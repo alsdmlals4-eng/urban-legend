@@ -18,6 +18,41 @@
       "after_story": "해결 등급에 따라 피해자의 귀환 여부와 후유증 기록이 달라집니다."
     }
   ],
+  "agents": [
+    {
+      "id": "agent_kang_ijun",
+      "name": "강이준",
+      "temperament": "analytical",
+      "temperament_label": "분석형",
+      "class": "현대 요원",
+      "role": "디지털 포렌식 담당",
+      "description": "삭제된 앱 로그, 통신 기록, CCTV 노이즈를 복원하는 분석 담당.",
+      "mvp10_dialogue_focus": "노이즈, 로그, 전광판, 앱 기록의 반복 패턴을 말한다.",
+      "mvp11_future_role": "미니게임 보조, 괴이 패턴 관찰, 고가치 힌트 발견"
+    },
+    {
+      "id": "agent_kwon_narae",
+      "name": "권나래",
+      "temperament": "empathetic",
+      "temperament_label": "공감형",
+      "class": "현대 요원",
+      "role": "기억 상담 담당",
+      "description": "피해자의 기억 공백과 감정 흔적을 인터뷰로 복원하는 상담 담당.",
+      "mvp10_dialogue_focus": "피해자의 감정, 기억 공백, 후유증 위험을 말한다.",
+      "mvp11_future_role": "방어, 위험 상승 억제, 피해자 이해도와 구조 결과 보정"
+    },
+    {
+      "id": "agent_oh_hyun",
+      "name": "오현",
+      "temperament": "breakthrough",
+      "temperament_label": "돌파형",
+      "class": "현대 요원",
+      "role": "현장 정리반",
+      "description": "괴담 현장을 일반 사고처럼 위장하고, 위험 구역에 빠르게 진입해 현장을 확보하는 요원.",
+      "mvp10_dialogue_focus": "오래 망설이면 괴담에 말려든다고 판단하고 빠른 진입을 제안한다.",
+      "mvp11_future_role": "파괴, 강행 돌입, 공격형 안정화, 위험을 대가로 빠른 해결"
+    }
+  ],
   "hints": [
     {
       "id": "hint_afterlife_station_001",
@@ -64,7 +99,7 @@
       "episode_id": "episode_001_afterlife_station",
       "target_clue_id": "clue_staff_room_log",
       "source_type": "support_agent",
-      "source_id": "agent_yeon_harin",
+      "source_id": "bureau_case_terminal",
       "text": "역무원실 근무 기록에는 막차 이후에도 출근 도장이 찍혀 있습니다.",
       "condition_flags": [
         "unlocked_staff_room"
@@ -75,10 +110,10 @@
     {
       "id": "dialogue_intro",
       "background_id": "station_platform_midnight",
-      "standing_id": "agent_yeon_harin",
+      "standing_id": "bureau_control",
       "lines": [
         {
-          "speaker": "연하린",
+          "speaker": "기록국 관제",
           "text": "이 역은 지도에도, 기록국 데이터에도 남아 있지 않아요.",
           "expression": "calm"
         },
@@ -88,7 +123,7 @@
           "expression": "question"
         },
         {
-          "speaker": "연하린",
+          "speaker": "기록국 관제",
           "text": "괴담은 믿는 사람의 기억을 노선처럼 씁니다. 선택해야 해요.",
           "expression": "serious"
         }
@@ -115,7 +150,7 @@
           "id": "choice_go_staff_room",
           "text": "역무원실로 향한다",
           "conditions": {},
-          "result_text": "연하린이 역무원실 접근 권한을 임시로 열었습니다.",
+          "result_text": "기록국 관제가 역무원실 접근 권한을 임시로 열었습니다.",
           "add_flags": [
             "choice_headed_staff_room",
             "unlocked_staff_room"
@@ -148,10 +183,10 @@
     {
       "id": "dialogue_after_photo",
       "background_id": "station_platform_midnight",
-      "standing_id": "agent_yeon_harin",
+      "standing_id": "bureau_control",
       "lines": [
         {
-          "speaker": "연하린",
+          "speaker": "기록국 관제",
           "text": "좋아요. 사진 속 종착지는 실제 운행 데이터에 없는 이름이에요.",
           "expression": "focused"
         },
@@ -206,6 +241,29 @@
           "next_scene_path": "res://scenes/minigame_scene.tscn"
         }
       ]
+    }
+  ],
+  "agent_reactions": [
+    {
+      "agent_id": "agent_kang_ijun",
+      "temperament": "analytical",
+      "conditions": {},
+      "text": "전광판의 표시 주기가 일정합니다. 노이즈 안에 반복 패턴이 있어요. 바로 건드리기 전에 기록부터 따야 합니다.",
+      "expression": "focused"
+    },
+    {
+      "agent_id": "agent_kwon_narae",
+      "temperament": "empathetic",
+      "conditions": {},
+      "text": "피해자가 마지막으로 본 건 출구가 아니라 누군가를 기다리는 표정이었을 가능성이 커요. 급하게 몰아붙이면 기억이 더 흐려질 수 있어요.",
+      "expression": "worried"
+    },
+    {
+      "agent_id": "agent_oh_hyun",
+      "temperament": "breakthrough",
+      "conditions": {},
+      "text": "이상한 건 알겠는데, 저 문 너머에서 소리가 납니다. 오래 보면 더 말릴 수 있어요. 들어갈 거면 지금입니다.",
+      "expression": "serious"
     }
   ],
   "investigation_points": [

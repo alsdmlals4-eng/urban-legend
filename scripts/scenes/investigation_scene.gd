@@ -112,7 +112,7 @@ func _build_ui() -> void:
 	scene_layout.add_child(portrait)
 
 	var portrait_label := Label.new()
-	portrait_label.text = "작은 초상화 영역: 기록국 단말기 / 동행 요원 통신"
+	portrait_label.text = "작은 초상화 영역: 기록국 단말기 / 편성 요원 통신"
 	portrait_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	portrait_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	portrait.add_child(portrait_label)
@@ -123,7 +123,7 @@ func _build_ui() -> void:
 	scene_layout.add_child(_result_label)
 
 	_hint_label = Label.new()
-	_hint_label.text = "동료 힌트: 수상한 물건부터 천천히 확인하세요."
+	_hint_label.text = "기록국 힌트: 수상한 물건부터 천천히 확인하세요."
 	_hint_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	scene_layout.add_child(_hint_label)
 
@@ -157,7 +157,7 @@ func _add_investigation_point(parent: Control, point: Dictionary) -> void:
 func _inspect_point(point: Dictionary) -> void:
 	if not _is_point_unlocked(point):
 		_result_label.text = String(point.get("locked_text", "아직 확인할 근거가 부족합니다."))
-		_hint_label.text = "동료 힌트: 조건을 만족하면 이 조사 포인트를 다시 확인할 수 있습니다."
+		_hint_label.text = "기록국 힌트: 조건을 만족하면 이 조사 포인트를 다시 확인할 수 있습니다."
 		return
 
 	var clue_id := String(point.get("clue_id", ""))
@@ -206,8 +206,8 @@ func _make_point_result_text(point: Dictionary, clue_id: String, was_collected: 
 func _make_point_hint_text(point: Dictionary) -> String:
 	var hint_texts := GameState.get_hint_texts_by_ids(point.get("show_hint_ids", []))
 	if hint_texts.is_empty():
-		return "동료 힌트: 기록된 힌트가 없습니다."
-	return "동료 힌트 기록\n- %s" % "\n- ".join(hint_texts)
+		return "기록국 힌트: 기록된 힌트가 없습니다."
+	return "기록국 힌트 기록\n- %s" % "\n- ".join(hint_texts)
 
 
 func _refresh_case_status() -> void:

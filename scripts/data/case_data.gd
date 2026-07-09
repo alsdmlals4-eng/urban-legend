@@ -25,6 +25,24 @@ static func get_hints(episode_data: Dictionary) -> Array:
 	return _get_array(episode_data, "hints")
 
 
+## Returns agent records for mission formation.
+static func get_agents(episode_data: Dictionary) -> Array:
+	return _get_array(episode_data, "agents")
+
+
+## Finds one agent by id.
+static func get_agent_by_id(episode_data: Dictionary, agent_id: String) -> Dictionary:
+	for agent in get_agents(episode_data):
+		if typeof(agent) == TYPE_DICTIONARY and agent.get("id", "") == agent_id:
+			return agent
+	return {}
+
+
+## Returns dialogue reactions attached to recruitable agents.
+static func get_agent_reactions(episode_data: Dictionary) -> Array:
+	return _get_array(episode_data, "agent_reactions")
+
+
 ## Returns clue records. Only this list is counted for clue collection rate.
 static func get_clues(episode_data: Dictionary) -> Array:
 	return _get_array(episode_data, "clues")

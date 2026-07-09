@@ -85,8 +85,9 @@ func _add_navigation_buttons(parent: Control) -> void:
 	var restart_button := Button.new()
 	restart_button.text = "저승역 다시 시작"
 	restart_button.pressed.connect(func() -> void:
+		var selected_agent_ids := GameState.get_selected_agent_ids()
 		GameState.clear_save_file()
-		GameState.restart_afterlife_station_flow()
+		GameState.restart_afterlife_station_flow(selected_agent_ids)
 		GameState.set_current_scene_path("res://scenes/dialogue_scene.tscn")
 		GameState.save_game()
 		get_tree().change_scene_to_file("res://scenes/dialogue_scene.tscn")

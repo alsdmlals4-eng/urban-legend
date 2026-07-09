@@ -2,9 +2,9 @@
 extends Control
 
 const FALLBACK_LINES: Array[Dictionary] = [
-	{"speaker": "연하린", "text": "이 역은 지도에도, 기록국 데이터에도 남아 있지 않아요.", "expression": "default"},
+	{"speaker": "기록국 관제", "text": "이 역은 지도에도, 기록국 데이터에도 남아 있지 않아요.", "expression": "default"},
 	{"speaker": "신입 요원", "text": "그럼 지금 우리가 보고 있는 전광판은 뭘 기준으로 움직이는 거죠?", "expression": "question"},
-	{"speaker": "연하린", "text": "괴담은 믿는 사람의 기억을 노선처럼 씁니다. 선택해야 해요.", "expression": "serious"}
+	{"speaker": "기록국 관제", "text": "괴담은 믿는 사람의 기억을 노선처럼 씁니다. 선택해야 해요.", "expression": "serious"}
 ]
 
 var _line_index := 0
@@ -16,6 +16,8 @@ var _pending_next_scene_path := ""
 
 var _stage_label: Label
 var _standing_label: Label
+var _agent_status_label: Label
+var _agent_reaction_label: Label
 var _name_label: Label
 var _dialogue_label: Label
 var _condition_label: Label
@@ -88,6 +90,26 @@ func _build_ui() -> void:
 	_standing_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	standing.add_child(_standing_label)
 
+	var agent_panel := PanelContainer.new()
+	stage_layout.add_child(agent_panel)
+
+	var agent_content := VBoxContainer.new()
+	agent_content.add_theme_constant_override("separation", 6)
+	agent_panel.add_child(agent_content)
+
+	var agent_title := Label.new()
+	agent_title.text = "편성 요원 반응"
+	agent_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	agent_content.add_child(agent_title)
+
+	_agent_status_label = Label.new()
+	_agent_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	agent_content.add_child(_agent_status_label)
+
+	_agent_reaction_label = Label.new()
+	_agent_reaction_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	agent_content.add_child(_agent_reaction_label)
+
 	_name_label = Label.new()
 	_name_label.text = "이름"
 	stage_layout.add_child(_name_label)
@@ -126,11 +148,11 @@ func _build_ui() -> void:
 	hint_panel.add_child(hint_content)
 
 	var hint_title := Label.new()
-	hint_title.text = "동료 힌트 목록"
+	hint_title.text = "기록국 힌트 목록"
 	hint_content.add_child(hint_title)
 
 	var hint_button := Button.new()
-	hint_button.text = "동료 힌트 확인"
+	hint_button.text = "기록국 힌트 확인"
 	hint_button.pressed.connect(_show_next_hint)
 	hint_content.add_child(hint_button)
 
@@ -156,7 +178,7 @@ func _show_line() -> void:
 	_line_index = clampi(_line_index, 0, lines.size() - 1)
 	var line: Dictionary = lines[_line_index]
 	_stage_label.text = "배경 placeholder: %s" % String(_dialogue_node.get("background_id", "사라진 승강장"))
-	_standing_label.text = "캐릭터 스탠딩 placeholder: %s" % String(_dialogue_node.get("standing_id", "agent_yeon_harin"))
+	_standing_label.text = "상황 표시 placeholder: %s" % String(_dialogue_node.get("standing_id", "bureau_control"))
 	_name_label.text = String(line.get("speaker", line.get("name", "")))
 	_dialogue_label.text = "%s\n[표정: %s]" % [
 		String(line.get("text", "")),
@@ -168,6 +190,7 @@ func _show_line() -> void:
 	_pending_next_scene_path = ""
 	_next_button.disabled = false
 	_next_button.text = "다음 대사"
+	_refresh_agent_reactions()
 
 
 func _advance_line() -> void:
@@ -230,6 +253,7 @@ func _select_choice(choice: Dictionary) -> void:
 	_next_button.text = _make_next_button_text()
 	_refresh_clue_status()
 	_refresh_condition_label()
+	_refresh_agent_reactions()
 	GameState.save_game()
 
 
@@ -258,6 +282,7 @@ func _load_dialogue_node(dialogue_node_id: String) -> void:
 	_line_index = 0
 	_show_line()
 	_refresh_condition_label()
+	_refresh_agent_reactions()
 
 
 func _show_next_hint() -> void:
@@ -307,6 +332,38 @@ func _refresh_condition_label() -> void:
 		String(_dialogue_node.get("id", "fallback")),
 		", ".join(GameState.get_flags()) if not GameState.get_flags().is_empty() else "없음"
 	]
+
+
+func _refresh_agent_reactions() -> void:
+	if _agent_status_label == null or _agent_reaction_label == null:
+		return
+
+	var selected_agents := GameState.get_selected_agents()
+	if selected_agents.is_empty():
+		_agent_status_label.text = "편성 요원: 없음"
+		_agent_reaction_label.text = "메인 메뉴에서 요원 2~3명을 편성하면 성향별 반응이 표시됩니다."
+		return
+
+	_agent_status_label.text = "편성 요원: %s" % GameState.get_selected_agent_summary()
+
+	var reactions := GameState.get_selected_agent_reactions()
+	if reactions.is_empty():
+		_agent_reaction_label.text = "현재 조건에서 표시할 요원 반응이 없습니다."
+		return
+
+	var lines: Array = []
+	for reaction in reactions:
+		if typeof(reaction) != TYPE_DICTIONARY:
+			continue
+
+		lines.append("%s [%s]: %s\n표정: %s" % [
+			String(reaction.get("agent_name", reaction.get("agent_id", ""))),
+			String(reaction.get("temperament_label", reaction.get("temperament", ""))),
+			String(reaction.get("text", "")),
+			String(reaction.get("expression", "default"))
+		])
+
+	_agent_reaction_label.text = "\n\n".join(lines)
 
 
 func _make_choice_result_text(choice: Dictionary) -> String:

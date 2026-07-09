@@ -49,10 +49,9 @@ const SECTIONS: Array[Dictionary] = [
 		"title": "요원",
 		"summary": "기관 ID 카드형 화면으로 표현할 캐릭터와 능력 정보를 관리한다.",
 		"items": [
-			"오현: 현장 정리반",
-			"연하린: 동양 퇴마사 계열 선임",
-			"민서우: 서양 마법사 계열 분석가",
-			"하유건: 괴담 중개인"
+			"강이준: 분석형 / 디지털 포렌식 담당",
+			"권나래: 공감형 / 기억 상담 담당",
+			"오현: 돌파형 / 현장 정리반"
 		]
 	},
 	{
@@ -105,4 +104,3 @@ func get_section(section_id: String) -> Dictionary:
 		if section.get("id", "") == section_id:
 			return section
 	return SECTIONS[0]
-

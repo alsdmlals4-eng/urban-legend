@@ -3,7 +3,7 @@ extends Node
 
 const DEFAULT_EPISODE_PATH := "res://data/episodes/episode_001_afterlife_station.json"
 const SAVE_FILE_PATH := "user://urban_legend_save.json"
-const SAVE_VERSION := "mvp-009"
+const SAVE_VERSION := "mvp-010"
 const DEFAULT_DIALOGUE_NODE_ID := "dialogue_intro"
 const DEFAULT_MINIGAME_ID := "minigame_frequency_sync"
 const SCENE_MAIN_MENU := "res://scenes/main_menu.tscn"
@@ -12,6 +12,9 @@ const SCENE_INVESTIGATION := "res://scenes/investigation_scene.tscn"
 const SCENE_BATTLE := "res://scenes/battle_scene.tscn"
 const SCENE_RESULT := "res://scenes/result_scene.tscn"
 const FLAG_CAPTURE_SUCCESS := "capture_success"
+const MIN_SELECTED_AGENTS := 2
+const MAX_SELECTED_AGENTS := 3
+const ALLOWED_AGENT_TEMPERAMENTS := ["analytical", "empathetic", "breakthrough"]
 const EpisodeLoaderScript := preload("res://scripts/data/episode_loader.gd")
 const CaseDataScript := preload("res://scripts/data/case_data.gd")
 
@@ -21,6 +24,7 @@ var current_scene_path := SCENE_MAIN_MENU
 var current_dialogue_node_id := DEFAULT_DIALOGUE_NODE_ID
 var current_minigame_id := DEFAULT_MINIGAME_ID
 var minigame_results: Dictionary = {}
+var selected_agent_ids: Array = []
 var flags: Array = []
 var seen_hint_ids: Array = []
 var selected_resolution_grade := ""
@@ -55,8 +59,9 @@ func get_current_episode() -> Dictionary:
 
 
 ## Restarts the afterlife station MVP from the beginning.
-func restart_afterlife_station_flow() -> bool:
+func restart_afterlife_station_flow(agent_ids: Array = []) -> bool:
 	reset_run_state()
+	set_selected_agent_ids(agent_ids)
 	current_scene_path = SCENE_DIALOGUE
 	return not current_episode_data.is_empty()
 
@@ -66,6 +71,7 @@ func reset_run_state() -> void:
 	flags.clear()
 	seen_hint_ids.clear()
 	minigame_results.clear()
+	selected_agent_ids.clear()
 	current_scene_path = SCENE_DIALOGUE
 	current_dialogue_node_id = DEFAULT_DIALOGUE_NODE_ID
 	current_minigame_id = DEFAULT_MINIGAME_ID
@@ -359,6 +365,127 @@ func reset_clue_collection() -> void:
 ## Returns active victim records.
 func get_victims() -> Array:
 	return CaseDataScript.get_victims(current_episode_data)
+
+
+## Returns recruitable agent records.
+func get_agents() -> Array:
+	return CaseDataScript.get_agents(current_episode_data)
+
+
+## Returns one recruitable agent by id.
+func get_agent_by_id(agent_id: String) -> Dictionary:
+	return CaseDataScript.get_agent_by_id(current_episode_data, agent_id)
+
+
+## Selects one agent for the current mission formation.
+func select_agent(agent_id: String) -> bool:
+	var clean_agent_id := agent_id.strip_edges()
+	if clean_agent_id.is_empty():
+		return false
+	if selected_agent_ids.has(clean_agent_id):
+		return true
+	if selected_agent_ids.size() >= MAX_SELECTED_AGENTS:
+		return false
+
+	var agent := get_agent_by_id(clean_agent_id)
+	if agent.is_empty() or not _is_allowed_agent_temperament(agent):
+		return false
+
+	selected_agent_ids.append(clean_agent_id)
+	return true
+
+
+## Removes one agent from the current mission formation.
+func deselect_agent(agent_id: String) -> void:
+	selected_agent_ids.erase(agent_id)
+
+
+## Replaces the current formation with valid agent ids.
+func set_selected_agent_ids(agent_ids: Array) -> void:
+	selected_agent_ids.clear()
+	for agent_id in _to_string_array(agent_ids):
+		if selected_agent_ids.size() >= MAX_SELECTED_AGENTS:
+			break
+		select_agent(agent_id)
+
+
+## Clears the current mission formation.
+func clear_selected_agents() -> void:
+	selected_agent_ids.clear()
+
+
+## Returns true when the agent is currently selected.
+func is_agent_selected(agent_id: String) -> bool:
+	return selected_agent_ids.has(agent_id)
+
+
+## Returns selected agent ids for save data.
+func get_selected_agent_ids() -> Array:
+	return selected_agent_ids.duplicate()
+
+
+## Returns selected agent records only.
+func get_selected_agents() -> Array:
+	var selected_agents: Array = []
+	for agent_id in selected_agent_ids:
+		var agent := get_agent_by_id(String(agent_id))
+		if not agent.is_empty():
+			selected_agents.append(agent)
+	return selected_agents
+
+
+## Returns true when the current formation can start a mission.
+func can_start_mission_with_agents() -> bool:
+	return selected_agent_ids.size() >= MIN_SELECTED_AGENTS and selected_agent_ids.size() <= MAX_SELECTED_AGENTS
+
+
+## Returns a short Korean status text for the current formation.
+func get_agent_selection_status_text() -> String:
+	var count := selected_agent_ids.size()
+	if count < MIN_SELECTED_AGENTS:
+		return "요원 %d명을 더 선택해야 임무를 시작할 수 있습니다." % (MIN_SELECTED_AGENTS - count)
+	if count > MAX_SELECTED_AGENTS:
+		return "요원은 최대 %d명까지만 편성할 수 있습니다." % MAX_SELECTED_AGENTS
+	return "임무 시작 가능: 요원 %d명 편성됨" % count
+
+
+## Returns readable selected agent names and temperaments.
+func get_selected_agent_summary() -> String:
+	var names: Array = []
+	for agent in get_selected_agents():
+		names.append("%s(%s)" % [
+			String(agent.get("name", "")),
+			String(agent.get("temperament_label", ""))
+		])
+	if names.is_empty():
+		return "선택 요원 없음"
+	return ", ".join(names)
+
+
+## Returns selected agents' dialogue reactions whose conditions are met.
+func get_selected_agent_reactions() -> Array:
+	var visible_reactions: Array = []
+	for reaction in CaseDataScript.get_agent_reactions(current_episode_data):
+		if typeof(reaction) != TYPE_DICTIONARY:
+			continue
+
+		var agent_id := String(reaction.get("agent_id", ""))
+		if not selected_agent_ids.has(agent_id):
+			continue
+
+		var conditions := _to_dictionary(reaction.get("conditions", {}))
+		if not check_conditions(conditions):
+			continue
+
+		var agent := get_agent_by_id(agent_id)
+		if agent.is_empty():
+			continue
+
+		var entry: Dictionary = reaction.duplicate(true)
+		entry["agent_name"] = String(agent.get("name", agent_id))
+		entry["temperament_label"] = String(agent.get("temperament_label", ""))
+		visible_reactions.append(entry)
+	return visible_reactions
 
 
 ## Returns active hint records. Hints are separate from clues.
@@ -668,6 +795,7 @@ func load_game() -> bool:
 	if not load_episode(episode_path):
 		return false
 
+	set_selected_agent_ids(_to_string_array(save_data.get("selected_agent_ids", [])))
 	flags = _to_unique_string_array(save_data.get("flags", []))
 	seen_hint_ids = _to_unique_string_array(save_data.get("seen_hint_ids", []))
 	minigame_results = _to_dictionary(save_data.get("minigame_results", {}))
@@ -727,6 +855,7 @@ func _make_save_data() -> Dictionary:
 		"current_scene_path": get_current_scene_path(),
 		"current_dialogue_node_id": get_current_dialogue_node_id(),
 		"current_minigame_id": get_current_minigame_id(),
+		"selected_agent_ids": get_selected_agent_ids(),
 		"flags": get_flags(),
 		"minigame_results": get_minigame_results(),
 		"collected_clue_ids": get_collected_clue_ids(),
@@ -776,6 +905,10 @@ func _clear_recovery_result() -> void:
 	recovery_result_status = ""
 	recovery_result_stability = 100
 	remove_flag(FLAG_CAPTURE_SUCCESS)
+
+
+func _is_allowed_agent_temperament(agent: Dictionary) -> bool:
+	return ALLOWED_AGENT_TEMPERAMENTS.has(String(agent.get("temperament", "")))
 
 
 func _to_unique_string_array(value: Variant) -> Array:

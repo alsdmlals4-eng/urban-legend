@@ -259,11 +259,11 @@ func _add_defense_action(parent: Control) -> void:
 
 func _add_support_action(parent: Control) -> void:
 	var button := Button.new()
-	button.text = "지원 요청: 연하린 보조"
+	button.text = "지원 요청: 기록국 보조"
 	button.pressed.connect(func() -> void:
 		_anomaly_stability = max(0, _anomaly_stability - 14)
 		_fear_level = max(0, _fear_level - 6)
-		_update_battle_view("연하린이 부적 봉인으로 괴이의 핵을 더 안정화했습니다.")
+		_update_battle_view("기록국 지원팀이 임시 봉인지로 괴이의 핵을 더 안정화했습니다.")
 	)
 	parent.add_child(button)
 	_action_buttons.append(button)
