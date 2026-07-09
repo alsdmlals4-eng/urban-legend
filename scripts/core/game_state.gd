@@ -3,7 +3,8 @@ extends Node
 
 const DEFAULT_EPISODE_PATH := "res://data/episodes/episode_001_afterlife_station.json"
 const SAVE_FILE_PATH := "user://urban_legend_save.json"
-const SAVE_VERSION := "mvp-007"
+const SAVE_VERSION := "mvp-008"
+const DEFAULT_DIALOGUE_NODE_ID := "dialogue_intro"
 const SCENE_MAIN_MENU := "res://scenes/main_menu.tscn"
 const SCENE_DIALOGUE := "res://scenes/dialogue_scene.tscn"
 const SCENE_INVESTIGATION := "res://scenes/investigation_scene.tscn"
@@ -16,6 +17,7 @@ const CaseDataScript := preload("res://scripts/data/case_data.gd")
 var current_episode_path := DEFAULT_EPISODE_PATH
 var current_episode_data: Dictionary = {}
 var current_scene_path := SCENE_MAIN_MENU
+var current_dialogue_node_id := DEFAULT_DIALOGUE_NODE_ID
 var flags: Array = []
 var seen_hint_ids: Array = []
 var selected_resolution_grade := ""
@@ -61,6 +63,7 @@ func reset_run_state() -> void:
 	flags.clear()
 	seen_hint_ids.clear()
 	current_scene_path = SCENE_DIALOGUE
+	current_dialogue_node_id = DEFAULT_DIALOGUE_NODE_ID
 	load_episode(DEFAULT_EPISODE_PATH)
 
 
@@ -89,6 +92,22 @@ func get_current_scene_path() -> String:
 	if current_scene_path.strip_edges().is_empty():
 		return SCENE_DIALOGUE
 	return current_scene_path
+
+
+## Stores the current dialogue node for Continue and save data.
+func set_current_dialogue_node_id(dialogue_node_id: String) -> void:
+	var clean_id := dialogue_node_id.strip_edges()
+	if clean_id.is_empty():
+		return
+
+	current_dialogue_node_id = clean_id
+
+
+## Returns the current dialogue node id.
+func get_current_dialogue_node_id() -> String:
+	if current_dialogue_node_id.strip_edges().is_empty():
+		return DEFAULT_DIALOGUE_NODE_ID
+	return current_dialogue_node_id
 
 
 ## Adds one run flag if it is not already present.
@@ -192,6 +211,43 @@ func check_conditions(conditions: Dictionary) -> bool:
 	return true
 
 
+## Applies branch result data from dialogue choices or investigation points.
+func apply_story_effects(result_data: Dictionary) -> void:
+	for flag_id in _to_string_array(result_data.get("add_flags", [])):
+		add_flag(flag_id)
+
+	for flag_id in _to_string_array(result_data.get("remove_flags", [])):
+		remove_flag(flag_id)
+
+	var clue_ids := _to_string_array(result_data.get("collect_clues", []))
+	var direct_clue_id := String(result_data.get("clue_id", "")).strip_edges()
+	if not direct_clue_id.is_empty() and not clue_ids.has(direct_clue_id):
+		clue_ids.append(direct_clue_id)
+
+	for clue_id in clue_ids:
+		collect_clue(clue_id)
+
+	for hint_id in _to_string_array(result_data.get("show_hint_ids", [])):
+		mark_hint_seen(hint_id)
+
+	save_game()
+
+
+## Returns display text for hint ids stored in branch result data.
+func get_hint_texts_by_ids(hint_ids: Array) -> Array:
+	var texts: Array = []
+	for hint_id in _to_string_array(hint_ids):
+		var hint := get_hint_by_id(hint_id)
+		if hint.is_empty():
+			continue
+
+		texts.append("%s: %s" % [
+			String(hint.get("target_clue_id", "")),
+			String(hint.get("text", ""))
+		])
+	return texts
+
+
 ## Marks one clue as collected and updates the resolution state.
 func collect_clue(clue_id: String) -> bool:
 	if current_episode_data.is_empty():
@@ -236,6 +292,11 @@ func get_hints() -> Array:
 	return CaseDataScript.get_hints(current_episode_data)
 
 
+## Returns one hint by id.
+func get_hint_by_id(hint_id: String) -> Dictionary:
+	return CaseDataScript.get_hint_by_id(current_episode_data, hint_id)
+
+
 ## Returns hints whose condition flags are currently satisfied.
 func get_available_hints() -> Array:
 	var available_hints: Array = []
@@ -247,6 +308,36 @@ func get_available_hints() -> Array:
 		if check_conditions({"required_flags": condition_flags}):
 			available_hints.append(hint)
 	return available_hints
+
+
+## Returns dialogue nodes defined in the active episode data.
+func get_dialogue_nodes() -> Array:
+	return CaseDataScript.get_dialogue_nodes(current_episode_data)
+
+
+## Returns one dialogue node by id.
+func get_dialogue_node(dialogue_node_id: String) -> Dictionary:
+	return CaseDataScript.get_dialogue_node_by_id(current_episode_data, dialogue_node_id)
+
+
+## Returns the current dialogue node, falling back to the first node.
+func get_current_dialogue_node() -> Dictionary:
+	var node := get_dialogue_node(get_current_dialogue_node_id())
+	if not node.is_empty():
+		return node
+
+	var nodes := get_dialogue_nodes()
+	if nodes.is_empty() or typeof(nodes[0]) != TYPE_DICTIONARY:
+		return {}
+
+	var first_node: Dictionary = nodes[0]
+	set_current_dialogue_node_id(String(first_node.get("id", DEFAULT_DIALOGUE_NODE_ID)))
+	return first_node
+
+
+## Returns investigation points defined in the active episode data.
+func get_investigation_points() -> Array:
+	return CaseDataScript.get_investigation_points(current_episode_data)
 
 
 ## Returns active clue records.
@@ -497,6 +588,10 @@ func load_game() -> bool:
 	current_scene_path = String(save_data.get("current_scene_path", SCENE_DIALOGUE))
 	if current_scene_path.is_empty():
 		current_scene_path = SCENE_DIALOGUE
+
+	current_dialogue_node_id = String(save_data.get("current_dialogue_node_id", DEFAULT_DIALOGUE_NODE_ID))
+	if current_dialogue_node_id.is_empty():
+		current_dialogue_node_id = DEFAULT_DIALOGUE_NODE_ID
 	return true
 
 
@@ -526,6 +621,7 @@ func _make_save_data() -> Dictionary:
 		"episode_id": get_current_episode_id(),
 		"episode_path": current_episode_path,
 		"current_scene_path": get_current_scene_path(),
+		"current_dialogue_node_id": get_current_dialogue_node_id(),
 		"flags": get_flags(),
 		"collected_clue_ids": get_collected_clue_ids(),
 		"seen_hint_ids": get_seen_hint_ids(),

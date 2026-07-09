@@ -30,6 +30,32 @@ static func get_clues(episode_data: Dictionary) -> Array:
 	return _get_array(episode_data, "clues")
 
 
+## Returns dialogue node records for data-driven visual novel scenes.
+static func get_dialogue_nodes(episode_data: Dictionary) -> Array:
+	return _get_array(episode_data, "dialogue_nodes")
+
+
+## Finds one dialogue node by id.
+static func get_dialogue_node_by_id(episode_data: Dictionary, dialogue_node_id: String) -> Dictionary:
+	for node in get_dialogue_nodes(episode_data):
+		if typeof(node) == TYPE_DICTIONARY and node.get("id", "") == dialogue_node_id:
+			return node
+	return {}
+
+
+## Returns investigation point records for data-driven investigation scenes.
+static func get_investigation_points(episode_data: Dictionary) -> Array:
+	return _get_array(episode_data, "investigation_points")
+
+
+## Finds one hint by id.
+static func get_hint_by_id(episode_data: Dictionary, hint_id: String) -> Dictionary:
+	for hint in get_hints(episode_data):
+		if typeof(hint) == TYPE_DICTIONARY and hint.get("id", "") == hint_id:
+			return hint
+	return {}
+
+
 ## Counts every clue in the active episode data.
 static func get_total_clue_count(episode_data: Dictionary) -> int:
 	return get_clues(episode_data).size()

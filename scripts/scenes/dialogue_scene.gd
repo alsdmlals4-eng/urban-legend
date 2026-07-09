@@ -1,20 +1,28 @@
-# 대화 씬의 대사 진행과 선택지 테스트를 관리한다.
+# 대화 씬의 JSON 기반 대사 노드와 선택지 분기를 관리한다.
 extends Control
 
-const LINES: Array[Dictionary] = [
-	{"name": "연하린", "text": "이 역은 지도에도, 기록국 데이터에도 남아 있지 않아요."},
-	{"name": "신입 요원", "text": "그럼 지금 우리가 보고 있는 전광판은 뭘 기준으로 움직이는 거죠?"},
-	{"name": "연하린", "text": "괴담은 믿는 사람의 기억을 노선처럼 씁니다. 선택해야 해요."}
+const FALLBACK_LINES: Array[Dictionary] = [
+	{"speaker": "연하린", "text": "이 역은 지도에도, 기록국 데이터에도 남아 있지 않아요.", "expression": "default"},
+	{"speaker": "신입 요원", "text": "그럼 지금 우리가 보고 있는 전광판은 뭘 기준으로 움직이는 거죠?", "expression": "question"},
+	{"speaker": "연하린", "text": "괴담은 믿는 사람의 기억을 노선처럼 씁니다. 선택해야 해요.", "expression": "serious"}
 ]
 
 var _line_index := 0
 var _hint_index := 0
+var _dialogue_node: Dictionary = {}
+var _waiting_for_result_continue := false
+var _pending_next_node_id := ""
+var _pending_next_scene_path := ""
+
+var _stage_label: Label
+var _standing_label: Label
 var _name_label: Label
 var _dialogue_label: Label
+var _condition_label: Label
+var _next_button: Button
 var _choice_box: VBoxContainer
 var _hint_label: Label
 var _clue_status_label: Label
-var _condition_label: Label
 
 
 func _ready() -> void:
@@ -22,6 +30,7 @@ func _ready() -> void:
 		GameState.load_episode()
 
 	GameState.set_current_scene_path("res://scenes/dialogue_scene.tscn")
+	_dialogue_node = GameState.get_current_dialogue_node()
 	_build_ui()
 	_show_line()
 	_refresh_clue_status()
@@ -66,20 +75,18 @@ func _build_ui() -> void:
 	stage_layout.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	stage_scroll.add_child(stage_layout)
 
-	var bg_label := Label.new()
-	bg_label.text = "배경 placeholder: 사라진 승강장"
-	bg_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	stage_layout.add_child(bg_label)
+	_stage_label = Label.new()
+	_stage_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	stage_layout.add_child(_stage_label)
 
 	var standing := PanelContainer.new()
 	standing.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	stage_layout.add_child(standing)
 
-	var standing_label := Label.new()
-	standing_label.text = "캐릭터 스탠딩 placeholder: 연하린"
-	standing_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	standing_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	standing.add_child(standing_label)
+	_standing_label = Label.new()
+	_standing_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_standing_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	standing.add_child(_standing_label)
 
 	_name_label = Label.new()
 	_name_label.text = "이름"
@@ -94,17 +101,15 @@ func _build_ui() -> void:
 	_condition_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	stage_layout.add_child(_condition_label)
 
-	var next_button := Button.new()
-	next_button.text = "다음 대사"
-	next_button.pressed.connect(_advance_line)
-	stage_layout.add_child(next_button)
+	_next_button = Button.new()
+	_next_button.text = "다음 대사"
+	_next_button.pressed.connect(_advance_line)
+	stage_layout.add_child(_next_button)
 
 	var investigation_button := Button.new()
 	investigation_button.text = "조사 시작"
 	investigation_button.pressed.connect(func() -> void:
-		GameState.set_current_scene_path("res://scenes/investigation_scene.tscn")
-		GameState.save_game()
-		get_tree().change_scene_to_file("res://scenes/investigation_scene.tscn")
+		_go_to_scene("res://scenes/investigation_scene.tscn")
 	)
 	stage_layout.add_child(investigation_button)
 
@@ -144,49 +149,115 @@ func _build_ui() -> void:
 
 
 func _show_line() -> void:
-	var line := LINES[_line_index]
-	_name_label.text = line.get("name", "")
-	_dialogue_label.text = line.get("text", "")
+	var lines := _get_current_lines()
+	if lines.is_empty():
+		return
+
+	_line_index = clampi(_line_index, 0, lines.size() - 1)
+	var line: Dictionary = lines[_line_index]
+	_stage_label.text = "배경 placeholder: %s" % String(_dialogue_node.get("background_id", "사라진 승강장"))
+	_standing_label.text = "캐릭터 스탠딩 placeholder: %s" % String(_dialogue_node.get("standing_id", "agent_yeon_harin"))
+	_name_label.text = String(line.get("speaker", line.get("name", "")))
+	_dialogue_label.text = "%s\n[표정: %s]" % [
+		String(line.get("text", "")),
+		String(line.get("expression", "default"))
+	]
 	_choice_box.visible = false
+	_waiting_for_result_continue = false
+	_pending_next_node_id = ""
+	_pending_next_scene_path = ""
+	_next_button.disabled = false
+	_next_button.text = "다음 대사"
 
 
 func _advance_line() -> void:
-	if _line_index < LINES.size() - 1:
+	if _waiting_for_result_continue:
+		_continue_after_result()
+		return
+
+	var lines := _get_current_lines()
+	if _line_index < lines.size() - 1:
 		_line_index += 1
 		_show_line()
-	else:
-		_show_choices()
+		return
+
+	_show_choices()
 
 
 func _show_choices() -> void:
 	_choice_box.visible = true
-	for child in _choice_box.get_children():
-		child.queue_free()
-	_add_choice(
-		"전광판을 촬영한다",
-		"선택 결과: 전광판 촬영 기록 플래그가 추가되었습니다.",
-		["choice_photographed_sign"]
-	)
-	_add_choice(
-		"역무원실로 향한다",
-		"선택 결과: 역무원실 접근 근거 플래그가 추가되었습니다.",
-		["choice_headed_staff_room", "unlocked_staff_room"]
-	)
+	_clear_children(_choice_box)
+
+	var choices := _get_current_choices()
+	if choices.is_empty():
+		var label := Label.new()
+		label.text = "표시할 선택지가 없습니다. 조사 시작 버튼으로 이동하세요."
+		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		_choice_box.add_child(label)
+		_next_button.disabled = true
+		return
+
+	for choice in choices:
+		if typeof(choice) == TYPE_DICTIONARY:
+			_add_choice(choice)
+
+	_next_button.disabled = true
 
 
-func _add_choice(label: String, result: String, flag_ids: Array) -> void:
+func _add_choice(choice: Dictionary) -> void:
 	var button := Button.new()
-	button.text = label
+	var conditions: Dictionary = choice.get("conditions", {})
+	var can_select := GameState.check_conditions(conditions)
+	button.text = String(choice.get("text", "선택지"))
+	if not can_select:
+		button.text += " (조건 미충족)"
+		button.disabled = true
 	button.pressed.connect(func() -> void:
-		for flag_id in flag_ids:
-			GameState.add_flag(String(flag_id))
-		_name_label.text = "선택"
-		_dialogue_label.text = result
-		_choice_box.visible = false
-		GameState.save_game()
-		_refresh_condition_label()
+		_select_choice(choice)
 	)
 	_choice_box.add_child(button)
+
+
+func _select_choice(choice: Dictionary) -> void:
+	GameState.apply_story_effects(choice)
+	_name_label.text = "선택"
+	_dialogue_label.text = _make_choice_result_text(choice)
+	_choice_box.visible = false
+	_pending_next_node_id = String(choice.get("next_node_id", ""))
+	_pending_next_scene_path = String(choice.get("next_scene_path", ""))
+	_waiting_for_result_continue = true
+	_next_button.disabled = false
+	_next_button.text = _make_next_button_text()
+	_refresh_clue_status()
+	_refresh_condition_label()
+	GameState.save_game()
+
+
+func _continue_after_result() -> void:
+	if not _pending_next_scene_path.is_empty():
+		_go_to_scene(_pending_next_scene_path)
+		return
+
+	if not _pending_next_node_id.is_empty():
+		_load_dialogue_node(_pending_next_node_id)
+		return
+
+	_waiting_for_result_continue = false
+	_show_choices()
+
+
+func _load_dialogue_node(dialogue_node_id: String) -> void:
+	var next_node := GameState.get_dialogue_node(dialogue_node_id)
+	if next_node.is_empty():
+		_dialogue_label.text = "다음 대화 노드를 찾지 못했습니다: %s" % dialogue_node_id
+		return
+
+	_dialogue_node = next_node
+	GameState.set_current_dialogue_node_id(dialogue_node_id)
+	GameState.save_game()
+	_line_index = 0
+	_show_line()
+	_refresh_condition_label()
 
 
 func _show_next_hint() -> void:
@@ -232,10 +303,51 @@ func _refresh_condition_label() -> void:
 	if _condition_label == null:
 		return
 
-	if GameState.has_flag("unlocked_staff_room"):
-		_condition_label.text = "조건부 안내: 역무원실 조사 권한이 열렸습니다. 조사씬에서 근무 기록을 확인할 수 있습니다."
-	else:
-		_condition_label.text = "조건부 안내: 역무원실은 아직 접근 근거가 부족합니다. 선택지로 접근 근거를 만들 수 있습니다."
+	_condition_label.text = "현재 대화 노드: %s\n보유 플래그: %s" % [
+		String(_dialogue_node.get("id", "fallback")),
+		", ".join(GameState.get_flags()) if not GameState.get_flags().is_empty() else "없음"
+	]
+
+
+func _make_choice_result_text(choice: Dictionary) -> String:
+	var text := String(choice.get("result_text", "선택 결과가 기록되었습니다."))
+	var hint_texts := GameState.get_hint_texts_by_ids(choice.get("show_hint_ids", []))
+	if not hint_texts.is_empty():
+		text += "\n\n기록된 힌트\n- %s" % "\n- ".join(hint_texts)
+	return text
+
+
+func _make_next_button_text() -> String:
+	if not _pending_next_scene_path.is_empty():
+		return "다음 장면"
+	if not _pending_next_node_id.is_empty():
+		return "다음 대화"
+	return "선택지 보기"
+
+
+func _go_to_scene(scene_path: String) -> void:
+	GameState.set_current_scene_path(scene_path)
+	GameState.save_game()
+	get_tree().change_scene_to_file(scene_path)
+
+
+func _get_current_lines() -> Array:
+	var lines: Variant = _dialogue_node.get("lines", [])
+	if typeof(lines) == TYPE_ARRAY and not lines.is_empty():
+		return lines
+	return FALLBACK_LINES
+
+
+func _get_current_choices() -> Array:
+	var choices: Variant = _dialogue_node.get("choices", [])
+	if typeof(choices) == TYPE_ARRAY:
+		return choices
+	return []
+
+
+func _clear_children(parent: Node) -> void:
+	for child in parent.get_children():
+		child.queue_free()
 
 
 func _add_navigation(parent: Control) -> void:
@@ -252,8 +364,6 @@ func _add_scene_button(parent: Control, label: String, scene_path: String) -> vo
 	var button := Button.new()
 	button.text = label
 	button.pressed.connect(func() -> void:
-		GameState.set_current_scene_path(scene_path)
-		GameState.save_game()
-		get_tree().change_scene_to_file(scene_path)
+		_go_to_scene(scene_path)
 	)
 	parent.add_child(button)

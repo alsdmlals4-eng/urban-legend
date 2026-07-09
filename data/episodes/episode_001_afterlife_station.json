@@ -71,6 +71,206 @@
       ]
     }
   ],
+  "dialogue_nodes": [
+    {
+      "id": "dialogue_intro",
+      "background_id": "station_platform_midnight",
+      "standing_id": "agent_yeon_harin",
+      "lines": [
+        {
+          "speaker": "연하린",
+          "text": "이 역은 지도에도, 기록국 데이터에도 남아 있지 않아요.",
+          "expression": "calm"
+        },
+        {
+          "speaker": "신입 요원",
+          "text": "그럼 지금 우리가 보고 있는 전광판은 뭘 기준으로 움직이는 거죠?",
+          "expression": "question"
+        },
+        {
+          "speaker": "연하린",
+          "text": "괴담은 믿는 사람의 기억을 노선처럼 씁니다. 선택해야 해요.",
+          "expression": "serious"
+        }
+      ],
+      "choices": [
+        {
+          "id": "choice_photo_terminal_sign",
+          "text": "전광판을 촬영한다",
+          "conditions": {},
+          "result_text": "전광판 사진에 지도에 없는 종착지가 희미하게 남았습니다.",
+          "add_flags": [
+            "choice_photographed_sign",
+            "photo_terminal_sign"
+          ],
+          "collect_clues": [
+            "clue_missing_terminal_sign"
+          ],
+          "show_hint_ids": [
+            "hint_afterlife_station_004"
+          ],
+          "next_node_id": "dialogue_after_photo"
+        },
+        {
+          "id": "choice_go_staff_room",
+          "text": "역무원실로 향한다",
+          "conditions": {},
+          "result_text": "연하린이 역무원실 접근 권한을 임시로 열었습니다.",
+          "add_flags": [
+            "choice_headed_staff_room",
+            "unlocked_staff_room"
+          ],
+          "show_hint_ids": [
+            "hint_afterlife_station_005"
+          ],
+          "next_scene_path": "res://scenes/investigation_scene.tscn"
+        },
+        {
+          "id": "choice_share_photo_record",
+          "text": "촬영 기록을 근거로 역무원실 접근을 요청한다",
+          "conditions": {
+            "required_flags": [
+              "choice_photographed_sign"
+            ]
+          },
+          "result_text": "촬영 기록이 근거로 인정되어 역무원실 접근 권한이 열렸습니다.",
+          "add_flags": [
+            "shared_terminal_photo",
+            "unlocked_staff_room"
+          ],
+          "show_hint_ids": [
+            "hint_afterlife_station_005"
+          ],
+          "next_scene_path": "res://scenes/investigation_scene.tscn"
+        }
+      ]
+    },
+    {
+      "id": "dialogue_after_photo",
+      "background_id": "station_platform_midnight",
+      "standing_id": "agent_yeon_harin",
+      "lines": [
+        {
+          "speaker": "연하린",
+          "text": "좋아요. 사진 속 종착지는 실제 운행 데이터에 없는 이름이에요.",
+          "expression": "focused"
+        },
+        {
+          "speaker": "신입 요원",
+          "text": "이 기록이면 역무원실 접근 요청에 쓸 수 있겠네요.",
+          "expression": "default"
+        }
+      ],
+      "choices": [
+        {
+          "id": "choice_unlock_staff_room_with_photo",
+          "text": "촬영 기록으로 역무원실 접근을 요청한다",
+          "conditions": {
+            "required_flags": [
+              "choice_photographed_sign"
+            ]
+          },
+          "result_text": "촬영 기록 덕분에 역무원실 접근 권한이 열렸습니다.",
+          "add_flags": [
+            "shared_terminal_photo",
+            "unlocked_staff_room"
+          ],
+          "show_hint_ids": [
+            "hint_afterlife_station_005"
+          ],
+          "next_scene_path": "res://scenes/investigation_scene.tscn"
+        },
+        {
+          "id": "choice_start_investigation_after_photo",
+          "text": "먼저 승강장을 조사한다",
+          "conditions": {},
+          "result_text": "사진 기록을 보관하고 승강장 조사를 시작합니다.",
+          "add_flags": [
+            "started_investigation_after_photo"
+          ],
+          "next_scene_path": "res://scenes/investigation_scene.tscn"
+        }
+      ]
+    }
+  ],
+  "investigation_points": [
+    {
+      "id": "point_victim_phone",
+      "label": "피해자의 휴대폰",
+      "clue_id": "clue_last_message",
+      "conditions": {},
+      "locked_text": "",
+      "result_text": "피해자의 휴대폰에서 00:00으로 고정된 마지막 문자를 확인했습니다.",
+      "add_flags": [
+        "inspected_phone"
+      ],
+      "show_hint_ids": [
+        "hint_afterlife_station_001"
+      ]
+    },
+    {
+      "id": "point_black_ticket",
+      "label": "검은 승차권 조각",
+      "clue_id": "clue_black_ticket",
+      "conditions": {},
+      "locked_text": "",
+      "result_text": "개찰구 아래에서 존재하지 않는 종착지가 찍힌 검은 승차권 조각을 발견했습니다.",
+      "add_flags": [
+        "visited_ticket_gate",
+        "inspected_black_ticket"
+      ],
+      "show_hint_ids": [
+        "hint_afterlife_station_002"
+      ]
+    },
+    {
+      "id": "point_platform_speaker",
+      "label": "플랫폼 스피커",
+      "clue_id": "clue_repeating_announcement",
+      "conditions": {},
+      "locked_text": "",
+      "result_text": "반복 안내방송 사이에서 피해자의 이름이 섞인 녹음을 확보했습니다.",
+      "add_flags": [
+        "heard_station_noise",
+        "inspected_platform_speaker"
+      ],
+      "show_hint_ids": [
+        "hint_afterlife_station_003"
+      ]
+    },
+    {
+      "id": "point_terminal_sign",
+      "label": "꺼진 종착지 표지판",
+      "clue_id": "clue_missing_terminal_sign",
+      "conditions": {},
+      "locked_text": "",
+      "result_text": "꺼진 전광판에 지도에 없는 종착지명이 잠깐 비친 기록을 확보했습니다.",
+      "add_flags": [
+        "inspected_terminal_sign"
+      ],
+      "show_hint_ids": [
+        "hint_afterlife_station_004"
+      ]
+    },
+    {
+      "id": "point_staff_room_log",
+      "label": "역무원실 근무 기록",
+      "clue_id": "clue_staff_room_log",
+      "conditions": {
+        "required_flags": [
+          "unlocked_staff_room"
+        ]
+      },
+      "locked_text": "아직 확인할 근거가 부족합니다. 대화씬에서 역무원실 접근 근거를 먼저 확보하세요.",
+      "result_text": "역무원실 기록에서 막차 이후에도 반복된 출근 도장을 발견했습니다.",
+      "add_flags": [
+        "inspected_staff_room_log"
+      ],
+      "show_hint_ids": [
+        "hint_afterlife_station_005"
+      ]
+    }
+  ],
   "clues": [
     {
       "id": "clue_last_message",

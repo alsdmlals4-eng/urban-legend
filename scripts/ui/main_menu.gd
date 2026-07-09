@@ -1,7 +1,7 @@
 # 시작 화면에서 프로젝트 소개와 데이터베이스 진입을 관리한다.
 extends Control
 
-const GAME_VERSION := "Ver 1.3"
+const GAME_VERSION := "Ver 1.4"
 
 var _continue_button: Button
 var _save_status_label: Label

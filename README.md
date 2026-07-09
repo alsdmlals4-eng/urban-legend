@@ -7,7 +7,7 @@
 ## 버전 표기
 
 메인 화면의 `Ver` 표기는 수정 작업이 반영될 때마다 0.1씩 올립니다.
-현재 버전은 `Ver 1.3`이며, 이후에는 `Ver 1.4`, `Ver 1.5`처럼 갱신합니다.
+현재 버전은 `Ver 1.4`이며, 이후에는 `Ver 1.5`, `Ver 1.6`처럼 갱신합니다.
 
 ## 기준 파일
 
@@ -87,6 +87,8 @@ urban-legend/
 - `battle_clue_effects`: 단서별 전투 자동 효과 id, 효과 타입, 효과 값, 설명
 - `research_rewards`: 해결 등급별 연구 보상 id, 능력명, 설명, 다음 에피소드 영향
 - `recovery_results`: 해결 등급별 피해자 구조와 괴이 핵 회수 결과
+- `dialogue_nodes`: 대화 노드, 대사 라인, 선택지, 선택 결과
+- `investigation_points`: 조사 포인트, 잠김 조건, 조사 결과, 단서/힌트/플래그 처리
 
 ### 저승역 기준
 
@@ -278,6 +280,77 @@ user://urban_legend_save.json
 
 메인 메뉴에서는 `새 게임 / 저승역 시작`, `이어하기`, `저장 초기화`를 제공합니다. 저장 파일이 없으면 `이어하기` 버튼은 비활성화됩니다.
 
+## MVP-008 데이터 기반 대화/조사 분기
+
+MVP-008부터 저승역 대화와 조사 포인트는 `data/episodes/episode_001_afterlife_station.json`의 데이터에서 읽습니다.
+
+### 대화 데이터
+
+`dialogue_nodes`는 다음 구조를 사용합니다.
+
+```json
+{
+  "id": "dialogue_intro",
+  "background_id": "station_platform_midnight",
+  "standing_id": "agent_yeon_harin",
+  "lines": [
+    {
+      "speaker": "연하린",
+      "text": "이 역은 지도에도, 기록국 데이터에도 남아 있지 않아요.",
+      "expression": "calm"
+    }
+  ],
+  "choices": [
+    {
+      "id": "choice_photo_terminal_sign",
+      "text": "전광판을 촬영한다",
+      "conditions": {},
+      "result_text": "전광판 사진에 지도에 없는 종착지가 희미하게 남았습니다.",
+      "add_flags": ["choice_photographed_sign"],
+      "collect_clues": ["clue_missing_terminal_sign"],
+      "show_hint_ids": ["hint_afterlife_station_004"],
+      "next_node_id": "dialogue_after_photo"
+    }
+  ]
+}
+```
+
+대화씬은 `GameState.get_current_dialogue_node()`로 현재 노드를 읽고, 선택지는 JSON의 `choices`에서 생성합니다. 조건은 `GameState.check_conditions()`로 판정하며, 조건이 맞지 않는 선택지는 비활성화됩니다.
+
+선택 결과는 `GameState.apply_story_effects()`가 처리합니다.
+
+- `add_flags`: 플래그 추가
+- `remove_flags`: 플래그 제거
+- `collect_clues`: 단서 획득
+- `show_hint_ids`: 힌트 확인 기록
+- `next_node_id`: 다음 대화 노드
+- `next_scene_path`: 다음 씬 이동
+
+현재 조건부 선택지 예시는 `촬영 기록을 근거로 역무원실 접근을 요청한다`입니다. `choice_photographed_sign` 플래그가 있을 때 선택할 수 있습니다.
+
+### 조사 데이터
+
+`investigation_points`는 다음 구조를 사용합니다.
+
+```json
+{
+  "id": "point_staff_room_log",
+  "label": "역무원실 근무 기록",
+  "clue_id": "clue_staff_room_log",
+  "conditions": {
+    "required_flags": ["unlocked_staff_room"]
+  },
+  "locked_text": "아직 확인할 근거가 부족합니다.",
+  "result_text": "역무원실 기록에서 막차 이후에도 반복된 출근 도장을 발견했습니다.",
+  "add_flags": ["inspected_staff_room_log"],
+  "show_hint_ids": ["hint_afterlife_station_005"]
+}
+```
+
+조사씬은 `GameState.get_investigation_points()`로 조사 포인트를 읽습니다. 조건이 맞지 않는 포인트는 `[잠김]`으로 표시되며, 클릭하면 `locked_text`를 보여줍니다. 조건이 맞으면 `GameState.apply_story_effects()`로 플래그, 단서, 힌트 기록을 처리합니다.
+
+기존 단서 수집률, 해결 등급, 해결 시도 버튼은 그대로 유지됩니다. 저장/불러오기는 `flags`, `collected_clue_ids`, `seen_hint_ids`, `current_dialogue_node_id`, `current_scene_path`를 통해 데이터 기반 진행 상태를 복원합니다.
+
 ## 테스트 방법
 
 Godot 실행 확인.
@@ -299,16 +372,16 @@ Godot 실행 확인.
 전체 플레이 테스트 순서입니다.
 
 1. 메인 메뉴에서 `새 게임 / 저승역 시작`을 누릅니다.
-2. 대화씬에서 사건 브리핑을 확인하고 `조사 시작`을 누릅니다.
-3. 대화 선택지에서 `역무원실로 향한다`를 골라 `unlocked_staff_room` 플래그를 추가합니다.
-4. 조사씬에서 단서 2개 이상을 수집합니다.
-5. 역무원실 근무 기록이 조건 충족 후 조사되는지 확인합니다.
-6. `해결 시도` 버튼을 누르고 확인 패널에서 다시 `해결 시도`를 누릅니다.
-7. 전투씬에서 행동 버튼으로 괴이 안정도를 회수 기준 이하로 낮춥니다.
-8. `괴이 핵 회수` 버튼을 누릅니다.
-9. 결과 화면에서 해결 등급, 피해자 구조 결과, 후일담, 연구 보상을 확인합니다.
-10. 메인 메뉴로 돌아가 `이어하기`가 결과 화면 또는 마지막 저장 씬으로 복원되는지 확인합니다.
-11. `저장 초기화`를 누르면 `이어하기`가 비활성화되는지 확인합니다.
+2. 대화씬에서 JSON 대사 노드의 대사가 표시되는지 확인합니다.
+3. `전광판을 촬영한다` 선택지로 `clue_missing_terminal_sign` 단서와 `choice_photographed_sign` 플래그를 얻습니다.
+4. 다음 대화 노드에서 조건부 선택지 `촬영 기록으로 역무원실 접근을 요청한다`가 활성화되는지 확인합니다.
+5. 조건부 선택지를 눌러 `unlocked_staff_room` 플래그를 얻고 조사씬으로 이동합니다.
+6. 조사씬에서 JSON 조사 포인트 5개가 표시되는지 확인합니다.
+7. 새 게임 직후 대화 선택 없이 조사씬에 들어가면 `역무원실 근무 기록`이 `[잠김]`으로 표시되는지 확인합니다.
+8. 조건 충족 후 `역무원실 근무 기록`을 눌러 `clue_staff_room_log` 단서와 힌트 기록이 처리되는지 확인합니다.
+9. 단서 2개 이상 수집 후 `해결 시도` 버튼이 활성화되는지 확인합니다.
+10. 전투/회수/결과 화면까지 기존 흐름이 이어지는지 확인합니다.
+11. 메인 메뉴로 돌아가 `이어하기`가 마지막 저장 씬과 데이터 기반 상태를 복원하는지 확인합니다.
 
 ## 체크리스트
 
@@ -327,6 +400,16 @@ Godot 실행 확인.
 - [ ] 단서 수집 상태가 저장/불러오기된다.
 - [ ] 해결 등급과 회수 성공 상태가 저장/불러오기된다.
 - [ ] 회수 성공 시 `capture_success` 플래그가 추가된다.
+- [ ] 저승역 JSON에 `dialogue_nodes`가 정의되어 있다.
+- [ ] 저승역 JSON에 `investigation_points`가 정의되어 있다.
+- [ ] 대화씬이 JSON 대화 노드를 읽어 대사를 표시한다.
+- [ ] 대화 선택지가 JSON 데이터에서 생성된다.
+- [ ] 조건부 선택지가 조건에 따라 비활성화/활성화된다.
+- [ ] 선택 결과로 플래그, 단서, 힌트 기록, 다음 노드/씬 이동이 처리된다.
+- [ ] 조사씬이 JSON 조사 포인트를 읽어 표시한다.
+- [ ] 조건부 조사 포인트가 `[잠김]`으로 표시되고 `locked_text`를 보여준다.
+- [ ] 조사 결과로 플래그, 단서, 힌트 기록이 처리된다.
+- [ ] 저장/불러오기 후 현재 대화 노드와 데이터 기반 진행 상태가 유지된다.
 - [ ] `MVP-002 데이터 확인` 화면에서 단서 수집률과 해결 단계가 보인다.
 - [ ] `테스트: 다음 단서 수집` 버튼을 누르면 수집률이 20%씩 증가한다.
 - [ ] `수집 초기화` 버튼을 누르면 단서 수집률이 0%로 돌아간다.
@@ -368,5 +451,5 @@ Godot 실행 확인.
 
 1. 결과 화면을 엽서/보고서형 UI로 다듬습니다.
 2. 연구 보상을 다음 사건의 실제 보정 효과와 연결합니다.
-3. 조사/대화/해결/회수 상태를 저장/불러오기 구조와 연결합니다.
-4. 조사 포인트 조건 플래그와 대화 분기 조건을 데이터화합니다.
+3. 대화 노드와 조사 포인트를 별도 에피소드 데이터 파일로 분리할지 검토합니다.
+4. 대화/조사 데이터 검증용 에디터 또는 간단한 체크 도구를 만듭니다.

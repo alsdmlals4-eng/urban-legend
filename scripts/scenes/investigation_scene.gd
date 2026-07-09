@@ -1,38 +1,13 @@
-# 조사 씬의 단서 선택과 결과 표시를 관리한다.
+# 조사 씬의 JSON 기반 조사 포인트와 조건부 결과 처리를 관리한다.
 extends Control
 
-const INVESTIGATION_POINTS: Array[Dictionary] = [
+const FALLBACK_INVESTIGATION_POINTS: Array[Dictionary] = [
 	{
+		"id": "fallback_phone",
 		"label": "피해자의 휴대폰",
 		"clue_id": "clue_last_message",
-		"hint": "피해자가 보낸 마지막 문자는 도착지가 아니라 시간을 가리킵니다.",
-		"flags": ["inspected_phone"]
-	},
-	{
-		"label": "검은 승차권 조각",
-		"clue_id": "clue_black_ticket",
-		"hint": "개찰구 주변의 검은 종이 조각은 괴이의 핵과 이어져 있습니다.",
-		"flags": ["visited_ticket_gate", "inspected_black_ticket"]
-	},
-	{
-		"label": "플랫폼 스피커",
-		"clue_id": "clue_repeating_announcement",
-		"hint": "안내방송의 잡음 사이에 피해자의 이름이 섞여 있습니다.",
-		"flags": ["heard_station_noise", "inspected_platform_speaker"]
-	},
-	{
-		"label": "꺼진 종착지 표지판",
-		"clue_id": "clue_missing_terminal_sign",
-		"hint": "전광판이 꺼지기 직전 지도에 없는 종착지가 비칩니다.",
-		"flags": ["inspected_terminal_sign"]
-	},
-	{
-		"label": "역무원실 근무 기록",
-		"clue_id": "clue_staff_room_log",
-		"hint": "막차 이후에도 누군가 근무한 흔적이 반복해서 남아 있습니다.",
-		"flags": ["inspected_staff_room_log"],
-		"conditions": {"required_flags": ["unlocked_staff_room"]},
-		"blocked_message": "아직 확인할 근거가 부족합니다. 대화씬에서 역무원실 접근 근거를 먼저 확보하세요."
+		"result_text": "피해자가 보낸 마지막 문자는 도착지가 아니라 시간을 가리킵니다.",
+		"add_flags": ["inspected_phone"]
 	}
 ]
 
@@ -129,8 +104,9 @@ func _build_ui() -> void:
 	points.add_theme_constant_override("v_separation", 8)
 	scene_layout.add_child(points)
 
-	for point in INVESTIGATION_POINTS:
-		_add_investigation_point(points, point)
+	for point in _get_investigation_points():
+		if typeof(point) == TYPE_DICTIONARY:
+			_add_investigation_point(points, point)
 
 	var portrait := PanelContainer.new()
 	scene_layout.add_child(portrait)
@@ -142,7 +118,7 @@ func _build_ui() -> void:
 	portrait.add_child(portrait_label)
 
 	_result_label = Label.new()
-	_result_label.text = "조사 포인트를 선택하면 결과가 표시됩니다."
+	_result_label.text = "조사 포인트를 선택하면 JSON 결과가 표시됩니다."
 	_result_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	scene_layout.add_child(_result_label)
 
@@ -169,8 +145,9 @@ func _add_title(parent: Control) -> void:
 
 func _add_investigation_point(parent: Control, point: Dictionary) -> void:
 	var button := Button.new()
+	var is_unlocked := _is_point_unlocked(point)
 	var label := String(point.get("label", "조사 포인트"))
-	button.text = label
+	button.text = label if is_unlocked else "[잠김] %s" % label
 	button.pressed.connect(func() -> void:
 		_inspect_point(point)
 	)
@@ -178,40 +155,59 @@ func _add_investigation_point(parent: Control, point: Dictionary) -> void:
 
 
 func _inspect_point(point: Dictionary) -> void:
-	var conditions: Dictionary = point.get("conditions", {})
-	if not GameState.check_conditions(conditions):
-		_result_label.text = String(point.get("blocked_message", "아직 확인할 근거가 부족합니다."))
+	if not _is_point_unlocked(point):
+		_result_label.text = String(point.get("locked_text", "아직 확인할 근거가 부족합니다."))
 		_hint_label.text = "동료 힌트: 조건을 만족하면 이 조사 포인트를 다시 확인할 수 있습니다."
 		return
 
-	for flag_id in point.get("flags", []):
-		GameState.add_flag(String(flag_id))
-
 	var clue_id := String(point.get("clue_id", ""))
-	var hint := String(point.get("hint", ""))
+	var was_collected := GameState.has_collected_clue(clue_id) if not clue_id.is_empty() else false
+	GameState.apply_story_effects(point)
+	var collected_now := false
+	if not clue_id.is_empty():
+		collected_now = GameState.has_collected_clue(clue_id) and not was_collected
+
+	_result_label.text = _make_point_result_text(point, clue_id, was_collected, collected_now)
+	_hint_label.text = _make_point_hint_text(point)
+	_refresh_case_status()
+
+	var next_scene_path := String(point.get("next_scene_path", ""))
+	if not next_scene_path.is_empty():
+		GameState.set_current_scene_path(next_scene_path)
+		GameState.save_game()
+		get_tree().change_scene_to_file(next_scene_path)
+
+
+func _make_point_result_text(point: Dictionary, clue_id: String, was_collected: bool, collected_now: bool) -> String:
+	var result_text := String(point.get("result_text", "조사 결과가 기록되었습니다."))
+	if clue_id.is_empty():
+		return result_text
+
 	var clue := _find_clue(clue_id)
 	if clue.is_empty():
-		_result_label.text = "조사 결과: 연결된 단서 데이터를 찾지 못했습니다. clue_id: %s" % clue_id
-		return
+		return "%s\n연결된 단서 데이터를 찾지 못했습니다. clue_id: %s" % [result_text, clue_id]
 
-	var was_collected: bool = bool(clue.get("collected", false))
-	var collected_now: bool = GameState.collect_clue(clue_id)
 	if collected_now:
-		_result_label.text = "새 단서 획득: %s\n%s" % [
+		return "%s\n새 단서 획득: %s\n%s" % [
+			result_text,
 			clue.get("title", ""),
 			clue.get("description", "")
 		]
-	elif was_collected:
-		_result_label.text = "이미 확인한 단서입니다: %s\n%s" % [
-			clue.get("title", ""),
-			clue.get("description", "")
-		]
-	else:
-		_result_label.text = "조사 결과: 단서를 획득하지 못했습니다. clue_id: %s" % clue_id
 
-	_hint_label.text = "동료 힌트: %s" % hint
-	GameState.save_game()
-	_refresh_case_status()
+	if was_collected:
+		return "%s\n이미 확인한 단서입니다: %s" % [
+			result_text,
+			clue.get("title", "")
+		]
+
+	return result_text
+
+
+func _make_point_hint_text(point: Dictionary) -> String:
+	var hint_texts := GameState.get_hint_texts_by_ids(point.get("show_hint_ids", []))
+	if hint_texts.is_empty():
+		return "동료 힌트: 기록된 힌트가 없습니다."
+	return "동료 힌트 기록\n- %s" % "\n- ".join(hint_texts)
 
 
 func _refresh_case_status() -> void:
@@ -318,6 +314,18 @@ func _start_resolution_attempt() -> void:
 	GameState.set_current_scene_path("res://scenes/battle_scene.tscn")
 	GameState.save_game()
 	get_tree().change_scene_to_file("res://scenes/battle_scene.tscn")
+
+
+func _get_investigation_points() -> Array:
+	var points := GameState.get_investigation_points()
+	if points.is_empty():
+		return FALLBACK_INVESTIGATION_POINTS
+	return points
+
+
+func _is_point_unlocked(point: Dictionary) -> bool:
+	var conditions: Dictionary = point.get("conditions", {})
+	return GameState.check_conditions(conditions)
 
 
 func _clear_children(parent: Node) -> void:
