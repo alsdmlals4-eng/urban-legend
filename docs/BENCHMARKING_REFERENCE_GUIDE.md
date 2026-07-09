@@ -13,22 +13,23 @@
 필수 조건:
 
 - 유사 장르 게임 또는 인접 장르 게임을 최소 10개 이상 확인한다.
-- 각 항목은 `게임명`, `참고한 출처`, `플레이어/평론/개발자 반응`, `우리 프로젝트에 반영할 점`, `제외할 점`을 기록한다.
+- 각 항목은 `게임/사례`, `관찰포인트`, `반응`, `기록국 적용(+사유)` 형식으로 기록한다.
 - 출처 없는 일반론만으로 판단하지 않는다.
 - 오래된 자료를 사용할 수는 있지만, 현재 게임 방향과 맞는지 따로 판단한다.
 - Steam/스토어/커뮤니티 반응은 유용하지만 단독 근거로 쓰지 않는다. 가능하면 리뷰 매체, 개발자 인터뷰, GDC/학술 자료와 함께 본다.
 - 전문가/현업 발언은 `게임 개발자`, `내러티브 디자이너`, `게임 리뷰어`, `학술 연구`를 포함할 수 있다.
+- Codex Goal에는 긴 벤치마킹 전문을 넣지 않는다. Issue 또는 문서에 정리하고 Goal은 구현 지시만 작성한다.
 
 ---
 
 ## 2. 벤치마킹 작성 템플릿
 
 ```md
-## 벤치마킹 항목
+## 벤치마킹 분석
 
-| # | 게임 / 사례 | 장르 | 참고 출처 | 관찰한 반응 / 평가 | 반영할 점 | 제외할 점 |
-|---:|---|---|---|---|---|---|
-| 1 |  |  |  |  |  |  |
+| # | 게임/사례 | 관찰포인트 | 반응 | 기록국 적용(+사유) |
+|---:|---|---|---|---|
+| 1 |  |  |  |  |
 ```
 
 추가 분석:
@@ -48,25 +49,23 @@
 
 아래 목록은 시작점이다. 새 MVP를 설계할 때는 여기에 새 자료를 추가해도 된다.
 
-| # | 게임 / 사례 | 참고 방향 | 출처 URL |
-|---:|---|---|---|
-| 1 | PARANORMASIGHT: The Seven Mysteries of Honjo | 도시괴담, 시점 전환, 플로우차트, 선택 실패 후 재추론 | https://en.wikipedia.org/wiki/Paranormasight:_The_Seven_Mysteries_of_Honjo |
-| 2 | World of Horror | 단기 사건 묶음, 코즈믹 호러, 상태 압박, 반복 플레이 | https://en.wikipedia.org/wiki/World_of_Horror |
-| 3 | Return of the Obra Dinn | 관찰 기반 추론, 정답 도출 만족감, 반복 조사 피로 위험 | https://as.com/meristation/2018/10/23/analisis/1540330984_171917.html |
-| 4 | The Case of the Golden Idol | 단서 조합, 보고서 완성, 페어플레이와 추측 위험 | https://en.wikipedia.org/wiki/The_Case_of_the_Golden_Idol |
-| 5 | The Rise of the Golden Idol | 사건별 추리와 장기 서사 연결, 단계적 난도 상승 | https://www.theguardian.com/games/2024/nov/30/the-rise-of-the-golden-idol-review-detective-sequel-color-gray-thrilling-whodunnit-takes-sleuthing-to-the-next-level |
-| 6 | Disco Elysium | 대화 중심 RPG, 동료 존재감, 전투 없는 갈등 해결, 내면/스킬 대화 | https://en.wikipedia.org/wiki/Disco_Elysium |
-| 7 | Scarlet Hollow | 특성 기반 선택지, 숨은 관계 변수, 호러 VN의 반복 플레이 | https://en.wikipedia.org/wiki/Scarlet_Hollow |
-| 8 | Citizen Sleeper / Citizen Sleeper 2 | 자원 압박, 주사위/턴 기반 선택, 동료와 관계 | https://www.theguardian.com/games/2025/mar/01/citizen-sleeper-2-starward-vector-review-high-stakes-sci-fi-adventure |
-| 9 | Cultist Simulator | 카드 기반 추상 개념 시각화, 플레이어가 직접 정리하는 서사 | https://en.wikipedia.org/wiki/Cultist_Simulator |
-| 10 | Her Story | 데이터베이스 검색, 플레이어 주도 추리, 비선형 증거 탐색 | https://en.wikipedia.org/wiki/Her_Story_(video_game) |
-| 11 | Immortality | 비선형 영상/기록 탐색, 단서 간 매칭, 조각난 진실 복원 | https://en.wikipedia.org/wiki/Immortality_(video_game) |
-| 12 | Phoenix Wright: Ace Attorney Trilogy | 조사와 재판 분리, 증거 제시, 모순 추적 | https://en.wikipedia.org/wiki/Phoenix_Wright:_Ace_Attorney_Trilogy |
-| 13 | Danganronpa: Trigger Happy Havoc | 캐릭터 관계, 조사 후 논쟁/재판, 미니게임 과잉 위험 | https://en.wikipedia.org/wiki/Danganronpa:_Trigger_Happy_Havoc |
-| 14 | Deduction Game Framework and Information Set Entropy Search | 추리 게임의 정보량 변화와 설명 가능한 의사결정 | https://arxiv.org/abs/2407.21178 |
-| 15 | Modeling Fair Play in Detective Stories with Language Models | 추리 서사의 페어플레이, 놀라움과 납득 가능성 균형 | https://arxiv.org/abs/2507.13841 |
-| 16 | TurnaboutLLM | Ace Attorney / Danganronpa 기반 장문 추리·모순 탐지 난도 | https://arxiv.org/abs/2505.15712 |
-| 17 | Why Do Urban Legends Go Viral? | 도시괴담의 믿을 만한 현실성 + 기억에 남는 비현실성 | https://arxiv.org/abs/1601.06081 |
+| # | 게임/사례 | 관찰포인트 | 반응 | 기록국 적용(+사유) |
+|---:|---|---|---|---|
+| 1 | PARANORMASIGHT: The Seven Mysteries of Honjo | 도시괴담, 시점 전환, 플로우차트, 선택 실패 후 재추론 | narrative, visuals, characters는 호평. 일부 평가는 horror가 story를 방해하거나 controls가 불편하다고 지적 | 도시괴담의 지역성, 분기 재확인, 기록 흐름 참고. 단, 공포 연출이 정보 이해를 방해하지 않게 제한 |
+| 2 | World of Horror | 단기 사건 묶음, 상태 압박, 반복 플레이, 코즈믹 호러 | narrative/visuals는 호평. combat/gameplay에는 일부 비판 | 사건 1개를 짧게 압축하고 괴이 위험도/정신력 압박을 유지. 전투 중심 구조는 제외 |
+| 3 | Return of the Obra Dinn | 관찰 기반 추론, 정체/원인 맞히기, 반복 조사 | 독창성과 추론 과정은 강한 호평. 일부는 결말 보상감이 약하다고 평가 | 단서 관찰과 기록 검증 감각 반영. 결과 화면은 사건 의미와 보상을 명확히 보여줘야 함 |
+| 4 | The Case of the Golden Idol | 단서 조합, 보고서 완성, 페어플레이 추리 | 혁신적 추리와 장면 분석은 호평. 일부는 후반 추측/브루트포스 위험을 지적 | 기록국 보고서/기록물 조합 구조 반영. 근거 없는 찍기식 조건은 배제 |
+| 5 | The Rise of the Golden Idol | 사건별 추리와 장기 서사 연결, 단계적 난도 상승 | 세부 관찰과 복합 서사는 호평. 힌트 사용 시 만족감 저하 가능 | 사건별 짧은 루프와 장기 DB 연결 반영. 힌트는 보조로 두고 자동 정답화 금지 |
+| 6 | Disco Elysium / Kim Kitsuragi | 동료 존재감, 선택 반응, 전투 없는 대화 중심 진행 | Kim은 companion의 대표적 성공 사례로 평가됨. 선택에 대한 작은 반응이 캐릭터 애착을 만든다는 반응 | MVP-016 요원 신뢰도/반응의 직접 참고. 요원은 스탯보다 조사 반응으로 존재감을 만든다 |
+| 7 | Scarlet Hollow | 특성 기반 선택지, 숨은 관계 변수, 호러 VN 반복 플레이 | trait system, setting, dialogue가 호평. 관계 변수는 깊이를 주지만 복잡해질 수 있음 | 요원 신뢰도는 숨은 상태값으로 두되, 연애 호감도가 아니라 수사 파트너 신뢰로 제한 |
+| 8 | Citizen Sleeper 2 | 자원 압박, 동료/크루, 스트레스와 위험 관리 | 동료와 연대감은 강점. 일부 평가는 동료가 임무 중 자원 제공자로 축소되는 문제를 지적 | 요원은 단순 보정 도구가 아니라 반응/이벤트가 있어야 함. 단, 보정은 작게 유지 |
+| 9 | Cultist Simulator | 카드 기반 추상 개념 시각화, 플레이어가 직접 정리하는 서사 | 독특한 시스템과 분위기는 강점. 불친절함과 난해함은 진입 장벽 | 기록물/장비/연구 보상 카드화 참고. 정보는 숨기되 기본 사용법은 명확히 안내 |
+| 10 | Her Story | DB 검색, 비선형 영상/기록 탐색, 플레이어 주도 추리 | 검색 도구와 파편화된 서사는 큰 호평. 플레이어가 맥락을 직접 복원하는 점이 핵심 | 기록국 DB의 태그/검색/기록물 연결 참고. 초반은 카드/필터 중심, 이후 검색 고도화 |
+| 11 | Immortality | 비선형 기록 탐색, 장면/단서 매칭, 조각난 진실 복원 | 조각난 자료를 연결하는 방식이 강점. 해석 부담이 커질 수 있음 | 기록물 간 연결/관련 단서 보기 반영. 초반에는 과도한 비선형 탐색은 제한 |
+| 12 | Phoenix Wright: Ace Attorney | 조사와 논증 분리, 증거 제시, 모순 추적 | 증거 제시와 모순 찾기가 명확한 재미. 재판식 구조는 제작 범위가 커짐 | 후속 회수 페이즈의 규칙 모순 찾기에 참고. 초기 MVP에서는 복잡한 재판 시스템 제외 |
+| 13 | Danganronpa | 캐릭터 관계, 조사 후 논쟁, 미니게임 결합 | 캐릭터성과 연출은 강점. 미니게임 과잉/추리 난도 편차는 주의 | 요원 이벤트와 사건 캐릭터성 참고. 미니게임은 짧고 사건 규칙과 직접 연결 |
+| 14 | Why Do Urban Legends Go Viral? | 도시괴담은 믿을 만한 현실성과 기억에 남는 비현실성의 긴장으로 작동 | 연구는 who/where/when 같은 뉴스적 구체성과 동화적 기억성을 함께 지적 | 실제 장소/기록국 문서성 + 비현실적 괴이 규칙을 함께 유지 |
+| 15 | Deduction Game Framework / Fair Play 연구 | 추리 게임의 정보량, 설명 가능한 의사결정, 페어플레이 | 추리는 놀라움과 납득 가능성의 균형이 중요 | 단서 없는 반전/찍기 금지. 플레이어가 사후에 납득할 수 있는 기록 구조 필요 |
 
 ---
 
@@ -102,15 +101,14 @@
 
 ### MVP Issue 작성 시
 
-Issue에는 다음 중 필요한 만큼만 요약한다.
+Issue에는 다음 형식을 사용한다.
 
 ```md
-## 벤치마킹 반영
+## 벤치마킹 분석
 
-- 참고 사례:
-- 반영:
-- 제외:
-- 이유:
+| # | 게임/사례 | 관찰포인트 | 반응 | 기록국 적용(+사유) |
+|---:|---|---|---|---|
+| 1 |  |  |  |  |
 ```
 
 ### Codex Goal 작성 시
