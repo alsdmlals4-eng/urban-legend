@@ -1,0 +1,236 @@
+{
+  "episode": {
+    "id": "episode_001_afterlife_station",
+    "title": "저승역",
+    "legend_type": "공간형 괴담",
+    "summary": "막차 이후 존재하지 않는 종착지로 향하는 역사에서 피해자를 구조하고 괴이의 핵을 회수하는 테스트 에피소드입니다.",
+    "anomaly_core": "존재하지 않는 종착지가 찍힌 검은 승차권"
+  },
+  "victims": [
+    {
+      "id": "victim_afterlife_station_001",
+      "name": "막차 이후 사라진 인물",
+      "episode_id": "episode_001_afterlife_station",
+      "status": "missing",
+      "last_seen_location": "자정 이후의 무인 승강장",
+      "emotional_state": "불안과 체념이 섞인 상태",
+      "rescue_result": "unresolved",
+      "after_story": "해결 등급에 따라 피해자의 귀환 여부와 후유증 기록이 달라집니다."
+    }
+  ],
+  "hints": [
+    {
+      "id": "hint_afterlife_station_001",
+      "episode_id": "episode_001_afterlife_station",
+      "target_clue_id": "clue_last_message",
+      "source_type": "dialogue",
+      "source_id": "dialogue_station_intro",
+      "text": "피해자가 보낸 마지막 문자는 도착지가 아니라 시간을 가리키는 것 같습니다.",
+      "condition_flags": []
+    },
+    {
+      "id": "hint_afterlife_station_002",
+      "episode_id": "episode_001_afterlife_station",
+      "target_clue_id": "clue_black_ticket",
+      "source_type": "investigation",
+      "source_id": "hotspot_ticket_gate",
+      "text": "개찰구 주변에 남은 검은 종이 조각을 확인해보세요.",
+      "condition_flags": [
+        "visited_ticket_gate"
+      ]
+    },
+    {
+      "id": "hint_afterlife_station_003",
+      "episode_id": "episode_001_afterlife_station",
+      "target_clue_id": "clue_repeating_announcement",
+      "source_type": "minigame",
+      "source_id": "frequency_sync_test",
+      "text": "안내방송은 같은 문장을 반복하지만 잡음 사이의 숫자가 매번 바뀝니다.",
+      "condition_flags": [
+        "heard_station_noise"
+      ]
+    },
+    {
+      "id": "hint_afterlife_station_004",
+      "episode_id": "episode_001_afterlife_station",
+      "target_clue_id": "clue_missing_terminal_sign",
+      "source_type": "investigation",
+      "source_id": "hotspot_platform_sign",
+      "text": "전광판이 꺼지는 순간, 지도에 없는 종착지명이 비칩니다.",
+      "condition_flags": []
+    },
+    {
+      "id": "hint_afterlife_station_005",
+      "episode_id": "episode_001_afterlife_station",
+      "target_clue_id": "clue_staff_room_log",
+      "source_type": "support_agent",
+      "source_id": "agent_yeon_harin",
+      "text": "역무원실 근무 기록에는 막차 이후에도 출근 도장이 찍혀 있습니다.",
+      "condition_flags": [
+        "unlocked_staff_room"
+      ]
+    }
+  ],
+  "clues": [
+    {
+      "id": "clue_last_message",
+      "episode_id": "episode_001_afterlife_station",
+      "title": "피해자의 마지막 문자",
+      "description": "피해자가 막차 시간 이후 보낸 짧은 문자입니다. 도착 예정 시간이 00:00으로 고정되어 있습니다.",
+      "location_id": "location_station_entrance",
+      "related_victim_id": "victim_afterlife_station_001",
+      "related_legend_id": "legend_afterlife_station",
+      "battle_effect_id": "effect_last_message",
+      "resolution_weight": 1,
+      "is_required": false,
+      "collected": false
+    },
+    {
+      "id": "clue_black_ticket",
+      "episode_id": "episode_001_afterlife_station",
+      "title": "검은 승차권",
+      "description": "존재하지 않는 종착지가 인쇄된 검은 승차권입니다. 괴이의 핵과 직접 연결된 필수 단서입니다.",
+      "location_id": "location_ticket_gate",
+      "related_victim_id": "victim_afterlife_station_001",
+      "related_legend_id": "legend_afterlife_station",
+      "battle_effect_id": "effect_black_ticket",
+      "resolution_weight": 1,
+      "is_required": true,
+      "collected": false
+    },
+    {
+      "id": "clue_repeating_announcement",
+      "episode_id": "episode_001_afterlife_station",
+      "title": "반복 안내방송 녹음",
+      "description": "같은 안내문처럼 들리지만 잡음 사이에 피해자의 이름이 섞여 있는 녹음입니다.",
+      "location_id": "location_platform_speaker",
+      "related_victim_id": "victim_afterlife_station_001",
+      "related_legend_id": "legend_afterlife_station",
+      "battle_effect_id": "effect_repeating_announcement",
+      "resolution_weight": 1,
+      "is_required": false,
+      "collected": false
+    },
+    {
+      "id": "clue_missing_terminal_sign",
+      "episode_id": "episode_001_afterlife_station",
+      "title": "존재하지 않는 종착지 표지판",
+      "description": "지도와 운행 데이터에 없는 종착지가 잠깐 표시된 표지판 기록입니다.",
+      "location_id": "location_platform_sign",
+      "related_victim_id": "victim_afterlife_station_001",
+      "related_legend_id": "legend_afterlife_station",
+      "battle_effect_id": "effect_missing_terminal_sign",
+      "resolution_weight": 1,
+      "is_required": false,
+      "collected": false
+    },
+    {
+      "id": "clue_staff_room_log",
+      "episode_id": "episode_001_afterlife_station",
+      "title": "역무원실 근무 기록",
+      "description": "막차 이후에도 누군가 근무한 기록입니다. 같은 필체로 여러 날짜가 반복되어 있습니다.",
+      "location_id": "location_staff_room",
+      "related_victim_id": "victim_afterlife_station_001",
+      "related_legend_id": "legend_afterlife_station",
+      "battle_effect_id": "effect_staff_room_log",
+      "resolution_weight": 1,
+      "is_required": false,
+      "collected": false
+    }
+  ],
+  "resolution": {
+    "episode_id": "episode_001_afterlife_station",
+    "total_clues": 5,
+    "collected_clues": 0,
+    "collection_rate": 0.0,
+    "phase_state": "unavailable",
+    "temporary_threshold": 40.0,
+    "standard_threshold": 70.0,
+    "complete_threshold": 100.0
+  },
+  "battle_clue_effects": [
+    {
+      "id": "effect_last_message",
+      "clue_id": "clue_last_message",
+      "effect_type": "reduce_anomaly_focus",
+      "effect_value": 5,
+      "description": "피해자의 마지막 위치를 고정해 괴이의 시선 집중도를 낮춥니다."
+    },
+    {
+      "id": "effect_black_ticket",
+      "clue_id": "clue_black_ticket",
+      "effect_type": "expose_core",
+      "effect_value": 20,
+      "description": "검은 승차권이 괴이의 핵을 드러내 회수 페이즈 진입을 돕습니다."
+    },
+    {
+      "id": "effect_repeating_announcement",
+      "clue_id": "clue_repeating_announcement",
+      "effect_type": "delay_pattern",
+      "effect_value": 10,
+      "description": "반복 안내방송의 규칙을 깨 괴이 패턴 발동을 늦춥니다."
+    },
+    {
+      "id": "effect_missing_terminal_sign",
+      "clue_id": "clue_missing_terminal_sign",
+      "effect_type": "weaken_route_lock",
+      "effect_value": 12,
+      "description": "존재하지 않는 종착지의 노선 고정을 약화합니다."
+    },
+    {
+      "id": "effect_staff_room_log",
+      "clue_id": "clue_staff_room_log",
+      "effect_type": "reduce_escape_cost",
+      "effect_value": 8,
+      "description": "역무원실의 반복 근무 기록으로 피해자의 탈출 경로를 추적합니다."
+    }
+  ],
+  "research_rewards": [
+    {
+      "id": "reward_afterlife_station_temporary",
+      "legend_id": "legend_afterlife_station",
+      "resolution_grade": "temporary",
+      "ability_name": "임시 승강장 봉인",
+      "ability_description": "공간형 괴담의 이동 경로를 짧은 시간 차단합니다.",
+      "next_episode_effect": "다음 공간형 사건에서 첫 조사 힌트 1개를 더 빨리 확인합니다."
+    },
+    {
+      "id": "reward_afterlife_station_standard",
+      "legend_id": "legend_afterlife_station",
+      "resolution_grade": "standard",
+      "ability_name": "노선 잔향 추적",
+      "ability_description": "사라진 동선과 반복되는 안내방송 패턴을 분석합니다.",
+      "next_episode_effect": "다음 사건의 조사 시작 시 관련 위치 후보를 1개 표시합니다."
+    },
+    {
+      "id": "reward_afterlife_station_complete",
+      "legend_id": "legend_afterlife_station",
+      "resolution_grade": "complete",
+      "ability_name": "검은 승차권 회수 기록",
+      "ability_description": "괴이의 핵을 안정적으로 회수한 연구 기록입니다.",
+      "next_episode_effect": "다음 공간형 괴담의 해결 페이즈 기준 정보를 더 정확하게 표시합니다."
+    }
+  ],
+  "recovery_results": [
+    {
+      "resolution_grade": "unavailable",
+      "victim_rescue_result": "failed_to_enter_resolution",
+      "description": "단서가 부족해 해결 페이즈에 진입하지 못합니다."
+    },
+    {
+      "resolution_grade": "temporary",
+      "victim_rescue_result": "rescued_with_aftereffect",
+      "description": "피해자는 구조되지만 기억 일부가 역사에 남습니다."
+    },
+    {
+      "resolution_grade": "standard",
+      "victim_rescue_result": "rescued",
+      "description": "피해자를 구조하고 괴이의 발동 조건을 기록합니다."
+    },
+    {
+      "resolution_grade": "complete",
+      "victim_rescue_result": "rescued_and_core_recovered",
+      "description": "피해자를 안정적으로 구조하고 괴이의 핵을 회수합니다."
+    }
+  ]
+}

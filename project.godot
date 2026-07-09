@@ -17,6 +17,7 @@ config/features=PackedStringArray("4.7")
 [autoload]
 
 UrbanLegendState="*res://scripts/core/urban_legend_state.gd"
+GameState="*res://scripts/core/game_state.gd"
 
 [display]
 

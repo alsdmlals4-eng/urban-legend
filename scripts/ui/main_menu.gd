@@ -1,6 +1,8 @@
 # 시작 화면에서 프로젝트 소개와 데이터베이스 진입을 관리한다.
 extends Control
 
+const GAME_VERSION := "Ver 1.1"
+
 
 func _ready() -> void:
 	_build_ui()
@@ -27,10 +29,21 @@ func _build_ui() -> void:
 	content.add_theme_constant_override("separation", 14)
 	panel.add_child(content)
 
+	var title_row := HBoxContainer.new()
+	title_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	title_row.add_theme_constant_override("separation", 14)
+	content.add_child(title_row)
+
 	var title := Label.new()
 	title.text = "도시괴담 기록국"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	content.add_child(title)
+	title_row.add_child(title)
+
+	var version_label := Label.new()
+	version_label.text = GAME_VERSION
+	version_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	version_label.add_theme_font_size_override("font_size", 10)
+	title_row.add_child(version_label)
 
 	var subtitle := Label.new()
 	subtitle.text = "비주얼노벨 / 호러 미스터리 Godot 이관 프로젝트"
@@ -47,6 +60,8 @@ func _build_ui() -> void:
 	open_button.text = "기록국 데이터베이스 열기"
 	open_button.pressed.connect(_open_database)
 	content.add_child(open_button)
+
+	_add_scene_button(content, "MVP-002 데이터 확인", "res://scenes/case_data_scene.tscn")
 
 	var scene_label := Label.new()
 	scene_label.text = "MVP-001 핵심 씬 테스트"
