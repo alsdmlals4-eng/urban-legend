@@ -3,12 +3,13 @@ extends Node
 
 const DEFAULT_EPISODE_PATH := "res://data/episodes/episode_001_afterlife_station.json"
 const SAVE_FILE_PATH := "user://urban_legend_save.json"
-const SAVE_VERSION := "mvp-013"
+const SAVE_VERSION := "mvp-014"
 const DEFAULT_DIALOGUE_NODE_ID := "dialogue_intro"
 const DEFAULT_MINIGAME_ID := "minigame_frequency_sync"
 const EQUIP_FREQUENCY_FILTER := "equip_frequency_filter"
 const SCENE_MAIN_MENU := "res://scenes/main_menu.tscn"
 const SCENE_DIALOGUE := "res://scenes/dialogue_scene.tscn"
+const SCENE_PREPARATION := "res://scenes/preparation_scene.tscn"
 const SCENE_INVESTIGATION := "res://scenes/investigation_scene.tscn"
 const SCENE_BATTLE := "res://scenes/battle_scene.tscn"
 const SCENE_RESULT := "res://scenes/result_scene.tscn"
@@ -1050,6 +1051,34 @@ func has_equipped_item(equipment_id: String) -> bool:
 	return equipped_items.has(equipment_id)
 
 
+## Returns true when one equipment item is unlocked.
+func has_unlocked_equipment(equipment_id: String) -> bool:
+	return unlocked_equipment.has(equipment_id)
+
+
+## Equips one unlocked equipment item into the MVP tool slot.
+func equip_item(equipment_id: String) -> bool:
+	var clean_id := equipment_id.strip_edges()
+	if clean_id.is_empty() or not has_unlocked_equipment(clean_id):
+		return false
+
+	equipped_items.clear()
+	equipped_items.append(clean_id)
+	save_game()
+	return true
+
+
+## Unequips one equipment item from the MVP tool slot.
+func unequip_item(equipment_id: String) -> bool:
+	var clean_id := equipment_id.strip_edges()
+	if clean_id.is_empty() or not equipped_items.has(clean_id):
+		return false
+
+	equipped_items.erase(clean_id)
+	save_game()
+	return true
+
+
 ## Returns true when an equipment effect key has already been consumed.
 func has_used_equipment_effect(effect_key: String) -> bool:
 	return used_equipment_effects.has(effect_key)
@@ -1075,6 +1104,11 @@ func get_unlocked_equipment_entries() -> Array:
 	return _get_entries_by_ids(get_equipment(), unlocked_equipment)
 
 
+## Returns equipped equipment data.
+func get_equipped_equipment_entries() -> Array:
+	return _get_entries_by_ids(get_equipment(), equipped_items)
+
+
 ## Returns unlocked research reward data.
 func get_unlocked_research_reward_entries() -> Array:
 	return _get_entries_by_ids(CaseDataScript.get_research_rewards(current_episode_data), unlocked_research_rewards)
@@ -1097,10 +1131,43 @@ func get_current_result_unlocked_equipment() -> Array:
 
 ## Returns next investigation modifier text for current unlocks.
 func get_next_investigation_modifier_text() -> String:
-	if unlocked_equipment.has(EQUIP_FREQUENCY_FILTER):
+	if has_equipped_item(EQUIP_FREQUENCY_FILTER):
 		var item := get_equipment_by_id(EQUIP_FREQUENCY_FILTER)
 		return String(item.get("next_investigation_modifier", "주파수 계열 미니게임에서 힌트 1회 제공"))
+	if has_unlocked_equipment(EQUIP_FREQUENCY_FILTER):
+		return "폐주파수 필터가 해금되어 있습니다. 사건 준비 화면에서 장착하면 주파수 계열 힌트 1회가 적용됩니다."
 	return "이번 회수 결과로 적용되는 다음 조사 보정은 아직 없습니다."
+
+
+## Returns the project core sentence.
+func get_project_core_sentence() -> String:
+	return "괴담은 죽이는 게 아니라, 규칙을 밝혀 봉인하는 것이다."
+
+
+## Returns mascot guide lines for the case preparation screen.
+func get_preparation_log_lines() -> Array:
+	var lines: Array = [
+		"로그: 기관 지급 단말기 속 안내 AI입니다. 장비, 기록물, 위험 안내를 조사 시작 전에 정리합니다.",
+		"핵심 원칙: %s" % get_project_core_sentence()
+	]
+	if has_equipped_item(EQUIP_FREQUENCY_FILTER):
+		lines.append("장비 장착 확인: 폐주파수 필터가 주파수 계열 미니게임 힌트 1회를 준비합니다.")
+	elif has_unlocked_equipment(EQUIP_FREQUENCY_FILTER):
+		lines.append("장비 안내: 폐주파수 필터가 해금되어 있습니다. 장착하면 다음 조사 보정이 활성화됩니다.")
+	else:
+		lines.append("장비 안내: 아직 해금된 주파수 보정 장비가 없습니다.")
+
+	var unlocked_record_count := get_unlocked_record_entries().size()
+	if unlocked_record_count >= 2:
+		lines.append("기록물 안내: 저승역 회수 기록 %d건을 참고할 수 있습니다. 반복 패턴과 매개체 규칙을 먼저 확인하세요." % unlocked_record_count)
+	else:
+		lines.append("기록물 안내: 참고 가능한 회수 기록이 부족합니다. 조사 중 단서와 힌트를 우선 확보하세요.")
+
+	if has_equipped_item(EQUIP_FREQUENCY_FILTER):
+		lines.append("위험 안내: 필터 힌트는 같은 미니게임에서 한 번만 발동합니다. 가장 불안정한 파형 앞에서 쓰세요.")
+	else:
+		lines.append("위험 안내: 장착 장비가 없으면 미니게임 보정 없이 조사에 들어갑니다.")
+	return lines
 
 
 ## Returns true when the current clue rate allows entering the resolution phase.
@@ -1274,6 +1341,9 @@ func load_game() -> bool:
 	unlocked_equipment = _to_unique_string_array(save_data.get("unlocked_equipment", []))
 	unlocked_research_rewards = _to_unique_string_array(save_data.get("unlocked_research_rewards", []))
 	equipped_items = _to_unique_string_array(save_data.get("equipped_items", []))
+	for equipment_id in equipped_items.duplicate():
+		if not unlocked_equipment.has(String(equipment_id)):
+			equipped_items.erase(equipment_id)
 	used_equipment_effects = _to_unique_string_array(save_data.get("used_equipment_effects", []))
 	investigation_risk = clampi(int(save_data.get("anomaly_risk", save_data.get("investigation_risk", 0))), 0, 100)
 	case_understanding = clampi(int(save_data.get("anomaly_understanding", save_data.get("case_understanding", 0))), 0, 100)

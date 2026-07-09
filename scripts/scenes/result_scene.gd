@@ -106,11 +106,20 @@ func _add_navigation_buttons(parent: Control) -> void:
 		var selected_agent_ids := GameState.get_selected_agent_ids()
 		GameState.clear_save_file()
 		GameState.restart_afterlife_station_flow(selected_agent_ids)
-		GameState.set_current_scene_path("res://scenes/dialogue_scene.tscn")
+		GameState.set_current_scene_path(GameState.SCENE_PREPARATION)
 		GameState.save_game()
-		get_tree().change_scene_to_file("res://scenes/dialogue_scene.tscn")
+		get_tree().change_scene_to_file(GameState.SCENE_PREPARATION)
 	)
 	row.add_child(restart_button)
+
+	var prepare_button := Button.new()
+	prepare_button.text = "사건 준비로"
+	prepare_button.pressed.connect(func() -> void:
+		GameState.set_current_scene_path(GameState.SCENE_PREPARATION)
+		GameState.save_game()
+		get_tree().change_scene_to_file(GameState.SCENE_PREPARATION)
+	)
+	row.add_child(prepare_button)
 
 	var investigate_button := Button.new()
 	investigate_button.text = "조사로"

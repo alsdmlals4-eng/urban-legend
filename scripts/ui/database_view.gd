@@ -41,6 +41,11 @@ func _build_ui() -> void:
 	back_button.pressed.connect(_back_to_menu)
 	header.add_child(back_button)
 
+	var prepare_button := Button.new()
+	prepare_button.text = "사건 준비"
+	prepare_button.pressed.connect(_open_preparation)
+	header.add_child(prepare_button)
+
 	var title := Label.new()
 	title.text = "기록국 데이터베이스"
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -125,6 +130,7 @@ func _show_mvp13_rewards() -> void:
 	_add_dynamic_entry_list("해금 기록물", GameState.get_unlocked_record_entries(), "title", "description")
 	_add_dynamic_entry_list("연구 보상", GameState.get_unlocked_research_reward_entries(), "ability_name", "ability_description")
 	_add_dynamic_entry_list("해금 장비", GameState.get_unlocked_equipment_entries(), "name", "description")
+	_add_dynamic_entry_list("장착 장비", GameState.get_equipped_equipment_entries(), "name", "description")
 	var modifier_label := Label.new()
 	modifier_label.text = "- 다음 조사 보정: %s" % GameState.get_next_investigation_modifier_text()
 	modifier_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -162,3 +168,9 @@ func _clear_detail_items() -> void:
 
 func _back_to_menu() -> void:
 	get_tree().change_scene_to_file("res://scenes/main_menu.tscn")
+
+
+func _open_preparation() -> void:
+	GameState.set_current_scene_path(GameState.SCENE_PREPARATION)
+	GameState.save_game()
+	get_tree().change_scene_to_file(GameState.SCENE_PREPARATION)

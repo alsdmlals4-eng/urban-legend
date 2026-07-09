@@ -918,6 +918,7 @@
       "id": "record_black_ticket_core",
       "title": "검은 승차권의 핵",
       "description": "저승역 괴이의 중심 매개체로 회수된 검은 승차권 기록입니다. 승객을 없는 종착지로 묶는 규칙과 직접 연결됩니다.",
+      "next_investigation_effect": "다음 사건 준비에서 괴이 매개체와 봉인 조건을 먼저 확인하는 참고 기록으로 표시됩니다.",
       "episode_id": "episode_001_afterlife_station",
       "source_result": "standard_or_better"
     },
@@ -925,6 +926,7 @@
       "id": "record_repeating_announcement",
       "title": "반복 안내방송 기록",
       "description": "피해자의 이름과 숫자 패턴이 섞여 반복되던 안내방송 분석 기록입니다. 주파수 계열 조사 보정의 근거가 됩니다.",
+      "next_investigation_effect": "주파수 계열 조사에서 반복 파형과 안정 타이밍을 해석하는 근거로 표시됩니다.",
       "episode_id": "episode_001_afterlife_station",
       "source_result": "standard_or_better"
     },
@@ -932,6 +934,7 @@
       "id": "record_missing_terminal_sign",
       "title": "존재하지 않는 종착지 표지",
       "description": "완전 해결 시 보존되는 추가 기록물입니다. 현실 노선도에 없는 종착지가 괴이 경로를 고정하던 흔적을 담습니다.",
+      "next_investigation_effect": "완전 해결 기록으로 다음 공간형 괴담의 위장 경로를 의심하는 참고 자료로 표시됩니다.",
       "episode_id": "episode_001_afterlife_station",
       "source_result": "complete"
     }

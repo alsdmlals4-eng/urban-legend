@@ -17,6 +17,7 @@ var _progress_label: Label
 var _progress_bar: ProgressBar
 var _resolution_label: Label
 var _case_state_label: Label
+var _preparation_modifier_label: Label
 var _clue_list: VBoxContainer
 var _resolution_attempt_button: Button
 var _resolution_confirm_panel: PanelContainer
@@ -100,6 +101,10 @@ func _build_ui() -> void:
 	_case_state_label = Label.new()
 	_case_state_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	progress_content.add_child(_case_state_label)
+
+	_preparation_modifier_label = Label.new()
+	_preparation_modifier_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	progress_content.add_child(_preparation_modifier_label)
 
 	_resolution_attempt_button = Button.new()
 	_resolution_attempt_button.text = "해결 시도"
@@ -403,6 +408,7 @@ func _refresh_case_status() -> void:
 		int(status.get("anomaly_stability", 100)),
 		float(status.get("prediction_rate", 0.0))
 	]
+	_preparation_modifier_label.text = "로그 준비 안내: %s" % GameState.get_next_investigation_modifier_text()
 	_refresh_resolution_attempt_button()
 	_refresh_clue_list()
 

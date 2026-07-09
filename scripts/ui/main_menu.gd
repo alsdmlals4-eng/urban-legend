@@ -103,6 +103,7 @@ func _build_ui() -> void:
 	content.add_child(scene_label)
 
 	_add_scene_button(content, "조사씬 열기", "res://scenes/investigation_scene.tscn")
+	_add_scene_button(content, "준비 화면 열기", GameState.SCENE_PREPARATION)
 	_add_scene_button(content, "대화씬 열기", "res://scenes/dialogue_scene.tscn")
 	_add_scene_button(content, "전투씬 열기", "res://scenes/battle_scene.tscn")
 	_add_scene_button(content, "미니게임씬 열기", "res://scenes/minigame_scene.tscn")
@@ -121,9 +122,9 @@ func _start_afterlife_station() -> void:
 	var selected_agent_ids := GameState.get_selected_agent_ids()
 	GameState.clear_save_file()
 	GameState.restart_afterlife_station_flow(selected_agent_ids)
-	GameState.set_current_scene_path("res://scenes/dialogue_scene.tscn")
+	GameState.set_current_scene_path(GameState.SCENE_PREPARATION)
 	GameState.save_game()
-	get_tree().change_scene_to_file("res://scenes/dialogue_scene.tscn")
+	get_tree().change_scene_to_file(GameState.SCENE_PREPARATION)
 
 
 func _continue_saved_game() -> void:
