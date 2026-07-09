@@ -3,8 +3,9 @@ extends Node
 
 const DEFAULT_EPISODE_PATH := "res://data/episodes/episode_001_afterlife_station.json"
 const SAVE_FILE_PATH := "user://urban_legend_save.json"
-const SAVE_VERSION := "mvp-008"
+const SAVE_VERSION := "mvp-009"
 const DEFAULT_DIALOGUE_NODE_ID := "dialogue_intro"
+const DEFAULT_MINIGAME_ID := "minigame_frequency_sync"
 const SCENE_MAIN_MENU := "res://scenes/main_menu.tscn"
 const SCENE_DIALOGUE := "res://scenes/dialogue_scene.tscn"
 const SCENE_INVESTIGATION := "res://scenes/investigation_scene.tscn"
@@ -18,6 +19,8 @@ var current_episode_path := DEFAULT_EPISODE_PATH
 var current_episode_data: Dictionary = {}
 var current_scene_path := SCENE_MAIN_MENU
 var current_dialogue_node_id := DEFAULT_DIALOGUE_NODE_ID
+var current_minigame_id := DEFAULT_MINIGAME_ID
+var minigame_results: Dictionary = {}
 var flags: Array = []
 var seen_hint_ids: Array = []
 var selected_resolution_grade := ""
@@ -62,8 +65,10 @@ func restart_afterlife_station_flow() -> bool:
 func reset_run_state() -> void:
 	flags.clear()
 	seen_hint_ids.clear()
+	minigame_results.clear()
 	current_scene_path = SCENE_DIALOGUE
 	current_dialogue_node_id = DEFAULT_DIALOGUE_NODE_ID
+	current_minigame_id = DEFAULT_MINIGAME_ID
 	load_episode(DEFAULT_EPISODE_PATH)
 
 
@@ -108,6 +113,22 @@ func get_current_dialogue_node_id() -> String:
 	if current_dialogue_node_id.strip_edges().is_empty():
 		return DEFAULT_DIALOGUE_NODE_ID
 	return current_dialogue_node_id
+
+
+## Stores the current minigame id for minigame scene loading.
+func set_current_minigame_id(minigame_id: String) -> void:
+	var clean_id := minigame_id.strip_edges()
+	if clean_id.is_empty():
+		return
+
+	current_minigame_id = clean_id
+
+
+## Returns the current minigame id.
+func get_current_minigame_id() -> String:
+	if current_minigame_id.strip_edges().is_empty():
+		return DEFAULT_MINIGAME_ID
+	return current_minigame_id
 
 
 ## Adds one run flag if it is not already present.
@@ -230,7 +251,60 @@ func apply_story_effects(result_data: Dictionary) -> void:
 	for hint_id in _to_string_array(result_data.get("show_hint_ids", [])):
 		mark_hint_seen(hint_id)
 
+	var minigame_id := String(result_data.get("start_minigame_id", result_data.get("minigame_id", ""))).strip_edges()
+	if not minigame_id.is_empty():
+		set_current_minigame_id(minigame_id)
+
 	save_game()
+
+
+## Applies a minigame success or failure result and stores it for save/load.
+func save_minigame_result(minigame_id: String, successful: bool) -> void:
+	var minigame := get_minigame(minigame_id)
+	if minigame.is_empty():
+		return
+
+	var result_state := "success" if successful else "failure"
+	var result_text_key := "success_result_text" if successful else "failure_result_text"
+	var result_text := String(minigame.get(result_text_key, ""))
+	var opposite_flags: Variant = minigame.get("failure_flags", []) if successful else minigame.get("success_flags", [])
+	for flag_id in _to_string_array(opposite_flags):
+		remove_flag(flag_id)
+
+	minigame_results[minigame_id] = {
+		"successful": successful,
+		"result_state": result_state,
+		"result_text": result_text,
+		"last_updated_at": Time.get_datetime_string_from_system(false, true)
+	}
+
+	apply_story_effects(_make_minigame_effect_data(minigame, successful))
+	save_game()
+
+
+## Returns true when a minigame was completed successfully.
+func has_minigame_success(minigame_id: String) -> bool:
+	var result: Dictionary = minigame_results.get(minigame_id, {})
+	return bool(result.get("successful", false))
+
+
+## Returns true when a minigame was completed with failure.
+func has_minigame_failure(minigame_id: String) -> bool:
+	var result: Dictionary = minigame_results.get(minigame_id, {})
+	return not result.is_empty() and not bool(result.get("successful", false))
+
+
+## Returns the saved result for one minigame.
+func get_minigame_result(minigame_id: String) -> Dictionary:
+	var result: Variant = minigame_results.get(minigame_id, {})
+	if typeof(result) == TYPE_DICTIONARY:
+		return result
+	return {}
+
+
+## Returns all saved minigame results.
+func get_minigame_results() -> Dictionary:
+	return minigame_results.duplicate(true)
 
 
 ## Returns display text for hint ids stored in branch result data.
@@ -338,6 +412,31 @@ func get_current_dialogue_node() -> Dictionary:
 ## Returns investigation points defined in the active episode data.
 func get_investigation_points() -> Array:
 	return CaseDataScript.get_investigation_points(current_episode_data)
+
+
+## Returns minigames defined in the active episode data.
+func get_minigames() -> Array:
+	return CaseDataScript.get_minigames(current_episode_data)
+
+
+## Returns one minigame by id.
+func get_minigame(minigame_id: String) -> Dictionary:
+	return CaseDataScript.get_minigame_by_id(current_episode_data, minigame_id)
+
+
+## Returns the current minigame, falling back to the first minigame.
+func get_current_minigame() -> Dictionary:
+	var minigame := get_minigame(get_current_minigame_id())
+	if not minigame.is_empty():
+		return minigame
+
+	var minigames := get_minigames()
+	if minigames.is_empty() or typeof(minigames[0]) != TYPE_DICTIONARY:
+		return {}
+
+	var first_minigame: Dictionary = minigames[0]
+	set_current_minigame_id(String(first_minigame.get("id", DEFAULT_MINIGAME_ID)))
+	return first_minigame
 
 
 ## Returns active clue records.
@@ -571,6 +670,7 @@ func load_game() -> bool:
 
 	flags = _to_unique_string_array(save_data.get("flags", []))
 	seen_hint_ids = _to_unique_string_array(save_data.get("seen_hint_ids", []))
+	minigame_results = _to_dictionary(save_data.get("minigame_results", {}))
 	_apply_collected_clue_ids(_to_string_array(save_data.get("collected_clue_ids", [])))
 
 	selected_resolution_grade = String(save_data.get("selected_resolution_grade", ""))
@@ -592,6 +692,10 @@ func load_game() -> bool:
 	current_dialogue_node_id = String(save_data.get("current_dialogue_node_id", DEFAULT_DIALOGUE_NODE_ID))
 	if current_dialogue_node_id.is_empty():
 		current_dialogue_node_id = DEFAULT_DIALOGUE_NODE_ID
+
+	current_minigame_id = String(save_data.get("current_minigame_id", DEFAULT_MINIGAME_ID))
+	if current_minigame_id.is_empty():
+		current_minigame_id = DEFAULT_MINIGAME_ID
 	return true
 
 
@@ -622,7 +726,9 @@ func _make_save_data() -> Dictionary:
 		"episode_path": current_episode_path,
 		"current_scene_path": get_current_scene_path(),
 		"current_dialogue_node_id": get_current_dialogue_node_id(),
+		"current_minigame_id": get_current_minigame_id(),
 		"flags": get_flags(),
+		"minigame_results": get_minigame_results(),
 		"collected_clue_ids": get_collected_clue_ids(),
 		"seen_hint_ids": get_seen_hint_ids(),
 		"selected_resolution_grade": selected_resolution_grade,
@@ -642,6 +748,21 @@ func _apply_collected_clue_ids(clue_ids: Array) -> void:
 	current_episode_data = CaseDataScript.reset_clue_collection(current_episode_data)
 	for clue_id in clue_ids:
 		_set_clue_collected_without_save(String(clue_id), true)
+
+
+func _make_minigame_effect_data(minigame: Dictionary, successful: bool) -> Dictionary:
+	if successful:
+		return {
+			"add_flags": minigame.get("success_flags", []),
+			"collect_clues": minigame.get("success_collect_clues", []),
+			"show_hint_ids": minigame.get("success_show_hint_ids", [])
+		}
+
+	return {
+		"add_flags": minigame.get("failure_flags", []),
+		"collect_clues": minigame.get("failure_collect_clues", []),
+		"show_hint_ids": minigame.get("failure_show_hint_ids", [])
+	}
 
 
 func _clear_resolution_phase_selection() -> void:
@@ -675,6 +796,12 @@ func _to_string_array(value: Variant) -> Array:
 		if not text.is_empty():
 			result.append(text)
 	return result
+
+
+func _to_dictionary(value: Variant) -> Dictionary:
+	if typeof(value) == TYPE_DICTIONARY:
+		return value.duplicate(true)
+	return {}
 
 
 func _get_resolution_rank(grade: String) -> int:

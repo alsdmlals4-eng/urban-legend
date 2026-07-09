@@ -189,6 +189,21 @@
             "started_investigation_after_photo"
           ],
           "next_scene_path": "res://scenes/investigation_scene.tscn"
+        },
+        {
+          "id": "choice_frequency_sync_after_photo",
+          "text": "전광판 사진의 잡음 주파수를 분석한다",
+          "conditions": {
+            "required_flags": [
+              "choice_photographed_sign"
+            ]
+          },
+          "result_text": "사진에 남은 잡음 패턴을 기록국 단말기로 넘깁니다.",
+          "add_flags": [
+            "requested_frequency_sync"
+          ],
+          "start_minigame_id": "minigame_frequency_sync",
+          "next_scene_path": "res://scenes/minigame_scene.tscn"
         }
       ]
     }
@@ -239,6 +254,25 @@
       ]
     },
     {
+      "id": "point_frequency_terminal",
+      "label": "기록국 단말기: 폐주파수 동기화",
+      "conditions": {
+        "required_flags": [
+          "heard_station_noise"
+        ],
+        "blocked_flags": [
+          "minigame_frequency_success"
+        ]
+      },
+      "locked_text": "아직 동기화할 폐주파수 잡음을 확보하지 못했습니다. 플랫폼 스피커를 먼저 확인하세요.",
+      "result_text": "기록국 단말기가 반복 안내방송의 잡음을 분석하기 시작합니다.",
+      "add_flags": [
+        "started_frequency_sync"
+      ],
+      "start_minigame_id": "minigame_frequency_sync",
+      "next_scene_path": "res://scenes/minigame_scene.tscn"
+    },
+    {
       "id": "point_terminal_sign",
       "label": "꺼진 종착지 표지판",
       "clue_id": "clue_missing_terminal_sign",
@@ -269,6 +303,39 @@
       "show_hint_ids": [
         "hint_afterlife_station_005"
       ]
+    }
+  ],
+  "minigames": [
+    {
+      "id": "minigame_frequency_sync",
+      "title": "폐주파수 동기화",
+      "description": "반복 안내방송의 잡음 사이에 숨어 있는 피해자의 이름과 숫자 패턴을 맞춥니다.",
+      "type": "timing_check",
+      "target_count": 3,
+      "success_flags": [
+        "minigame_frequency_success",
+        "heard_station_noise",
+        "frequency_sync_completed"
+      ],
+      "failure_flags": [
+        "minigame_frequency_failed",
+        "frequency_noise_alert",
+        "battle_route_distorted"
+      ],
+      "success_collect_clues": [
+        "clue_repeating_announcement"
+      ],
+      "success_show_hint_ids": [
+        "hint_afterlife_station_003"
+      ],
+      "failure_show_hint_ids": [
+        "hint_afterlife_station_003"
+      ],
+      "success_result_text": "반복 안내방송의 규칙을 파악했습니다. 피해자의 이름이 끼어드는 순간을 단서로 기록합니다.",
+      "failure_result_text": "잡음이 커져 저승역의 경계가 강화되었습니다. 회수 전투에서 괴이 안정도가 조금 높아집니다.",
+      "return_scene_path": "res://scenes/investigation_scene.tscn",
+      "success_next_scene_path": "res://scenes/investigation_scene.tscn",
+      "failure_next_scene_path": "res://scenes/investigation_scene.tscn"
     }
   ],
   "clues": [

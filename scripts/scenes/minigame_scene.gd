@@ -1,15 +1,29 @@
-# 미니게임 씬의 간단한 상호작용과 성공 실패 결과를 관리한다.
+# 미니게임 씬의 JSON 기반 성공/실패 결과와 복귀 흐름을 관리한다.
 extends Control
 
 var _sync_count := 0
+var _target_count := 3
+var _minigame: Dictionary = {}
+var _last_successful := false
+
+var _title_label: Label
+var _description_label: Label
 var _result_label: Label
 var _progress_bar: ProgressBar
+var _success_button: Button
+var _fail_button: Button
+var _return_button: Button
 
 
 func _ready() -> void:
+	if GameState.get_current_episode().is_empty():
+		GameState.load_episode()
+
 	GameState.set_current_scene_path("res://scenes/minigame_scene.tscn")
+	_minigame = GameState.get_current_minigame()
+	_target_count = max(1, int(_minigame.get("target_count", 3)))
 	_build_ui()
-	_update_result("파형을 세 번 맞추면 기억 표찰이 안정화됩니다.")
+	_update_result("파형을 %d번 맞추면 폐주파수 동기화가 완료됩니다." % _target_count)
 
 
 func _build_ui() -> void:
@@ -32,11 +46,11 @@ func _build_ui() -> void:
 
 	_add_navigation(root)
 
-	var title := Label.new()
-	title.text = "미니게임 씬 placeholder: 폐주파수 파형 맞추기"
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	root.add_child(title)
+	_title_label = Label.new()
+	_title_label.text = String(_minigame.get("title", "미니게임"))
+	_title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	root.add_child(_title_label)
 
 	var panel := PanelContainer.new()
 	panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -46,32 +60,32 @@ func _build_ui() -> void:
 	content.add_theme_constant_override("separation", 10)
 	panel.add_child(content)
 
-	var description := Label.new()
-	description.text = "상호작용: 기록국 단말기의 폐주파수 파형을 맞춰 괴담 신호를 고정합니다."
-	description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	content.add_child(description)
+	_description_label = Label.new()
+	_description_label.text = String(_minigame.get("description", "미니게임 설명이 없습니다."))
+	_description_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	content.add_child(_description_label)
 
 	_progress_bar = ProgressBar.new()
 	_progress_bar.min_value = 0
-	_progress_bar.max_value = 3
+	_progress_bar.max_value = _target_count
 	_progress_bar.value = 0
 	content.add_child(_progress_bar)
 
-	var success_button := Button.new()
-	success_button.text = "파형 맞추기"
-	success_button.pressed.connect(_match_wave)
-	content.add_child(success_button)
+	_success_button = Button.new()
+	_success_button.text = "파형 맞추기"
+	_success_button.pressed.connect(_match_wave)
+	content.add_child(_success_button)
 
-	var fail_button := Button.new()
-	fail_button.text = "잘못된 주파수 선택"
-	fail_button.pressed.connect(func() -> void:
-		_sync_count = 0
-		_progress_bar.value = _sync_count
-		GameState.add_flag("minigame_frequency_failed")
-		GameState.save_game()
-		_update_result("실패: 잡음이 커져 신호가 흩어졌습니다. 다시 시도하세요.")
-	)
-	content.add_child(fail_button)
+	_fail_button = Button.new()
+	_fail_button.text = "잘못된 주파수 선택"
+	_fail_button.pressed.connect(_fail_minigame)
+	content.add_child(_fail_button)
+
+	_return_button = Button.new()
+	_return_button.text = "사건 흐름으로 돌아가기"
+	_return_button.visible = false
+	_return_button.pressed.connect(_return_to_flow)
+	content.add_child(_return_button)
 
 	_result_label = Label.new()
 	_result_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -81,13 +95,56 @@ func _build_ui() -> void:
 func _match_wave() -> void:
 	_sync_count += 1
 	_progress_bar.value = _sync_count
-	if _sync_count >= 3:
-		GameState.add_flag("minigame_frequency_success")
-		GameState.add_flag("heard_station_noise")
-		GameState.save_game()
-		_update_result("성공: 폐주파수 신호가 고정되고 다음 단서가 열립니다.")
+	if _sync_count >= _target_count:
+		_complete_minigame(true)
 	else:
-		_update_result("파형 동기화 중: %d/3" % _sync_count)
+		_update_result("파형 동기화 중: %d/%d" % [_sync_count, _target_count])
+
+
+func _fail_minigame() -> void:
+	_sync_count = 0
+	_progress_bar.value = _sync_count
+	_complete_minigame(false)
+
+
+func _complete_minigame(successful: bool) -> void:
+	_last_successful = successful
+	var minigame_id := String(_minigame.get("id", GameState.get_current_minigame_id()))
+	GameState.save_minigame_result(minigame_id, successful)
+
+	_success_button.disabled = true
+	_fail_button.disabled = true
+	_return_button.visible = true
+	_update_result(_make_result_text(successful))
+
+
+func _make_result_text(successful: bool) -> String:
+	var text_key := "success_result_text" if successful else "failure_result_text"
+	var text := String(_minigame.get(text_key, "미니게임 결과가 기록되었습니다."))
+	var hint_key := "success_show_hint_ids" if successful else "failure_show_hint_ids"
+	var hint_texts := GameState.get_hint_texts_by_ids(_minigame.get(hint_key, []))
+	if not hint_texts.is_empty():
+		text += "\n\n기록된 힌트\n- %s" % "\n- ".join(hint_texts)
+
+	if successful:
+		text += "\n\n성공 플래그: %s" % ", ".join(_minigame.get("success_flags", []))
+	else:
+		text += "\n\n실패 플래그: %s" % ", ".join(_minigame.get("failure_flags", []))
+	return text
+
+
+func _return_to_flow() -> void:
+	var scene_path := ""
+	if _last_successful:
+		scene_path = String(_minigame.get("success_next_scene_path", ""))
+	else:
+		scene_path = String(_minigame.get("failure_next_scene_path", ""))
+	if scene_path.is_empty():
+		scene_path = String(_minigame.get("return_scene_path", "res://scenes/investigation_scene.tscn"))
+
+	GameState.set_current_scene_path(scene_path)
+	GameState.save_game()
+	get_tree().change_scene_to_file(scene_path)
 
 
 func _update_result(text: String) -> void:

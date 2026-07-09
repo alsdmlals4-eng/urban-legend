@@ -6,6 +6,11 @@ const BASE_RECOVERY_THRESHOLD := 40
 const MAX_RECOVERY_THRESHOLD := 75
 const CLUE_THRESHOLD_FACTOR := 0.5
 const CLUE_START_WEAKEN_FACTOR := 0.2
+const FREQUENCY_SUCCESS_THRESHOLD_BONUS := 8
+const FREQUENCY_SUCCESS_STABILITY_BONUS := 8
+const FREQUENCY_FAILURE_THRESHOLD_PENALTY := 8
+const FREQUENCY_FAILURE_STABILITY_PENALTY := 10
+const FREQUENCY_MINIGAME_ID := "minigame_frequency_sync"
 
 var _anomaly_stability := BASE_ANOMALY_STABILITY
 var _fear_level := 0
@@ -137,14 +142,39 @@ func _apply_collected_clue_effects() -> void:
 		BASE_ANOMALY_STABILITY
 	)
 
+	if GameState.has_minigame_success(FREQUENCY_MINIGAME_ID):
+		_recovery_threshold = clampi(
+			_recovery_threshold + FREQUENCY_SUCCESS_THRESHOLD_BONUS,
+			BASE_RECOVERY_THRESHOLD,
+			MAX_RECOVERY_THRESHOLD
+		)
+		_anomaly_stability = clampi(
+			_anomaly_stability - FREQUENCY_SUCCESS_STABILITY_BONUS,
+			0,
+			BASE_ANOMALY_STABILITY
+		)
+	elif GameState.has_minigame_failure(FREQUENCY_MINIGAME_ID):
+		_recovery_threshold = clampi(
+			_recovery_threshold - FREQUENCY_FAILURE_THRESHOLD_PENALTY,
+			30,
+			MAX_RECOVERY_THRESHOLD
+		)
+		_anomaly_stability = clampi(
+			_anomaly_stability + FREQUENCY_FAILURE_STABILITY_PENALTY,
+			0,
+			BASE_ANOMALY_STABILITY
+		)
+
 
 func _make_start_message() -> String:
+	var minigame_text := _make_minigame_battle_text()
 	if _active_effects.is_empty():
-		return "수집한 단서가 없어 자동 발동 효과 없이 회수 전투를 시작합니다."
+		return "수집한 단서가 없어 자동 발동 효과 없이 회수 전투를 시작합니다.%s" % minigame_text
 
-	return "수집한 단서 %d개가 자동 발동했습니다. 회수 가능 기준이 %d 이하로 완화되었습니다." % [
+	return "수집한 단서 %d개가 자동 발동했습니다. 회수 가능 기준이 %d 이하로 완화되었습니다.%s" % [
 		_active_effects.size(),
-		_recovery_threshold
+		_recovery_threshold,
+		minigame_text
 	]
 
 
@@ -164,7 +194,18 @@ func _make_auto_effect_text() -> String:
 		]
 
 	text += "힌트는 단서가 아니므로 전투 자동 발동에 포함되지 않습니다."
+	var minigame_text := _make_minigame_battle_text().strip_edges()
+	if not minigame_text.is_empty():
+		text += "\n\n미니게임 영향\n%s" % minigame_text
 	return text.strip_edges()
+
+
+func _make_minigame_battle_text() -> String:
+	if GameState.has_minigame_success(FREQUENCY_MINIGAME_ID):
+		return "\n폐주파수 동기화 성공: 회수 기준이 완화되고 괴이 안정도가 낮아졌습니다."
+	if GameState.has_minigame_failure(FREQUENCY_MINIGAME_ID):
+		return "\n폐주파수 동기화 실패: 회수 기준이 강화되고 괴이 안정도가 높아졌습니다."
+	return ""
 
 
 func _make_label(text: String) -> Label:

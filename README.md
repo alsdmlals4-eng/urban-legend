@@ -7,7 +7,7 @@
 ## 버전 표기
 
 메인 화면의 `Ver` 표기는 수정 작업이 반영될 때마다 0.1씩 올립니다.
-현재 버전은 `Ver 1.4`이며, 이후에는 `Ver 1.5`, `Ver 1.6`처럼 갱신합니다.
+현재 버전은 `Ver 1.5`이며, 이후에는 `Ver 1.6`, `Ver 1.7`처럼 갱신합니다.
 
 ## 기준 파일
 
@@ -89,6 +89,7 @@ urban-legend/
 - `recovery_results`: 해결 등급별 피해자 구조와 괴이 핵 회수 결과
 - `dialogue_nodes`: 대화 노드, 대사 라인, 선택지, 선택 결과
 - `investigation_points`: 조사 포인트, 잠김 조건, 조사 결과, 단서/힌트/플래그 처리
+- `minigames`: 사건 진행에 연결되는 미니게임 설정, 성공/실패 결과, 복귀 경로
 
 ### 저승역 기준
 
@@ -222,7 +223,15 @@ user://urban_legend_save.json
   "episode_id": "episode_001_afterlife_station",
   "episode_path": "res://data/episodes/episode_001_afterlife_station.json",
   "current_scene_path": "res://scenes/investigation_scene.tscn",
+  "current_minigame_id": "minigame_frequency_sync",
   "flags": ["choice_headed_staff_room", "unlocked_staff_room"],
+  "minigame_results": {
+    "minigame_frequency_sync": {
+      "successful": true,
+      "result_state": "success",
+      "result_text": "반복 안내방송의 규칙을 파악했습니다."
+    }
+  },
   "collected_clue_ids": ["clue_last_message", "clue_black_ticket"],
   "seen_hint_ids": ["hint_afterlife_station_001"],
   "selected_resolution_grade": "temporary",
@@ -351,6 +360,49 @@ MVP-008부터 저승역 대화와 조사 포인트는 `data/episodes/episode_001
 
 기존 단서 수집률, 해결 등급, 해결 시도 버튼은 그대로 유지됩니다. 저장/불러오기는 `flags`, `collected_clue_ids`, `seen_hint_ids`, `current_dialogue_node_id`, `current_scene_path`를 통해 데이터 기반 진행 상태를 복원합니다.
 
+## MVP-009 미니게임 성공/실패 분기
+
+MVP-009부터 미니게임은 별도 테스트 화면이 아니라 저승역 사건 진행 조건으로 사용합니다.
+
+저승역 JSON의 `minigames` 구조입니다.
+
+```json
+{
+  "id": "minigame_frequency_sync",
+  "title": "폐주파수 동기화",
+  "description": "반복 안내방송의 잡음 사이에 숨어 있는 피해자의 이름과 숫자 패턴을 맞춥니다.",
+  "type": "timing_check",
+  "target_count": 3,
+  "success_flags": ["minigame_frequency_success", "heard_station_noise", "frequency_sync_completed"],
+  "failure_flags": ["minigame_frequency_failed", "frequency_noise_alert", "battle_route_distorted"],
+  "success_collect_clues": ["clue_repeating_announcement"],
+  "success_show_hint_ids": ["hint_afterlife_station_003"],
+  "failure_show_hint_ids": ["hint_afterlife_station_003"],
+  "success_result_text": "반복 안내방송의 규칙을 파악했습니다.",
+  "failure_result_text": "잡음이 커져 저승역의 경계가 강화되었습니다.",
+  "return_scene_path": "res://scenes/investigation_scene.tscn"
+}
+```
+
+미니게임 진입 경로입니다.
+
+- 대화 선택지 `전광판 사진의 잡음 주파수를 분석한다`
+- 조사 포인트 `기록국 단말기: 폐주파수 동기화`
+
+성공/실패 결과입니다.
+
+- 성공 플래그: `minigame_frequency_success`, `heard_station_noise`, `frequency_sync_completed`
+- 실패 플래그: `minigame_frequency_failed`, `frequency_noise_alert`, `battle_route_distorted`
+- 성공 시 처리: `clue_repeating_announcement` 획득, `hint_afterlife_station_003` 확인 기록
+- 실패 시 처리: 위험/불리한 플래그 저장, `hint_afterlife_station_003` 확인 기록
+- 결과 저장: `GameState.save_minigame_result(minigame_id, successful)`가 `minigame_results`와 플래그를 함께 저장합니다.
+
+전투 반영입니다.
+
+- `minigame_frequency_success`: 회수 가능 기준이 완화되고 괴이 안정도 시작값이 낮아집니다.
+- `minigame_frequency_failed`: 회수 가능 기준이 강화되고 괴이 안정도 시작값이 높아집니다.
+- 전투씬의 자동 발동 단서 영역과 시작 안내 문구에 미니게임 영향이 표시됩니다.
+
 ## 테스트 방법
 
 Godot 실행 확인.
@@ -367,6 +419,7 @@ Godot 실행 확인.
 & "C:\Users\user\Downloads\Godot_v4.7-stable_win64.exe\Godot_v4.7-stable_win64_console.exe" --headless --path . --scene "res://scenes/dialogue_scene.tscn" --quit-after 1
 & "C:\Users\user\Downloads\Godot_v4.7-stable_win64.exe\Godot_v4.7-stable_win64_console.exe" --headless --path . --scene "res://scenes/battle_scene.tscn" --quit-after 1
 & "C:\Users\user\Downloads\Godot_v4.7-stable_win64.exe\Godot_v4.7-stable_win64_console.exe" --headless --path . --scene "res://scenes/result_scene.tscn" --quit-after 1
+& "C:\Users\user\Downloads\Godot_v4.7-stable_win64.exe\Godot_v4.7-stable_win64_console.exe" --headless --path . --scene "res://scenes/minigame_scene.tscn" --quit-after 1
 ```
 
 전체 플레이 테스트 순서입니다.
@@ -379,9 +432,14 @@ Godot 실행 확인.
 6. 조사씬에서 JSON 조사 포인트 5개가 표시되는지 확인합니다.
 7. 새 게임 직후 대화 선택 없이 조사씬에 들어가면 `역무원실 근무 기록`이 `[잠김]`으로 표시되는지 확인합니다.
 8. 조건 충족 후 `역무원실 근무 기록`을 눌러 `clue_staff_room_log` 단서와 힌트 기록이 처리되는지 확인합니다.
-9. 단서 2개 이상 수집 후 `해결 시도` 버튼이 활성화되는지 확인합니다.
-10. 전투/회수/결과 화면까지 기존 흐름이 이어지는지 확인합니다.
-11. 메인 메뉴로 돌아가 `이어하기`가 마지막 저장 씬과 데이터 기반 상태를 복원하는지 확인합니다.
+9. `플랫폼 스피커`를 확인한 뒤 `기록국 단말기: 폐주파수 동기화` 조사 포인트로 미니게임씬에 진입합니다.
+10. 미니게임에서 `파형 맞추기`를 3번 눌러 성공 결과를 확인합니다.
+11. 새 게임 또는 저장 초기화 후 미니게임에서 `잘못된 주파수 선택`을 눌러 실패 결과를 확인합니다.
+12. 성공 시 `반복 안내방송 녹음` 단서가 수집되는지 확인합니다.
+13. 실패 시 전투씬 시작 안내에서 폐주파수 실패 경고가 보이는지 확인합니다.
+14. 단서 2개 이상 수집 후 `해결 시도` 버튼이 활성화되는지 확인합니다.
+15. 전투/회수/결과 화면까지 기존 흐름이 이어지는지 확인합니다.
+16. 메인 메뉴로 돌아가 `이어하기`가 미니게임 결과와 마지막 저장 씬을 복원하는지 확인합니다.
 
 ## 체크리스트
 
@@ -410,6 +468,16 @@ Godot 실행 확인.
 - [ ] 조건부 조사 포인트가 `[잠김]`으로 표시되고 `locked_text`를 보여준다.
 - [ ] 조사 결과로 플래그, 단서, 힌트 기록이 처리된다.
 - [ ] 저장/불러오기 후 현재 대화 노드와 데이터 기반 진행 상태가 유지된다.
+- [ ] 저승역 JSON에 `minigames`가 정의되어 있다.
+- [ ] 미니게임씬이 JSON 미니게임 제목과 설명을 표시한다.
+- [ ] 미니게임 성공 결과가 플래그와 `minigame_results`에 저장된다.
+- [ ] 미니게임 실패 결과가 플래그와 `minigame_results`에 저장된다.
+- [ ] 미니게임 성공 시 `clue_repeating_announcement` 또는 관련 힌트가 처리된다.
+- [ ] 미니게임 실패 시 위험/불리한 플래그가 처리된다.
+- [ ] 대화 또는 조사에서 미니게임씬으로 이동할 수 있다.
+- [ ] 미니게임 종료 후 조사씬으로 복귀할 수 있다.
+- [ ] 미니게임 성공/실패 결과가 전투씬 안내 또는 난이도에 반영된다.
+- [ ] 저장/불러오기 후 미니게임 결과가 유지된다.
 - [ ] `MVP-002 데이터 확인` 화면에서 단서 수집률과 해결 단계가 보인다.
 - [ ] `테스트: 다음 단서 수집` 버튼을 누르면 수집률이 20%씩 증가한다.
 - [ ] `수집 초기화` 버튼을 누르면 단서 수집률이 0%로 돌아간다.
