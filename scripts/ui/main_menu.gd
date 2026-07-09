@@ -48,7 +48,25 @@ func _build_ui() -> void:
 	open_button.pressed.connect(_open_database)
 	content.add_child(open_button)
 
+	var scene_label := Label.new()
+	scene_label.text = "MVP-001 핵심 씬 테스트"
+	scene_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	content.add_child(scene_label)
+
+	_add_scene_button(content, "조사씬 열기", "res://scenes/investigation_scene.tscn")
+	_add_scene_button(content, "대화씬 열기", "res://scenes/dialogue_scene.tscn")
+	_add_scene_button(content, "전투씬 열기", "res://scenes/battle_scene.tscn")
+	_add_scene_button(content, "미니게임씬 열기", "res://scenes/minigame_scene.tscn")
+
 
 func _open_database() -> void:
 	get_tree().change_scene_to_file("res://scenes/database_view.tscn")
 
+
+func _add_scene_button(parent: Control, label: String, scene_path: String) -> void:
+	var button := Button.new()
+	button.text = label
+	button.pressed.connect(func() -> void:
+		get_tree().change_scene_to_file(scene_path)
+	)
+	parent.add_child(button)
