@@ -14,6 +14,7 @@ func _ready() -> void:
 	if GameState.get_current_episode().is_empty():
 		GameState.load_episode()
 
+	GameState.set_current_scene_path("res://scenes/case_data_scene.tscn")
 	_build_ui()
 	_refresh_data_view()
 
@@ -222,6 +223,8 @@ func _add_scene_button(parent: Control, label: String, scene_path: String) -> vo
 	var button := Button.new()
 	button.text = label
 	button.pressed.connect(func() -> void:
+		GameState.set_current_scene_path(scene_path)
+		GameState.save_game()
 		get_tree().change_scene_to_file(scene_path)
 	)
 	parent.add_child(button)

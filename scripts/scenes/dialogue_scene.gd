@@ -14,15 +14,18 @@ var _dialogue_label: Label
 var _choice_box: VBoxContainer
 var _hint_label: Label
 var _clue_status_label: Label
+var _condition_label: Label
 
 
 func _ready() -> void:
 	if GameState.get_current_episode().is_empty():
 		GameState.load_episode()
 
+	GameState.set_current_scene_path("res://scenes/dialogue_scene.tscn")
 	_build_ui()
 	_show_line()
 	_refresh_clue_status()
+	_refresh_condition_label()
 
 
 func _build_ui() -> void:
@@ -87,6 +90,10 @@ func _build_ui() -> void:
 	_dialogue_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	stage_layout.add_child(_dialogue_label)
 
+	_condition_label = Label.new()
+	_condition_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	stage_layout.add_child(_condition_label)
+
 	var next_button := Button.new()
 	next_button.text = "다음 대사"
 	next_button.pressed.connect(_advance_line)
@@ -95,6 +102,8 @@ func _build_ui() -> void:
 	var investigation_button := Button.new()
 	investigation_button.text = "조사 시작"
 	investigation_button.pressed.connect(func() -> void:
+		GameState.set_current_scene_path("res://scenes/investigation_scene.tscn")
+		GameState.save_game()
 		get_tree().change_scene_to_file("res://scenes/investigation_scene.tscn")
 	)
 	stage_layout.add_child(investigation_button)
@@ -153,34 +162,53 @@ func _show_choices() -> void:
 	_choice_box.visible = true
 	for child in _choice_box.get_children():
 		child.queue_free()
-	_add_choice("전광판을 촬영한다", "선택 결과: 진실도 단서가 추가됩니다.")
-	_add_choice("역무원실로 향한다", "선택 결과: 2차 분기 테스트가 열립니다.")
+	_add_choice(
+		"전광판을 촬영한다",
+		"선택 결과: 전광판 촬영 기록 플래그가 추가되었습니다.",
+		["choice_photographed_sign"]
+	)
+	_add_choice(
+		"역무원실로 향한다",
+		"선택 결과: 역무원실 접근 근거 플래그가 추가되었습니다.",
+		["choice_headed_staff_room", "unlocked_staff_room"]
+	)
 
 
-func _add_choice(label: String, result: String) -> void:
+func _add_choice(label: String, result: String, flag_ids: Array) -> void:
 	var button := Button.new()
 	button.text = label
 	button.pressed.connect(func() -> void:
+		for flag_id in flag_ids:
+			GameState.add_flag(String(flag_id))
 		_name_label.text = "선택"
 		_dialogue_label.text = result
 		_choice_box.visible = false
+		GameState.save_game()
+		_refresh_condition_label()
 	)
 	_choice_box.add_child(button)
 
 
 func _show_next_hint() -> void:
-	var hints := GameState.get_hints()
+	var hints := GameState.get_available_hints()
 	if hints.is_empty():
-		_hint_label.text = "표시할 힌트가 없습니다."
+		_hint_label.text = "현재 조건에서 표시할 힌트가 없습니다. 조사나 선택으로 플래그를 더 확보하세요."
 		return
 
 	var hint: Dictionary = hints[_hint_index % hints.size()]
 	_hint_index += 1
+	var hint_id := String(hint.get("id", ""))
+	var was_seen := GameState.has_seen_hint(hint_id)
+	GameState.mark_hint_seen(hint_id)
 	_hint_label.text = "대상 단서: %s\n힌트: %s\n단서 수집률 변화 없음: %.0f%%" % [
 		hint.get("target_clue_id", ""),
 		hint.get("text", ""),
 		GameState.get_clue_collection_rate()
 	]
+	if was_seen:
+		_hint_label.text += "\n힌트 상태: 이미 확인한 힌트"
+	else:
+		_hint_label.text += "\n힌트 상태: 새로 확인함"
 	_refresh_clue_status()
 
 
@@ -200,6 +228,16 @@ func _refresh_clue_status() -> void:
 	_clue_status_label.text = text.strip_edges()
 
 
+func _refresh_condition_label() -> void:
+	if _condition_label == null:
+		return
+
+	if GameState.has_flag("unlocked_staff_room"):
+		_condition_label.text = "조건부 안내: 역무원실 조사 권한이 열렸습니다. 조사씬에서 근무 기록을 확인할 수 있습니다."
+	else:
+		_condition_label.text = "조건부 안내: 역무원실은 아직 접근 근거가 부족합니다. 선택지로 접근 근거를 만들 수 있습니다."
+
+
 func _add_navigation(parent: Control) -> void:
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 6)
@@ -214,6 +252,8 @@ func _add_scene_button(parent: Control, label: String, scene_path: String) -> vo
 	var button := Button.new()
 	button.text = label
 	button.pressed.connect(func() -> void:
+		GameState.set_current_scene_path(scene_path)
+		GameState.save_game()
 		get_tree().change_scene_to_file(scene_path)
 	)
 	parent.add_child(button)

@@ -7,7 +7,7 @@
 ## 버전 표기
 
 메인 화면의 `Ver` 표기는 수정 작업이 반영될 때마다 0.1씩 올립니다.
-현재 버전은 `Ver 1.2`이며, 이후에는 `Ver 1.3`, `Ver 1.4`처럼 갱신합니다.
+현재 버전은 `Ver 1.3`이며, 이후에는 `Ver 1.4`, `Ver 1.5`처럼 갱신합니다.
 
 ## 기준 파일
 
@@ -201,6 +201,83 @@ MVP-006에서 추가한 `GameState` 함수입니다.
 - `get_current_research_result()`: 현재 해결 등급에 맞는 연구 결과 문구를 반환합니다.
 - `get_current_result_research_reward()`: 현재 해결 등급에 맞는 연구 보상 데이터를 반환합니다.
 
+## MVP-007 플래그/조건/저장 상태 관리
+
+MVP-007은 저승역 진행 중 생기는 선택, 조사, 힌트 확인, 해결 시도, 회수 결과를 `GameState`의 상태와 `user://` 저장 파일로 관리합니다.
+
+저장 파일 경로입니다.
+
+```text
+user://urban_legend_save.json
+```
+
+저장 데이터 구조입니다.
+
+```json
+{
+  "save_version": "mvp-007",
+  "last_updated_at": "시스템 시간 문자열",
+  "episode_id": "episode_001_afterlife_station",
+  "episode_path": "res://data/episodes/episode_001_afterlife_station.json",
+  "current_scene_path": "res://scenes/investigation_scene.tscn",
+  "flags": ["choice_headed_staff_room", "unlocked_staff_room"],
+  "collected_clue_ids": ["clue_last_message", "clue_black_ticket"],
+  "seen_hint_ids": ["hint_afterlife_station_001"],
+  "selected_resolution_grade": "temporary",
+  "selected_resolution_label": "임시 해결 가능",
+  "selected_resolution_rate": 40.0,
+  "capture_success": true,
+  "capture_result_state": "core_recovered",
+  "capture_result_stability": 24
+}
+```
+
+추가한 주요 `GameState` 함수입니다.
+
+- `add_flag(flag_id)`, `remove_flag(flag_id)`, `has_flag(flag_id)`: 플래그 추가/제거/확인
+- `has_all_flags(flag_ids)`, `has_any_flag(flag_ids)`, `get_flags()`, `clear_flags()`: 복수 플래그 판정과 조회
+- `check_conditions(conditions)`: `required_flags`, `blocked_flags`, `required_clues`, `min_clue_collection_rate`, `required_resolution_grade`, `capture_success` 조건 판정
+- `mark_hint_seen(hint_id)`, `has_seen_hint(hint_id)`, `get_seen_hint_ids()`: 힌트 확인 상태 관리
+- `get_collected_clue_ids()`, `has_collected_clue(clue_id)`: 저장과 조건 판정에 쓰는 단서 id 조회
+- `save_game()`, `load_game()`, `has_save_file()`, `clear_save_file()`, `reset_run_state()`: 저장/불러오기/초기화
+- `set_current_scene_path(scene_path)`, `get_current_scene_path()`, `get_save_file_path()`: 이어하기 위치와 저장 경로 조회
+
+조건 데이터 예시입니다.
+
+```gdscript
+{
+	"required_flags": ["unlocked_staff_room"],
+	"blocked_flags": ["capture_success"],
+	"required_clues": ["clue_black_ticket"],
+	"min_clue_collection_rate": 40.0,
+	"required_resolution_grade": "temporary",
+	"capture_success": false
+}
+```
+
+현재 적용된 플래그/조건 예시입니다.
+
+- 대화씬 선택지 `전광판을 촬영한다`: `choice_photographed_sign` 플래그 추가
+- 대화씬 선택지 `역무원실로 향한다`: `choice_headed_staff_room`, `unlocked_staff_room` 플래그 추가
+- 조사 포인트 클릭: `inspected_phone`, `visited_ticket_gate`, `heard_station_noise` 같은 조사 플래그 추가
+- 역무원실 근무 기록 조사: `unlocked_staff_room` 플래그가 있어야 확인 가능
+- 동료 힌트 확인: `seen_hint_ids`에 힌트 id 저장
+- 미니게임 성공/실패: `minigame_frequency_success`, `minigame_frequency_failed` 플래그 저장
+- 회수 성공: `capture_success`, `capture_result_core_recovered` 플래그 저장
+
+자동 저장 지점입니다.
+
+- 새 게임 시작 후
+- 단서 획득 후
+- 힌트 확인 후
+- 해결 페이즈 진입 후
+- 씬 이동 버튼을 통한 진행 위치 변경 후
+- 미니게임 성공/실패 후
+- 괴이 핵 회수 성공 후
+- 결과 화면 진입 후
+
+메인 메뉴에서는 `새 게임 / 저승역 시작`, `이어하기`, `저장 초기화`를 제공합니다. 저장 파일이 없으면 `이어하기` 버튼은 비활성화됩니다.
+
 ## 테스트 방법
 
 Godot 실행 확인.
@@ -221,20 +298,35 @@ Godot 실행 확인.
 
 전체 플레이 테스트 순서입니다.
 
-1. 메인 메뉴에서 `저승역 MVP 시작`을 누릅니다.
+1. 메인 메뉴에서 `새 게임 / 저승역 시작`을 누릅니다.
 2. 대화씬에서 사건 브리핑을 확인하고 `조사 시작`을 누릅니다.
-3. 조사씬에서 단서 2개 이상을 수집합니다.
-4. `해결 시도` 버튼을 누르고 확인 패널에서 다시 `해결 시도`를 누릅니다.
-5. 전투씬에서 행동 버튼으로 괴이 안정도를 회수 기준 이하로 낮춥니다.
-6. `괴이 핵 회수` 버튼을 누릅니다.
-7. 결과 화면에서 해결 등급, 피해자 구조 결과, 후일담, 연구 보상을 확인합니다.
-8. `메인 메뉴로` 또는 `저승역 다시 시작`을 눌러 흐름이 이어지는지 확인합니다.
+3. 대화 선택지에서 `역무원실로 향한다`를 골라 `unlocked_staff_room` 플래그를 추가합니다.
+4. 조사씬에서 단서 2개 이상을 수집합니다.
+5. 역무원실 근무 기록이 조건 충족 후 조사되는지 확인합니다.
+6. `해결 시도` 버튼을 누르고 확인 패널에서 다시 `해결 시도`를 누릅니다.
+7. 전투씬에서 행동 버튼으로 괴이 안정도를 회수 기준 이하로 낮춥니다.
+8. `괴이 핵 회수` 버튼을 누릅니다.
+9. 결과 화면에서 해결 등급, 피해자 구조 결과, 후일담, 연구 보상을 확인합니다.
+10. 메인 메뉴로 돌아가 `이어하기`가 결과 화면 또는 마지막 저장 씬으로 복원되는지 확인합니다.
+11. `저장 초기화`를 누르면 `이어하기`가 비활성화되는지 확인합니다.
 
 ## 체크리스트
 
 - [ ] Godot 4.7 stable에서 프로젝트가 열린다.
 - [ ] `main_menu.tscn`에서 데이터베이스, 조사, 대화, 전투, 미니게임 씬으로 이동할 수 있다.
-- [ ] 메인 메뉴에서 `저승역 MVP 시작`으로 대화씬에 진입할 수 있다.
+- [ ] 메인 메뉴에서 `새 게임 / 저승역 시작`으로 대화씬에 진입할 수 있다.
+- [ ] 메인 메뉴에서 저장 파일이 없으면 `이어하기`가 비활성화된다.
+- [ ] 저장 파일이 있으면 `이어하기`로 마지막 저장 씬에 진입할 수 있다.
+- [ ] `저장 초기화`를 누르면 저장 파일이 삭제되고 `이어하기`가 비활성화된다.
+- [ ] `GameState.add_flag()`, `remove_flag()`, `has_flag()`로 플래그를 관리할 수 있다.
+- [ ] `GameState.check_conditions()`가 플래그, 단서, 단서 수집률, 해결 등급, 회수 성공 조건을 판정한다.
+- [ ] 대화 선택 결과로 플래그가 추가된다.
+- [ ] 힌트 확인 시 `seen_hint_ids`에 힌트 id가 저장된다.
+- [ ] 조사 포인트 확인 시 관련 플래그가 추가된다.
+- [ ] 역무원실 근무 기록은 `unlocked_staff_room` 조건이 없으면 막힌다.
+- [ ] 단서 수집 상태가 저장/불러오기된다.
+- [ ] 해결 등급과 회수 성공 상태가 저장/불러오기된다.
+- [ ] 회수 성공 시 `capture_success` 플래그가 추가된다.
 - [ ] `MVP-002 데이터 확인` 화면에서 단서 수집률과 해결 단계가 보인다.
 - [ ] `테스트: 다음 단서 수집` 버튼을 누르면 수집률이 20%씩 증가한다.
 - [ ] `수집 초기화` 버튼을 누르면 단서 수집률이 0%로 돌아간다.

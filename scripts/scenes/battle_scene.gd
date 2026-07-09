@@ -27,6 +27,7 @@ func _ready() -> void:
 	if GameState.get_current_episode().is_empty():
 		GameState.load_episode()
 
+	GameState.set_current_scene_path("res://scenes/battle_scene.tscn")
 	_active_effects = GameState.get_collected_battle_effects()
 	_apply_collected_clue_effects()
 	_build_ui()
@@ -259,6 +260,8 @@ func _recover_anomaly_core() -> void:
 
 	_recovery_completed = true
 	GameState.save_recovery_result(true, "core_recovered", _anomaly_stability)
+	GameState.set_current_scene_path("res://scenes/result_scene.tscn")
+	GameState.save_game()
 	for button in _action_buttons:
 		button.disabled = true
 	_recover_button.disabled = true
@@ -279,6 +282,8 @@ func _add_scene_button(parent: Control, label: String, scene_path: String) -> vo
 	var button := Button.new()
 	button.text = label
 	button.pressed.connect(func() -> void:
+		GameState.set_current_scene_path(scene_path)
+		GameState.save_game()
 		get_tree().change_scene_to_file(scene_path)
 	)
 	parent.add_child(button)

@@ -6,6 +6,8 @@ func _ready() -> void:
 	if GameState.get_current_episode().is_empty():
 		GameState.load_episode()
 
+	GameState.set_current_scene_path("res://scenes/result_scene.tscn")
+	GameState.save_game()
 	_build_ui()
 
 
@@ -83,7 +85,10 @@ func _add_navigation_buttons(parent: Control) -> void:
 	var restart_button := Button.new()
 	restart_button.text = "저승역 다시 시작"
 	restart_button.pressed.connect(func() -> void:
+		GameState.clear_save_file()
 		GameState.restart_afterlife_station_flow()
+		GameState.set_current_scene_path("res://scenes/dialogue_scene.tscn")
+		GameState.save_game()
 		get_tree().change_scene_to_file("res://scenes/dialogue_scene.tscn")
 	)
 	row.add_child(restart_button)
@@ -91,6 +96,8 @@ func _add_navigation_buttons(parent: Control) -> void:
 	var investigate_button := Button.new()
 	investigate_button.text = "조사씬으로"
 	investigate_button.pressed.connect(func() -> void:
+		GameState.set_current_scene_path("res://scenes/investigation_scene.tscn")
+		GameState.save_game()
 		get_tree().change_scene_to_file("res://scenes/investigation_scene.tscn")
 	)
 	row.add_child(investigate_button)

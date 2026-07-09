@@ -1,11 +1,16 @@
 # 시작 화면에서 프로젝트 소개와 데이터베이스 진입을 관리한다.
 extends Control
 
-const GAME_VERSION := "Ver 1.2"
+const GAME_VERSION := "Ver 1.3"
+
+var _continue_button: Button
+var _save_status_label: Label
 
 
 func _ready() -> void:
+	GameState.set_current_scene_path("res://scenes/main_menu.tscn")
 	_build_ui()
+	_refresh_save_controls()
 
 
 func _build_ui() -> void:
@@ -56,15 +61,30 @@ func _build_ui() -> void:
 	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	content.add_child(body)
 
+	_save_status_label = Label.new()
+	_save_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_save_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	content.add_child(_save_status_label)
+
 	var open_button := Button.new()
 	open_button.text = "기록국 데이터베이스 열기"
 	open_button.pressed.connect(_open_database)
 	content.add_child(open_button)
 
 	var start_episode_button := Button.new()
-	start_episode_button.text = "저승역 MVP 시작"
+	start_episode_button.text = "새 게임 / 저승역 시작"
 	start_episode_button.pressed.connect(_start_afterlife_station)
 	content.add_child(start_episode_button)
+
+	_continue_button = Button.new()
+	_continue_button.text = "이어하기"
+	_continue_button.pressed.connect(_continue_saved_game)
+	content.add_child(_continue_button)
+
+	var clear_save_button := Button.new()
+	clear_save_button.text = "저장 초기화"
+	clear_save_button.pressed.connect(_clear_saved_game)
+	content.add_child(clear_save_button)
 
 	_add_scene_button(content, "MVP-002 데이터 확인", "res://scenes/case_data_scene.tscn")
 
@@ -84,8 +104,40 @@ func _open_database() -> void:
 
 
 func _start_afterlife_station() -> void:
+	GameState.clear_save_file()
 	GameState.restart_afterlife_station_flow()
+	GameState.set_current_scene_path("res://scenes/dialogue_scene.tscn")
+	GameState.save_game()
 	get_tree().change_scene_to_file("res://scenes/dialogue_scene.tscn")
+
+
+func _continue_saved_game() -> void:
+	if not GameState.load_game():
+		_refresh_save_controls()
+		return
+
+	var scene_path := GameState.get_current_scene_path()
+	if scene_path == "res://scenes/main_menu.tscn":
+		scene_path = "res://scenes/dialogue_scene.tscn"
+	get_tree().change_scene_to_file(scene_path)
+
+
+func _clear_saved_game() -> void:
+	GameState.clear_save_file()
+	GameState.reset_run_state()
+	GameState.set_current_scene_path("res://scenes/main_menu.tscn")
+	_refresh_save_controls()
+
+
+func _refresh_save_controls() -> void:
+	var has_save := GameState.has_save_file()
+	if _continue_button != null:
+		_continue_button.disabled = not has_save
+	if _save_status_label != null:
+		_save_status_label.text = "저장 파일: %s\n경로: %s" % [
+			"있음" if has_save else "없음",
+			GameState.get_save_file_path()
+		]
 
 
 func _add_scene_button(parent: Control, label: String, scene_path: String) -> void:

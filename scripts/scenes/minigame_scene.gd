@@ -7,6 +7,7 @@ var _progress_bar: ProgressBar
 
 
 func _ready() -> void:
+	GameState.set_current_scene_path("res://scenes/minigame_scene.tscn")
 	_build_ui()
 	_update_result("파형을 세 번 맞추면 기억 표찰이 안정화됩니다.")
 
@@ -66,6 +67,8 @@ func _build_ui() -> void:
 	fail_button.pressed.connect(func() -> void:
 		_sync_count = 0
 		_progress_bar.value = _sync_count
+		GameState.add_flag("minigame_frequency_failed")
+		GameState.save_game()
 		_update_result("실패: 잡음이 커져 신호가 흩어졌습니다. 다시 시도하세요.")
 	)
 	content.add_child(fail_button)
@@ -79,6 +82,9 @@ func _match_wave() -> void:
 	_sync_count += 1
 	_progress_bar.value = _sync_count
 	if _sync_count >= 3:
+		GameState.add_flag("minigame_frequency_success")
+		GameState.add_flag("heard_station_noise")
+		GameState.save_game()
 		_update_result("성공: 폐주파수 신호가 고정되고 다음 단서가 열립니다.")
 	else:
 		_update_result("파형 동기화 중: %d/3" % _sync_count)
@@ -103,7 +109,8 @@ func _add_scene_button(parent: Control, label: String, scene_path: String) -> vo
 	var button := Button.new()
 	button.text = label
 	button.pressed.connect(func() -> void:
+		GameState.set_current_scene_path(scene_path)
+		GameState.save_game()
 		get_tree().change_scene_to_file(scene_path)
 	)
 	parent.add_child(button)
-
