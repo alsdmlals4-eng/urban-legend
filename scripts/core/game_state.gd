@@ -17,8 +17,36 @@ const SCENE_RESULT := "res://scenes/result_scene.tscn"
 const FLAG_CAPTURE_SUCCESS := "capture_success"
 const MIN_SELECTED_AGENTS := 2
 const MAX_SELECTED_AGENTS := 3
+const AGENT_TRUST_MIN := -3
+const AGENT_TRUST_MAX := 3
 const ALLOWED_AGENT_TEMPERAMENTS := ["analytical", "empathetic", "breakthrough"]
 const INVESTIGATION_METHOD_KEYS := ["destruction", "observation", "analysis"]
+const AGENT_TRUST_EVENTS: Array[Dictionary] = [
+	{
+		"id": "agent_event_kang_pattern_note_01",
+		"agent_id": "agent_kang_ijun",
+		"required_trust": 2,
+		"title": "강이준의 패턴 메모",
+		"text": "강이준: 반복 간격을 분리해 두었습니다. 다음 예측 판단에서 이 기록을 먼저 대조하세요.",
+		"support_text": "강이준의 패턴 메모: 다음 예측 판단에서 참고 가능한 기록이 추가됩니다."
+	},
+	{
+		"id": "agent_event_kwon_victim_trace_01",
+		"agent_id": "agent_kwon_narae",
+		"required_trust": 2,
+		"title": "권나래의 피해자 흔적",
+		"text": "권나래: 피해자의 흔적이 아직 남아 있어요. 다음 조사에서는 급하게 결론내리지 말고 반응을 확인하죠.",
+		"support_text": "권나래의 피해자 흔적: 다음 조사에서 피해자 관련 기록을 우선 참고할 수 있습니다."
+	},
+	{
+		"id": "agent_event_oh_breakthrough_warning_01",
+		"agent_id": "agent_oh_hyun",
+		"required_trust": 2,
+		"title": "오현의 돌파 경고",
+		"text": "오현: 길을 열었으면 바로 빠져나갈 경로도 확보해야 합니다. 다음 회수 판단 때는 제가 앞을 보겠습니다.",
+		"support_text": "오현의 돌파 경고: 다음 조사 또는 회수 판단에서 진입 경로를 참고할 수 있습니다."
+	}
+]
 const EpisodeLoaderScript := preload("res://scripts/data/episode_loader.gd")
 const CaseDataScript := preload("res://scripts/data/case_data.gd")
 
@@ -48,6 +76,8 @@ var last_random_event_result: Dictionary = {}
 var forced_recovery_phase := false
 var method_results: Dictionary = {}
 var agent_trust_changes: Dictionary = {}
+var agent_trust: Dictionary = {}
+var triggered_agent_event_ids: Array = []
 var used_agent_supports: Array = []
 var unlocked_records: Array = []
 var unlocked_equipment: Array = []
@@ -109,6 +139,8 @@ func reset_run_state() -> void:
 	seen_hint_ids.clear()
 	minigame_results.clear()
 	selected_agent_ids.clear()
+	agent_trust.clear()
+	triggered_agent_event_ids.clear()
 	unlocked_records.clear()
 	unlocked_equipment.clear()
 	unlocked_research_rewards.clear()
@@ -493,6 +525,8 @@ func select_agent(agent_id: String) -> bool:
 		return false
 
 	selected_agent_ids.append(clean_agent_id)
+	if not agent_trust.has(clean_agent_id):
+		agent_trust[clean_agent_id] = 0
 	return true
 
 
@@ -633,12 +667,37 @@ func get_used_agent_supports() -> Array:
 
 ## Returns the current investigation partner trust delta for one agent.
 func get_agent_trust_delta(agent_id: String) -> int:
-	return int(agent_trust_changes.get(agent_id, 0))
+	return get_agent_trust(agent_id)
 
 
 ## Returns all investigation partner trust deltas.
 func get_agent_trust_changes() -> Dictionary:
-	return agent_trust_changes.duplicate(true)
+	return get_agent_trust_values()
+
+
+## Returns one selected agent's bounded investigation-partner trust.
+func get_agent_trust(agent_id: String) -> int:
+	return clampi(int(agent_trust.get(agent_id, 0)), AGENT_TRUST_MIN, AGENT_TRUST_MAX)
+
+
+## Returns the current investigation-partner trust state for saving and UI display.
+func get_agent_trust_values() -> Dictionary:
+	return agent_trust.duplicate(true)
+
+
+## Returns one-time trust events that have already been shown.
+func get_triggered_agent_event_ids() -> Array:
+	return triggered_agent_event_ids.duplicate()
+
+
+## Returns small follow-up investigation notices unlocked by trust events.
+func get_agent_trust_support_texts() -> Array:
+	var lines: Array = []
+	for event in AGENT_TRUST_EVENTS:
+		var event_id := String(event.get("id", ""))
+		if triggered_agent_event_ids.has(event_id):
+			lines.append(String(event.get("support_text", "")))
+	return lines
 
 
 ## Returns active hint records. Hints are separate from clues.
@@ -722,6 +781,7 @@ func resolve_investigation_method(point_id: String, method: Dictionary) -> Dicti
 
 	apply_story_effects(effects)
 	var trust_changes := _apply_method_trust_rules(method, successful, helper_agent_id)
+	var triggered_agent_events := _try_trigger_agent_trust_events()
 	var random_event_result := check_random_event(_to_string_array(method.get("situation_tags", [])))
 	var new_clue_ids := _get_new_string_ids(before_clue_ids, get_collected_clue_ids())
 	var method_result := {
@@ -745,6 +805,7 @@ func resolve_investigation_method(point_id: String, method: Dictionary) -> Dicti
 		"requested_clue_ids": _to_string_array(effects.get("collect_clues", [])),
 		"hint_texts": get_hint_texts_by_ids(effects.get("show_hint_ids", [])),
 		"trust_changes": trust_changes,
+		"triggered_agent_events": triggered_agent_events,
 		"random_event_result": random_event_result,
 		"case_status": get_anomaly_status_summary(),
 		"last_updated_at": Time.get_datetime_string_from_system(false, true)
@@ -1415,7 +1476,11 @@ func load_game() -> bool:
 	seen_hint_ids = _to_unique_string_array(save_data.get("seen_hint_ids", []))
 	minigame_results = _to_dictionary(save_data.get("minigame_results", {}))
 	method_results = _to_dictionary(save_data.get("method_results", {}))
-	agent_trust_changes = _to_dictionary(save_data.get("agent_trust_changes", {}))
+	agent_trust = _to_dictionary(save_data.get("agent_trust", save_data.get("agent_trust_changes", {})))
+	for agent_id in agent_trust.keys():
+		agent_trust[agent_id] = clampi(int(agent_trust.get(agent_id, 0)), AGENT_TRUST_MIN, AGENT_TRUST_MAX)
+	agent_trust_changes = agent_trust.duplicate(true)
+	triggered_agent_event_ids = _to_unique_string_array(save_data.get("triggered_agent_event_ids", []))
 	used_agent_supports = _to_unique_string_array(save_data.get("used_agent_supports", []))
 	unlocked_records = _to_unique_string_array(save_data.get("unlocked_records", []))
 	unlocked_equipment = _to_unique_string_array(save_data.get("unlocked_equipment", []))
@@ -1497,6 +1562,8 @@ func _make_save_data() -> Dictionary:
 		"minigame_results": get_minigame_results(),
 		"method_results": get_method_results(),
 		"agent_trust_changes": get_agent_trust_changes(),
+		"agent_trust": get_agent_trust_values(),
+		"triggered_agent_event_ids": get_triggered_agent_event_ids(),
 		"used_agent_supports": get_used_agent_supports(),
 		"unlocked_records": get_unlocked_records(),
 		"unlocked_equipment": get_unlocked_equipment(),
@@ -1719,31 +1786,33 @@ func _apply_status_deltas(effect_data: Dictionary) -> void:
 func _apply_method_trust_rules(method: Dictionary, successful: bool, helper_agent_id: String) -> Array:
 	var changes: Array = []
 	var rules: Array = method.get("trust_rules", [])
-	for agent in get_selected_agents():
-		var agent_id := String(agent.get("id", ""))
-		var temperament := String(agent.get("temperament", ""))
-		var rule := _find_trust_rule_for_temperament(rules, temperament)
-		if rule.is_empty():
-			continue
+	var agent := get_agent_by_id(helper_agent_id)
+	if agent.is_empty() or not selected_agent_ids.has(helper_agent_id):
+		return changes
 
-		var delta_key := "success_delta" if successful else "failure_delta"
-		var text_key := "success_text" if successful else "failure_text"
-		var delta := int(rule.get(delta_key, 0))
-		var reaction_text := String(rule.get(text_key, ""))
-		if delta != 0:
-			_add_agent_trust_delta(agent_id, delta)
+	var temperament := String(agent.get("temperament", ""))
+	var rule := _find_trust_rule_for_temperament(rules, temperament)
+	if rule.is_empty():
+		return changes
 
-		if delta != 0 or not reaction_text.is_empty():
-			changes.append({
-				"agent_id": agent_id,
-				"agent_name": String(agent.get("name", "")),
-				"temperament": temperament,
-				"temperament_label": String(agent.get("temperament_label", "")),
-				"is_helper": agent_id == helper_agent_id,
-				"delta": delta,
-				"total": get_agent_trust_delta(agent_id),
-				"text": reaction_text
-			})
+	var delta_key := "success_delta" if successful else "failure_delta"
+	var text_key := "success_text" if successful else "failure_text"
+	var delta := int(rule.get(delta_key, 0))
+	var reaction_text := String(rule.get(text_key, ""))
+	if delta != 0:
+		_add_agent_trust_delta(helper_agent_id, delta)
+
+	if delta != 0 or not reaction_text.is_empty():
+		changes.append({
+			"agent_id": helper_agent_id,
+			"agent_name": String(agent.get("name", "")),
+			"temperament": temperament,
+			"temperament_label": String(agent.get("temperament_label", "")),
+			"is_helper": true,
+			"delta": delta,
+			"total": get_agent_trust_delta(helper_agent_id),
+			"text": reaction_text
+		})
 	return changes
 
 
@@ -1755,10 +1824,28 @@ func _find_trust_rule_for_temperament(rules: Array, temperament: String) -> Dict
 
 
 func _add_agent_trust_delta(agent_id: String, delta: int) -> void:
-	if agent_id.strip_edges().is_empty():
+	if agent_id.strip_edges().is_empty() or not selected_agent_ids.has(agent_id):
 		return
 
-	agent_trust_changes[agent_id] = int(agent_trust_changes.get(agent_id, 0)) + delta
+	var next_value := clampi(get_agent_trust(agent_id) + delta, AGENT_TRUST_MIN, AGENT_TRUST_MAX)
+	agent_trust[agent_id] = next_value
+	agent_trust_changes[agent_id] = next_value
+
+
+func _try_trigger_agent_trust_events() -> Array:
+	var triggered_events: Array = []
+	for event in AGENT_TRUST_EVENTS:
+		var event_id := String(event.get("id", ""))
+		var agent_id := String(event.get("agent_id", ""))
+		if event_id.is_empty() or not selected_agent_ids.has(agent_id):
+			continue
+		if triggered_agent_event_ids.has(event_id):
+			continue
+		if get_agent_trust(agent_id) < int(event.get("required_trust", 2)):
+			continue
+		triggered_agent_event_ids.append(event_id)
+		triggered_events.append(event.duplicate(true))
+	return triggered_events
 
 
 func _get_new_string_ids(before_ids: Array, after_ids: Array) -> Array:
@@ -1773,6 +1860,8 @@ func _clear_investigation_method_state() -> void:
 	_apply_initial_anomaly_status()
 	method_results.clear()
 	agent_trust_changes.clear()
+	agent_trust.clear()
+	triggered_agent_event_ids.clear()
 	used_agent_supports.clear()
 
 

@@ -378,6 +378,18 @@ func _make_method_result_text(result: Dictionary) -> String:
 	else:
 		lines.append("수사 파트너 신뢰도 반응\n- %s" % "\n- ".join(trust_lines))
 
+	var event_lines: Array = []
+	for event in result.get("triggered_agent_events", []):
+		if typeof(event) != TYPE_DICTIONARY:
+			continue
+		event_lines.append("[%s]\n%s\n보조 안내: %s" % [
+			String(event.get("title", "요원 이벤트")),
+			String(event.get("text", "")),
+			String(event.get("support_text", ""))
+		])
+	if not event_lines.is_empty():
+		lines.append("요원 이벤트\n%s" % "\n".join(event_lines))
+
 	return "\n".join(lines)
 
 
@@ -413,7 +425,10 @@ func _refresh_case_status() -> void:
 		int(status.get("anomaly_stability", 100)),
 		float(status.get("prediction_rate", 0.0))
 	]
+	var support_texts := GameState.get_agent_trust_support_texts()
 	_preparation_modifier_label.text = "로그 준비 안내: %s" % GameState.get_next_investigation_modifier_text()
+	if not support_texts.is_empty():
+		_preparation_modifier_label.text += "\n수사 파트너 보조: %s" % " / ".join(support_texts)
 	_refresh_resolution_attempt_button()
 	_refresh_clue_list()
 
