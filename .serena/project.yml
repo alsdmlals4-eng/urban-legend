@@ -1,0 +1,11 @@
+# Serena project configuration for 도시괴담 기록국 / urban-legend
+# This file lets Serena know that the repository should be analyzed as a Godot GDScript project.
+# Godot editor must be open for GDScript language-server features.
+
+languages:
+  - gdscript
+
+ls_specific_settings:
+  gdscript:
+    port: 6008
+    request_timeout: 30.0
