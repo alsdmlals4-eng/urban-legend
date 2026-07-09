@@ -1,16 +1,36 @@
-# 전투 씬의 기본 행동 버튼과 지원군 UI를 관리한다.
+# 전투 씬의 단서 자동 발동과 괴이 핵 회수를 관리한다.
 extends Control
 
-var _player_hp := 100
-var _enemy_hp := 100
-var _player_bar: ProgressBar
-var _enemy_bar: ProgressBar
+const BASE_ANOMALY_STABILITY := 100
+const BASE_RECOVERY_THRESHOLD := 40
+const MAX_RECOVERY_THRESHOLD := 75
+const CLUE_THRESHOLD_FACTOR := 0.5
+const CLUE_START_WEAKEN_FACTOR := 0.2
+
+var _anomaly_stability := BASE_ANOMALY_STABILITY
+var _fear_level := 0
+var _recovery_threshold := BASE_RECOVERY_THRESHOLD
+var _total_clue_effect_value := 0
+var _recovery_completed := false
+var _active_effects: Array = []
+var _action_buttons: Array[Button] = []
+
+var _stability_bar: ProgressBar
+var _fear_bar: ProgressBar
+var _threshold_label: Label
+var _auto_effect_label: Label
 var _result_label: Label
+var _recover_button: Button
 
 
 func _ready() -> void:
+	if GameState.get_current_episode().is_empty():
+		GameState.load_episode()
+
+	_active_effects = GameState.get_collected_battle_effects()
+	_apply_collected_clue_effects()
 	_build_ui()
-	_update_bars("괴담 조우가 시작되었습니다. 행동을 선택하세요.")
+	_update_battle_view(_make_start_message())
 
 
 func _build_ui() -> void:
@@ -27,14 +47,19 @@ func _build_ui() -> void:
 	margin.add_theme_constant_override("margin_bottom", 20)
 	add_child(margin)
 
+	var scroll := ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	margin.add_child(scroll)
+
 	var root := VBoxContainer.new()
+	root.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	root.add_theme_constant_override("separation", 10)
-	margin.add_child(root)
+	scroll.add_child(root)
 
 	_add_navigation(root)
 
 	var title := Label.new()
-	title.text = "전투 씬 placeholder: 신입 요원 vs 괴담 현상"
+	title.text = "회수 전투 씬 placeholder: 신입 요원 vs 저승역 괴이"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	root.add_child(title)
@@ -45,6 +70,14 @@ func _build_ui() -> void:
 	resolution_phase_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	root.add_child(resolution_phase_label)
 
+	var effect_panel := PanelContainer.new()
+	root.add_child(effect_panel)
+
+	_auto_effect_label = Label.new()
+	_auto_effect_label.text = _make_auto_effect_text()
+	_auto_effect_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	effect_panel.add_child(_auto_effect_label)
+
 	var status_panel := PanelContainer.new()
 	root.add_child(status_panel)
 
@@ -52,42 +85,85 @@ func _build_ui() -> void:
 	status.add_theme_constant_override("separation", 8)
 	status_panel.add_child(status)
 
-	status.add_child(_make_label("신입 요원 체력"))
-	_player_bar = _make_bar()
-	status.add_child(_player_bar)
+	status.add_child(_make_label("괴이 안정도"))
+	_stability_bar = _make_bar(100)
+	status.add_child(_stability_bar)
 
-	status.add_child(_make_label("괴담 위험도"))
-	_enemy_bar = _make_bar()
-	status.add_child(_enemy_bar)
+	_threshold_label = _make_label("")
+	status.add_child(_threshold_label)
+
+	status.add_child(_make_label("현장 위험/공포도"))
+	_fear_bar = _make_bar(100)
+	status.add_child(_fear_bar)
 
 	var actions := GridContainer.new()
 	actions.columns = 1
 	actions.add_theme_constant_override("v_separation", 6)
 	root.add_child(actions)
 
-	_add_action(actions, "기록 스캔", 18, 4, "단말기로 괴담의 약점을 스캔했습니다.")
-	_add_action(actions, "임시 봉인지", 26, 8, "봉인지가 괴담의 발동 조건을 늦췄습니다.")
-	_add_action(actions, "거리 유지", 10, -8, "거리를 벌려 요원의 피해를 줄였습니다.")
+	_add_stability_action(actions, "기록 스캔", 18, 6, "단말기로 괴이의 반복 규칙을 스캔했습니다.")
+	_add_stability_action(actions, "임시 봉인지", 24, 9, "봉인지가 괴이의 핵 주변을 짧게 고정했습니다.")
+	_add_defense_action(actions)
+	_add_support_action(actions)
 
-	var support_panel := PanelContainer.new()
-	root.add_child(support_panel)
-
-	var support := VBoxContainer.new()
-	support.add_theme_constant_override("separation", 6)
-	support_panel.add_child(support)
-
-	support.add_child(_make_label("지원군 UI: 대기 중인 요원"))
-	var support_button := Button.new()
-	support_button.text = "연하린 지원 스킬: 부적 봉인"
-	support_button.pressed.connect(func() -> void:
-		_enemy_hp = max(0, _enemy_hp - 22)
-		_update_bars("연하린이 부적 봉인으로 괴담 위험도를 낮췄습니다.")
-	)
-	support.add_child(support_button)
+	_recover_button = Button.new()
+	_recover_button.text = "괴이 핵 회수"
+	_recover_button.pressed.connect(_recover_anomaly_core)
+	root.add_child(_recover_button)
 
 	_result_label = Label.new()
 	_result_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	root.add_child(_result_label)
+
+
+func _apply_collected_clue_effects() -> void:
+	_total_clue_effect_value = 0
+	for effect in _active_effects:
+		if typeof(effect) == TYPE_DICTIONARY:
+			_total_clue_effect_value += int(effect.get("effect_value", 0))
+
+	var threshold_bonus := int(floor(float(_total_clue_effect_value) * CLUE_THRESHOLD_FACTOR))
+	_recovery_threshold = clampi(
+		BASE_RECOVERY_THRESHOLD + threshold_bonus,
+		BASE_RECOVERY_THRESHOLD,
+		MAX_RECOVERY_THRESHOLD
+	)
+
+	var start_weaken_amount := int(floor(float(_total_clue_effect_value) * CLUE_START_WEAKEN_FACTOR))
+	_anomaly_stability = clampi(
+		BASE_ANOMALY_STABILITY - start_weaken_amount,
+		0,
+		BASE_ANOMALY_STABILITY
+	)
+
+
+func _make_start_message() -> String:
+	if _active_effects.is_empty():
+		return "수집한 단서가 없어 자동 발동 효과 없이 회수 전투를 시작합니다."
+
+	return "수집한 단서 %d개가 자동 발동했습니다. 회수 가능 기준이 %d 이하로 완화되었습니다." % [
+		_active_effects.size(),
+		_recovery_threshold
+	]
+
+
+func _make_auto_effect_text() -> String:
+	if _active_effects.is_empty():
+		return "자동 발동 단서: 없음\n힌트는 단서가 아니므로 전투 자동 발동에 포함되지 않습니다."
+
+	var text := "자동 발동 단서\n"
+	for effect in _active_effects:
+		if typeof(effect) != TYPE_DICTIONARY:
+			continue
+
+		text += "- %s: %s (효과값 %d)\n" % [
+			effect.get("clue_title", "이름 없는 단서"),
+			effect.get("description", ""),
+			int(effect.get("effect_value", 0))
+		]
+
+	text += "힌트는 단서가 아니므로 전투 자동 발동에 포함되지 않습니다."
+	return text.strip_edges()
 
 
 func _make_label(text: String) -> Label:
@@ -97,11 +173,11 @@ func _make_label(text: String) -> Label:
 	return label
 
 
-func _make_bar() -> ProgressBar:
+func _make_bar(max_value: int) -> ProgressBar:
 	var bar := ProgressBar.new()
 	bar.min_value = 0
-	bar.max_value = 100
-	bar.value = 100
+	bar.max_value = max_value
+	bar.value = max_value
 	return bar
 
 
@@ -116,26 +192,80 @@ func _make_resolution_phase_text() -> String:
 	]
 
 
-func _add_action(parent: Control, label: String, enemy_damage: int, player_damage: int, message: String) -> void:
+func _add_stability_action(parent: Control, label: String, stability_damage: int, fear_gain: int, message: String) -> void:
 	var button := Button.new()
 	button.text = label
 	button.pressed.connect(func() -> void:
-		_enemy_hp = max(0, _enemy_hp - enemy_damage)
-		_player_hp = clampi(_player_hp - player_damage, 0, 100)
-		_update_bars(message)
+		_anomaly_stability = max(0, _anomaly_stability - stability_damage)
+		_fear_level = clampi(_fear_level + fear_gain, 0, 100)
+		_update_battle_view(message)
 	)
 	parent.add_child(button)
+	_action_buttons.append(button)
 
 
-func _update_bars(message: String) -> void:
-	if _player_bar != null:
-		_player_bar.value = _player_hp
-	if _enemy_bar != null:
-		_enemy_bar.value = _enemy_hp
-	if _enemy_hp <= 0:
-		_result_label.text = "전투 종료: 괴담 현상을 약화시키고 기록국 봉인 절차로 넘겼습니다."
-	else:
-		_result_label.text = message
+func _add_defense_action(parent: Control) -> void:
+	var button := Button.new()
+	button.text = "방어: 위험 억제"
+	button.pressed.connect(func() -> void:
+		_fear_level = max(0, _fear_level - 12)
+		_update_battle_view("위험 억제 자세를 유지해 공포 상승을 줄였습니다.")
+	)
+	parent.add_child(button)
+	_action_buttons.append(button)
+
+
+func _add_support_action(parent: Control) -> void:
+	var button := Button.new()
+	button.text = "지원 요청: 연하린 보조"
+	button.pressed.connect(func() -> void:
+		_anomaly_stability = max(0, _anomaly_stability - 14)
+		_fear_level = max(0, _fear_level - 6)
+		_update_battle_view("연하린이 부적 봉인으로 괴이의 핵을 더 안정화했습니다.")
+	)
+	parent.add_child(button)
+	_action_buttons.append(button)
+
+
+func _update_battle_view(message: String) -> void:
+	if _stability_bar != null:
+		_stability_bar.value = _anomaly_stability
+	if _fear_bar != null:
+		_fear_bar.value = _fear_level
+	if _threshold_label != null:
+		_threshold_label.text = "회수 가능 조건: 괴이 안정도 %d 이하 / 현재 %d" % [
+			_recovery_threshold,
+			_anomaly_stability
+		]
+	if _recover_button != null:
+		_recover_button.disabled = _recovery_completed or not _can_recover()
+
+	var status_message := message
+	if not _recovery_completed and _can_recover():
+		status_message += "\n괴이의 핵이 회수 가능한 상태입니다."
+
+	if _result_label != null:
+		_result_label.text = status_message
+
+
+func _can_recover() -> bool:
+	return _anomaly_stability <= _recovery_threshold
+
+
+func _recover_anomaly_core() -> void:
+	if not _can_recover():
+		_update_battle_view("아직 괴이의 핵이 충분히 안정화되지 않았습니다.")
+		return
+
+	_recovery_completed = true
+	GameState.save_recovery_result(true, "core_recovered", _anomaly_stability)
+	for button in _action_buttons:
+		button.disabled = true
+	_recover_button.disabled = true
+	_result_label.text = "회수 성공: 괴이의 핵을 안정화해 기록국 회수 절차로 넘겼습니다.\n저장 상태: %s / 안정도 %d" % [
+		GameState.get_recovery_result_status(),
+		GameState.get_recovery_result_stability()
+	]
 
 
 func _add_navigation(parent: Control) -> void:

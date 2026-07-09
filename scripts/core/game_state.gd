@@ -10,6 +10,9 @@ var current_episode_data: Dictionary = {}
 var selected_resolution_grade := ""
 var selected_resolution_label := ""
 var selected_resolution_rate := 0.0
+var recovery_successful := false
+var recovery_result_status := ""
+var recovery_result_stability := 100
 
 
 func _ready() -> void:
@@ -26,6 +29,7 @@ func load_episode(file_path: String = DEFAULT_EPISODE_PATH) -> bool:
 	current_episode_path = file_path
 	current_episode_data = CaseDataScript.refresh_resolution_progress(loaded_data)
 	_clear_resolution_phase_selection()
+	_clear_recovery_result()
 	return true
 
 
@@ -60,6 +64,7 @@ func reset_clue_collection() -> void:
 
 	current_episode_data = CaseDataScript.reset_clue_collection(current_episode_data)
 	_clear_resolution_phase_selection()
+	_clear_recovery_result()
 
 
 ## Returns active victim records.
@@ -75,6 +80,15 @@ func get_hints() -> Array:
 ## Returns active clue records.
 func get_clues() -> Array:
 	return CaseDataScript.get_clues(current_episode_data)
+
+
+## Returns only collected clues. Hints are intentionally excluded.
+func get_collected_clues() -> Array:
+	var collected_clues: Array = []
+	for clue in get_clues():
+		if typeof(clue) == TYPE_DICTIONARY and bool(clue.get("collected", false)):
+			collected_clues.append(clue)
+	return collected_clues
 
 
 ## Returns collected clue count for the active episode.
@@ -105,6 +119,21 @@ func get_resolution_label() -> String:
 ## Returns the battle auto-effect linked to one clue.
 func get_battle_effect_for_clue(clue_id: String) -> Dictionary:
 	return CaseDataScript.get_battle_effect_for_clue(current_episode_data, clue_id)
+
+
+## Returns battle effects for collected clues only. Hints and uncollected clues are excluded.
+func get_collected_battle_effects() -> Array:
+	var effects: Array = []
+	for clue in get_collected_clues():
+		var clue_id := String(clue.get("id", ""))
+		var effect := get_battle_effect_for_clue(clue_id)
+		if effect.is_empty():
+			continue
+
+		var effect_entry := effect.duplicate(true)
+		effect_entry["clue_title"] = String(clue.get("title", ""))
+		effects.append(effect_entry)
+	return effects
 
 
 ## Returns the research reward for the current resolution grade.
@@ -139,6 +168,7 @@ func start_resolution_phase() -> bool:
 	selected_resolution_grade = get_resolution_grade()
 	selected_resolution_label = get_resolution_label()
 	selected_resolution_rate = get_clue_collection_rate()
+	_clear_recovery_result()
 	return true
 
 
@@ -157,7 +187,35 @@ func get_selected_resolution_rate() -> float:
 	return selected_resolution_rate
 
 
+## Saves the recovery result after the anomaly core is stabilized.
+func save_recovery_result(successful: bool, result_status: String, anomaly_stability: int) -> void:
+	recovery_successful = successful
+	recovery_result_status = result_status
+	recovery_result_stability = anomaly_stability
+
+
+## Returns true after a successful anomaly core recovery.
+func is_recovery_successful() -> bool:
+	return recovery_successful
+
+
+## Returns the saved recovery result status key.
+func get_recovery_result_status() -> String:
+	return recovery_result_status
+
+
+## Returns the anomaly stability value saved at recovery.
+func get_recovery_result_stability() -> int:
+	return recovery_result_stability
+
+
 func _clear_resolution_phase_selection() -> void:
 	selected_resolution_grade = ""
 	selected_resolution_label = ""
 	selected_resolution_rate = 0.0
+
+
+func _clear_recovery_result() -> void:
+	recovery_successful = false
+	recovery_result_status = ""
+	recovery_result_stability = 100
