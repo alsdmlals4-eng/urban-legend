@@ -3,7 +3,7 @@ extends Node
 
 const DEFAULT_EPISODE_PATH := "res://data/episodes/episode_001_afterlife_station.json"
 const SAVE_FILE_PATH := "user://urban_legend_save.json"
-const SAVE_VERSION := "mvp-010"
+const SAVE_VERSION := "mvp-011"
 const DEFAULT_DIALOGUE_NODE_ID := "dialogue_intro"
 const DEFAULT_MINIGAME_ID := "minigame_frequency_sync"
 const SCENE_MAIN_MENU := "res://scenes/main_menu.tscn"
@@ -15,6 +15,7 @@ const FLAG_CAPTURE_SUCCESS := "capture_success"
 const MIN_SELECTED_AGENTS := 2
 const MAX_SELECTED_AGENTS := 3
 const ALLOWED_AGENT_TEMPERAMENTS := ["analytical", "empathetic", "breakthrough"]
+const INVESTIGATION_METHOD_KEYS := ["destruction", "observation", "analysis"]
 const EpisodeLoaderScript := preload("res://scripts/data/episode_loader.gd")
 const CaseDataScript := preload("res://scripts/data/case_data.gd")
 
@@ -33,6 +34,13 @@ var selected_resolution_rate := 0.0
 var recovery_successful := false
 var recovery_result_status := ""
 var recovery_result_stability := 100
+var investigation_risk := 0
+var case_understanding := 0
+var victim_understanding := 0
+var case_anomaly_stability := 100
+var method_results: Dictionary = {}
+var agent_trust_changes: Dictionary = {}
+var used_agent_supports: Array = []
 
 
 func _ready() -> void:
@@ -72,6 +80,7 @@ func reset_run_state() -> void:
 	seen_hint_ids.clear()
 	minigame_results.clear()
 	selected_agent_ids.clear()
+	_clear_investigation_method_state()
 	current_scene_path = SCENE_DIALOGUE
 	current_dialogue_node_id = DEFAULT_DIALOGUE_NODE_ID
 	current_minigame_id = DEFAULT_MINIGAME_ID
@@ -377,6 +386,28 @@ func get_agent_by_id(agent_id: String) -> Dictionary:
 	return CaseDataScript.get_agent_by_id(current_episode_data, agent_id)
 
 
+## Returns the player's base investigation stats.
+func get_player_investigation_stats() -> Dictionary:
+	var stats: Variant = current_episode_data.get("player_investigation_stats", {})
+	if typeof(stats) == TYPE_DICTIONARY:
+		return stats.duplicate(true)
+	return {
+		"destruction": 2,
+		"observation": 2,
+		"analysis": 2
+	}
+
+
+## Returns one agent's investigation stat value.
+func get_agent_investigation_stat(agent_id: String, stat_key: String) -> int:
+	var agent := get_agent_by_id(agent_id)
+	if agent.is_empty():
+		return 0
+
+	var stats := _to_dictionary(agent.get("investigation_stats", {}))
+	return int(stats.get(stat_key, 0))
+
+
 ## Selects one agent for the current mission formation.
 func select_agent(agent_id: String) -> bool:
 	var clean_agent_id := agent_id.strip_edges()
@@ -488,6 +519,58 @@ func get_selected_agent_reactions() -> Array:
 	return visible_reactions
 
 
+## Returns recovery support records for selected agents only.
+func get_selected_recovery_supports() -> Array:
+	var supports: Array = []
+	for agent in get_selected_agents():
+		var support := _to_dictionary(agent.get("recovery_support", {}))
+		if support.is_empty():
+			continue
+
+		var support_id := String(support.get("id", "support_%s" % String(agent.get("id", "")))).strip_edges()
+		if support_id.is_empty():
+			continue
+
+		var entry := support.duplicate(true)
+		entry["id"] = support_id
+		entry["agent_id"] = String(agent.get("id", ""))
+		entry["agent_name"] = String(agent.get("name", ""))
+		entry["temperament"] = String(agent.get("temperament", ""))
+		entry["temperament_label"] = String(agent.get("temperament_label", ""))
+		supports.append(entry)
+	return supports
+
+
+## Returns true when an agent recovery support has already been used.
+func has_used_agent_support(support_id: String) -> bool:
+	return used_agent_supports.has(support_id)
+
+
+## Marks an agent recovery support as used once.
+func mark_agent_support_used(support_id: String) -> void:
+	var clean_support_id := support_id.strip_edges()
+	if clean_support_id.is_empty() or used_agent_supports.has(clean_support_id):
+		return
+
+	used_agent_supports.append(clean_support_id)
+	save_game()
+
+
+## Returns used recovery support ids for save data.
+func get_used_agent_supports() -> Array:
+	return used_agent_supports.duplicate()
+
+
+## Returns the current investigation partner trust delta for one agent.
+func get_agent_trust_delta(agent_id: String) -> int:
+	return int(agent_trust_changes.get(agent_id, 0))
+
+
+## Returns all investigation partner trust deltas.
+func get_agent_trust_changes() -> Dictionary:
+	return agent_trust_changes.duplicate(true)
+
+
 ## Returns active hint records. Hints are separate from clues.
 func get_hints() -> Array:
 	return CaseDataScript.get_hints(current_episode_data)
@@ -539,6 +622,109 @@ func get_current_dialogue_node() -> Dictionary:
 ## Returns investigation points defined in the active episode data.
 func get_investigation_points() -> Array:
 	return CaseDataScript.get_investigation_points(current_episode_data)
+
+
+## Returns one investigation point by id.
+func get_investigation_point_by_id(point_id: String) -> Dictionary:
+	return CaseDataScript.get_investigation_point_by_id(current_episode_data, point_id)
+
+
+## Resolves one investigation method with player stat, selected helper stat, and 1d6.
+func resolve_investigation_method(point_id: String, method: Dictionary) -> Dictionary:
+	var stat_key := String(method.get("stat_key", method.get("method_type", ""))).strip_edges()
+	if not INVESTIGATION_METHOD_KEYS.has(stat_key):
+		return {
+			"successful": false,
+			"error": "지원하지 않는 조사 방법입니다: %s" % stat_key
+		}
+
+	var player_stats := get_player_investigation_stats()
+	var player_stat := int(player_stats.get(stat_key, 0))
+	var helper_agent := _find_best_selected_agent_for_stat(stat_key)
+	var helper_agent_id := String(helper_agent.get("id", ""))
+	var helper_stat := get_agent_investigation_stat(helper_agent_id, stat_key) if not helper_agent_id.is_empty() else 0
+	var dice := randi_range(1, 6)
+	var total := player_stat + helper_stat + dice
+	var difficulty := int(method.get("difficulty", 0))
+	var successful := total >= difficulty
+	var effects := _to_dictionary(method.get("success_effects", {})) if successful else _to_dictionary(method.get("failure_effects", {}))
+	var before_clue_ids := get_collected_clue_ids()
+
+	apply_story_effects(effects)
+	_apply_method_status_deltas(effects)
+	var trust_changes := _apply_method_trust_rules(method, successful, helper_agent_id)
+	var new_clue_ids := _get_new_string_ids(before_clue_ids, get_collected_clue_ids())
+	var method_result := {
+		"point_id": point_id,
+		"method_id": String(method.get("id", "")),
+		"method_label": String(method.get("label", "조사 방법")),
+		"method_type": String(method.get("method_type", stat_key)),
+		"stat_key": stat_key,
+		"difficulty": difficulty,
+		"player_stat": player_stat,
+		"helper_agent_id": helper_agent_id,
+		"helper_agent_name": String(helper_agent.get("name", "도우미 없음")),
+		"helper_temperament_label": String(helper_agent.get("temperament_label", "")),
+		"helper_stat": helper_stat,
+		"dice": dice,
+		"total": total,
+		"successful": successful,
+		"result_text": String(method.get("success_text", "")) if successful else String(method.get("failure_text", "")),
+		"effect_data": effects,
+		"new_clue_ids": new_clue_ids,
+		"requested_clue_ids": _to_string_array(effects.get("collect_clues", [])),
+		"hint_texts": get_hint_texts_by_ids(effects.get("show_hint_ids", [])),
+		"trust_changes": trust_changes,
+		"case_status": get_case_status_summary(),
+		"last_updated_at": Time.get_datetime_string_from_system(false, true)
+	}
+
+	method_results[point_id] = method_result
+	save_game()
+	return method_result
+
+
+## Returns saved investigation method results.
+func get_method_results() -> Dictionary:
+	return method_results.duplicate(true)
+
+
+## Returns one saved method result by investigation point id.
+func get_method_result(point_id: String) -> Dictionary:
+	var result: Variant = method_results.get(point_id, {})
+	if typeof(result) == TYPE_DICTIONARY:
+		return result.duplicate(true)
+	return {}
+
+
+## Returns current investigation risk.
+func get_investigation_risk() -> int:
+	return investigation_risk
+
+
+## Returns current case understanding.
+func get_case_understanding() -> int:
+	return case_understanding
+
+
+## Returns current victim understanding.
+func get_victim_understanding() -> int:
+	return victim_understanding
+
+
+## Returns current anomaly stability carried from investigation.
+func get_case_anomaly_stability() -> int:
+	return case_anomaly_stability
+
+
+## Returns a compact summary of investigation status values.
+func get_case_status_summary() -> Dictionary:
+	return {
+		"investigation_risk": investigation_risk,
+		"case_understanding": case_understanding,
+		"victim_understanding": victim_understanding,
+		"anomaly_stability": case_anomaly_stability
+	}
 
 
 ## Returns minigames defined in the active episode data.
@@ -799,6 +985,13 @@ func load_game() -> bool:
 	flags = _to_unique_string_array(save_data.get("flags", []))
 	seen_hint_ids = _to_unique_string_array(save_data.get("seen_hint_ids", []))
 	minigame_results = _to_dictionary(save_data.get("minigame_results", {}))
+	method_results = _to_dictionary(save_data.get("method_results", {}))
+	agent_trust_changes = _to_dictionary(save_data.get("agent_trust_changes", {}))
+	used_agent_supports = _to_unique_string_array(save_data.get("used_agent_supports", []))
+	investigation_risk = clampi(int(save_data.get("investigation_risk", 0)), 0, 100)
+	case_understanding = clampi(int(save_data.get("case_understanding", 0)), 0, 100)
+	victim_understanding = clampi(int(save_data.get("victim_understanding", 0)), 0, 100)
+	case_anomaly_stability = clampi(int(save_data.get("anomaly_stability", 100)), 0, 100)
 	_apply_collected_clue_ids(_to_string_array(save_data.get("collected_clue_ids", [])))
 
 	selected_resolution_grade = String(save_data.get("selected_resolution_grade", ""))
@@ -858,6 +1051,13 @@ func _make_save_data() -> Dictionary:
 		"selected_agent_ids": get_selected_agent_ids(),
 		"flags": get_flags(),
 		"minigame_results": get_minigame_results(),
+		"method_results": get_method_results(),
+		"agent_trust_changes": get_agent_trust_changes(),
+		"used_agent_supports": get_used_agent_supports(),
+		"investigation_risk": investigation_risk,
+		"case_understanding": case_understanding,
+		"victim_understanding": victim_understanding,
+		"anomaly_stability": case_anomaly_stability,
 		"collected_clue_ids": get_collected_clue_ids(),
 		"seen_hint_ids": get_seen_hint_ids(),
 		"selected_resolution_grade": selected_resolution_grade,
@@ -909,6 +1109,104 @@ func _clear_recovery_result() -> void:
 
 func _is_allowed_agent_temperament(agent: Dictionary) -> bool:
 	return ALLOWED_AGENT_TEMPERAMENTS.has(String(agent.get("temperament", "")))
+
+
+func _find_best_selected_agent_for_stat(stat_key: String) -> Dictionary:
+	var best_agent: Dictionary = {}
+	var best_value := -1
+	for agent in get_selected_agents():
+		var agent_id := String(agent.get("id", ""))
+		var value := get_agent_investigation_stat(agent_id, stat_key)
+		if value > best_value:
+			best_value = value
+			best_agent = agent
+	return best_agent
+
+
+func _apply_method_status_deltas(effect_data: Dictionary) -> void:
+	investigation_risk = clampi(
+		investigation_risk + int(effect_data.get("investigation_risk_delta", 0)),
+		0,
+		100
+	)
+	case_understanding = clampi(
+		case_understanding + int(effect_data.get("case_understanding_delta", 0)),
+		0,
+		100
+	)
+	victim_understanding = clampi(
+		victim_understanding + int(effect_data.get("victim_understanding_delta", 0)),
+		0,
+		100
+	)
+	case_anomaly_stability = clampi(
+		case_anomaly_stability + int(effect_data.get("anomaly_stability_delta", 0)),
+		0,
+		100
+	)
+
+
+func _apply_method_trust_rules(method: Dictionary, successful: bool, helper_agent_id: String) -> Array:
+	var changes: Array = []
+	var rules: Array = method.get("trust_rules", [])
+	for agent in get_selected_agents():
+		var agent_id := String(agent.get("id", ""))
+		var temperament := String(agent.get("temperament", ""))
+		var rule := _find_trust_rule_for_temperament(rules, temperament)
+		if rule.is_empty():
+			continue
+
+		var delta_key := "success_delta" if successful else "failure_delta"
+		var text_key := "success_text" if successful else "failure_text"
+		var delta := int(rule.get(delta_key, 0))
+		var reaction_text := String(rule.get(text_key, ""))
+		if delta != 0:
+			_add_agent_trust_delta(agent_id, delta)
+
+		if delta != 0 or not reaction_text.is_empty():
+			changes.append({
+				"agent_id": agent_id,
+				"agent_name": String(agent.get("name", "")),
+				"temperament": temperament,
+				"temperament_label": String(agent.get("temperament_label", "")),
+				"is_helper": agent_id == helper_agent_id,
+				"delta": delta,
+				"total": get_agent_trust_delta(agent_id),
+				"text": reaction_text
+			})
+	return changes
+
+
+func _find_trust_rule_for_temperament(rules: Array, temperament: String) -> Dictionary:
+	for rule in rules:
+		if typeof(rule) == TYPE_DICTIONARY and String(rule.get("temperament", "")) == temperament:
+			return rule
+	return {}
+
+
+func _add_agent_trust_delta(agent_id: String, delta: int) -> void:
+	if agent_id.strip_edges().is_empty():
+		return
+
+	agent_trust_changes[agent_id] = int(agent_trust_changes.get(agent_id, 0)) + delta
+
+
+func _get_new_string_ids(before_ids: Array, after_ids: Array) -> Array:
+	var new_ids: Array = []
+	for after_id in _to_string_array(after_ids):
+		if not before_ids.has(after_id):
+			new_ids.append(after_id)
+	return new_ids
+
+
+func _clear_investigation_method_state() -> void:
+	investigation_risk = 0
+	case_understanding = 0
+	victim_understanding = 0
+	case_anomaly_stability = 100
+	method_results.clear()
+	agent_trust_changes.clear()
+	used_agent_supports.clear()
 
 
 func _to_unique_string_array(value: Variant) -> Array:

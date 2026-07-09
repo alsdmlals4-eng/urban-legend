@@ -66,6 +66,14 @@ static func get_investigation_points(episode_data: Dictionary) -> Array:
 	return _get_array(episode_data, "investigation_points")
 
 
+## Finds one investigation point by id.
+static func get_investigation_point_by_id(episode_data: Dictionary, point_id: String) -> Dictionary:
+	for point in get_investigation_points(episode_data):
+		if typeof(point) == TYPE_DICTIONARY and point.get("id", "") == point_id:
+			return point
+	return {}
+
+
 ## Returns minigame records for data-driven event checks.
 static func get_minigames(episode_data: Dictionary) -> Array:
 	return _get_array(episode_data, "minigames")

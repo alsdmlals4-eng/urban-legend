@@ -28,7 +28,21 @@
       "role": "디지털 포렌식 담당",
       "description": "삭제된 앱 로그, 통신 기록, CCTV 노이즈를 복원하는 분석 담당.",
       "mvp10_dialogue_focus": "노이즈, 로그, 전광판, 앱 기록의 반복 패턴을 말한다.",
-      "mvp11_future_role": "미니게임 보조, 괴이 패턴 관찰, 고가치 힌트 발견"
+      "mvp11_future_role": "미니게임 보조, 괴이 패턴 관찰, 고가치 힌트 발견",
+      "investigation_stats": {
+        "destruction": 1,
+        "observation": 2,
+        "analysis": 4
+      },
+      "recovery_support": {
+        "id": "support_kang_pattern_observation",
+        "label": "패턴 예측",
+        "role": "관찰",
+        "description": "강이준이 안내방송과 전광판 노이즈의 반복 주기를 읽어 괴이 행동 패턴을 예측합니다.",
+        "stability_delta": -8,
+        "fear_delta": 0,
+        "threshold_delta": 3
+      }
     },
     {
       "id": "agent_kwon_narae",
@@ -39,7 +53,21 @@
       "role": "기억 상담 담당",
       "description": "피해자의 기억 공백과 감정 흔적을 인터뷰로 복원하는 상담 담당.",
       "mvp10_dialogue_focus": "피해자의 감정, 기억 공백, 후유증 위험을 말한다.",
-      "mvp11_future_role": "방어, 위험 상승 억제, 피해자 이해도와 구조 결과 보정"
+      "mvp11_future_role": "방어, 위험 상승 억제, 피해자 이해도와 구조 결과 보정",
+      "investigation_stats": {
+        "destruction": 1,
+        "observation": 4,
+        "analysis": 2
+      },
+      "recovery_support": {
+        "id": "support_kwon_victim_guard",
+        "label": "피해자 보호",
+        "role": "방어",
+        "description": "권나래가 피해자의 기억 흔적을 고정해 현장 위험과 공포 상승을 억제합니다.",
+        "stability_delta": 0,
+        "fear_delta": -16,
+        "threshold_delta": 2
+      }
     },
     {
       "id": "agent_oh_hyun",
@@ -50,9 +78,28 @@
       "role": "현장 정리반",
       "description": "괴담 현장을 일반 사고처럼 위장하고, 위험 구역에 빠르게 진입해 현장을 확보하는 요원.",
       "mvp10_dialogue_focus": "오래 망설이면 괴담에 말려든다고 판단하고 빠른 진입을 제안한다.",
-      "mvp11_future_role": "파괴, 강행 돌입, 공격형 안정화, 위험을 대가로 빠른 해결"
+      "mvp11_future_role": "파괴, 강행 돌입, 공격형 안정화, 위험을 대가로 빠른 해결",
+      "investigation_stats": {
+        "destruction": 4,
+        "observation": 1,
+        "analysis": 1
+      },
+      "recovery_support": {
+        "id": "support_oh_direct_stabilize",
+        "label": "강행 안정화",
+        "role": "공격",
+        "description": "오현이 위험을 감수하고 괴이의 흔들리는 경로를 직접 끊어 안정도를 낮춥니다.",
+        "stability_delta": -14,
+        "fear_delta": 4,
+        "threshold_delta": 0
+      }
     }
   ],
+  "player_investigation_stats": {
+    "destruction": 2,
+    "observation": 2,
+    "analysis": 2
+  },
   "hints": [
     {
       "id": "hint_afterlife_station_001",
@@ -342,6 +389,207 @@
       ],
       "show_hint_ids": [
         "hint_afterlife_station_004"
+      ]
+    },
+    {
+      "id": "point_staff_room_door",
+      "label": "역무원실 잠긴 문",
+      "conditions": {},
+      "locked_text": "",
+      "result_text": "역무원실 문은 닫혀 있습니다. 접근 방식을 정해야 합니다.",
+      "method_options": [
+        {
+          "id": "method_staff_room_destruction",
+          "label": "파괴 판정으로 돌파",
+          "method_type": "destruction",
+          "stat_key": "destruction",
+          "difficulty": 7,
+          "situation_tags": [
+            "locked_route",
+            "time_pressure",
+            "anomaly_alert"
+          ],
+          "summary": "빠르게 문을 열지만 소음과 현장 위험을 감수합니다.",
+          "success_text": "잠금장치를 강하게 밀어붙여 역무원실 진입로를 확보했습니다. 대신 승강장에 짧은 경계음이 퍼집니다.",
+          "failure_text": "문은 열리지 않았고 금속음이 크게 울렸습니다. 괴이가 역무원실 주변을 더 강하게 의식합니다.",
+          "success_effects": {
+            "add_flags": [
+              "unlocked_staff_room",
+              "staff_room_forced_entry",
+              "method_destruction_success"
+            ],
+            "investigation_risk_delta": 12,
+            "case_understanding_delta": 2,
+            "victim_understanding_delta": 0,
+            "anomaly_stability_delta": -4
+          },
+          "failure_effects": {
+            "add_flags": [
+              "staff_room_noise_alert",
+              "method_destruction_failed"
+            ],
+            "investigation_risk_delta": 18,
+            "case_understanding_delta": 0,
+            "victim_understanding_delta": 0,
+            "anomaly_stability_delta": 6
+          },
+          "trust_rules": [
+            {
+              "temperament": "breakthrough",
+              "success_delta": 2,
+              "failure_delta": -1,
+              "success_text": "빠른 진입 판단이 맞았다고 봅니다.",
+              "failure_text": "강행했지만 진입 각이 좋지 않았다고 판단합니다."
+            },
+            {
+              "temperament": "analytical",
+              "success_delta": -1,
+              "failure_delta": -2,
+              "success_text": "증거 훼손 가능성을 걱정합니다.",
+              "failure_text": "기록을 확보하기 전에 현장을 흔든 점을 우려합니다."
+            },
+            {
+              "temperament": "empathetic",
+              "success_delta": -1,
+              "failure_delta": -2,
+              "success_text": "피해자 기억 흔적이 놀랐을 가능성을 걱정합니다.",
+              "failure_text": "위험을 올린 선택에 부담을 느낍니다."
+            }
+          ]
+        },
+        {
+          "id": "method_staff_room_observation",
+          "label": "주변을 관찰해 열쇠를 찾는다",
+          "method_type": "observation",
+          "stat_key": "observation",
+          "difficulty": 6,
+          "situation_tags": [
+            "locked_route",
+            "victim_risk",
+            "memory_gap"
+          ],
+          "summary": "시간은 조금 쓰지만 피해자의 동선과 감정 흔적을 안정적으로 확인합니다.",
+          "success_text": "문틈 아래의 작은 열쇠와 피해자가 남긴 손자국을 찾았습니다. 역무원실 기록까지 안전하게 확인할 수 있습니다.",
+          "failure_text": "손자국은 확인했지만 열쇠 위치를 특정하지 못했습니다. 피해자 동선에 대한 이해만 조금 남았습니다.",
+          "success_effects": {
+            "add_flags": [
+              "unlocked_staff_room",
+              "found_staff_room_key",
+              "method_observation_success"
+            ],
+            "collect_clues": [
+              "clue_staff_room_log"
+            ],
+            "show_hint_ids": [
+              "hint_afterlife_station_005"
+            ],
+            "investigation_risk_delta": 2,
+            "case_understanding_delta": 8,
+            "victim_understanding_delta": 10,
+            "anomaly_stability_delta": -2
+          },
+          "failure_effects": {
+            "add_flags": [
+              "staff_room_observation_delayed",
+              "method_observation_failed"
+            ],
+            "show_hint_ids": [
+              "hint_afterlife_station_005"
+            ],
+            "investigation_risk_delta": 3,
+            "case_understanding_delta": 2,
+            "victim_understanding_delta": 2,
+            "anomaly_stability_delta": 0
+          },
+          "trust_rules": [
+            {
+              "temperament": "empathetic",
+              "success_delta": 2,
+              "failure_delta": 0,
+              "success_text": "피해자의 흔적을 먼저 본 선택을 신뢰합니다.",
+              "failure_text": "시간은 걸렸지만 피해자를 해치지 않는 접근이라고 봅니다."
+            },
+            {
+              "temperament": "analytical",
+              "success_delta": 1,
+              "failure_delta": 0,
+              "success_text": "관찰 기록이 분석 근거로 쓸 만하다고 봅니다.",
+              "failure_text": "정보는 부족하지만 기록 방향은 유지됩니다."
+            },
+            {
+              "temperament": "breakthrough",
+              "success_delta": 0,
+              "failure_delta": -1,
+              "success_text": "느리지만 결과가 있으면 받아들입니다.",
+              "failure_text": "망설이다가 기회를 놓쳤다고 느낍니다."
+            }
+          ]
+        },
+        {
+          "id": "method_staff_room_analysis",
+          "label": "잠금 패턴을 분석한다",
+          "method_type": "analysis",
+          "stat_key": "analysis",
+          "difficulty": 8,
+          "situation_tags": [
+            "locked_route",
+            "ritual_rule",
+            "noise_pattern",
+            "evidence_sensitive"
+          ],
+          "summary": "느리지만 괴담 규칙과 미니게임 보조 정보를 얻을 수 있습니다.",
+          "success_text": "잠금 패턴이 안내방송 주기와 맞물린다는 사실을 확인했습니다. 역무원실 접근권과 폐주파수 분석 보조값을 확보합니다.",
+          "failure_text": "잠금 패턴 해석이 어긋나 폐주파수 잡음이 강해졌습니다. 다음 판정에서 더 조심해야 합니다.",
+          "success_effects": {
+            "add_flags": [
+              "unlocked_staff_room",
+              "decoded_staff_room_lock",
+              "method_analysis_success",
+              "frequency_sync_assisted"
+            ],
+            "show_hint_ids": [
+              "hint_afterlife_station_003",
+              "hint_afterlife_station_005"
+            ],
+            "investigation_risk_delta": 4,
+            "case_understanding_delta": 12,
+            "victim_understanding_delta": 3,
+            "anomaly_stability_delta": -6
+          },
+          "failure_effects": {
+            "add_flags": [
+              "method_analysis_failed",
+              "frequency_sync_harder"
+            ],
+            "investigation_risk_delta": 8,
+            "case_understanding_delta": 1,
+            "victim_understanding_delta": 0,
+            "anomaly_stability_delta": 4
+          },
+          "trust_rules": [
+            {
+              "temperament": "analytical",
+              "success_delta": 2,
+              "failure_delta": -1,
+              "success_text": "규칙을 해석한 판단을 높게 평가합니다.",
+              "failure_text": "분석 절차를 더 안정화해야 한다고 봅니다."
+            },
+            {
+              "temperament": "empathetic",
+              "success_delta": 1,
+              "failure_delta": -1,
+              "success_text": "피해자에게 부담이 적은 접근이라 긍정적으로 봅니다.",
+              "failure_text": "오판이 기억 흔적을 자극할까 걱정합니다."
+            },
+            {
+              "temperament": "breakthrough",
+              "success_delta": 0,
+              "failure_delta": -1,
+              "success_text": "시간은 걸렸지만 문이 열렸으니 인정합니다.",
+              "failure_text": "너무 오래 붙잡았다고 답답해합니다."
+            }
+          ]
+        }
       ]
     },
     {

@@ -19,6 +19,7 @@ var _total_clue_effect_value := 0
 var _recovery_completed := false
 var _active_effects: Array = []
 var _action_buttons: Array[Button] = []
+var _agent_support_buttons: Array[Button] = []
 
 var _stability_bar: ProgressBar
 var _fear_bar: ProgressBar
@@ -65,7 +66,7 @@ func _build_ui() -> void:
 	_add_navigation(root)
 
 	var title := Label.new()
-	title.text = "회수 전투 씬 placeholder: 신입 요원 vs 저승역 괴이"
+	title.text = "괴이 안정화 / 회수 페이즈 placeholder: 신입 요원 vs 저승역 괴이"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	root.add_child(title)
@@ -111,6 +112,7 @@ func _build_ui() -> void:
 	_add_stability_action(actions, "임시 봉인지", 24, 9, "봉인지가 괴이의 핵 주변을 짧게 고정했습니다.")
 	_add_defense_action(actions)
 	_add_support_action(actions)
+	_add_agent_recovery_support_actions(actions)
 
 	_recover_button = Button.new()
 	_recover_button.text = "괴이 핵 회수"
@@ -165,16 +167,26 @@ func _apply_collected_clue_effects() -> void:
 			BASE_ANOMALY_STABILITY
 		)
 
+	var investigation_stability_delta := GameState.get_case_anomaly_stability() - BASE_ANOMALY_STABILITY
+	var risk_penalty := int(floor(float(GameState.get_investigation_risk()) / 25.0))
+	_anomaly_stability = clampi(
+		_anomaly_stability + investigation_stability_delta + risk_penalty,
+		0,
+		BASE_ANOMALY_STABILITY
+	)
+
 
 func _make_start_message() -> String:
 	var minigame_text := _make_minigame_battle_text()
+	var investigation_text := _make_investigation_status_text()
 	if _active_effects.is_empty():
-		return "수집한 단서가 없어 자동 발동 효과 없이 회수 전투를 시작합니다.%s" % minigame_text
+		return "수집한 단서가 없어 자동 발동 효과 없이 회수 페이즈를 시작합니다.%s%s" % [minigame_text, investigation_text]
 
-	return "수집한 단서 %d개가 자동 발동했습니다. 회수 가능 기준이 %d 이하로 완화되었습니다.%s" % [
+	return "수집한 단서 %d개가 자동 발동했습니다. 회수 가능 기준이 %d 이하로 완화되었습니다.%s%s" % [
 		_active_effects.size(),
 		_recovery_threshold,
-		minigame_text
+		minigame_text,
+		investigation_text
 	]
 
 
@@ -208,6 +220,18 @@ func _make_minigame_battle_text() -> String:
 	return ""
 
 
+func _make_investigation_status_text() -> String:
+	if GameState.get_investigation_risk() <= 0 and GameState.get_case_understanding() <= 0 and GameState.get_victim_understanding() <= 0:
+		return ""
+
+	return "\n조사 방법 영향: 위험도 %d / 사건 이해도 %d / 피해자 이해도 %d / 조사상 괴이 안정도 %d" % [
+		GameState.get_investigation_risk(),
+		GameState.get_case_understanding(),
+		GameState.get_victim_understanding(),
+		GameState.get_case_anomaly_stability()
+	]
+
+
 func _make_label(text: String) -> Label:
 	var label := Label.new()
 	label.text = text
@@ -234,11 +258,11 @@ func _make_resolution_phase_text() -> String:
 	]
 
 
-func _add_stability_action(parent: Control, label: String, stability_damage: int, fear_gain: int, message: String) -> void:
+func _add_stability_action(parent: Control, label: String, stability_delta: int, fear_gain: int, message: String) -> void:
 	var button := Button.new()
 	button.text = label
 	button.pressed.connect(func() -> void:
-		_anomaly_stability = max(0, _anomaly_stability - stability_damage)
+		_anomaly_stability = max(0, _anomaly_stability - stability_delta)
 		_fear_level = clampi(_fear_level + fear_gain, 0, 100)
 		_update_battle_view(message)
 	)
@@ -267,6 +291,72 @@ func _add_support_action(parent: Control) -> void:
 	)
 	parent.add_child(button)
 	_action_buttons.append(button)
+
+
+func _add_agent_recovery_support_actions(parent: Control) -> void:
+	var title := Label.new()
+	title.text = "편성 요원 자동 지원"
+	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	parent.add_child(title)
+
+	var supports := GameState.get_selected_recovery_supports()
+	if supports.is_empty():
+		var empty_label := Label.new()
+		empty_label.text = "선택된 요원이 없어 성향별 회수 지원이 없습니다."
+		empty_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		parent.add_child(empty_label)
+		return
+
+	for support in supports:
+		if typeof(support) != TYPE_DICTIONARY:
+			continue
+
+		var support_copy: Dictionary = support.duplicate(true)
+		var support_id := String(support_copy.get("id", ""))
+		var button := Button.new()
+		button.text = "%s [%s]: %s" % [
+			String(support_copy.get("agent_name", "")),
+			String(support_copy.get("temperament_label", "")),
+			String(support_copy.get("label", "지원"))
+		]
+		button.tooltip_text = String(support_copy.get("description", ""))
+		button.disabled = GameState.has_used_agent_support(support_id)
+		button.pressed.connect(func() -> void:
+			_use_agent_recovery_support(support_copy, button)
+		)
+		parent.add_child(button)
+		_agent_support_buttons.append(button)
+
+
+func _use_agent_recovery_support(support: Dictionary, button: Button) -> void:
+	var support_id := String(support.get("id", ""))
+	if GameState.has_used_agent_support(support_id):
+		_update_battle_view("이미 사용한 요원 지원입니다. 같은 지원은 중복 적용되지 않습니다.")
+		return
+
+	GameState.mark_agent_support_used(support_id)
+	_anomaly_stability = clampi(
+		_anomaly_stability + int(support.get("stability_delta", 0)),
+		0,
+		BASE_ANOMALY_STABILITY
+	)
+	_fear_level = clampi(
+		_fear_level + int(support.get("fear_delta", 0)),
+		0,
+		100
+	)
+	_recovery_threshold = clampi(
+		_recovery_threshold + int(support.get("threshold_delta", 0)),
+		30,
+		MAX_RECOVERY_THRESHOLD
+	)
+	button.disabled = true
+
+	_update_battle_view("%s의 %s 지원 발동\n%s" % [
+		String(support.get("agent_name", "")),
+		String(support.get("role", "회수")),
+		String(support.get("description", ""))
+	])
 
 
 func _update_battle_view(message: String) -> void:
@@ -304,6 +394,8 @@ func _recover_anomaly_core() -> void:
 	GameState.set_current_scene_path("res://scenes/result_scene.tscn")
 	GameState.save_game()
 	for button in _action_buttons:
+		button.disabled = true
+	for button in _agent_support_buttons:
 		button.disabled = true
 	_recover_button.disabled = true
 	get_tree().change_scene_to_file("res://scenes/result_scene.tscn")
