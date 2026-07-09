@@ -7,6 +7,7 @@
 반복 규칙은 아래 문서에 나누어 둔다.
 
 - `docs/CODEX_SHARED_WORK_RULES.md`: Codex 공통 구현 규칙, Serena, 보고 형식
+- `docs/AI_SHARED_WORK_RULES.md`: 새 프로젝트에도 복사 가능한 공용 AI 작업 원칙과 DoR/DoD
 - `docs/MVP_WORKFLOW_CHECKLIST.md`: 작업 순서, 시작/종료 체크리스트, 좋은 프롬프트 변환, HTML/Issue/Goal 체크리스트
 - `docs/BENCHMARKING_REFERENCE_GUIDE.md`: 벤치마킹 기준과 표 형식
 
@@ -21,17 +22,18 @@
 3. GitHub 기준 문서 확인
 4. 현재 MVP / Issue 기준선 확인
 5. 작업 준비 상태 체크
-6. 벤치마킹 필요 여부 판단
-7. 벤치마킹 분석 및 반영/제외 결론
-8. 구현 범위 / 제외 범위 확정
-9. 위험 분석 / 영향 파일 예상
-10. GitHub Issue 작성 또는 수정
-11. HTML 전체 흐름 대시보드 갱신
-12. Codex Goal 작성
-13. Codex 구현 결과 검수
-14. Godot 확인 항목 정리
-15. 결과 보고 / 회고
-16. 필요한 경우 GitHub 공동 규칙 갱신
+6. Definition of Ready 확인
+7. 벤치마킹 필요 여부 판단
+8. 벤치마킹 분석 및 반영/제외 결론
+9. 구현 범위 / 제외 범위 확정
+10. 위험 분석 / 영향 파일 예상
+11. GitHub Issue 작성 또는 수정
+12. HTML 전체 흐름 대시보드 갱신
+13. Codex Goal 작성
+14. Codex 구현 결과 검수
+15. Godot 확인 항목 정리
+16. 결과 보고 / 회고
+17. 필요한 경우 GitHub 공동 규칙 갱신
 
 세부 체크리스트는 `docs/MVP_WORKFLOW_CHECKLIST.md`를 따른다.
 

@@ -7,6 +7,13 @@ Codex와 다른 코딩 에이전트는 이 저장소에서 작업할 때 이 파
 - Project name: `urban-legend`
 - Engine: Godot 4.7 stable
 - Language: GDScript
+
+## Rule Scope
+
+- 새 프로젝트에도 복사할 수 있는 공용 AI 작업 원칙: `docs/AI_SHARED_WORK_RULES.md`
+- 이 프로젝트에만 적용되는 Godot/도시괴담 기록국 규칙: 이 파일, `docs/AI_WORKFLOW_RULES.md`, `docs/CODEX_SHARED_WORK_RULES.md`
+- 실제 MVP 시작/완료 체크리스트: `docs/MVP_WORKFLOW_CHECKLIST.md`
+- 공용 원칙과 프로젝트 전용 규칙이 충돌하면 이 프로젝트의 최신 사용자 지시와 이 파일을 우선한다.
 - Genre: 현대 괴담 미스터리 비주얼 노벨 / 조사 어드벤처
 
 이 프로젝트는 HTML 기반 `도시괴담 기록국` 데이터 편집기의 구조를 Godot 프로젝트로 옮겨, 대화·조사·미니게임·해결/회수·결과 보상이 연결되는 데이터 기반 게임 골격을 만드는 프로젝트다.
