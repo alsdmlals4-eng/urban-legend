@@ -1,81 +1,180 @@
 # AGENTS.md
 
-Codex and other coding agents should follow this file when working in this repository.
+Codex와 다른 코딩 에이전트는 이 저장소에서 작업할 때 이 파일을 먼저 읽고 따라야 한다.
 
 ## Project
 
-Project name: `urban-legend`
-Engine: Godot 4.7 stable
-Language: GDScript
-Genre: visual novel / horror mystery
+- Project name: `urban-legend`
+- Engine: Godot 4.7 stable
+- Language: GDScript
+- Genre: 현대 괴담 미스터리 비주얼 노벨 / 조사 어드벤처
 
-This project recreates the provided HTML-based urban legend database as a Godot project. The goal is not to copy the web page literally, but to preserve its production data structure and turn it into a usable visual novel foundation.
+이 프로젝트는 HTML 기반 `도시괴담 기록국` 데이터 편집기의 구조를 Godot 프로젝트로 옮겨, 대화·조사·미니게임·해결/회수·결과 보상이 연결되는 데이터 기반 게임 골격을 만드는 프로젝트다.
+
+목표는 웹 페이지를 그대로 복사하는 것이 아니라, 도시괴담 기록국의 제작 데이터 구조와 플레이 흐름을 Godot에서 실제로 작동하는 비주얼 노벨/조사 어드벤처 기반으로 변환하는 것이다.
 
 ## Source References
 
 - `C:\Users\user\Downloads\도시괴이담\urban-legend-database.html`
 - `C:\Users\user\Downloads\도시괴이담\agent-workflow-report-v28.md`
 
-Before implementing features that depend on the old tool, inspect the relevant source file directly.
+기존 HTML 도구나 작업 보고서에 의존하는 기능을 구현할 때는 관련 원본 파일을 먼저 확인한다.
 
 ## Core Direction
 
-- Build a horror mystery visual novel foundation.
-- Preserve the original concepts: urban legend archive, agency records, factions, agents, equipment, skills, timelines, branches, dialogue, minigames, and production checks.
-- Keep the mood investigative, ominous, readable, and data-driven.
-- Prioritize mobile portrait UI, while keeping PC mouse input usable.
-- Do not add combat, HP, stamina, damage, death, ranking, ads, payments, or online systems unless explicitly requested.
+- 현대 괴담 미스터리 비주얼 노벨 기반을 만든다.
+- 핵심 경험은 `사건 이해`, `대화 선택`, `조사 방법 선택`, `단서 획득`, `미니게임 결과`, `괴담 약화`, `회수`, `기록/연구 보상`이다.
+- 원본 콘셉트인 도시괴담 기록국, 기관 기록, 세력, 요원, 장비, 기술, 타임라인, 분기, 대화, 미니게임, 제작 체크를 보존한다.
+- 분위기는 조사적이고, 불길하며, 읽기 쉽고, 데이터 기반이어야 한다.
+- UI는 모바일 세로 화면을 우선하되, PC 마우스 입력도 사용할 수 있어야 한다.
+- 의미 없는 선택지, 결과 차이가 없는 분기, 데이터화되지 않은 하드코딩 분기를 피한다.
+
+## Battle / Recovery Direction
+
+이 프로젝트에는 `battle_scene`이 존재하지만, 전통적인 RPG 전투를 목표로 하지 않는다.
+
+- `battle_scene`은 괴이를 죽이는 전투가 아니라 `괴이 안정화 / 회수 페이즈`다.
+- 괴담은 처치하지 않고 약화·안정화한 뒤 기록국 방식으로 회수한다.
+- `HP`, `damage`, `death`, `kill` 같은 RPG 전투 중심 표현은 피한다.
+- 필요한 경우 다음 용어를 우선한다.
+  - 체력 → 괴이 안정도
+  - 공격 → 안정화 조치
+  - 피해/데미지 → 안정도 변화
+  - 처치 → 회수
+  - 전투 승리 → 회수 성공
+- 단, `battle_scene.tscn`처럼 이미 존재하는 파일명이나 씬명은 당장 바꾸지 않는다. 기능명과 UI 문구부터 회수 중심으로 정리한다.
+- 랭킹, 광고, 결제, 온라인 시스템은 명시 요청 없이는 추가하지 않는다.
+
+## Current MVP Baseline
+
+현재 기준선은 MVP-009까지다.
+
+- MVP-001~003: 기본 씬, 사건 데이터, 힌트/단서 획득
+- MVP-004~006: 해결 페이즈, 전투/회수, 결과/연구 보상
+- MVP-007~008: 플래그/조건/저장, 데이터 기반 대화/조사 분기
+- MVP-009: 미니게임 성공/실패 결과를 사건 진행, 플래그, 단서, 전투/회수 페이즈에 연결
+
+다음 MVP 분리 기준은 다음과 같다.
+
+- MVP-010: 요원 데이터, 요원 편성, 선택 요원 저장, 성향별 대화 지문
+- MVP-011: 조사 방법 `파괴 / 관찰 / 분석`, 판정 구조, 요원 조사/회수 지원, 상황별 신뢰도 반응의 기초
+
+기존의 큰 MVP-010 범위를 한 번에 구현하지 말고, 위 기준대로 작게 나누어 진행한다.
+
+## Investigation Method Direction
+
+조사 방법은 고정된 정답/오답 구조가 아니다.
+
+- `파괴`, `관찰`, `분석`은 상황에 따라 좋은 선택이 달라져야 한다.
+- 어떤 방법도 항상 정답이거나 항상 손해여서는 안 된다.
+- 조사 방법은 결과뿐 아니라 위험도, 단서 종류, 미니게임 연결, 요원 반응, 신뢰도 변화에 영향을 줄 수 있다.
+
+권장 방향:
+
+- 파괴
+  - 빠르게 잠긴 경로를 열거나 시간을 단축한다.
+  - 돌파형 요원은 선호할 수 있다.
+  - 분석형/안정형 요원은 위험하다고 판단해 신뢰도가 감소할 수 있다.
+  - 실패 시 위험도, 괴이 경계, 회수 난이도가 오를 수 있다.
+
+- 관찰
+  - 현장 이해도, 피해자 이해도, 단서 수집률을 안정적으로 올린다.
+  - 공감형/상담형 요원이 선호할 수 있다.
+  - 즉시 돌파가 필요한 상황에서는 느리거나 기회를 놓칠 수 있다.
+
+- 분석
+  - 고가치 힌트, 조건 해석, 미니게임 완화, 숨은 규칙 발견에 강하다.
+  - 분석형 요원이 선호할 수 있다.
+  - 실패 시 기억 오염, 공포도 상승, 잘못된 해석 플래그가 생길 수 있다.
+
+요원 신뢰도는 단순히 특정 방법을 고정 선호하는 구조가 아니라, `상황 + 선택 방법 + 결과 + 요원 성향`을 함께 보고 변화해야 한다.
+
+## Agent Direction
+
+- 선택 요원만 대화, 조사, 회수 지원, 신뢰도 변화의 대상이 된다.
+- 요원 성향은 대화 톤, 선호 행동, 싫어하는 행동, 조사/회수 지원 방식에 영향을 준다.
+- 요원 신뢰도는 연애 호감도가 아니라 `수사 파트너로서의 신뢰`다.
+- 신뢰도는 플레이어가 어떤 방식으로 사건을 해결하는지에 대한 요원의 평가로 작동한다.
+- 선택되지 않은 요원의 반응이나 신뢰도 변화는 기본적으로 발생하지 않아야 한다.
+- MVP-010에서는 요원 편성과 성향 대화에 집중한다.
+- MVP-011에서는 조사 방법과 요원 지원을 연결한다.
+- 전체 신뢰도 성장, 요원 이벤트, 장기 관계 보상은 별도 Issue가 있을 때만 구현한다.
 
 ## Work Style
 
-- Inspect actual files before editing. Use `rg` to locate relevant scenes, scripts, and source references.
-- Prefer small, focused changes that move the Godot recreation forward.
-- Do not overwrite or revert unrelated user changes.
-- Avoid speculative framework work until a concrete feature needs it.
-- Keep generated structures understandable for a beginner.
-- Update `README.md` when setup, scene flow, test steps, or project scope changes.
+- 실제 파일을 확인한 뒤 수정한다. `rg`로 관련 씬, 스크립트, 데이터 파일, 원본 참조를 찾는다.
+- 작은 변경으로 목표를 달성한다.
+- 기존 사용자 변경사항을 되돌리거나 덮어쓰지 않는다.
+- 요청 범위 밖 리팩터링을 하지 않는다.
+- 정상 작동하는 구조를 임의로 바꾸지 않는다.
+- 추측성 프레임워크 작업은 구체적인 기능 요구가 있을 때만 한다.
+- 초보자도 이해할 수 있도록 구조와 이름을 단순하게 유지한다.
+- 설정, 씬 흐름, 테스트 방법, 프로젝트 범위가 바뀌면 `README.md`를 갱신한다.
+- 프로젝트 의도나 로드맵이 바뀌면 해당 문서가 있을 경우 `PROJECT_BRIEF.md`, `DESIGN_INTENT.md`, `MVP_ROADMAP.md`, `TEST_CHECKLIST.md`도 함께 갱신한다.
 
 ## Godot Rules
 
-- Use Godot 4.7 stable.
-- Use GDScript unless explicitly requested otherwise.
-- Keep scene and node structures simple.
-- Use clear names such as `DatabaseView`, `SectionList`, `DetailText`, and `UrbanLegendState`.
-- New GDScript files must start with a one-line Korean role comment.
+- Godot 4.7 stable을 사용한다.
+- 명시 요청이 없으면 GDScript를 사용한다.
+- 씬과 노드 구조는 단순하게 유지한다.
+- 명확한 이름을 사용한다. 예: `GameState`, `EpisodeLoader`, `InvestigationScene`, `DialogueScene`, `MinigameScene`, `BattleScene`, `ResultScene`.
+- 새 GDScript 파일 첫 줄에는 한국어 역할 주석을 추가한다.
 
-Example.
+예시:
 
 ```gdscript
 # 데이터베이스 화면의 섹션 선택과 상세 표시를 관리한다.
 extends Control
 ```
 
-## Data Migration Priorities
+## Data Priorities
 
-Move the HTML concepts into Godot in this order.
+HTML 개념은 Godot로 옮길 때 다음 순서를 우선한다.
 
-1. Project overview and section navigation.
-2. Factions, agents, equipment, and skills.
-3. Horror episodes and daily episodes.
-4. Timeline, branches, dialogue, and audio cues.
-5. Minigame links and condition rules.
-6. Production quality checks.
-7. Import/export pipeline.
+1. 프로젝트 개요와 씬 이동 구조
+2. 저승역 에피소드 데이터
+3. 힌트, 단서, 해결 단계, 회수 결과
+4. 플래그, 조건, 저장/불러오기
+5. 데이터 기반 대화와 조사 포인트
+6. 미니게임 성공/실패 결과와 사건 진행 연결
+7. 요원 데이터, 편성, 성향 대화
+8. 조사 방법, 판정, 요원 지원, 신뢰도 반응
+9. 장비, 기록물, 연구 보상, 다중 에피소드
+10. 제작 품질 체크와 데이터 검증 도구
 
 ## Verification
 
-If code, scenes, or project settings changed, run the smallest useful Godot check.
+코드, 씬, 프로젝트 설정이 바뀌면 가장 작은 유효 Godot 검증을 실행한다.
 
 ```powershell
 godot --headless --path . --quit
 godot --headless --path . --scene "res://scenes/main_menu.tscn" --quit-after 1
 ```
 
-Known Windows local fallback.
+Windows 로컬 fallback:
 
 ```powershell
 & "C:\Users\user\Downloads\Godot_v4.7-stable_win64.exe\Godot_v4.7-stable_win64_console.exe" --headless --path . --quit
 ```
 
-Final replies should include changed files, implemented content, verification, remaining risks, and what the user should do next.
+씬을 수정했다면 관련 씬 단독 실행도 확인한다.
 
+```powershell
+& "C:\Users\user\Downloads\Godot_v4.7-stable_win64.exe\Godot_v4.7-stable_win64_console.exe" --headless --path . --scene "res://scenes/main_menu.tscn" --quit-after 1
+& "C:\Users\user\Downloads\Godot_v4.7-stable_win64.exe\Godot_v4.7-stable_win64_console.exe" --headless --path . --scene "res://scenes/dialogue_scene.tscn" --quit-after 1
+& "C:\Users\user\Downloads\Godot_v4.7-stable_win64.exe\Godot_v4.7-stable_win64_console.exe" --headless --path . --scene "res://scenes/investigation_scene.tscn" --quit-after 1
+& "C:\Users\user\Downloads\Godot_v4.7-stable_win64.exe\Godot_v4.7-stable_win64_console.exe" --headless --path . --scene "res://scenes/minigame_scene.tscn" --quit-after 1
+& "C:\Users\user\Downloads\Godot_v4.7-stable_win64.exe\Godot_v4.7-stable_win64_console.exe" --headless --path . --scene "res://scenes/battle_scene.tscn" --quit-after 1
+& "C:\Users\user\Downloads\Godot_v4.7-stable_win64.exe\Godot_v4.7-stable_win64_console.exe" --headless --path . --scene "res://scenes/result_scene.tscn" --quit-after 1
+```
+
+## Final Report Rule
+
+작업 후 최종 보고에는 반드시 다음을 포함한다.
+
+- 변경 파일
+- 구현 내용
+- 기획 의도 반영 여부
+- 검증 내용
+- 남은 위험
+- 사용자가 Godot에서 다음에 확인할 일
