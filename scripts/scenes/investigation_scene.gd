@@ -35,6 +35,10 @@ var _progress_label: Label
 var _progress_bar: ProgressBar
 var _resolution_label: Label
 var _clue_list: VBoxContainer
+var _resolution_attempt_button: Button
+var _resolution_confirm_panel: PanelContainer
+var _resolution_confirm_label: Label
+var _resolution_warning_label: Label
 
 
 func _ready() -> void:
@@ -104,6 +108,13 @@ func _build_ui() -> void:
 	_resolution_label = Label.new()
 	_resolution_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	progress_content.add_child(_resolution_label)
+
+	_resolution_attempt_button = Button.new()
+	_resolution_attempt_button.text = "해결 시도"
+	_resolution_attempt_button.pressed.connect(_show_resolution_confirm_panel)
+	progress_content.add_child(_resolution_attempt_button)
+
+	_add_resolution_confirm_panel(scene_layout)
 
 	var points := GridContainer.new()
 	points.columns = 1
@@ -192,6 +203,7 @@ func _refresh_case_status() -> void:
 	_progress_label.text = "단서 수집률: %.0f%% (%d/%d)" % [collection_rate, collected_count, total_count]
 	_progress_bar.value = collection_rate
 	_resolution_label.text = "현재 해결 단계: %s" % GameState.get_resolution_label()
+	_refresh_resolution_attempt_button()
 	_refresh_clue_list()
 
 
@@ -213,6 +225,79 @@ func _find_clue(clue_id: String) -> Dictionary:
 		if typeof(clue) == TYPE_DICTIONARY and clue.get("id", "") == clue_id:
 			return clue
 	return {}
+
+
+func _add_resolution_confirm_panel(parent: Control) -> void:
+	_resolution_confirm_panel = PanelContainer.new()
+	_resolution_confirm_panel.visible = false
+	parent.add_child(_resolution_confirm_panel)
+
+	var content := VBoxContainer.new()
+	content.add_theme_constant_override("separation", 8)
+	_resolution_confirm_panel.add_child(content)
+
+	var title := Label.new()
+	title.text = "해결 페이즈 진입 확인"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	content.add_child(title)
+
+	_resolution_confirm_label = Label.new()
+	_resolution_confirm_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	content.add_child(_resolution_confirm_label)
+
+	_resolution_warning_label = Label.new()
+	_resolution_warning_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	content.add_child(_resolution_warning_label)
+
+	var button_row := HBoxContainer.new()
+	button_row.add_theme_constant_override("separation", 8)
+	content.add_child(button_row)
+
+	var continue_button := Button.new()
+	continue_button.text = "조사 계속"
+	continue_button.pressed.connect(func() -> void:
+		_resolution_confirm_panel.visible = false
+	)
+	button_row.add_child(continue_button)
+
+	var attempt_button := Button.new()
+	attempt_button.text = "해결 시도"
+	attempt_button.pressed.connect(_start_resolution_attempt)
+	button_row.add_child(attempt_button)
+
+
+func _refresh_resolution_attempt_button() -> void:
+	var can_enter: bool = GameState.can_enter_resolution_phase()
+	_resolution_attempt_button.disabled = not can_enter
+	if can_enter:
+		_resolution_attempt_button.text = "해결 시도: %s" % GameState.get_resolution_label()
+	else:
+		_resolution_attempt_button.text = "해결 불가"
+
+
+func _show_resolution_confirm_panel() -> void:
+	if not GameState.can_enter_resolution_phase():
+		_result_label.text = "해결 불가: 아직 괴이의 핵에 접근할 근거가 부족합니다. 단서를 더 수집해야 합니다."
+		_resolution_confirm_panel.visible = false
+		return
+
+	var collection_rate: float = GameState.get_clue_collection_rate()
+	_resolution_confirm_label.text = "현재 단서 수집률: %.0f%%\n현재 해결 등급: %s" % [
+		collection_rate,
+		GameState.get_resolution_label()
+	]
+	_resolution_warning_label.text = "위험 안내: %s" % GameState.get_resolution_phase_warning()
+	_resolution_confirm_panel.visible = true
+
+
+func _start_resolution_attempt() -> void:
+	if not GameState.start_resolution_phase():
+		_result_label.text = "해결 불가: 단서 수집률이 40% 이상이어야 합니다."
+		_resolution_confirm_panel.visible = false
+		_refresh_case_status()
+		return
+
+	get_tree().change_scene_to_file("res://scenes/battle_scene.tscn")
 
 
 func _clear_children(parent: Node) -> void:

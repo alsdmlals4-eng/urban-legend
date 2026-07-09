@@ -113,6 +113,29 @@ urban-legend/
 
 대화씬의 `동료 힌트 확인` 버튼은 `GameState.get_hints()`에서 힌트를 가져와 표시합니다. 힌트는 대상 단서와 힌트 문구만 보여주며, 단서 수집률에는 반영되지 않습니다. 대화씬 안에서도 힌트 목록 영역과 단서 목록 영역을 분리했습니다.
 
+## MVP-004 해결 페이즈 진입 선택
+
+조사씬에서 현재 단서 수집률에 따라 해결 페이즈 진입 여부를 선택할 수 있습니다.
+
+- 40% 미만: `해결 불가`, 해결 시도 버튼 비활성화
+- 40~69%: `임시 해결 가능`, 해결 시도 가능
+- 70~99%: `정식 해결 가능`, 해결 시도 가능
+- 100%: `완전 해결 가능`, 해결 시도 가능
+
+조사씬의 `해결 시도` 버튼을 누르면 확인 패널이 열립니다. 확인 패널에는 현재 단서 수집률, 현재 해결 등급, 위험 안내가 표시됩니다.
+
+- `조사 계속`: 확인 패널을 닫고 조사씬에 남습니다.
+- `해결 시도`: `GameState.start_resolution_phase()`를 호출해 현재 해결 등급을 저장한 뒤 `battle_scene.tscn`으로 이동합니다.
+
+MVP-004에서 추가한 `GameState` 함수입니다.
+
+- `can_enter_resolution_phase()`: 현재 단서 수집률로 해결 페이즈에 들어갈 수 있는지 확인합니다.
+- `get_resolution_phase_warning()`: 현재 해결 등급에 맞는 위험 안내 문구를 반환합니다.
+- `start_resolution_phase()`: 현재 해결 등급, 표시명, 단서 수집률을 저장합니다.
+- `get_selected_resolution_grade()`: 저장된 해결 등급 key를 반환합니다.
+- `get_selected_resolution_label()`: 저장된 해결 등급 표시명을 반환합니다.
+- `get_selected_resolution_rate()`: 해결 시도 당시의 단서 수집률을 반환합니다.
+
 ## 테스트 방법
 
 Godot 실행 확인.
@@ -127,6 +150,7 @@ Godot 실행 확인.
 & "C:\Users\user\Downloads\Godot_v4.7-stable_win64.exe\Godot_v4.7-stable_win64_console.exe" --headless --path . --scene "res://scenes/main_menu.tscn" --quit-after 1
 & "C:\Users\user\Downloads\Godot_v4.7-stable_win64.exe\Godot_v4.7-stable_win64_console.exe" --headless --path . --scene "res://scenes/investigation_scene.tscn" --quit-after 1
 & "C:\Users\user\Downloads\Godot_v4.7-stable_win64.exe\Godot_v4.7-stable_win64_console.exe" --headless --path . --scene "res://scenes/dialogue_scene.tscn" --quit-after 1
+& "C:\Users\user\Downloads\Godot_v4.7-stable_win64.exe\Godot_v4.7-stable_win64_console.exe" --headless --path . --scene "res://scenes/battle_scene.tscn" --quit-after 1
 ```
 
 ## 체크리스트
@@ -143,6 +167,11 @@ Godot 실행 확인.
 - [ ] 대화씬의 `동료 힌트 확인` 버튼으로 힌트를 확인할 수 있다.
 - [ ] 힌트를 확인해도 단서 수집률이 변하지 않는다.
 - [ ] 힌트 목록과 단서 목록이 같은 영역에 섞이지 않는다.
+- [ ] 조사씬에서 단서 수집률 40% 미만일 때 해결 시도 버튼이 비활성화된다.
+- [ ] 조사씬에서 단서 2개 이상을 수집하면 해결 시도 버튼이 활성화된다.
+- [ ] 해결 시도 버튼을 누르면 현재 해결 등급과 위험 안내가 표시된다.
+- [ ] `조사 계속`을 누르면 조사씬에 남는다.
+- [ ] `해결 시도`를 누르면 현재 해결 등급이 저장되고 전투씬으로 이동한다.
 - [ ] 전투씬에서 행동 버튼 3개와 지원 스킬 버튼이 작동한다.
 - [ ] 미니게임씬에서 성공/실패 상호작용이 가능하다.
 - [ ] 저승역 JSON 데이터가 존재한다.
@@ -155,6 +184,6 @@ Godot 실행 확인.
 ## 다음 작업 후보
 
 1. 전투씬에서 수집된 단서의 `battle_clue_effects`를 자동 표시합니다.
-2. 해결 페이즈 진입 버튼과 결과 UI를 별도 placeholder로 추가합니다.
-3. 조사/대화에서 얻은 단서를 저장/불러오기 구조와 연결합니다.
+2. 회수 버튼과 피해자 구조 결과 placeholder를 추가합니다.
+3. 조사/대화/해결 페이즈 상태를 저장/불러오기 구조와 연결합니다.
 4. 조사 포인트 조건 플래그와 대화 분기 조건을 데이터화합니다.

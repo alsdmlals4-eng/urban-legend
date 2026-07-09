@@ -39,6 +39,12 @@ func _build_ui() -> void:
 	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	root.add_child(title)
 
+	var resolution_phase_label := Label.new()
+	resolution_phase_label.text = _make_resolution_phase_text()
+	resolution_phase_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	resolution_phase_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	root.add_child(resolution_phase_label)
+
 	var status_panel := PanelContainer.new()
 	root.add_child(status_panel)
 
@@ -99,6 +105,17 @@ func _make_bar() -> ProgressBar:
 	return bar
 
 
+func _make_resolution_phase_text() -> String:
+	var selected_label: String = GameState.get_selected_resolution_label()
+	if selected_label.is_empty():
+		return "해결 페이즈: 직접 진입하지 않은 전투 테스트입니다."
+
+	return "해결 페이즈 진입 등급: %s / 저장된 단서 수집률: %.0f%%" % [
+		selected_label,
+		GameState.get_selected_resolution_rate()
+	]
+
+
 func _add_action(parent: Control, label: String, enemy_damage: int, player_damage: int, message: String) -> void:
 	var button := Button.new()
 	button.text = label
@@ -138,4 +155,3 @@ func _add_scene_button(parent: Control, label: String, scene_path: String) -> vo
 		get_tree().change_scene_to_file(scene_path)
 	)
 	parent.add_child(button)
-
