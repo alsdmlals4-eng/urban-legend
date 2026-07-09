@@ -73,7 +73,7 @@ func _build_ui() -> void:
 	scene_scroll.add_child(scene_layout)
 
 	var location := Label.new()
-	location.text = "배경 placeholder: 자정 이후의 무인 역사 / 저승역 조사"
+	location.text = "배경 placeholder: %s" % GameState.get_current_episode_title()
 	location.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	location.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	scene_layout.add_child(location)
@@ -226,9 +226,14 @@ func _make_point_result_text(point: Dictionary, clue_id: String, was_collected: 
 
 func _make_point_hint_text(point: Dictionary) -> String:
 	var hint_texts := GameState.get_hint_texts_by_ids(point.get("show_hint_ids", []))
-	if hint_texts.is_empty():
+	var lines: Array = []
+	if not hint_texts.is_empty():
+		lines.append("기록국 힌트 기록\n- %s" % "\n- ".join(hint_texts))
+	for support_text in GameState.get_investigation_point_support_text(point):
+		lines.append(String(support_text))
+	if lines.is_empty():
 		return "기록국 힌트: 기록된 힌트가 없습니다."
-	return "기록국 힌트 기록\n- %s" % "\n- ".join(hint_texts)
+	return "\n\n".join(lines)
 
 
 func _add_method_panel(parent: Control) -> void:

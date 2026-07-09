@@ -1,0 +1,130 @@
+{
+  "episode": {
+    "id": "episode_002_red_umbrella_alley",
+    "title": "비 오는 골목의 빨간 우산",
+    "summary": "비가 내리지 않는 밤에도 젖은 발자국과 빨간 우산이 같은 골목을 되감습니다."
+  },
+  "preparation_briefing": {
+    "briefing": "폐쇄된 골목에서 같은 우산이 다른 사람의 귀가 경로를 대신 걷고 있습니다.",
+    "equipped_frequency_filter": "폐주파수 필터가 빗소리 속 반복 간격을 분리합니다. 주파수 관련 조사에서 힌트 1회를 사용할 수 있습니다.",
+    "record_reference": "저승역의 반복 안내방송 기록과 유사한 잡음 패턴입니다.",
+    "risk_warning": "우산 표식을 따라가면 경로가 되감길 수 있습니다. 같은 모퉁이를 세 번 넘지 마세요."
+  },
+  "dialogue_nodes": [
+    {
+      "id": "dialogue_intro",
+      "background_id": "red_umbrella_alley_midnight",
+      "standing_id": "log_terminal",
+      "lines": [
+        {
+          "speaker": "로그",
+          "text": "기록을 확인했습니다. 비는 멈췄지만 골목의 빗소리는 같은 간격으로 반복됩니다.",
+          "expression": "serious"
+        },
+        {
+          "speaker": "기록국 관제",
+          "text": "빨간 우산을 본 사람들은 모두 다른 길로 귀가했다고 믿고 있습니다.",
+          "expression": "calm"
+        }
+      ],
+      "choices": [
+        {
+          "id": "choice_check_rain_drain",
+          "text": "빗물 배수구의 소리를 확인한다",
+          "conditions": {},
+          "result_text": "배수구 아래에서 일정한 세 박자 잡음이 되돌아옵니다.",
+          "add_flags": ["red_umbrella_briefing_seen"],
+          "next_scene_path": "res://scenes/investigation_scene.tscn"
+        }
+      ]
+    }
+  ],
+  "investigation_points": [
+    {
+      "id": "point_rain_drain_echo",
+      "title": "빗물 배수구의 되감긴 소리",
+      "description": "우산 끝에서 떨어진 물방울이 세 박자 간격으로 배수구 안쪽을 울립니다.",
+      "result_text": "반복된 빗소리의 간격을 기록했습니다. 골목의 경로가 소리와 함께 되감기고 있습니다.",
+      "clue_id": "clue_rain_noise_interval",
+      "tags": ["rain_noise", "frequency_related"],
+      "show_hint_ids": []
+    },
+    {
+      "id": "point_umbrella_mark_wall",
+      "title": "담벼락의 우산 표식",
+      "description": "붉은 물감처럼 보이는 표식이 다음 모퉁이를 가리키지만, 방향은 계속 바뀝니다.",
+      "result_text": "표식이 가리키는 방향은 실제 출구가 아니라 반복 경로의 시작점입니다.",
+      "clue_id": "clue_umbrella_mark_route",
+      "tags": ["route_loop", "umbrella_mark"],
+      "show_hint_ids": []
+    }
+  ],
+  "clues": [
+    {
+      "id": "clue_rain_noise_interval",
+      "title": "세 박자 빗소리 간격",
+      "description": "빗소리의 세 번째 박자에서만 골목의 실제 발자국이 드러납니다.",
+      "location_id": "point_rain_drain_echo",
+      "related_victim_id": "victim_alley_witness",
+      "related_legend_id": "legend_red_umbrella_alley",
+      "battle_effect_id": "effect_rain_noise_record",
+      "resolution_weight": 50,
+      "is_required": true,
+      "collected": false
+    },
+    {
+      "id": "clue_umbrella_mark_route",
+      "title": "빨간 우산 경로 표식",
+      "description": "우산 표식은 출구가 아니라 같은 모퉁이로 돌아오는 규칙을 표시합니다.",
+      "location_id": "point_umbrella_mark_wall",
+      "related_victim_id": "victim_alley_witness",
+      "related_legend_id": "legend_red_umbrella_alley",
+      "battle_effect_id": "effect_route_loop_record",
+      "resolution_weight": 50,
+      "is_required": true,
+      "collected": false
+    }
+  ],
+  "records": [
+    {
+      "id": "record_black_ticket_core",
+      "title": "검은 승차권의 핵",
+      "description": "반복 경로를 고정하는 매개체 규칙을 정리한 저승역 회수 기록입니다.",
+      "next_investigation_effect": "반복 경로와 매개체 규칙을 대조할 수 있습니다."
+    },
+    {
+      "id": "record_repeating_announcement",
+      "title": "반복 안내방송 기록",
+      "description": "규칙이 반복 음향에 섞여 나타난 저승역 회수 기록입니다.",
+      "next_investigation_effect": "반복 잡음 패턴을 조사 단서와 대조할 수 있습니다."
+    }
+  ],
+  "equipment": [
+    {
+      "id": "equip_frequency_filter",
+      "name": "폐주파수 필터",
+      "description": "괴담 기록에서 반복 잡음을 분리하는 기록국 조사 보조 도구입니다.",
+      "next_investigation_modifier": "주파수 계열 조사 또는 미니게임에서 힌트 1회 제공",
+      "effect_text": "폐주파수 필터가 잡음을 분리합니다. 다음 타이밍은 세 번째 파형이 가장 안정적입니다."
+    }
+  ],
+  "resolution": {
+    "episode_id": "episode_002_red_umbrella_alley",
+    "total_clues": 2,
+    "collected_clues": 0,
+    "collection_rate": 0,
+    "phase_state": "unavailable",
+    "temporary_threshold": 50,
+    "standard_threshold": 100,
+    "complete_threshold": 100
+  },
+  "recovery_results": [
+    {
+      "resolution_grade": "unavailable",
+      "victim_rescue_result": "placeholder",
+      "description": "두 번째 사건의 회수 결과는 다음 MVP에서 확장합니다.",
+      "after_story": "현재는 조사 골격과 준비 보정 확인에 집중합니다.",
+      "research_result": "결과 placeholder"
+    }
+  ]
+}

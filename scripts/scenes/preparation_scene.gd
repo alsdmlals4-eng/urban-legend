@@ -2,6 +2,7 @@
 extends Control
 
 var _equipment_list: VBoxContainer
+var _episode_list: VBoxContainer
 var _equipped_label: Label
 var _modifier_label: Label
 var _record_list: VBoxContainer
@@ -44,6 +45,7 @@ func _build_ui() -> void:
 
 	_add_navigation(root)
 	_add_header(root)
+	_add_episode_panel(root)
 	_add_agent_panel(root)
 	_add_equipment_panel(root)
 	_add_record_panel(root)
@@ -75,6 +77,23 @@ func _add_header(parent: Control) -> void:
 	case_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	case_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	parent.add_child(case_label)
+
+
+func _add_episode_panel(parent: Control) -> void:
+	var panel := PanelContainer.new()
+	parent.add_child(panel)
+
+	var content := VBoxContainer.new()
+	content.add_theme_constant_override("separation", 6)
+	panel.add_child(content)
+
+	var title := Label.new()
+	title.text = "시작할 사건"
+	content.add_child(title)
+
+	_episode_list = VBoxContainer.new()
+	_episode_list.add_theme_constant_override("separation", 6)
+	content.add_child(_episode_list)
 
 
 func _add_agent_panel(parent: Control) -> void:
@@ -186,10 +205,39 @@ func _add_start_panel(parent: Control) -> void:
 
 
 func _refresh() -> void:
+	_refresh_episode_selection()
 	_refresh_equipment()
 	_refresh_records()
 	_refresh_log()
 	_status_label.text = "조사 시작 전 장비와 기록물을 확인하세요."
+
+
+func _refresh_episode_selection() -> void:
+	_clear_children(_episode_list)
+	for entry in GameState.get_preparation_episode_entries():
+		if typeof(entry) != TYPE_DICTIONARY:
+			continue
+		var episode_path := String(entry.get("path", ""))
+		var episode_id := String(entry.get("id", ""))
+		var active := episode_id == GameState.get_current_episode_id()
+		var button := Button.new()
+		button.text = "%s: %s" % ["선택됨" if active else "사건 선택", String(entry.get("title", "사건"))]
+		button.disabled = active
+		button.pressed.connect(_select_episode.bind(episode_path))
+		_episode_list.add_child(button)
+
+		var summary := Label.new()
+		summary.text = String(entry.get("summary", ""))
+		summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		_episode_list.add_child(summary)
+
+
+func _select_episode(episode_path: String) -> void:
+	if not GameState.start_episode_from_preparation(episode_path):
+		_status_label.text = "사건 데이터를 불러오지 못했습니다."
+		return
+	GameState.save_game()
+	get_tree().reload_current_scene()
 
 
 func _refresh_equipment() -> void:
@@ -252,6 +300,8 @@ func _refresh_log() -> void:
 	_clear_children(_log_list)
 	for line in GameState.get_preparation_log_lines():
 		_log_list.add_child(_make_label("- %s" % String(line)))
+	for line in GameState.get_episode_log_lines():
+		_log_list.add_child(_make_label("- 로그: %s" % String(line)))
 
 
 func _toggle_equipment(equipment_id: String) -> void:

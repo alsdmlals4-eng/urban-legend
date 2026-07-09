@@ -2,6 +2,7 @@
 extends Node
 
 const DEFAULT_EPISODE_PATH := "res://data/episodes/episode_001_afterlife_station.json"
+const RED_UMBRELLA_ALLEY_EPISODE_PATH := "res://data/episodes/episode_002_red_umbrella_alley.json"
 const SAVE_FILE_PATH := "user://urban_legend_save.json"
 const SAVE_VERSION := "mvp-014"
 const DEFAULT_DIALOGUE_NODE_ID := "dialogue_intro"
@@ -84,6 +85,22 @@ func restart_afterlife_station_flow(agent_ids: Array = []) -> bool:
 	set_selected_agent_ids(agent_ids)
 	current_scene_path = SCENE_DIALOGUE
 	return not current_episode_data.is_empty()
+
+
+## Starts another episode while preserving unlocked preparation rewards and the current team.
+func start_episode_from_preparation(file_path: String) -> bool:
+	if not load_episode(file_path):
+		return false
+
+	flags.clear()
+	seen_hint_ids.clear()
+	minigame_results.clear()
+	used_equipment_effects.clear()
+	_clear_investigation_method_state()
+	current_dialogue_node_id = DEFAULT_DIALOGUE_NODE_ID
+	current_minigame_id = DEFAULT_MINIGAME_ID
+	current_scene_path = SCENE_PREPARATION
+	return true
 
 
 ## Clears the current run state and reloads the default episode.
@@ -1026,6 +1043,11 @@ func get_unlocked_records() -> Array:
 	return unlocked_records.duplicate()
 
 
+## Returns whether a recovered record is available for preparation references.
+func has_unlocked_record(record_id: String) -> bool:
+	return unlocked_records.has(record_id)
+
+
 ## Returns unlocked research reward ids for save data and DB UI.
 func get_unlocked_research_rewards() -> Array:
 	return unlocked_research_rewards.duplicate()
@@ -1137,6 +1159,64 @@ func get_next_investigation_modifier_text() -> String:
 	if has_unlocked_equipment(EQUIP_FREQUENCY_FILTER):
 		return "폐주파수 필터가 해금되어 있습니다. 사건 준비 화면에서 장착하면 주파수 계열 힌트 1회가 적용됩니다."
 	return "이번 회수 결과로 적용되는 다음 조사 보정은 아직 없습니다."
+
+
+## Returns the episode choices exposed by the MVP preparation screen.
+func get_preparation_episode_entries() -> Array:
+	var entries: Array = []
+	for episode_path in [DEFAULT_EPISODE_PATH, RED_UMBRELLA_ALLEY_EPISODE_PATH]:
+		var loader = EpisodeLoaderScript.new()
+		var data: Dictionary = loader.load_episode(episode_path)
+		var episode: Dictionary = data.get("episode", {})
+		if not episode.is_empty():
+			entries.append({
+				"path": episode_path,
+				"id": String(episode.get("id", "")),
+				"title": String(episode.get("title", "사건")),
+				"summary": String(episode.get("summary", ""))
+			})
+	return entries
+
+
+## Builds Log's current-case briefing from the active episode data.
+func get_episode_log_lines() -> Array:
+	var briefing: Dictionary = current_episode_data.get("preparation_briefing", {})
+	if briefing.is_empty():
+		return []
+
+	var lines: Array = []
+	var briefing_text := String(briefing.get("briefing", ""))
+	if not briefing_text.is_empty():
+		lines.append("사건 브리핑: %s" % briefing_text)
+
+	if has_equipped_item(EQUIP_FREQUENCY_FILTER):
+		var equipment_text := String(briefing.get("equipped_frequency_filter", ""))
+		if not equipment_text.is_empty():
+			lines.append("장비 보정: %s" % equipment_text)
+
+	if has_unlocked_record("record_repeating_announcement") or has_unlocked_record("record_black_ticket_core"):
+		var record_text := String(briefing.get("record_reference", ""))
+		if not record_text.is_empty():
+			lines.append("기록물 참고: %s" % record_text)
+
+	var warning_text := String(briefing.get("risk_warning", ""))
+	if not warning_text.is_empty():
+		lines.append("위험 경고: %s" % warning_text)
+	return lines
+
+
+## Returns active equipment and record notices for an investigation point.
+func get_investigation_point_support_text(point: Dictionary) -> Array:
+	var lines: Array = []
+	var tags := _to_string_array(point.get("tags", []))
+	if tags.has("frequency_related") and has_equipped_item(EQUIP_FREQUENCY_FILTER):
+		lines.append("로그 장비 안내: 폐주파수 필터가 잡음을 분리할 준비를 마쳤습니다. 이 조사 포인트의 주파수 패턴에서 힌트 1회를 사용할 수 있습니다.")
+
+	if has_unlocked_record("record_repeating_announcement"):
+		lines.append("로그 기록물 참고: 저승역의 반복 안내방송 기록과 유사한 잡음 패턴입니다.")
+	elif has_unlocked_record("record_black_ticket_core"):
+		lines.append("로그 기록물 참고: 검은 승차권의 핵 기록에서 확인한 반복 경로 규칙을 대조하세요.")
+	return lines
 
 
 ## Returns the project core sentence.
