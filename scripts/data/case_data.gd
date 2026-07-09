@@ -144,6 +144,14 @@ static func get_research_reward_for_grade(episode_data: Dictionary, resolution_g
 	return {}
 
 
+## Finds the recovery result for one resolution grade.
+static func get_recovery_result_for_grade(episode_data: Dictionary, resolution_grade: String) -> Dictionary:
+	for result in _get_array(episode_data, "recovery_results"):
+		if typeof(result) == TYPE_DICTIONARY and result.get("resolution_grade", "") == resolution_grade:
+			return result
+	return {}
+
+
 static func _get_resolution(episode_data: Dictionary) -> Dictionary:
 	var value: Variant = episode_data.get("resolution", {})
 	if typeof(value) == TYPE_DICTIONARY:

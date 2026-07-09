@@ -92,6 +92,13 @@ func _build_ui() -> void:
 	next_button.pressed.connect(_advance_line)
 	stage_layout.add_child(next_button)
 
+	var investigation_button := Button.new()
+	investigation_button.text = "조사 시작"
+	investigation_button.pressed.connect(func() -> void:
+		get_tree().change_scene_to_file("res://scenes/investigation_scene.tscn")
+	)
+	stage_layout.add_child(investigation_button)
+
 	_choice_box = VBoxContainer.new()
 	_choice_box.visible = false
 	_choice_box.add_theme_constant_override("separation", 6)

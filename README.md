@@ -4,6 +4,11 @@
 
 초기 목표는 기존 HTML 기반 `도시괴담 기록국 데이터 편집기`와 작업 보고서의 구조를 Godot 프로젝트로 옮겨, 이후 조사/대화/전투/미니게임 씬이 함께 사용할 수 있는 데이터 기반 게임 골격을 만드는 것입니다.
 
+## 버전 표기
+
+메인 화면의 `Ver` 표기는 수정 작업이 반영될 때마다 0.1씩 올립니다.
+현재 버전은 `Ver 1.2`이며, 이후에는 `Ver 1.3`, `Ver 1.4`처럼 갱신합니다.
+
 ## 기준 파일
 
 - `C:\Users\user\Downloads\도시괴이담\urban-legend-database.html`
@@ -28,6 +33,7 @@ urban-legend/
     main_menu.tscn
     database_view.tscn
     case_data_scene.tscn
+    result_scene.tscn
     investigation_scene.tscn
     dialogue_scene.tscn
     battle_scene.tscn
@@ -43,6 +49,7 @@ urban-legend/
       investigation_scene.gd
       dialogue_scene.gd
       battle_scene.gd
+      result_scene.gd
       minigame_scene.gd
     ui/
       main_menu.gd
@@ -164,6 +171,36 @@ MVP-005에서 추가한 `GameState` 함수입니다.
 - `get_recovery_result_status()`: 저장된 회수 결과 상태를 반환합니다.
 - `get_recovery_result_stability()`: 회수 당시 괴이 안정도를 반환합니다.
 
+## MVP-006 결과/연구 보상과 저승역 통합 흐름
+
+저승역 MVP는 메인 메뉴에서 `저승역 MVP 시작` 버튼으로 시작합니다.
+
+전체 흐름입니다.
+
+1. 메인 메뉴
+2. 저승역 MVP 시작
+3. 대화씬: 사건 브리핑
+4. 조사씬: 단서 수집
+5. 해결 페이즈 진입 선택
+6. 전투씬: 수집 단서 자동 발동
+7. 괴이 핵 회수 성공
+8. 결과 / 연구 보상 화면
+9. 메인 메뉴 복귀 또는 저승역 다시 시작
+
+전투씬에서 `괴이 핵 회수`에 성공하면 `scenes/result_scene.tscn`으로 이동합니다. 결과 화면에는 에피소드명, 해결 등급, 피해자 구조 결과, 피해자 후일담, 괴이 핵 회수 상태, 연구 결과, 해금 능력명, 해금 능력 설명, 다음 사건 영향 placeholder가 표시됩니다.
+
+MVP-006에서 추가한 `GameState` 함수입니다.
+
+- `restart_afterlife_station_flow()`: 저승역 에피소드를 처음 상태로 다시 시작합니다.
+- `get_current_episode_title()`: 현재 에피소드명을 반환합니다.
+- `get_result_resolution_grade()`: 결과 화면에서 사용할 해결 등급 key를 반환합니다.
+- `get_result_resolution_label()`: 결과 화면에서 사용할 해결 등급 표시명을 반환합니다.
+- `get_current_recovery_result()`: 현재 해결 등급에 맞는 회수/구조 결과 데이터를 반환합니다.
+- `get_current_victim_rescue_result()`: 현재 해결 등급에 맞는 피해자 구조 결과 문구를 반환합니다.
+- `get_current_victim_after_story()`: 현재 해결 등급에 맞는 피해자 후일담을 반환합니다.
+- `get_current_research_result()`: 현재 해결 등급에 맞는 연구 결과 문구를 반환합니다.
+- `get_current_result_research_reward()`: 현재 해결 등급에 맞는 연구 보상 데이터를 반환합니다.
+
 ## 테스트 방법
 
 Godot 실행 확인.
@@ -179,12 +216,25 @@ Godot 실행 확인.
 & "C:\Users\user\Downloads\Godot_v4.7-stable_win64.exe\Godot_v4.7-stable_win64_console.exe" --headless --path . --scene "res://scenes/investigation_scene.tscn" --quit-after 1
 & "C:\Users\user\Downloads\Godot_v4.7-stable_win64.exe\Godot_v4.7-stable_win64_console.exe" --headless --path . --scene "res://scenes/dialogue_scene.tscn" --quit-after 1
 & "C:\Users\user\Downloads\Godot_v4.7-stable_win64.exe\Godot_v4.7-stable_win64_console.exe" --headless --path . --scene "res://scenes/battle_scene.tscn" --quit-after 1
+& "C:\Users\user\Downloads\Godot_v4.7-stable_win64.exe\Godot_v4.7-stable_win64_console.exe" --headless --path . --scene "res://scenes/result_scene.tscn" --quit-after 1
 ```
+
+전체 플레이 테스트 순서입니다.
+
+1. 메인 메뉴에서 `저승역 MVP 시작`을 누릅니다.
+2. 대화씬에서 사건 브리핑을 확인하고 `조사 시작`을 누릅니다.
+3. 조사씬에서 단서 2개 이상을 수집합니다.
+4. `해결 시도` 버튼을 누르고 확인 패널에서 다시 `해결 시도`를 누릅니다.
+5. 전투씬에서 행동 버튼으로 괴이 안정도를 회수 기준 이하로 낮춥니다.
+6. `괴이 핵 회수` 버튼을 누릅니다.
+7. 결과 화면에서 해결 등급, 피해자 구조 결과, 후일담, 연구 보상을 확인합니다.
+8. `메인 메뉴로` 또는 `저승역 다시 시작`을 눌러 흐름이 이어지는지 확인합니다.
 
 ## 체크리스트
 
 - [ ] Godot 4.7 stable에서 프로젝트가 열린다.
 - [ ] `main_menu.tscn`에서 데이터베이스, 조사, 대화, 전투, 미니게임 씬으로 이동할 수 있다.
+- [ ] 메인 메뉴에서 `저승역 MVP 시작`으로 대화씬에 진입할 수 있다.
 - [ ] `MVP-002 데이터 확인` 화면에서 단서 수집률과 해결 단계가 보인다.
 - [ ] `테스트: 다음 단서 수집` 버튼을 누르면 수집률이 20%씩 증가한다.
 - [ ] `수집 초기화` 버튼을 누르면 단서 수집률이 0%로 돌아간다.
@@ -208,7 +258,12 @@ Godot 실행 확인.
 - [ ] 기본 행동 버튼이 괴이 안정도 또는 위험/공포도에 영향을 준다.
 - [ ] 회수 조건 충족 전에는 `괴이 핵 회수` 버튼이 비활성화된다.
 - [ ] 회수 조건 충족 후에는 `괴이 핵 회수` 버튼이 활성화된다.
-- [ ] 회수 성공 시 전투씬에 임시 결과 문구가 표시되고 결과 상태가 `GameState`에 저장된다.
+- [ ] 회수 성공 시 결과 상태가 `GameState`에 저장되고 결과 화면으로 이동한다.
+- [ ] 결과 화면에 에피소드명, 해결 등급, 피해자 구조 결과가 표시된다.
+- [ ] 해결 등급에 따라 피해자 후일담과 연구 보상이 달라진다.
+- [ ] 결과 화면에서 메인 메뉴로 돌아갈 수 있다.
+- [ ] 결과 화면에서 저승역을 다시 시작할 수 있다.
+- [ ] 대화 → 조사 → 해결 페이즈 → 전투/회수 → 결과 화면까지 이어진다.
 - [ ] 미니게임씬에서 성공/실패 상호작용이 가능하다.
 - [ ] 저승역 JSON 데이터가 존재한다.
 - [ ] 피해자, 힌트, 단서, 해결 단계, 전투 단서 효과, 연구 보상 데이터가 분리되어 있다.
@@ -219,7 +274,7 @@ Godot 실행 확인.
 
 ## 다음 작업 후보
 
-1. 회수 결과에 따른 피해자 구조 결과 placeholder를 추가합니다.
-2. 연구 보상 화면 placeholder를 추가합니다.
+1. 결과 화면을 엽서/보고서형 UI로 다듬습니다.
+2. 연구 보상을 다음 사건의 실제 보정 효과와 연결합니다.
 3. 조사/대화/해결/회수 상태를 저장/불러오기 구조와 연결합니다.
 4. 조사 포인트 조건 플래그와 대화 분기 조건을 데이터화합니다.

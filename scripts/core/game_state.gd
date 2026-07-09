@@ -38,6 +38,17 @@ func get_current_episode() -> Dictionary:
 	return current_episode_data
 
 
+## Restarts the afterlife station MVP from the beginning.
+func restart_afterlife_station_flow() -> bool:
+	return load_episode(DEFAULT_EPISODE_PATH)
+
+
+## Returns the active episode title.
+func get_current_episode_title() -> String:
+	var episode: Dictionary = current_episode_data.get("episode", {})
+	return String(episode.get("title", "저승역"))
+
+
 ## Marks one clue as collected and updates the resolution state.
 func collect_clue(clue_id: String) -> bool:
 	if current_episode_data.is_empty():
@@ -185,6 +196,48 @@ func get_selected_resolution_label() -> String:
 ## Returns the clue collection rate saved when the resolution attempt started.
 func get_selected_resolution_rate() -> float:
 	return selected_resolution_rate
+
+
+## Returns the selected resolution grade, falling back to the current grade for scene tests.
+func get_result_resolution_grade() -> String:
+	if selected_resolution_grade.is_empty():
+		return get_resolution_grade()
+	return selected_resolution_grade
+
+
+## Returns the selected resolution label, falling back to the current label for scene tests.
+func get_result_resolution_label() -> String:
+	if selected_resolution_label.is_empty():
+		return get_resolution_label()
+	return selected_resolution_label
+
+
+## Returns the recovery result that matches the selected resolution grade.
+func get_current_recovery_result() -> Dictionary:
+	return CaseDataScript.get_recovery_result_for_grade(current_episode_data, get_result_resolution_grade())
+
+
+## Returns the victim rescue result text for the selected resolution grade.
+func get_current_victim_rescue_result() -> String:
+	var result := get_current_recovery_result()
+	return String(result.get("description", "피해자 구조 결과가 아직 기록되지 않았습니다."))
+
+
+## Returns the victim after-story for the selected resolution grade.
+func get_current_victim_after_story() -> String:
+	var result := get_current_recovery_result()
+	return String(result.get("after_story", "피해자 후일담이 아직 기록되지 않았습니다."))
+
+
+## Returns the research result text for the selected resolution grade.
+func get_current_research_result() -> String:
+	var result := get_current_recovery_result()
+	return String(result.get("research_result", "연구 결과가 아직 기록되지 않았습니다."))
+
+
+## Returns the research reward that matches the selected resolution grade.
+func get_current_result_research_reward() -> Dictionary:
+	return CaseDataScript.get_research_reward_for_grade(current_episode_data, get_result_resolution_grade())
 
 
 ## Saves the recovery result after the anomaly core is stabilized.

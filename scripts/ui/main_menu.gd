@@ -1,7 +1,7 @@
 # 시작 화면에서 프로젝트 소개와 데이터베이스 진입을 관리한다.
 extends Control
 
-const GAME_VERSION := "Ver 1.1"
+const GAME_VERSION := "Ver 1.2"
 
 
 func _ready() -> void:
@@ -61,6 +61,11 @@ func _build_ui() -> void:
 	open_button.pressed.connect(_open_database)
 	content.add_child(open_button)
 
+	var start_episode_button := Button.new()
+	start_episode_button.text = "저승역 MVP 시작"
+	start_episode_button.pressed.connect(_start_afterlife_station)
+	content.add_child(start_episode_button)
+
 	_add_scene_button(content, "MVP-002 데이터 확인", "res://scenes/case_data_scene.tscn")
 
 	var scene_label := Label.new()
@@ -76,6 +81,11 @@ func _build_ui() -> void:
 
 func _open_database() -> void:
 	get_tree().change_scene_to_file("res://scenes/database_view.tscn")
+
+
+func _start_afterlife_station() -> void:
+	GameState.restart_afterlife_station_flow()
+	get_tree().change_scene_to_file("res://scenes/dialogue_scene.tscn")
 
 
 func _add_scene_button(parent: Control, label: String, scene_path: String) -> void:

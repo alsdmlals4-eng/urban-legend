@@ -262,10 +262,7 @@ func _recover_anomaly_core() -> void:
 	for button in _action_buttons:
 		button.disabled = true
 	_recover_button.disabled = true
-	_result_label.text = "회수 성공: 괴이의 핵을 안정화해 기록국 회수 절차로 넘겼습니다.\n저장 상태: %s / 안정도 %d" % [
-		GameState.get_recovery_result_status(),
-		GameState.get_recovery_result_stability()
-	]
+	get_tree().change_scene_to_file("res://scenes/result_scene.tscn")
 
 
 func _add_navigation(parent: Control) -> void:

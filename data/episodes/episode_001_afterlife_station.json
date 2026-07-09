@@ -215,22 +215,30 @@
     {
       "resolution_grade": "unavailable",
       "victim_rescue_result": "failed_to_enter_resolution",
-      "description": "단서가 부족해 해결 페이즈에 진입하지 못합니다."
+      "description": "단서가 부족해 해결 페이즈에 진입하지 못합니다.",
+      "after_story": "피해자의 행방은 아직 확정되지 않았고, 기록국은 저승역 접근 근거를 더 모아야 합니다.",
+      "research_result": "연구 보상 없음"
     },
     {
       "resolution_grade": "temporary",
       "victim_rescue_result": "rescued_with_aftereffect",
-      "description": "피해자는 구조되지만 기억 일부가 역사에 남습니다."
+      "description": "피해자는 구조되지만 기억 일부가 역사에 남습니다.",
+      "after_story": "피해자는 돌아왔지만 막차 이후의 기억 일부가 비어 있습니다. 가끔 존재하지 않는 안내방송을 꿈에서 듣습니다.",
+      "research_result": "저승역의 이동 경로를 임시로 막는 방법을 기록했습니다."
     },
     {
       "resolution_grade": "standard",
       "victim_rescue_result": "rescued",
-      "description": "피해자를 구조하고 괴이의 발동 조건을 기록합니다."
+      "description": "피해자를 구조하고 괴이의 발동 조건을 기록합니다.",
+      "after_story": "피해자는 안정적으로 귀환했고, 반복 안내방송과 검은 승차권의 발동 조건이 기록국 자료로 정리되었습니다.",
+      "research_result": "저승역의 잔향 노선을 추적할 수 있는 분석 절차를 확보했습니다."
     },
     {
       "resolution_grade": "complete",
       "victim_rescue_result": "rescued_and_core_recovered",
-      "description": "피해자를 안정적으로 구조하고 괴이의 핵을 회수합니다."
+      "description": "피해자를 안정적으로 구조하고 괴이의 핵을 회수합니다.",
+      "after_story": "피해자는 큰 후유증 없이 돌아왔고, 검은 승차권은 기록국 격리 보관함에 안정 회수되었습니다.",
+      "research_result": "검은 승차권의 핵 규칙과 종착지 조작 원리를 완전 기록했습니다."
     }
   ]
 }
