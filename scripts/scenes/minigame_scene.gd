@@ -1,9 +1,10 @@
-# 미니게임 씬의 JSON 기반 성공/실패 결과와 복귀 흐름을 관리한다.
+# 주파수 미니게임의 성공/실패 결과와 장비 힌트를 관리한다.
 extends Control
 
 var _sync_count := 0
 var _target_count := 3
 var _minigame: Dictionary = {}
+var _equipment_hint: Dictionary = {}
 var _last_successful := false
 
 var _title_label: Label
@@ -22,8 +23,9 @@ func _ready() -> void:
 	GameState.set_current_scene_path("res://scenes/minigame_scene.tscn")
 	_minigame = GameState.get_current_minigame()
 	_target_count = max(1, int(_minigame.get("target_count", 3)))
+	_equipment_hint = GameState.try_use_frequency_filter_hint(String(_minigame.get("id", GameState.get_current_minigame_id())))
 	_build_ui()
-	_update_result("파형을 %d번 맞추면 폐주파수 동기화가 완료됩니다." % _target_count)
+	_update_result(_make_intro_text())
 
 
 func _build_ui() -> void:
@@ -92,13 +94,23 @@ func _build_ui() -> void:
 	content.add_child(_result_label)
 
 
+func _make_intro_text() -> String:
+	var text := "주파수 파형을 %d번 맞추면 동기화가 완료됩니다." % _target_count
+	if not _equipment_hint.is_empty():
+		text += "\n\n장비 효과: %s\n%s" % [
+			String(_equipment_hint.get("equipment_name", "폐주파수 필터")),
+			String(_equipment_hint.get("effect_text", ""))
+		]
+	return text
+
+
 func _match_wave() -> void:
 	_sync_count += 1
 	_progress_bar.value = _sync_count
 	if _sync_count >= _target_count:
 		_complete_minigame(true)
 	else:
-		_update_result("파형 동기화 중: %d/%d" % [_sync_count, _target_count])
+		_update_result("파형 동기화 중 %d/%d" % [_sync_count, _target_count])
 
 
 func _fail_minigame() -> void:
@@ -124,12 +136,13 @@ func _make_result_text(successful: bool) -> String:
 	var hint_key := "success_show_hint_ids" if successful else "failure_show_hint_ids"
 	var hint_texts := GameState.get_hint_texts_by_ids(_minigame.get(hint_key, []))
 	if not hint_texts.is_empty():
-		text += "\n\n기록된 힌트\n- %s" % "\n- ".join(hint_texts)
+		text += "\n\n기록국 힌트\n- %s" % "\n- ".join(hint_texts)
 
 	if successful:
 		text += "\n\n성공 플래그: %s" % ", ".join(_minigame.get("success_flags", []))
 	else:
 		text += "\n\n실패 플래그: %s" % ", ".join(_minigame.get("failure_flags", []))
+
 	var status := GameState.get_anomaly_status_summary()
 	text += "\n\n현재 상태: 괴이 위험도 %d / 괴이 이해도 %d / 정신력 %d / 괴이 안정도 %d / 예측률 %.1f%%" % [
 		int(status.get("anomaly_risk", 0)),
@@ -167,7 +180,7 @@ func _add_navigation(parent: Control) -> void:
 	_add_scene_button(row, "메뉴", "res://scenes/main_menu.tscn")
 	_add_scene_button(row, "조사", "res://scenes/investigation_scene.tscn")
 	_add_scene_button(row, "대화", "res://scenes/dialogue_scene.tscn")
-	_add_scene_button(row, "전투", "res://scenes/battle_scene.tscn")
+	_add_scene_button(row, "회수", "res://scenes/battle_scene.tscn")
 
 
 func _add_scene_button(parent: Control, label: String, scene_path: String) -> void:

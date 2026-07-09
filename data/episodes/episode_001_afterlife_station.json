@@ -896,6 +896,57 @@
       "ability_name": "검은 승차권 회수 기록",
       "ability_description": "괴이의 핵을 안정적으로 회수한 연구 기록입니다.",
       "next_episode_effect": "다음 공간형 괴담의 해결 페이즈 기준 정보를 더 정확하게 표시합니다."
+    },
+    {
+      "id": "reward_frequency_analysis",
+      "legend_id": "legend_afterlife_station",
+      "resolution_grade": "standard",
+      "ability_name": "폐주파수 분석 절차",
+      "ability_description": "저승역 안내방송의 반복 파형을 분리해 다음 주파수 계열 조사에서 안정 타이밍을 예측합니다.",
+      "next_episode_effect": "equip_frequency_filter를 해금합니다.",
+      "unlocks_equipment": [
+        "equip_frequency_filter"
+      ],
+      "unlocks_records": [
+        "record_black_ticket_core",
+        "record_repeating_announcement"
+      ]
+    }
+  ],
+  "records": [
+    {
+      "id": "record_black_ticket_core",
+      "title": "검은 승차권의 핵",
+      "description": "저승역 괴이의 중심 매개체로 회수된 검은 승차권 기록입니다. 승객을 없는 종착지로 묶는 규칙과 직접 연결됩니다.",
+      "episode_id": "episode_001_afterlife_station",
+      "source_result": "standard_or_better"
+    },
+    {
+      "id": "record_repeating_announcement",
+      "title": "반복 안내방송 기록",
+      "description": "피해자의 이름과 숫자 패턴이 섞여 반복되던 안내방송 분석 기록입니다. 주파수 계열 조사 보정의 근거가 됩니다.",
+      "episode_id": "episode_001_afterlife_station",
+      "source_result": "standard_or_better"
+    },
+    {
+      "id": "record_missing_terminal_sign",
+      "title": "존재하지 않는 종착지 표지",
+      "description": "완전 해결 시 보존되는 추가 기록물입니다. 현실 노선도에 없는 종착지가 괴이 경로를 고정하던 흔적을 담습니다.",
+      "episode_id": "episode_001_afterlife_station",
+      "source_result": "complete"
+    }
+  ],
+  "equipment": [
+    {
+      "id": "equip_frequency_filter",
+      "name": "폐주파수 필터",
+      "category": "investigation_support",
+      "description": "기록국 단말기에 장착하는 조사 보조 필터입니다. 잡음 속 반복 파형을 분리해 주파수 계열 미니게임 또는 분석 조사에서 힌트를 1회 제공합니다.",
+      "effect_scope": "frequency_minigame_or_analysis",
+      "effect_once_key": "equip_frequency_filter:{minigame_id}",
+      "effect_text": "폐주파수 필터가 잡음을 분리합니다. 다음 타이밍은 세 번째 파형이 가장 안정적입니다.",
+      "next_investigation_modifier": "주파수 계열 미니게임에서 힌트 1회 제공",
+      "unlock_reward_id": "reward_frequency_analysis"
     }
   ],
   "recovery_results": [

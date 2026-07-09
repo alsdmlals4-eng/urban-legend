@@ -1,4 +1,4 @@
-# 데이터베이스 화면의 섹션 선택과 상세 표시를 관리한다.
+# 데이터베이스 화면의 섹션 선택과 MVP-013 해금 상태 표시를 관리한다.
 extends Control
 
 var _section_list: VBoxContainer
@@ -8,6 +8,8 @@ var _detail_items: VBoxContainer
 
 
 func _ready() -> void:
+	if GameState.get_current_episode().is_empty():
+		GameState.load_episode()
 	_build_ui()
 	_show_section("overview")
 
@@ -91,14 +93,23 @@ func _build_section_buttons() -> void:
 		)
 		_section_list.add_child(button)
 
+	var mvp13_button := Button.new()
+	mvp13_button.text = "MVP-013 보상"
+	mvp13_button.pressed.connect(func() -> void:
+		_show_section("mvp13_rewards")
+	)
+	_section_list.add_child(mvp13_button)
+
 
 func _show_section(section_id: String) -> void:
+	if section_id == "mvp13_rewards":
+		_show_mvp13_rewards()
+		return
+
 	var section := UrbanLegendState.get_section(section_id)
 	_detail_title.text = section.get("title", "섹션")
 	_detail_summary.text = section.get("summary", "")
-
-	for child in _detail_items.get_children():
-		child.queue_free()
+	_clear_detail_items()
 
 	for item in section.get("items", []):
 		var label := Label.new()
@@ -107,6 +118,47 @@ func _show_section(section_id: String) -> void:
 		_detail_items.add_child(label)
 
 
+func _show_mvp13_rewards() -> void:
+	_detail_title.text = "MVP-013 기록물 / 연구 보상 / 장비"
+	_detail_summary.text = "회수 결과로 해금된 기록국 보상 상태입니다. 완성형 도감이 아니라 현재 해금 여부를 확인하는 1차 DB 화면입니다."
+	_clear_detail_items()
+	_add_dynamic_entry_list("해금 기록물", GameState.get_unlocked_record_entries(), "title", "description")
+	_add_dynamic_entry_list("연구 보상", GameState.get_unlocked_research_reward_entries(), "ability_name", "ability_description")
+	_add_dynamic_entry_list("해금 장비", GameState.get_unlocked_equipment_entries(), "name", "description")
+	var modifier_label := Label.new()
+	modifier_label.text = "- 다음 조사 보정: %s" % GameState.get_next_investigation_modifier_text()
+	modifier_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_detail_items.add_child(modifier_label)
+
+
+func _add_dynamic_entry_list(title: String, entries: Array, name_key: String, description_key: String) -> void:
+	var title_label := Label.new()
+	title_label.text = title
+	title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_detail_items.add_child(title_label)
+	if entries.is_empty():
+		var empty_label := Label.new()
+		empty_label.text = "- 아직 해금된 항목이 없습니다."
+		empty_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		_detail_items.add_child(empty_label)
+		return
+
+	for entry in entries:
+		if typeof(entry) != TYPE_DICTIONARY:
+			continue
+		var label := Label.new()
+		label.text = "- %s: %s" % [
+			String(entry.get(name_key, "")),
+			String(entry.get(description_key, ""))
+		]
+		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		_detail_items.add_child(label)
+
+
+func _clear_detail_items() -> void:
+	for child in _detail_items.get_children():
+		child.queue_free()
+
+
 func _back_to_menu() -> void:
 	get_tree().change_scene_to_file("res://scenes/main_menu.tscn")
-

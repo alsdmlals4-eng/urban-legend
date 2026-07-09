@@ -3,9 +3,10 @@ extends Node
 
 const DEFAULT_EPISODE_PATH := "res://data/episodes/episode_001_afterlife_station.json"
 const SAVE_FILE_PATH := "user://urban_legend_save.json"
-const SAVE_VERSION := "mvp-012"
+const SAVE_VERSION := "mvp-013"
 const DEFAULT_DIALOGUE_NODE_ID := "dialogue_intro"
 const DEFAULT_MINIGAME_ID := "minigame_frequency_sync"
+const EQUIP_FREQUENCY_FILTER := "equip_frequency_filter"
 const SCENE_MAIN_MENU := "res://scenes/main_menu.tscn"
 const SCENE_DIALOGUE := "res://scenes/dialogue_scene.tscn"
 const SCENE_INVESTIGATION := "res://scenes/investigation_scene.tscn"
@@ -46,6 +47,11 @@ var forced_recovery_phase := false
 var method_results: Dictionary = {}
 var agent_trust_changes: Dictionary = {}
 var used_agent_supports: Array = []
+var unlocked_records: Array = []
+var unlocked_equipment: Array = []
+var unlocked_research_rewards: Array = []
+var equipped_items: Array = []
+var used_equipment_effects: Array = []
 
 
 func _ready() -> void:
@@ -85,6 +91,11 @@ func reset_run_state() -> void:
 	seen_hint_ids.clear()
 	minigame_results.clear()
 	selected_agent_ids.clear()
+	unlocked_records.clear()
+	unlocked_equipment.clear()
+	unlocked_research_rewards.clear()
+	equipped_items.clear()
+	used_equipment_effects.clear()
 	current_scene_path = SCENE_DIALOGUE
 	current_dialogue_node_id = DEFAULT_DIALOGUE_NODE_ID
 	current_minigame_id = DEFAULT_MINIGAME_ID
@@ -318,6 +329,24 @@ func save_minigame_result(minigame_id: String, successful: bool) -> void:
 
 	apply_story_effects(_make_minigame_effect_data(minigame, successful))
 	save_game()
+
+
+## Tries to consume the frequency filter for one minigame hint.
+func try_use_frequency_filter_hint(minigame_id: String) -> Dictionary:
+	if not has_equipped_item(EQUIP_FREQUENCY_FILTER):
+		return {}
+
+	var effect_key := "%s:%s" % [EQUIP_FREQUENCY_FILTER, minigame_id]
+	if has_used_equipment_effect(effect_key):
+		return {}
+
+	mark_equipment_effect_used(effect_key)
+	var item := get_equipment_by_id(EQUIP_FREQUENCY_FILTER)
+	return {
+		"equipment_id": EQUIP_FREQUENCY_FILTER,
+		"equipment_name": String(item.get("name", "폐주파수 필터")),
+		"effect_text": String(item.get("effect_text", "폐주파수 필터가 잡음을 분리합니다. 다음 타이밍은 세 번째 파형이 가장 안정적입니다."))
+	}
 
 
 ## Returns true when a minigame was completed successfully.
@@ -874,6 +903,26 @@ func get_minigames() -> Array:
 	return CaseDataScript.get_minigames(current_episode_data)
 
 
+## Returns record definitions.
+func get_records() -> Array:
+	return CaseDataScript.get_records(current_episode_data)
+
+
+## Returns one record definition.
+func get_record_by_id(record_id: String) -> Dictionary:
+	return CaseDataScript.get_record_by_id(current_episode_data, record_id)
+
+
+## Returns equipment definitions.
+func get_equipment() -> Array:
+	return CaseDataScript.get_equipment(current_episode_data)
+
+
+## Returns one equipment definition.
+func get_equipment_by_id(equipment_id: String) -> Dictionary:
+	return CaseDataScript.get_equipment_by_id(current_episode_data, equipment_id)
+
+
 ## Returns one minigame by id.
 func get_minigame(minigame_id: String) -> Dictionary:
 	return CaseDataScript.get_minigame_by_id(current_episode_data, minigame_id)
@@ -969,6 +1018,89 @@ func get_collected_battle_effects() -> Array:
 ## Returns the research reward for the current resolution grade.
 func get_current_research_reward() -> Dictionary:
 	return CaseDataScript.get_research_reward_for_grade(current_episode_data, get_resolution_grade())
+
+
+## Returns unlocked record ids for save data and DB UI.
+func get_unlocked_records() -> Array:
+	return unlocked_records.duplicate()
+
+
+## Returns unlocked research reward ids for save data and DB UI.
+func get_unlocked_research_rewards() -> Array:
+	return unlocked_research_rewards.duplicate()
+
+
+## Returns unlocked equipment ids for save data and DB UI.
+func get_unlocked_equipment() -> Array:
+	return unlocked_equipment.duplicate()
+
+
+## Returns equipped item ids for save data.
+func get_equipped_items() -> Array:
+	return equipped_items.duplicate()
+
+
+## Returns used equipment effect keys for save data.
+func get_used_equipment_effects() -> Array:
+	return used_equipment_effects.duplicate()
+
+
+## Returns true when one equipment item is equipped.
+func has_equipped_item(equipment_id: String) -> bool:
+	return equipped_items.has(equipment_id)
+
+
+## Returns true when an equipment effect key has already been consumed.
+func has_used_equipment_effect(effect_key: String) -> bool:
+	return used_equipment_effects.has(effect_key)
+
+
+## Marks one equipment effect as used once.
+func mark_equipment_effect_used(effect_key: String) -> void:
+	var clean_key := effect_key.strip_edges()
+	if clean_key.is_empty() or used_equipment_effects.has(clean_key):
+		return
+
+	used_equipment_effects.append(clean_key)
+	save_game()
+
+
+## Returns unlocked record data.
+func get_unlocked_record_entries() -> Array:
+	return _get_entries_by_ids(get_records(), unlocked_records)
+
+
+## Returns unlocked equipment data.
+func get_unlocked_equipment_entries() -> Array:
+	return _get_entries_by_ids(get_equipment(), unlocked_equipment)
+
+
+## Returns unlocked research reward data.
+func get_unlocked_research_reward_entries() -> Array:
+	return _get_entries_by_ids(CaseDataScript.get_research_rewards(current_episode_data), unlocked_research_rewards)
+
+
+## Returns current result grade record unlocks.
+func get_current_result_unlocked_records() -> Array:
+	return _get_entries_by_ids(get_records(), _get_result_record_ids_for_grade(get_result_resolution_grade()))
+
+
+## Returns current result grade research unlocks.
+func get_current_result_unlocked_research_rewards() -> Array:
+	return _get_entries_by_ids(CaseDataScript.get_research_rewards(current_episode_data), _get_result_research_reward_ids_for_grade(get_result_resolution_grade()))
+
+
+## Returns current result grade equipment unlocks.
+func get_current_result_unlocked_equipment() -> Array:
+	return _get_entries_by_ids(get_equipment(), _get_result_equipment_ids_for_grade(get_result_resolution_grade()))
+
+
+## Returns next investigation modifier text for current unlocks.
+func get_next_investigation_modifier_text() -> String:
+	if unlocked_equipment.has(EQUIP_FREQUENCY_FILTER):
+		var item := get_equipment_by_id(EQUIP_FREQUENCY_FILTER)
+		return String(item.get("next_investigation_modifier", "주파수 계열 미니게임에서 힌트 1회 제공"))
+	return "이번 회수 결과로 적용되는 다음 조사 보정은 아직 없습니다."
 
 
 ## Returns true when the current clue rate allows entering the resolution phase.
@@ -1076,6 +1208,7 @@ func save_recovery_result(successful: bool, result_status: String, anomaly_stabi
 	if successful:
 		add_flag(FLAG_CAPTURE_SUCCESS)
 		add_flag("capture_result_%s" % result_status)
+		_apply_resolution_unlocks(get_result_resolution_grade())
 	save_game()
 
 
@@ -1137,6 +1270,11 @@ func load_game() -> bool:
 	method_results = _to_dictionary(save_data.get("method_results", {}))
 	agent_trust_changes = _to_dictionary(save_data.get("agent_trust_changes", {}))
 	used_agent_supports = _to_unique_string_array(save_data.get("used_agent_supports", []))
+	unlocked_records = _to_unique_string_array(save_data.get("unlocked_records", []))
+	unlocked_equipment = _to_unique_string_array(save_data.get("unlocked_equipment", []))
+	unlocked_research_rewards = _to_unique_string_array(save_data.get("unlocked_research_rewards", []))
+	equipped_items = _to_unique_string_array(save_data.get("equipped_items", []))
+	used_equipment_effects = _to_unique_string_array(save_data.get("used_equipment_effects", []))
 	investigation_risk = clampi(int(save_data.get("anomaly_risk", save_data.get("investigation_risk", 0))), 0, 100)
 	case_understanding = clampi(int(save_data.get("anomaly_understanding", save_data.get("case_understanding", 0))), 0, 100)
 	victim_understanding = clampi(int(save_data.get("victim_understanding", 0)), 0, 100)
@@ -1210,6 +1348,11 @@ func _make_save_data() -> Dictionary:
 		"method_results": get_method_results(),
 		"agent_trust_changes": get_agent_trust_changes(),
 		"used_agent_supports": get_used_agent_supports(),
+		"unlocked_records": get_unlocked_records(),
+		"unlocked_equipment": get_unlocked_equipment(),
+		"unlocked_research_rewards": get_unlocked_research_rewards(),
+		"equipped_items": get_equipped_items(),
+		"used_equipment_effects": get_used_equipment_effects(),
 		"investigation_risk": investigation_risk,
 		"case_understanding": case_understanding,
 		"victim_understanding": victim_understanding,
@@ -1481,6 +1624,59 @@ func _clear_investigation_method_state() -> void:
 	method_results.clear()
 	agent_trust_changes.clear()
 	used_agent_supports.clear()
+
+
+func _apply_resolution_unlocks(resolution_grade: String) -> void:
+	for record_id in _get_result_record_ids_for_grade(resolution_grade):
+		_unlock_unique(unlocked_records, record_id)
+
+	for reward_id in _get_result_research_reward_ids_for_grade(resolution_grade):
+		_unlock_unique(unlocked_research_rewards, reward_id)
+
+	for equipment_id in _get_result_equipment_ids_for_grade(resolution_grade):
+		_unlock_unique(unlocked_equipment, equipment_id)
+		_unlock_unique(equipped_items, equipment_id)
+
+
+func _get_result_record_ids_for_grade(resolution_grade: String) -> Array:
+	var grade_rank := _get_resolution_rank(resolution_grade)
+	var record_ids: Array = []
+	if grade_rank >= _get_resolution_rank("standard"):
+		record_ids.append("record_black_ticket_core")
+		record_ids.append("record_repeating_announcement")
+	if grade_rank >= _get_resolution_rank("complete"):
+		record_ids.append("record_missing_terminal_sign")
+	return record_ids
+
+
+func _get_result_research_reward_ids_for_grade(resolution_grade: String) -> Array:
+	if _get_resolution_rank(resolution_grade) >= _get_resolution_rank("standard"):
+		return ["reward_frequency_analysis"]
+	return []
+
+
+func _get_result_equipment_ids_for_grade(resolution_grade: String) -> Array:
+	if _get_resolution_rank(resolution_grade) >= _get_resolution_rank("standard"):
+		return [EQUIP_FREQUENCY_FILTER]
+	return []
+
+
+func _unlock_unique(target: Array, item_id: String) -> void:
+	var clean_id := item_id.strip_edges()
+	if clean_id.is_empty() or target.has(clean_id):
+		return
+
+	target.append(clean_id)
+
+
+func _get_entries_by_ids(entries: Array, ids: Array) -> Array:
+	var result: Array = []
+	for item_id in _to_string_array(ids):
+		for entry in entries:
+			if typeof(entry) == TYPE_DICTIONARY and String(entry.get("id", "")) == item_id:
+				result.append(entry)
+				break
+	return result
 
 
 func _apply_initial_anomaly_status() -> void:

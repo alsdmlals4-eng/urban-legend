@@ -79,6 +79,32 @@ static func get_minigames(episode_data: Dictionary) -> Array:
 	return _get_array(episode_data, "minigames")
 
 
+## Returns record unlock definitions.
+static func get_records(episode_data: Dictionary) -> Array:
+	return _get_array(episode_data, "records")
+
+
+## Finds one record by id.
+static func get_record_by_id(episode_data: Dictionary, record_id: String) -> Dictionary:
+	for record in get_records(episode_data):
+		if typeof(record) == TYPE_DICTIONARY and record.get("id", "") == record_id:
+			return record
+	return {}
+
+
+## Returns equipment definitions.
+static func get_equipment(episode_data: Dictionary) -> Array:
+	return _get_array(episode_data, "equipment")
+
+
+## Finds one equipment item by id.
+static func get_equipment_by_id(episode_data: Dictionary, equipment_id: String) -> Dictionary:
+	for item in get_equipment(episode_data):
+		if typeof(item) == TYPE_DICTIONARY and item.get("id", "") == equipment_id:
+			return item
+	return {}
+
+
 ## Finds one minigame by id.
 static func get_minigame_by_id(episode_data: Dictionary, minigame_id: String) -> Dictionary:
 	for minigame in get_minigames(episode_data):
@@ -207,6 +233,11 @@ static func get_research_reward_for_grade(episode_data: Dictionary, resolution_g
 		if typeof(reward) == TYPE_DICTIONARY and reward.get("resolution_grade", "") == resolution_grade:
 			return reward
 	return {}
+
+
+## Returns research reward definitions.
+static func get_research_rewards(episode_data: Dictionary) -> Array:
+	return _get_array(episode_data, "research_rewards")
 
 
 ## Finds the recovery result for one resolution grade.
