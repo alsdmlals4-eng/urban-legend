@@ -8,14 +8,21 @@ const LINES: Array[Dictionary] = [
 ]
 
 var _line_index := 0
+var _hint_index := 0
 var _name_label: Label
 var _dialogue_label: Label
 var _choice_box: VBoxContainer
+var _hint_label: Label
+var _clue_status_label: Label
 
 
 func _ready() -> void:
+	if GameState.get_current_episode().is_empty():
+		GameState.load_episode()
+
 	_build_ui()
 	_show_line()
+	_refresh_clue_status()
 
 
 func _build_ui() -> void:
@@ -47,9 +54,14 @@ func _build_ui() -> void:
 	stage.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	root.add_child(stage)
 
+	var stage_scroll := ScrollContainer.new()
+	stage_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	stage.add_child(stage_scroll)
+
 	var stage_layout := VBoxContainer.new()
 	stage_layout.add_theme_constant_override("separation", 10)
-	stage.add_child(stage_layout)
+	stage_layout.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	stage_scroll.add_child(stage_layout)
 
 	var bg_label := Label.new()
 	bg_label.text = "배경 placeholder: 사라진 승강장"
@@ -84,6 +96,35 @@ func _build_ui() -> void:
 	_choice_box.visible = false
 	_choice_box.add_theme_constant_override("separation", 6)
 	stage_layout.add_child(_choice_box)
+
+	var hint_panel := PanelContainer.new()
+	stage_layout.add_child(hint_panel)
+
+	var hint_content := VBoxContainer.new()
+	hint_content.add_theme_constant_override("separation", 6)
+	hint_panel.add_child(hint_content)
+
+	var hint_title := Label.new()
+	hint_title.text = "동료 힌트 목록"
+	hint_content.add_child(hint_title)
+
+	var hint_button := Button.new()
+	hint_button.text = "동료 힌트 확인"
+	hint_button.pressed.connect(_show_next_hint)
+	hint_content.add_child(hint_button)
+
+	_hint_label = Label.new()
+	_hint_label.text = "힌트는 아직 찾지 못한 단서의 방향만 알려주며, 단서 수집률에는 반영되지 않습니다."
+	_hint_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	hint_content.add_child(_hint_label)
+
+	var clue_title := Label.new()
+	clue_title.text = "단서 목록"
+	hint_content.add_child(clue_title)
+
+	_clue_status_label = Label.new()
+	_clue_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	hint_content.add_child(_clue_status_label)
 
 
 func _show_line() -> void:
@@ -120,14 +161,46 @@ func _add_choice(label: String, result: String) -> void:
 	_choice_box.add_child(button)
 
 
+func _show_next_hint() -> void:
+	var hints := GameState.get_hints()
+	if hints.is_empty():
+		_hint_label.text = "표시할 힌트가 없습니다."
+		return
+
+	var hint: Dictionary = hints[_hint_index % hints.size()]
+	_hint_index += 1
+	_hint_label.text = "대상 단서: %s\n힌트: %s\n단서 수집률 변화 없음: %.0f%%" % [
+		hint.get("target_clue_id", ""),
+		hint.get("text", ""),
+		GameState.get_clue_collection_rate()
+	]
+	_refresh_clue_status()
+
+
+func _refresh_clue_status() -> void:
+	var text := "단서 수집률: %.0f%% (%d/%d)\n" % [
+		GameState.get_clue_collection_rate(),
+		GameState.get_collected_clue_count(),
+		GameState.get_total_clue_count()
+	]
+	for clue in GameState.get_clues():
+		if typeof(clue) != TYPE_DICTIONARY:
+			continue
+
+		var state_text := "수집됨" if clue.get("collected", false) else "미수집"
+		text += "%s - %s\n" % [state_text, clue.get("title", "")]
+
+	_clue_status_label.text = text.strip_edges()
+
+
 func _add_navigation(parent: Control) -> void:
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 6)
 	parent.add_child(row)
 	_add_scene_button(row, "메뉴", "res://scenes/main_menu.tscn")
 	_add_scene_button(row, "조사", "res://scenes/investigation_scene.tscn")
+	_add_scene_button(row, "데이터", "res://scenes/case_data_scene.tscn")
 	_add_scene_button(row, "전투", "res://scenes/battle_scene.tscn")
-	_add_scene_button(row, "미니게임", "res://scenes/minigame_scene.tscn")
 
 
 func _add_scene_button(parent: Control, label: String, scene_path: String) -> void:
@@ -137,4 +210,3 @@ func _add_scene_button(parent: Control, label: String, scene_path: String) -> vo
 		get_tree().change_scene_to_file(scene_path)
 	)
 	parent.add_child(button)
-

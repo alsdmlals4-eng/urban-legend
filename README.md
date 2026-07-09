@@ -97,6 +97,22 @@ urban-legend/
 - `scripts/data/case_data.gd`: 힌트/단서 분리, 단서 수집률 계산, 해결 등급 판정, 전투 효과와 연구 보상 조회를 담당합니다.
 - `scripts/scenes/case_data_scene.gd`: MVP-002 데이터를 화면에서 확인하고 테스트용 단서 수집을 실행합니다.
 
+## MVP-003 조사/대화 연결
+
+조사씬과 대화씬이 MVP-002 데이터 구조를 실제 플레이 흐름과 연결합니다.
+
+조사씬의 조사 포인트는 저승역 JSON의 단서 id와 연결되어 있습니다.
+
+- `피해자의 휴대폰` -> `clue_last_message`
+- `검은 승차권 조각` -> `clue_black_ticket`
+- `플랫폼 스피커` -> `clue_repeating_announcement`
+- `꺼진 종착지 표지판` -> `clue_missing_terminal_sign`
+- `역무원실 근무 기록` -> `clue_staff_room_log`
+
+조사 포인트를 클릭하면 `GameState.collect_clue(clue_id)`가 호출됩니다. 새 단서를 얻으면 단서 제목과 설명이 표시되고, 이미 수집한 단서를 다시 클릭하면 `이미 확인한 단서입니다` 문구가 표시됩니다. 조사씬에는 단서 수집률과 현재 해결 단계가 함께 표시됩니다.
+
+대화씬의 `동료 힌트 확인` 버튼은 `GameState.get_hints()`에서 힌트를 가져와 표시합니다. 힌트는 대상 단서와 힌트 문구만 보여주며, 단서 수집률에는 반영되지 않습니다. 대화씬 안에서도 힌트 목록 영역과 단서 목록 영역을 분리했습니다.
+
 ## 테스트 방법
 
 Godot 실행 확인.
@@ -109,6 +125,8 @@ Godot 실행 확인.
 
 ```powershell
 & "C:\Users\user\Downloads\Godot_v4.7-stable_win64.exe\Godot_v4.7-stable_win64_console.exe" --headless --path . --scene "res://scenes/main_menu.tscn" --quit-after 1
+& "C:\Users\user\Downloads\Godot_v4.7-stable_win64.exe\Godot_v4.7-stable_win64_console.exe" --headless --path . --scene "res://scenes/investigation_scene.tscn" --quit-after 1
+& "C:\Users\user\Downloads\Godot_v4.7-stable_win64.exe\Godot_v4.7-stable_win64_console.exe" --headless --path . --scene "res://scenes/dialogue_scene.tscn" --quit-after 1
 ```
 
 ## 체크리스트
@@ -118,8 +136,13 @@ Godot 실행 확인.
 - [ ] `MVP-002 데이터 확인` 화면에서 단서 수집률과 해결 단계가 보인다.
 - [ ] `테스트: 다음 단서 수집` 버튼을 누르면 수집률이 20%씩 증가한다.
 - [ ] `수집 초기화` 버튼을 누르면 단서 수집률이 0%로 돌아간다.
-- [ ] 조사씬에서 조사 포인트 3개를 클릭할 수 있다.
+- [ ] 조사씬에서 조사 포인트 5개를 클릭해 저승역 단서를 수집할 수 있다.
+- [ ] 조사씬에서 단서 획득 후 단서 수집률과 현재 해결 단계가 갱신된다.
+- [ ] 이미 수집한 단서를 다시 클릭하면 중복 획득 대신 `이미 확인한 단서입니다`가 표시된다.
 - [ ] 대화씬에서 대사 진행과 선택지 테스트가 가능하다.
+- [ ] 대화씬의 `동료 힌트 확인` 버튼으로 힌트를 확인할 수 있다.
+- [ ] 힌트를 확인해도 단서 수집률이 변하지 않는다.
+- [ ] 힌트 목록과 단서 목록이 같은 영역에 섞이지 않는다.
 - [ ] 전투씬에서 행동 버튼 3개와 지원 스킬 버튼이 작동한다.
 - [ ] 미니게임씬에서 성공/실패 상호작용이 가능하다.
 - [ ] 저승역 JSON 데이터가 존재한다.
@@ -131,7 +154,7 @@ Godot 실행 확인.
 
 ## 다음 작업 후보
 
-1. 조사씬의 조사 포인트를 저승역 JSON 단서 id와 연결합니다.
-2. 대화 선택지 결과가 `GameState.collect_clue()`를 호출하도록 테스트 연결합니다.
-3. 전투씬에서 수집된 단서의 `battle_clue_effects`를 자동 표시합니다.
-4. 해결 페이즈 진입 버튼과 결과 UI를 별도 placeholder로 추가합니다.
+1. 전투씬에서 수집된 단서의 `battle_clue_effects`를 자동 표시합니다.
+2. 해결 페이즈 진입 버튼과 결과 UI를 별도 placeholder로 추가합니다.
+3. 조사/대화에서 얻은 단서를 저장/불러오기 구조와 연결합니다.
+4. 조사 포인트 조건 플래그와 대화 분기 조건을 데이터화합니다.
