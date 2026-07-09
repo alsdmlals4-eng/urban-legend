@@ -3,7 +3,7 @@ extends Node
 
 const DEFAULT_EPISODE_PATH := "res://data/episodes/episode_001_afterlife_station.json"
 const SAVE_FILE_PATH := "user://urban_legend_save.json"
-const SAVE_VERSION := "mvp-011"
+const SAVE_VERSION := "mvp-012"
 const DEFAULT_DIALOGUE_NODE_ID := "dialogue_intro"
 const DEFAULT_MINIGAME_ID := "minigame_frequency_sync"
 const SCENE_MAIN_MENU := "res://scenes/main_menu.tscn"
@@ -38,6 +38,11 @@ var investigation_risk := 0
 var case_understanding := 0
 var victim_understanding := 0
 var case_anomaly_stability := 100
+var mental_stamina := 100
+var prediction_success_streak := 0
+var last_random_event_id := ""
+var last_random_event_result: Dictionary = {}
+var forced_recovery_phase := false
 var method_results: Dictionary = {}
 var agent_trust_changes: Dictionary = {}
 var used_agent_supports: Array = []
@@ -80,11 +85,11 @@ func reset_run_state() -> void:
 	seen_hint_ids.clear()
 	minigame_results.clear()
 	selected_agent_ids.clear()
-	_clear_investigation_method_state()
 	current_scene_path = SCENE_DIALOGUE
 	current_dialogue_node_id = DEFAULT_DIALOGUE_NODE_ID
 	current_minigame_id = DEFAULT_MINIGAME_ID
 	load_episode(DEFAULT_EPISODE_PATH)
+	_clear_investigation_method_state()
 
 
 ## Returns the active episode title.
@@ -235,6 +240,22 @@ func check_conditions(conditions: Dictionary) -> bool:
 		if get_clue_collection_rate() < float(conditions.get("min_clue_collection_rate", 0.0)):
 			return false
 
+	if conditions.has("min_anomaly_risk"):
+		if get_anomaly_risk() < int(conditions.get("min_anomaly_risk", 0)):
+			return false
+
+	if conditions.has("min_anomaly_understanding"):
+		if get_anomaly_understanding() < int(conditions.get("min_anomaly_understanding", 0)):
+			return false
+
+	if conditions.has("min_mental_stamina"):
+		if get_mental_stamina() < int(conditions.get("min_mental_stamina", 0)):
+			return false
+
+	if conditions.has("forced_recovery_phase"):
+		if forced_recovery_phase != bool(conditions.get("forced_recovery_phase", false)):
+			return false
+
 	if conditions.has("required_resolution_grade"):
 		var required_grade := String(conditions.get("required_resolution_grade", ""))
 		if _get_resolution_rank(get_result_resolution_grade()) < _get_resolution_rank(required_grade):
@@ -249,6 +270,8 @@ func check_conditions(conditions: Dictionary) -> bool:
 
 ## Applies branch result data from dialogue choices or investigation points.
 func apply_story_effects(result_data: Dictionary) -> void:
+	_apply_status_deltas(result_data)
+
 	for flag_id in _to_string_array(result_data.get("add_flags", [])):
 		add_flag(flag_id)
 
@@ -651,8 +674,8 @@ func resolve_investigation_method(point_id: String, method: Dictionary) -> Dicti
 	var before_clue_ids := get_collected_clue_ids()
 
 	apply_story_effects(effects)
-	_apply_method_status_deltas(effects)
 	var trust_changes := _apply_method_trust_rules(method, successful, helper_agent_id)
+	var random_event_result := check_random_event(_to_string_array(method.get("situation_tags", [])))
 	var new_clue_ids := _get_new_string_ids(before_clue_ids, get_collected_clue_ids())
 	var method_result := {
 		"point_id": point_id,
@@ -675,7 +698,8 @@ func resolve_investigation_method(point_id: String, method: Dictionary) -> Dicti
 		"requested_clue_ids": _to_string_array(effects.get("collect_clues", [])),
 		"hint_texts": get_hint_texts_by_ids(effects.get("show_hint_ids", [])),
 		"trust_changes": trust_changes,
-		"case_status": get_case_status_summary(),
+		"random_event_result": random_event_result,
+		"case_status": get_anomaly_status_summary(),
 		"last_updated_at": Time.get_datetime_string_from_system(false, true)
 	}
 
@@ -702,8 +726,18 @@ func get_investigation_risk() -> int:
 	return investigation_risk
 
 
+## Returns current anomaly risk for MVP-012 UI.
+func get_anomaly_risk() -> int:
+	return investigation_risk
+
+
 ## Returns current case understanding.
 func get_case_understanding() -> int:
+	return case_understanding
+
+
+## Returns current anomaly understanding for prediction.
+func get_anomaly_understanding() -> int:
 	return case_understanding
 
 
@@ -717,13 +751,121 @@ func get_case_anomaly_stability() -> int:
 	return case_anomaly_stability
 
 
+## Returns current anomaly stability for recovery UI.
+func get_anomaly_stability() -> int:
+	return case_anomaly_stability
+
+
+## Returns current mental stamina.
+func get_mental_stamina() -> int:
+	return mental_stamina
+
+
+## Returns true when risk forced the run toward recovery.
+func is_forced_recovery_phase() -> bool:
+	return forced_recovery_phase
+
+
+## Returns current anomaly prediction rate after consecutive-success decay.
+func get_current_prediction_rate() -> float:
+	return clampf(float(case_understanding) * _get_prediction_decay_multiplier(), 0.0, 100.0)
+
+
+## Rolls one anomaly prediction and updates decay state.
+func roll_anomaly_prediction() -> Dictionary:
+	var rate := get_current_prediction_rate()
+	var successful := randf() * 100.0 <= rate
+	var next_action := "괴이의 다음 움직임을 안정적으로 읽지 못했습니다."
+	if successful:
+		next_action = _get_prediction_success_text()
+
+	apply_prediction_result(successful)
+	var result := {
+		"successful": successful,
+		"rate": rate,
+		"next_action": next_action,
+		"prediction_success_streak": prediction_success_streak,
+		"mental_stamina": mental_stamina
+	}
+	save_game()
+	return result
+
+
+## Applies prediction success or failure to the decay counter.
+func apply_prediction_result(successful: bool) -> void:
+	if successful:
+		prediction_success_streak += 1
+		add_flag("prediction_success")
+	else:
+		prediction_success_streak = 0
+		add_flag("prediction_failed")
+
+
+## Resets consecutive prediction decay.
+func reset_prediction_decay() -> void:
+	prediction_success_streak = 0
+	save_game()
+
+
+## Returns the latest random event result.
+func get_last_random_event_result() -> Dictionary:
+	return last_random_event_result.duplicate(true)
+
+
+## Checks whether a risk-based random event happens after investigation.
+func check_random_event(trigger_tags: Array = []) -> Dictionary:
+	if investigation_risk >= 100:
+		return _make_forced_recovery_event()
+
+	var chance := _get_random_event_chance()
+	if chance <= 0 or randi_range(1, 100) > chance:
+		last_random_event_result = {
+			"triggered": false,
+			"message": "이번 조사에서는 추가 이상 현상이 발생하지 않았습니다."
+		}
+		return last_random_event_result.duplicate(true)
+
+	var candidates := _get_random_event_candidates(trigger_tags)
+	if candidates.is_empty():
+		last_random_event_result = {
+			"triggered": false,
+			"message": "조건에 맞는 랜덤 이벤트가 없습니다."
+		}
+		return last_random_event_result.duplicate(true)
+
+	var event := _pick_weighted_random_event(candidates)
+	var effects := _to_dictionary(event.get("effects", {}))
+	last_random_event_id = String(event.get("id", ""))
+	last_random_event_result = {
+		"triggered": true,
+		"id": last_random_event_id,
+		"event_type": String(event.get("event_type", "")),
+		"title": String(event.get("title", "랜덤 이벤트")),
+		"message": String(event.get("text", "")),
+		"effects": effects.duplicate(true)
+	}
+	apply_story_effects(effects)
+	return last_random_event_result.duplicate(true)
+
+
 ## Returns a compact summary of investigation status values.
 func get_case_status_summary() -> Dictionary:
+	return get_anomaly_status_summary()
+
+
+## Returns a compact summary of MVP-012 anomaly loop status values.
+func get_anomaly_status_summary() -> Dictionary:
 	return {
 		"investigation_risk": investigation_risk,
 		"case_understanding": case_understanding,
 		"victim_understanding": victim_understanding,
-		"anomaly_stability": case_anomaly_stability
+		"anomaly_risk": investigation_risk,
+		"anomaly_understanding": case_understanding,
+		"anomaly_stability": case_anomaly_stability,
+		"mental_stamina": mental_stamina,
+		"prediction_rate": get_current_prediction_rate(),
+		"prediction_success_streak": prediction_success_streak,
+		"forced_recovery_phase": forced_recovery_phase
 	}
 
 
@@ -831,11 +973,14 @@ func get_current_research_reward() -> Dictionary:
 
 ## Returns true when the current clue rate allows entering the resolution phase.
 func can_enter_resolution_phase() -> bool:
-	return get_resolution_grade() != "unavailable"
+	return forced_recovery_phase or get_resolution_grade() != "unavailable"
 
 
 ## Returns a warning message for the current resolution grade.
 func get_resolution_phase_warning() -> String:
+	if forced_recovery_phase:
+		return "괴이 위험도가 한계에 도달해 강제 회수전으로 밀려나고 있습니다. 단서가 부족하면 피해자 후유증과 회수 부담이 커집니다."
+
 	var grade := get_resolution_grade()
 	match grade:
 		"temporary":
@@ -853,8 +998,12 @@ func start_resolution_phase() -> bool:
 	if not can_enter_resolution_phase():
 		return false
 
-	selected_resolution_grade = get_resolution_grade()
-	selected_resolution_label = get_resolution_label()
+	if forced_recovery_phase and get_resolution_grade() == "unavailable":
+		selected_resolution_grade = "temporary"
+		selected_resolution_label = "강제 회수전"
+	else:
+		selected_resolution_grade = get_resolution_grade()
+		selected_resolution_label = get_resolution_label()
 	selected_resolution_rate = get_clue_collection_rate()
 	_clear_recovery_result()
 	add_flag("resolution_phase_started")
@@ -988,10 +1137,17 @@ func load_game() -> bool:
 	method_results = _to_dictionary(save_data.get("method_results", {}))
 	agent_trust_changes = _to_dictionary(save_data.get("agent_trust_changes", {}))
 	used_agent_supports = _to_unique_string_array(save_data.get("used_agent_supports", []))
-	investigation_risk = clampi(int(save_data.get("investigation_risk", 0)), 0, 100)
-	case_understanding = clampi(int(save_data.get("case_understanding", 0)), 0, 100)
+	investigation_risk = clampi(int(save_data.get("anomaly_risk", save_data.get("investigation_risk", 0))), 0, 100)
+	case_understanding = clampi(int(save_data.get("anomaly_understanding", save_data.get("case_understanding", 0))), 0, 100)
 	victim_understanding = clampi(int(save_data.get("victim_understanding", 0)), 0, 100)
 	case_anomaly_stability = clampi(int(save_data.get("anomaly_stability", 100)), 0, 100)
+	mental_stamina = clampi(int(save_data.get("mental_stamina", 100)), 0, 100)
+	prediction_success_streak = max(0, int(save_data.get("prediction_success_streak", 0)))
+	last_random_event_id = String(save_data.get("last_random_event_id", ""))
+	last_random_event_result = _to_dictionary(save_data.get("last_random_event_result", {}))
+	forced_recovery_phase = bool(save_data.get("forced_recovery_phase", false)) or investigation_risk >= 100
+	if forced_recovery_phase:
+		add_flag("forced_recovery_phase")
 	_apply_collected_clue_ids(_to_string_array(save_data.get("collected_clue_ids", [])))
 
 	selected_resolution_grade = String(save_data.get("selected_resolution_grade", ""))
@@ -1057,7 +1213,14 @@ func _make_save_data() -> Dictionary:
 		"investigation_risk": investigation_risk,
 		"case_understanding": case_understanding,
 		"victim_understanding": victim_understanding,
+		"anomaly_risk": investigation_risk,
+		"anomaly_understanding": case_understanding,
 		"anomaly_stability": case_anomaly_stability,
+		"mental_stamina": mental_stamina,
+		"prediction_success_streak": prediction_success_streak,
+		"last_random_event_id": last_random_event_id,
+		"last_random_event_result": last_random_event_result,
+		"forced_recovery_phase": forced_recovery_phase,
 		"collected_clue_ids": get_collected_clue_ids(),
 		"seen_hint_ids": get_seen_hint_ids(),
 		"selected_resolution_grade": selected_resolution_grade,
@@ -1080,17 +1243,15 @@ func _apply_collected_clue_ids(clue_ids: Array) -> void:
 
 
 func _make_minigame_effect_data(minigame: Dictionary, successful: bool) -> Dictionary:
-	if successful:
-		return {
-			"add_flags": minigame.get("success_flags", []),
-			"collect_clues": minigame.get("success_collect_clues", []),
-			"show_hint_ids": minigame.get("success_show_hint_ids", [])
-		}
-
+	var prefix := "success" if successful else "failure"
 	return {
-		"add_flags": minigame.get("failure_flags", []),
-		"collect_clues": minigame.get("failure_collect_clues", []),
-		"show_hint_ids": minigame.get("failure_show_hint_ids", [])
+		"add_flags": minigame.get("%s_flags" % prefix, []),
+		"collect_clues": minigame.get("%s_collect_clues" % prefix, []),
+		"show_hint_ids": minigame.get("%s_show_hint_ids" % prefix, []),
+		"anomaly_risk_delta": int(minigame.get("%s_anomaly_risk_delta" % prefix, 0)),
+		"anomaly_understanding_delta": int(minigame.get("%s_anomaly_understanding_delta" % prefix, 0)),
+		"anomaly_stability_delta": int(minigame.get("%s_anomaly_stability_delta" % prefix, 0)),
+		"mental_stamina_delta": int(minigame.get("%s_mental_stamina_delta" % prefix, 0))
 	}
 
 
@@ -1123,27 +1284,143 @@ func _find_best_selected_agent_for_stat(stat_key: String) -> Dictionary:
 	return best_agent
 
 
-func _apply_method_status_deltas(effect_data: Dictionary) -> void:
+func _get_effect_int(effect_data: Dictionary, keys: Array) -> int:
+	for key in keys:
+		var text_key := String(key)
+		if effect_data.has(text_key):
+			return int(effect_data.get(text_key, 0))
+	return 0
+
+
+func _get_prediction_decay_multiplier() -> float:
+	if prediction_success_streak <= 0:
+		return 1.0
+	if prediction_success_streak == 1:
+		return 0.5
+	if prediction_success_streak == 2:
+		return 0.25
+	return 0.125
+
+
+func _get_prediction_success_text() -> String:
+	var candidates := [
+		"다음 변화는 안내방송의 잡음 직후에 옵니다. 안정화 타이밍을 맞출 수 있습니다.",
+		"전광판의 글자가 바뀌기 전에 괴이 안정도가 흔들립니다. 그 순간을 노리면 됩니다.",
+		"승강장 조명이 꺼지는 순서가 반복됩니다. 다음 흔들림을 미리 방어할 수 있습니다."
+	]
+	return candidates[randi_range(0, candidates.size() - 1)]
+
+
+func _get_random_event_chance() -> int:
+	if investigation_risk >= 75:
+		return 65
+	if investigation_risk >= 50:
+		return 45
+	if investigation_risk >= 25:
+		return 25
+	if investigation_risk > 0:
+		return 10
+	return 5
+
+
+func _get_random_event_candidates(trigger_tags: Array) -> Array:
+	var candidates: Array = []
+	var clean_trigger_tags := _to_string_array(trigger_tags)
+	var events: Variant = current_episode_data.get("random_events", [])
+	if typeof(events) != TYPE_ARRAY:
+		return candidates
+
+	for event in events:
+		if typeof(event) != TYPE_DICTIONARY:
+			continue
+
+		var event_id := String(event.get("id", ""))
+		if event_id == last_random_event_id:
+			continue
+		if investigation_risk < int(event.get("min_anomaly_risk", 0)):
+			continue
+		if not _event_tags_match(_to_string_array(event.get("trigger_tags", [])), clean_trigger_tags):
+			continue
+		if not check_conditions(_to_dictionary(event.get("conditions", {}))):
+			continue
+
+		candidates.append(event)
+	return candidates
+
+
+func _event_tags_match(event_tags: Array, trigger_tags: Array) -> bool:
+	if event_tags.is_empty() or trigger_tags.is_empty():
+		return true
+
+	for tag in event_tags:
+		if trigger_tags.has(tag):
+			return true
+	return false
+
+
+func _pick_weighted_random_event(events: Array) -> Dictionary:
+	var total_weight := 0
+	for event in events:
+		if typeof(event) == TYPE_DICTIONARY:
+			total_weight += max(1, int(event.get("weight", 1)))
+
+	var roll := randi_range(1, max(1, total_weight))
+	var cursor := 0
+	for event in events:
+		if typeof(event) != TYPE_DICTIONARY:
+			continue
+
+		cursor += max(1, int(event.get("weight", 1)))
+		if roll <= cursor:
+			return event
+	return events[0] if not events.is_empty() else {}
+
+
+func _make_forced_recovery_event() -> Dictionary:
+	forced_recovery_phase = true
+	add_flag("forced_recovery_phase")
+	last_random_event_id = "forced_recovery_phase"
+	last_random_event_result = {
+		"triggered": true,
+		"id": last_random_event_id,
+		"event_type": "threat_event",
+		"title": "강제 회수전",
+		"message": "괴이 위험도가 100에 도달했습니다. 더 조사하기보다 회수 페이즈 진입을 준비해야 합니다.",
+		"effects": {}
+	}
+	save_game()
+	return last_random_event_result.duplicate(true)
+
+
+func _apply_status_deltas(effect_data: Dictionary) -> void:
 	investigation_risk = clampi(
-		investigation_risk + int(effect_data.get("investigation_risk_delta", 0)),
+		investigation_risk + _get_effect_int(effect_data, ["anomaly_risk_delta", "investigation_risk_delta"]),
 		0,
 		100
 	)
 	case_understanding = clampi(
-		case_understanding + int(effect_data.get("case_understanding_delta", 0)),
+		case_understanding + _get_effect_int(effect_data, ["anomaly_understanding_delta", "case_understanding_delta"]),
 		0,
 		100
 	)
 	victim_understanding = clampi(
-		victim_understanding + int(effect_data.get("victim_understanding_delta", 0)),
+		victim_understanding + _get_effect_int(effect_data, ["victim_understanding_delta"]),
 		0,
 		100
 	)
 	case_anomaly_stability = clampi(
-		case_anomaly_stability + int(effect_data.get("anomaly_stability_delta", 0)),
+		case_anomaly_stability + _get_effect_int(effect_data, ["anomaly_stability_delta"]),
 		0,
 		100
 	)
+	mental_stamina = clampi(
+		mental_stamina + _get_effect_int(effect_data, ["mental_stamina_delta"]),
+		0,
+		100
+	)
+	if investigation_risk >= 100:
+		forced_recovery_phase = true
+		add_flag("forced_recovery_phase")
 
 
 func _apply_method_trust_rules(method: Dictionary, successful: bool, helper_agent_id: String) -> Array:
@@ -1200,13 +1477,23 @@ func _get_new_string_ids(before_ids: Array, after_ids: Array) -> Array:
 
 
 func _clear_investigation_method_state() -> void:
-	investigation_risk = 0
-	case_understanding = 0
-	victim_understanding = 0
-	case_anomaly_stability = 100
+	_apply_initial_anomaly_status()
 	method_results.clear()
 	agent_trust_changes.clear()
 	used_agent_supports.clear()
+
+
+func _apply_initial_anomaly_status() -> void:
+	var status := _to_dictionary(current_episode_data.get("anomaly_status", {}))
+	investigation_risk = clampi(int(status.get("anomaly_risk", 0)), 0, 100)
+	case_understanding = clampi(int(status.get("anomaly_understanding", 0)), 0, 100)
+	victim_understanding = clampi(int(status.get("victim_understanding", 0)), 0, 100)
+	case_anomaly_stability = clampi(int(status.get("anomaly_stability", 100)), 0, 100)
+	mental_stamina = clampi(int(status.get("mental_stamina", 100)), 0, 100)
+	prediction_success_streak = max(0, int(status.get("prediction_success_streak", 0)))
+	last_random_event_id = ""
+	last_random_event_result.clear()
+	forced_recovery_phase = bool(status.get("forced_recovery_phase", false))
 
 
 func _to_unique_string_array(value: Variant) -> Array:

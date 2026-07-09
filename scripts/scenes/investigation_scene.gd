@@ -330,12 +330,27 @@ func _make_method_result_text(result: Dictionary) -> String:
 		lines.append("새 단서: %s" % ", ".join(new_clue_ids))
 
 	var case_status: Dictionary = result.get("case_status", {})
-	lines.append("상태 변화 후: 위험도 %d / 사건 이해도 %d / 피해자 이해도 %d / 괴이 안정도 %d" % [
-		int(case_status.get("investigation_risk", 0)),
-		int(case_status.get("case_understanding", 0)),
+	lines.append("상태 변화 후: 괴이 위험도 %d / 괴이 이해도 %d / 피해자 이해도 %d / 정신력 %d / 괴이 안정도 %d / 예측률 %.1f%%" % [
+		int(case_status.get("anomaly_risk", 0)),
+		int(case_status.get("anomaly_understanding", 0)),
 		int(case_status.get("victim_understanding", 0)),
-		int(case_status.get("anomaly_stability", 100))
+		int(case_status.get("mental_stamina", 100)),
+		int(case_status.get("anomaly_stability", 100)),
+		float(case_status.get("prediction_rate", 0.0))
 	])
+
+	var random_event: Dictionary = result.get("random_event_result", {})
+	if not random_event.is_empty():
+		if bool(random_event.get("triggered", false)):
+			lines.append("랜덤 이벤트 [%s]\n%s" % [
+				String(random_event.get("title", "")),
+				String(random_event.get("message", ""))
+			])
+		else:
+			lines.append("랜덤 이벤트: %s" % String(random_event.get("message", "이상 현상 없음")))
+
+	if bool(case_status.get("forced_recovery_phase", false)):
+		lines.append("괴이 위험도가 한계에 도달했습니다. 해결 시도 버튼으로 강제 회수전에 진입할 수 있습니다.")
 
 	var trust_lines: Array = []
 	for change in result.get("trust_changes", []):
@@ -379,11 +394,14 @@ func _refresh_case_status() -> void:
 	_progress_label.text = "단서 수집률: %.0f%% (%d/%d)" % [collection_rate, collected_count, total_count]
 	_progress_bar.value = collection_rate
 	_resolution_label.text = "현재 해결 단계: %s" % GameState.get_resolution_label()
-	_case_state_label.text = "조사 상태: 위험도 %d / 사건 이해도 %d / 피해자 이해도 %d / 괴이 안정도 %d" % [
-		GameState.get_investigation_risk(),
-		GameState.get_case_understanding(),
-		GameState.get_victim_understanding(),
-		GameState.get_case_anomaly_stability()
+	var status := GameState.get_anomaly_status_summary()
+	_case_state_label.text = "조사 상태: 괴이 위험도 %d / 괴이 이해도 %d / 피해자 이해도 %d / 정신력 %d / 괴이 안정도 %d / 예측률 %.1f%%" % [
+		int(status.get("anomaly_risk", 0)),
+		int(status.get("anomaly_understanding", 0)),
+		int(status.get("victim_understanding", 0)),
+		int(status.get("mental_stamina", 100)),
+		int(status.get("anomaly_stability", 100)),
+		float(status.get("prediction_rate", 0.0))
 	]
 	_refresh_resolution_attempt_button()
 	_refresh_clue_list()
@@ -452,7 +470,10 @@ func _refresh_resolution_attempt_button() -> void:
 	var can_enter: bool = GameState.can_enter_resolution_phase()
 	_resolution_attempt_button.disabled = not can_enter
 	if can_enter:
-		_resolution_attempt_button.text = "해결 시도: %s" % GameState.get_resolution_label()
+		if GameState.is_forced_recovery_phase():
+			_resolution_attempt_button.text = "강제 회수전 진입"
+		else:
+			_resolution_attempt_button.text = "해결 시도: %s" % GameState.get_resolution_label()
 	else:
 		_resolution_attempt_button.text = "해결 불가"
 
@@ -464,9 +485,10 @@ func _show_resolution_confirm_panel() -> void:
 		return
 
 	var collection_rate: float = GameState.get_clue_collection_rate()
+	var grade_text := "강제 회수전" if GameState.is_forced_recovery_phase() else GameState.get_resolution_label()
 	_resolution_confirm_label.text = "현재 단서 수집률: %.0f%%\n현재 해결 등급: %s" % [
 		collection_rate,
-		GameState.get_resolution_label()
+		grade_text
 	]
 	_resolution_warning_label.text = "위험 안내: %s" % GameState.get_resolution_phase_warning()
 	_resolution_confirm_panel.visible = true

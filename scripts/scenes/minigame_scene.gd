@@ -130,6 +130,14 @@ func _make_result_text(successful: bool) -> String:
 		text += "\n\n성공 플래그: %s" % ", ".join(_minigame.get("success_flags", []))
 	else:
 		text += "\n\n실패 플래그: %s" % ", ".join(_minigame.get("failure_flags", []))
+	var status := GameState.get_anomaly_status_summary()
+	text += "\n\n현재 상태: 괴이 위험도 %d / 괴이 이해도 %d / 정신력 %d / 괴이 안정도 %d / 예측률 %.1f%%" % [
+		int(status.get("anomaly_risk", 0)),
+		int(status.get("anomaly_understanding", 0)),
+		int(status.get("mental_stamina", 100)),
+		int(status.get("anomaly_stability", 100)),
+		float(status.get("prediction_rate", 0.0))
+	]
 	return text
 
 

@@ -24,6 +24,7 @@ var _agent_support_buttons: Array[Button] = []
 var _stability_bar: ProgressBar
 var _fear_bar: ProgressBar
 var _threshold_label: Label
+var _prediction_label: Label
 var _auto_effect_label: Label
 var _result_label: Label
 var _recover_button: Button
@@ -99,6 +100,9 @@ func _build_ui() -> void:
 	_threshold_label = _make_label("")
 	status.add_child(_threshold_label)
 
+	_prediction_label = _make_label("")
+	status.add_child(_prediction_label)
+
 	status.add_child(_make_label("현장 위험/공포도"))
 	_fear_bar = _make_bar(100)
 	status.add_child(_fear_bar)
@@ -108,6 +112,7 @@ func _build_ui() -> void:
 	actions.add_theme_constant_override("v_separation", 6)
 	root.add_child(actions)
 
+	_add_prediction_action(actions)
 	_add_stability_action(actions, "기록 스캔", 18, 6, "단말기로 괴이의 반복 규칙을 스캔했습니다.")
 	_add_stability_action(actions, "임시 봉인지", 24, 9, "봉인지가 괴이의 핵 주변을 짧게 고정했습니다.")
 	_add_defense_action(actions)
@@ -167,13 +172,14 @@ func _apply_collected_clue_effects() -> void:
 			BASE_ANOMALY_STABILITY
 		)
 
-	var investigation_stability_delta := GameState.get_case_anomaly_stability() - BASE_ANOMALY_STABILITY
-	var risk_penalty := int(floor(float(GameState.get_investigation_risk()) / 25.0))
+	var investigation_stability_delta := GameState.get_anomaly_stability() - BASE_ANOMALY_STABILITY
+	var risk_penalty := int(floor(float(GameState.get_anomaly_risk()) / 25.0))
 	_anomaly_stability = clampi(
 		_anomaly_stability + investigation_stability_delta + risk_penalty,
 		0,
 		BASE_ANOMALY_STABILITY
 	)
+	_fear_level = clampi(int(floor(float(100 - GameState.get_mental_stamina()) / 5.0)), 0, 100)
 
 
 func _make_start_message() -> String:
@@ -221,14 +227,17 @@ func _make_minigame_battle_text() -> String:
 
 
 func _make_investigation_status_text() -> String:
-	if GameState.get_investigation_risk() <= 0 and GameState.get_case_understanding() <= 0 and GameState.get_victim_understanding() <= 0:
+	var status := GameState.get_anomaly_status_summary()
+	if int(status.get("anomaly_risk", 0)) <= 0 and int(status.get("anomaly_understanding", 0)) <= 0 and int(status.get("victim_understanding", 0)) <= 0:
 		return ""
 
-	return "\n조사 방법 영향: 위험도 %d / 사건 이해도 %d / 피해자 이해도 %d / 조사상 괴이 안정도 %d" % [
-		GameState.get_investigation_risk(),
-		GameState.get_case_understanding(),
-		GameState.get_victim_understanding(),
-		GameState.get_case_anomaly_stability()
+	return "\n조사 루프 영향: 괴이 위험도 %d / 괴이 이해도 %d / 피해자 이해도 %d / 정신력 %d / 조사상 괴이 안정도 %d / 예측률 %.1f%%" % [
+		int(status.get("anomaly_risk", 0)),
+		int(status.get("anomaly_understanding", 0)),
+		int(status.get("victim_understanding", 0)),
+		int(status.get("mental_stamina", 100)),
+		int(status.get("anomaly_stability", 100)),
+		float(status.get("prediction_rate", 0.0))
 	]
 
 
@@ -265,6 +274,25 @@ func _add_stability_action(parent: Control, label: String, stability_delta: int,
 		_anomaly_stability = max(0, _anomaly_stability - stability_delta)
 		_fear_level = clampi(_fear_level + fear_gain, 0, 100)
 		_update_battle_view(message)
+	)
+	parent.add_child(button)
+	_action_buttons.append(button)
+
+
+func _add_prediction_action(parent: Control) -> void:
+	var button := Button.new()
+	button.text = "다음 행동 예측"
+	button.pressed.connect(func() -> void:
+		var prediction := GameState.roll_anomaly_prediction()
+		if bool(prediction.get("successful", false)):
+			_fear_level = max(0, _fear_level - 6)
+			_update_battle_view("예측 성공 %.1f%%\n%s" % [
+				float(prediction.get("rate", 0.0)),
+				String(prediction.get("next_action", ""))
+			])
+		else:
+			_fear_level = clampi(_fear_level + 6, 0, 100)
+			_update_battle_view("예측 실패 %.1f%%\n괴이의 다음 움직임을 놓쳤습니다. 연속 예측 보정이 초기화됩니다." % float(prediction.get("rate", 0.0)))
 	)
 	parent.add_child(button)
 	_action_buttons.append(button)
@@ -368,6 +396,15 @@ func _update_battle_view(message: String) -> void:
 		_threshold_label.text = "회수 가능 조건: 괴이 안정도 %d 이하 / 현재 %d" % [
 			_recovery_threshold,
 			_anomaly_stability
+		]
+	if _prediction_label != null:
+		var status := GameState.get_anomaly_status_summary()
+		_prediction_label.text = "괴이 위험도 %d / 괴이 이해도 %d / 정신력 %d / 예측률 %.1f%% / 연속 예측 %d" % [
+			int(status.get("anomaly_risk", 0)),
+			int(status.get("anomaly_understanding", 0)),
+			int(status.get("mental_stamina", 100)),
+			float(status.get("prediction_rate", 0.0)),
+			int(status.get("prediction_success_streak", 0))
 		]
 	if _recover_button != null:
 		_recover_button.disabled = _recovery_completed or not _can_recover()
