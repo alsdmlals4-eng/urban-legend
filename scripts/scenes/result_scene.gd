@@ -40,6 +40,7 @@ func _build_ui() -> void:
 	root.add_child(title)
 
 	_add_result_panel(root)
+	_add_case_report_panel(root)
 	_add_navigation_buttons(root)
 
 
@@ -72,11 +73,39 @@ func _add_result_panel(parent: Control) -> void:
 	content.add_child(_make_label("다음 사건 영향: %s" % reward.get("next_episode_effect", "")))
 
 
-func _add_unlock_list(parent: Control, title: String, entries: Array, name_key: String, description_key: String) -> void:
-	if entries.is_empty():
-		parent.add_child(_make_label("%s: 없음" % title))
-		return
+func _add_case_report_panel(parent: Control) -> void:
+	var report := GameState.get_case_report_summary()
+	var panel := PanelContainer.new()
+	parent.add_child(panel)
 
+	var content := VBoxContainer.new()
+	content.add_theme_constant_override("separation", 8)
+	panel.add_child(content)
+
+	content.add_child(_make_label("사건 보고서"))
+	content.add_child(_make_label("사건명: %s" % String(report.get("episode_title", ""))))
+	content.add_child(_make_label("해결 등급: %s / 단서 수집률: %.0f%%" % [
+		String(report.get("resolution_label", "해결 불가")),
+		float(report.get("clue_collection_rate", 0.0))
+	]))
+	_add_text_list(content, "수집한 단서", _make_entry_lines(report.get("collected_clues", []), "title", "description"))
+	content.add_child(_make_label("확인한 힌트: %d건" % int(report.get("seen_hint_count", 0))))
+	_add_text_list(content, "미니게임 기록", _make_minigame_lines(report.get("minigame_results", {})))
+	content.add_child(_make_label("괴이 핵 회수 결과: %s" % _make_report_recovery_text(report.get("recovery_result", {}))))
+	_add_text_list(content, "해금 기록물", _make_entry_lines(report.get("unlocked_records", []), "title", "description"))
+	_add_text_list(content, "연구 보상", _make_entry_lines(report.get("unlocked_research_rewards", []), "ability_name", "ability_description"))
+	_add_text_list(content, "해금 장비", _make_entry_lines(report.get("unlocked_equipment", []), "name", "description"))
+	_add_text_list(content, "선택 요원과 수사 파트너 신뢰도", _make_agent_trust_lines(report.get("selected_agents", [])))
+	_add_text_list(content, "발생한 요원 이벤트", _make_entry_lines(report.get("triggered_agent_events", []), "title", "text"))
+	_add_text_list(content, "요원 보조 안내", report.get("agent_support_texts", []))
+	_add_text_list(content, "다음 사건 참고", report.get("next_case_notes", []))
+
+
+func _add_unlock_list(parent: Control, title: String, entries: Array, name_key: String, description_key: String) -> void:
+	_add_text_list(parent, title, _make_entry_lines(entries, name_key, description_key))
+
+
+func _make_entry_lines(entries: Array, name_key: String, description_key: String) -> Array:
 	var lines: Array = []
 	for entry in entries:
 		if typeof(entry) != TYPE_DICTIONARY:
@@ -85,6 +114,48 @@ func _add_unlock_list(parent: Control, title: String, entries: Array, name_key: 
 			String(entry.get(name_key, "")),
 			String(entry.get(description_key, ""))
 		])
+	return lines
+
+
+func _make_minigame_lines(results: Dictionary) -> Array:
+	var lines: Array = []
+	for minigame_id in results:
+		var result: Variant = results.get(minigame_id, {})
+		if typeof(result) != TYPE_DICTIONARY:
+			continue
+		var minigame := GameState.get_minigame(String(minigame_id))
+		var title := String(minigame.get("title", minigame_id))
+		var state := "성공" if bool(result.get("successful", false)) else "실패"
+		lines.append("%s: %s - %s" % [title, state, String(result.get("result_text", "결과가 기록되었습니다."))])
+	return lines
+
+
+func _make_agent_trust_lines(agents: Array) -> Array:
+	var lines: Array = []
+	for agent in agents:
+		if typeof(agent) == TYPE_DICTIONARY:
+			lines.append("%s (%s): 신뢰도 %+d" % [
+				String(agent.get("name", "요원")),
+				String(agent.get("temperament_label", "")),
+				int(agent.get("trust", 0))
+			])
+	return lines
+
+
+func _make_report_recovery_text(result: Dictionary) -> String:
+	if result.is_empty() or not bool(result.get("successful", false)):
+		return "회수 기록 없음"
+	return "%s / 상태: %s / 안정도 %d" % [
+		String(result.get("description", "회수 성공")),
+		String(result.get("result_status", "기록됨")),
+		int(result.get("anomaly_stability", 100))
+	]
+
+
+func _add_text_list(parent: Control, title: String, lines: Array) -> void:
+	if lines.is_empty():
+		parent.add_child(_make_label("%s: 없음" % title))
+		return
 	parent.add_child(_make_label("%s\n- %s" % [title, "\n- ".join(lines)]))
 
 

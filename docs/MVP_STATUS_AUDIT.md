@@ -15,16 +15,15 @@
 다만 새 AI/Codex가 작업을 시작할 때 혼동할 수 있는 문서 정합성 문제가 있다.
 
 1. `docs/CODEX_SHARED_WORK_RULES.md`는 직전 정상 기준으로 복구되었다.
-2. `AGENTS.md`의 `Current MVP Baseline`은 MVP-009로 남아 실제 진행 상황과 다르다.
-3. `PROJECT_BRIEF.md`, `DESIGN_INTENT.md`, `MVP_ROADMAP.md`, `TEST_CHECKLIST.md`가 없어 현재 흐름을 빠르게 파악하기 어려웠다.
-4. 전체 흐름 HTML 대시보드가 repo 안에 없었다.
+2. `AGENTS.md`의 `Current MVP Baseline`은 MVP-017 기준으로 갱신했다.
+3. `PROJECT_BRIEF.md`, `DESIGN_INTENT.md`, `MVP_ROADMAP.md`, `TEST_CHECKLIST.md`와 전체 흐름 HTML 대시보드를 추가해 현재 흐름을 빠르게 파악할 수 있게 했다.
 5. README와 코드 상수의 버전 표기가 실제 MVP 진행 상태보다 뒤처질 가능성이 있다.
 
 ## 확인한 기준 문서
 
 | 파일 | 확인 결과 |
 |---|---|
-| `AGENTS.md` | 작업 순서와 Godot/GDScript 규칙은 유효. 단, Current MVP Baseline이 MVP-009로 오래됨 |
+| `AGENTS.md` | 작업 순서와 Godot/GDScript 규칙이 유효하며, Current MVP Baseline을 MVP-017로 갱신함 |
 | `docs/BASE_RULES_VERSION.md` | Base 원격 대신 로컬 사본 우선 원칙 확인 |
 | `docs/DOCUMENTATION_MAP.md` | 계획 문서 4종이 파일 없음으로 기록되어 있었음 |
 | `docs/AI_SHARED_WORK_RULES.md` | 사용자 최신 지시와 프로젝트 규칙 우선 원칙 확인 |
@@ -48,10 +47,10 @@
 
 | 문제 | 위험 | 조치 |
 |---|---|---|
-| `AGENTS.md` 기준선이 MVP-009 | 새 작업자가 MVP-010~016 구현을 없는 것으로 오해할 수 있음 | `MVP_ROADMAP.md`와 이 감사 문서에서 현재 기준을 MVP-017로 명시. 후속으로 AGENTS 갱신 권장 |
-| 계획 문서 4종 부재 | 프로젝트 목적/로드맵/검수 기준 파악이 늦어짐 | `PROJECT_BRIEF.md`, `DESIGN_INTENT.md`, `MVP_ROADMAP.md`, `TEST_CHECKLIST.md` 생성 |
-| 전체 흐름 HTML 부재 | MVP 연결 관계와 현재 위치 확인 어려움 | `docs/urban_legend_flow_dashboard.html` 생성 |
-| README 버전 `Ver 1.8` | 실제 진행 단계와 표시 버전 불일치 가능성 | 후속 Codex/문서 정합성 작업에서 갱신 권장 |
+| `AGENTS.md` 기준선이 MVP-009 | 새 작업자가 MVP-010~016 구현을 없는 것으로 오해할 수 있음 | MVP-017 기준으로 갱신 완료 |
+| 계획 문서 4종 부재 | 프로젝트 목적/로드맵/검수 기준 파악이 늦어짐 | `PROJECT_BRIEF.md`, `DESIGN_INTENT.md`, `MVP_ROADMAP.md`, `TEST_CHECKLIST.md` 생성 완료 |
+| 전체 흐름 HTML 부재 | MVP 연결 관계와 현재 위치 확인 어려움 | `docs/urban_legend_flow_dashboard.html` 생성 완료 |
+| README 버전 `Ver 1.8` | 실제 진행 단계와 표시 버전 불일치 가능성 | MVP-017 구현과 함께 `Ver 1.9`로 갱신 완료 |
 | `SAVE_VERSION := "mvp-014"` | 의도된 저장 호환성인지, 갱신 누락인지 불명확 | 코드 수정 전 실제 저장 호환성 확인 필요. 임의 수정 금지 |
 
 ## MVP-016 구현 확인 메모
@@ -102,6 +101,5 @@ MVP-017은 새 시스템을 크게 늘리는 것보다, 기존 시스템을 한 
 
 ## 남은 위험
 
-- 실제 Godot 실행 검증은 아직 수행하지 않았다.
-- `AGENTS.md`의 Current MVP Baseline은 직접 수정되지 않았다.
-- README 전체 갱신은 대형 문서 수정이라 Codex 구현 결과와 함께 처리하는 것이 안전하다.
+- 실제 Godot 실행 검증은 MVP-017 구현 후 다시 수행해야 한다.
+- `SAVE_VERSION`은 저장 구조를 바꾸지 않아 의도적으로 `mvp-014`를 유지한다.

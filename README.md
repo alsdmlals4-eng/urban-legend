@@ -7,7 +7,7 @@
 ## 버전 표기
 
 메인 화면의 `Ver` 표기는 수정 작업이 반영될 때마다 0.1씩 올립니다.
-현재 버전은 `Ver 1.8`이며, 이후에는 `Ver 1.9`, `Ver 2.0`처럼 갱신합니다.
+현재 버전은 `Ver 1.9`이며, 이후에는 `Ver 2.0`, `Ver 2.1`처럼 갱신합니다.
 
 ## 기준 파일
 
@@ -29,6 +29,7 @@ urban-legend/
   data/
     episodes/
       episode_001_afterlife_station.json
+      episode_002_red_umbrella_alley.json
   scenes/
     main_menu.tscn
     database_view.tscn
@@ -38,6 +39,7 @@ urban-legend/
     dialogue_scene.tscn
     battle_scene.tscn
     minigame_scene.tscn
+    preparation_scene.tscn
   scripts/
     core/
       urban_legend_state.gd
@@ -51,6 +53,7 @@ urban-legend/
       battle_scene.gd
       result_scene.gd
       minigame_scene.gd
+      preparation_scene.gd
     ui/
       main_menu.gd
       database_view.gd
@@ -859,3 +862,18 @@ Godot에서 확인할 항목:
 4. 같은 조사 방법을 다시 실행해도 같은 이벤트가 반복 표시되지 않는지 확인합니다.
 5. 이벤트 후 조사 상태 패널에 수사 파트너 보조 안내가 유지되는지 확인합니다.
 6. 저장 후 이어하기로 신뢰도와 이벤트 표시 이력이 유지되는지 확인합니다.
+
+## MVP-017 사건 보고서·요원 신뢰도 결산 1차 구현
+
+결과 화면은 기존 피해자 구조 결과와 연구 보상을 유지하면서, `GameState.get_case_report_summary()`가 집계한 사건 보고서를 함께 표시합니다. 보고서는 현재 사건의 단서 수집률과 실제 수집 단서, 확인한 힌트 수, 미니게임 결과, 괴이 핵 회수 결과, 이번 결과로 해금된 기록물·연구 보상·장비를 구분합니다.
+
+선택한 요원만 보고서의 수사 파트너 신뢰도와 요원 이벤트 대상으로 표시됩니다. 신뢰도는 연애 호감도가 아니라 수사 파트너로서의 신뢰이며, 저장 데이터에 이미 있던 `agent_trust`, `triggered_agent_event_ids`, 단서·힌트·미니게임·회수·해금 상태를 다시 집계하므로 MVP-017을 위해 새 저장 필드는 추가하지 않았습니다.
+
+`SAVE_VERSION`은 기존 `mvp-014`를 유지합니다. 이번 변경은 저장 데이터 구조를 바꾸지 않고 기존 값을 읽어 표시만 하므로, 이전 저장과의 호환성을 지키는 편이 안전합니다.
+
+Godot에서 확인할 항목:
+
+1. 저승역을 회수 성공까지 진행한 뒤 결과 화면에 기존 피해자 결과와 연구 보상이 유지되는지 확인합니다.
+2. 사건 보고서에서 실제 수집한 단서, 힌트 수, 미니게임 결과, 회수 결과가 표시되는지 확인합니다.
+3. 편성한 요원만 신뢰도, 요원 이벤트, 보조 안내에 나타나는지 확인합니다.
+4. 결과 화면에서 메인 메뉴 또는 사건 준비 화면으로 이동한 뒤 `이어하기`를 선택해 보고서에 필요한 상태가 유지되는지 확인합니다.

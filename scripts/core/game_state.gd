@@ -695,9 +695,49 @@ func get_agent_trust_support_texts() -> Array:
 	var lines: Array = []
 	for event in AGENT_TRUST_EVENTS:
 		var event_id := String(event.get("id", ""))
-		if triggered_agent_event_ids.has(event_id):
+		var agent_id := String(event.get("agent_id", ""))
+		if selected_agent_ids.has(agent_id) and triggered_agent_event_ids.has(event_id):
 			lines.append(String(event.get("support_text", "")))
 	return lines
+
+
+## Collects only the current case records needed by the result-screen case report.
+func get_case_report_summary() -> Dictionary:
+	var selected_agents: Array = []
+	var trust_values: Dictionary = {}
+	for agent in get_selected_agents():
+		var agent_entry: Dictionary = agent.duplicate(true)
+		var agent_id := String(agent_entry.get("id", ""))
+		var trust_value := get_agent_trust(agent_id)
+		agent_entry["trust"] = trust_value
+		selected_agents.append(agent_entry)
+		trust_values[agent_id] = trust_value
+
+	var recovery_result := get_current_recovery_result().duplicate(true)
+	recovery_result["successful"] = is_recovery_successful()
+	recovery_result["result_status"] = get_recovery_result_status()
+	recovery_result["anomaly_stability"] = get_recovery_result_stability()
+
+	var record_entries := get_current_result_unlocked_records()
+	var reward_entries := get_current_result_unlocked_research_rewards()
+	var equipment_entries := get_current_result_unlocked_equipment()
+	return {
+		"episode_title": get_current_episode_title(),
+		"resolution_label": get_result_resolution_label(),
+		"clue_collection_rate": get_clue_collection_rate(),
+		"collected_clues": get_collected_clues(),
+		"seen_hint_count": get_seen_hint_ids().size(),
+		"minigame_results": get_minigame_results(),
+		"recovery_result": recovery_result,
+		"unlocked_records": record_entries,
+		"unlocked_research_rewards": reward_entries,
+		"unlocked_equipment": equipment_entries,
+		"selected_agents": selected_agents,
+		"agent_trust": trust_values,
+		"triggered_agent_events": _get_triggered_agent_event_entries(),
+		"agent_support_texts": get_agent_trust_support_texts(),
+		"next_case_notes": _get_case_report_next_notes(record_entries, equipment_entries, selected_agents)
+	}
 
 
 ## Returns active hint records. Hints are separate from clues.
@@ -1846,6 +1886,33 @@ func _try_trigger_agent_trust_events() -> Array:
 		triggered_agent_event_ids.append(event_id)
 		triggered_events.append(event.duplicate(true))
 	return triggered_events
+
+
+func _get_triggered_agent_event_entries() -> Array:
+	var events: Array = []
+	for event in AGENT_TRUST_EVENTS:
+		var event_id := String(event.get("id", ""))
+		var agent_id := String(event.get("agent_id", ""))
+		if selected_agent_ids.has(agent_id) and triggered_agent_event_ids.has(event_id):
+			events.append(event.duplicate(true))
+	return events
+
+
+func _get_case_report_next_notes(records: Array, equipment: Array, agents: Array) -> Array:
+	var notes: Array = []
+	for record in records:
+		if typeof(record) == TYPE_DICTIONARY:
+			var effect := String(record.get("next_investigation_effect", ""))
+			if not effect.is_empty():
+				notes.append("%s: %s" % [String(record.get("title", "기록물")), effect])
+	for item in equipment:
+		if typeof(item) == TYPE_DICTIONARY:
+			var modifier := String(item.get("next_investigation_modifier", ""))
+			if not modifier.is_empty():
+				notes.append("%s: %s" % [String(item.get("name", "장비")), modifier])
+	if not agents.is_empty():
+		notes.append("선택 요원의 수사 파트너 신뢰도는 후속 사건의 반응과 보조 안내에 기록됩니다.")
+	return notes.slice(0, 3)
 
 
 func _get_new_string_ids(before_ids: Array, after_ids: Array) -> Array:

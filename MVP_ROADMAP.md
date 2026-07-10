@@ -4,7 +4,7 @@
 
 현재 문서 기준선은 `MVP-017`이다.
 
-주의: `AGENTS.md`의 `Current MVP Baseline` 섹션은 아직 MVP-009 기준으로 남아 있어 실제 진행 상황과 맞지 않는다. 현재 MVP 상태 판단은 이 문서와 GitHub Issue #17, README의 최신 MVP 섹션을 함께 기준으로 삼는다.
+현재 MVP 상태 판단은 이 문서와 GitHub Issue #17, README의 최신 MVP 섹션을 함께 기준으로 삼는다. `AGENTS.md`의 `Current MVP Baseline`도 MVP-017 기준으로 동기화되어 있다.
 
 ## 전체 MVP 흐름
 
