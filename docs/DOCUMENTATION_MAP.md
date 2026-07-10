@@ -42,6 +42,7 @@
 | 프로젝트 전용 | `docs/CODEX_GOAL_MVP_018.md` | MVP-018 Codex 실행 Goal |
 | 프로젝트 전용 | `docs/CODEX_GOAL_MVP_020.md` | MVP-020 Codex 실행 Goal. 실제 GitHub Issue는 #27 |
 | 프로젝트 전용 | `docs/CODEX_GOAL_MVP_021.md` | MVP-021 Codex 실행 Goal. 실제 GitHub Issue는 #28 |
+| 프로젝트 전용 | `docs/CODEX_GOAL_MVP_022.md` | MVP-022 Codex 실행 Goal. 실제 GitHub Issue는 #29 |
 | 프로젝트 전용 | `.serena/project.yml` | Serena 프로젝트 설정 |
 | 프로젝트 전용 | `data/` | 게임 데이터 |
 | 프로젝트 전용 | `scripts/` | Godot 구현 코드 |
@@ -81,7 +82,7 @@ GitHub에 남아 있는 `docs/urban_legend_flow_dashboard.html`은 과거 기록
 18. 실제 수정 대상 파일
 ```
 
-MVP-021 기준으로 현재 MVP 상태는 `MVP_ROADMAP.md`, `docs/MVP_STATUS_AUDIT.md`, GitHub Issue #28, `docs/CODEX_GOAL_MVP_021.md`를 함께 확인한다.
+MVP-022 기준으로 현재 MVP 상태는 `MVP_ROADMAP.md`, `docs/MVP_STATUS_AUDIT.md`, GitHub Issue #29, `docs/CODEX_GOAL_MVP_022.md`를 함께 확인한다.
 
 ## 동기화와 확장 원칙
 
