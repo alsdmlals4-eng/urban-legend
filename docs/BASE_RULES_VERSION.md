@@ -11,17 +11,37 @@
 
 일상적인 urban-legend 작업에서는 Base 원격 링크 대신 이 저장소의 공용 로컬 사본을 먼저 읽는다. Base 원격은 공용 규칙 동기화, 기준 차이 확인, 또는 공용 규칙 개선 작업에서만 확인한다.
 
+단, 사용자 최신 지시로 Base 원본 확인이 요구되었거나 공용 규칙을 갱신하는 작업에서는 GitHub Base 원본을 먼저 확인한다.
+
 ## 로컬 사본 상태
 
 | 로컬 파일 | Base와의 관계 | 비고 |
 |---|---|---|
 | `docs/AI_SHARED_WORK_RULES.md` | Base 기반 로컬 사본 | 공용 작업 원칙을 유지한다. |
-| `docs/AI_WORKFLOW_RULES.md` | Base 기반 + 프로젝트 확장 | 도시괴담 기록국의 ChatGPT, HTML, Goal 작업 규칙을 포함한다. |
+| `docs/AI_WORKFLOW_RULES.md` | Base 기반 + 프로젝트 확장 | 도시괴담 기록국의 ChatGPT, HTML, Goal, 벤치마킹 작업 규칙을 포함한다. |
 | `docs/MVP_WORKFLOW_CHECKLIST.md` | Base 기반 + 프로젝트 확장 | 현재 프로젝트의 역할과 MVP 실행 흐름을 포함한다. |
-| `docs/BENCHMARKING_REFERENCE_GUIDE.md` | Base 기반 + 프로젝트 확장 | 공용 기록 방식에 도시괴담 기록국 사례 목록을 더한다. |
+| `docs/BENCHMARKING_REFERENCE_GUIDE.md` | Base 기반 + 프로젝트 확장 | 공용 기록 방식에 도시괴담 기록국 사례 목록과 고정 참고 링크를 더한다. |
 | `docs/DOCUMENTATION_MAP.md` | Base 기반 + 프로젝트 적용 | 이 저장소의 실제 문서와 부재 문서를 구분한다. |
 
 동기화는 Base 내용을 무조건 덮어쓰는 절차가 아니다. 먼저 Base의 공용 변경과 이 프로젝트의 확장 내용을 비교하고, 필요한 변경만 반영한 뒤 이 파일의 기준 커밋과 날짜를 갱신한다.
+
+## 2026-07-10 Base 공용 규칙 갱신 기록
+
+이번 업데이트는 Base 원본의 공용 규칙을 직접 갱신했다.
+
+Base 변경 목적:
+
+- GPT가 매 작업에서 벤치마킹을 수행하게 한다.
+- 벤치마킹에서 게임성, 디자인, UX, 아이디어, 시장성, 구현 방식 중 필요한 항목을 확인하게 한다.
+- 벤치마킹 결과를 장문 복사가 아니라 개선점/수정점으로 압축하게 한다.
+- Issue/문서에는 필요한 맥락만 반영하고, Codex Goal에는 실행에 필요한 지시만 남기게 한다.
+- 프로젝트별 고정 참고 링크를 매 작업에서 확인하게 한다.
+
+도시괴담 기록국 로컬 반영:
+
+- 1차 출시 목표를 PC 기준 Steam 출시로 명시했다.
+- 모바일 세로 화면 기준은 기본 목표에서 제외하고, 별도 요청 시에만 포함한다.
+- Unity Asset Store와 Tales of Tuscany Demo를 고정 벤치마킹 링크로 등록했다.
 
 ## 2026-07-10 로컬 확장 기록
 
@@ -42,6 +62,8 @@ Base 승격 후보:
 - 파일 변경 보고 형식
 - Plan → Work → Review → Ship 단계화
 - Base 승격 후보와 프로젝트 전용 규칙 후보를 최종 보고에 분리하는 방식
+- GPT 작업 전 벤치마킹 필수 수행
+- 벤치마킹 결과를 개선점/수정점으로 압축해 반영하는 방식
 
 프로젝트 전용으로 유지할 내용:
 
@@ -50,3 +72,5 @@ Base 승격 후보:
 - Godot 4.7 stable + GDScript 기준
 - 현재 MVP/Issue 문맥
 - `battle_scene`을 괴이 안정화/회수 페이즈로 보는 규칙
+- PC 기준 Steam 출시 목표
+- Unity Asset Store / Tales of Tuscany Demo 고정 참고 링크
