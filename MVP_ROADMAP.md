@@ -34,12 +34,12 @@
 | 항목 | 상태 | 판단 | 조치 |
 |---|---|---|---|
 | `docs/CODEX_SHARED_WORK_RULES.md` | 정상 | 프로젝트 전용 Codex 규칙 기준 문서 | 유지 |
-| `AGENTS.md` MVP 기준선 | 동기화 필요 가능 | MVP-017 기준으로 동기화되었으나 MVP-018 진입에 따라 후속 갱신 여지 있음 | 필요 시 후속 수정 |
+| `AGENTS.md` MVP 기준선 | 주의 | MVP-017 기준으로 동기화되어 있음. MVP-018 완료 후 다시 갱신 필요 | 후속 완료 시 갱신 |
 | `PROJECT_BRIEF.md` | 생성 완료 | 프로젝트 목적과 핵심 경험 확인 가능 | 유지 |
 | `DESIGN_INTENT.md` | 생성 완료 | 금지 방향과 선택 구조 확인 가능 | 유지 |
 | `MVP_ROADMAP.md` | 갱신 완료 | MVP-018 기준선 반영 | 완료 |
-| `TEST_CHECKLIST.md` | 보강 필요 가능 | MVP-017까지 확인 순서 있음. MVP-018 확인 항목 추가 필요 | 후속 갱신 |
-| 전체 흐름 HTML | 갱신 필요 | MVP-017 기준에서 MVP-018 기준으로 변경 필요 | 후속 갱신 |
+| `TEST_CHECKLIST.md` | 갱신 완료 | MVP-018 확인 항목 추가 | 완료 |
+| 전체 흐름 HTML | 갱신 완료 | MVP-018 현재 위치와 DB 재확인 흐름 반영 | 완료 |
 | README 버전 표기 | 주의 | Codex 구현 결과에 따라 갱신 필요 | MVP-018 Goal에 포함 |
 | 저장 구조 | 주의 | completed_case_reports 추가 시 기존 저장 호환성 필요 | MVP-018 Goal에 포함 |
 
@@ -54,6 +54,7 @@ MVP-018은 MVP-017 사건 보고서를 기록국 DB에서 다시 볼 수 있게 
 - 전체 흐름 HTML 대시보드 갱신
 - Codex Goal 작성
 - 문서 맵에 MVP-018 Goal 등록
+- 테스트 체크리스트와 상태 감사 문서 갱신
 
 ### Codex 작업 범위
 
