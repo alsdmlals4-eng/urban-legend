@@ -1,0 +1,165 @@
+name: Codex Goal
+about: Codex가 구현할 수 있는 MVP/기능 작업 기준서를 작성합니다.
+title: "[MVP-000] 작업명"
+labels: ["codex", "mvp"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        이 템플릿은 Codex 구현 작업용입니다. 기획 확정 전 아이디어는 `Planning Task` 템플릿을 사용합니다.
+
+  - type: input
+    id: mvp
+    attributes:
+      label: MVP / Issue 기준
+      description: 연결할 MVP 번호 또는 선행 Issue를 적습니다.
+      placeholder: "MVP-019 / Issue #00"
+    validations:
+      required: true
+
+  - type: textarea
+    id: goal
+    attributes:
+      label: 목표
+      description: 이 작업이 해결할 문제를 한 문장으로 적습니다.
+      placeholder: "플레이어가 짧은 괴담 조사 결과를 명확히 이해하도록 결과 보고 흐름을 보강한다."
+    validations:
+      required: true
+
+  - type: textarea
+    id: player_experience
+    attributes:
+      label: 목표 플레이어 경험
+      description: 기능 목록이 아니라 플레이어가 느껴야 하는 감정, 선택, 보상, 기억 포인트를 적습니다.
+      placeholder: |
+        - 조사한 단서가 결과에 연결된다는 느낌
+        - 실패해도 무엇을 놓쳤는지 알 수 있는 짧은 피드백
+    validations:
+      required: true
+
+  - type: textarea
+    id: previous_next
+    attributes:
+      label: 이전/다음 MVP 연결
+      description: 이전 작업에서 받는 상태와 다음 작업에 넘길 상태를 구분합니다.
+      placeholder: |
+        - 이전 MVP에서 받는 상태:
+        - 이번 작업에서 완성할 상태:
+        - 다음 MVP로 넘길 상태:
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: 구현 범위
+      description: Codex가 실제로 수정할 파일/시스템 범위만 적습니다.
+      placeholder: |
+        - JSON 데이터 구조 보강
+        - 결과 화면 텍스트 표시
+        - README의 현재 MVP 상태 갱신
+    validations:
+      required: true
+
+  - type: textarea
+    id: exclusions
+    attributes:
+      label: 제외 범위
+      description: 이번 작업에서 하지 않을 것을 명확히 적습니다.
+      placeholder: |
+        - 신규 아트 제작 제외
+        - HTML 대시보드 수정 제외
+        - 저장 시스템 전체 교체 제외
+        - 대규모 씬 구조 변경 제외
+    validations:
+      required: true
+
+  - type: textarea
+    id: impact
+    attributes:
+      label: 데이터 / 저장 / 씬 영향
+      description: JSON, GameState, 저장 호환성, 씬 이동, 모바일 UI 영향 여부를 적습니다.
+      placeholder: |
+        - 데이터 영향:
+        - 저장/불러오기 영향:
+        - 씬/노드 영향:
+        - 모바일 세로 UI 영향:
+    validations:
+      required: true
+
+  - type: textarea
+    id: ready_files
+    attributes:
+      label: 작업 전 확인 파일
+      description: Codex가 구현 전에 읽어야 하는 파일을 적습니다.
+      value: |
+        - [ ] `AGENTS.md`
+        - [ ] `docs/BASE_RULES_VERSION.md`
+        - [ ] `docs/DOCUMENTATION_MAP.md`
+        - [ ] `docs/CODEX_SHARED_WORK_RULES.md`
+        - [ ] `docs/MVP_WORKFLOW_CHECKLIST.md`
+        - [ ] 현재 Issue 본문
+        - [ ] 실제 수정 대상 파일
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: 완료 기준
+      description: 실제 파일/실행/화면에서 확인 가능한 체크리스트로 적습니다.
+      placeholder: |
+        - [ ] 새 흐름이 main_menu에서 진입 가능하다.
+        - [ ] 선택 결과가 화면에 표시된다.
+        - [ ] 기존 MVP 흐름이 깨지지 않는다.
+        - [ ] 오류 로그가 없다.
+    validations:
+      required: true
+
+  - type: textarea
+    id: validation
+    attributes:
+      label: 검증 방법
+      description: 자동 검증과 Godot 수동 확인 순서를 적습니다.
+      placeholder: |
+        - [ ] Godot headless 프로젝트 로드
+        - [ ] 변경 씬 직접 실행
+        - [ ] main_menu → affected scene 흐름 확인
+        - [ ] 모바일 폭에서 텍스트 줄바꿈 확인
+    validations:
+      required: true
+
+  - type: textarea
+    id: report
+    attributes:
+      label: 작업 후 보고 형식
+      value: |
+        ## 변경 파일
+        -
+
+        ## 변경 이유
+        -
+
+        ## 구현 내용
+        -
+
+        ## 검증 내용
+        -
+
+        ## Godot 확인 순서
+        1.
+        2.
+        3.
+
+        ## 남은 위험
+        -
+
+        ## Serena 사용 여부
+        - 사용 가능 여부:
+        - 실제 사용 여부:
+        - 대체 확인 방법:
+
+        ## 다음 MVP에 넘길 항목
+        -
+    validations:
+      required: true
