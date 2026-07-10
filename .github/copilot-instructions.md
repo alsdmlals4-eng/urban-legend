@@ -5,13 +5,17 @@
 ## 먼저 읽을 파일
 
 1. `AGENTS.md`
-2. `docs/AI_SHARED_WORK_RULES.md`
-3. `docs/AI_WORKFLOW_RULES.md`
-4. `docs/CODEX_SHARED_WORK_RULES.md`
-5. `docs/MVP_WORKFLOW_CHECKLIST.md`
-6. 현재 GitHub Issue와 `README.md`
+2. `docs/BASE_RULES_VERSION.md`
+3. `docs/DOCUMENTATION_MAP.md`
+4. `docs/AI_SHARED_WORK_RULES.md`
+5. `docs/AI_WORKFLOW_RULES.md`
+6. `docs/MVP_WORKFLOW_CHECKLIST.md`
+7. `docs/BENCHMARKING_REFERENCE_GUIDE.md`
+8. `docs/CODEX_SHARED_WORK_RULES.md`
+9. 현재 GitHub Issue와 `README.md`
+10. Godot 구현 작업이면 수정 직전에 `docs/CODEX_SHARED_WORK_RULES.md`를 다시 확인하고, 현재 작업 규칙과 충돌이 있으면 문서를 임의로 바꾸지 말고 보고한다.
 
-실제 파일 구조와 현재 변경사항을 확인한 뒤 작업한다. 범위 밖 리팩터링과 기존 사용자 변경사항 되돌리기는 금지한다.
+Base 원격 링크를 일반 작업의 규칙 출처로 직접 사용하지 않는다. `docs/BASE_RULES_VERSION.md`에 기록된 기준에 따라 이 저장소의 공용 로컬 사본을 먼저 읽는다. 실제 파일 구조와 현재 변경사항을 확인한 뒤 작업한다. 범위 밖 리팩터링과 기존 사용자 변경사항 되돌리기는 금지한다.
 
 ## 구조
 
@@ -33,4 +37,3 @@ godot --headless --path . --scene "res://scenes/<changed_scene>.tscn" --quit-aft
 ```
 
 Godot가 PATH에 없으면 프로젝트의 Windows Godot 4.7 console 실행 파일을 사용한다. JSON 변경은 UTF-8 파싱과 실제 Godot 로드를 함께 확인한다. 결과 보고에는 변경 이유, 검증 내용, Godot 수동 확인 순서, 남은 위험을 포함한다.
-

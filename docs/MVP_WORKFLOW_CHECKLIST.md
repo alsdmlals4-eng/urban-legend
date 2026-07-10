@@ -1,5 +1,7 @@
 # MVP Workflow Checklist
 
+> **Base 기반 로컬 사본 + 도시괴담 기록국 확장**: 공용 MVP 체크리스트의 원본과 기준 커밋은 `docs/BASE_RULES_VERSION.md`를 따른다. 이 문서는 현재 프로젝트의 역할, HTML, Godot 검수 흐름을 추가로 기록한다.
+
 이 문서는 `도시괴담 기록국`의 실제 MVP 작업 순서와 시작/완료 체크리스트다. 엔진과 장르에 종속되지 않는 원칙은 `docs/AI_SHARED_WORK_RULES.md`, Godot와 기록국의 구현 규칙은 `AGENTS.md`와 `docs/CODEX_SHARED_WORK_RULES.md`에서 확인한다.
 
 ## 1. 역할

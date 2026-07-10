@@ -1,5 +1,7 @@
 # Benchmarking Reference Guide
 
+> **Base 기반 로컬 사본 + 도시괴담 기록국 사례 확장**: 공용 벤치마킹 기록 방식은 [`alsdmlals4-eng/Base`](https://github.com/alsdmlals4-eng/Base)에서 유래하며, 기준 커밋은 `docs/BASE_RULES_VERSION.md`에 기록한다. 아래 초기 사례 목록과 적용 결론은 이 프로젝트 전용이다.
+
 이 문서는 `도시괴담 기록국` 프로젝트에서 기획, MVP 정의, 시스템 개선, UI/UX 판단을 할 때 참조할 벤치마킹 규칙과 초기 사례 목록을 정리한다.
 
 목적은 새 채팅, 새 AI, Codex, 다른 작업자가 보더라도 동일한 기준으로 벤치마킹을 수행하게 하는 것이다.

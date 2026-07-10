@@ -10,9 +10,11 @@ Codex와 다른 코딩 에이전트는 이 저장소에서 작업할 때 이 파
 
 ## Rule Scope
 
-- 새 프로젝트에도 복사할 수 있는 공용 AI 작업 원칙: `docs/AI_SHARED_WORK_RULES.md`
-- 이 프로젝트에만 적용되는 Godot/도시괴담 기록국 규칙: 이 파일, `docs/AI_WORKFLOW_RULES.md`, `docs/CODEX_SHARED_WORK_RULES.md`
-- 실제 MVP 시작/완료 체크리스트: `docs/MVP_WORKFLOW_CHECKLIST.md`
+- 공용 규칙의 원본 저장소: [`alsdmlals4-eng/Base`](https://github.com/alsdmlals4-eng/Base)
+- Base 기준 커밋과 동기화 날짜: `docs/BASE_RULES_VERSION.md`
+- 작업 시 먼저 읽는 공용 로컬 사본: `docs/AI_SHARED_WORK_RULES.md`, `docs/AI_WORKFLOW_RULES.md`, `docs/MVP_WORKFLOW_CHECKLIST.md`, `docs/BENCHMARKING_REFERENCE_GUIDE.md`, `docs/DOCUMENTATION_MAP.md`
+- 이 프로젝트에만 적용되는 Godot/도시괴담 기록국 규칙: 이 파일과 `docs/CODEX_SHARED_WORK_RULES.md`
+- Base 링크만 직접 읽어 작업하지 않는다. 일반 작업은 프로젝트 안의 동기화된 로컬 사본을 기준으로 하고, Base 원격 저장소는 명시적 동기화 또는 기준 차이 확인 때만 사용한다.
 - 공용 원칙과 프로젝트 전용 규칙이 충돌하면 이 프로젝트의 최신 사용자 지시와 이 파일을 우선한다.
 - Genre: 현대 괴담 미스터리 비주얼 노벨 / 조사 어드벤처
 
@@ -38,13 +40,25 @@ Codex와 다른 코딩 에이전트는 이 저장소에서 작업할 때 이 파
 
 ## Work Preparation Rule
 
-작업을 시작하기 전에 최신 GitHub 기준선을 먼저 확인한다.
+작업을 시작할 때는 Base 원격 링크가 아니라 이 저장소에 동기화된 공용 로컬 사본을 먼저 기준으로 삼는다. 다음 순서를 따른다.
 
-- `AGENTS.md`를 먼저 읽는다.
-- 관련 Issue 본문을 읽고 현재 MVP 범위와 제외 범위를 확인한다.
-- `README.md`에서 현재 버전, 파일 구조, 기존 데이터 구조를 확인한다.
-- 관련 씬, 스크립트, JSON 파일을 실제로 열어 현재 구현을 확인한 뒤 수정한다.
-- 이전 추정이나 오래된 대화 내용만 믿고 작업하지 않는다.
+1. `AGENTS.md`
+2. `docs/BASE_RULES_VERSION.md`
+3. `docs/DOCUMENTATION_MAP.md`
+4. `docs/AI_SHARED_WORK_RULES.md`
+5. `docs/AI_WORKFLOW_RULES.md`
+6. `docs/MVP_WORKFLOW_CHECKLIST.md`
+7. `docs/BENCHMARKING_REFERENCE_GUIDE.md`
+8. `docs/CODEX_SHARED_WORK_RULES.md`
+9. `README.md`
+10. `PROJECT_BRIEF.md`
+11. `DESIGN_INTENT.md`
+12. `MVP_ROADMAP.md`
+13. `TEST_CHECKLIST.md`
+14. 현재 GitHub Issue
+15. 실제 수정 대상 파일
+
+10~13번 문서가 아직 없으면 부재 사실을 기록하고, 현재 작업 범위와 무관하게 내용을 추정하거나 새 문서를 만들지 않는다. 관련 씬, 스크립트, JSON은 실제로 열어 현재 구현을 확인한 뒤 수정한다. Base 원격은 동기화가 필요한 경우에만 이 순서 뒤에 확인한다.
 
 ## Battle / Recovery Direction
 

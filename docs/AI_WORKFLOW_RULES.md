@@ -1,5 +1,7 @@
 # AI Workflow Rules
 
+> **Base 기반 로컬 사본 + 도시괴담 기록국 확장**: 공용 흐름의 원본은 [`alsdmlals4-eng/Base`](https://github.com/alsdmlals4-eng/Base)이며, 이 문서는 현재 프로젝트의 ChatGPT, HTML, Goal 작업 규칙을 덧붙인다. 기준 커밋은 `docs/BASE_RULES_VERSION.md`에 기록한다.
+
 이 문서는 `도시괴담 기록국` 프로젝트에서 ChatGPT, Codex, 기타 코딩 에이전트가 공통으로 따라야 할 보조 작업 규칙을 정리한다.
 
 `AGENTS.md`의 기본 규칙이 항상 우선한다.

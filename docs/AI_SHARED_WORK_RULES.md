@@ -1,5 +1,7 @@
 # AI Shared Work Rules
 
+> **Base 공용 규칙의 로컬 사본**: 원본은 [`alsdmlals4-eng/Base`](https://github.com/alsdmlals4-eng/Base)이며, 기준 커밋과 동기화 방식은 `docs/BASE_RULES_VERSION.md`를 따른다. 일반 작업에서는 Base 링크보다 이 로컬 사본을 먼저 읽는다.
+
 이 문서는 특정 엔진이나 장르에 종속되지 않는 공용 AI 작업 규칙이다. 새 프로젝트를 시작할 때 복사하고, 프로젝트의 `AGENTS.md`와 전용 규칙 문서가 이 문서보다 구체적인 내용을 덧붙인다.
 
 ## 1. 규칙 우선순위
