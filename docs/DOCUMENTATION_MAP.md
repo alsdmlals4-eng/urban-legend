@@ -18,10 +18,13 @@
 | 프로젝트 전용 | `AGENTS.md` | 도시괴담 기록국 최상위 규칙 |
 | 프로젝트 전용 | `docs/CODEX_SHARED_WORK_RULES.md` | 도시괴담 기록국 Codex 구현 규칙 |
 | 프로젝트 전용 | `README.md` | 프로젝트 소개, 실행 방법, 현재 MVP 상태 |
-| 프로젝트 전용 (계획됨) | `PROJECT_BRIEF.md` | 한 줄 설명, 장르, 플레이어 역할, 핵심 경험, 차별점. 현재 파일 없음 |
-| 프로젝트 전용 (계획됨) | `DESIGN_INTENT.md` | 기획 의도, 핵심 루프, 플레이어 감정, 선택지 설계 원칙. 현재 파일 없음 |
-| 프로젝트 전용 (계획됨) | `MVP_ROADMAP.md` | MVP 목록, Issue 번호, 상태, 완료 기준, 다음 작업. 현재 파일 없음 |
-| 프로젝트 전용 (계획됨) | `TEST_CHECKLIST.md` | Godot 테스트 순서, MVP별 체크리스트, 오류 기록 방식. 현재 파일 없음 |
+| 프로젝트 전용 | `PROJECT_BRIEF.md` | 한 줄 설명, 장르, 플레이어 역할, 핵심 경험, 차별점 |
+| 프로젝트 전용 | `DESIGN_INTENT.md` | 기획 의도, 핵심 루프, 플레이어 감정, 선택지 설계 원칙 |
+| 프로젝트 전용 | `MVP_ROADMAP.md` | MVP 목록, Issue 번호, 상태, 완료 기준, 다음 작업 |
+| 프로젝트 전용 | `TEST_CHECKLIST.md` | Godot 테스트 순서, MVP별 체크리스트, 오류 기록 방식 |
+| 프로젝트 전용 | `docs/MVP_STATUS_AUDIT.md` | 현재 MVP 상태, 문서 충돌, 개선점, 남은 위험 기록 |
+| 프로젝트 전용 | `docs/urban_legend_flow_dashboard.html` | 전체 흐름 HTML 대시보드 |
+| 프로젝트 전용 | `docs/CODEX_GOAL_MVP_017.md` | MVP-017 Codex 실행 Goal |
 | 프로젝트 전용 | `.serena/project.yml` | Serena 프로젝트 설정 |
 | 프로젝트 전용 | `data/` | 게임 데이터 |
 | 프로젝트 전용 | `scripts/` | Godot 구현 코드 |
@@ -47,7 +50,7 @@
 15. 실제 수정 대상 파일
 ```
 
-10~13번 문서는 현재 저장소에 없으므로, 존재 여부를 확인한 뒤 없으면 부재 사실만 기록한다. 이 문서의 역할표가 새 문서 생성을 지시하지는 않는다.
+MVP-017 기준으로 `PROJECT_BRIEF.md`, `DESIGN_INTENT.md`, `MVP_ROADMAP.md`, `TEST_CHECKLIST.md`가 생성되었다. 현재 MVP 상태는 `MVP_ROADMAP.md`, `docs/MVP_STATUS_AUDIT.md`, GitHub Issue #17을 함께 확인한다.
 
 ## 동기화와 확장 원칙
 
@@ -63,4 +66,4 @@
 - 반복 가능한 작업 원칙은 Base와 공용 로컬 사본에 둔다.
 - 엔진, 폴더 구조, 세계관, 데이터, 현재 MVP 상태는 프로젝트 전용 문서에 둔다.
 - Issue는 현재 작업 기준서이고, Goal은 구현 실행 지시서다.
-- HTML 대시보드는 관련 Issue가 명시할 때만 수정한다.
+- HTML 대시보드는 관련 Issue 또는 사용자 최신 지시가 명시할 때 수정한다.
