@@ -46,6 +46,12 @@ Run roles 1, 3, and 4 in parallel. Add role 2 only when a design decision needs 
 
 If subagents are unavailable, perform the same roles with parallel read-only tool calls and keep one implementation owner.
 
+## Tooling Blockers
+
+When a required workflow capability is missing, such as subagents, a connector, a command runtime, or credentials, first check whether it is already available in the current session or project configuration. Fix it directly only when the change is safe, scoped, and does not need user or administrator approval. Do not pretend a missing capability ran successfully or continue work that depends on it.
+
+If direct recovery is impossible or requires user action, stop the dependent task and report the exact blocker, why it prevents reliable work, what was tried, the smallest user action needed, and how recovery will be verified. Independent work may continue only when it cannot hide, weaken, or conflict with the blocked goal.
+
 ## Commit & Pull Request Guidelines
 
 Use focused messages such as `MVP-018 완료 사건 보고서 DB 재확인 구현` or `docs: update MVP status audit`. PRs state the Issue/MVP, player-visible behavior, validation, and UI screenshots.
