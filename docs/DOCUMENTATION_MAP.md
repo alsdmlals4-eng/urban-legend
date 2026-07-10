@@ -14,9 +14,9 @@
 | 공용 로컬 사본 | `docs/BENCHMARKING_REFERENCE_GUIDE.md` | 벤치마킹 표 형식과 사례 목록 |
 | 공용 로컬 사본 | `docs/MVP_WORKFLOW_CHECKLIST.md` | 실제 작업 시작/종료 체크리스트 |
 | 공용 로컬 사본 | `docs/DOCUMENTATION_MAP.md` | 문서 역할표와 공용/전용 구분 |
-| Base 동기화 기록 | `docs/BASE_RULES_VERSION.md` | Base 기준 커밋 SHA와 동기화 날짜 |
-| 프로젝트 전용 | `AGENTS.md` | 도시괴담 기록국 최상위 규칙 |
-| 프로젝트 전용 | `docs/CODEX_SHARED_WORK_RULES.md` | 도시괴담 기록국 Codex 구현 규칙 |
+| Base 동기화 기록 | `docs/BASE_RULES_VERSION.md` | Base 기준 커밋 SHA, 동기화 날짜, 로컬 확장 이력 |
+| 프로젝트 전용 | `AGENTS.md` | 도시괴담 기록국 최상위 규칙. GPT + Codex + GitHub 기본 워크플로우와 플러그인 실패 대체 흐름 포함 |
+| 프로젝트 전용 | `docs/CODEX_SHARED_WORK_RULES.md` | 도시괴담 기록국 Codex 구현 규칙. Harness 실패 시 문서 기반 대체 규칙 포함 |
 | 프로젝트 전용 | `README.md` | 프로젝트 소개, 실행 방법, 현재 MVP 상태 |
 | 프로젝트 전용 | `PROJECT_BRIEF.md` | 한 줄 설명, 장르, 플레이어 역할, 핵심 경험, 차별점 |
 | 프로젝트 전용 | `DESIGN_INTENT.md` | 기획 의도, 핵심 루프, 플레이어 감정, 선택지 설계 원칙 |
@@ -34,21 +34,23 @@
 ## 새 채팅 또는 새 작업자의 읽기 순서
 
 ```text
-1. AGENTS.md
-2. docs/BASE_RULES_VERSION.md
-3. docs/DOCUMENTATION_MAP.md
-4. docs/AI_SHARED_WORK_RULES.md
-5. docs/AI_WORKFLOW_RULES.md
-6. docs/MVP_WORKFLOW_CHECKLIST.md
-7. docs/BENCHMARKING_REFERENCE_GUIDE.md
-8. docs/CODEX_SHARED_WORK_RULES.md
-9. README.md
-10. PROJECT_BRIEF.md
-11. DESIGN_INTENT.md
-12. MVP_ROADMAP.md
-13. TEST_CHECKLIST.md
-14. 현재 GitHub Issue
-15. 실제 수정 대상 파일
+1. 최신 사용자 지시
+2. AGENTS.md
+3. docs/BASE_RULES_VERSION.md
+4. docs/DOCUMENTATION_MAP.md
+5. docs/AI_SHARED_WORK_RULES.md
+6. docs/AI_WORKFLOW_RULES.md
+7. docs/MVP_WORKFLOW_CHECKLIST.md
+8. docs/BENCHMARKING_REFERENCE_GUIDE.md
+9. docs/CODEX_SHARED_WORK_RULES.md
+10. README.md
+11. PROJECT_BRIEF.md
+12. DESIGN_INTENT.md
+13. MVP_ROADMAP.md
+14. TEST_CHECKLIST.md
+15. 현재 GitHub Issue
+16. 현재 Codex Goal
+17. 실제 수정 대상 파일
 ```
 
 MVP-018 기준으로 현재 MVP 상태는 `MVP_ROADMAP.md`, `docs/MVP_STATUS_AUDIT.md`, GitHub Issue #18을 함께 확인한다.
@@ -61,6 +63,7 @@ MVP-018 기준으로 현재 MVP 상태는 `MVP_ROADMAP.md`, `docs/MVP_STATUS_AUD
 4. 이 저장소의 `AI_WORKFLOW_RULES.md`, `MVP_WORKFLOW_CHECKLIST.md`, `BENCHMARKING_REFERENCE_GUIDE.md`는 Base 기반 문서에 도시괴담 기록국의 작업 사례를 덧붙인 로컬 확장본이다.
 5. 프로젝트 전용 규칙은 공용 규칙을 보완하며, 더 구체적인 규칙이 우선한다.
 6. Base 변경은 자동 반영하지 않는다. 영향과 프로젝트 확장 내용을 검토한 뒤 의도적으로 동기화한다.
+7. Harness, Superpowers, Serena, Claude Code 플러그인 등 외부 자동화는 선택 도구다. 설치나 호출이 실패하면 `AGENTS.md`, `docs/CODEX_SHARED_WORK_RULES.md`, Issue, Codex Goal을 기준으로 작업을 계속한다.
 
 ## 관리 원칙
 
@@ -68,3 +71,4 @@ MVP-018 기준으로 현재 MVP 상태는 `MVP_ROADMAP.md`, `docs/MVP_STATUS_AUD
 - 엔진, 폴더 구조, 세계관, 데이터, 현재 MVP 상태는 프로젝트 전용 문서에 둔다.
 - Issue는 현재 작업 기준서이고, Goal은 구현 실행 지시서다.
 - HTML 대시보드는 관련 Issue 또는 사용자 최신 지시가 명시할 때 수정한다.
+- 플러그인 실패 대응 규칙 중 여러 프로젝트에 재사용 가능한 내용은 Base 승격 후보로 기록하되, 도시괴담 기록국 세계관·Godot 경로·현재 MVP 번호는 프로젝트 전용으로 유지한다.
