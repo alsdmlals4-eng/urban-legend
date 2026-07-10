@@ -23,9 +23,21 @@ Use GDScript and Godot nodes only. Indent with tabs; use `snake_case`; name conc
 
 Design mobile-vertical UI first while retaining PC mouse support. `battle_scene` is anomaly stabilization/recovery, not RPG combat: prefer `회수`, `안정화`, `위험도`, and `괴이 안정도`; do not add HP, damage, kill, or death-centered systems.
 
-## Superpowers Replacement Workflow
+## GPT + Codex + GitHub Default Workflow
 
-This repository uses a spec-first collaboration workflow even when the Superpowers plugin or any other coding-agent skill is unavailable.
+This repository does not require Harness, Superpowers, Serena, Claude Code plugins, or any other external automation to continue work. Those tools are optional accelerators only.
+
+Default responsibility split:
+
+1. **GPT/ChatGPT**: planning, benchmarking, player-experience framing, system/data design, HTML dashboard design, GitHub Issue drafting, Codex Goal drafting, review prompts, and test checklist writing.
+2. **Codex**: actual file edits, Godot/GDScript implementation, JSON/TSCN updates, documentation patches, validation, and final change reports.
+3. **GitHub**: single source for Issues, Goals, changed files, review history, completion criteria, validation notes, and future handoff context.
+
+If a plugin cannot be installed, downloaded, or invoked, do not block the project. Fall back to `AGENTS.md`, `docs/CODEX_SHARED_WORK_RULES.md`, GitHub Issue, and Codex Goal.
+
+## Superpowers / Harness Replacement Workflow
+
+This repository uses a spec-first collaboration workflow even when Superpowers, Harness, Claude Code plugins, or any other coding-agent skill is unavailable.
 
 The highest-priority order is always:
 
@@ -57,7 +69,7 @@ If the request is already clear, summarize the inferred specification instead of
 
 Before Codex begins work, convert the confirmed specification into a working prompt that includes:
 
-1. `@Superpowers` invocation when available
+1. Optional plugin invocation only when actually available (`@Superpowers`, Harness command, or equivalent)
 2. Objective
 3. Context documents to read
 4. Rule priority order
@@ -80,15 +92,19 @@ Proceed only within the confirmed scope.
 At the end, run the Compound Review process and report mistakes, lessons, prevention rules, and Base-promotion candidates.
 ```
 
+When Harness is available, Codex may use the same Plan → Work → Review → Ship discipline, but the repository documents remain the source of truth.
+
 Codex must not redefine the product direction, player experience, genre direction, art direction, core loop, or high-level design unless the latest user instruction explicitly asks for that.
 
 ### Plugin Compatibility and Installation
 
-If `@Superpowers` or another plugin is available, it may support brainstorming, planning, TDD, debugging, review, and verification. It must not override the latest user instruction, this `AGENTS.md`, the current Goal/Issue, project docs, or actual repository files.
+If `@Superpowers`, Harness, Serena, or another plugin is available, it may support brainstorming, planning, TDD, debugging, review, verification, or task orchestration. It must not override the latest user instruction, this `AGENTS.md`, the current Goal/Issue, project docs, or actual repository files.
 
-If the plugin does not activate automatically, this replacement workflow remains the source of truth.
+If a plugin does not activate automatically, this replacement workflow remains the source of truth.
 
 Superpowers must be installed separately for each coding-agent environment. For Codex App, install `Superpowers` from the Codex plugin marketplace. For Codex CLI, open `/plugins`, search `superpowers`, and select `Install Plugin`. Do not claim Superpowers is installed or active unless Codex actually shows it as callable or installed.
+
+Harness or other Claude/Codex plugins are optional. If download, marketplace registration, or invocation fails, record the failure briefly and continue with the document-based GPT + Codex + GitHub workflow.
 
 ### Compound Review Process
 
@@ -121,7 +137,7 @@ Use subagents to improve evidence and speed, not to create competing edits. The 
 
 ### Required Roles
 
-1. **Rules and Git Inspector**: checks the latest GitHub `alsdmlals4-eng/Base` reference, local Base copies, project rules, Issue/Goal, branch status, user changes, conflicts, and relevant history. Output: rule conflicts, current-state facts, and a safe file list. This role does not edit files.
+1. **Rules and Git Inspector**: checks the latest user instruction, this repository's local Base copies, project rules, Issue/Goal, branch status, user changes, conflicts, and relevant history. It checks the remote `alsdmlals4-eng/Base` reference only for Base synchronization or common-rule promotion work. Output: rule conflicts, current-state facts, and a safe file list. This role does not edit files.
 2. **Benchmark and Player Insight Analyst**: use only for new systems, major UX decisions, genre changes, or unclear player needs. Research 3–5 similar games or keyword cases, separating official facts, professional analysis, and player feedback. Output: evidence, observed need, adopt/reject decision, and why it fits this game. Do not copy features or expand the approved scope.
 3. **Goal and Scope Analyst**: turns the Issue/Goal into a Definition of Ready: problem, target player experience, in-scope and excluded work, observable completion criteria, expected files, dependencies, and save/compatibility risks. Output: a short implementation brief and unanswered questions.
 4. **Codebase and Data-Flow Inspector**: reads the actual related scenes, scripts, JSON, calls, save/load fields, and existing helpers. Output: current behavior, reuse candidates, duplicate-code risks, affected paths, and regression risks. This prevents implementing a second version of an existing system.
@@ -136,9 +152,11 @@ If subagents are unavailable, perform the same roles with parallel read-only too
 
 ## Tooling Blockers
 
-When a required workflow capability is missing, such as subagents, a connector, a command runtime, or credentials, first check whether it is already available in the current session or project configuration. Fix it directly only when the change is safe, scoped, and does not need user or administrator approval. Do not pretend a missing capability ran successfully or continue work that depends on it.
+When a required workflow capability is missing, such as subagents, a connector, a command runtime, a plugin, or credentials, first check whether it is already available in the current session or project configuration. Fix it directly only when the change is safe, scoped, and does not need user or administrator approval. Do not pretend a missing capability ran successfully or continue work that depends on it.
 
-If direct recovery is impossible or requires user action, stop the dependent task and report the exact blocker, why it prevents reliable work, what was tried, the smallest user action needed, and how recovery will be verified. Independent work may continue only when it cannot hide, weaken, or conflict with the blocked goal.
+If direct recovery is impossible or requires user action, stop only the dependent task and report the exact blocker, why it prevents reliable work, what was tried, the smallest user action needed, and how recovery will be verified. Independent work may continue when it does not hide, weaken, or conflict with the blocked goal.
+
+A plugin installation failure is not a project failure. Continue with the repository rules, Issue, Codex Goal, and manual verification checklist.
 
 ## Commit & Pull Request Guidelines
 
@@ -146,4 +164,8 @@ Use focused messages such as `MVP-018 완료 사건 보고서 DB 재확인 구�
 
 ## Agent Workflow
 
-Check the latest GitHub `alsdmlals4-eng/Base` reference first, then local Base copies, project rules, Issue/Goal, Git status, and relevant files. Latest user instructions win. Before editing, turn requests into a plan with purpose, player value, scope, exclusions, completion criteria, owned files, and verification. Follow the Superpowers Replacement Workflow: clarify the user's idea through questions and discussion, confirm the specification, convert it into a high-quality working prompt that starts with `@Superpowers` when available, and only then start work. Explain a better in-scope solution before applying it. Display versions follow MVP numbers: MVP-018 is `Ver 1.8`, MVP-020 is `Ver 2.0`. Update the start screen with changed behavior and user checks, then explain work in simple Korean. State whether Superpowers was callable, whether subagents were available, which roles were used, what each role found, what the Compound Review found, and whether a Base-promotion candidate exists.
+Read the latest user instruction first, then `AGENTS.md`, `docs/BASE_RULES_VERSION.md`, `docs/DOCUMENTATION_MAP.md`, local Base-derived docs, project rules, Issue/Goal, Git status, and relevant files. Use the remote `alsdmlals4-eng/Base` reference only when the task is Base synchronization, Base promotion, or common-rule comparison. Latest user instructions win.
+
+Before editing, turn requests into a plan with purpose, player value, scope, exclusions, completion criteria, owned files, and verification. Follow the Superpowers / Harness Replacement Workflow: clarify the user's idea through questions and discussion when needed, confirm or summarize the specification, convert it into a high-quality working prompt that starts with `@Superpowers` or another plugin invocation only when available, and only then start work. Explain a better in-scope solution before applying it.
+
+Display versions follow MVP numbers: MVP-018 is `Ver 1.8`, MVP-020 is `Ver 2.0`. Update the start screen with changed behavior and user checks, then explain work in simple Korean. State whether Superpowers, Harness, Serena, or subagents were available, which roles were used, what each role found, what the Compound Review found, and whether a Base-promotion candidate exists.
