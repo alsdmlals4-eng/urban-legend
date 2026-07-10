@@ -4,6 +4,21 @@
 
 **Base는 공용 규칙의 원본 저장소이고, urban-legend는 프로젝트 전용 저장소다.** 작업자는 Base 링크만 읽지 않는다. 먼저 이 저장소 안에 동기화된 공용 문서의 로컬 사본을 읽고, Base 원격은 동기화와 기준 확인에 사용한다.
 
+## 프로젝트 기준
+
+- 1차 출시 목표: **PC 기준 Steam 출시**
+- UI/UX 기본 기준: PC 16:9, 마우스/키보드, Steam 데모 첫인상
+- 모바일 세로 최적화: 별도 요청이 있을 때만 범위에 포함
+
+## 고정 벤치마킹 링크
+
+매 작업에서 아래 링크를 확인하고, 게임성/디자인/아이디어/UX 개선점과 수정할 점을 압축해 반영한다.
+
+1. Unity Asset Store
+   - `https://assetstore.unity.com/ko-KR?srsltid=AfmBOoqVvQhMXSGdC4kGuQE4OgvNyuvG7CaIQqlUdoY1qXryac39ZLi0`
+2. Tales of Tuscany Demo
+   - `https://athenian-rhapsody.itch.io/tales-of-tuscany-demo`
+
 ## 문서 역할표
 
 | 구분 | 파일 | 역할 |
