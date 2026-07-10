@@ -776,6 +776,22 @@ func get_completed_case_reports() -> Array:
 	return completed_case_reports.duplicate(true)
 
 
+## Returns a read-only summary of the save payload that Continue should preserve.
+func get_save_state_summary() -> Dictionary:
+	return {
+		"save_version": SAVE_VERSION,
+		"save_path": SAVE_FILE_PATH,
+		"current_scene_path": get_current_scene_path(),
+		"completed_report_count": completed_case_reports.size(),
+		"agent_trust_count": agent_trust.size(),
+		"unlocked_record_count": unlocked_records.size(),
+		"unlocked_equipment_count": unlocked_equipment.size(),
+		"equipped_item_count": equipped_items.size(),
+		"recovery_saved": recovery_successful,
+		"recovery_status": recovery_result_status
+	}
+
+
 ## Returns active hint records. Hints are separate from clues.
 func get_hints() -> Array:
 	return CaseDataScript.get_hints(current_episode_data)

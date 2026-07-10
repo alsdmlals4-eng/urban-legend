@@ -1,4 +1,4 @@
-# 전투 씬의 단서 자동 발동과 괴이 핵 회수를 관리한다.
+# 괴이 안정화/회수 페이즈의 단서 반영과 괴이 핵 회수를 관리한다.
 extends Control
 
 const BASE_ANOMALY_STABILITY := 100
@@ -55,6 +55,7 @@ func _build_ui() -> void:
 	margin.add_child(scroll)
 
 	var root := VBoxContainer.new()
+	root.custom_minimum_size = Vector2(960, 0)
 	root.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	root.add_theme_constant_override("separation", 10)
 	scroll.add_child(root)
@@ -73,20 +74,14 @@ func _build_ui() -> void:
 	resolution_phase_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	root.add_child(resolution_phase_label)
 
-	var effect_panel := PanelContainer.new()
-	root.add_child(effect_panel)
+	var effect_content := _add_section(root, "회수 근거", "수집한 단서와 미니게임 결과가 회수 조건에 어떻게 반영되는지 확인합니다.")
 
 	_auto_effect_label = Label.new()
 	_auto_effect_label.text = _make_auto_effect_text()
 	_auto_effect_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	effect_panel.add_child(_auto_effect_label)
+	effect_content.add_child(_auto_effect_label)
 
-	var status_panel := PanelContainer.new()
-	root.add_child(status_panel)
-
-	var status := VBoxContainer.new()
-	status.add_theme_constant_override("separation", 8)
-	status_panel.add_child(status)
+	var status := _add_section(root, "안정화 상태", "괴이 안정도와 현장 위험을 보며 회수 가능선을 맞춥니다.")
 
 	status.add_child(_make_label("괴이 안정도"))
 	_stability_bar = _make_bar(100)
@@ -102,26 +97,28 @@ func _build_ui() -> void:
 	_fear_bar = _make_bar(100)
 	status.add_child(_fear_bar)
 
+	var action_content := _add_section(root, "안정화 행동", "회수 전 괴이 핵을 낮추거나 현장 위험을 억제합니다.")
 	var actions := GridContainer.new()
 	actions.columns = 1
 	actions.add_theme_constant_override("v_separation", 6)
-	root.add_child(actions)
+	action_content.add_child(actions)
 
 	_add_prediction_action(actions)
 	_add_stability_action(actions, "기록 스캔", 18, 6, "단말기로 괴이의 반복 규칙을 스캔했습니다.")
 	_add_stability_action(actions, "임시 봉인지", 24, 9, "봉인지가 괴이의 핵 주변을 짧게 고정했습니다.")
 	_add_defense_action(actions)
 	_add_support_action(actions)
-	_add_agent_recovery_support_actions(actions)
+	_add_agent_recovery_support_actions(_add_section(root, "요원 지원", "편성한 수사 파트너의 회수 지원은 한 번씩만 사용할 수 있습니다."))
 
+	var recovery_content := _add_section(root, "회수 실행", "조건을 만족하면 괴이 핵을 회수하고 사건 보고서로 이동합니다.")
 	_recover_button = Button.new()
 	_recover_button.text = "괴이 핵 회수"
 	_recover_button.pressed.connect(_recover_anomaly_core)
-	root.add_child(_recover_button)
+	recovery_content.add_child(_recover_button)
 
 	_result_label = Label.new()
 	_result_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	root.add_child(_result_label)
+	recovery_content.add_child(_result_label)
 
 
 func _apply_collected_clue_effects() -> void:
@@ -184,12 +181,12 @@ func _apply_minigame_recovery_effects() -> void:
 
 
 func _make_start_message() -> String:
-	var minigame_text := _make_minigame_battle_text()
+	var minigame_text := _make_minigame_recovery_text()
 	var investigation_text := _make_investigation_status_text()
 	if _active_effects.is_empty():
-		return "수집한 단서가 없어 자동 발동 효과 없이 회수 페이즈를 시작합니다.%s%s" % [minigame_text, investigation_text]
+		return "수집한 단서가 없어 회수 조건 보정 없이 회수 페이즈를 시작합니다.%s%s" % [minigame_text, investigation_text]
 
-	return "수집한 단서 %d개가 자동 발동했습니다. 현재 회수 가능 기준은 괴이 안정도 %d 이하입니다.%s%s" % [
+	return "수집한 단서 %d개가 회수 조건에 반영되었습니다. 현재 회수 가능 기준은 괴이 안정도 %d 이하입니다.%s%s" % [
 		_active_effects.size(),
 		_recovery_threshold,
 		minigame_text,
@@ -199,9 +196,9 @@ func _make_start_message() -> String:
 
 func _make_auto_effect_text() -> String:
 	if _active_effects.is_empty():
-		return "자동 발동 단서: 없음\n힌트는 단서가 아니므로 전투 자동 발동에 포함되지 않습니다."
+		return "회수 자동 반영 단서: 없음\n힌트는 단서가 아니므로 회수 조건에는 직접 포함되지 않습니다."
 
-	var text := "자동 발동 단서\n"
+	var text := "회수 자동 반영 단서\n"
 	for effect in _active_effects:
 		if typeof(effect) != TYPE_DICTIONARY:
 			continue
@@ -212,14 +209,14 @@ func _make_auto_effect_text() -> String:
 			int(effect.get("effect_value", 0))
 		]
 
-	text += "힌트는 단서가 아니므로 전투 자동 발동에 포함되지 않습니다."
-	var minigame_text := _make_minigame_battle_text().strip_edges()
+	text += "힌트는 단서가 아니므로 회수 조건에는 직접 포함되지 않습니다."
+	var minigame_text := _make_minigame_recovery_text().strip_edges()
 	if not minigame_text.is_empty():
 		text += "\n\n미니게임 영향\n%s" % minigame_text
 	return text.strip_edges()
 
 
-func _make_minigame_battle_text() -> String:
+func _make_minigame_recovery_text() -> String:
 	if _minigame_recovery_messages.is_empty():
 		return ""
 	return "\n%s" % "\n".join(_minigame_recovery_messages)
@@ -247,6 +244,27 @@ func _make_label(text: String) -> Label:
 	return label
 
 
+func _add_section(parent: Control, title_text: String, description_text: String = "") -> VBoxContainer:
+	var panel := PanelContainer.new()
+	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	parent.add_child(panel)
+
+	var content := VBoxContainer.new()
+	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	content.add_theme_constant_override("separation", 8)
+	panel.add_child(content)
+
+	var title := Label.new()
+	title.text = title_text
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	content.add_child(title)
+
+	if not description_text.is_empty():
+		content.add_child(_make_label(description_text))
+
+	return content
+
+
 func _make_bar(max_value: int) -> ProgressBar:
 	var bar := ProgressBar.new()
 	bar.min_value = 0
@@ -258,9 +276,9 @@ func _make_bar(max_value: int) -> ProgressBar:
 func _make_resolution_phase_text() -> String:
 	var selected_label: String = GameState.get_selected_resolution_label()
 	if selected_label.is_empty():
-		return "해결 페이즈: 직접 진입하지 않은 전투 테스트입니다."
+		return "회수 페이즈: 직접 진입하지 않은 안정화 테스트입니다."
 
-	return "해결 페이즈 진입 등급: %s / 저장된 단서 수집률: %.0f%%" % [
+	return "회수/안정화 진입 등급: %s / 저장된 단서 수집률: %.0f%%" % [
 		selected_label,
 		GameState.get_selected_resolution_rate()
 	]

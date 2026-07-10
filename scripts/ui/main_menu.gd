@@ -1,7 +1,7 @@
 # 시작 화면에서 프로젝트 소개와 데이터베이스 진입을 관리한다.
 extends Control
 
-const GAME_VERSION := "Ver 2.2"
+const GAME_VERSION := "Ver 2.7"
 
 var _start_episode_button: Button
 var _continue_button: Button
@@ -152,7 +152,7 @@ func _build_ui() -> void:
 	_add_scene_button(dev_content, "조사씬 열기", "res://scenes/investigation_scene.tscn")
 	_add_scene_button(dev_content, "준비 화면 열기", GameState.SCENE_PREPARATION)
 	_add_scene_button(dev_content, "대화씬 열기", "res://scenes/dialogue_scene.tscn")
-	_add_scene_button(dev_content, "전투씬 열기", "res://scenes/battle_scene.tscn")
+	_add_scene_button(dev_content, "회수 페이즈 열기", "res://scenes/battle_scene.tscn")
 	_add_scene_button(dev_content, "미니게임씬 열기", "res://scenes/minigame_scene.tscn")
 
 
@@ -191,16 +191,16 @@ func _add_update_notice(parent: Control) -> void:
 	panel.add_child(content)
 
 	var title := Label.new()
-	title.text = "Ver 2.2 변경사항"
+	title.text = "Ver 2.7 변경사항"
 	content.add_child(title)
 
 	var changes := Label.new()
-	changes.text = "- 메인 메뉴, 사건 준비 화면, 조사 화면의 정보 위계를 PC/Steam 기준으로 정리했습니다.\n- 단서와 힌트 추적을 분리하고, 조사 결과를 다음 행동까지 읽히게 개선했습니다."
+	changes.text = "- 사건 보고서, 기록국 DB, 요원 신뢰, 장비/기록물, 회수, 저장 상태를 PC/Steam 기준 섹션으로 정리했습니다.\n- 회수 페이즈가 전투보다 괴이 안정화와 회수 절차로 읽히도록 문구와 순서를 보강했습니다."
 	changes.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	content.add_child(changes)
 
 	var checks := Label.new()
-	checks.text = "확인할 것: 두 사건 기준 시작·준비·조사 화면의 정보가 읽히는지, 이어하기와 완료 사건 기록이 유지되는지 확인하세요."
+	checks.text = "확인할 것: 저승역과 빨간 우산 완료 보고서가 DB에서 구분되는지, 이어하기 후 보고서·요원 신뢰·장비/기록물·회수 결과가 유지되는지 확인하세요."
 	checks.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	content.add_child(checks)
 

@@ -30,62 +30,53 @@ func _build_ui() -> void:
 	margin.add_child(scroll)
 
 	var root := VBoxContainer.new()
+	root.custom_minimum_size = Vector2(960, 0)
 	root.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	root.add_theme_constant_override("separation", 10)
 	scroll.add_child(root)
 
 	var title := Label.new()
-	title.text = "결과 / 연구 보상"
+	title.text = "사건 보고서 / 회수 결과"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	root.add_child(title)
 
 	_add_result_panel(root)
 	_add_case_report_panel(root)
+	_add_save_state_panel(root)
 	_add_navigation_buttons(root)
 
 
 func _add_result_panel(parent: Control) -> void:
-	var panel := PanelContainer.new()
-	parent.add_child(panel)
-
-	var content := VBoxContainer.new()
-	content.add_theme_constant_override("separation", 8)
-	panel.add_child(content)
+	var content := _add_section(parent, "회수 결과", "괴이 핵 회수 뒤 현재 사건의 결말과 보상을 확인합니다.")
 
 	content.add_child(_make_label("에피소드명: %s" % GameState.get_current_episode_title()))
-	content.add_child(_make_label("해결 등급: %s" % GameState.get_result_resolution_label()))
+	content.add_child(_make_label("회수/안정화 등급: %s" % GameState.get_result_resolution_label()))
 	content.add_child(_make_label("피해자 구조 결과: %s" % GameState.get_current_victim_rescue_result()))
 	content.add_child(_make_label("피해자 후일담: %s" % GameState.get_current_victim_after_story()))
 	content.add_child(_make_label("괴이 핵 회수 상태: %s" % _make_recovery_status_text()))
-	content.add_child(_make_label("연구 결과: %s" % GameState.get_current_research_result()))
+	_add_text_list(content, "연구 결과", [GameState.get_current_research_result()])
 	_add_unlock_list(content, "기록물 획득", GameState.get_current_result_unlocked_records(), "title", "description")
 	_add_unlock_list(content, "연구 보상", GameState.get_current_result_unlocked_research_rewards(), "ability_name", "ability_description")
 	_add_unlock_list(content, "장비 해금", GameState.get_current_result_unlocked_equipment(), "name", "description")
-	content.add_child(_make_label("다음 조사 보정: %s" % GameState.get_next_investigation_modifier_text()))
+	_add_text_list(content, "다음 조사 연결", [GameState.get_next_investigation_modifier_text()])
 
 	var reward := GameState.get_current_result_research_reward()
 	if reward.is_empty():
-		content.add_child(_make_label("기존 연구 보상: 없음"))
+		_add_text_list(content, "기존 연구 보상", [])
 		return
 
-	content.add_child(_make_label("기존 연구 보상명: %s" % reward.get("ability_name", "")))
-	content.add_child(_make_label("기존 연구 보상 설명: %s" % reward.get("ability_description", "")))
-	content.add_child(_make_label("다음 사건 영향: %s" % reward.get("next_episode_effect", "")))
+	_add_text_list(content, "기존 연구 보상", [
+		"%s - %s" % [reward.get("ability_name", ""), reward.get("ability_description", "")],
+		"다음 사건 영향: %s" % reward.get("next_episode_effect", "")
+	])
 
 
 func _add_case_report_panel(parent: Control) -> void:
 	var report := GameState.get_case_report_summary()
-	var panel := PanelContainer.new()
-	parent.add_child(panel)
-
-	var content := VBoxContainer.new()
-	content.add_theme_constant_override("separation", 8)
-	panel.add_child(content)
-
-	content.add_child(_make_label("사건 보고서"))
+	var content := _add_section(parent, "사건 보고서", "기록국 DB에 저장될 완료 사건 요약입니다.")
 	content.add_child(_make_label("사건명: %s" % String(report.get("episode_title", ""))))
-	content.add_child(_make_label("해결 등급: %s / 단서 수집률: %.0f%%" % [
-		String(report.get("resolution_label", "해결 불가")),
+	content.add_child(_make_label("회수/안정화 등급: %s / 단서 수집률: %.0f%%" % [
+		String(report.get("resolution_label", "회수 불가")),
 		float(report.get("clue_collection_rate", 0.0))
 	]))
 	_add_text_list(content, "수집한 단서", _make_entry_lines(report.get("collected_clues", []), "title", "description"))
@@ -99,6 +90,46 @@ func _add_case_report_panel(parent: Control) -> void:
 	_add_text_list(content, "발생한 요원 이벤트", _make_entry_lines(report.get("triggered_agent_events", []), "title", "text"))
 	_add_text_list(content, "요원 보조 안내", report.get("agent_support_texts", []))
 	_add_text_list(content, "다음 사건 참고", report.get("next_case_notes", []))
+
+
+func _add_save_state_panel(parent: Control) -> void:
+	var summary := GameState.get_save_state_summary()
+	var content := _add_section(parent, "저장 / 이어하기 상태", "이어하기 후 유지되어야 하는 완료 보고서와 현재 씬 경로를 점검합니다.")
+	content.add_child(_make_label("저장 버전: %s / 현재 씬: %s" % [
+		String(summary.get("save_version", "")),
+		String(summary.get("current_scene_path", ""))
+	]))
+	content.add_child(_make_label("완료 보고서: %d건 / 요원 신뢰 기록: %d명 / 기록물: %d건 / 장비: %d건 / 장착: %d건" % [
+		int(summary.get("completed_report_count", 0)),
+		int(summary.get("agent_trust_count", 0)),
+		int(summary.get("unlocked_record_count", 0)),
+		int(summary.get("unlocked_equipment_count", 0)),
+		int(summary.get("equipped_item_count", 0))
+	]))
+	content.add_child(_make_label("회수 결과 저장: %s / 다음 행동: 사건 준비 또는 기록국 DB에서 보고서를 재확인" % [
+		"유지됨" if bool(summary.get("recovery_saved", false)) else "아직 없음"
+	]))
+
+
+func _add_section(parent: Control, title_text: String, description_text: String = "") -> VBoxContainer:
+	var panel := PanelContainer.new()
+	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	parent.add_child(panel)
+
+	var content := VBoxContainer.new()
+	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	content.add_theme_constant_override("separation", 8)
+	panel.add_child(content)
+
+	var title := Label.new()
+	title.text = title_text
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	content.add_child(title)
+
+	if not description_text.is_empty():
+		content.add_child(_make_label(description_text))
+
+	return content
 
 
 func _add_unlock_list(parent: Control, title: String, entries: Array, name_key: String, description_key: String) -> void:
@@ -134,10 +165,11 @@ func _make_agent_trust_lines(agents: Array) -> Array:
 	var lines: Array = []
 	for agent in agents:
 		if typeof(agent) == TYPE_DICTIONARY:
-			lines.append("%s (%s): 신뢰도 %+d" % [
+			lines.append("%s (%s): 수사 파트너 신뢰 %+d / 사건 기여: %s" % [
 				String(agent.get("name", "요원")),
 				String(agent.get("temperament_label", "")),
-				int(agent.get("trust", 0))
+				int(agent.get("trust", 0)),
+				String(agent.get("role", "현장 보조"))
 			])
 	return lines
 
@@ -153,10 +185,20 @@ func _make_report_recovery_text(result: Dictionary) -> String:
 
 
 func _add_text_list(parent: Control, title: String, lines: Array) -> void:
+	var content := VBoxContainer.new()
+	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	content.add_theme_constant_override("separation", 4)
+	parent.add_child(content)
+
+	var title_label := Label.new()
+	title_label.text = title
+	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	content.add_child(title_label)
+
 	if lines.is_empty():
-		parent.add_child(_make_label("%s: 없음" % title))
+		content.add_child(_make_label("없음"))
 		return
-	parent.add_child(_make_label("%s\n- %s" % [title, "\n- ".join(lines)]))
+	content.add_child(_make_label("- %s" % "\n- ".join(lines)))
 
 
 func _add_navigation_buttons(parent: Control) -> void:

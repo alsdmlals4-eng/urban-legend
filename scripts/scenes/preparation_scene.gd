@@ -261,8 +261,9 @@ func _refresh_equipment() -> void:
 		_equipment_list.add_child(button)
 
 		var description := Label.new()
-		description.text = "%s\n효과: %s" % [
+		description.text = "%s\n획득처: %s\n활용처: 조사/미니게임 보조\n다음 조사 연결: %s" % [
 			String(item.get("description", "")),
+			_make_equipment_source_text(item),
 			String(item.get("next_investigation_modifier", ""))
 		]
 		description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -280,9 +281,10 @@ func _refresh_records() -> void:
 		if typeof(record) != TYPE_DICTIONARY:
 			continue
 		var effect := String(record.get("next_investigation_effect", "다음 조사 전 규칙 확인용 참고 기록입니다."))
-		_record_list.add_child(_make_label("- %s\n  %s\n  다음 조사 영향: %s" % [
+		_record_list.add_child(_make_label("- %s\n  %s\n  획득처: %s\n  활용처: 사건 규칙 대조 / 다음 조사 영향: %s" % [
 			String(record.get("title", "")),
 			String(record.get("description", "")),
+			_make_record_source_text(record),
 			effect
 		]))
 
@@ -311,6 +313,26 @@ func _start_investigation() -> void:
 	GameState.set_current_scene_path(GameState.SCENE_INVESTIGATION)
 	GameState.save_game()
 	get_tree().change_scene_to_file(GameState.SCENE_INVESTIGATION)
+
+
+func _make_equipment_source_text(item: Dictionary) -> String:
+	var reward_id := String(item.get("unlock_reward_id", "")).strip_edges()
+	if reward_id.is_empty():
+		return "완료 사건 회수 보상"
+	return "연구 보상 %s" % reward_id
+
+
+func _make_record_source_text(record: Dictionary) -> String:
+	var episode_id := String(record.get("episode_id", "")).strip_edges()
+	var source_result := String(record.get("source_result", "")).strip_edges()
+	var parts: Array = []
+	if not episode_id.is_empty():
+		parts.append(episode_id)
+	if not source_result.is_empty():
+		parts.append(source_result)
+	if parts.is_empty():
+		return "완료 사건 보고서"
+	return " / ".join(parts)
 
 
 func _add_scene_button(parent: Control, label: String, scene_path: String) -> void:

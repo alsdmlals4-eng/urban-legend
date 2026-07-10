@@ -151,6 +151,12 @@ func _show_completed_case_reports() -> void:
 	_detail_title.text = "완료 사건 기록"
 	_detail_summary.text = "회수에 성공한 사건 보고서를 다시 확인합니다. 각 사건은 최신 기록 1개만 보관합니다."
 	_clear_detail_items()
+	var save_summary := GameState.get_save_state_summary()
+	_add_detail_text("저장 상태: 완료 보고서 %d건 / 현재 씬 %s / 이어하기 경로 %s" % [
+		int(save_summary.get("completed_report_count", 0)),
+		String(save_summary.get("current_scene_path", "")),
+		String(save_summary.get("save_path", ""))
+	])
 
 	var reports := GameState.get_completed_case_reports()
 	if reports.is_empty():
@@ -179,15 +185,24 @@ func _show_completed_case_reports() -> void:
 
 func _show_completed_case_report(report: Dictionary, parent: VBoxContainer) -> void:
 	_clear_children(parent)
-	_add_detail_text("선택 보고서: %s" % String(report.get("episode_title", "완료 사건")), parent)
-	_add_detail_text("기록 시각: %s / 해결 등급: %s / 단서 수집률: %.0f%%" % [
-		String(report.get("completed_at_label", "기록 시각 없음")),
-		String(report.get("resolution_label", "해결 불가")),
-		float(report.get("clue_collection_rate", 0.0))
+	_add_text_entries("보고서 개요", [
+		"사건: %s" % String(report.get("episode_title", "완료 사건")),
+		"기록 시각: %s" % String(report.get("completed_at_label", "기록 시각 없음")),
+		"회수/안정화 등급: %s" % String(report.get("resolution_label", "회수 불가")),
+		"단서 수집률: %.0f%% / 확인한 힌트: %d건" % [
+			float(report.get("clue_collection_rate", 0.0)),
+			int(report.get("seen_hint_count", 0))
+		]
+	], parent)
+	_add_text_entries("DB 구분", [
+		"episode_id: %s" % String(report.get("episode_id", "")),
+		"저승역과 빨간 우산은 사건 id와 제목 기준으로 별도 최신 보고서 1건씩 보관됩니다."
+	], parent)
+	_add_text_entries("회수 결과", [
+		"괴이 핵 회수 결과: %s" % _make_recovery_text(report.get("recovery_result", {}))
 	], parent)
 	_add_report_entries("수집 단서", report.get("collected_clues", []), "title", "description", parent)
 	_add_minigame_entries(report.get("minigame_results", {}), parent)
-	_add_detail_text("괴이 핵 회수 결과: %s" % _make_recovery_text(report.get("recovery_result", {})), parent)
 	_add_report_entries("연구 보상", report.get("unlocked_research_rewards", []), "ability_name", "ability_description", parent)
 	_add_report_entries("해금 기록물", report.get("unlocked_records", []), "title", "description", parent)
 	_add_report_entries("해금 장비", report.get("unlocked_equipment", []), "name", "description", parent)
@@ -199,8 +214,10 @@ func _show_completed_case_report(report: Dictionary, parent: VBoxContainer) -> v
 	var records: Array = report.get("unlocked_records", [])
 	var equipment: Array = report.get("unlocked_equipment", [])
 	if not records.is_empty() or not equipment.is_empty():
-		_add_detail_text("연결 안내: 이 사건의 기록물은 다음 사건 준비에서 참고할 수 있고, 해금 장비는 준비 화면에서 장착할 수 있습니다.", parent)
-
+		_add_text_entries("다음 행동", [
+			"기록물은 사건 준비 화면에서 다음 조사 참고 자료로 다시 확인합니다.",
+			"해금 장비는 사건 준비 화면에서 장착한 뒤 조사 보정으로 연결합니다."
+		], parent)
 
 func _add_minigame_entries(results: Dictionary, parent: VBoxContainer) -> void:
 	var lines: Array = []
@@ -221,10 +238,11 @@ func _add_agent_entries(agents: Array, parent: VBoxContainer) -> void:
 	var lines: Array = []
 	for agent in agents:
 		if typeof(agent) == TYPE_DICTIONARY:
-			lines.append("%s (%s): 수사 파트너 신뢰도 %+d" % [
+			lines.append("%s (%s): 수사 파트너 신뢰 %+d / 사건 기여: %s" % [
 				String(agent.get("name", "요원")),
 				String(agent.get("temperament_label", "")),
-				int(agent.get("trust", 0))
+				int(agent.get("trust", 0)),
+				String(agent.get("role", "현장 보조"))
 			])
 	_add_text_entries("선택 요원", lines, parent)
 
@@ -233,8 +251,26 @@ func _add_report_entries(title: String, entries: Array, name_key: String, descri
 	var lines: Array = []
 	for entry in entries:
 		if typeof(entry) == TYPE_DICTIONARY:
-			lines.append("%s: %s" % [String(entry.get(name_key, "")), String(entry.get(description_key, ""))])
+			lines.append(_make_entry_usage_line(entry, name_key, description_key))
 	_add_text_entries(title, lines, parent)
+
+
+func _make_entry_usage_line(entry: Dictionary, name_key: String, description_key: String) -> String:
+	var line := "%s: %s" % [String(entry.get(name_key, "")), String(entry.get(description_key, ""))]
+	var source_parts: Array = []
+	if entry.has("episode_id"):
+		source_parts.append("획득처 %s" % String(entry.get("episode_id", "")))
+	if entry.has("source_result"):
+		source_parts.append("조건 %s" % String(entry.get("source_result", "")))
+	if entry.has("unlock_reward_id"):
+		source_parts.append("보상 %s" % String(entry.get("unlock_reward_id", "")))
+	if not source_parts.is_empty():
+		line += " / " + " / ".join(source_parts)
+
+	var usage := String(entry.get("next_investigation_effect", entry.get("next_episode_effect", entry.get("next_investigation_modifier", ""))))
+	if not usage.is_empty():
+		line += "\n  활용처: %s" % usage
+	return line
 
 
 func _make_recovery_text(result: Dictionary) -> String:
@@ -248,10 +284,24 @@ func _make_recovery_text(result: Dictionary) -> String:
 
 
 func _add_text_entries(title: String, lines: Array, parent: VBoxContainer) -> void:
+	var panel := PanelContainer.new()
+	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	parent.add_child(panel)
+
+	var content := VBoxContainer.new()
+	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	content.add_theme_constant_override("separation", 4)
+	panel.add_child(content)
+
+	var title_label := Label.new()
+	title_label.text = title
+	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	content.add_child(title_label)
+
 	if lines.is_empty():
-		_add_detail_text("%s: 없음" % title, parent)
+		_add_detail_text("없음", content)
 		return
-	_add_detail_text("%s\n- %s" % [title, "\n- ".join(lines)], parent)
+	_add_detail_text("- %s" % "\n- ".join(lines), content)
 
 
 func _add_detail_text(text: String, parent: VBoxContainer = _detail_items) -> void:
