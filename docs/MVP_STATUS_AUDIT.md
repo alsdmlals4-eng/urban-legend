@@ -1,53 +1,114 @@
 # MVP Status Audit
 
-## Audit Scope
+## 점검 일자
 
-Date: 2026-07-10
-Baseline: `MVP-020` / `Ver 2.0`
-Tracking issue: [#27](https://github.com/alsdmlals4-eng/urban-legend/issues/27). Issue #20 is an old duplicate and is not the MVP-020 reference.
+2026-07-10
 
-The audit compared the two episode JSON files, `GameState`, main scene flow, roadmap, tests, and shared documentation. No code change is required for this retrospective.
+## 점검 목적
 
-## Verified Implementation Baseline
+MVP-015~019까지 쌓인 기능과 문서가 서로 충돌하지 않는지 확인하고, 이후 작업 방향을 `괴담 에피소드 추가`가 아니라 `시스템/UI 디벨롭` 중심으로 전환한다.
 
-| Area | Evidence | Status |
+## 결론 요약
+
+현재 큰 방향의 충돌은 없다.
+
+다만 MVP-020부터는 새 괴담 에피소드를 계속 늘리는 것보다, 2개 사건 샘플을 기준으로 시스템·UI·안정화·데모 완성도를 높이는 편이 낫다.
+
+핵심 판단:
+
+```text
+괴담 에피소드는 2편까지를 기준 샘플로 두고,
+이후 MVP는 시스템·UI·안정화·데모 완성도를 높인다.
+```
+
+## 확인한 기준 문서
+
+| 파일 | 확인 결과 |
+|---|---|
+| `AGENTS.md` | Godot/GDScript, 회수 페이즈, GPT/Codex 역할 분리 규칙 유지 |
+| `docs/BASE_RULES_VERSION.md` | Base 기준 확인 필요 |
+| `docs/DOCUMENTATION_MAP.md` | MVP-020 Goal과 Issue #27 기준으로 갱신 필요/진행 |
+| `docs/AI_WORKFLOW_RULES.md` | GitHub Base 확인과 좋은 프롬프트 변환이 최우선 규칙으로 반영됨 |
+| `docs/MVP_WORKFLOW_CHECKLIST.md` | 표준 작업 순서와 결과 보고 체크리스트 기준 유지 |
+| `docs/CODEX_SHARED_WORK_RULES.md` | Codex 구현/문서 정리 규칙 기준 유지 |
+| `MVP_ROADMAP.md` | MVP-020 기준, 시스템/UI 중심 후속 로드맵으로 갱신 |
+| `TEST_CHECKLIST.md` | MVP-020 회고/문서 정리 확인 항목 추가 |
+| `docs/CODEX_GOAL_MVP_020.md` | MVP-020 실행 Goal 생성 완료 |
+
+## 현재 MVP 상태
+
+| 범위 | 상태 | 판단 |
 |---|---|---|
-| Two cases | `episode_001_afterlife_station.json`, `episode_002_red_umbrella_alley.json` | Keep as the demo sample set |
-| Shared state | `scripts/core/game_state.gd` manages clues, recovery, trust, reports, and saves | Keep; avoid a parallel state manager |
-| Recovery/report loop | Recovery result, unlocks, and `completed_case_reports` are data-driven | Keep; improve presentation in MVP-023/026 |
-| Agent trust | Selected agents only, bounded partner trust, one-time events | Keep; avoid romance framing |
-| Red-umbrella loop | Dialogue, investigation methods, minigame, recovery, result, and DB are connected | Keep; do not add a third episode |
+| MVP-001~009 | 완료 기준 | 기본 씬, 데이터 기반 대화/조사, 저장, 미니게임, 회수 흐름 존재 |
+| MVP-010~012 | 완료 기준 | 요원 편성, 조사 방법, 괴이 상태, 랜덤 이벤트 흐름 존재 |
+| MVP-013~015 | 완료 기준 | 장비, 기록물, 준비 화면, 두 번째 사건 준비 연결 존재 |
+| MVP-016 | 완료 기준 | 요원 신뢰도, 요원 이벤트, 조사 결과 UI 표시, 저장 구조 존재 |
+| MVP-017 | 완료 기준 | 결과 화면 사건 보고서와 요원 신뢰도 결산 |
+| MVP-018 | 완료 기준 | 완료 사건 보고서 저장과 기록국 DB 재확인 |
+| MVP-019 | 완료 기준 | 두 번째 사건 빨간 우산 조사 루프 1차 |
+| MVP-020 | 진행 중 | 5개 단위 회고, 규칙 다이어트, 시스템/UI 전환 기준 정리 |
 
-## MVP-015~019 Retrospective
+## MVP-015~019 회고
 
-| MVP | Keep | Reduce or avoid | Hand off |
-|---|---|---|---|
-| 015 | Preparation and second-case carryover | Dense explanatory text | MVP-021 preparation UI |
-| 016 | Partner trust and selected-agent reactions | Romance-like wording and repeated reactions | MVP-024 feedback design |
-| 017 | Case report as the outcome summary | Result-screen information density | MVP-023 report layout |
-| 018 | Completed-case report snapshots and DB re-check | Premature search/filter expansion | MVP-023 readable browsing first |
-| 019 | Two-case, data-driven full loop | A third episode or episode-specific logic | MVP-022, 026, and 029 polish |
+| MVP | 남길 구조 | 줄일 구조 / 위험 | 다음으로 넘길 항목 |
+|---:|---|---|---|
+| 015 | 두 번째 사건 준비 연결, 이전 기록 참고 | 준비 화면 설명 과밀 | MVP-021 준비 UI 개선 |
+| 016 | 요원 신뢰도, 1회 이벤트, 수사 파트너 반응 | 연애 호감도처럼 보이는 문구 | MVP-024 요원 시스템 디벨롭 |
+| 017 | 사건 보고서, 요원 신뢰도 결산 | 결과 화면 정보 과밀 | MVP-023 보고서 UI 고도화 |
+| 018 | 완료 사건 보고서 DB 재확인 | DB 검색/필터 과확장 | MVP-023 DB UI 고도화 |
+| 019 | 두 번째 사건 본격 조사 루프 | 새 사건 추가 욕심 | MVP-029 2개 사건 통합 QA |
 
-## Rule Diet
+## 규칙 다이어트 기준
 
-Keep these non-negotiable rules in `AGENTS.md` and the shared workflow documents:
+### 유지할 규칙
 
-- Godot 4.7 stable with GDScript.
-- ChatGPT plans, benchmarks, drafts Issues/Goals, and owns local HTML dashboards; Codex edits and validates project files.
-- Local HTML dashboard delivery is the default. Repository HTML is historical unless a task explicitly requests a repository update.
-- Anomalies are investigated, stabilized, sealed, or recovered, not killed.
-- Agent trust is investigative-partner trust.
-- Do not overwrite user changes.
+- Godot 4.7 + GDScript
+- ChatGPT는 기획/Issue/로컬 HTML/Goal/검수, Codex는 구현/문서 정리
+- HTML 대시보드는 로컬 파일 방식
+- `battle_scene`은 괴이 안정화/회수 페이즈
+- 괴담은 죽이는 대상이 아니라 규칙을 밝혀 봉인/회수하는 대상
+- 요원 신뢰도는 수사 파트너 신뢰
+- 기존 사용자 변경사항을 되돌리지 않음
 
-Reduce repeated task prose by referring to `AGENTS.md` and `docs/MVP_WORKFLOW_CHECKLIST.md` for shared process. A Goal should contain only its objective, scope, exclusions, affected files, completion checks, and task-specific risks. Use one implementation owner unless independent review materially improves confidence.
+### 줄일 규칙
 
-## Risks and Follow-up
+- 매 Goal마다 반복되는 장문 세계관 설명
+- HTML GitHub 소스 링크와 로컬 파일 방식 혼재
+- 구현 범위 밖 장기 기획 전문
+- 새 에피소드 자동 제안 흐름
+- 동일한 경고문 반복
 
-- Main, preparation, investigation, report, and recovery screens have accumulated text and need UI-focused readability work.
-- The two-case loop needs manual mobile-vertical and save/continue QA before a demo candidate.
-- No current code conflict was found. The remaining work is presentation and reliability, not more episode content.
+## 후속 로드맵 판단
 
-## Base Promotion
+MVP-021 이후는 다음 순서가 적절하다.
 
-Candidate: concise Goal structure plus a five-MVP retrospective checkpoint.
-Project-only: anomaly-recovery terminology, partner-trust framing, and the two-case content limit.
+1. MVP-021: 메인 UI / 사건 준비 UI 리디자인 1차
+2. MVP-022: 조사 화면 UI / 단서·힌트 추적 개선
+3. MVP-023: 사건 보고서 / 기록국 DB UI 고도화
+4. MVP-024: 요원 시스템 디벨롭
+5. MVP-025: 장비 / 기록물 시스템 디벨롭
+6. MVP-026: 괴이 안정화 / 회수 페이즈 UI 개선
+7. MVP-027: 저장 / 불러오기 / 진행 상태 안정화
+8. MVP-028: 모바일 세로 화면 / 접근성 / 텍스트 가독성
+9. MVP-029: 2개 사건 통합 데모 QA
+10. MVP-030: 데모 후보 빌드 / 소개 자료 정리
+
+## Base 승격 후보
+
+- MVP 5개 단위로 회고/규칙 다이어트를 수행하는 원칙
+- 에피소드 샘플이 충분할 때 새 콘텐츠보다 시스템/UI 안정화를 우선하는 판단 기준
+- 로컬 HTML 대시보드를 작업용 산출물로 제공하는 보고 방식
+
+## 프로젝트 전용으로 유지할 내용
+
+- 저승역/빨간 우산 2개 사건 기준
+- 기록국 DB와 사건 보고서 톤
+- 괴이 안정화/회수 표현
+- 요원 성향 3종과 수사 파트너 신뢰도
+- Godot 파일 경로와 씬 구조
+
+## 남은 위험
+
+- MVP-019 실제 구현 확인 결과가 완전히 공유되지 않았다면, MVP-020 문서에서는 `완료 기준` 표현으로 유지한다.
+- GitHub Issue 번호와 MVP 번호가 어긋나 있다. MVP-020 실제 Issue는 #27이며, #20은 오생성/중복 종료 이슈다.
+- MVP-021부터 UI 개선에 들어가기 전, 현재 UI의 가장 불편한 화면을 사용자가 우선순위로 지정하면 더 정확하다.

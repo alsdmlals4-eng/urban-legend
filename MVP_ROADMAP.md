@@ -1,45 +1,147 @@
-# MVP Roadmap
+# MVP_ROADMAP
 
-## Current Baseline
+## 현재 기준
 
-The implementation and documents are aligned through `MVP-020` (`Ver 2.0`). The authoritative tracking issue is [Issue #27](https://github.com/alsdmlals4-eng/urban-legend/issues/27); GitHub Issue #20 is an old duplicate and must not be used as the MVP-020 source.
+현재 문서 기준선은 `MVP-020`이다.
 
-The project now has two sample cases: `저승역` and `비 오는 골목의 빨간 우산`. They are enough to validate the core loop. Do not add a third case before the demo review.
+현재 MVP 상태 판단은 이 문서와 GitHub Issue #27, `docs/CODEX_GOAL_MVP_020.md`, `docs/MVP_STATUS_AUDIT.md`를 함께 기준으로 삼는다.
 
-## Completed Foundation
+> GitHub Issue #20은 과거 오생성/중복 종료 이슈다. MVP-020 기준 이슈는 #27이다.
 
-| Range | Result kept for later work |
-|---|---|
-| MVP-001~009 | Godot scenes, data-driven dialogue/investigation, clues, minigames, recovery, flags, and save/load |
-| MVP-010~014 | Agent formation, investigation methods, anomaly state, equipment/records, and preparation flow |
-| MVP-015 | Second-case preparation connection and carryover of selected agents, records, and equipment |
-| MVP-016 | Selected-agent-only partner trust and one-time support events |
-| MVP-017 | Case report and partner-trust settlement in the result flow |
-| MVP-018 | Completed-case report snapshots and Bureau DB re-check |
-| MVP-019 | Full red-umbrella loop from preparation to recovery, report, and DB |
-| MVP-020 | Five-MVP retrospective, rule diet, and system/UI transition criteria |
+## 전체 방향 전환
 
-## Direction After Two Cases
+MVP-020부터는 새 괴담 에피소드를 계속 추가하지 않는다.
 
-Keep the common loop: preparation → formation → dialogue → investigation → event/minigame → anomaly stabilization and recovery → report → Bureau DB.
+기준 방향:
 
-Improve clarity, usability, and reliability around that loop before expanding content. `battle_scene` remains an anomaly stabilization/recovery phase, not a traditional combat system. Agent trust remains investigative-partner trust, not romance affinity.
+```text
+괴담 에피소드는 2편까지를 기준 샘플로 두고,
+이후 MVP는 시스템·UI·안정화·데모 완성도를 높인다.
+```
 
-## Next Roadmap
+두 사건 샘플:
 
-| MVP | Focus | Outcome |
+1. `저승역`
+2. `비 오는 골목의 빨간 우산`
+
+이 2개 사건으로 다음 핵심 루프를 검증한다.
+
+```text
+사건 준비
+→ 요원 편성
+→ 조사
+→ 조사 방법 선택
+→ 단서/힌트/상태 변화
+→ 미니게임 또는 판정
+→ 괴이 안정화/회수
+→ 사건 보고서
+→ 기록국 DB
+→ 다음 사건 참고
+```
+
+## 전체 MVP 흐름
+
+| MVP | 상태 | 핵심 목표 | 주요 결과물 |
+|---:|---|---|---|
+| 001 | 완료 | Godot 핵심 씬 골격 | 조사, 대화, 전투/회수, 미니게임, 결과 씬 placeholder |
+| 002 | 완료 | 힌트·단서·피해자·해결 데이터 | 저승역 데이터 구조, 단서 수집률, 해결 등급 |
+| 003 | 완료 | 조사/대화에서 힌트와 단서 획득 | 조사 포인트 클릭, 대화 힌트 확인 |
+| 004 | 완료 | 해결 페이즈 진입 선택 | 단서 수집률 기반 해결 시도 |
+| 005 | 완료 | 전투 중 단서 자동 발동과 회수 | 괴이 안정화/핵 회수 흐름 |
+| 006 | 완료 | 결과·연구 보상·저승역 통합 흐름 | 피해자 결과, 연구 보상, 결과 화면 |
+| 007 | 완료 | 플래그·조건·저장/불러오기 | 진행 상태 저장, 조건 판정 |
+| 008 | 완료 | 데이터 기반 대화·조사 분기 | JSON 대화 노드, 조건부 선택지, 조사 포인트 |
+| 009 | 완료 | 미니게임 성공/실패 사건 연결 | 폐주파수 동기화 성공/실패와 회수 영향 |
+| 010 | 완료 | 3성향 요원 데이터·편성 | 분석형/공감형/돌파형, 요원 2~3명 편성 |
+| 011 | 완료 | 조사 방법·성향별 지원·신뢰도 반응 기초 | 파괴/관찰/분석 판정, 요원 지원 |
+| 012 | 완료 | 텍스트 조사 루프·괴이 상태·랜덤 이벤트 | 위험도, 이해도, 정신력, 예측률 |
+| 013 | 완료 | 장비·기록물·연구 보상 | 장비 해금, 기록물, 보상 연결 |
+| 014 | 완료 | 준비 화면·장비 장착 | 사건 준비와 장착 장비 선택 |
+| 015 | 완료 | 두 번째 사건 준비 연결 | 비 오는 골목의 빨간 우산, 장비/기록물 참고 |
+| 016 | 완료 | 요원 신뢰도·요원 이벤트 | agent_trust, 1회 요원 이벤트, 신뢰도 보조 안내 |
+| 017 | 완료 | 사건 보고서·요원 신뢰도 결산 | 결과 화면 사건 보고서, GameState 집계, README 갱신 |
+| 018 | 완료 | 사건 보고서 기반 기록국 DB 탭 강화 | 완료 사건 보고서 저장, 기록국 DB 목록/상세, 기존 저장 기본값 처리 |
+| 019 | 완료 기준 | 두 번째 사건 본격 조사 루프 | 빨간 우산 대화/조사/단서/판정/회수/보고서 연결 |
+| 020 | 진행 중 | 5개 단위 회고·규칙 다이어트·전환 기준 정리 | MVP-015~019 회고, 규칙 다이어트, 시스템/UI 중심 로드맵 |
+
+## MVP-015~019 회고 기준
+
+| 범위 | 유지할 구조 | 줄일 구조 / 위험 |
+|---|---|---|
+| MVP-015 | 두 번째 사건 준비 연결, 기록물/장비 참고 | 준비 화면 설명이 길어지는 문제 |
+| MVP-016 | 요원 신뢰도, 1회 요원 이벤트 | 연애 호감도처럼 보이는 표현 금지 |
+| MVP-017 | 사건 보고서, 요원 신뢰도 결산 | 결과 화면 정보 과밀 위험 |
+| MVP-018 | 완료 사건 보고서 DB 재확인 | DB 검색/필터 과확장 위험 |
+| MVP-019 | 두 번째 사건 플레이 루프 | 에피소드 양 확장보다 루프 검증 우선 |
+
+## 유지할 핵심 규칙
+
+- Godot 4.7 + GDScript 기준.
+- Codex는 구현, ChatGPT는 기획/Issue/로컬 HTML/Goal/검수.
+- HTML 대시보드는 로컬 파일 방식: `urban-legend-database-dashboard.html`.
+- `battle_scene`은 전통 전투가 아니라 `괴이 안정화 / 회수 페이즈`.
+- 괴담은 죽이는 대상이 아니라 규칙을 밝혀 봉인/회수하는 대상.
+- 요원 신뢰도는 연애 호감도가 아니라 수사 파트너 신뢰.
+- 기존 사용자 변경사항을 되돌리지 않는다.
+
+## 줄일 규칙 / 정리할 중복
+
+- Codex Goal마다 반복되는 과도한 세계관 설명.
+- HTML 대시보드의 GitHub 소스 링크/로컬 파일 방식 혼재.
+- `battle_scene` 경고 문구의 장문 반복.
+- 새 MVP마다 세 번째/네 번째 괴담을 자동으로 제안하는 흐름.
+- 구현 범위 밖의 장기 시스템 기획을 Goal에 넣는 방식.
+
+## MVP-020 작업 범위
+
+MVP-020은 코드 기능 추가보다 문서·규칙·로드맵 정리 중심이다.
+
+### ChatGPT 작업 범위
+
+- Issue #27 작성
+- `docs/CODEX_GOAL_MVP_020.md` 작성
+- `MVP_ROADMAP.md` 갱신
+- `TEST_CHECKLIST.md` 갱신
+- `docs/MVP_STATUS_AUDIT.md` 갱신
+- `docs/DOCUMENTATION_MAP.md` 갱신
+- 로컬 HTML 대시보드 갱신
+
+### Codex 작업 범위
+
+Codex는 Issue #27과 `docs/CODEX_GOAL_MVP_020.md`를 기준으로 문서/규칙 정리를 수행한다.
+
+예상 작업:
+
+- 문서 간 MVP 기준선 충돌 정리
+- MVP-015~019 회고 문서화
+- MVP-021~030 시스템/UI 중심 로드맵 확정
+- README에 필요 시 방향 전환 요약 추가
+- 코드 변경은 원칙적으로 제외하거나 최소화
+
+## 제외 범위
+
+MVP-020에서 제외한다.
+
+- 세 번째 괴담 에피소드 추가
+- 새 미니게임 추가
+- 새 전투/회수 시스템 추가
+- 장기 요원 개인 루트
+- 실제 코드 리팩터링
+- 저장 구조 변경
+- 대형 UI 구현
+- GitHub HTML 소스 관리 전환
+
+## 다음 MVP 로드맵
+
+| MVP | 방향 | 핵심 작업 |
 |---:|---|---|
-| 021 | Main and case-preparation UI | Clearer start, case, agent, and equipment decisions |
-| 022 | Investigation UI and clue/hint tracking | Easier point selection, method comparison, and evidence progress |
-| 023 | Case report and Bureau DB UI | Readable reports and useful completed-case browsing without overbuilt search |
-| 024 | Agent-system development | Stronger selected-agent reactions and trust feedback |
-| 025 | Equipment and record development | Meaningful investigation/recovery reference use |
-| 026 | Stabilization/recovery UI | Clear anomaly state, support, and recovery decisions |
-| 027 | Save/load stabilization | Reliable continuation, restart, and compatibility checks |
-| 028 | Mobile/accessibility/readability | Vertical layout, text legibility, and input accessibility |
-| 029 | Two-case integrated demo QA | Full-flow regression and player-facing issue list |
-| 030 | Demo candidate build and materials | Stable candidate build, concise introduction, and final documentation |
-
-## MVP-021 Brief
-
-Redesign only the main menu and preparation UI first. The player should immediately understand the selected case, 2–3 assigned agents, equipped records/tools, save status, and the next action. Do not change save data or add a new gameplay system in MVP-021.
+| 021 | UI | 메인 UI / 사건 준비 UI 리디자인 1차 |
+| 022 | UI | 조사 화면 UI / 단서·힌트 추적 개선 |
+| 023 | UI/시스템 | 사건 보고서 / 기록국 DB UI 고도화 |
+| 024 | 시스템 | 요원 신뢰도 / 요원 반응 디벨롭 |
+| 025 | 시스템 | 장비 / 기록물 활용성 강화 |
+| 026 | 시스템/UI | 괴이 안정화 / 회수 페이즈 개선 |
+| 027 | 안정화 | 저장 / 불러오기 / 진행 상태 안정화 |
+| 028 | UX | 모바일 세로 화면 / 접근성 / 텍스트 가독성 |
+| 029 | QA | 2개 사건 통합 데모 검수 |
+| 030 | 데모 | 데모 후보 빌드 / 소개 자료 정리 |
