@@ -24,7 +24,7 @@
 
 ## 벤치마킹 반영 기준
 
-Issue #28과 `MVP_ROADMAP.md`의 벤치마킹 결론을 확인하고, Goal에는 실행에 필요한 만큼만 반영한다.
+Issue #28, `MVP_ROADMAP.md`, `docs/MVP_STATUS_AUDIT.md`의 벤치마킹 결론을 확인하고 Goal에는 실행에 필요한 만큼만 반영한다.
 
 - Unity Asset Store: UI 키트/템플릿/상점형 정보 구조에서 버튼 그룹, 카드 구성, 기능 소개 방식을 참고한다.
 - Tales of Tuscany Demo: Steam 위시리스트 유도, 데모 소개, 빠른 기능 소개, 개성 있는 상호작용 소개 방식을 참고한다.
