@@ -1,7 +1,7 @@
 # 시작 화면에서 프로젝트 소개와 데이터베이스 진입을 관리한다.
 extends Control
 
-const GAME_VERSION := "Ver 2.0"
+const GAME_VERSION := "Ver 2.2"
 
 var _start_episode_button: Button
 var _continue_button: Button
@@ -164,16 +164,16 @@ func _add_update_notice(parent: Control) -> void:
 	panel.add_child(content)
 
 	var title := Label.new()
-	title.text = "Ver 2.0 변경사항"
+	title.text = "Ver 2.2 변경사항"
 	content.add_child(title)
 
 	var changes := Label.new()
-	changes.text = "- 두 번째 사건 '비 오는 골목의 빨간 우산'을 대화부터 회수·보고서까지 진행할 수 있습니다.\n- 빗소리 동기화 결과와 수집 단서가 회수 조건에 반영됩니다."
+	changes.text = "- 메인 메뉴, 사건 준비 화면, 조사 화면의 정보 위계를 PC/Steam 기준으로 정리했습니다.\n- 단서와 힌트 추적을 분리하고, 조사 결과를 다음 행동까지 읽히게 개선했습니다."
 	changes.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	content.add_child(changes)
 
 	var checks := Label.new()
-	checks.text = "확인할 것: 두 사건을 기준으로 시작·준비 화면의 정보가 읽히는지, 이어하기와 완료 사건 기록이 유지되는지 확인하세요."
+	checks.text = "확인할 것: 두 사건 기준 시작·준비·조사 화면의 정보가 읽히는지, 이어하기와 완료 사건 기록이 유지되는지 확인하세요."
 	checks.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	content.add_child(checks)
 
