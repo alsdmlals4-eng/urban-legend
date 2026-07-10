@@ -7,7 +7,12 @@
 
 ## 작업 전 확인
 
-`docs/DOCUMENTATION_MAP.md`의 읽기 순서를 따른 뒤, Issue #28과 아래 파일을 확인한다.
+먼저 GitHub Base 원본 규칙을 확인한다.
+
+- `alsdmlals4-eng/Base/docs/MVP_WORKFLOW_CHECKLIST.md`
+- `alsdmlals4-eng/Base/docs/AI_WORKFLOW_RULES.md`
+
+그다음 `docs/DOCUMENTATION_MAP.md`의 읽기 순서를 따른 뒤, Issue #28과 아래 파일을 확인한다.
 
 - `scripts/ui/main_menu.gd`
 - `scripts/scenes/preparation_scene.gd`
