@@ -17,15 +17,22 @@
 | Base 동기화 기록 | `docs/BASE_RULES_VERSION.md` | Base 기준 커밋 SHA와 동기화 날짜 |
 | 프로젝트 전용 | `AGENTS.md` | 도시괴담 기록국 최상위 규칙 |
 | 프로젝트 전용 | `docs/CODEX_SHARED_WORK_RULES.md` | 도시괴담 기록국 Codex 구현 규칙 |
+| 프로젝트 전용 | `docs/AGENTIC_GITHUB_WORKFLOW.md` | GPT, Codex, GitHub를 Antigravity식 운영면으로 쓰는 절차 |
 | 프로젝트 전용 | `README.md` | 프로젝트 소개, 실행 방법, 현재 MVP 상태 |
 | 프로젝트 전용 | `PROJECT_BRIEF.md` | 한 줄 설명, 장르, 플레이어 역할, 핵심 경험, 차별점 |
 | 프로젝트 전용 | `DESIGN_INTENT.md` | 기획 의도, 핵심 루프, 플레이어 감정, 선택지 설계 원칙 |
 | 프로젝트 전용 | `MVP_ROADMAP.md` | MVP 목록, Issue 번호, 상태, 완료 기준, 다음 작업 |
 | 프로젝트 전용 | `TEST_CHECKLIST.md` | Godot 테스트 순서, MVP별 체크리스트, 오류 기록 방식 |
 | 프로젝트 전용 | `docs/MVP_STATUS_AUDIT.md` | 현재 MVP 상태, 문서 충돌, 개선점, 남은 위험 기록 |
-| 프로젝트 전용 | `docs/urban_legend_flow_dashboard.html` | 전체 흐름 HTML 대시보드 |
-| 프로젝트 전용 | `docs/CODEX_GOAL_MVP_017.md` | MVP-017 Codex 실행 Goal |
-| 프로젝트 전용 | `docs/CODEX_GOAL_MVP_018.md` | MVP-018 Codex 실행 Goal |
+| 프로젝트 전용 | `docs/urban_legend_flow_dashboard.html` | 과거 GitHub 보관용 전체 흐름 HTML 대시보드 |
+| 프로젝트 전용 | `docs/CODEX_GOAL_MVP_017.md` | MVP-017 Codex 실행 Goal 과거 기록 |
+| 프로젝트 전용 | `docs/CODEX_GOAL_MVP_018.md` | MVP-018 Codex 실행 Goal 과거 기록 |
+| 프로젝트 전용 | `docs/CODEX_GOALS/README.md` | 신규 Codex Goal 보관 규칙 |
+| 프로젝트 전용 | `docs/REVIEWS/README.md` | MVP/PR 검수 Artifact 보관 규칙 |
+| GitHub 템플릿 | `.github/ISSUE_TEMPLATE/codex_goal.yml` | Codex 구현 Issue 입력 양식 |
+| GitHub 템플릿 | `.github/ISSUE_TEMPLATE/planning_task.yml` | 기획/시스템 설계 Issue 입력 양식 |
+| GitHub 템플릿 | `.github/ISSUE_TEMPLATE/bug_report.yml` | 오류 재현/수정 Issue 입력 양식 |
+| GitHub 템플릿 | `.github/pull_request_template.md` | PR Walkthrough / 검증 보고 양식 |
 | 프로젝트 전용 | `.serena/project.yml` | Serena 프로젝트 설정 |
 | 프로젝트 전용 | `data/` | 게임 데이터 |
 | 프로젝트 전용 | `scripts/` | Godot 구현 코드 |
@@ -42,16 +49,20 @@
 6. docs/MVP_WORKFLOW_CHECKLIST.md
 7. docs/BENCHMARKING_REFERENCE_GUIDE.md
 8. docs/CODEX_SHARED_WORK_RULES.md
-9. README.md
-10. PROJECT_BRIEF.md
-11. DESIGN_INTENT.md
-12. MVP_ROADMAP.md
-13. TEST_CHECKLIST.md
-14. 현재 GitHub Issue
-15. 실제 수정 대상 파일
+9. docs/AGENTIC_GITHUB_WORKFLOW.md
+10. README.md
+11. PROJECT_BRIEF.md
+12. DESIGN_INTENT.md
+13. MVP_ROADMAP.md
+14. TEST_CHECKLIST.md
+15. 현재 GitHub Issue
+16. 현재 Codex Goal
+17. 실제 수정 대상 파일
 ```
 
 MVP-018 기준으로 현재 MVP 상태는 `MVP_ROADMAP.md`, `docs/MVP_STATUS_AUDIT.md`, GitHub Issue #18을 함께 확인한다.
+
+신규 Codex Goal은 `docs/CODEX_GOALS/`에 작성한다. 기존 `docs/CODEX_GOAL_MVP_017.md`, `docs/CODEX_GOAL_MVP_018.md`는 과거 기록으로 유지한다.
 
 ## 동기화와 확장 원칙
 
@@ -67,4 +78,5 @@ MVP-018 기준으로 현재 MVP 상태는 `MVP_ROADMAP.md`, `docs/MVP_STATUS_AUD
 - 반복 가능한 작업 원칙은 Base와 공용 로컬 사본에 둔다.
 - 엔진, 폴더 구조, 세계관, 데이터, 현재 MVP 상태는 프로젝트 전용 문서에 둔다.
 - Issue는 현재 작업 기준서이고, Goal은 구현 실행 지시서다.
+- GitHub Issue/PR/Goal/Review는 Antigravity식 Artifact를 대체하는 검토 가능한 산출물로 사용한다.
 - HTML 대시보드는 관련 Issue 또는 사용자 최신 지시가 명시할 때 수정한다.

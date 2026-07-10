@@ -1,0 +1,91 @@
+name: Planning Task
+about: 기획, 벤치마킹, 시스템 설계, 데이터 구조 설계 작업을 정리합니다.
+title: "[Planning] 작업명"
+labels: ["planning"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        이 템플릿은 아직 Codex 구현으로 넘기기 전의 기획/설계 작업용입니다.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: 해결하려는 문제
+      description: 기능 요구가 아니라 왜 필요한지 적습니다.
+      placeholder: "현재 괴담 조사 루프가 짧은 도파민 보상을 만들지 못한다."
+    validations:
+      required: true
+
+  - type: textarea
+    id: target_experience
+    attributes:
+      label: 목표 플레이어 경험
+      description: 감정, 선택, 고민, 보상, 기억 포인트를 적습니다.
+      placeholder: |
+        - 친구에게 말하고 싶은 짧은 괴담 반전
+        - 3~5분 안에 끝나는 조사와 결과 피드백
+    validations:
+      required: true
+
+  - type: textarea
+    id: references
+    attributes:
+      label: 참고 사례 / 벤치마킹 필요 여부
+      description: 필요한 경우 3~5개 사례를 적고, 필요 없으면 이유를 적습니다.
+      placeholder: |
+        - 벤치마킹 필요:
+        - 참고할 사례:
+        - 그대로 따라하지 않을 요소:
+    validations:
+      required: true
+
+  - type: textarea
+    id: design_scope
+    attributes:
+      label: 설계 범위
+      description: 이번 기획 작업에서 결정할 범위를 적습니다.
+      placeholder: |
+        - 핵심 루프
+        - 데이터 구조
+        - UI 정보 구조
+        - MVP 범위
+    validations:
+      required: true
+
+  - type: textarea
+    id: out_of_scope
+    attributes:
+      label: 제외 범위
+      description: 이번 기획에서 결정하지 않을 것을 적습니다.
+      placeholder: |
+        - 최종 아트
+        - 구현 세부 코드
+        - 전체 저장 시스템 개편
+    validations:
+      required: true
+
+  - type: textarea
+    id: output
+    attributes:
+      label: 결과물 형식
+      description: 이 기획 작업의 산출물을 적습니다.
+      placeholder: |
+        - PROJECT_BRIEF 갱신안
+        - DESIGN_INTENT 갱신안
+        - MVP_ROADMAP 갱신안
+        - Codex Goal 초안
+    validations:
+      required: true
+
+  - type: textarea
+    id: done
+    attributes:
+      label: 완료 기준
+      placeholder: |
+        - [ ] 플레이어 경험이 한 문장으로 정리됐다.
+        - [ ] 구현 범위와 제외 범위가 분리됐다.
+        - [ ] Codex로 넘길 수 있는 Goal 초안이 있다.
+        - [ ] Base 승격 후보와 프로젝트 전용 내용을 구분했다.
+    validations:
+      required: true
