@@ -407,7 +407,7 @@ func _make_method_result_text(result: Dictionary) -> String:
 			lines.append("랜덤 이벤트: %s" % String(random_event.get("message", "이상 현상 없음")))
 
 	if bool(case_status.get("forced_recovery_phase", false)):
-		lines.append("괴이 위험도가 한계에 도달했습니다. 해결 시도 버튼으로 강제 회수전에 진입할 수 있습니다.")
+		lines.append("괴이 위험도가 한계에 도달했습니다. 회수/안정화 버튼으로 강제 회수전에 진입할 수 있습니다.")
 
 	var trust_lines: Array = []
 	for change in result.get("trust_changes", []):
@@ -597,7 +597,7 @@ func _show_resolution_confirm_panel() -> void:
 
 func _start_resolution_attempt() -> void:
 	if not GameState.start_resolution_phase():
-		_result_label.text = "해결 불가: 단서 수집률이 40% 이상이어야 합니다."
+		_result_label.text = "회수/안정화 불가: 단서 수집률이 40% 이상이어야 합니다."
 		_resolution_confirm_panel.visible = false
 		_refresh_case_status()
 		return
