@@ -37,9 +37,13 @@ func _build_ui() -> void:
 	var panel := PanelContainer.new()
 	margin.add_child(panel)
 
+	var scroll := ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	panel.add_child(scroll)
+
 	var content := VBoxContainer.new()
 	content.add_theme_constant_override("separation", 14)
-	panel.add_child(content)
+	scroll.add_child(content)
 
 	var title_row := HBoxContainer.new()
 	title_row.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -70,45 +74,85 @@ func _build_ui() -> void:
 
 	_add_update_notice(content)
 
-	_save_status_label = Label.new()
-	_save_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_save_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	content.add_child(_save_status_label)
-
-	_add_agent_selection_panel(content)
-
-	var open_button := Button.new()
-	open_button.text = "기록국 데이터베이스 열기"
-	open_button.pressed.connect(_open_database)
-	content.add_child(open_button)
+	var action_content := _add_section(
+		content,
+		"주요 행동",
+		"새 수사를 시작하거나 저장된 진행을 이어가고, 기록국 DB에서 확보한 정보를 다시 확인합니다."
+	)
 
 	_start_episode_button = Button.new()
-	_start_episode_button.text = "새 게임 / 저승역 시작"
+	_start_episode_button.text = "새 수사 시작: 저승역"
 	_start_episode_button.pressed.connect(_start_afterlife_station)
-	content.add_child(_start_episode_button)
+	action_content.add_child(_start_episode_button)
 
 	_continue_button = Button.new()
 	_continue_button.text = "이어하기"
 	_continue_button.pressed.connect(_continue_saved_game)
-	content.add_child(_continue_button)
+	action_content.add_child(_continue_button)
+
+	var open_button := Button.new()
+	open_button.text = "기록국 DB"
+	open_button.pressed.connect(_open_database)
+	action_content.add_child(open_button)
+
+	var status_content := _add_section(
+		content,
+		"저장 / 요원 상태",
+		"조사 시작 가능 여부와 이어하기 가능 여부를 먼저 확인합니다."
+	)
+
+	_save_status_label = Label.new()
+	_save_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_save_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	status_content.add_child(_save_status_label)
+
+	_add_agent_selection_panel(status_content)
+
+	var dev_content := _add_section(
+		content,
+		"개발 / 테스트",
+		"플레이 루프 검증용 보조 버튼입니다. 실제 진행은 주요 행동에서 시작합니다."
+	)
 
 	var clear_save_button := Button.new()
 	clear_save_button.text = "저장 초기화"
 	clear_save_button.pressed.connect(_clear_saved_game)
-	content.add_child(clear_save_button)
+	dev_content.add_child(clear_save_button)
 
-	_add_scene_button(content, "MVP-002 데이터 확인", "res://scenes/case_data_scene.tscn")
+	_add_scene_button(dev_content, "MVP-002 데이터 확인", "res://scenes/case_data_scene.tscn")
 
 	var scene_label := Label.new()
 	scene_label.text = "MVP-001 핵심 씬 테스트"
 	scene_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	content.add_child(scene_label)
+	dev_content.add_child(scene_label)
 
-	_add_scene_button(content, "조사씬 열기", "res://scenes/investigation_scene.tscn")
-	_add_scene_button(content, "준비 화면 열기", GameState.SCENE_PREPARATION)
-	_add_scene_button(content, "대화씬 열기", "res://scenes/dialogue_scene.tscn")
-	_add_scene_button(content, "전투씬 열기", "res://scenes/battle_scene.tscn")
-	_add_scene_button(content, "미니게임씬 열기", "res://scenes/minigame_scene.tscn")
+	_add_scene_button(dev_content, "조사씬 열기", "res://scenes/investigation_scene.tscn")
+	_add_scene_button(dev_content, "준비 화면 열기", GameState.SCENE_PREPARATION)
+	_add_scene_button(dev_content, "대화씬 열기", "res://scenes/dialogue_scene.tscn")
+	_add_scene_button(dev_content, "전투씬 열기", "res://scenes/battle_scene.tscn")
+	_add_scene_button(dev_content, "미니게임씬 열기", "res://scenes/minigame_scene.tscn")
+
+
+func _add_section(parent: Control, title_text: String, description_text: String = "") -> VBoxContainer:
+	var panel := PanelContainer.new()
+	parent.add_child(panel)
+
+	var content := VBoxContainer.new()
+	content.add_theme_constant_override("separation", 8)
+	panel.add_child(content)
+
+	var title := Label.new()
+	title.text = title_text
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	content.add_child(title)
+
+	if not description_text.is_empty():
+		var description := Label.new()
+		description.text = description_text
+		description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		content.add_child(description)
+
+	return content
 
 
 func _add_update_notice(parent: Control) -> void:
@@ -175,7 +219,7 @@ func _refresh_save_controls() -> void:
 	if _continue_button != null:
 		_continue_button.disabled = not has_save
 	if _save_status_label != null:
-		_save_status_label.text = "저장 파일: %s\n경로: %s" % [
+		_save_status_label.text = "이어하기: %s\n저장 경로: %s" % [
 			"있음" if has_save else "없음",
 			GameState.get_save_file_path()
 		]

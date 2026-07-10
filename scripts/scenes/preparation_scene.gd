@@ -7,6 +7,7 @@ var _equipped_label: Label
 var _modifier_label: Label
 var _record_list: VBoxContainer
 var _log_list: VBoxContainer
+var _start_button: Button
 var _status_label: Label
 
 
@@ -45,6 +46,7 @@ func _build_ui() -> void:
 
 	_add_navigation(root)
 	_add_header(root)
+	_add_current_case_panel(root)
 	_add_episode_panel(root)
 	_add_agent_panel(root)
 	_add_equipment_panel(root)
@@ -69,6 +71,10 @@ func _add_header(parent: Control) -> void:
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	parent.add_child(title)
 
+
+func _add_current_case_panel(parent: Control) -> void:
+	var content := _add_section(parent, "현재 사건", "지금 조사 준비를 적용할 사건입니다.")
+
 	var case_label := Label.new()
 	case_label.text = "현재 사건: %s\n%s" % [
 		GameState.get_current_episode_title(),
@@ -76,20 +82,11 @@ func _add_header(parent: Control) -> void:
 	]
 	case_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	case_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	parent.add_child(case_label)
+	content.add_child(case_label)
 
 
 func _add_episode_panel(parent: Control) -> void:
-	var panel := PanelContainer.new()
-	parent.add_child(panel)
-
-	var content := VBoxContainer.new()
-	content.add_theme_constant_override("separation", 6)
-	panel.add_child(content)
-
-	var title := Label.new()
-	title.text = "시작할 사건"
-	content.add_child(title)
+	var content := _add_section(parent, "사건 선택", "두 사건 중 이번에 조사할 대상을 고릅니다.")
 
 	_episode_list = VBoxContainer.new()
 	_episode_list.add_theme_constant_override("separation", 6)
@@ -97,16 +94,7 @@ func _add_episode_panel(parent: Control) -> void:
 
 
 func _add_agent_panel(parent: Control) -> void:
-	var panel := PanelContainer.new()
-	parent.add_child(panel)
-
-	var content := VBoxContainer.new()
-	content.add_theme_constant_override("separation", 6)
-	panel.add_child(content)
-
-	var title := Label.new()
-	title.text = "요원 편성"
-	content.add_child(title)
+	var content := _add_section(parent, "요원", "조사 시작 조건과 현재 편성 요원을 확인합니다.")
 
 	var summary := Label.new()
 	summary.text = "%s\n선택된 요원: %s" % [
@@ -118,16 +106,7 @@ func _add_agent_panel(parent: Control) -> void:
 
 
 func _add_equipment_panel(parent: Control) -> void:
-	var panel := PanelContainer.new()
-	parent.add_child(panel)
-
-	var content := VBoxContainer.new()
-	content.add_theme_constant_override("separation", 8)
-	panel.add_child(content)
-
-	var title := Label.new()
-	title.text = "장비 장착"
-	content.add_child(title)
+	var content := _add_section(parent, "장비", "해금된 도구를 장착해 다음 조사 보정을 확인합니다.")
 
 	_equipped_label = Label.new()
 	_equipped_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -143,16 +122,7 @@ func _add_equipment_panel(parent: Control) -> void:
 
 
 func _add_record_panel(parent: Control) -> void:
-	var panel := PanelContainer.new()
-	parent.add_child(panel)
-
-	var content := VBoxContainer.new()
-	content.add_theme_constant_override("separation", 8)
-	panel.add_child(content)
-
-	var title := Label.new()
-	title.text = "참고 기록물"
-	content.add_child(title)
+	var content := _add_section(parent, "기록물", "해금된 기록물이 이번 조사에 주는 참고 효과를 봅니다.")
 
 	_record_list = VBoxContainer.new()
 	_record_list.add_theme_constant_override("separation", 6)
@@ -160,16 +130,7 @@ func _add_record_panel(parent: Control) -> void:
 
 
 func _add_log_panel(parent: Control) -> void:
-	var panel := PanelContainer.new()
-	parent.add_child(panel)
-
-	var content := VBoxContainer.new()
-	content.add_theme_constant_override("separation", 8)
-	panel.add_child(content)
-
-	var title := Label.new()
-	title.text = "로그 안내 패널"
-	content.add_child(title)
+	var content := _add_section(parent, "로그", "준비 상태와 사건별 주의 문구를 한 번 더 확인합니다.")
 
 	var profile := Label.new()
 	profile.text = "로그 / 기관에서 지급한 괴담 기록 단말기 속 안내 AI / 작은 픽셀 유령 또는 말하는 부적 스티커"
@@ -182,18 +143,20 @@ func _add_log_panel(parent: Control) -> void:
 
 
 func _add_start_panel(parent: Control) -> void:
+	var content := _add_section(parent, "조사 시작", "조건을 만족하면 현재 사건의 조사 화면으로 이동합니다.")
+
 	_status_label = Label.new()
 	_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	parent.add_child(_status_label)
+	content.add_child(_status_label)
 
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 8)
-	parent.add_child(row)
+	content.add_child(row)
 
-	var start_button := Button.new()
-	start_button.text = "조사 시작"
-	start_button.pressed.connect(_start_investigation)
-	row.add_child(start_button)
+	_start_button = Button.new()
+	_start_button.text = "조사 시작"
+	_start_button.pressed.connect(_start_investigation)
+	row.add_child(_start_button)
 
 	var save_button := Button.new()
 	save_button.text = "준비 저장"
@@ -204,12 +167,40 @@ func _add_start_panel(parent: Control) -> void:
 	row.add_child(save_button)
 
 
+func _add_section(parent: Control, title_text: String, description_text: String = "") -> VBoxContainer:
+	var panel := PanelContainer.new()
+	parent.add_child(panel)
+
+	var content := VBoxContainer.new()
+	content.add_theme_constant_override("separation", 8)
+	panel.add_child(content)
+
+	var title := Label.new()
+	title.text = title_text
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	content.add_child(title)
+
+	if not description_text.is_empty():
+		var description := Label.new()
+		description.text = description_text
+		description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		content.add_child(description)
+
+	return content
+
+
 func _refresh() -> void:
 	_refresh_episode_selection()
 	_refresh_equipment()
 	_refresh_records()
 	_refresh_log()
-	_status_label.text = "조사 시작 전 장비와 기록물을 확인하세요."
+	var can_start := GameState.can_start_mission_with_agents()
+	if _start_button != null:
+		_start_button.disabled = not can_start
+	if can_start:
+		_status_label.text = "시작 가능: 장비와 기록물을 확인한 뒤 현재 사건 조사를 시작할 수 있습니다."
+	else:
+		_status_label.text = "시작 불가: %s" % GameState.get_agent_selection_status_text()
 
 
 func _refresh_episode_selection() -> void:
