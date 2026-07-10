@@ -4,7 +4,7 @@ extends Node
 const DEFAULT_EPISODE_PATH := "res://data/episodes/episode_001_afterlife_station.json"
 const RED_UMBRELLA_ALLEY_EPISODE_PATH := "res://data/episodes/episode_002_red_umbrella_alley.json"
 const SAVE_FILE_PATH := "user://urban_legend_save.json"
-const SAVE_VERSION := "mvp-014"
+const SAVE_VERSION := "mvp-018"
 const DEFAULT_DIALOGUE_NODE_ID := "dialogue_intro"
 const DEFAULT_MINIGAME_ID := "minigame_frequency_sync"
 const EQUIP_FREQUENCY_FILTER := "equip_frequency_filter"
@@ -84,6 +84,7 @@ var unlocked_equipment: Array = []
 var unlocked_research_rewards: Array = []
 var equipped_items: Array = []
 var used_equipment_effects: Array = []
+var completed_case_reports: Array = []
 
 
 func _ready() -> void:
@@ -146,6 +147,7 @@ func reset_run_state() -> void:
 	unlocked_research_rewards.clear()
 	equipped_items.clear()
 	used_equipment_effects.clear()
+	completed_case_reports.clear()
 	current_scene_path = SCENE_DIALOGUE
 	current_dialogue_node_id = DEFAULT_DIALOGUE_NODE_ID
 	current_minigame_id = DEFAULT_MINIGAME_ID
@@ -722,6 +724,7 @@ func get_case_report_summary() -> Dictionary:
 	var reward_entries := get_current_result_unlocked_research_rewards()
 	var equipment_entries := get_current_result_unlocked_equipment()
 	return {
+		"episode_id": get_current_episode_id(),
 		"episode_title": get_current_episode_title(),
 		"resolution_label": get_result_resolution_label(),
 		"clue_collection_rate": get_clue_collection_rate(),
@@ -738,6 +741,39 @@ func get_case_report_summary() -> Dictionary:
 		"agent_support_texts": get_agent_trust_support_texts(),
 		"next_case_notes": _get_case_report_next_notes(record_entries, equipment_entries, selected_agents)
 	}
+
+
+## Saves the current successful recovery as one completed-case report per episode.
+func record_current_case_report() -> bool:
+	if not is_recovery_successful():
+		return false
+
+	var report := get_case_report_summary()
+	var episode_id := String(report.get("episode_id", ""))
+	if episode_id.is_empty():
+		return false
+
+	var existing_index := -1
+	for index in range(completed_case_reports.size()):
+		var existing: Variant = completed_case_reports[index]
+		if typeof(existing) == TYPE_DICTIONARY and String(existing.get("episode_id", "")) == episode_id:
+			existing_index = index
+			report["completed_at_label"] = String(existing.get("completed_at_label", ""))
+			break
+
+	if String(report.get("completed_at_label", "")).is_empty():
+		report["completed_at_label"] = Time.get_datetime_string_from_system(false, true)
+	if existing_index >= 0:
+		completed_case_reports[existing_index] = report
+	else:
+		completed_case_reports.append(report)
+	save_game()
+	return true
+
+
+## Returns saved completed-case report snapshots for the database screen.
+func get_completed_case_reports() -> Array:
+	return completed_case_reports.duplicate(true)
 
 
 ## Returns active hint records. Hints are separate from clues.
@@ -1530,6 +1566,7 @@ func load_game() -> bool:
 		if not unlocked_equipment.has(String(equipment_id)):
 			equipped_items.erase(equipment_id)
 	used_equipment_effects = _to_unique_string_array(save_data.get("used_equipment_effects", []))
+	completed_case_reports = _to_dictionary_array(save_data.get("completed_case_reports", []))
 	investigation_risk = clampi(int(save_data.get("anomaly_risk", save_data.get("investigation_risk", 0))), 0, 100)
 	case_understanding = clampi(int(save_data.get("anomaly_understanding", save_data.get("case_understanding", 0))), 0, 100)
 	victim_understanding = clampi(int(save_data.get("victim_understanding", 0)), 0, 100)
@@ -1610,6 +1647,7 @@ func _make_save_data() -> Dictionary:
 		"unlocked_research_rewards": get_unlocked_research_rewards(),
 		"equipped_items": get_equipped_items(),
 		"used_equipment_effects": get_used_equipment_effects(),
+		"completed_case_reports": get_completed_case_reports(),
 		"investigation_risk": investigation_risk,
 		"case_understanding": case_understanding,
 		"victim_understanding": victim_understanding,
@@ -2022,6 +2060,16 @@ func _to_dictionary(value: Variant) -> Dictionary:
 	if typeof(value) == TYPE_DICTIONARY:
 		return value.duplicate(true)
 	return {}
+
+
+func _to_dictionary_array(value: Variant) -> Array:
+	var dictionaries: Array = []
+	if typeof(value) != TYPE_ARRAY:
+		return dictionaries
+	for item in value:
+		if typeof(item) == TYPE_DICTIONARY:
+			dictionaries.append(item.duplicate(true))
+	return dictionaries
 
 
 func _get_resolution_rank(grade: String) -> int:

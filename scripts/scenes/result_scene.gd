@@ -7,7 +7,7 @@ func _ready() -> void:
 		GameState.load_episode()
 
 	GameState.set_current_scene_path("res://scenes/result_scene.tscn")
-	GameState.save_game()
+	GameState.record_current_case_report()
 	_build_ui()
 
 

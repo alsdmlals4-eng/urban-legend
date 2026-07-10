@@ -1,4 +1,4 @@
-# 데이터베이스 화면의 섹션 선택과 MVP-013 해금 상태 표시를 관리한다.
+# 데이터베이스 화면의 섹션 선택과 완료 사건 기록 표시를 관리한다.
 extends Control
 
 var _section_list: VBoxContainer
@@ -105,10 +105,20 @@ func _build_section_buttons() -> void:
 	)
 	_section_list.add_child(mvp13_button)
 
+	var completed_reports_button := Button.new()
+	completed_reports_button.text = "완료 사건 기록"
+	completed_reports_button.pressed.connect(func() -> void:
+		_show_section("completed_case_reports")
+	)
+	_section_list.add_child(completed_reports_button)
+
 
 func _show_section(section_id: String) -> void:
 	if section_id == "mvp13_rewards":
 		_show_mvp13_rewards()
+		return
+	if section_id == "completed_case_reports":
+		_show_completed_case_reports()
 		return
 
 	var section := UrbanLegendState.get_section(section_id)
@@ -137,6 +147,120 @@ func _show_mvp13_rewards() -> void:
 	_detail_items.add_child(modifier_label)
 
 
+func _show_completed_case_reports() -> void:
+	_detail_title.text = "완료 사건 기록"
+	_detail_summary.text = "회수에 성공한 사건 보고서를 다시 확인합니다. 각 사건은 최신 기록 1개만 보관합니다."
+	_clear_detail_items()
+
+	var reports := GameState.get_completed_case_reports()
+	if reports.is_empty():
+		_add_detail_text("아직 저장된 완료 사건 보고서가 없습니다. 괴이 핵 회수에 성공하면 결과 화면에서 자동 기록됩니다.")
+		return
+
+	var report_detail := VBoxContainer.new()
+	report_detail.add_theme_constant_override("separation", 6)
+	_detail_items.add_child(report_detail)
+	for report in reports:
+		if typeof(report) != TYPE_DICTIONARY:
+			continue
+		var report_data: Dictionary = report.duplicate(true)
+		var report_button := Button.new()
+		report_button.text = "%s / %s" % [
+			String(report_data.get("episode_title", "완료 사건")),
+			String(report_data.get("resolution_label", "해결 기록"))
+		]
+		report_button.pressed.connect(func() -> void:
+			_show_completed_case_report(report_data, report_detail)
+		)
+		_detail_items.add_child(report_button)
+
+	_show_completed_case_report(reports[0], report_detail)
+
+
+func _show_completed_case_report(report: Dictionary, parent: VBoxContainer) -> void:
+	_clear_children(parent)
+	_add_detail_text("선택 보고서: %s" % String(report.get("episode_title", "완료 사건")), parent)
+	_add_detail_text("기록 시각: %s / 해결 등급: %s / 단서 수집률: %.0f%%" % [
+		String(report.get("completed_at_label", "기록 시각 없음")),
+		String(report.get("resolution_label", "해결 불가")),
+		float(report.get("clue_collection_rate", 0.0))
+	], parent)
+	_add_report_entries("수집 단서", report.get("collected_clues", []), "title", "description", parent)
+	_add_minigame_entries(report.get("minigame_results", {}), parent)
+	_add_detail_text("괴이 핵 회수 결과: %s" % _make_recovery_text(report.get("recovery_result", {})), parent)
+	_add_report_entries("연구 보상", report.get("unlocked_research_rewards", []), "ability_name", "ability_description", parent)
+	_add_report_entries("해금 기록물", report.get("unlocked_records", []), "title", "description", parent)
+	_add_report_entries("해금 장비", report.get("unlocked_equipment", []), "name", "description", parent)
+	_add_agent_entries(report.get("selected_agents", []), parent)
+	_add_report_entries("발생한 요원 이벤트", report.get("triggered_agent_events", []), "title", "text", parent)
+	_add_text_entries("요원 보조 안내", report.get("agent_support_texts", []), parent)
+	_add_text_entries("다음 사건 참고", report.get("next_case_notes", []), parent)
+
+	var records: Array = report.get("unlocked_records", [])
+	var equipment: Array = report.get("unlocked_equipment", [])
+	if not records.is_empty() or not equipment.is_empty():
+		_add_detail_text("연결 안내: 이 사건의 기록물은 다음 사건 준비에서 참고할 수 있고, 해금 장비는 준비 화면에서 장착할 수 있습니다.", parent)
+
+
+func _add_minigame_entries(results: Dictionary, parent: VBoxContainer) -> void:
+	var lines: Array = []
+	for minigame_id in results:
+		var result: Variant = results.get(minigame_id, {})
+		if typeof(result) == TYPE_DICTIONARY:
+			var minigame := GameState.get_minigame(String(minigame_id))
+			var state := "성공" if bool(result.get("successful", false)) else "실패"
+			lines.append("%s: %s - %s" % [
+				String(minigame.get("title", minigame_id)),
+				state,
+				String(result.get("result_text", "결과가 기록되었습니다."))
+			])
+	_add_text_entries("미니게임 기록", lines, parent)
+
+
+func _add_agent_entries(agents: Array, parent: VBoxContainer) -> void:
+	var lines: Array = []
+	for agent in agents:
+		if typeof(agent) == TYPE_DICTIONARY:
+			lines.append("%s (%s): 수사 파트너 신뢰도 %+d" % [
+				String(agent.get("name", "요원")),
+				String(agent.get("temperament_label", "")),
+				int(agent.get("trust", 0))
+			])
+	_add_text_entries("선택 요원", lines, parent)
+
+
+func _add_report_entries(title: String, entries: Array, name_key: String, description_key: String, parent: VBoxContainer) -> void:
+	var lines: Array = []
+	for entry in entries:
+		if typeof(entry) == TYPE_DICTIONARY:
+			lines.append("%s: %s" % [String(entry.get(name_key, "")), String(entry.get(description_key, ""))])
+	_add_text_entries(title, lines, parent)
+
+
+func _make_recovery_text(result: Dictionary) -> String:
+	if result.is_empty() or not bool(result.get("successful", false)):
+		return "회수 기록 없음"
+	return "%s / 상태: %s / 안정도 %d" % [
+		String(result.get("description", "회수 성공")),
+		String(result.get("result_status", "기록됨")),
+		int(result.get("anomaly_stability", 100))
+	]
+
+
+func _add_text_entries(title: String, lines: Array, parent: VBoxContainer) -> void:
+	if lines.is_empty():
+		_add_detail_text("%s: 없음" % title, parent)
+		return
+	_add_detail_text("%s\n- %s" % [title, "\n- ".join(lines)], parent)
+
+
+func _add_detail_text(text: String, parent: VBoxContainer = _detail_items) -> void:
+	var label := Label.new()
+	label.text = text
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	parent.add_child(label)
+
+
 func _add_dynamic_entry_list(title: String, entries: Array, name_key: String, description_key: String) -> void:
 	var title_label := Label.new()
 	title_label.text = title
@@ -162,7 +286,11 @@ func _add_dynamic_entry_list(title: String, entries: Array, name_key: String, de
 
 
 func _clear_detail_items() -> void:
-	for child in _detail_items.get_children():
+	_clear_children(_detail_items)
+
+
+func _clear_children(parent: Node) -> void:
+	for child in parent.get_children():
 		child.queue_free()
 
 

@@ -1,7 +1,7 @@
 # 시작 화면에서 프로젝트 소개와 데이터베이스 진입을 관리한다.
 extends Control
 
-const GAME_VERSION := "Ver 1.9"
+const GAME_VERSION := "Ver 1.8"
 
 var _start_episode_button: Button
 var _continue_button: Button
@@ -68,6 +68,8 @@ func _build_ui() -> void:
 	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	content.add_child(body)
 
+	_add_update_notice(content)
+
 	_save_status_label = Label.new()
 	_save_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_save_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -107,6 +109,29 @@ func _build_ui() -> void:
 	_add_scene_button(content, "대화씬 열기", "res://scenes/dialogue_scene.tscn")
 	_add_scene_button(content, "전투씬 열기", "res://scenes/battle_scene.tscn")
 	_add_scene_button(content, "미니게임씬 열기", "res://scenes/minigame_scene.tscn")
+
+
+func _add_update_notice(parent: Control) -> void:
+	var panel := PanelContainer.new()
+	parent.add_child(panel)
+
+	var content := VBoxContainer.new()
+	content.add_theme_constant_override("separation", 6)
+	panel.add_child(content)
+
+	var title := Label.new()
+	title.text = "Ver 1.8 변경사항"
+	content.add_child(title)
+
+	var changes := Label.new()
+	changes.text = "- 회수 성공한 사건 보고서가 자동 저장됩니다.\n- 기록국 데이터베이스의 '완료 사건 기록'에서 다시 볼 수 있습니다."
+	changes.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	content.add_child(changes)
+
+	var checks := Label.new()
+	checks.text = "확인할 것: 회수 성공 후 기록국 데이터베이스에서 사건을 선택해 단서, 미니게임, 요원 신뢰도, 해금 보상이 보이는지 확인하세요."
+	checks.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	content.add_child(checks)
 
 
 func _open_database() -> void:
