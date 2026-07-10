@@ -15,6 +15,7 @@ var _active_effects: Array = []
 var _minigame_recovery_messages: Array[String] = []
 var _action_buttons: Array[Button] = []
 var _agent_support_buttons: Array[Button] = []
+var _representative_agent_index := 0
 
 var _stability_bar: ProgressBar
 var _fear_bar: ProgressBar
@@ -23,6 +24,7 @@ var _prediction_label: Label
 var _auto_effect_label: Label
 var _result_label: Label
 var _recover_button: Button
+var _representative_agent_label: Label
 
 
 func _ready() -> void:
@@ -74,7 +76,23 @@ func _build_ui() -> void:
 	resolution_phase_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	root.add_child(resolution_phase_label)
 
-	var effect_content := _add_section(root, "회수 근거", "수집한 단서와 미니게임 결과가 회수 조건에 어떻게 반영되는지 확인합니다.")
+	var top_row := HBoxContainer.new()
+	top_row.add_theme_constant_override("separation", 12)
+	top_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	root.add_child(top_row)
+
+	var agent_content := _add_section(top_row, "아군 요원", "현장 지휘와 회수 담당을 정하고, 팀 지원을 확인합니다.")
+	var agent_panel := agent_content.get_parent() as Control
+	agent_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	agent_panel.size_flags_stretch_ratio = 1.0
+	_representative_agent_label = _make_label("")
+	agent_content.add_child(_representative_agent_label)
+	_add_agent_recovery_support_actions(agent_content)
+
+	var effect_content := _add_section(top_row, "해결 단서 / 회수 근거", "수집한 단서와 미니게임 결과가 회수 조건에 어떻게 반영되는지 확인합니다.")
+	var effect_panel := effect_content.get_parent() as Control
+	effect_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	effect_panel.size_flags_stretch_ratio = 1.0
 
 	_auto_effect_label = Label.new()
 	_auto_effect_label.text = _make_auto_effect_text()
@@ -97,28 +115,29 @@ func _build_ui() -> void:
 	_fear_bar = _make_bar(100)
 	status.add_child(_fear_bar)
 
-	var action_content := _add_section(root, "안정화 행동", "회수 전 괴이 핵을 낮추거나 현장 위험을 억제합니다.")
+	var action_content := _add_section(root, "회수 행동 선택", "대표 요원과 팀이 현장 지휘에 따라 안정화 절차를 선택합니다.")
 	var actions := GridContainer.new()
-	actions.columns = 1
+	actions.columns = 2
 	actions.add_theme_constant_override("v_separation", 6)
 	action_content.add_child(actions)
 
 	_add_prediction_action(actions)
-	_add_stability_action(actions, "기록 스캔", 18, 6, "단말기로 괴이의 반복 규칙을 스캔했습니다.")
-	_add_stability_action(actions, "임시 봉인지", 24, 9, "봉인지가 괴이의 핵 주변을 짧게 고정했습니다.")
+	_add_stability_action(actions, "안정화 시도: 기록 스캔", 18, 6, "단말기로 괴이의 반복 규칙을 스캔했습니다.")
+	_add_stability_action(actions, "안정화 시도: 임시 봉인지", 24, 9, "봉인지가 괴이의 핵 주변을 짧게 고정했습니다.")
 	_add_defense_action(actions)
+	_add_representative_switch_action(actions)
 	_add_support_action(actions)
-	_add_agent_recovery_support_actions(_add_section(root, "요원 지원", "편성한 수사 파트너의 회수 지원은 한 번씩만 사용할 수 있습니다."))
 
-	var recovery_content := _add_section(root, "회수 실행", "조건을 만족하면 괴이 핵을 회수하고 사건 보고서로 이동합니다.")
+	var recovery_content := _add_section(root, "강제 회수", "조건을 만족하면 괴이 핵을 회수하고 사건 보고서로 이동합니다.")
 	_recover_button = Button.new()
-	_recover_button.text = "괴이 핵 회수"
+	_recover_button.text = "강제 회수 실행"
 	_recover_button.pressed.connect(_recover_anomaly_core)
 	recovery_content.add_child(_recover_button)
 
 	_result_label = Label.new()
 	_result_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	recovery_content.add_child(_result_label)
+	_refresh_representative_agent()
 
 
 func _apply_collected_clue_effects() -> void:
@@ -298,7 +317,7 @@ func _add_stability_action(parent: Control, label: String, stability_delta: int,
 
 func _add_prediction_action(parent: Control) -> void:
 	var button := Button.new()
-	button.text = "다음 행동 예측"
+	button.text = "패턴 분석"
 	button.pressed.connect(func() -> void:
 		var prediction := GameState.roll_anomaly_prediction()
 		if bool(prediction.get("successful", false)):
@@ -317,7 +336,7 @@ func _add_prediction_action(parent: Control) -> void:
 
 func _add_defense_action(parent: Control) -> void:
 	var button := Button.new()
-	button.text = "방어: 위험 억제"
+	button.text = "보호 조치"
 	button.pressed.connect(func() -> void:
 		_fear_level = max(0, _fear_level - 12)
 		_update_battle_view("위험 억제 자세를 유지해 공포 상승을 줄였습니다.")
@@ -328,7 +347,7 @@ func _add_defense_action(parent: Control) -> void:
 
 func _add_support_action(parent: Control) -> void:
 	var button := Button.new()
-	button.text = "지원 요청: 기록국 보조"
+	button.text = "기록국 보호 지원"
 	button.pressed.connect(func() -> void:
 		_anomaly_stability = max(0, _anomaly_stability - 14)
 		_fear_level = max(0, _fear_level - 6)
@@ -338,9 +357,25 @@ func _add_support_action(parent: Control) -> void:
 	_action_buttons.append(button)
 
 
+func _add_representative_switch_action(parent: Control) -> void:
+	var button := Button.new()
+	button.text = "대표 요원 교체"
+	button.pressed.connect(func() -> void:
+		var agents := GameState.get_selected_agents()
+		if agents.size() < 2:
+			_update_battle_view("대표 요원 교체: 전환할 다른 요원이 없습니다.")
+			return
+		_representative_agent_index = (_representative_agent_index + 1) % agents.size()
+		_refresh_representative_agent()
+		_update_battle_view("현장 지휘 / 회수 담당을 전환했습니다. 팀 지원과 회수 조건은 유지됩니다.")
+	)
+	parent.add_child(button)
+	_action_buttons.append(button)
+
+
 func _add_agent_recovery_support_actions(parent: Control) -> void:
 	var title := Label.new()
-	title.text = "편성 요원 자동 지원"
+	title.text = "요원 지원"
 	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	parent.add_child(title)
 
@@ -405,6 +440,7 @@ func _use_agent_recovery_support(support: Dictionary, button: Button) -> void:
 
 
 func _update_battle_view(message: String) -> void:
+	_refresh_representative_agent()
 	if _stability_bar != null:
 		_stability_bar.value = _anomaly_stability
 	if _fear_bar != null:
@@ -432,6 +468,24 @@ func _update_battle_view(message: String) -> void:
 
 	if _result_label != null:
 		_result_label.text = status_message
+
+
+func _refresh_representative_agent() -> void:
+	if _representative_agent_label == null:
+		return
+
+	var agents := GameState.get_selected_agents()
+	if agents.is_empty():
+		_representative_agent_label.text = "대표 요원: 미지정\n팀 상태: 요원 편성이 필요합니다."
+		return
+
+	_representative_agent_index = posmod(_representative_agent_index, agents.size())
+	var representative: Dictionary = agents[_representative_agent_index]
+	_representative_agent_label.text = "대표 요원: %s [%s]\n역할: 현장 지휘 / 회수 담당\n팀: %s" % [
+		String(representative.get("name", representative.get("id", "요원"))),
+		String(representative.get("temperament_label", representative.get("temperament", ""))),
+		GameState.get_selected_agent_summary()
+	]
 
 
 func _can_recover() -> bool:

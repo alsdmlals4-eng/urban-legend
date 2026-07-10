@@ -28,6 +28,7 @@ var _method_panel: PanelContainer
 var _method_title_label: Label
 var _method_button_box: VBoxContainer
 var _method_result_label: Label
+var _team_label: Label
 
 
 func _ready() -> void:
@@ -54,6 +55,8 @@ func _build_ui() -> void:
 	add_child(margin)
 
 	var root := VBoxContainer.new()
+	root.custom_minimum_size = Vector2(960, 0)
+	root.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	root.add_theme_constant_override("separation", 10)
 	margin.add_child(root)
 
@@ -74,7 +77,7 @@ func _build_ui() -> void:
 	scene_scroll.add_child(scene_layout)
 
 	var location := Label.new()
-	location.text = "배경 placeholder: %s" % GameState.get_current_episode_title()
+	location.text = "현장 상황: %s\n괴담기록국 요원 팀이 현장을 읽고 수사 방식을 선택합니다." % GameState.get_current_episode_title()
 	location.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	location.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	scene_layout.add_child(location)
@@ -88,14 +91,27 @@ func _build_ui() -> void:
 	var left_column := VBoxContainer.new()
 	left_column.add_theme_constant_override("separation", 10)
 	left_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	left_column.size_flags_stretch_ratio = 0.85
 	columns.add_child(left_column)
+
+	var center_column := VBoxContainer.new()
+	center_column.add_theme_constant_override("separation", 10)
+	center_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	center_column.size_flags_stretch_ratio = 1.3
+	columns.add_child(center_column)
 
 	var right_column := VBoxContainer.new()
 	right_column.add_theme_constant_override("separation", 10)
 	right_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	right_column.size_flags_stretch_ratio = 1.0
 	columns.add_child(right_column)
 
-	var progress_content := _add_section(left_column, "사건 상태", "단서 수집률, 현장 상태, 준비 보정을 먼저 확인합니다.")
+	var team_content := _add_section(left_column, "현장 요원 팀", "별도 주인공이 아닌 편성 요원 팀이 현장을 분담합니다.")
+	_team_label = Label.new()
+	_team_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	team_content.add_child(_team_label)
+
+	var progress_content := _add_section(left_column, "사건 상태", "단서 수집률과 현장 변화를 먼저 확인합니다.")
 
 	_progress_label = Label.new()
 	_progress_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -118,7 +134,13 @@ func _build_ui() -> void:
 	_preparation_modifier_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	progress_content.add_child(_preparation_modifier_label)
 
-	var points_content := _add_section(left_column, "조사 포인트", "포인트를 클릭하거나 조사 방법을 선택해 단서와 힌트를 갱신합니다.")
+	var narrative_content := _add_section(center_column, "상황 묘사", "현장에 남은 반복과 위화감을 읽고, 팀의 다음 수사 방식을 선택합니다.")
+	var narrative_label := Label.new()
+	narrative_label.text = "%s의 현장 기록이 불완전하게 겹칩니다. 확보한 단서와 요원 판단을 근거로 다음 행동을 정하세요." % GameState.get_current_episode_title()
+	narrative_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	narrative_content.add_child(narrative_label)
+
+	var points_content := _add_section(center_column, "수사 선택", "조사 포인트를 고른 뒤 관찰·분석·강행 진입 같은 수사 방식을 선택합니다.")
 	var points := GridContainer.new()
 	points.columns = 1
 	points.add_theme_constant_override("v_separation", 8)
@@ -128,9 +150,9 @@ func _build_ui() -> void:
 		if typeof(point) == TYPE_DICTIONARY:
 			_add_investigation_point(points, point)
 
-	_add_method_panel(left_column)
+	_add_method_panel(center_column)
 
-	var result_content := _add_section(right_column, "결과 로그", "가장 최근 조사 결과와 이번 조사에서 얻은 정보를 요약합니다.")
+	var result_content := _add_section(right_column, "선택 결과", "선택 결과와 이번 조사에서 얻은 정보를 순서대로 요약합니다.")
 	_result_label = Label.new()
 	_result_label.text = "조사 포인트를 선택하면 JSON 결과가 표시됩니다."
 	_result_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -151,26 +173,16 @@ func _build_ui() -> void:
 	_hint_list.add_theme_constant_override("separation", 4)
 	hint_content.add_child(_hint_list)
 
-	var recovery_content := _add_section(right_column, "회수 / 안정화 안내", "단서가 충분하면 괴이 핵 안정화와 회수 페이즈로 넘어갑니다.")
+	var recovery_content := _add_section(right_column, "다음 단계: 회수 / 안정화", "단서가 충분하면 팀이 괴이 핵 안정화와 회수 페이즈로 넘어갑니다.")
 	_resolution_attempt_button = Button.new()
 	_resolution_attempt_button.text = "회수/안정화 시도"
 	_resolution_attempt_button.pressed.connect(_show_resolution_confirm_panel)
 	recovery_content.add_child(_resolution_attempt_button)
 	_add_resolution_confirm_panel(recovery_content)
 
-	var portrait := PanelContainer.new()
-	right_column.add_child(portrait)
-
-	var portrait_label := Label.new()
-	portrait_label.text = "작은 초상화 영역: 기록국 단말기 / 편성 요원 통신"
-	portrait_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	portrait_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	portrait.add_child(portrait_label)
-
-
 func _add_title(parent: Control) -> void:
 	var title := Label.new()
-	title.text = "조사 씬"
+	title.text = "현장 조사 / 선택 진행"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	parent.add_child(title)
 
@@ -212,7 +224,7 @@ func _add_investigation_point(parent: Control, point: Dictionary) -> void:
 
 func _inspect_point(point: Dictionary) -> void:
 	if not _is_point_unlocked(point):
-		_result_label.text = "다음 행동: 조건을 만족한 뒤 다시 조사\n잠김 이유: %s" % String(point.get("locked_text", "아직 확인할 근거가 부족합니다."))
+		_result_label.text = "선택 결과: 이 수사 방식은 아직 실행할 수 없습니다.\n잠김 이유: %s\n다음 선택지: 확보한 단서를 대조하거나 다른 현장을 관찰합니다." % String(point.get("locked_text", "아직 확인할 근거가 부족합니다."))
 		_hint_label.text = "이번 조사 힌트: 조건을 만족하면 이 조사 포인트를 다시 확인할 수 있습니다."
 		return
 
@@ -242,26 +254,26 @@ func _inspect_point(point: Dictionary) -> void:
 func _make_point_result_text(point: Dictionary, clue_id: String, was_collected: bool, collected_now: bool) -> String:
 	var result_text := String(point.get("result_text", "조사 결과가 기록되었습니다."))
 	if clue_id.is_empty():
-		return "결과: %s\n새 정보: 연결된 단서 없음\n다음 행동: 다른 조사 포인트나 회수/안정화 조건을 확인" % result_text
+		return "선택 결과: %s\n새 정보: 연결된 단서 없음\n상태 변화: 없음\n요원 반응: 현장 기록을 보류합니다.\n다음 선택지: 다른 조사 포인트나 회수/안정화 조건을 확인" % result_text
 
 	var clue := _find_clue(clue_id)
 	if clue.is_empty():
-		return "결과: %s\n새 정보: 연결된 단서 데이터를 찾지 못했습니다. clue_id: %s\n다음 행동: 다른 조사 포인트 확인" % [result_text, clue_id]
+		return "선택 결과: %s\n새 정보: 연결된 단서 데이터를 찾지 못했습니다. clue_id: %s\n상태 변화: 없음\n요원 반응: 기록국 단말기로 데이터 확인을 요청합니다.\n다음 선택지: 다른 조사 포인트 확인" % [result_text, clue_id]
 
 	if collected_now:
-		return "결과: %s\n새 정보: 새 단서 획득 - %s\n%s\n다음 행동: 단서 추적을 확인하고 다음 조사 포인트 선택" % [
+		return "선택 결과: %s\n새 정보: 새 단서 획득 - %s\n%s\n상태 변화: 단서 수집률이 갱신되었습니다.\n요원 반응: 팀이 이 단서를 회수 근거로 기록합니다.\n다음 선택지: 단서 추적을 확인하고 다음 조사 포인트 선택" % [
 			result_text,
 			clue.get("title", ""),
 			clue.get("description", "")
 		]
 
 	if was_collected:
-		return "결과: %s\n새 정보: 이미 확인한 단서 - %s\n다음 행동: 남은 미수집 단서 또는 회수/안정화 조건 확인" % [
+		return "선택 결과: %s\n새 정보: 이미 확인한 단서 - %s\n상태 변화: 없음\n요원 반응: 팀이 기존 기록과 대조합니다.\n다음 선택지: 남은 미수집 단서 또는 회수/안정화 조건 확인" % [
 			result_text,
 			clue.get("title", "")
 		]
 
-	return "결과: %s\n새 정보: 단서 상태 변화 없음\n다음 행동: 다른 조사 포인트 확인" % result_text
+	return "선택 결과: %s\n새 정보: 단서 상태 변화 없음\n요원 반응: 다음 현장 기록을 확인합니다.\n다음 선택지: 다른 조사 포인트 확인" % result_text
 
 
 func _make_point_hint_text(point: Dictionary) -> String:
@@ -306,10 +318,10 @@ func _show_method_options(point: Dictionary) -> void:
 
 	_method_panel.visible = true
 	_clear_children(_method_button_box)
-	_method_title_label.text = "%s 접근 방식 선택" % String(point.get("label", "조사 포인트"))
+	_method_title_label.text = "%s 수사 방식 선택" % String(point.get("label", "조사 포인트"))
 	_method_result_label.text = String(point.get("result_text", "어떤 방식으로 조사할지 선택하세요."))
-	_result_label.text = "방법 선택 대기\n다음 행동: 파괴/관찰/분석 중 하나를 선택하면 결과가 요약됩니다."
-	_hint_label.text = "이번 조사 힌트: 편성 요원 중 해당 능력치가 가장 높은 1명이 자동으로 도와줍니다."
+	_result_label.text = "상황: 팀이 현장을 확인했습니다.\n선택지: 관찰·분석·강행 진입 중 한 가지 수사 방식을 고르면 결과가 기록됩니다."
+	_hint_label.text = "이번 조사 힌트: 편성 요원 중 해당 능력치가 가장 높은 1명이 판단을 보조합니다."
 
 	var method_options: Variant = point.get("method_options", [])
 	if typeof(method_options) != TYPE_ARRAY:
@@ -336,7 +348,7 @@ func _run_method_option(point: Dictionary, method: Dictionary) -> void:
 		return
 
 	_method_result_label.text = _make_method_result_text(result)
-	_result_label.text = String(result.get("result_text", "조사 방법 결과가 기록되었습니다."))
+	_result_label.text = _make_method_result_text(result)
 
 	var hint_texts_value: Variant = result.get("hint_texts", [])
 	var hint_texts: Array = hint_texts_value if typeof(hint_texts_value) == TYPE_ARRAY else []
@@ -349,8 +361,16 @@ func _run_method_option(point: Dictionary, method: Dictionary) -> void:
 
 
 func _make_method_button_text(method: Dictionary) -> String:
+	var method_label := String(method.get("label", "조사 방법"))
+	match String(method.get("method_type", "")):
+		"observation":
+			method_label = "관찰한다"
+		"analysis":
+			method_label = "분석한다"
+		"destruction":
+			method_label = "강행 진입한다"
 	return "%s / 능력치: %s / 난이도: %d\n%s" % [
-		String(method.get("label", "조사 방법")),
+		method_label,
 		String(method.get("stat_key", method.get("method_type", ""))),
 		int(method.get("difficulty", 0)),
 		String(method.get("summary", ""))
@@ -360,7 +380,7 @@ func _make_method_button_text(method: Dictionary) -> String:
 func _make_method_result_text(result: Dictionary) -> String:
 	var success_text := "성공" if bool(result.get("successful", false)) else "실패"
 	var lines: Array = [
-		"방법: %s" % String(result.get("method_label", "")),
+		"수사 방식: %s" % String(result.get("method_label", "")),
 		"성공/실패: %s" % success_text,
 		"판정식: 플레이어 %d + 도우미 %s %d + 주사위 %d = %d / 난이도 %d" % [
 			int(result.get("player_stat", 0)),
@@ -478,6 +498,13 @@ func _refresh_case_status() -> void:
 		float(status.get("prediction_rate", 0.0))
 	]
 	var support_texts := GameState.get_agent_trust_support_texts()
+	if _team_label != null:
+		var team_text := GameState.get_selected_agent_summary()
+		_team_label.text = "투입 팀: %s" % (team_text if not team_text.is_empty() else "미편성")
+		if support_texts.is_empty():
+			_team_label.text += "\n팀 반응: 아직 별도 보조 기록이 없습니다."
+		else:
+			_team_label.text += "\n팀 보조: %s" % " / ".join(support_texts)
 	_preparation_modifier_label.text = "로그 준비 안내: %s" % GameState.get_next_investigation_modifier_text()
 	if not support_texts.is_empty():
 		_preparation_modifier_label.text += "\n수사 파트너 보조: %s" % " / ".join(support_texts)
@@ -634,7 +661,7 @@ func _add_navigation(parent: Control) -> void:
 	_add_scene_button(row, "메뉴", "res://scenes/main_menu.tscn")
 	_add_scene_button(row, "데이터", "res://scenes/case_data_scene.tscn")
 	_add_scene_button(row, "대화", "res://scenes/dialogue_scene.tscn")
-	_add_scene_button(row, "전투", "res://scenes/battle_scene.tscn")
+	_add_scene_button(row, "회수", "res://scenes/battle_scene.tscn")
 
 
 func _add_scene_button(parent: Control, label: String, scene_path: String) -> void:

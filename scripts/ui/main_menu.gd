@@ -1,7 +1,7 @@
 # 시작 화면에서 프로젝트 소개와 데이터베이스 진입을 관리한다.
 extends Control
 
-const GAME_VERSION := "Ver 2.7"
+const GAME_VERSION := "Ver 2.8"
 
 var _start_episode_button: Button
 var _continue_button: Button
@@ -191,16 +191,16 @@ func _add_update_notice(parent: Control) -> void:
 	panel.add_child(content)
 
 	var title := Label.new()
-	title.text = "Ver 2.7 변경사항"
+	title.text = "Ver 2.8 변경사항"
 	content.add_child(title)
 
 	var changes := Label.new()
-	changes.text = "- 사건 보고서, 기록국 DB, 요원 신뢰, 장비/기록물, 회수, 저장 상태를 PC/Steam 기준 섹션으로 정리했습니다.\n- 회수 페이즈가 전투보다 괴이 안정화와 회수 절차로 읽히도록 문구와 순서를 보강했습니다."
+	changes.text = "- 대화는 현장·요원 팀·하단 대사창, 조사는 상황 묘사·수사 선택·선택 결과, 회수는 아군 요원·해결 단서·행동 선택 구조로 정리했습니다.\n- 회수 화면에서 대표 요원을 현장 지휘 / 회수 담당으로 전환할 수 있습니다."
 	changes.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	content.add_child(changes)
 
 	var checks := Label.new()
-	checks.text = "확인할 것: 저승역과 빨간 우산 완료 보고서가 DB에서 구분되는지, 이어하기 후 보고서·요원 신뢰·장비/기록물·회수 결과가 유지되는지 확인하세요."
+	checks.text = "확인할 것: 요원 팀이 함께 움직이는 흐름, 조사 선택 결과의 단서·상태·요원 반응, 회수 화면의 대표 요원 전환과 해결 단서 배치를 확인하세요."
 	checks.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	content.add_child(checks)
 

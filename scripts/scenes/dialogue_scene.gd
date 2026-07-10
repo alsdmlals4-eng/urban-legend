@@ -54,28 +54,31 @@ func _build_ui() -> void:
 	add_child(margin)
 
 	var root := VBoxContainer.new()
+	root.custom_minimum_size = Vector2(960, 0)
+	root.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	root.add_theme_constant_override("separation", 10)
 	margin.add_child(root)
 
 	_add_navigation(root)
 
 	var title := Label.new()
-	title.text = "대화 씬"
+	title.text = "현장 브리핑 / 요원 팀 대화"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	root.add_child(title)
 
-	var stage := PanelContainer.new()
-	stage.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	root.add_child(stage)
+	var upper_row := HBoxContainer.new()
+	upper_row.add_theme_constant_override("separation", 12)
+	upper_row.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	root.add_child(upper_row)
 
-	var stage_scroll := ScrollContainer.new()
-	stage_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	stage.add_child(stage_scroll)
+	var stage := PanelContainer.new()
+	stage.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	stage.size_flags_stretch_ratio = 1.7
+	upper_row.add_child(stage)
 
 	var stage_layout := VBoxContainer.new()
 	stage_layout.add_theme_constant_override("separation", 10)
-	stage_layout.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	stage_scroll.add_child(stage_layout)
+	stage.add_child(stage_layout)
 
 	_stage_label = Label.new()
 	_stage_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -91,14 +94,16 @@ func _build_ui() -> void:
 	standing.add_child(_standing_label)
 
 	var agent_panel := PanelContainer.new()
-	stage_layout.add_child(agent_panel)
+	agent_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	agent_panel.size_flags_stretch_ratio = 1.0
+	upper_row.add_child(agent_panel)
 
 	var agent_content := VBoxContainer.new()
 	agent_content.add_theme_constant_override("separation", 6)
 	agent_panel.add_child(agent_content)
 
 	var agent_title := Label.new()
-	agent_title.text = "편성 요원 반응"
+	agent_title.text = "현장 투입 요원"
 	agent_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	agent_content.add_child(agent_title)
 
@@ -110,45 +115,55 @@ func _build_ui() -> void:
 	_agent_reaction_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	agent_content.add_child(_agent_reaction_label)
 
+	var dialogue_panel := PanelContainer.new()
+	root.add_child(dialogue_panel)
+	var dialogue_content := VBoxContainer.new()
+	dialogue_content.add_theme_constant_override("separation", 8)
+	dialogue_panel.add_child(dialogue_content)
+
 	_name_label = Label.new()
-	_name_label.text = "이름"
-	stage_layout.add_child(_name_label)
+	_name_label.text = "발화 요원"
+	dialogue_content.add_child(_name_label)
 
 	_dialogue_label = Label.new()
 	_dialogue_label.text = "대사"
 	_dialogue_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	stage_layout.add_child(_dialogue_label)
+	dialogue_content.add_child(_dialogue_label)
 
 	_condition_label = Label.new()
 	_condition_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	stage_layout.add_child(_condition_label)
-
-	_next_button = Button.new()
-	_next_button.text = "다음 대사"
-	_next_button.pressed.connect(_advance_line)
-	stage_layout.add_child(_next_button)
-
-	var investigation_button := Button.new()
-	investigation_button.text = "조사 시작"
-	investigation_button.pressed.connect(func() -> void:
-		_go_to_scene("res://scenes/investigation_scene.tscn")
-	)
-	stage_layout.add_child(investigation_button)
+	dialogue_content.add_child(_condition_label)
 
 	_choice_box = VBoxContainer.new()
 	_choice_box.visible = false
 	_choice_box.add_theme_constant_override("separation", 6)
-	stage_layout.add_child(_choice_box)
+	dialogue_content.add_child(_choice_box)
+
+	var command_row := HBoxContainer.new()
+	command_row.add_theme_constant_override("separation", 8)
+	dialogue_content.add_child(command_row)
+
+	_next_button = Button.new()
+	_next_button.text = "다음 대사"
+	_next_button.pressed.connect(_advance_line)
+	command_row.add_child(_next_button)
+
+	var investigation_button := Button.new()
+	investigation_button.text = "팀 조사 투입"
+	investigation_button.pressed.connect(func() -> void:
+		_go_to_scene("res://scenes/investigation_scene.tscn")
+	)
+	command_row.add_child(investigation_button)
 
 	var hint_panel := PanelContainer.new()
-	stage_layout.add_child(hint_panel)
+	root.add_child(hint_panel)
 
 	var hint_content := VBoxContainer.new()
 	hint_content.add_theme_constant_override("separation", 6)
 	hint_panel.add_child(hint_content)
 
 	var hint_title := Label.new()
-	hint_title.text = "기록국 힌트 목록"
+	hint_title.text = "기록국 지원 정보"
 	hint_content.add_child(hint_title)
 
 	var hint_button := Button.new()
@@ -177,8 +192,8 @@ func _show_line() -> void:
 
 	_line_index = clampi(_line_index, 0, lines.size() - 1)
 	var line: Dictionary = lines[_line_index]
-	_stage_label.text = "배경 placeholder: %s" % String(_dialogue_node.get("background_id", "사라진 승강장"))
-	_standing_label.text = "상황 표시 placeholder: %s" % String(_dialogue_node.get("standing_id", "bureau_control"))
+	_stage_label.text = "현장: %s" % String(_dialogue_node.get("background_id", "사라진 승강장"))
+	_standing_label.text = "현장 상황 / 통신 대상: %s" % String(_dialogue_node.get("standing_id", "bureau_control"))
 	_name_label.text = String(line.get("speaker", line.get("name", "")))
 	_dialogue_label.text = "%s\n[표정: %s]" % [
 		String(line.get("text", "")),
@@ -340,11 +355,11 @@ func _refresh_agent_reactions() -> void:
 
 	var selected_agents := GameState.get_selected_agents()
 	if selected_agents.is_empty():
-		_agent_status_label.text = "편성 요원: 없음"
-		_agent_reaction_label.text = "메인 메뉴에서 요원 2~3명을 편성하면 성향별 반응이 표시됩니다."
+		_agent_status_label.text = "투입 요원: 없음"
+		_agent_reaction_label.text = "메인 메뉴에서 요원 2~3명을 편성하면 팀의 성향별 현장 반응이 표시됩니다."
 		return
 
-	_agent_status_label.text = "편성 요원: %s" % GameState.get_selected_agent_summary()
+	_agent_status_label.text = "투입 팀: %s" % GameState.get_selected_agent_summary()
 
 	var reactions := GameState.get_selected_agent_reactions()
 	if reactions.is_empty():
@@ -414,7 +429,7 @@ func _add_navigation(parent: Control) -> void:
 	_add_scene_button(row, "메뉴", "res://scenes/main_menu.tscn")
 	_add_scene_button(row, "조사", "res://scenes/investigation_scene.tscn")
 	_add_scene_button(row, "데이터", "res://scenes/case_data_scene.tscn")
-	_add_scene_button(row, "전투", "res://scenes/battle_scene.tscn")
+	_add_scene_button(row, "회수", "res://scenes/battle_scene.tscn")
 
 
 func _add_scene_button(parent: Control, label: String, scene_path: String) -> void:
