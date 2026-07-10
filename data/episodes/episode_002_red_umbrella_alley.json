@@ -2,89 +2,100 @@
   "episode": {
     "id": "episode_002_red_umbrella_alley",
     "title": "비 오는 골목의 빨간 우산",
-    "summary": "비가 내리지 않는 밤에도 젖은 발자국과 빨간 우산이 같은 골목을 되감습니다."
+    "legend_type": "반복 경로형 괴담",
+    "summary": "비가 멈춘 골목에서 빨간 우산과 젖지 않은 발자국이 귀가 경로를 되감습니다.",
+    "anomaly_core": "세 번째 빗소리 뒤에만 보이는 붉은 우산 손잡이"
+  },
+  "victims": [
+    {
+      "id": "victim_alley_witness",
+      "name": "비 오는 날 귀가하지 못한 목격자",
+      "episode_id": "episode_002_red_umbrella_alley",
+      "status": "lost_in_repeating_route",
+      "last_seen_location": "폐쇄 상가 뒤편의 골목 사거리",
+      "emotional_state": "집으로 돌아가야 한다는 조급함과 혼란",
+      "rescue_result": "unresolved",
+      "after_story": "해결 등급에 따라 기억의 공백과 귀가 후유증이 달라집니다."
+    }
+  ],
+  "agents": [
+    {
+      "id": "agent_kang_ijun",
+      "name": "강이준",
+      "temperament": "analytical",
+      "temperament_label": "분석형",
+      "class": "현대 요원",
+      "role": "디지털 포렌식 담당",
+      "description": "삭제된 앱 로그, 통신 기록, CCTV 노이즈를 복원하는 분석 담당.",
+      "investigation_stats": { "destruction": 1, "observation": 2, "analysis": 4 },
+      "recovery_support": {
+        "id": "support_kang_rain_pattern",
+        "label": "빗소리 패턴 예측",
+        "role": "관찰",
+        "description": "강이준이 세 번째 빗소리와 표지판 반복 주기를 대조해 우산의 다음 이동을 예측합니다.",
+        "stability_delta": -8,
+        "fear_delta": 0,
+        "threshold_delta": 3
+      }
+    },
+    {
+      "id": "agent_kwon_narae",
+      "name": "권나래",
+      "temperament": "empathetic",
+      "temperament_label": "공감형",
+      "class": "현대 요원",
+      "role": "기억 상담 담당",
+      "description": "피해자의 기억 공백과 감정 흔적을 인터뷰로 복원하는 상담 담당.",
+      "investigation_stats": { "destruction": 1, "observation": 4, "analysis": 2 },
+      "recovery_support": {
+        "id": "support_kwon_return_route",
+        "label": "귀가 기억 고정",
+        "role": "보호",
+        "description": "권나래가 피해자의 귀가 기억을 붙잡아 반복 골목이 다시 덮어쓰는 것을 억제합니다.",
+        "stability_delta": 0,
+        "fear_delta": -16,
+        "threshold_delta": 2
+      }
+    },
+    {
+      "id": "agent_oh_hyun",
+      "name": "오현",
+      "temperament": "breakthrough",
+      "temperament_label": "돌파형",
+      "class": "현대 요원",
+      "role": "현장 정리반",
+      "description": "괴담 현장을 일반 사고처럼 위장하고, 위험 구역에 빠르게 진입해 현장을 확보하는 요원.",
+      "investigation_stats": { "destruction": 4, "observation": 1, "analysis": 1 },
+      "recovery_support": {
+        "id": "support_oh_umbrella_intercept",
+        "label": "우산 경로 차단",
+        "role": "강행 안정화",
+        "description": "오현이 우산이 반복 경로로 돌아가기 전 교차로를 확보해 이동 규칙을 직접 끊습니다.",
+        "stability_delta": -14,
+        "fear_delta": 4,
+        "threshold_delta": 0
+      }
+    }
+  ],
+  "player_investigation_stats": { "destruction": 2, "observation": 2, "analysis": 2 },
+  "anomaly_status": {
+    "anomaly_risk": 0,
+    "anomaly_understanding": 0,
+    "anomaly_stability": 100,
+    "mental_stamina": 100,
+    "prediction_success_streak": 0,
+    "forced_recovery_phase": false
+  },
+  "prediction_rules": {
+    "base_stat": "anomaly_understanding",
+    "decay_by_success_streak": { "0": 1.0, "1": 0.5, "2": 0.25, "3_or_more": 0.125 }
   },
   "preparation_briefing": {
     "briefing": "폐쇄된 골목에서 같은 우산이 다른 사람의 귀가 경로를 대신 걷고 있습니다.",
-    "equipped_frequency_filter": "폐주파수 필터가 빗소리 속 반복 간격을 분리합니다. 주파수 관련 조사에서 힌트 1회를 사용할 수 있습니다.",
-    "record_reference": "저승역의 반복 안내방송 기록과 유사한 잡음 패턴입니다.",
+    "equipped_frequency_filter": "폐주파수 필터가 빗소리 속 반복 간격을 분리합니다. 주파수 관련 미니게임에서 힌트 1회를 사용할 수 있습니다.",
+    "record_reference": "저승역의 반복 안내방송 기록처럼, 빗소리 사이의 짧은 공백이 실제 경로를 가리킬 수 있습니다.",
     "risk_warning": "우산 표식을 따라가면 경로가 되감길 수 있습니다. 같은 모퉁이를 세 번 넘지 마세요."
   },
-  "dialogue_nodes": [
-    {
-      "id": "dialogue_intro",
-      "background_id": "red_umbrella_alley_midnight",
-      "standing_id": "log_terminal",
-      "lines": [
-        {
-          "speaker": "로그",
-          "text": "기록을 확인했습니다. 비는 멈췄지만 골목의 빗소리는 같은 간격으로 반복됩니다.",
-          "expression": "serious"
-        },
-        {
-          "speaker": "기록국 관제",
-          "text": "빨간 우산을 본 사람들은 모두 다른 길로 귀가했다고 믿고 있습니다.",
-          "expression": "calm"
-        }
-      ],
-      "choices": [
-        {
-          "id": "choice_check_rain_drain",
-          "text": "빗물 배수구의 소리를 확인한다",
-          "conditions": {},
-          "result_text": "배수구 아래에서 일정한 세 박자 잡음이 되돌아옵니다.",
-          "add_flags": ["red_umbrella_briefing_seen"],
-          "next_scene_path": "res://scenes/investigation_scene.tscn"
-        }
-      ]
-    }
-  ],
-  "investigation_points": [
-    {
-      "id": "point_rain_drain_echo",
-      "title": "빗물 배수구의 되감긴 소리",
-      "description": "우산 끝에서 떨어진 물방울이 세 박자 간격으로 배수구 안쪽을 울립니다.",
-      "result_text": "반복된 빗소리의 간격을 기록했습니다. 골목의 경로가 소리와 함께 되감기고 있습니다.",
-      "clue_id": "clue_rain_noise_interval",
-      "tags": ["rain_noise", "frequency_related"],
-      "show_hint_ids": []
-    },
-    {
-      "id": "point_umbrella_mark_wall",
-      "title": "담벼락의 우산 표식",
-      "description": "붉은 물감처럼 보이는 표식이 다음 모퉁이를 가리키지만, 방향은 계속 바뀝니다.",
-      "result_text": "표식이 가리키는 방향은 실제 출구가 아니라 반복 경로의 시작점입니다.",
-      "clue_id": "clue_umbrella_mark_route",
-      "tags": ["route_loop", "umbrella_mark"],
-      "show_hint_ids": []
-    }
-  ],
-  "clues": [
-    {
-      "id": "clue_rain_noise_interval",
-      "title": "세 박자 빗소리 간격",
-      "description": "빗소리의 세 번째 박자에서만 골목의 실제 발자국이 드러납니다.",
-      "location_id": "point_rain_drain_echo",
-      "related_victim_id": "victim_alley_witness",
-      "related_legend_id": "legend_red_umbrella_alley",
-      "battle_effect_id": "effect_rain_noise_record",
-      "resolution_weight": 50,
-      "is_required": true,
-      "collected": false
-    },
-    {
-      "id": "clue_umbrella_mark_route",
-      "title": "빨간 우산 경로 표식",
-      "description": "우산 표식은 출구가 아니라 같은 모퉁이로 돌아오는 규칙을 표시합니다.",
-      "location_id": "point_umbrella_mark_wall",
-      "related_victim_id": "victim_alley_witness",
-      "related_legend_id": "legend_red_umbrella_alley",
-      "battle_effect_id": "effect_route_loop_record",
-      "resolution_weight": 50,
-      "is_required": true,
-      "collected": false
-    }
-  ],
   "records": [
     {
       "id": "record_black_ticket_core",
@@ -97,6 +108,18 @@
       "title": "반복 안내방송 기록",
       "description": "규칙이 반복 음향에 섞여 나타난 저승역 회수 기록입니다.",
       "next_investigation_effect": "반복 잡음 패턴을 조사 단서와 대조할 수 있습니다."
+    },
+    {
+      "id": "record_missing_terminal_sign",
+      "title": "존재하지 않는 종착지 표지",
+      "description": "현실 지도 밖의 목적지가 경로를 고정하는 방식을 기록한 자료입니다.",
+      "next_investigation_effect": "가짜 출구 표식이 실제 경로를 덮어쓰는지 확인할 수 있습니다."
+    },
+    {
+      "id": "record_red_umbrella_rule",
+      "title": "붉은 우산 반복 규칙",
+      "description": "세 번째 빗소리 뒤에만 실제 골목이 드러난다는 회수 기록입니다.",
+      "next_investigation_effect": "반복 경로형 괴담의 귀가 흔적을 우선 확인할 수 있습니다."
     }
   ],
   "equipment": [
@@ -105,26 +128,450 @@
       "name": "폐주파수 필터",
       "description": "괴담 기록에서 반복 잡음을 분리하는 기록국 조사 보조 도구입니다.",
       "next_investigation_modifier": "주파수 계열 조사 또는 미니게임에서 힌트 1회 제공",
-      "effect_text": "폐주파수 필터가 잡음을 분리합니다. 다음 타이밍은 세 번째 파형이 가장 안정적입니다."
+      "effect_text": "폐주파수 필터가 빗소리 사이의 공백을 분리합니다. 세 번째 파형이 가장 안정적입니다."
+    }
+  ],
+  "hints": [
+    {
+      "id": "hint_red_umbrella_001",
+      "episode_id": "episode_002_red_umbrella_alley",
+      "target_clue_id": "clue_red_umbrella_fabric",
+      "source_type": "dialogue",
+      "source_id": "dialogue_intro",
+      "text": "젖지 않는 우산은 비를 피하는 물건이 아니라, 빗물을 골목에 남기는 매개체일 수 있습니다.",
+      "condition_flags": ["red_umbrella_briefing_seen"]
+    },
+    {
+      "id": "hint_red_umbrella_002",
+      "episode_id": "episode_002_red_umbrella_alley",
+      "target_clue_id": "clue_repeating_alley_sign",
+      "source_type": "investigation",
+      "source_id": "point_repeating_alley_sign",
+      "text": "표지판이 가리키는 방향보다, 화살표가 바뀌는 빗소리의 박자를 기록하세요.",
+      "condition_flags": ["red_umbrella_route_checked"]
+    },
+    {
+      "id": "hint_red_umbrella_003",
+      "episode_id": "episode_002_red_umbrella_alley",
+      "target_clue_id": "clue_reverse_rain_flow",
+      "source_type": "minigame",
+      "source_id": "minigame_rain_sync",
+      "text": "세 번째 빗소리 뒤에는 물웅덩이 속 골목이 먼저 현실을 비춥니다.",
+      "condition_flags": ["red_umbrella_sync_requested"]
+    }
+  ],
+  "dialogue_nodes": [
+    {
+      "id": "dialogue_intro",
+      "background_id": "red_umbrella_alley_midnight",
+      "standing_id": "log_terminal",
+      "lines": [
+        { "speaker": "로그", "text": "기록을 확인했습니다. 비는 멈췄지만 골목의 빗소리는 같은 간격으로 반복됩니다.", "expression": "serious" },
+        { "speaker": "기록국 관제", "text": "빨간 우산을 본 사람들은 모두 다른 길로 귀가했다고 믿고 있습니다.", "expression": "calm" },
+        { "speaker": "신입 요원", "text": "그렇다면 우산이 아니라, 골목이 사람의 귀가 기억을 바꾸고 있는 걸지도 모릅니다.", "expression": "focused" }
+      ],
+      "choices": [
+        {
+          "id": "choice_record_drain_rhythm",
+          "text": "배수구의 빗소리 간격을 기록한다",
+          "conditions": {},
+          "result_text": "세 번째 물방울 뒤에만 멀어진 발자국 소리가 들립니다.",
+          "add_flags": ["red_umbrella_briefing_seen"],
+          "show_hint_ids": ["hint_red_umbrella_001"],
+          "next_node_id": "dialogue_after_rhythm"
+        }
+      ]
+    },
+    {
+      "id": "dialogue_after_rhythm",
+      "background_id": "red_umbrella_alley_midnight",
+      "standing_id": "log_terminal",
+      "lines": [
+        { "speaker": "로그", "text": "저승역 기록과 유사한 반복 간격입니다. 다만 이번에는 소리가 경로를 바꾸고 있어요.", "expression": "focused" }
+      ],
+      "choices": [
+        {
+          "id": "choice_compare_afterlife_record",
+          "text": "저승역 반복 기록과 대조한다",
+          "conditions": { "required_flags": ["red_umbrella_briefing_seen"] },
+          "result_text": "이전 사건은 방향을 가리는 잡음이었고, 이번 사건은 귀가 경로를 되감는 빗소리라는 점을 확인했습니다.",
+          "add_flags": ["red_umbrella_record_compared"],
+          "show_hint_ids": ["hint_red_umbrella_002"],
+          "next_scene_path": "res://scenes/investigation_scene.tscn"
+        },
+        {
+          "id": "choice_enter_alley_investigation",
+          "text": "골목 조사를 시작한다",
+          "conditions": {},
+          "result_text": "우산이 지나간 흔적과 실제 출구를 동시에 확인하기로 합니다.",
+          "add_flags": ["red_umbrella_investigation_started"],
+          "next_scene_path": "res://scenes/investigation_scene.tscn"
+        }
+      ]
+    }
+  ],
+  "agent_reactions": [
+    {
+      "agent_id": "agent_kang_ijun",
+      "temperament": "analytical",
+      "conditions": {},
+      "text": "빗소리의 공백이 일정합니다. 저승역 기록처럼 반복 자체가 규칙의 일부예요. 우산보다 간격부터 비교하죠.",
+      "expression": "focused"
+    },
+    {
+      "agent_id": "agent_kwon_narae",
+      "temperament": "empathetic",
+      "conditions": {},
+      "text": "목격자는 계속 집에 간다고 말했어요. 길을 잃은 게 아니라, 돌아갈 기억을 빼앗긴 걸 수도 있습니다.",
+      "expression": "worried"
+    },
+    {
+      "agent_id": "agent_oh_hyun",
+      "temperament": "breakthrough",
+      "conditions": {},
+      "text": "같은 모퉁이를 계속 돌면 우산 쪽이 먼저 우리를 읽습니다. 길이 열릴 때 바로 들어가죠.",
+      "expression": "serious"
+    }
+  ],
+  "investigation_points": [
+    {
+      "id": "point_dry_red_umbrella",
+      "label": "비에 젖지 않는 빨간 우산",
+      "description": "젖은 골목 한가운데 우산만 마른 채로 서 있습니다.",
+      "tags": ["umbrella_mark", "evidence_sensitive"],
+      "conditions": {},
+      "locked_text": "아직 우산이 나타나는 박자를 기록하지 못했습니다.",
+      "result_text": "우산을 어떻게 다룰지 결정합니다.",
+      "method_options": [
+        {
+          "id": "method_umbrella_destruction",
+          "label": "파괴: 우산 경로를 강제로 막는다",
+          "method_type": "destruction",
+          "stat_key": "destruction",
+          "difficulty": 7,
+          "situation_tags": ["anomaly_alert", "time_pressure"],
+          "summary": "빠르게 우산의 이동을 끊지만 골목의 경계를 자극할 수 있습니다.",
+          "success_text": "우산 손잡이를 붙잡아 천 조각을 확보했습니다. 골목이 잠시 흔들립니다.",
+          "failure_text": "우산은 손을 빠져나가고 붉은 물방울이 골목 벽을 타고 번집니다.",
+          "success_effects": { "add_flags": ["red_umbrella_force_stopped"], "collect_clues": ["clue_red_umbrella_fabric"], "anomaly_risk_delta": 10, "anomaly_understanding_delta": 3, "anomaly_stability_delta": -4 },
+          "failure_effects": { "add_flags": ["red_umbrella_alerted"], "anomaly_risk_delta": 16, "mental_stamina_delta": -5, "anomaly_stability_delta": 5 },
+          "trust_rules": [
+            { "temperament": "breakthrough", "success_delta": 2, "failure_delta": -1, "success_text": "강행으로도 핵심 흔적을 남겼습니다.", "failure_text": "밀어붙인 만큼 경계도 커졌습니다." },
+            { "temperament": "analytical", "success_delta": -1, "failure_delta": -2, "success_text": "기록 손실이 아쉽지만 흔적은 남았습니다.", "failure_text": "규칙을 읽기 전에 건드린 대가가 큽니다." },
+            { "temperament": "empathetic", "success_delta": -1, "failure_delta": -2, "success_text": "목격자 경로가 더 흔들리지 않게 서둘러야 합니다.", "failure_text": "피해자의 귀가 기억이 더 흐려질 수 있습니다." }
+          ]
+        },
+        {
+          "id": "method_umbrella_observation",
+          "label": "관찰: 마른 천과 젖은 바닥을 비교한다",
+          "method_type": "observation",
+          "stat_key": "observation",
+          "difficulty": 7,
+          "situation_tags": ["evidence_sensitive", "memory_gap"],
+          "summary": "피해자 흔적을 보존하며 우산이 남긴 경로를 읽습니다.",
+          "success_text": "우산 천에는 비가 닿지 않았지만, 안쪽에는 피해자의 젖은 손자국이 남아 있습니다.",
+          "failure_text": "손자국이 번져 누가 우산을 들었는지 확신할 수 없습니다.",
+          "success_effects": { "add_flags": ["red_umbrella_victim_trace"], "collect_clues": ["clue_red_umbrella_fabric"], "anomaly_understanding_delta": 6, "victim_understanding_delta": 5, "anomaly_stability_delta": -3 },
+          "failure_effects": { "add_flags": ["red_umbrella_trace_blurred"], "anomaly_risk_delta": 4, "mental_stamina_delta": -2 },
+          "trust_rules": [
+            { "temperament": "empathetic", "success_delta": 2, "failure_delta": 0, "success_text": "피해자가 남긴 흔적을 안전하게 붙잡았습니다.", "failure_text": "흔적을 잃었지만 피해자를 서두르게 하진 않았습니다." },
+            { "temperament": "breakthrough", "success_delta": -1, "failure_delta": -1, "success_text": "확인은 됐지만 길이 닫히기 전에 움직여야 합니다.", "failure_text": "더 기다릴 여유는 없습니다." }
+          ]
+        },
+        {
+          "id": "method_umbrella_analysis",
+          "label": "분석: 저승역 반복 기록과 천의 파형을 대조한다",
+          "method_type": "analysis",
+          "stat_key": "analysis",
+          "difficulty": 7,
+          "situation_tags": ["noise_pattern", "ritual_rule"],
+          "summary": "기록국 기록과 비교해 우산이 비를 반복시키는 방식을 해석합니다.",
+          "success_text": "붉은 천의 물방울 간격이 저승역 안내방송의 반복 간격과 닮았다는 것을 확인했습니다.",
+          "failure_text": "파형이 너무 빨리 바뀌어 우산의 규칙을 하나로 고정하지 못했습니다.",
+          "success_effects": { "add_flags": ["red_umbrella_pattern_read"], "collect_clues": ["clue_red_umbrella_fabric"], "show_hint_ids": ["hint_red_umbrella_001"], "anomaly_understanding_delta": 10, "anomaly_stability_delta": -4 },
+          "failure_effects": { "add_flags": ["red_umbrella_pattern_noise"], "anomaly_risk_delta": 6, "mental_stamina_delta": -4 },
+          "trust_rules": [
+            { "temperament": "analytical", "success_delta": 2, "failure_delta": -1, "success_text": "이제 반복을 경로가 아니라 규칙으로 볼 수 있습니다.", "failure_text": "비교 기준은 잡았지만 데이터가 부족합니다." },
+            { "temperament": "breakthrough", "success_delta": -1, "failure_delta": -1, "success_text": "규칙을 잡았으니 다음 교차로로 갑시다.", "failure_text": "분석하는 동안 우산이 더 멀어졌습니다." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "point_repeating_alley_sign",
+      "label": "반복되는 골목 표지판",
+      "description": "출구 화살표가 빗소리 세 박자마다 다른 모퉁이를 가리킵니다.",
+      "tags": ["route_loop", "frequency_related"],
+      "conditions": {},
+      "locked_text": "표지판의 방향이 바뀌는 박자를 먼저 기록해야 합니다.",
+      "result_text": "표지판이 가리키는 방향을 조사합니다.",
+      "method_options": [
+        {
+          "id": "method_sign_destruction",
+          "label": "파괴: 표지판을 떼어 경로를 강제로 끊는다",
+          "method_type": "destruction",
+          "stat_key": "destruction",
+          "difficulty": 7,
+          "situation_tags": ["locked_route", "anomaly_alert"],
+          "summary": "가짜 출구 표식을 제거하지만 반복 골목이 반발합니다.",
+          "success_text": "표지판 뒤에서 같은 사거리를 가리키는 낡은 방향 사진을 발견했습니다.",
+          "failure_text": "표지판은 찢어졌지만 화살표가 젖은 벽에 다시 떠오릅니다.",
+          "success_effects": { "add_flags": ["red_umbrella_route_checked", "red_umbrella_sign_removed"], "collect_clues": ["clue_repeating_alley_sign"], "show_hint_ids": ["hint_red_umbrella_002"], "anomaly_risk_delta": 8, "anomaly_understanding_delta": 5, "anomaly_stability_delta": -3 },
+          "failure_effects": { "add_flags": ["red_umbrella_sign_alert"], "anomaly_risk_delta": 14, "anomaly_stability_delta": 4 }
+        },
+        {
+          "id": "method_sign_observation",
+          "label": "관찰: 화살표가 바뀌는 순서를 기록한다",
+          "method_type": "observation",
+          "stat_key": "observation",
+          "difficulty": 7,
+          "situation_tags": ["route_loop", "memory_gap"],
+          "summary": "실제 출구가 사라지는 순서를 안전하게 확인합니다.",
+          "success_text": "표지판은 출구를 가리키지 않고, 피해자가 지나간 순서를 거꾸로 표시하고 있었습니다.",
+          "failure_text": "방향이 바뀌는 순간을 하나 놓쳐 경로 순서가 어긋났습니다.",
+          "success_effects": { "add_flags": ["red_umbrella_route_checked"], "collect_clues": ["clue_repeating_alley_sign"], "show_hint_ids": ["hint_red_umbrella_002"], "anomaly_understanding_delta": 7, "victim_understanding_delta": 3, "anomaly_stability_delta": -3 },
+          "failure_effects": { "add_flags": ["red_umbrella_route_confused"], "anomaly_risk_delta": 4, "mental_stamina_delta": -3 }
+        },
+        {
+          "id": "method_sign_analysis",
+          "label": "분석: 표지판 사진을 반복 기록과 겹친다",
+          "method_type": "analysis",
+          "stat_key": "analysis",
+          "difficulty": 7,
+          "situation_tags": ["noise_pattern", "ritual_rule"],
+          "summary": "표지판의 변화 규칙을 데이터로 묶어 실제 교차로를 찾습니다.",
+          "success_text": "화살표의 변화는 우산이 나타나는 세 번째 빗소리 바로 전에서 멈춘다는 것을 확인했습니다.",
+          "failure_text": "표지판 사진의 시간 정보가 반복되어 실제 순서를 확정하지 못했습니다.",
+          "success_effects": { "add_flags": ["red_umbrella_route_checked", "red_umbrella_sign_pattern"], "collect_clues": ["clue_repeating_alley_sign"], "show_hint_ids": ["hint_red_umbrella_002"], "anomaly_understanding_delta": 10, "anomaly_stability_delta": -4 },
+          "failure_effects": { "add_flags": ["red_umbrella_sign_noise"], "anomaly_risk_delta": 5, "mental_stamina_delta": -4 }
+        }
+      ]
+    },
+    {
+      "id": "point_reverse_rain_puddle",
+      "label": "물웅덩이에 비친 다른 골목",
+      "description": "물웅덩이 속에는 실제보다 한 박자 먼저 비가 내리는 다른 골목이 비칩니다.",
+      "tags": ["frequency_related", "ritual_rule", "victim_risk"],
+      "conditions": { "required_clues": ["clue_red_umbrella_fabric"] },
+      "locked_text": "우산이 무엇을 남기는지 먼저 확인해야 물웅덩이의 반사를 해석할 수 있습니다.",
+      "result_text": "물웅덩이의 반사 경로를 조사합니다.",
+      "method_options": [
+        {
+          "id": "method_puddle_destruction",
+          "label": "파괴: 물웅덩이를 흩어 반사 경로를 끊는다",
+          "method_type": "destruction",
+          "stat_key": "destruction",
+          "difficulty": 7,
+          "situation_tags": ["victim_risk", "anomaly_alert"],
+          "summary": "즉시 반사를 끊지만 피해자의 흔적도 함께 흐려질 수 있습니다.",
+          "success_text": "반사가 깨지는 순간 빗물이 반대 방향으로 흘렀다는 흔적을 확보했습니다.",
+          "failure_text": "물결이 번지며 골목이 한 번 더 되감겼습니다.",
+          "success_effects": { "add_flags": ["red_umbrella_reflection_opened"], "collect_clues": ["clue_reverse_rain_flow"], "anomaly_risk_delta": 9, "anomaly_understanding_delta": 4, "anomaly_stability_delta": -4 },
+          "failure_effects": { "add_flags": ["red_umbrella_route_rewound"], "anomaly_risk_delta": 15, "mental_stamina_delta": -5, "anomaly_stability_delta": 4 }
+        },
+        {
+          "id": "method_puddle_observation",
+          "label": "관찰: 반사된 발자국을 따라간다",
+          "method_type": "observation",
+          "stat_key": "observation",
+          "difficulty": 7,
+          "situation_tags": ["victim_risk", "memory_gap"],
+          "summary": "피해자의 실제 발자국과 반사된 길을 분리합니다.",
+          "success_text": "젖지 않은 발자국은 현실 골목이 아니라 물웅덩이 속 경로로 향하고 있었습니다.",
+          "failure_text": "발자국이 겹쳐 피해자의 현재 위치를 확정하지 못했습니다.",
+          "success_effects": { "add_flags": ["red_umbrella_reflection_opened"], "collect_clues": ["clue_reverse_rain_flow"], "anomaly_understanding_delta": 6, "victim_understanding_delta": 6, "anomaly_stability_delta": -3 },
+          "failure_effects": { "add_flags": ["red_umbrella_footprints_lost"], "anomaly_risk_delta": 3, "mental_stamina_delta": -2 }
+        },
+        {
+          "id": "method_puddle_analysis",
+          "label": "분석: 빗물의 역류 박자를 계산한다",
+          "method_type": "analysis",
+          "stat_key": "analysis",
+          "difficulty": 7,
+          "situation_tags": ["frequency_related", "noise_pattern"],
+          "summary": "세 번째 빗소리와 역류하는 물의 타이밍을 겹쳐 회수 조건을 읽습니다.",
+          "success_text": "세 번째 빗소리 뒤에만 빗물이 역류하며 우산 손잡이가 나타난다는 것을 계산했습니다.",
+          "failure_text": "반사와 현실의 시간차가 섞여 회수 타이밍을 하나로 고정하지 못했습니다.",
+          "success_effects": { "add_flags": ["red_umbrella_reflection_opened", "red_umbrella_sync_requested"], "collect_clues": ["clue_reverse_rain_flow"], "show_hint_ids": ["hint_red_umbrella_003"], "anomaly_understanding_delta": 11, "anomaly_stability_delta": -5 },
+          "failure_effects": { "add_flags": ["red_umbrella_timing_noise"], "anomaly_risk_delta": 6, "mental_stamina_delta": -4 }
+        }
+      ]
+    },
+    {
+      "id": "point_cctv_crossing_sync",
+      "label": "CCTV가 끊긴 사거리: 빗소리 동기화",
+      "description": "CCTV 영상은 세 번째 빗소리에서만 한 프레임씩 이어집니다.",
+      "tags": ["frequency_related", "route_loop"],
+      "conditions": { "required_clues": ["clue_red_umbrella_fabric", "clue_repeating_alley_sign"] },
+      "locked_text": "우산의 매개체와 반복 표지판을 먼저 확인해야 CCTV의 빈 프레임을 해석할 수 있습니다.",
+      "result_text": "기록국 단말기로 빗소리와 CCTV 빈 프레임을 동기화합니다.",
+      "add_flags": ["red_umbrella_sync_requested"],
+      "show_hint_ids": ["hint_red_umbrella_003"],
+      "start_minigame_id": "minigame_rain_sync",
+      "next_scene_path": "res://scenes/minigame_scene.tscn"
+    }
+  ],
+  "minigames": [
+    {
+      "id": "minigame_rain_sync",
+      "title": "빗소리 동기화",
+      "description": "세 번째 빗소리 뒤에만 이어지는 CCTV 프레임을 맞춰, 붉은 우산이 되돌아오는 위치를 고정합니다.",
+      "type": "timing_check",
+      "target_count": 3,
+      "success_flags": ["minigame_rain_sync_success", "red_umbrella_sync_completed"],
+      "failure_flags": ["minigame_rain_sync_failed", "red_umbrella_sync_noise"],
+      "success_show_hint_ids": ["hint_red_umbrella_003"],
+      "failure_show_hint_ids": ["hint_red_umbrella_003"],
+      "success_anomaly_risk_delta": -6,
+      "success_anomaly_understanding_delta": 12,
+      "success_anomaly_stability_delta": -5,
+      "success_mental_stamina_delta": 2,
+      "failure_anomaly_risk_delta": 10,
+      "failure_anomaly_understanding_delta": 2,
+      "failure_anomaly_stability_delta": 5,
+      "failure_mental_stamina_delta": -8,
+      "success_recovery_threshold_delta": 6,
+      "success_recovery_stability_delta": -6,
+      "failure_recovery_threshold_delta": -6,
+      "failure_recovery_stability_delta": 8,
+      "success_result_text": "세 번째 빗소리 뒤의 빈 프레임을 맞췄습니다. 우산은 사거리 중앙으로 되돌아오며, 실제 출구가 잠깐 고정됩니다.",
+      "failure_result_text": "동기화가 어긋나 CCTV가 다시 끊겼습니다. 골목의 빗소리가 커져 회수 전 부담이 높아집니다.",
+      "return_scene_path": "res://scenes/investigation_scene.tscn",
+      "success_next_scene_path": "res://scenes/investigation_scene.tscn",
+      "failure_next_scene_path": "res://scenes/investigation_scene.tscn"
+    }
+  ],
+  "clues": [
+    {
+      "id": "clue_red_umbrella_fabric",
+      "title": "붉은 우산 천 조각",
+      "description": "비에 닿지 않는 붉은 천 안쪽에서 피해자의 젖은 손자국을 확인했습니다.",
+      "location_id": "point_dry_red_umbrella",
+      "related_victim_id": "victim_alley_witness",
+      "related_legend_id": "legend_red_umbrella_alley",
+      "battle_effect_id": "effect_red_umbrella_anchor",
+      "resolution_weight": 34,
+      "is_required": true,
+      "collected": false
+    },
+    {
+      "id": "clue_repeating_alley_sign",
+      "title": "반복 표지판 사진",
+      "description": "출구 화살표는 실제 길이 아니라 피해자가 지나간 순서를 거꾸로 표시합니다.",
+      "location_id": "point_repeating_alley_sign",
+      "related_victim_id": "victim_alley_witness",
+      "related_legend_id": "legend_red_umbrella_alley",
+      "battle_effect_id": "effect_repeating_route_map",
+      "resolution_weight": 33,
+      "is_required": true,
+      "collected": false
+    },
+    {
+      "id": "clue_reverse_rain_flow",
+      "title": "반대로 흐르는 빗물",
+      "description": "세 번째 빗소리 뒤에만 물웅덩이 속 빗물이 실제 골목과 반대 방향으로 흐릅니다.",
+      "location_id": "point_reverse_rain_puddle",
+      "related_victim_id": "victim_alley_witness",
+      "related_legend_id": "legend_red_umbrella_alley",
+      "battle_effect_id": "effect_reverse_rain_timing",
+      "resolution_weight": 33,
+      "is_required": true,
+      "collected": false
+    }
+  ],
+  "battle_clue_effects": [
+    {
+      "id": "effect_red_umbrella_anchor",
+      "clue_id": "clue_red_umbrella_fabric",
+      "effect_type": "expose_anchor",
+      "effect_value": 12,
+      "description": "우산 천의 손자국이 반복 경로를 고정하는 매개체 위치를 드러냅니다."
+    },
+    {
+      "id": "effect_repeating_route_map",
+      "clue_id": "clue_repeating_alley_sign",
+      "effect_type": "break_route_loop",
+      "effect_value": 10,
+      "description": "표지판 사진이 우산이 되돌아오는 교차로를 좁혀 회수 경로를 약화합니다."
+    },
+    {
+      "id": "effect_reverse_rain_timing",
+      "clue_id": "clue_reverse_rain_flow",
+      "effect_type": "stabilize_timing",
+      "effect_value": 14,
+      "description": "역류하는 빗물의 세 번째 박자가 우산 손잡이를 회수 가능한 순간으로 고정합니다."
     }
   ],
   "resolution": {
     "episode_id": "episode_002_red_umbrella_alley",
-    "total_clues": 2,
+    "total_clues": 3,
     "collected_clues": 0,
     "collection_rate": 0,
     "phase_state": "unavailable",
-    "temporary_threshold": 50,
-    "standard_threshold": 100,
+    "temporary_threshold": 34,
+    "standard_threshold": 67,
     "complete_threshold": 100
   },
+  "research_rewards": [
+    {
+      "id": "reward_red_umbrella_route_analysis",
+      "legend_id": "legend_red_umbrella_alley",
+      "resolution_grade": "standard",
+      "ability_name": "귀가 경로 역추적",
+      "ability_description": "반복 경로형 괴담에서 피해자가 기억한 마지막 귀가 순서를 역으로 복원합니다.",
+      "next_episode_effect": "다음 사건에서 반복 경로 단서를 우선 분류하는 연구 기록으로 표시됩니다."
+    },
+    {
+      "id": "reward_frequency_analysis",
+      "legend_id": "legend_afterlife_station",
+      "resolution_grade": "standard",
+      "ability_name": "폐주파수 분석 절차",
+      "ability_description": "저승역 안내방송의 반복 파형을 분리해 다음 주파수 계열 조사에서 안정 타이밍을 예측합니다.",
+      "next_episode_effect": "equip_frequency_filter를 해금합니다.",
+      "unlocks_equipment": ["equip_frequency_filter"],
+      "unlocks_records": ["record_black_ticket_core", "record_repeating_announcement"]
+    }
+  ],
   "recovery_results": [
     {
       "resolution_grade": "unavailable",
-      "victim_rescue_result": "placeholder",
-      "description": "두 번째 사건의 회수 결과는 다음 MVP에서 확장합니다.",
-      "after_story": "현재는 조사 골격과 준비 보정 확인에 집중합니다.",
-      "research_result": "결과 placeholder"
+      "victim_rescue_result": "failed_to_enter_resolution",
+      "description": "단서가 부족해 붉은 우산의 회수 조건을 고정하지 못했습니다.",
+      "after_story": "목격자의 귀가 기억은 아직 반복 골목에 붙잡혀 있습니다.",
+      "research_result": "연구 보상 없음",
+      "unlocks_records": [],
+      "unlocks_research_rewards": [],
+      "unlocks_equipment": []
+    },
+    {
+      "resolution_grade": "temporary",
+      "victim_rescue_result": "rescued_with_route_aftereffect",
+      "description": "목격자는 골목을 빠져나오지만, 비가 오는 날 같은 모퉁이를 망설이게 됩니다.",
+      "after_story": "목격자는 귀가했지만 세 번째 빗소리를 들으면 잠시 길을 잃은 감각을 느낍니다.",
+      "research_result": "반복 골목의 임시 차단 절차를 기록했습니다.",
+      "unlocks_records": [],
+      "unlocks_research_rewards": [],
+      "unlocks_equipment": []
+    },
+    {
+      "resolution_grade": "standard",
+      "victim_rescue_result": "rescued_with_rule_recorded",
+      "description": "목격자를 구조하고, 우산이 귀가 경로를 되감는 규칙을 기록했습니다.",
+      "after_story": "목격자는 실제 귀가 경로를 다시 기억합니다. 비가 오는 날에도 기록국의 안내에 따라 안전하게 돌아갈 수 있습니다.",
+      "research_result": "반복 경로형 괴담의 귀가 흔적을 역추적하는 절차를 확보했습니다.",
+      "unlocks_records": ["record_red_umbrella_rule"],
+      "unlocks_research_rewards": ["reward_red_umbrella_route_analysis"],
+      "unlocks_equipment": []
+    },
+    {
+      "resolution_grade": "complete",
+      "victim_rescue_result": "rescued_and_umbrella_core_recovered",
+      "description": "목격자를 안정적으로 구조하고, 세 번째 빗소리 뒤에 나타나는 우산 손잡이를 회수했습니다.",
+      "after_story": "목격자는 귀가 기억을 온전히 되찾았고, 붉은 우산은 기록국 격리 보관함에서 더 이상 골목을 되감지 않습니다.",
+      "research_result": "우산, 빗물, 반복 표지판이 하나의 귀가 기억을 덮어쓰는 구조를 완전 기록했습니다.",
+      "unlocks_records": ["record_red_umbrella_rule"],
+      "unlocks_research_rewards": ["reward_red_umbrella_route_analysis"],
+      "unlocks_equipment": []
     }
   ]
 }

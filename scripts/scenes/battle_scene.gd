@@ -6,18 +6,13 @@ const BASE_RECOVERY_THRESHOLD := 40
 const MAX_RECOVERY_THRESHOLD := 75
 const CLUE_THRESHOLD_FACTOR := 0.5
 const CLUE_START_WEAKEN_FACTOR := 0.2
-const FREQUENCY_SUCCESS_THRESHOLD_BONUS := 8
-const FREQUENCY_SUCCESS_STABILITY_BONUS := 8
-const FREQUENCY_FAILURE_THRESHOLD_PENALTY := 8
-const FREQUENCY_FAILURE_STABILITY_PENALTY := 10
-const FREQUENCY_MINIGAME_ID := "minigame_frequency_sync"
-
 var _anomaly_stability := BASE_ANOMALY_STABILITY
 var _fear_level := 0
 var _recovery_threshold := BASE_RECOVERY_THRESHOLD
 var _total_clue_effect_value := 0
 var _recovery_completed := false
 var _active_effects: Array = []
+var _minigame_recovery_messages: Array[String] = []
 var _action_buttons: Array[Button] = []
 var _agent_support_buttons: Array[Button] = []
 
@@ -67,7 +62,7 @@ func _build_ui() -> void:
 	_add_navigation(root)
 
 	var title := Label.new()
-	title.text = "괴이 안정화 / 회수 페이즈 placeholder: 신입 요원 vs 저승역 괴이"
+	title.text = "괴이 안정화 / 회수 페이즈: %s" % GameState.get_current_episode_title()
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	root.add_child(title)
@@ -149,28 +144,7 @@ func _apply_collected_clue_effects() -> void:
 		BASE_ANOMALY_STABILITY
 	)
 
-	if GameState.has_minigame_success(FREQUENCY_MINIGAME_ID):
-		_recovery_threshold = clampi(
-			_recovery_threshold + FREQUENCY_SUCCESS_THRESHOLD_BONUS,
-			BASE_RECOVERY_THRESHOLD,
-			MAX_RECOVERY_THRESHOLD
-		)
-		_anomaly_stability = clampi(
-			_anomaly_stability - FREQUENCY_SUCCESS_STABILITY_BONUS,
-			0,
-			BASE_ANOMALY_STABILITY
-		)
-	elif GameState.has_minigame_failure(FREQUENCY_MINIGAME_ID):
-		_recovery_threshold = clampi(
-			_recovery_threshold - FREQUENCY_FAILURE_THRESHOLD_PENALTY,
-			30,
-			MAX_RECOVERY_THRESHOLD
-		)
-		_anomaly_stability = clampi(
-			_anomaly_stability + FREQUENCY_FAILURE_STABILITY_PENALTY,
-			0,
-			BASE_ANOMALY_STABILITY
-		)
+	_apply_minigame_recovery_effects()
 
 	var investigation_stability_delta := GameState.get_anomaly_stability() - BASE_ANOMALY_STABILITY
 	var risk_penalty := int(floor(float(GameState.get_anomaly_risk()) / 25.0))
@@ -182,13 +156,40 @@ func _apply_collected_clue_effects() -> void:
 	_fear_level = clampi(int(floor(float(100 - GameState.get_mental_stamina()) / 5.0)), 0, 100)
 
 
+func _apply_minigame_recovery_effects() -> void:
+	_minigame_recovery_messages.clear()
+	for minigame_id in GameState.get_minigame_results():
+		var minigame := GameState.get_minigame(String(minigame_id))
+		var result := GameState.get_minigame_result(String(minigame_id))
+		if minigame.is_empty() or result.is_empty():
+			continue
+
+		var prefix := "success" if bool(result.get("successful", false)) else "failure"
+		_recovery_threshold = clampi(
+			_recovery_threshold + int(minigame.get("%s_recovery_threshold_delta" % prefix, 0)),
+			30,
+			MAX_RECOVERY_THRESHOLD
+		)
+		_anomaly_stability = clampi(
+			_anomaly_stability + int(minigame.get("%s_recovery_stability_delta" % prefix, 0)),
+			0,
+			BASE_ANOMALY_STABILITY
+		)
+		var outcome := "성공" if prefix == "success" else "실패"
+		_minigame_recovery_messages.append("%s %s: %s" % [
+			String(minigame.get("title", minigame_id)),
+			outcome,
+			String(result.get("result_text", "회수 페이즈에 결과가 반영되었습니다."))
+		])
+
+
 func _make_start_message() -> String:
 	var minigame_text := _make_minigame_battle_text()
 	var investigation_text := _make_investigation_status_text()
 	if _active_effects.is_empty():
 		return "수집한 단서가 없어 자동 발동 효과 없이 회수 페이즈를 시작합니다.%s%s" % [minigame_text, investigation_text]
 
-	return "수집한 단서 %d개가 자동 발동했습니다. 회수 가능 기준이 %d 이하로 완화되었습니다.%s%s" % [
+	return "수집한 단서 %d개가 자동 발동했습니다. 현재 회수 가능 기준은 괴이 안정도 %d 이하입니다.%s%s" % [
 		_active_effects.size(),
 		_recovery_threshold,
 		minigame_text,
@@ -219,11 +220,9 @@ func _make_auto_effect_text() -> String:
 
 
 func _make_minigame_battle_text() -> String:
-	if GameState.has_minigame_success(FREQUENCY_MINIGAME_ID):
-		return "\n폐주파수 동기화 성공: 회수 기준이 완화되고 괴이 안정도가 낮아졌습니다."
-	if GameState.has_minigame_failure(FREQUENCY_MINIGAME_ID):
-		return "\n폐주파수 동기화 실패: 회수 기준이 강화되고 괴이 안정도가 높아졌습니다."
-	return ""
+	if _minigame_recovery_messages.is_empty():
+		return ""
+	return "\n%s" % "\n".join(_minigame_recovery_messages)
 
 
 func _make_investigation_status_text() -> String:

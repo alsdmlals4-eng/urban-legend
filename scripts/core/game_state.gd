@@ -1983,26 +1983,20 @@ func _apply_resolution_unlocks(resolution_grade: String) -> void:
 
 
 func _get_result_record_ids_for_grade(resolution_grade: String) -> Array:
-	var grade_rank := _get_resolution_rank(resolution_grade)
-	var record_ids: Array = []
-	if grade_rank >= _get_resolution_rank("standard"):
-		record_ids.append("record_black_ticket_core")
-		record_ids.append("record_repeating_announcement")
-	if grade_rank >= _get_resolution_rank("complete"):
-		record_ids.append("record_missing_terminal_sign")
-	return record_ids
+	return _get_result_unlock_ids_for_grade(resolution_grade, "unlocks_records")
 
 
 func _get_result_research_reward_ids_for_grade(resolution_grade: String) -> Array:
-	if _get_resolution_rank(resolution_grade) >= _get_resolution_rank("standard"):
-		return ["reward_frequency_analysis"]
-	return []
+	return _get_result_unlock_ids_for_grade(resolution_grade, "unlocks_research_rewards")
 
 
 func _get_result_equipment_ids_for_grade(resolution_grade: String) -> Array:
-	if _get_resolution_rank(resolution_grade) >= _get_resolution_rank("standard"):
-		return [EQUIP_FREQUENCY_FILTER]
-	return []
+	return _get_result_unlock_ids_for_grade(resolution_grade, "unlocks_equipment")
+
+
+func _get_result_unlock_ids_for_grade(resolution_grade: String, unlock_key: String) -> Array:
+	var result := CaseDataScript.get_recovery_result_for_grade(current_episode_data, resolution_grade)
+	return _to_string_array(result.get(unlock_key, []))
 
 
 func _unlock_unique(target: Array, item_id: String) -> void:
