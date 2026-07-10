@@ -25,6 +25,7 @@
 | 프로젝트 전용 | `docs/MVP_STATUS_AUDIT.md` | 현재 MVP 상태, 문서 충돌, 개선점, 남은 위험 기록 |
 | 프로젝트 전용 | `docs/urban_legend_flow_dashboard.html` | 전체 흐름 HTML 대시보드 |
 | 프로젝트 전용 | `docs/CODEX_GOAL_MVP_017.md` | MVP-017 Codex 실행 Goal |
+| 프로젝트 전용 | `docs/CODEX_GOAL_MVP_018.md` | MVP-018 Codex 실행 Goal |
 | 프로젝트 전용 | `.serena/project.yml` | Serena 프로젝트 설정 |
 | 프로젝트 전용 | `data/` | 게임 데이터 |
 | 프로젝트 전용 | `scripts/` | Godot 구현 코드 |
@@ -50,7 +51,7 @@
 15. 실제 수정 대상 파일
 ```
 
-MVP-017 기준으로 `PROJECT_BRIEF.md`, `DESIGN_INTENT.md`, `MVP_ROADMAP.md`, `TEST_CHECKLIST.md`가 생성되었다. 현재 MVP 상태는 `MVP_ROADMAP.md`, `docs/MVP_STATUS_AUDIT.md`, GitHub Issue #17을 함께 확인한다.
+MVP-018 기준으로 현재 MVP 상태는 `MVP_ROADMAP.md`, `docs/MVP_STATUS_AUDIT.md`, GitHub Issue #18을 함께 확인한다.
 
 ## 동기화와 확장 원칙
 
