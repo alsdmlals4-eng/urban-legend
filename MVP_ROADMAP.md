@@ -1,90 +1,45 @@
-# MVP_ROADMAP
+# MVP Roadmap
 
-## 현재 기준
+## Current Baseline
 
-현재 문서 기준선은 `MVP-018`이다.
+The implementation and documents are aligned through `MVP-020` (`Ver 2.0`). The authoritative tracking issue is [Issue #27](https://github.com/alsdmlals4-eng/urban-legend/issues/27); GitHub Issue #20 is an old duplicate and must not be used as the MVP-020 source.
 
-현재 MVP 상태 판단은 이 문서와 GitHub Issue #18, README의 최신 MVP 섹션을 함께 기준으로 삼는다.
+The project now has two sample cases: `저승역` and `비 오는 골목의 빨간 우산`. They are enough to validate the core loop. Do not add a third case before the demo review.
 
-## 전체 MVP 흐름
+## Completed Foundation
 
-| MVP | 상태 | 핵심 목표 | 주요 결과물 |
-|---:|---|---|---|
-| 001 | 완료 | Godot 핵심 씬 골격 | 조사, 대화, 전투/회수, 미니게임, 결과 씬 placeholder |
-| 002 | 완료 | 힌트·단서·피해자·해결 데이터 | 저승역 데이터 구조, 단서 수집률, 해결 등급 |
-| 003 | 완료 | 조사/대화에서 힌트와 단서 획득 | 조사 포인트 클릭, 대화 힌트 확인 |
-| 004 | 완료 | 해결 페이즈 진입 선택 | 단서 수집률 기반 해결 시도 |
-| 005 | 완료 | 전투 중 단서 자동 발동과 회수 | 괴이 안정화/핵 회수 흐름 |
-| 006 | 완료 | 결과·연구 보상·저승역 통합 흐름 | 피해자 결과, 연구 보상, 결과 화면 |
-| 007 | 완료 | 플래그·조건·저장/불러오기 | 진행 상태 저장, 조건 판정 |
-| 008 | 완료 | 데이터 기반 대화·조사 분기 | JSON 대화 노드, 조건부 선택지, 조사 포인트 |
-| 009 | 완료 | 미니게임 성공/실패 사건 연결 | 폐주파수 동기화 성공/실패와 회수 영향 |
-| 010 | 완료 | 3성향 요원 데이터·편성 | 분석형/공감형/돌파형, 요원 2~3명 편성 |
-| 011 | 완료 | 조사 방법·성향별 지원·신뢰도 반응 기초 | 파괴/관찰/분석 판정, 요원 지원 |
-| 012 | 완료 | 텍스트 조사 루프·괴이 상태·랜덤 이벤트 | 위험도, 이해도, 정신력, 예측률 |
-| 013 | 완료 | 장비·기록물·연구 보상 | 장비 해금, 기록물, 보상 연결 |
-| 014 | 완료 | 준비 화면·장비 장착 | 사건 준비와 장착 장비 선택 |
-| 015 | 완료 | 두 번째 사건 준비 연결 | 비 오는 골목의 빨간 우산, 장비/기록물 참고 |
-| 016 | 완료 | 요원 신뢰도·요원 이벤트 | agent_trust, 1회 요원 이벤트, 신뢰도 보조 안내 |
-| 017 | 완료 | 사건 보고서·요원 신뢰도 결산 | 결과 화면 사건 보고서, GameState 집계, README 갱신 |
-| 018 | 완료 | 사건 보고서 기반 기록국 DB 탭 강화 | 완료 사건 보고서 저장, 기록국 DB 목록/상세, 기존 저장 기본값 처리 |
+| Range | Result kept for later work |
+|---|---|
+| MVP-001~009 | Godot scenes, data-driven dialogue/investigation, clues, minigames, recovery, flags, and save/load |
+| MVP-010~014 | Agent formation, investigation methods, anomaly state, equipment/records, and preparation flow |
+| MVP-015 | Second-case preparation connection and carryover of selected agents, records, and equipment |
+| MVP-016 | Selected-agent-only partner trust and one-time support events |
+| MVP-017 | Case report and partner-trust settlement in the result flow |
+| MVP-018 | Completed-case report snapshots and Bureau DB re-check |
+| MVP-019 | Full red-umbrella loop from preparation to recovery, report, and DB |
+| MVP-020 | Five-MVP retrospective, rule diet, and system/UI transition criteria |
 
-## 현재 충돌/오류 점검 결과
+## Direction After Two Cases
 
-| 항목 | 상태 | 판단 | 조치 |
-|---|---|---|---|
-| `docs/CODEX_SHARED_WORK_RULES.md` | 정상 | 프로젝트 전용 Codex 규칙 기준 문서 | 유지 |
-| `AGENTS.md` MVP 기준선 | 정상 | MVP-018 기준과 버전/시작 안내 규칙으로 동기화됨 | 완료 |
-| `PROJECT_BRIEF.md` | 생성 완료 | 프로젝트 목적과 핵심 경험 확인 가능 | 유지 |
-| `DESIGN_INTENT.md` | 생성 완료 | 금지 방향과 선택 구조 확인 가능 | 유지 |
-| `MVP_ROADMAP.md` | 갱신 완료 | MVP-018 기준선 반영 | 완료 |
-| `TEST_CHECKLIST.md` | 갱신 완료 | MVP-018 확인 항목 추가 | 완료 |
-| 전체 흐름 HTML | 갱신 완료 | MVP-018 현재 위치와 DB 재확인 흐름 반영 | 완료 |
-| README 버전 표기 | 정상 | MVP 번호 규칙에 따라 `Ver 1.8`로 갱신 | 완료 |
-| 저장 구조 | 정상 | `completed_case_reports`를 추가하고 이전 저장 기본값 처리 | 완료 |
+Keep the common loop: preparation → formation → dialogue → investigation → event/minigame → anomaly stabilization and recovery → report → Bureau DB.
 
-## MVP-018 작업 범위
+Improve clarity, usability, and reliability around that loop before expanding content. `battle_scene` remains an anomaly stabilization/recovery phase, not a traditional combat system. Agent trust remains investigative-partner trust, not romance affinity.
 
-MVP-018은 MVP-017 사건 보고서를 기록국 DB에서 다시 볼 수 있게 만드는 작업이다.
+## Next Roadmap
 
-### ChatGPT 작업 범위
+| MVP | Focus | Outcome |
+|---:|---|---|
+| 021 | Main and case-preparation UI | Clearer start, case, agent, and equipment decisions |
+| 022 | Investigation UI and clue/hint tracking | Easier point selection, method comparison, and evidence progress |
+| 023 | Case report and Bureau DB UI | Readable reports and useful completed-case browsing without overbuilt search |
+| 024 | Agent-system development | Stronger selected-agent reactions and trust feedback |
+| 025 | Equipment and record development | Meaningful investigation/recovery reference use |
+| 026 | Stabilization/recovery UI | Clear anomaly state, support, and recovery decisions |
+| 027 | Save/load stabilization | Reliable continuation, restart, and compatibility checks |
+| 028 | Mobile/accessibility/readability | Vertical layout, text legibility, and input accessibility |
+| 029 | Two-case integrated demo QA | Full-flow regression and player-facing issue list |
+| 030 | Demo candidate build and materials | Stable candidate build, concise introduction, and final documentation |
 
-- Issue #18 작성
-- MVP 로드맵 기준선 갱신
-- 전체 흐름 HTML 대시보드 갱신
-- Codex Goal 작성
-- 문서 맵에 MVP-018 Goal 등록
-- 테스트 체크리스트와 상태 감사 문서 갱신
+## MVP-021 Brief
 
-### Codex 작업 범위
-
-Codex는 Issue #18과 `docs/CODEX_GOAL_MVP_018.md`를 기준으로 구현한다.
-
-예상 구현:
-
-- 완료 사건 보고서 저장 상태 추가
-- 기존 저장 파일 기본값 처리
-- 기록국 DB 또는 기존 기록 표시 UI에 완료 사건 보고서 목록/상세 표시
-- 해금 기록물/장비와 보고서 연결 문구 표시
-- README 최신화
-
-## 제외 범위
-
-MVP-018에서 제외한다.
-
-- 완성형 DB 검색/필터 시스템
-- 보고서 편집/삭제/정렬/태그 관리
-- 새 사건 본편 구현
-- 새 미니게임
-- 새 전투/회수 시스템
-- 장기 요원 개인 루트
-- 대규모 리팩터링
-- 기존 저장 데이터 파괴
-
-## 다음 MVP 후보
-
-| 후보 | 목표 | 메모 |
-|---|---|---|
-| MVP-019 | 두 번째 사건 본격 조사 루프 | 빨간 우산 사건의 조사 방법/미니게임/회수 구조 확장 |
-| MVP-020 | 5개 단위 회고와 규칙 정리 | MVP-015~019 기준으로 규칙 다이어트 |
-| MVP-021 | 기록국 DB 검색/필터 1차 | MVP-018의 보고서 재확인 구조가 안정화된 뒤 검토 |
+Redesign only the main menu and preparation UI first. The player should immediately understand the selected case, 2–3 assigned agents, equipped records/tools, save status, and the next action. Do not change save data or add a new gameplay system in MVP-021.

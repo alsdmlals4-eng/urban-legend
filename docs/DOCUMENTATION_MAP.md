@@ -23,7 +23,8 @@
 | 프로젝트 전용 | `MVP_ROADMAP.md` | MVP 목록, Issue 번호, 상태, 완료 기준, 다음 작업 |
 | 프로젝트 전용 | `TEST_CHECKLIST.md` | Godot 테스트 순서, MVP별 체크리스트, 오류 기록 방식 |
 | 프로젝트 전용 | `docs/MVP_STATUS_AUDIT.md` | 현재 MVP 상태, 문서 충돌, 개선점, 남은 위험 기록 |
-| 프로젝트 전용 | `docs/urban_legend_flow_dashboard.html` | 전체 흐름 HTML 대시보드 |
+| 프로젝트 전용 | `docs/urban_legend_flow_dashboard.html` | 과거 GitHub 대시보드 기록. 현재 전달본의 소스는 아님 |
+| 로컬 전달물 | `C:/Users/user/Downloads/urban-legend-database-dashboard.html` | ChatGPT가 갱신해 사용자가 브라우저로 여는 현재 대시보드 |
 | 프로젝트 전용 | `docs/CODEX_GOAL_MVP_017.md` | MVP-017 Codex 실행 Goal |
 | 프로젝트 전용 | `docs/CODEX_GOAL_MVP_018.md` | MVP-018 Codex 실행 Goal |
 | 프로젝트 전용 | `.serena/project.yml` | Serena 프로젝트 설정 |
@@ -53,7 +54,7 @@
 17. 실제 수정 대상 파일
 ```
 
-MVP-018 기준으로 현재 MVP 상태는 `MVP_ROADMAP.md`, `docs/MVP_STATUS_AUDIT.md`, GitHub Issue #18을 함께 확인한다.
+MVP-020 기준으로 현재 상태는 `MVP_ROADMAP.md`, `docs/MVP_STATUS_AUDIT.md`, GitHub Issue #27을 함께 확인한다. GitHub Issue #20은 과거 중복 이슈이므로 기준으로 사용하지 않는다.
 
 ## 동기화와 확장 원칙
 
@@ -70,5 +71,5 @@ MVP-018 기준으로 현재 MVP 상태는 `MVP_ROADMAP.md`, `docs/MVP_STATUS_AUD
 - 반복 가능한 작업 원칙은 Base와 공용 로컬 사본에 둔다.
 - 엔진, 폴더 구조, 세계관, 데이터, 현재 MVP 상태는 프로젝트 전용 문서에 둔다.
 - Issue는 현재 작업 기준서이고, Goal은 구현 실행 지시서다.
-- HTML 대시보드는 관련 Issue 또는 사용자 최신 지시가 명시할 때 수정한다.
+- HTML 대시보드는 기본적으로 로컬 파일로 전달하며, 관련 Issue 또는 사용자 최신 지시가 명시할 때만 갱신한다.
 - 플러그인 실패 대응 규칙 중 여러 프로젝트에 재사용 가능한 내용은 Base 승격 후보로 기록하되, 도시괴담 기록국 세계관·Godot 경로·현재 MVP 번호는 프로젝트 전용으로 유지한다.

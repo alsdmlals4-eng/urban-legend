@@ -113,7 +113,7 @@ Codex는 확정된 Goal 없이 임의로 기획 방향을 바꾸지 않는다.
 
 ### HTML 대시보드 규칙
 
-HTML 대시보드는 ChatGPT가 별도로 관리하는 전체 흐름 확인용 문서다.
+HTML 대시보드는 ChatGPT가 별도로 관리하는 전체 흐름 확인용 문서이며, 기본 전달본은 `C:/Users/user/Downloads/urban-legend-database-dashboard.html`의 로컬 파일이다.
 
 Codex가 repo 안의 HTML 파일을 직접 수정하라는 별도 요청을 받지 않았다면, HTML 대시보드는 Codex 구현 범위와 완료 기준에 넣지 않는다.
 

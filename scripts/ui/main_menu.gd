@@ -1,7 +1,7 @@
 # 시작 화면에서 프로젝트 소개와 데이터베이스 진입을 관리한다.
 extends Control
 
-const GAME_VERSION := "Ver 1.9"
+const GAME_VERSION := "Ver 2.0"
 
 var _start_episode_button: Button
 var _continue_button: Button
@@ -120,7 +120,7 @@ func _add_update_notice(parent: Control) -> void:
 	panel.add_child(content)
 
 	var title := Label.new()
-	title.text = "Ver 1.9 변경사항"
+	title.text = "Ver 2.0 변경사항"
 	content.add_child(title)
 
 	var changes := Label.new()
@@ -129,7 +129,7 @@ func _add_update_notice(parent: Control) -> void:
 	content.add_child(changes)
 
 	var checks := Label.new()
-	checks.text = "확인할 것: 사건 준비에서 빨간 우산을 선택하고, 조사 방법·빗소리 동기화·회수 후 완료 사건 기록에 두 번째 보고서가 보이는지 확인하세요."
+	checks.text = "확인할 것: 두 사건을 기준으로 시작·준비 화면의 정보가 읽히는지, 이어하기와 완료 사건 기록이 유지되는지 확인하세요."
 	checks.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	content.add_child(checks)
 
