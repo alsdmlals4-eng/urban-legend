@@ -35,13 +35,18 @@ func _build_ui() -> void:
 	add_child(margin)
 
 	var panel := PanelContainer.new()
+	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	margin.add_child(panel)
 
 	var scroll := ScrollContainer.new()
+	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	panel.add_child(scroll)
 
 	var content := VBoxContainer.new()
+	content.custom_minimum_size = Vector2(960, 0)
+	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	content.add_theme_constant_override("separation", 14)
 	scroll.add_child(content)
 
@@ -72,10 +77,28 @@ func _build_ui() -> void:
 	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	content.add_child(body)
 
-	_add_update_notice(content)
+	var columns := HBoxContainer.new()
+	columns.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	columns.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	columns.add_theme_constant_override("separation", 16)
+	content.add_child(columns)
+
+	var overview_column := VBoxContainer.new()
+	overview_column.custom_minimum_size = Vector2(560, 0)
+	overview_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	overview_column.add_theme_constant_override("separation", 12)
+	columns.add_child(overview_column)
+
+	var control_column := VBoxContainer.new()
+	control_column.custom_minimum_size = Vector2(360, 0)
+	control_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	control_column.add_theme_constant_override("separation", 12)
+	columns.add_child(control_column)
+
+	_add_update_notice(overview_column)
 
 	var action_content := _add_section(
-		content,
+		control_column,
 		"주요 행동",
 		"새 수사를 시작하거나 저장된 진행을 이어가고, 기록국 DB에서 확보한 정보를 다시 확인합니다."
 	)
@@ -96,7 +119,7 @@ func _build_ui() -> void:
 	action_content.add_child(open_button)
 
 	var status_content := _add_section(
-		content,
+		control_column,
 		"저장 / 요원 상태",
 		"조사 시작 가능 여부와 이어하기 가능 여부를 먼저 확인합니다."
 	)
@@ -109,7 +132,7 @@ func _build_ui() -> void:
 	_add_agent_selection_panel(status_content)
 
 	var dev_content := _add_section(
-		content,
+		control_column,
 		"개발 / 테스트",
 		"플레이 루프 검증용 보조 버튼입니다. 실제 진행은 주요 행동에서 시작합니다."
 	)
@@ -135,9 +158,11 @@ func _build_ui() -> void:
 
 func _add_section(parent: Control, title_text: String, description_text: String = "") -> VBoxContainer:
 	var panel := PanelContainer.new()
+	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	parent.add_child(panel)
 
 	var content := VBoxContainer.new()
+	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	content.add_theme_constant_override("separation", 8)
 	panel.add_child(content)
 
@@ -157,9 +182,11 @@ func _add_section(parent: Control, title_text: String, description_text: String 
 
 func _add_update_notice(parent: Control) -> void:
 	var panel := PanelContainer.new()
+	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	parent.add_child(panel)
 
 	var content := VBoxContainer.new()
+	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	content.add_theme_constant_override("separation", 6)
 	panel.add_child(content)
 
