@@ -1,0 +1,90 @@
+name: Bug Report
+about: Godot 실행 오류, 데이터 표시 오류, 저장/이동 문제를 재현 가능한 형태로 기록합니다.
+title: "[Bug] 문제 요약"
+labels: ["bug"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: 문제 요약
+      description: 사용자가 본 문제를 한 문장으로 적습니다.
+      placeholder: "결과 화면에서 회수 보고 텍스트가 표시되지 않는다."
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: 기대 동작
+      placeholder: "선택 결과에 따라 회수 보고 텍스트와 다음 행동 버튼이 표시되어야 한다."
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: 실제 동작
+      placeholder: "버튼은 표시되지만 결과 텍스트가 비어 있다."
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: 재현 순서
+      placeholder: |
+        1. Godot에서 `scenes/main_menu.tscn` 실행
+        2. 에피소드 선택
+        3. 조사 선택지 A 선택
+        4. 결과 화면 확인
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: 오류 로그 / 스크린샷 / 관찰 내용
+      description: 콘솔 로그, 스크린샷, 발생 빈도를 적습니다.
+      placeholder: |
+        - 오류 로그:
+        - 스크린샷:
+        - 항상 발생 / 간헐적 발생:
+    validations:
+      required: false
+
+  - type: textarea
+    id: impact
+    attributes:
+      label: 영향 범위 추정
+      description: 저장/불러오기, 씬 이동, 데이터, 모바일 UI 영향을 구분합니다.
+      placeholder: |
+        - 저장/불러오기 영향:
+        - 씬 이동 영향:
+        - 데이터 영향:
+        - 모바일 UI 영향:
+    validations:
+      required: true
+
+  - type: textarea
+    id: guardrails
+    attributes:
+      label: 수정 제한
+      value: |
+        - [ ] 요청 범위 밖 대규모 리팩터링 금지
+        - [ ] 사용자 변경사항 되돌리기 금지
+        - [ ] 정상 동작하는 이전 MVP 흐름 제거 금지
+        - [ ] 원인 확인 없이 새 시스템으로 우회 구현 금지
+    validations:
+      required: true
+
+  - type: textarea
+    id: done
+    attributes:
+      label: 수정 완료 기준
+      placeholder: |
+        - [ ] 재현 순서로 문제가 다시 발생하지 않는다.
+        - [ ] 관련 오류 로그가 사라졌다.
+        - [ ] 기존 MVP 흐름이 유지된다.
+        - [ ] 검증하지 못한 항목을 보고했다.
+    validations:
+      required: true
