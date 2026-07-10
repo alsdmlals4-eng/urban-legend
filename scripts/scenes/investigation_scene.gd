@@ -13,6 +13,7 @@ const FALLBACK_INVESTIGATION_POINTS: Array[Dictionary] = [
 
 var _result_label: Label
 var _hint_label: Label
+var _hint_list: VBoxContainer
 var _progress_label: Label
 var _progress_bar: ProgressBar
 var _resolution_label: Label
@@ -78,12 +79,23 @@ func _build_ui() -> void:
 	location.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	scene_layout.add_child(location)
 
-	var progress_panel := PanelContainer.new()
-	scene_layout.add_child(progress_panel)
+	var columns := HBoxContainer.new()
+	columns.add_theme_constant_override("separation", 12)
+	columns.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	columns.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scene_layout.add_child(columns)
 
-	var progress_content := VBoxContainer.new()
-	progress_content.add_theme_constant_override("separation", 6)
-	progress_panel.add_child(progress_content)
+	var left_column := VBoxContainer.new()
+	left_column.add_theme_constant_override("separation", 10)
+	left_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	columns.add_child(left_column)
+
+	var right_column := VBoxContainer.new()
+	right_column.add_theme_constant_override("separation", 10)
+	right_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	columns.add_child(right_column)
+
+	var progress_content := _add_section(left_column, "사건 상태", "단서 수집률, 현장 상태, 준비 보정을 먼저 확인합니다.")
 
 	_progress_label = Label.new()
 	_progress_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -106,26 +118,48 @@ func _build_ui() -> void:
 	_preparation_modifier_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	progress_content.add_child(_preparation_modifier_label)
 
-	_resolution_attempt_button = Button.new()
-	_resolution_attempt_button.text = "해결 시도"
-	_resolution_attempt_button.pressed.connect(_show_resolution_confirm_panel)
-	progress_content.add_child(_resolution_attempt_button)
-
-	_add_resolution_confirm_panel(scene_layout)
-
+	var points_content := _add_section(left_column, "조사 포인트", "포인트를 클릭하거나 조사 방법을 선택해 단서와 힌트를 갱신합니다.")
 	var points := GridContainer.new()
 	points.columns = 1
 	points.add_theme_constant_override("v_separation", 8)
-	scene_layout.add_child(points)
+	points_content.add_child(points)
 
 	for point in _get_investigation_points():
 		if typeof(point) == TYPE_DICTIONARY:
 			_add_investigation_point(points, point)
 
-	_add_method_panel(scene_layout)
+	_add_method_panel(left_column)
+
+	var result_content := _add_section(right_column, "결과 로그", "가장 최근 조사 결과와 이번 조사에서 얻은 정보를 요약합니다.")
+	_result_label = Label.new()
+	_result_label.text = "조사 포인트를 선택하면 JSON 결과가 표시됩니다."
+	_result_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	result_content.add_child(_result_label)
+
+	_hint_label = Label.new()
+	_hint_label.text = "이번 조사 힌트: 아직 새 힌트가 없습니다."
+	_hint_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	result_content.add_child(_hint_label)
+
+	var clue_content := _add_section(right_column, "단서 추적", "수집/미수집 상태와 이번 조사로 얻은 새 단서를 구분합니다.")
+	_clue_list = VBoxContainer.new()
+	_clue_list.add_theme_constant_override("separation", 4)
+	clue_content.add_child(_clue_list)
+
+	var hint_content := _add_section(right_column, "힌트 추적", "힌트는 단서 수집률에 포함되지 않는 방향 안내입니다.")
+	_hint_list = VBoxContainer.new()
+	_hint_list.add_theme_constant_override("separation", 4)
+	hint_content.add_child(_hint_list)
+
+	var recovery_content := _add_section(right_column, "회수 / 안정화 안내", "단서가 충분하면 괴이 핵 안정화와 회수 페이즈로 넘어갑니다.")
+	_resolution_attempt_button = Button.new()
+	_resolution_attempt_button.text = "회수/안정화 시도"
+	_resolution_attempt_button.pressed.connect(_show_resolution_confirm_panel)
+	recovery_content.add_child(_resolution_attempt_button)
+	_add_resolution_confirm_panel(recovery_content)
 
 	var portrait := PanelContainer.new()
-	scene_layout.add_child(portrait)
+	right_column.add_child(portrait)
 
 	var portrait_label := Label.new()
 	portrait_label.text = "작은 초상화 영역: 기록국 단말기 / 편성 요원 통신"
@@ -133,30 +167,36 @@ func _build_ui() -> void:
 	portrait_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	portrait.add_child(portrait_label)
 
-	_result_label = Label.new()
-	_result_label.text = "조사 포인트를 선택하면 JSON 결과가 표시됩니다."
-	_result_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	scene_layout.add_child(_result_label)
-
-	_hint_label = Label.new()
-	_hint_label.text = "기록국 힌트: 수상한 물건부터 천천히 확인하세요."
-	_hint_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	scene_layout.add_child(_hint_label)
-
-	var clue_list_title := Label.new()
-	clue_list_title.text = "단서 목록"
-	scene_layout.add_child(clue_list_title)
-
-	_clue_list = VBoxContainer.new()
-	_clue_list.add_theme_constant_override("separation", 4)
-	scene_layout.add_child(_clue_list)
-
 
 func _add_title(parent: Control) -> void:
 	var title := Label.new()
 	title.text = "조사 씬"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	parent.add_child(title)
+
+
+func _add_section(parent: Control, title_text: String, description_text: String = "") -> VBoxContainer:
+	var panel := PanelContainer.new()
+	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	parent.add_child(panel)
+
+	var content := VBoxContainer.new()
+	content.add_theme_constant_override("separation", 8)
+	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	panel.add_child(content)
+
+	var title := Label.new()
+	title.text = title_text
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	content.add_child(title)
+
+	if not description_text.is_empty():
+		var description := Label.new()
+		description.text = description_text
+		description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		content.add_child(description)
+
+	return content
 
 
 func _add_investigation_point(parent: Control, point: Dictionary) -> void:
@@ -172,8 +212,8 @@ func _add_investigation_point(parent: Control, point: Dictionary) -> void:
 
 func _inspect_point(point: Dictionary) -> void:
 	if not _is_point_unlocked(point):
-		_result_label.text = String(point.get("locked_text", "아직 확인할 근거가 부족합니다."))
-		_hint_label.text = "기록국 힌트: 조건을 만족하면 이 조사 포인트를 다시 확인할 수 있습니다."
+		_result_label.text = "다음 행동: 조건을 만족한 뒤 다시 조사\n잠김 이유: %s" % String(point.get("locked_text", "아직 확인할 근거가 부족합니다."))
+		_hint_label.text = "이번 조사 힌트: 조건을 만족하면 이 조사 포인트를 다시 확인할 수 있습니다."
 		return
 
 	if _has_method_options(point):
@@ -202,37 +242,37 @@ func _inspect_point(point: Dictionary) -> void:
 func _make_point_result_text(point: Dictionary, clue_id: String, was_collected: bool, collected_now: bool) -> String:
 	var result_text := String(point.get("result_text", "조사 결과가 기록되었습니다."))
 	if clue_id.is_empty():
-		return result_text
+		return "결과: %s\n새 정보: 연결된 단서 없음\n다음 행동: 다른 조사 포인트나 회수/안정화 조건을 확인" % result_text
 
 	var clue := _find_clue(clue_id)
 	if clue.is_empty():
-		return "%s\n연결된 단서 데이터를 찾지 못했습니다. clue_id: %s" % [result_text, clue_id]
+		return "결과: %s\n새 정보: 연결된 단서 데이터를 찾지 못했습니다. clue_id: %s\n다음 행동: 다른 조사 포인트 확인" % [result_text, clue_id]
 
 	if collected_now:
-		return "%s\n새 단서 획득: %s\n%s" % [
+		return "결과: %s\n새 정보: 새 단서 획득 - %s\n%s\n다음 행동: 단서 추적을 확인하고 다음 조사 포인트 선택" % [
 			result_text,
 			clue.get("title", ""),
 			clue.get("description", "")
 		]
 
 	if was_collected:
-		return "%s\n이미 확인한 단서입니다: %s" % [
+		return "결과: %s\n새 정보: 이미 확인한 단서 - %s\n다음 행동: 남은 미수집 단서 또는 회수/안정화 조건 확인" % [
 			result_text,
 			clue.get("title", "")
 		]
 
-	return result_text
+	return "결과: %s\n새 정보: 단서 상태 변화 없음\n다음 행동: 다른 조사 포인트 확인" % result_text
 
 
 func _make_point_hint_text(point: Dictionary) -> String:
 	var hint_texts := GameState.get_hint_texts_by_ids(point.get("show_hint_ids", []))
 	var lines: Array = []
 	if not hint_texts.is_empty():
-		lines.append("기록국 힌트 기록\n- %s" % "\n- ".join(hint_texts))
+		lines.append("이번 조사 힌트\n- %s" % "\n- ".join(hint_texts))
 	for support_text in GameState.get_investigation_point_support_text(point):
 		lines.append(String(support_text))
 	if lines.is_empty():
-		return "기록국 힌트: 기록된 힌트가 없습니다."
+		return "이번 조사 힌트: 새로 기록된 힌트가 없습니다."
 	return "\n\n".join(lines)
 
 
@@ -268,8 +308,8 @@ func _show_method_options(point: Dictionary) -> void:
 	_clear_children(_method_button_box)
 	_method_title_label.text = "%s 접근 방식 선택" % String(point.get("label", "조사 포인트"))
 	_method_result_label.text = String(point.get("result_text", "어떤 방식으로 조사할지 선택하세요."))
-	_result_label.text = "조사 방법을 선택하면 능력치 + 편성 요원 + 1d6 판정 결과가 표시됩니다."
-	_hint_label.text = "편성 요원 중 해당 능력치가 가장 높은 1명이 자동으로 도와줍니다."
+	_result_label.text = "방법 선택 대기\n다음 행동: 파괴/관찰/분석 중 하나를 선택하면 결과가 요약됩니다."
+	_hint_label.text = "이번 조사 힌트: 편성 요원 중 해당 능력치가 가장 높은 1명이 자동으로 도와줍니다."
 
 	var method_options: Variant = point.get("method_options", [])
 	if typeof(method_options) != TYPE_ARRAY:
@@ -301,9 +341,9 @@ func _run_method_option(point: Dictionary, method: Dictionary) -> void:
 	var hint_texts_value: Variant = result.get("hint_texts", [])
 	var hint_texts: Array = hint_texts_value if typeof(hint_texts_value) == TYPE_ARRAY else []
 	if hint_texts.is_empty():
-		_hint_label.text = "기록국 힌트: 이번 판정으로 새로 확인한 힌트가 없습니다."
+		_hint_label.text = "이번 조사 힌트: 이번 판정으로 새로 확인한 힌트가 없습니다."
 	else:
-		_hint_label.text = "기록국 힌트 기록\n- %s" % "\n- ".join(hint_texts)
+		_hint_label.text = "이번 조사 힌트\n- %s" % "\n- ".join(hint_texts)
 
 	_refresh_case_status()
 
@@ -320,8 +360,8 @@ func _make_method_button_text(method: Dictionary) -> String:
 func _make_method_result_text(result: Dictionary) -> String:
 	var success_text := "성공" if bool(result.get("successful", false)) else "실패"
 	var lines: Array = [
-		"판정 결과: %s" % success_text,
 		"방법: %s" % String(result.get("method_label", "")),
+		"성공/실패: %s" % success_text,
 		"판정식: 플레이어 %d + 도우미 %s %d + 주사위 %d = %d / 난이도 %d" % [
 			int(result.get("player_stat", 0)),
 			String(result.get("helper_agent_name", "도우미 없음")),
@@ -335,12 +375,19 @@ func _make_method_result_text(result: Dictionary) -> String:
 	var new_clue_ids_value: Variant = result.get("new_clue_ids", [])
 	var new_clue_ids: Array = new_clue_ids_value if typeof(new_clue_ids_value) == TYPE_ARRAY else []
 	if new_clue_ids.is_empty():
-		lines.append("새 단서: 없음")
+		lines.append("새 정보: 새 단서 없음")
 	else:
-		lines.append("새 단서: %s" % ", ".join(new_clue_ids))
+		lines.append("새 정보: 새 단서 %s" % ", ".join(new_clue_ids))
+
+	var hint_texts_value: Variant = result.get("hint_texts", [])
+	var hint_texts: Array = hint_texts_value if typeof(hint_texts_value) == TYPE_ARRAY else []
+	if hint_texts.is_empty():
+		lines.append("새 힌트: 없음")
+	else:
+		lines.append("새 힌트\n- %s" % "\n- ".join(hint_texts))
 
 	var case_status: Dictionary = result.get("case_status", {})
-	lines.append("상태 변화 후: 괴이 위험도 %d / 괴이 이해도 %d / 피해자 이해도 %d / 정신력 %d / 괴이 안정도 %d / 예측률 %.1f%%" % [
+	lines.append("상태 변화: 괴이 위험도 %d / 괴이 이해도 %d / 피해자 이해도 %d / 정신력 %d / 괴이 안정도 %d / 예측률 %.1f%%" % [
 		int(case_status.get("anomaly_risk", 0)),
 		int(case_status.get("anomaly_understanding", 0)),
 		int(case_status.get("victim_understanding", 0)),
@@ -374,9 +421,9 @@ func _make_method_result_text(result: Dictionary) -> String:
 			String(change.get("text", ""))
 		])
 	if trust_lines.is_empty():
-		lines.append("수사 파트너 신뢰도 반응: 없음")
+		lines.append("요원 반응: 수사 파트너 신뢰도 반응 없음")
 	else:
-		lines.append("수사 파트너 신뢰도 반응\n- %s" % "\n- ".join(trust_lines))
+		lines.append("요원 반응\n- %s" % "\n- ".join(trust_lines))
 
 	var event_lines: Array = []
 	for event in result.get("triggered_agent_events", []):
@@ -389,6 +436,11 @@ func _make_method_result_text(result: Dictionary) -> String:
 		])
 	if not event_lines.is_empty():
 		lines.append("요원 이벤트\n%s" % "\n".join(event_lines))
+
+	if GameState.can_enter_resolution_phase():
+		lines.append("다음 행동: 남은 단서를 더 확인하거나 회수/안정화 시도를 준비")
+	else:
+		lines.append("다음 행동: 조사 포인트를 더 확인해 단서 수집률을 올림")
 
 	return "\n".join(lines)
 
@@ -431,6 +483,7 @@ func _refresh_case_status() -> void:
 		_preparation_modifier_label.text += "\n수사 파트너 보조: %s" % " / ".join(support_texts)
 	_refresh_resolution_attempt_button()
 	_refresh_clue_list()
+	_refresh_hint_list()
 
 
 func _refresh_clue_list() -> void:
@@ -441,9 +494,31 @@ func _refresh_clue_list() -> void:
 
 		var label := Label.new()
 		var state_text := "수집됨" if bool(clue.get("collected", false)) else "미수집"
-		label.text = "%s - %s" % [state_text, clue.get("title", "")]
+		var description := String(clue.get("description", ""))
+		if bool(clue.get("collected", false)):
+			label.text = "%s - %s\n%s" % [state_text, clue.get("title", ""), description]
+		else:
+			label.text = "%s - %s\n아직 기록되지 않았습니다." % [state_text, clue.get("title", "")]
 		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		_clue_list.add_child(label)
+
+
+func _refresh_hint_list() -> void:
+	_clear_children(_hint_list)
+	for hint in GameState.get_hints():
+		if typeof(hint) != TYPE_DICTIONARY:
+			continue
+
+		var hint_id := String(hint.get("id", ""))
+		var seen := GameState.has_seen_hint(hint_id)
+		var label := Label.new()
+		label.text = "%s - %s\n대상 단서: %s" % [
+			"확인됨" if seen else "미확인",
+			String(hint.get("text", "")) if seen else "아직 확인하지 않은 방향 안내입니다.",
+			String(hint.get("target_clue_id", ""))
+		]
+		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		_hint_list.add_child(label)
 
 
 func _find_clue(clue_id: String) -> Dictionary:
@@ -463,7 +538,7 @@ func _add_resolution_confirm_panel(parent: Control) -> void:
 	_resolution_confirm_panel.add_child(content)
 
 	var title := Label.new()
-	title.text = "해결 페이즈 진입 확인"
+	title.text = "회수 / 안정화 페이즈 진입 확인"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	content.add_child(title)
 
@@ -487,7 +562,7 @@ func _add_resolution_confirm_panel(parent: Control) -> void:
 	button_row.add_child(continue_button)
 
 	var attempt_button := Button.new()
-	attempt_button.text = "해결 시도"
+	attempt_button.text = "회수/안정화 진입"
 	attempt_button.pressed.connect(_start_resolution_attempt)
 	button_row.add_child(attempt_button)
 
@@ -499,20 +574,20 @@ func _refresh_resolution_attempt_button() -> void:
 		if GameState.is_forced_recovery_phase():
 			_resolution_attempt_button.text = "강제 회수전 진입"
 		else:
-			_resolution_attempt_button.text = "해결 시도: %s" % GameState.get_resolution_label()
+			_resolution_attempt_button.text = "회수/안정화 시도: %s" % GameState.get_resolution_label()
 	else:
-		_resolution_attempt_button.text = "해결 불가"
+		_resolution_attempt_button.text = "회수/안정화 불가"
 
 
 func _show_resolution_confirm_panel() -> void:
 	if not GameState.can_enter_resolution_phase():
-		_result_label.text = "해결 불가: 아직 괴이의 핵에 접근할 근거가 부족합니다. 단서를 더 수집해야 합니다."
+		_result_label.text = "회수/안정화 불가: 아직 괴이의 핵에 접근할 근거가 부족합니다.\n다음 행동: 단서를 더 수집해야 합니다."
 		_resolution_confirm_panel.visible = false
 		return
 
 	var collection_rate: float = GameState.get_clue_collection_rate()
 	var grade_text := "강제 회수전" if GameState.is_forced_recovery_phase() else GameState.get_resolution_label()
-	_resolution_confirm_label.text = "현재 단서 수집률: %.0f%%\n현재 해결 등급: %s" % [
+	_resolution_confirm_label.text = "현재 단서 수집률: %.0f%%\n현재 회수/안정화 등급: %s" % [
 		collection_rate,
 		grade_text
 	]
