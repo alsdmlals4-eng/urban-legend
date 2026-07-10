@@ -130,31 +130,43 @@ HTML 대시보드는 현재 MVP만 보여주는 파일이 아니다.
 - 필요한 경우 벤치마킹 3~5개 요약
 - 사용자가 수정 가능한 설명 영역
 
-Codex가 repo 안의 HTML 파일을 직접 수정하라는 별도 요청을 받지 않았다면, HTML 대시보드는 Codex 구현 범위에 넣지 않는다.
+Codex가 HTML 파일을 직접 수정하라는 별도 요청을 받지 않았다면, HTML 대시보드는 Codex 구현 범위에 넣지 않는다.
 
-### HTML 링크 보고 규칙
+### HTML 파일 제공 방식
 
-MVP 작업에서 HTML 대시보드를 만들거나 갱신했다면 결과 보고에 반드시 HTML 링크를 포함한다.
+HTML 대시보드의 목적은 사용자와 ChatGPT가 프로젝트 전체 흐름을 가독성 좋게 확인하는 것이다.
 
-보고 순서:
+따라서 기본 방식은 **GitHub 소스 관리가 아니라 로컬 HTML 파일 제공**이다.
 
-1. **HTML 미리보기 링크**: 사용자가 바로 렌더링된 화면을 확인할 수 있는 링크를 먼저 제공한다.
-2. **GitHub 소스 링크**: 파일 내용을 확인하거나 수정할 수 있는 `github.com/.../blob/...` 링크를 보조로 제공한다.
-3. **변경 파일 경로**: 예: `docs/urban_legend_flow_dashboard.html`.
-
-`github.com/.../blob/...html` 링크만 단독으로 보내지 않는다. 이 링크는 렌더링 화면이 아니라 소스 보기 링크다.
-
-현재 프로젝트의 기본 HTML 링크 형식:
+기본 파일명:
 
 ```text
-HTML 미리보기:
-https://htmlpreview.github.io/?https://github.com/alsdmlals4-eng/urban-legend/blob/main/docs/urban_legend_flow_dashboard.html
-
-GitHub 소스:
-https://github.com/alsdmlals4-eng/urban-legend/blob/main/docs/urban_legend_flow_dashboard.html
+urban-legend-database-dashboard.html
 ```
 
-GitHub Pages 배포가 별도로 확인되면 GitHub Pages URL을 미리보기 링크로 우선 사용하고, 위 `htmlpreview.github.io` 링크는 보조 링크로 둔다.
+사용자 로컬 기준 기본 확인 경로:
+
+```text
+file:///C:/Users/user/Downloads/urban-legend-database-dashboard.html
+```
+
+작업 원칙:
+
+1. ChatGPT는 HTML 대시보드를 만들거나 갱신할 때 다운로드 가능한 `.html` 파일을 제공한다.
+2. 사용자는 해당 파일을 `C:/Users/user/Downloads/urban-legend-database-dashboard.html`로 저장해 브라우저에서 연다.
+3. 결과 보고에는 로컬 확인 경로와 다운로드 링크를 함께 제공한다.
+4. GitHub에는 HTML 대시보드 소스를 반드시 올릴 필요가 없다.
+5. GitHub 소스 링크는 사용하지 않는 것이 기본이며, 사용자가 명시적으로 GitHub 보관을 요청할 때만 별도로 처리한다.
+6. 기존 GitHub에 남아 있는 HTML 파일은 과거 기록으로 취급하고, 앞으로의 기본 전달 방식으로 사용하지 않는다.
+
+보고 형식:
+
+```md
+## 갱신한 HTML 대시보드
+
+- 로컬 확인 경로: file:///C:/Users/user/Downloads/urban-legend-database-dashboard.html
+- 다운로드 파일: [urban-legend-database-dashboard.html](sandbox:/mnt/data/urban-legend-database-dashboard.html)
+```
 
 ---
 
@@ -173,7 +185,7 @@ MVP 작업 결과 보고에는 아래 항목을 포함한다.
 6. 현재 MVP / Issue 기준선 확인
 7. 구현 범위 / 제외 범위 확정
 8. Issue 작성 또는 갱신
-9. 전체 흐름 HTML 대시보드 갱신
+9. 전체 흐름 HTML 대시보드 갱신 또는 로컬 HTML 파일 생성
 10. Codex Goal 작성
 11. 로드맵 / 체크리스트 / 상태 감사 문서 갱신
 12. Base 승격 후보 여부 판단
@@ -190,10 +202,10 @@ MVP 작업 결과 보고에는 아래 항목을 포함한다.
 - 완료 기준:
 - 결과물 형식:
 
-## 갱신한 HTML 링크
+## 갱신한 HTML 대시보드
 
-- HTML 미리보기:
-- GitHub 소스:
+- 로컬 확인 경로: file:///C:/Users/user/Downloads/urban-legend-database-dashboard.html
+- 다운로드 파일:
 
 ## 변경 파일
 
@@ -213,14 +225,14 @@ MVP 작업 결과 보고에는 아래 항목을 포함한다.
 ...
 ```
 
-HTML을 갱신하지 않은 작업이라도, 현재 기준 대시보드 링크를 함께 제공한다.
+HTML을 갱신하지 않은 작업이라도, 현재 기준 대시보드 파일 이름과 로컬 확인 경로를 함께 제공한다.
 
 ---
 
 ## 6. Codex Goal 규칙
 
 - Codex Goal은 항상 마지막 섹션에 둔다.
-- HTML은 Codex Goal 바로 앞에 둔다.
+- HTML 안내는 Codex Goal 바로 앞에 둔다.
 - Codex Goal 뒤에는 아무 문장도 쓰지 않는다.
 - Issue는 전체 기준서, Codex Goal은 실행 지시서로 작성한다.
 - Goal은 Issue와 `docs/CODEX_SHARED_WORK_RULES.md`를 참조하되 짧게 쓴다.
