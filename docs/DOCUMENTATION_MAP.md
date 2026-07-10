@@ -9,6 +9,7 @@
 - 1차 출시 목표: **PC 기준 Steam 출시**
 - UI/UX 기본 기준: PC 16:9, 마우스/키보드, Steam 데모 첫인상
 - 모바일 세로 최적화: 별도 요청이 있을 때만 범위에 포함
+- 플레이어 관점: 별도 고정 주인공이 아니라 괴담기록국 요원 팀을 운용한다.
 
 ## 고정 벤치마킹 링크
 
@@ -44,6 +45,7 @@
 | 프로젝트 전용 | `docs/CODEX_GOAL_MVP_021.md` | MVP-021 Codex 실행 Goal. 실제 GitHub Issue는 #28 |
 | 프로젝트 전용 | `docs/CODEX_GOAL_MVP_022.md` | MVP-022 Codex 실행 Goal. 실제 GitHub Issue는 #29 |
 | 프로젝트 전용 | `docs/CODEX_GOAL_MVP_023_027.md` | MVP-023~027 통합 Codex 실행 Goal. 실제 GitHub Issue는 #30 |
+| 프로젝트 전용 | `docs/CODEX_GOAL_MVP_028.md` | MVP-028 Codex 실행 Goal. 실제 GitHub Issue는 #31 |
 | 프로젝트 전용 | `.serena/project.yml` | Serena 프로젝트 설정 |
 | 프로젝트 전용 | `data/` | 게임 데이터 |
 | 프로젝트 전용 | `scripts/` | Godot 구현 코드 |
@@ -83,7 +85,9 @@ GitHub에 남아 있는 `docs/urban_legend_flow_dashboard.html`은 과거 기록
 18. 실제 수정 대상 파일
 ```
 
-MVP-023~027 통합 배치 기준으로 현재 MVP 상태는 `MVP_ROADMAP.md`, `docs/MVP_STATUS_AUDIT.md`, GitHub Issue #30, `docs/CODEX_GOAL_MVP_023_027.md`를 함께 확인한다.
+MVP-028 기준으로 현재 MVP 상태는 `MVP_ROADMAP.md`, `docs/MVP_STATUS_AUDIT.md`, GitHub Issue #31, `docs/CODEX_GOAL_MVP_028.md`를 함께 확인한다.
+
+Issue #32~#35는 오생성 테스트 이슈로 닫혔으며, 어떤 MVP 기준으로도 사용하지 않는다.
 
 ## 동기화와 확장 원칙
 
