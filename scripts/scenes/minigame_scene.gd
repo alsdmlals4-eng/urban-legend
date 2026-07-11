@@ -1,22 +1,19 @@
-# 사건별 짧은 동기화 판정과 조사·회수 결과 연결을 관리한다.
+# 사건별 액션 판정을 표시하고 결과를 기존 조사·회수 저장 흐름에 연결한다.
 extends Control
+
+const RhythmGame = preload("res://scripts/minigames/rhythm_timing_game.gd")
+const RainDodgeGame = preload("res://scripts/minigames/rain_dodge_game.gd")
 
 var _minigame: Dictionary = {}
 var _equipment_hint: Dictionary = {}
-var _target_sequence: Array[String] = []
-var _input_options: Array[Dictionary] = []
-var _entered_sequence: Array[String] = []
-var _current_step := 0
-var _mistakes := 0
-var _max_mistakes := 2
-var _input_count := 0
 var _last_successful := false
+var _completed := false
 
-var _progress_label: Label
+var _status_label: Label
 var _result_label: Label
 var _progress_bar: ProgressBar
-var _input_buttons: Array[Button] = []
 var _return_button: Button
+var _game_control: Control
 
 
 func _ready() -> void:
@@ -26,202 +23,148 @@ func _ready() -> void:
 	GameState.set_current_scene_path("res://scenes/minigame_scene.tscn")
 	_minigame = GameState.get_current_minigame()
 	_equipment_hint = GameState.try_use_frequency_filter_hint(String(_minigame.get("id", GameState.get_current_minigame_id())))
-	_load_sequence_rules()
 	_build_ui()
-	_update_result(_make_intro_text())
-
-
-func _load_sequence_rules() -> void:
-	for value in _minigame.get("target_sequence", []):
-		_target_sequence.append(String(value))
-	for option in _minigame.get("input_options", []):
-		if typeof(option) == TYPE_DICTIONARY:
-			_input_options.append(option)
-
-	if _target_sequence.is_empty():
-		_target_sequence = ["signal", "silence", "signal"]
-	if _input_options.is_empty():
-		_input_options = [
-			{"id": "signal", "label": "신호"},
-			{"id": "silence", "label": "정적"}
-		]
-
-	_max_mistakes = max(1, int(_minigame.get("max_mistakes", 2)))
-	if not _equipment_hint.is_empty():
-		_max_mistakes += 1
 
 
 func _build_ui() -> void:
 	var background := ColorRect.new()
-	background.color = Color(0.035, 0.055, 0.065, 1.0)
+	background.color = Color(0.018, 0.028, 0.038)
 	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(background)
 
 	var margin := MarginContainer.new()
 	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	margin.add_theme_constant_override("margin_left", 24)
+	margin.add_theme_constant_override("margin_left", 28)
 	margin.add_theme_constant_override("margin_top", 18)
-	margin.add_theme_constant_override("margin_right", 24)
-	margin.add_theme_constant_override("margin_bottom", 18)
+	margin.add_theme_constant_override("margin_right", 28)
+	margin.add_theme_constant_override("margin_bottom", 22)
 	add_child(margin)
 
 	var root := VBoxContainer.new()
-	root.custom_minimum_size = Vector2(960, 0)
+	root.custom_minimum_size = Vector2(1080, 0)
 	root.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	root.add_theme_constant_override("separation", 12)
 	margin.add_child(root)
-
 	_add_navigation(root)
+
+	var eyebrow := Label.new()
+	eyebrow.text = "FIELD JUDGEMENT  /  %s" % GameState.get_current_episode_title()
+	eyebrow.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	eyebrow.add_theme_font_size_override("font_size", 13)
+	eyebrow.add_theme_color_override("font_color", Color(0.48, 0.68, 0.72))
+	root.add_child(eyebrow)
+
 	var title := Label.new()
-	title.text = "현장 판정 / %s" % String(_minigame.get("title", "동기화"))
+	title.text = String(_minigame.get("title", "현장 판정"))
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 26)
 	root.add_child(title)
 
 	var columns := HBoxContainer.new()
+	columns.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	columns.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	columns.add_theme_constant_override("separation", 12)
+	columns.add_theme_constant_override("separation", 14)
 	root.add_child(columns)
 
-	var briefing := _add_section(columns, "판정 규칙", "조사 중 확보한 신호를 짧게 대조합니다. 실패해도 사건은 계속됩니다.")
-	var briefing_panel := briefing.get_parent() as Control
-	briefing_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	briefing_panel.size_flags_stretch_ratio = 0.9
-	var description := Label.new()
-	description.text = String(_minigame.get("description", "미니게임 설명이 없습니다."))
-	description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	var briefing := _add_section(columns, "판정 규칙", 0.78)
+	var description := _make_body_label(String(_minigame.get("description", "현장 판정을 준비합니다.")))
 	briefing.add_child(description)
-	var rule_label := Label.new()
-	rule_label.text = String(_minigame.get("rules_text", "표시된 순서대로 신호를 선택하세요."))
-	rule_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	briefing.add_child(rule_label)
-	if not _equipment_hint.is_empty():
-		var equipment_label := Label.new()
-		equipment_label.text = "장비 보정: %s\n%s\n허용 오류 +1" % [String(_equipment_hint.get("equipment_name", "폐주파수 필터")), String(_equipment_hint.get("effect_text", ""))]
-		equipment_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		briefing.add_child(equipment_label)
+	var rule := _make_body_label(String(_minigame.get("rules_text", "화면 안내에 따라 입력하세요.")))
+	rule.add_theme_color_override("font_color", Color(0.82, 0.88, 0.9))
+	briefing.add_child(rule)
 
-	var interaction := _add_section(columns, "신호 입력", "목표 순서를 읽고 입력을 완성하세요.")
-	var interaction_panel := interaction.get_parent() as Control
-	interaction_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	interaction_panel.size_flags_stretch_ratio = 1.25
-	var target_label := Label.new()
-	target_label.text = "목표: %s" % _make_target_sequence_text()
-	target_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	target_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	interaction.add_child(target_label)
+	var control_hint := Label.new()
+	control_hint.text = _make_control_hint()
+	control_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	control_hint.add_theme_font_size_override("font_size", 17)
+	control_hint.add_theme_color_override("font_color", Color(0.35, 0.88, 0.74))
+	briefing.add_child(control_hint)
+
+	if not _equipment_hint.is_empty():
+		var assist := _make_body_label("장비 보정\n%s" % String(_equipment_hint.get("effect_text", "판정 보정이 활성화되었습니다.")))
+		assist.add_theme_color_override("font_color", Color(0.95, 0.76, 0.38))
+		briefing.add_child(assist)
+
+	var play := _add_section(columns, _make_play_title(), 1.8)
+	_status_label = Label.new()
+	_status_label.text = "현장 신호를 불러오는 중"
+	_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_status_label.add_theme_font_size_override("font_size", 17)
+	play.add_child(_status_label)
+
 	_progress_bar = ProgressBar.new()
 	_progress_bar.min_value = 0
-	_progress_bar.max_value = _target_sequence.size()
-	interaction.add_child(_progress_bar)
-	_progress_label = Label.new()
-	_progress_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	interaction.add_child(_progress_label)
-	var input_grid := GridContainer.new()
-	input_grid.columns = min(3, _input_options.size())
-	input_grid.add_theme_constant_override("h_separation", 8)
-	input_grid.add_theme_constant_override("v_separation", 8)
-	interaction.add_child(input_grid)
-	for option in _input_options:
-		_add_input_button(input_grid, option)
+	_progress_bar.max_value = 100
+	_progress_bar.show_percentage = false
+	_progress_bar.custom_minimum_size.y = 10
+	play.add_child(_progress_bar)
+
+	var playfield_frame := PanelContainer.new()
+	playfield_frame.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	playfield_frame.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	playfield_frame.add_theme_stylebox_override("panel", _make_panel_style(Color(0.012, 0.025, 0.034), Color(0.18, 0.42, 0.46)))
+	play.add_child(playfield_frame)
+	_game_control = _make_game_control()
+	playfield_frame.add_child(_game_control)
+
+	var outcome := _add_section(columns, "현장 기록", 0.9)
+	_result_label = _make_body_label("판정이 끝나면 상태 변화와 요원 반응을 이곳에 기록합니다.")
+	outcome.add_child(_result_label)
+	var spacer := Control.new()
+	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	outcome.add_child(spacer)
 	_return_button = Button.new()
-	_return_button.text = "조사 흐름으로 돌아가기"
+	_return_button.text = "조사 현장으로 복귀"
+	_return_button.custom_minimum_size.y = 48
 	_return_button.visible = false
 	_return_button.pressed.connect(_return_to_flow)
-	interaction.add_child(_return_button)
+	outcome.add_child(_return_button)
 
-	var outcome := _add_section(columns, "판정 결과", "결과는 현장 상태, 회수 조건, 사건 보고서와 DB에 기록됩니다.")
-	var outcome_panel := outcome.get_parent() as Control
-	outcome_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	outcome_panel.size_flags_stretch_ratio = 1.0
-	_result_label = Label.new()
-	_result_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	outcome.add_child(_result_label)
-	_refresh_progress()
+	_game_control.status_changed.connect(_on_status_changed)
+	_game_control.completed.connect(_on_game_completed)
+	_game_control.configure(_minigame, not _equipment_hint.is_empty())
 
 
-func _add_section(parent: Control, title_text: String, description_text: String) -> VBoxContainer:
-	var panel := PanelContainer.new()
-	panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	parent.add_child(panel)
-	var content := VBoxContainer.new()
-	content.add_theme_constant_override("separation", 10)
-	panel.add_child(content)
-	var title := Label.new()
-	title.text = title_text
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	content.add_child(title)
-	var description := Label.new()
-	description.text = description_text
-	description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	content.add_child(description)
-	return content
+func _make_game_control() -> Control:
+	if String(_minigame.get("type", "rhythm_timing")) == "rain_dodge":
+		return RainDodgeGame.new()
+	return RhythmGame.new()
 
 
-func _add_input_button(parent: Control, option: Dictionary) -> void:
-	var button := Button.new()
-	button.text = String(option.get("label", option.get("id", "신호")))
-	button.custom_minimum_size = Vector2(0, 64)
-	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var option_id := String(option.get("id", ""))
-	button.pressed.connect(func() -> void: _submit_input(option_id))
-	parent.add_child(button)
-	_input_buttons.append(button)
+func _on_status_changed(text: String, progress: float) -> void:
+	_status_label.text = text
+	_progress_bar.value = clampf(progress, 0.0, 1.0) * 100.0
 
 
-func _submit_input(option_id: String) -> void:
-	if _current_step >= _target_sequence.size():
+func _on_game_completed(successful: bool, details: Dictionary) -> void:
+	if _completed:
 		return
-	_input_count += 1
-	_entered_sequence.append(_get_option_label(option_id))
-	if option_id == _target_sequence[_current_step]:
-		_current_step += 1
-		_progress_bar.value = _current_step
-		if _current_step >= _target_sequence.size():
-			_complete_minigame(true)
-		else:
-			_update_result("신호 %d/%d 일치. 다음 박자를 선택하세요." % [_current_step, _target_sequence.size()])
-	else:
-		_mistakes += 1
-		_current_step = 0
-		_progress_bar.value = 0
-		if _mistakes >= _max_mistakes:
-			_complete_minigame(false)
-		else:
-			_update_result("순서가 어긋났습니다. 처음부터 다시 맞추세요. 남은 오류 허용 %d회" % (_max_mistakes - _mistakes))
-	_refresh_progress()
-
-
-func _complete_minigame(successful: bool) -> void:
+	_completed = true
 	_last_successful = successful
-	var minigame_id := String(_minigame.get("id", GameState.get_current_minigame_id()))
-	GameState.save_minigame_result(minigame_id, successful, {
-		"attempt_count": _input_count,
-		"mistake_count": _mistakes,
-		"input_summary": " → ".join(_entered_sequence),
-		"effect_summary": _make_effect_summary(successful)
-	})
-	for button in _input_buttons:
-		button.disabled = true
+	var saved_details := details.duplicate(true)
+	saved_details["effect_summary"] = _make_effect_summary(successful)
+	saved_details["equipment_assisted"] = not _equipment_hint.is_empty()
+	GameState.save_minigame_result(String(_minigame.get("id", GameState.get_current_minigame_id())), successful, saved_details)
+	_result_label.text = _make_result_text(successful, saved_details)
 	_return_button.visible = true
-	_update_result(_make_result_text(successful))
+	_return_button.grab_focus()
 
 
-func _make_intro_text() -> String:
-	return "목표 신호를 확인하고 순서대로 입력하세요.\n허용 오류: %d회 / 실패해도 조사와 회수는 계속됩니다." % _max_mistakes
-
-
-func _make_result_text(successful: bool) -> String:
-	var outcome := "성공" if successful else "실패"
-	var text_key := "success_result_text" if successful else "failure_result_text"
-	var result_text := String(_minigame.get(text_key, "미니게임 결과가 기록되었습니다."))
+func _make_result_text(successful: bool, details: Dictionary) -> String:
+	var result_key := "success_result_text" if successful else "failure_result_text"
 	var reaction_key := "success_agent_reaction" if successful else "failure_agent_reaction"
-	var agent_reaction := String(_minigame.get(reaction_key, "요원 팀이 판정 결과를 회수 근거에 반영합니다."))
-	return "판정: %s\n결과: %s\n\n상태 변화\n%s\n\n요원 반응\n%s\n\n다음 행동\n조사 현장으로 돌아가 남은 단서를 확인하거나 회수/안정화에 진입하세요." % [outcome, result_text, _make_effect_summary(successful), agent_reaction]
+	return "%s\n\n%s\n\n상태 변화\n%s\n\n요원 반응\n%s" % [
+		"판정 성공" if successful else "판정 실패 · 사건 진행 가능",
+		String(_minigame.get(result_key, "판정 결과가 기록되었습니다.")),
+		String(details.get("effect_summary", "변화 없음")),
+		String(_minigame.get(reaction_key, "팀이 판정 결과를 회수 근거에 반영합니다."))
+	]
 
 
 func _make_effect_summary(successful: bool) -> String:
 	var prefix := "success" if successful else "failure"
-	return "위험도 %s / 이해도 %s / 정신력 %s / 괴이 안정도 %s / 회수 기준 %s" % [
+	return "위험도 %s  ·  이해도 %s\n정신력 %s  ·  안정도 %s\n회수 기준 %s" % [
 		_format_delta(int(_minigame.get("%s_anomaly_risk_delta" % prefix, 0))),
 		_format_delta(int(_minigame.get("%s_anomaly_understanding_delta" % prefix, 0))),
 		_format_delta(int(_minigame.get("%s_mental_stamina_delta" % prefix, 0))),
@@ -234,23 +177,60 @@ func _format_delta(value: int) -> String:
 	return "+%d" % value if value > 0 else str(value)
 
 
-func _make_target_sequence_text() -> String:
-	var labels: Array[String] = []
-	for option_id in _target_sequence:
-		labels.append(_get_option_label(option_id))
-	return " → ".join(labels)
+func _make_play_title() -> String:
+	return "빗속 이동" if String(_minigame.get("type", "")) == "rain_dodge" else "폐주파수 동기화"
 
 
-func _get_option_label(option_id: String) -> String:
-	for option in _input_options:
-		if String(option.get("id", "")) == option_id:
-			return String(option.get("label", option_id))
-	return option_id
+func _make_control_hint() -> String:
+	if String(_minigame.get("type", "")) == "rain_dodge":
+		return "조작  방향키"
+	return "조작  SPACE / ENTER"
 
 
-func _refresh_progress() -> void:
-	if _progress_label != null:
-		_progress_label.text = "일치 %d/%d  |  오류 %d/%d" % [_current_step, _target_sequence.size(), _mistakes, _max_mistakes]
+func _add_section(parent: Control, title_text: String, stretch_ratio: float) -> VBoxContainer:
+	var panel := PanelContainer.new()
+	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	panel.size_flags_stretch_ratio = stretch_ratio
+	panel.add_theme_stylebox_override("panel", _make_panel_style(Color(0.055, 0.067, 0.078), Color(0.15, 0.22, 0.25)))
+	parent.add_child(panel)
+
+	var margin := MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 16)
+	margin.add_theme_constant_override("margin_top", 14)
+	margin.add_theme_constant_override("margin_right", 16)
+	margin.add_theme_constant_override("margin_bottom", 16)
+	panel.add_child(margin)
+	var content := VBoxContainer.new()
+	content.add_theme_constant_override("separation", 12)
+	margin.add_child(content)
+	var title := Label.new()
+	title.text = title_text
+	title.add_theme_font_size_override("font_size", 19)
+	title.add_theme_color_override("font_color", Color(0.88, 0.92, 0.93))
+	content.add_child(title)
+	return content
+
+
+func _make_body_label(text: String) -> Label:
+	var label := Label.new()
+	label.text = text
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	label.add_theme_font_size_override("font_size", 15)
+	label.add_theme_color_override("font_color", Color(0.68, 0.74, 0.77))
+	return label
+
+
+func _make_panel_style(background: Color, border: Color) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = background
+	style.border_color = border
+	style.set_border_width_all(1)
+	style.corner_radius_top_left = 4
+	style.corner_radius_top_right = 4
+	style.corner_radius_bottom_left = 4
+	style.corner_radius_bottom_right = 4
+	return style
 
 
 func _return_to_flow() -> void:
@@ -261,11 +241,6 @@ func _return_to_flow() -> void:
 	GameState.set_current_scene_path(scene_path)
 	GameState.save_game()
 	get_tree().change_scene_to_file(scene_path)
-
-
-func _update_result(text: String) -> void:
-	if _result_label != null:
-		_result_label.text = text
 
 
 func _add_navigation(parent: Control) -> void:

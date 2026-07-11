@@ -195,7 +195,7 @@ func _add_update_notice(parent: Control) -> void:
 	content.add_child(title)
 
 	var changes := Label.new()
-	changes.text = "- PC 16:9 기준으로 대화·조사·회수 화면의 시선 흐름을 맞췄습니다.\n- 저승역 폐주파수와 빨간 우산 빗소리를 직접 맞추는 짧은 현장 판정을 추가하고, 결과가 회수·보고서·DB에 이어지게 했습니다."
+	changes.text = "- PC 16:9 기준으로 대화·조사·회수 화면의 시선 흐름을 맞췄습니다.\n- 저승역은 Space/Enter 리듬 판정, 빨간 우산은 방향키 비 피하기로 구현하고 결과를 회수·보고서·DB에 연결했습니다."
 	changes.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	content.add_child(changes)
 
