@@ -24,26 +24,40 @@ UI/UX 확인은 기본적으로 다음을 우선한다.
 ## 공통 실행 확인
 
 ```powershell
-& "C:\Users\user\Downloads\Godot_v4.7-stable_win64.exe\Godot_v4.7-stable_win64_console.exe" --headless --path . --quit
+$originalAppData = $env:APPDATA
+try {
+    $env:APPDATA = Join-Path $env:TEMP "urban-legend-godot-headless"
+    & "C:\Users\user\Downloads\Godot_v4.7-stable_win64.exe\Godot_v4.7-stable_win64_console.exe" --headless --path . --quit
+} finally {
+    $env:APPDATA = $originalAppData
+}
 ```
 
 Godot가 PATH에 있으면 다음으로도 확인할 수 있다.
 
 ```powershell
-godot --headless --path . --quit
+$originalAppData = $env:APPDATA
+try {
+    $env:APPDATA = Join-Path $env:TEMP "urban-legend-godot-headless"
+    godot --headless --path . --quit
+} finally {
+    $env:APPDATA = $originalAppData
+}
 ```
 
 ## 씬 단독 실행 확인
 
 ```powershell
-& "C:\Users\user\Downloads\Godot_v4.7-stable_win64.exe\Godot_v4.7-stable_win64_console.exe" --headless --path . --scene "res://scenes/main_menu.tscn" --quit-after 1
-& "C:\Users\user\Downloads\Godot_v4.7-stable_win64.exe\Godot_v4.7-stable_win64_console.exe" --headless --path . --scene "res://scenes/preparation_scene.tscn" --quit-after 1
-& "C:\Users\user\Downloads\Godot_v4.7-stable_win64.exe\Godot_v4.7-stable_win64_console.exe" --headless --path . --scene "res://scenes/dialogue_scene.tscn" --quit-after 1
-& "C:\Users\user\Downloads\Godot_v4.7-stable_win64.exe\Godot_v4.7-stable_win64_console.exe" --headless --path . --scene "res://scenes/investigation_scene.tscn" --quit-after 1
-& "C:\Users\user\Downloads\Godot_v4.7-stable_win64.exe\Godot_v4.7-stable_win64_console.exe" --headless --path . --scene "res://scenes/minigame_scene.tscn" --quit-after 1
-& "C:\Users\user\Downloads\Godot_v4.7-stable_win64.exe\Godot_v4.7-stable_win64_console.exe" --headless --path . --scene "res://scenes/battle_scene.tscn" --quit-after 1
-& "C:\Users\user\Downloads\Godot_v4.7-stable_win64.exe\Godot_v4.7-stable_win64_console.exe" --headless --path . --scene "res://scenes/result_scene.tscn" --quit-after 1
-& "C:\Users\user\Downloads\Godot_v4.7-stable_win64.exe\Godot_v4.7-stable_win64_console.exe" --headless --path . --scene "res://scenes/database_view.tscn" --quit-after 1
+$originalAppData = $env:APPDATA
+try {
+    $env:APPDATA = Join-Path $env:TEMP "urban-legend-godot-headless"
+    $godot = "C:\Users\user\Downloads\Godot_v4.7-stable_win64.exe\Godot_v4.7-stable_win64_console.exe"
+    foreach ($scene in @("main_menu", "preparation_scene", "dialogue_scene", "investigation_scene", "minigame_scene", "battle_scene", "result_scene", "database_view")) {
+        & $godot --headless --path . --scene "res://scenes/$scene.tscn" --quit-after 1
+    }
+} finally {
+    $env:APPDATA = $originalAppData
+}
 ```
 
 ## 전체 플레이 확인: 저승역

@@ -1,6 +1,9 @@
 # 두 사건의 미니게임 호스트와 게임 컨트롤 생성을 headless로 확인한다.
 extends SceneTree
 
+const TestSaveGuard = preload("res://tests/test_save_guard.gd")
+
+var _save_guard := TestSaveGuard.new()
 
 func _init() -> void:
 	call_deferred("_run")
@@ -12,13 +15,17 @@ func _run() -> void:
 		push_error("GameState autoload is unavailable")
 		quit(1)
 		return
+	var prepare_error := _save_guard.prepare(game_state.get_save_file_path())
+	if not prepare_error.is_empty():
+		push_error(prepare_error)
+		quit(1)
+		return
 
 	var red_umbrella := OS.get_cmdline_user_args().has("--red-umbrella")
 	var episode_path := "res://data/episodes/episode_002_red_umbrella_alley.json" if red_umbrella else "res://data/episodes/episode_001_afterlife_station.json"
 	var minigame_id := "minigame_rain_sync" if red_umbrella else "minigame_frequency_sync"
 	if not game_state.load_episode(episode_path):
-		push_error("Failed to load episode: %s" % episode_path)
-		quit(1)
+		_finish(1, "Failed to load episode: %s" % episode_path)
 		return
 
 	game_state.set_current_minigame_id(minigame_id)
@@ -30,12 +37,23 @@ func _run() -> void:
 	var expected_script := "rain_dodge_game.gd" if red_umbrella else "rhythm_timing_game.gd"
 	var found := _has_script_named(scene, expected_script)
 	if not found:
-		push_error("Expected child script was not created: %s" % expected_script)
-		quit(1)
+		_finish(1, "Expected child script was not created: %s" % expected_script)
 		return
 
-	print("MINIGAME SCENE OK: %s" % expected_script)
-	quit(0)
+	_finish(0, "MINIGAME SCENE OK: %s" % expected_script)
+
+
+func _finish(exit_code: int, message: String) -> void:
+	var restore_error := _save_guard.restore()
+	if not restore_error.is_empty():
+		push_error(restore_error)
+		quit(1)
+		return
+	if exit_code == 0:
+		print(message)
+	else:
+		push_error(message)
+	quit(exit_code)
 
 
 func _has_script_named(node: Node, script_name: String) -> bool:

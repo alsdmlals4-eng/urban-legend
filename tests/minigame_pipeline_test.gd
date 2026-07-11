@@ -1,10 +1,10 @@
 # 액션 판정 결과가 저장 payload와 사건 보고서 요약까지 이어지는지 검증한다.
 extends SceneTree
 
+const TestSaveGuard = preload("res://tests/test_save_guard.gd")
+
 var _failures: Array[String] = []
-var _save_path := ""
-var _save_backup_path := ""
-var _had_existing_save := false
+var _save_guard := TestSaveGuard.new()
 
 
 func _init() -> void:
@@ -13,7 +13,9 @@ func _init() -> void:
 
 func _run() -> void:
 	var game_state := root.get_node("GameState")
-	if not _prepare_save_backup(game_state.get_save_file_path()):
+	var prepare_error := _save_guard.prepare(game_state.get_save_file_path())
+	if not prepare_error.is_empty():
+		_failures.append(prepare_error)
 		_report_failures_and_quit()
 		return
 	game_state.reset_run_state()
@@ -36,52 +38,15 @@ func _run() -> void:
 	_assert_pipeline(game_state, "minigame_rain_sync", "rain_dodge", false)
 	await _assert_completed_game_does_not_reapply(game_state, "rain_dodge_game.gd")
 	_assert_save_payload(game_state.get_save_file_path(), "minigame_rain_sync", "rain_dodge")
-	_restore_save_backup()
+	var restore_error := _save_guard.restore()
+	if not restore_error.is_empty():
+		_failures.append(restore_error)
 
 	if _failures.is_empty():
 		print("MINIGAME PIPELINE: save and report assertions passed")
 		quit(0)
 		return
 	_report_failures_and_quit()
-
-
-func _prepare_save_backup(save_path: String) -> bool:
-	_save_path = ProjectSettings.globalize_path(save_path)
-	_save_backup_path = "%s.pipeline-test-backup" % _save_path
-	if FileAccess.file_exists(_save_backup_path):
-		if FileAccess.file_exists(_save_path):
-			var remove_error := DirAccess.remove_absolute(_save_path)
-			if remove_error != OK:
-				_failures.append("interrupted pipeline test save could not be removed before recovery")
-				return false
-		var recovery_error := DirAccess.rename_absolute(_save_backup_path, _save_path)
-		if recovery_error != OK:
-			_failures.append("backup from an interrupted pipeline test could not be recovered")
-			return false
-	_had_existing_save = FileAccess.file_exists(_save_path)
-	if _had_existing_save:
-		var error := DirAccess.rename_absolute(_save_path, _save_backup_path)
-		if error != OK:
-			_failures.append("existing user save could not be backed up before the pipeline test")
-			return false
-	return true
-
-
-func _restore_save_backup() -> void:
-	if _had_existing_save:
-		if not FileAccess.file_exists(_save_backup_path):
-			_failures.append("user save backup is missing; generated test save was preserved")
-			return
-		if FileAccess.file_exists(_save_path):
-			var remove_error := DirAccess.remove_absolute(_save_path)
-			if remove_error != OK:
-				_failures.append("generated test save could not be removed before restore")
-				return
-		var error := DirAccess.rename_absolute(_save_backup_path, _save_path)
-		_expect(error == OK, "existing user save should be restored after the pipeline test")
-	elif FileAccess.file_exists(_save_path):
-		var remove_error := DirAccess.remove_absolute(_save_path)
-		_expect(remove_error == OK, "generated test save should be removed when no user save existed")
 
 
 func _report_failures_and_quit() -> void:
