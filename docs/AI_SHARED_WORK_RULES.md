@@ -34,7 +34,8 @@
 여러 프로젝트에 재사용할 수 있는 문서다.
 
 - `docs/AI_SHARED_WORK_RULES.md`: 공용 AI 작업 원칙
-- `docs/AI_WORKFLOW_RULES.md`: ChatGPT 작업 순서, HTML, Goal 작성 규칙
+- `docs/AI_WORKFLOW_RULES.md`: ChatGPT 작업 순서와 Goal 작성 규칙
+- `docs/AI_SKILL_ADOPTION_GUIDE.md`: 외부 스킬 채택, 권한 사전점검, context compact 기준
 - `docs/BENCHMARKING_REFERENCE_GUIDE.md`: 벤치마킹 표 형식과 사례 관리 방식
 - `docs/MVP_WORKFLOW_CHECKLIST.md`: 실제 작업 시작/종료 체크리스트
 - `docs/DOCUMENTATION_MAP.md`: 문서 역할표와 공용/전용 구분
@@ -75,8 +76,7 @@
 8. `MVP_ROADMAP.md`를 작성한다.
 9. `TEST_CHECKLIST.md`를 작성한다.
 10. 프로젝트용 `AGENTS.md`와 Codex 규칙 문서를 작성한다.
-11. HTML 대시보드로 전체 흐름을 시각화한다.
-12. 첫 GitHub Issue를 만들고 Goal을 작성한다.
+11. 첫 GitHub Issue를 만들고 Goal을 작성한다.
 
 ## 5. 프로젝트 기본 구조 템플릿
 

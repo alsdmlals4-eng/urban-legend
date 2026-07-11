@@ -33,9 +33,11 @@ GPT/ChatGPT and Codex keep only the current goal, latest user decisions, active 
 
 Before work, read the relevant local documents and affected files instead of relying on a long conversation history or re-reading the full remote repository. Check GitHub only when an Issue, remote update, merge conflict, Base synchronization, or collaboration handoff requires it. Keep task prompts focused on one MVP or one observable fix. Use a single implementation agent by default; use parallel read-only agents only when their work is independent and the expected evidence is worth the additional context cost. Every completed task must leave a concise, committed handoff note so GPT and Codex can safely begin a new task with minimal context.
 
+External skill selection, permission preflight, and context compaction follow `docs/AI_SKILL_ADOPTION_GUIDE.md`. Use the smallest task-matched skill set; save decisions before compacting at phase boundaries, and never compact during partial implementation or active bug reproduction.
+
 Default responsibility split:
 
-1. **GPT/ChatGPT**: planning, benchmarking, player-experience framing, system/data design, HTML dashboard design, GitHub Issue drafting, Codex Goal drafting, review prompts, and test checklist writing.
+1. **GPT/ChatGPT**: planning, benchmarking, player-experience framing, system/data design, GitHub Issue drafting, Codex Goal drafting, review prompts, and test checklist writing.
 2. **Codex**: actual file edits, Godot/GDScript implementation, JSON/TSCN updates, documentation patches, validation, and final change reports.
 3. **GitHub**: single source for Issues, Goals, changed files, review history, completion criteria, validation notes, and future handoff context.
 

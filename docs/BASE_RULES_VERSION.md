@@ -4,8 +4,8 @@
 
 - 공용 원본: [`alsdmlals4-eng/Base`](https://github.com/alsdmlals4-eng/Base)
 - 기준 브랜치: `main`
-- 기준 커밋: [`f4b54a5552c96ca56a833d7d14e333d58cf56597`](https://github.com/alsdmlals4-eng/Base/commit/f4b54a5552c96ca56a833d7d14e333d58cf56597)
-- 동기화 확인 날짜: `2026-07-10`
+- 기준 커밋: [`6de304ee4cba14faf5a85d166f8ae1f1456ee768`](https://github.com/alsdmlals4-eng/Base/commit/6de304ee4cba14faf5a85d166f8ae1f1456ee768)
+- 동기화 확인 날짜: `2026-07-11`
 
 ## 사용 규칙
 
@@ -18,12 +18,29 @@
 | 로컬 파일 | Base와의 관계 | 비고 |
 |---|---|---|
 | `docs/AI_SHARED_WORK_RULES.md` | Base 기반 로컬 사본 | 공용 작업 원칙을 유지한다. |
-| `docs/AI_WORKFLOW_RULES.md` | Base 기반 + 프로젝트 확장 | 도시괴담 기록국의 ChatGPT, HTML, Goal, 벤치마킹 작업 규칙을 포함한다. |
+| `docs/AI_WORKFLOW_RULES.md` | Base 기반 + 프로젝트 확장 | 도시괴담 기록국의 ChatGPT, Goal, 벤치마킹 작업 규칙을 포함한다. |
+| `docs/AI_SKILL_ADOPTION_GUIDE.md` | Base 기반 + 프로젝트 확장 | 외부 스킬 비교와 Godot용 최소 라우팅·context compact 기준을 포함한다. |
 | `docs/MVP_WORKFLOW_CHECKLIST.md` | Base 기반 + 프로젝트 확장 | 현재 프로젝트의 역할과 MVP 실행 흐름을 포함한다. |
 | `docs/BENCHMARKING_REFERENCE_GUIDE.md` | Base 기반 + 프로젝트 확장 | 공용 기록 방식에 도시괴담 기록국 사례 목록과 고정 참고 링크를 더한다. |
 | `docs/DOCUMENTATION_MAP.md` | Base 기반 + 프로젝트 적용 | 이 저장소의 실제 문서와 부재 문서를 구분한다. |
 
 동기화는 Base 내용을 무조건 덮어쓰는 절차가 아니다. 먼저 Base의 공용 변경과 이 프로젝트의 확장 내용을 비교하고, 필요한 변경만 반영한 뒤 이 파일의 기준 커밋과 날짜를 갱신한다.
+
+## 2026-07-11 스킬 채택·context compact 동기화
+
+Base 변경:
+
+- 외부 스킬은 프로젝트 규칙보다 낮은 선택형 보조 수단으로 정의했다.
+- 스킬 설치 전 script, hook, MCP, 외부 API, cookie, secret, 쓰기 권한을 확인하게 했다.
+- 최소 구현 사다리, 최소 스킬 라우팅, active context capsule, phase-boundary compact를 추가했다.
+- Base 커밋: `6de304ee4cba14faf5a85d166f8ae1f1456ee768`.
+
+도시괴담 기록국 전용 적용:
+
+- Godot 4.7, PC/Steam, 저장 호환성, 변경 scene 검증을 작업 프롬프트에 유지한다.
+- UI 스킬은 웹 미학을 복사하지 않고 화면 역할과 정보 밀도 원칙만 사용한다.
+- MVP-028부터 요청하지 않은 HTML 대시보드를 작업 순서와 보고에서 제거했다.
+- Superpowers/Harness/Serena 설치 설명은 새 가이드를 가리키는 최소 규칙으로 줄였다.
 
 ## 2026-07-10 Base 공용 규칙 갱신 기록
 
