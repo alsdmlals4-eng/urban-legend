@@ -15,6 +15,7 @@ export_credentials.cfg
 .vscode/
 .idea/
 .vs/
+.worktrees/
 .DS_Store
 Thumbs.db
 desktop.ini
