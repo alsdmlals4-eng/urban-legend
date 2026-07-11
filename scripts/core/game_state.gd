@@ -360,7 +360,7 @@ func apply_story_effects(result_data: Dictionary) -> void:
 
 
 ## Applies a minigame success or failure result and stores it for save/load.
-func save_minigame_result(minigame_id: String, successful: bool) -> void:
+func save_minigame_result(minigame_id: String, successful: bool, details: Dictionary = {}) -> void:
 	var minigame := get_minigame(minigame_id)
 	if minigame.is_empty():
 		return
@@ -372,12 +372,15 @@ func save_minigame_result(minigame_id: String, successful: bool) -> void:
 	for flag_id in _to_string_array(opposite_flags):
 		remove_flag(flag_id)
 
-	minigame_results[minigame_id] = {
+	var result := {
 		"successful": successful,
 		"result_state": result_state,
 		"result_text": result_text,
 		"last_updated_at": Time.get_datetime_string_from_system(false, true)
 	}
+	for key in details:
+		result[key] = details[key]
+	minigame_results[minigame_id] = result
 
 	apply_story_effects(_make_minigame_effect_data(minigame, successful))
 	save_game()

@@ -1,7 +1,7 @@
 # 시작 화면에서 프로젝트 소개와 데이터베이스 진입을 관리한다.
 extends Control
 
-const GAME_VERSION := "Ver 2.8"
+const GAME_VERSION := "Ver 3.0"
 
 var _start_episode_button: Button
 var _continue_button: Button
@@ -73,7 +73,7 @@ func _build_ui() -> void:
 	content.add_child(subtitle)
 
 	var body := Label.new()
-	body.text = "HTML 데이터베이스의 세력, 요원, 장비, 기술, 에피소드, 분기, 대화문, 제작 점검 구조를 Godot에서 재현합니다."
+	body.text = "괴담기록국 요원 팀을 편성해 두 도시괴담의 규칙을 조사하고, 단서를 근거로 괴이를 안정화·회수합니다."
 	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	content.add_child(body)
 
@@ -191,16 +191,16 @@ func _add_update_notice(parent: Control) -> void:
 	panel.add_child(content)
 
 	var title := Label.new()
-	title.text = "Ver 2.8 변경사항"
+	title.text = "Ver 3.0 변경사항"
 	content.add_child(title)
 
 	var changes := Label.new()
-	changes.text = "- 대화는 현장·요원 팀·하단 대사창, 조사는 상황 묘사·수사 선택·선택 결과, 회수는 아군 요원·해결 단서·행동 선택 구조로 정리했습니다.\n- 회수 화면에서 대표 요원을 현장 지휘 / 회수 담당으로 전환할 수 있습니다."
+	changes.text = "- PC 16:9 기준으로 대화·조사·회수 화면의 시선 흐름을 맞췄습니다.\n- 저승역 폐주파수와 빨간 우산 빗소리를 직접 맞추는 짧은 현장 판정을 추가하고, 결과가 회수·보고서·DB에 이어지게 했습니다."
 	changes.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	content.add_child(changes)
 
 	var checks := Label.new()
-	checks.text = "확인할 것: 요원 팀이 함께 움직이는 흐름, 조사 선택 결과의 단서·상태·요원 반응, 회수 화면의 대표 요원 전환과 해결 단서 배치를 확인하세요."
+	checks.text = "확인할 것: 조사에서 사건별 현장 판정에 진입한 뒤 성공/실패 상태 변화가 회수 근거, 사건 보고서와 기록국 DB에 남는지 확인하세요."
 	checks.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	content.add_child(checks)
 

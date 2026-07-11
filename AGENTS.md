@@ -21,7 +21,7 @@ Run changed scenes directly. `TEST_CHECKLIST.md` defines manual player-flow chec
 
 Use GDScript and Godot nodes only. Indent with tabs; use `snake_case`; name concepts clearly (`GameState`, `ResultScene`). New `.gd` files start with one Korean role comment. Keep state ownership single, avoid duplicate logic, reuse JSON data flow, and preserve user changes.
 
-Design mobile-vertical UI first while retaining PC mouse support. `battle_scene` is anomaly stabilization/recovery, not RPG combat: prefer `회수`, `안정화`, `위험도`, and `괴이 안정도`; do not add HP, damage, kill, or death-centered systems.
+Design for PC 16:9 and mouse/keyboard first; mobile vertical optimization is included only when explicitly requested. `battle_scene` is anomaly stabilization/recovery, not RPG combat: prefer `회수`, `안정화`, `위험도`, and `괴이 안정도`; do not add HP, damage, kill, or death-centered systems.
 
 ## GPT + Codex + GitHub Default Workflow
 
@@ -59,7 +59,7 @@ Before reporting completion, record mistakes or near-misses, their prevention st
 
 ## Testing Guidelines
 
-Validate JSON, run headless project and changed-scene checks, then test the affected player path. Verify saves after `GameState` changes and inspect mobile-width wrapping. Report untested items plainly.
+Validate JSON, run headless project and changed-scene checks, then test the affected player path. Verify saves after `GameState` changes and inspect PC 16:9 windowed/fullscreen wrapping. Report untested items plainly.
 
 ## Agent Use
 

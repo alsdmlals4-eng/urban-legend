@@ -157,7 +157,9 @@ func _make_minigame_lines(results: Dictionary) -> Array:
 		var minigame := GameState.get_minigame(String(minigame_id))
 		var title := String(minigame.get("title", minigame_id))
 		var state := "성공" if bool(result.get("successful", false)) else "실패"
-		lines.append("%s: %s - %s" % [title, state, String(result.get("result_text", "결과가 기록되었습니다."))])
+		var detail := String(result.get("effect_summary", ""))
+		var detail_suffix := " / %s" % detail if not detail.is_empty() else ""
+		lines.append("%s: %s - %s%s" % [title, state, String(result.get("result_text", "결과가 기록되었습니다.")), detail_suffix])
 	return lines
 
 

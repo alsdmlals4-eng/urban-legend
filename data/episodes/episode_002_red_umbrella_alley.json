@@ -418,6 +418,16 @@
       "description": "세 번째 빗소리 뒤에만 이어지는 CCTV 프레임을 맞춰, 붉은 우산이 되돌아오는 위치를 고정합니다.",
       "type": "timing_check",
       "target_count": 3,
+      "rules_text": "빗소리 세 박자와 CCTV 빈 프레임이 겹치는 순서를 선택하세요. 두 번 어긋나도 사건은 계속됩니다.",
+      "input_options": [
+        { "id": "first_drop", "label": "첫 빗방울" },
+        { "id": "second_echo", "label": "두 번째 메아리" },
+        { "id": "empty_frame", "label": "세 번째 빈 프레임" }
+      ],
+      "target_sequence": ["first_drop", "second_echo", "empty_frame"],
+      "max_mistakes": 2,
+      "success_agent_reaction": "관찰 담당이 세 번째 빈 프레임을 실제 출구와 겹치고, 팀이 우산의 귀환 위치를 표시합니다.",
+      "failure_agent_reaction": "팀이 반복된 골목을 경고 구역으로 표시하고, 회수 담당에게 경로 재진입 위험을 전달합니다.",
       "success_flags": ["minigame_rain_sync_success", "red_umbrella_sync_completed"],
       "failure_flags": ["minigame_rain_sync_failed", "red_umbrella_sync_noise"],
       "success_show_hint_ids": ["hint_red_umbrella_003"],

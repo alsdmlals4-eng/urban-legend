@@ -48,6 +48,7 @@
 | 프로젝트 전용 | `docs/CODEX_GOAL_MVP_022.md` | MVP-022 Codex 실행 Goal. 실제 GitHub Issue는 #29 |
 | 프로젝트 전용 | `docs/CODEX_GOAL_MVP_023_027.md` | MVP-023~027 통합 Codex 실행 Goal. 실제 GitHub Issue는 #30 |
 | 프로젝트 전용 | `docs/CODEX_GOAL_MVP_028.md` | MVP-028 Codex 실행 Goal. 실제 GitHub Issue는 #31 |
+| 프로젝트 전용 | `docs/CODEX_GOAL_MVP_029_030.md` | MVP-029~030 통합 UX·현장 판정·데모 후보 실행 Goal |
 | 프로젝트 전용 | `.serena/project.yml` | Serena 프로젝트 설정 |
 | 프로젝트 전용 | `data/` | 게임 데이터 |
 | 프로젝트 전용 | `scripts/` | Godot 구현 코드 |

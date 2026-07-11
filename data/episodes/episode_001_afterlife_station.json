@@ -724,6 +724,16 @@
       "description": "반복 안내방송의 잡음 사이에 숨어 있는 피해자의 이름과 숫자 패턴을 맞춥니다.",
       "type": "timing_check",
       "target_count": 3,
+      "rules_text": "안내방송에서 이름 파형이 끼어드는 순서대로 3개의 신호를 선택하세요. 두 번 어긋나면 잡음 판정으로 종료됩니다.",
+      "input_options": [
+        { "id": "low_noise", "label": "낮은 잡음" },
+        { "id": "name_wave", "label": "이름 파형" },
+        { "id": "terminal_tone", "label": "종착음" }
+      ],
+      "target_sequence": ["low_noise", "name_wave", "terminal_tone"],
+      "max_mistakes": 2,
+      "success_agent_reaction": "분석 담당이 이름 파형을 고정하고, 팀이 반복 안내방송을 회수 근거로 등록합니다.",
+      "failure_agent_reaction": "팀이 잡음 구간을 위험 표식으로 남기고, 더 높은 안정화 부담을 감수하기로 합니다.",
       "success_flags": [
         "minigame_frequency_success",
         "heard_station_noise",
@@ -756,7 +766,7 @@
           "failure_recovery_threshold_delta": -8,
           "failure_recovery_stability_delta": 10,
       "success_result_text": "반복 안내방송의 규칙을 파악했습니다. 피해자의 이름이 끼어드는 순간을 단서로 기록합니다.",
-      "failure_result_text": "잡음이 커져 저승역의 경계가 강화되었습니다. 회수 전투에서 괴이 안정도가 조금 높아집니다.",
+      "failure_result_text": "잡음이 커져 저승역의 경계가 강화되었습니다. 회수 페이즈에서 괴이 안정도가 조금 높아집니다.",
       "return_scene_path": "res://scenes/investigation_scene.tscn",
       "success_next_scene_path": "res://scenes/investigation_scene.tscn",
       "failure_next_scene_path": "res://scenes/investigation_scene.tscn"

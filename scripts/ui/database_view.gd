@@ -226,10 +226,13 @@ func _add_minigame_entries(results: Dictionary, parent: VBoxContainer) -> void:
 		if typeof(result) == TYPE_DICTIONARY:
 			var minigame := GameState.get_minigame(String(minigame_id))
 			var state := "성공" if bool(result.get("successful", false)) else "실패"
-			lines.append("%s: %s - %s" % [
+			var detail := String(result.get("effect_summary", ""))
+			var detail_suffix := " / %s" % detail if not detail.is_empty() else ""
+			lines.append("%s: %s - %s%s" % [
 				String(minigame.get("title", minigame_id)),
 				state,
-				String(result.get("result_text", "결과가 기록되었습니다."))
+				String(result.get("result_text", "결과가 기록되었습니다.")),
+				detail_suffix
 			])
 	_add_text_entries("미니게임 기록", lines, parent)
 

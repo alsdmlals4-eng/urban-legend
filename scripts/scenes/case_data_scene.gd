@@ -216,7 +216,7 @@ func _add_navigation(parent: Control) -> void:
 	_add_scene_button(row, "메뉴", "res://scenes/main_menu.tscn")
 	_add_scene_button(row, "조사", "res://scenes/investigation_scene.tscn")
 	_add_scene_button(row, "대화", "res://scenes/dialogue_scene.tscn")
-	_add_scene_button(row, "전투", "res://scenes/battle_scene.tscn")
+	_add_scene_button(row, "회수", "res://scenes/battle_scene.tscn")
 
 
 func _add_scene_button(parent: Control, label: String, scene_path: String) -> void:
