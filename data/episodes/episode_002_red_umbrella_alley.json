@@ -402,8 +402,11 @@
       "label": "CCTV가 끊긴 사거리: 빗소리 동기화",
       "description": "CCTV 영상은 세 번째 빗소리에서만 한 프레임씩 이어집니다.",
       "tags": ["frequency_related", "route_loop"],
-      "conditions": { "required_clues": ["clue_red_umbrella_fabric", "clue_repeating_alley_sign"] },
-      "locked_text": "우산의 매개체와 반복 표지판을 먼저 확인해야 CCTV의 빈 프레임을 해석할 수 있습니다.",
+      "conditions": {
+        "required_clues": ["clue_red_umbrella_fabric", "clue_repeating_alley_sign"],
+        "blocked_flags": ["minigame_rain_sync_success", "minigame_rain_sync_failed"]
+      },
+      "locked_text": "우산·표지판 단서가 필요하거나, 이번 사건의 빗속 이동 판정을 이미 기록했습니다.",
       "result_text": "기록국 단말기로 빗소리와 CCTV 빈 프레임을 동기화합니다.",
       "add_flags": ["red_umbrella_sync_requested"],
       "show_hint_ids": ["hint_red_umbrella_003"],

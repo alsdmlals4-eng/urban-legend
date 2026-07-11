@@ -454,10 +454,11 @@
           "heard_station_noise"
         ],
         "blocked_flags": [
-          "minigame_frequency_success"
+          "minigame_frequency_success",
+          "minigame_frequency_failed"
         ]
       },
-      "locked_text": "아직 동기화할 폐주파수 잡음을 확보하지 못했습니다. 플랫폼 스피커를 먼저 확인하세요.",
+      "locked_text": "플랫폼 스피커의 잡음이 필요하거나, 이번 사건의 폐주파수 판정을 이미 기록했습니다.",
       "result_text": "기록국 단말기가 반복 안내방송의 잡음을 분석하기 시작합니다.",
       "add_flags": [
         "started_frequency_sync"

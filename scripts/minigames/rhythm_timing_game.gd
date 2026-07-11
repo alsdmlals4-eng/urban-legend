@@ -22,6 +22,7 @@ var _cooldown := 0.0
 var _feedback := "첫 파형을 기다리는 중"
 var _feedback_color := Color(0.72, 0.82, 0.86)
 var _finished := false
+var _started := false
 
 
 func configure(config: Dictionary, equipment_assisted: bool) -> void:
@@ -45,7 +46,7 @@ func configure(config: Dictionary, equipment_assisted: bool) -> void:
 
 
 func _process(delta: float) -> void:
-	if _finished:
+	if _finished or not _started:
 		return
 	if _cooldown > 0.0:
 		_cooldown -= delta
@@ -69,6 +70,15 @@ func _unhandled_key_input(event: InputEvent) -> void:
 	if not key_event.pressed or key_event.echo:
 		return
 	if key_event.keycode != KEY_SPACE and key_event.keycode != KEY_ENTER and key_event.keycode != KEY_KP_ENTER:
+		return
+	if not _started:
+		_started = true
+		_beat_elapsed = 0.0
+		_current_radius = _start_radius
+		_feedback = "첫 파형 접근 중"
+		_emit_status()
+		queue_redraw()
+		get_viewport().set_input_as_handled()
 		return
 
 	var hit := Rules.is_rhythm_hit(_current_radius, _target_radius, _tolerance)
@@ -139,4 +149,3 @@ func _draw() -> void:
 	var font := ThemeDB.fallback_font
 	draw_string(font, Vector2(24, 34), "SPACE / ENTER", HORIZONTAL_ALIGNMENT_LEFT, -1, 18, Color(0.68, 0.78, 0.82))
 	draw_string(font, Vector2(24, size.y - 24), _feedback, HORIZONTAL_ALIGNMENT_LEFT, -1, 20, _feedback_color)
-

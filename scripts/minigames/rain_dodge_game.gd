@@ -5,6 +5,7 @@ signal completed(successful: bool, details: Dictionary)
 signal status_changed(text: String, progress: float)
 
 const Rules = preload("res://scripts/minigames/minigame_rules.gd")
+const MAX_SIMULATION_STEP := 1.0 / 60.0
 
 var _duration := 12.0
 var _max_hits := 3
@@ -25,6 +26,7 @@ var _drops: Array[Dictionary] = []
 var _rng := RandomNumberGenerator.new()
 var _finished := false
 var _initialized := false
+var _started := false
 
 
 func configure(config: Dictionary, equipment_assisted: bool) -> void:
@@ -55,22 +57,39 @@ func _initialize_player() -> void:
 func _process(delta: float) -> void:
 	if _finished or not _initialized:
 		return
-	_elapsed += delta
-	_spawn_elapsed += delta
+	if not _started:
+		if Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down").is_zero_approx():
+			return
+		_started = true
+	if Rules.is_rain_failure(_hits, _max_hits):
+		_complete(false)
+		return
+
+	var remaining_delta := minf(delta, maxf(0.0, _duration - _elapsed))
+	while remaining_delta > 0.000001:
+		var step := minf(remaining_delta, MAX_SIMULATION_STEP)
+		_advance_simulation(step)
+		remaining_delta -= step
+		if Rules.is_rain_failure(_hits, _max_hits):
+			_complete(false)
+			return
+
+	if _elapsed >= _duration:
+		_complete(true)
+		return
+	_emit_status()
+	queue_redraw()
+
+
+func _advance_simulation(delta: float) -> void:
+	_elapsed = minf(_duration, _elapsed + delta)
 	_invulnerability = maxf(0.0, _invulnerability - delta)
 	_move_player(delta)
+	_update_drops(delta)
+	_spawn_elapsed += delta
 	while _spawn_elapsed >= _spawn_interval:
 		_spawn_elapsed -= _spawn_interval
 		_spawn_drop()
-	_update_drops(delta)
-
-	if Rules.is_rain_failure(_hits, _max_hits):
-		_complete(false)
-	elif Rules.is_rain_success(_elapsed, _duration, _hits, _max_hits):
-		_complete(true)
-	else:
-		_emit_status()
-	queue_redraw()
 
 
 func _move_player(delta: float) -> void:
@@ -134,6 +153,9 @@ func _complete(successful: bool) -> void:
 
 
 func _emit_status() -> void:
+	if not _started:
+		status_changed.emit("방향키를 눌러 시작\n%.0f초 동안 빗방울을 피하세요" % _duration, 0.0)
+		return
 	var remaining := maxf(0.0, _duration - _elapsed)
 	var shield_text := " / 보호 1회" if _shield_count > 0 else ""
 	status_changed.emit("남은 시간 %.1f초  |  충돌 %d/%d%s\n방향키로 우산을 이동하세요" % [remaining, _hits, _max_hits, shield_text], clampf(_elapsed / _duration, 0.0, 1.0))

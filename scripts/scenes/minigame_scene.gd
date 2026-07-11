@@ -6,6 +6,7 @@ const RainDodgeGame = preload("res://scripts/minigames/rain_dodge_game.gd")
 
 var _minigame: Dictionary = {}
 var _equipment_hint: Dictionary = {}
+var _existing_result: Dictionary = {}
 var _last_successful := false
 var _completed := false
 
@@ -22,7 +23,10 @@ func _ready() -> void:
 
 	GameState.set_current_scene_path("res://scenes/minigame_scene.tscn")
 	_minigame = GameState.get_current_minigame()
-	_equipment_hint = GameState.try_use_frequency_filter_hint(String(_minigame.get("id", GameState.get_current_minigame_id())))
+	var minigame_id := String(_minigame.get("id", GameState.get_current_minigame_id()))
+	_existing_result = GameState.get_minigame_result(minigame_id)
+	if _existing_result.is_empty():
+		_equipment_hint = GameState.try_use_frequency_filter_hint(minigame_id)
 	_build_ui()
 
 
@@ -105,8 +109,6 @@ func _build_ui() -> void:
 	playfield_frame.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	playfield_frame.add_theme_stylebox_override("panel", _make_panel_style(Color(0.012, 0.025, 0.034), Color(0.18, 0.42, 0.46)))
 	play.add_child(playfield_frame)
-	_game_control = _make_game_control()
-	playfield_frame.add_child(_game_control)
 
 	var outcome := _add_section(columns, "현장 기록", 0.9)
 	_result_label = _make_body_label("판정이 끝나면 상태 변화와 요원 반응을 이곳에 기록합니다.")
@@ -121,9 +123,30 @@ func _build_ui() -> void:
 	_return_button.pressed.connect(_return_to_flow)
 	outcome.add_child(_return_button)
 
-	_game_control.status_changed.connect(_on_status_changed)
-	_game_control.completed.connect(_on_game_completed)
-	_game_control.configure(_minigame, not _equipment_hint.is_empty())
+	if _existing_result.is_empty():
+		_game_control = _make_game_control()
+		playfield_frame.add_child(_game_control)
+		_game_control.status_changed.connect(_on_status_changed)
+		_game_control.completed.connect(_on_game_completed)
+		_game_control.configure(_minigame, not _equipment_hint.is_empty())
+	else:
+		_show_saved_result(playfield_frame)
+
+
+func _show_saved_result(playfield_frame: PanelContainer) -> void:
+	_completed = true
+	_last_successful = bool(_existing_result.get("successful", false))
+	_status_label.text = "판정 기록 완료  |  %s" % ("성공" if _last_successful else "실패")
+	_progress_bar.value = 100.0
+	var summary := Label.new()
+	summary.text = "이 미니게임의 판정은 이미 저장되었습니다.\n\n%s" % String(_existing_result.get("input_summary", "플레이 기록을 확인하세요."))
+	summary.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	summary.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	summary.add_theme_font_size_override("font_size", 20)
+	playfield_frame.add_child(summary)
+	_result_label.text = _make_result_text(_last_successful, _existing_result)
+	_return_button.visible = true
 
 
 func _make_game_control() -> Control:

@@ -1,6 +1,8 @@
 # 결과 화면의 회수 결과, 연구 보상, 기록물과 장비 해금을 표시한다.
 extends Control
 
+const MinigameResultFormatter = preload("res://scripts/minigames/minigame_result_formatter.gd")
+
 
 func _ready() -> void:
 	if GameState.get_current_episode().is_empty():
@@ -156,10 +158,7 @@ func _make_minigame_lines(results: Dictionary) -> Array:
 			continue
 		var minigame := GameState.get_minigame(String(minigame_id))
 		var title := String(minigame.get("title", minigame_id))
-		var state := "성공" if bool(result.get("successful", false)) else "실패"
-		var detail := String(result.get("effect_summary", ""))
-		var detail_suffix := " / %s" % detail if not detail.is_empty() else ""
-		lines.append("%s: %s - %s%s" % [title, state, String(result.get("result_text", "결과가 기록되었습니다.")), detail_suffix])
+		lines.append(MinigameResultFormatter.make_report_line(title, result))
 	return lines
 
 
