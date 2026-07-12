@@ -5,7 +5,7 @@ const ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")
 const Accessibility = preload("res://scripts/ui/accessibility_settings.gd")
 const AssetCatalog = preload("res://scripts/ui/ui_asset_catalog.gd")
 
-const GAME_VERSION := "Ver 3.0"
+const GAME_VERSION := "Ver 3.1"
 
 var _start_episode_button: Button
 var _continue_button: Button
@@ -251,7 +251,7 @@ func _add_update_notice(parent: Control) -> void:
 	panel.add_child(content)
 
 	var title := Label.new()
-	title.text = "Ver 3.0 변경사항"
+	title.text = "%s 변경사항" % GAME_VERSION
 	content.add_child(title)
 
 	var changes := Label.new()

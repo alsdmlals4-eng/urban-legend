@@ -1,6 +1,7 @@
 # 회수·대화 UI/UX 리디자인 1차 구현 기록
 
 - 날짜: 2026-07-13
+- 표시 버전: `Ver 3.1` / `MVP-031`
 - 기준: Issue #31, 사용자 참고 이미지, DeepSeek R0 조사 `ses_0a77e31aaffeNr7tjGJbzfQBKf`
 - 구현 보조: DeepSeek `builder-flash` 세션 `ses_0a76ec18affe4naZwZTA1GYyTg`; 초안 시간 초과 후 Codex가 실제 diff를 폐기하고 안전한 최소 변경으로 재구현
 

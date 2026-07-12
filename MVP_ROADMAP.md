@@ -2,7 +2,7 @@
 
 ## 현재 기준
 
-현재 문서 기준선은 `MVP-030`이다.
+현재 문서 기준선은 `MVP-031`이다.
 
 현재 MVP 상태 판단은 이 문서와 `docs/CODEX_GOAL_MVP_029_030.md`, `docs/MVP_STATUS_AUDIT.md`를 함께 기준으로 삼는다.
 
