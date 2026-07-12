@@ -2,6 +2,8 @@
 extends Control
 
 const SceneVisuals = preload("res://scripts/ui/scene_presentation.gd")
+const AssetCatalog = preload("res://scripts/ui/ui_asset_catalog.gd")
+const ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")
 const RuntimeEditor = preload("res://scripts/ui/runtime_ui_editor.gd")
 
 const BASE_ANOMALY_STABILITY := 100
@@ -28,6 +30,7 @@ var _auto_effect_label: Label
 var _result_label: Label
 var _recover_button: Button
 var _representative_agent_label: Label
+var _representative_agent_image: TextureRect
 var _anomaly_panel: PanelContainer
 var _anomaly_image: TextureRect
 var _anomaly_stage_label: Label
@@ -43,9 +46,173 @@ func _ready() -> void:
 	_active_effects = GameState.get_collected_battle_effects()
 	_apply_collected_clue_effects()
 	SceneVisuals.apply_background(self, "recovery")
-	_build_ui()
+	_build_scene_ui()
 	_setup_runtime_editor()
 	_update_battle_view(_make_start_message())
+
+
+func _build_scene_ui() -> void:
+	var shade := get_node_or_null("ArtLayer/Shade") as ColorRect
+	if shade != null:
+		shade.color = Color(0.08, 0.015, 0.025, 0.18)
+
+	var top_panel := PanelContainer.new()
+	top_panel.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
+	top_panel.offset_left = 12
+	top_panel.offset_top = 10
+	top_panel.offset_right = -12
+	top_panel.offset_bottom = 64
+	top_panel.add_theme_stylebox_override("panel", ThemeFactory.panel_style(Color("293943"), 0.76))
+	add_child(top_panel)
+	var status_row := HBoxContainer.new()
+	status_row.add_theme_constant_override("separation", 10)
+	top_panel.add_child(status_row)
+	_representative_agent_label = _make_label("")
+	_representative_agent_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	status_row.add_child(_representative_agent_label)
+	var stability_title := _make_label("안정")
+	stability_title.custom_minimum_size.x = 42
+	status_row.add_child(stability_title)
+	_stability_bar = _make_bar(100)
+	_stability_bar.custom_minimum_size = Vector2(180, 22)
+	status_row.add_child(_stability_bar)
+	var risk_title := _make_label("위험")
+	risk_title.custom_minimum_size.x = 42
+	status_row.add_child(risk_title)
+	_fear_bar = _make_bar(100)
+	_fear_bar.custom_minimum_size = Vector2(140, 22)
+	status_row.add_child(_fear_bar)
+
+	_representative_agent_image = TextureRect.new()
+	_representative_agent_image.set_anchors_and_offsets_preset(Control.PRESET_LEFT_WIDE)
+	_representative_agent_image.anchor_right = 0.28
+	_representative_agent_image.offset_left = 12
+	_representative_agent_image.offset_top = 72
+	_representative_agent_image.offset_right = -4
+	_representative_agent_image.offset_bottom = -214
+	_representative_agent_image.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_representative_agent_image.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_representative_agent_image.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(_representative_agent_image)
+
+	_anomaly_panel = PanelContainer.new()
+	_anomaly_panel.anchor_left = 0.24
+	_anomaly_panel.anchor_top = 0.1
+	_anomaly_panel.anchor_right = 0.78
+	_anomaly_panel.anchor_bottom = 0.72
+	_anomaly_panel.offset_left = 4
+	_anomaly_panel.offset_top = 8
+	_anomaly_panel.offset_right = -4
+	_anomaly_panel.offset_bottom = -4
+	_anomaly_panel.add_theme_stylebox_override("panel", ThemeFactory.panel_style(Color("3d2632"), 0.24))
+	add_child(_anomaly_panel)
+	var anomaly_box := VBoxContainer.new()
+	anomaly_box.alignment = BoxContainer.ALIGNMENT_CENTER
+	_anomaly_panel.add_child(anomaly_box)
+	_anomaly_image = TextureRect.new()
+	_anomaly_image.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_anomaly_image.custom_minimum_size = Vector2(0, 260)
+	var initial_stage := SceneVisuals.apply_anomaly(_anomaly_image, GameState.get_anomaly_risk())
+	anomaly_box.add_child(_anomaly_image)
+	_anomaly_stage_label = _make_label("관측 위험 단계 %s" % initial_stage)
+	_anomaly_stage_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	anomaly_box.add_child(_anomaly_stage_label)
+	var phase_label := _make_label(_make_resolution_phase_text())
+	phase_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	anomaly_box.add_child(phase_label)
+
+	var clue_panel := PanelContainer.new()
+	clue_panel.anchor_left = 0.78
+	clue_panel.anchor_top = 0.1
+	clue_panel.anchor_right = 1.0
+	clue_panel.anchor_bottom = 0.72
+	clue_panel.offset_left = 4
+	clue_panel.offset_top = 8
+	clue_panel.offset_right = -12
+	clue_panel.offset_bottom = -4
+	clue_panel.add_theme_stylebox_override("panel", ThemeFactory.panel_style(Color("293943"), 0.78))
+	add_child(clue_panel)
+	var clue_box := VBoxContainer.new()
+	clue_box.add_theme_constant_override("separation", 8)
+	clue_panel.add_child(clue_box)
+	var clue_title := _make_label("확보 단서 / 회수 근거")
+	clue_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	clue_box.add_child(clue_title)
+	_auto_effect_label = _make_label(_make_clue_summary())
+	_auto_effect_label.tooltip_text = _make_auto_effect_text()
+	clue_box.add_child(_auto_effect_label)
+	var detail_button := Button.new()
+	detail_button.text = "상세 보기 ▼"
+	clue_box.add_child(detail_button)
+	var detail_scroll := ScrollContainer.new()
+	detail_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	detail_scroll.visible = false
+	clue_box.add_child(detail_scroll)
+	var detail_box := VBoxContainer.new()
+	detail_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	detail_scroll.add_child(detail_box)
+	detail_box.add_child(_make_label(_make_auto_effect_text()))
+	_add_agent_recovery_support_actions(detail_box)
+	_add_navigation(detail_box)
+	detail_button.pressed.connect(func() -> void:
+		detail_scroll.visible = not detail_scroll.visible
+		_auto_effect_label.visible = not detail_scroll.visible
+		detail_button.text = "상세 닫기 ▲" if detail_scroll.visible else "상세 보기 ▼"
+	)
+
+	_action_panel = PanelContainer.new()
+	_action_panel.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
+	_action_panel.offset_left = 12
+	_action_panel.offset_top = -202
+	_action_panel.offset_right = -12
+	_action_panel.offset_bottom = -10
+	_action_panel.add_theme_stylebox_override("panel", ThemeFactory.panel_style(Color("17242c"), 0.84))
+	add_child(_action_panel)
+	var action_box := VBoxContainer.new()
+	action_box.add_theme_constant_override("separation", 8)
+	_action_panel.add_child(action_box)
+	var actions := GridContainer.new()
+	actions.columns = 3
+	actions.add_theme_constant_override("h_separation", 8)
+	actions.add_theme_constant_override("v_separation", 6)
+	action_box.add_child(actions)
+	_add_prediction_action(actions)
+	_add_stability_action(actions, "기록 스캔", 18, 6, "기록된 패턴으로 괴이의 반복 규칙을 좁혔습니다.")
+	_add_stability_action(actions, "안정화 시도", 24, 9, "임시 봉인지로 괴이의 행동 반경을 고정했습니다.")
+	_add_defense_action(actions)
+	_add_representative_switch_action(actions)
+	_add_support_action(actions)
+	var result_row := HBoxContainer.new()
+	result_row.add_theme_constant_override("separation", 10)
+	action_box.add_child(result_row)
+	_result_label = _make_label("")
+	_result_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	result_row.add_child(_result_label)
+	_recover_button = Button.new()
+	_recover_button.text = "강제 회수 실행"
+	_recover_button.pressed.connect(_recover_anomaly_core)
+	result_row.add_child(_recover_button)
+	_threshold_label = _make_label("")
+	_threshold_label.visible = false
+	_action_panel.add_child(_threshold_label)
+	_prediction_label = _make_label("")
+	_prediction_label.visible = false
+	_action_panel.add_child(_prediction_label)
+	_refresh_representative_agent()
+
+
+func _make_clue_summary() -> String:
+	if _active_effects.is_empty():
+		return "핵심 단서 없음\n부족 조건: 현장 규칙을 더 분석해야 합니다."
+	var names: Array[String] = []
+	for effect in _active_effects:
+		if typeof(effect) == TYPE_DICTIONARY:
+			names.append(String(effect.get("clue_title", "이름 없는 단서")))
+	return "핵심 단서 %d개\n%s\n회수 기준: 안정도 %d 이하" % [
+		_active_effects.size(),
+		", ".join(names),
+		_recovery_threshold
+	]
 
 
 func _build_ui() -> void:
@@ -520,6 +687,13 @@ func _refresh_representative_agent() -> void:
 
 	_representative_agent_index = posmod(_representative_agent_index, agents.size())
 	var representative: Dictionary = agents[_representative_agent_index]
+	if _representative_agent_image != null:
+		var catalog := AssetCatalog.new()
+		_representative_agent_image.texture = catalog.get_agent_expression(String(representative.get("id", "")), 1)
+		_representative_agent_image.tooltip_text = "%s [%s]" % [
+			String(representative.get("name", "요원")),
+			String(representative.get("temperament_label", representative.get("temperament", "")))
+		]
 	_representative_agent_label.text = "대표 요원: %s [%s]\n역할: 현장 지휘 / 회수 담당\n팀: %s" % [
 		String(representative.get("name", representative.get("id", "요원"))),
 		String(representative.get("temperament_label", representative.get("temperament", ""))),

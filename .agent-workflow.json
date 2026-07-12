@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "engine": "godot",
+  "godot_version": "4.7-stable",
+  "low_risk_max_files": 2,
+  "godot_executable": "C:\\Users\\user\\Downloads\\Godot_v4.7-stable_win64.exe\\Godot_v4.7-stable_win64_console.exe",
+  "protected_paths": [
+    "scripts/core/game_state.gd",
+    "data/episodes/*",
+    "project.godot",
+    "knowledge/base-pack/*"
+  ],
+  "high_risk_terms": [
+    "save migration",
+    "economy",
+    "core gameplay",
+    "delete protected data",
+    "save format",
+    "player progression",
+    "core game feel"
+  ],
+  "smoke_test": {
+    "executable": "C:\\Users\\user\\Downloads\\Godot_v4.7-stable_win64.exe\\Godot_v4.7-stable_win64_console.exe",
+    "arguments": [
+      "--headless",
+      "--path",
+      "{worktree}",
+      "--quit"
+    ]
+  },
+  "verification_commands": [
+    "& 'C:\\Program Files\\Git\\cmd\\git.exe' -C '{worktree}' diff --check",
+    "& 'C:\\Users\\user\\Downloads\\Godot_v4.7-stable_win64.exe\\Godot_v4.7-stable_win64_console.exe' --headless --path '{worktree}' --scene 'res://scenes/dialogue_scene.tscn' --quit-after 2",
+    "& 'C:\\Users\\user\\Downloads\\Godot_v4.7-stable_win64.exe\\Godot_v4.7-stable_win64_console.exe' --headless --path '{worktree}' --scene 'res://scenes/battle_scene.tscn' --quit-after 2"
+  ]
+}

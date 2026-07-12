@@ -2,6 +2,8 @@
 extends Control
 
 const SceneVisuals = preload("res://scripts/ui/scene_presentation.gd")
+const AssetCatalog = preload("res://scripts/ui/ui_asset_catalog.gd")
+const ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")
 const RuntimeEditor = preload("res://scripts/ui/runtime_ui_editor.gd")
 
 const FALLBACK_LINES: Array[Dictionary] = [
@@ -41,11 +43,145 @@ func _ready() -> void:
 	GameState.set_current_scene_path("res://scenes/dialogue_scene.tscn")
 	_dialogue_node = GameState.get_current_dialogue_node()
 	SceneVisuals.apply_background(self, "dialogue")
-	_build_ui()
+	_build_vn_ui()
 	_setup_runtime_editor()
 	_show_line()
 	_refresh_clue_status()
 	_refresh_condition_label()
+
+
+func _build_vn_ui() -> void:
+	var shade := get_node_or_null("ArtLayer/Shade") as ColorRect
+	if shade != null:
+		shade.color = Color(0.025, 0.035, 0.05, 0.16)
+
+	var scene_title := Label.new()
+	scene_title.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
+	scene_title.offset_left = 18
+	scene_title.offset_top = 12
+	scene_title.offset_right = -18
+	scene_title.offset_bottom = 46
+	scene_title.text = GameState.get_current_episode_title()
+	scene_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	add_child(scene_title)
+	_stage_label = scene_title
+	_standing_label = Label.new()
+	_standing_label.visible = false
+	add_child(_standing_label)
+
+	_agent_strip = HBoxContainer.new()
+	_agent_strip.anchor_left = 0.06
+	_agent_strip.anchor_top = 0.1
+	_agent_strip.anchor_right = 0.94
+	_agent_strip.anchor_bottom = 0.74
+	_agent_strip.add_theme_constant_override("separation", 18)
+	_agent_strip.alignment = BoxContainer.ALIGNMENT_CENTER
+	_agent_strip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(_agent_strip)
+
+	_dialogue_panel = PanelContainer.new()
+	_dialogue_panel.anchor_left = 0.04
+	_dialogue_panel.anchor_top = 0.68
+	_dialogue_panel.anchor_right = 0.96
+	_dialogue_panel.anchor_bottom = 0.98
+	_dialogue_panel.add_theme_stylebox_override("panel", ThemeFactory.panel_style(Color("17242c"), 0.86))
+	add_child(_dialogue_panel)
+	var dialogue_content := VBoxContainer.new()
+	dialogue_content.add_theme_constant_override("separation", 7)
+	_dialogue_panel.add_child(dialogue_content)
+	_name_label = Label.new()
+	_name_label.text = "현장 요원"
+	dialogue_content.add_child(_name_label)
+	_dialogue_label = Label.new()
+	_dialogue_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_dialogue_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	dialogue_content.add_child(_dialogue_label)
+	_condition_label = Label.new()
+	_condition_label.visible = false
+	_condition_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	dialogue_content.add_child(_condition_label)
+	_choice_box = VBoxContainer.new()
+	_choice_box.visible = false
+	_choice_box.add_theme_constant_override("separation", 6)
+	dialogue_content.add_child(_choice_box)
+	var command_row := HBoxContainer.new()
+	command_row.add_theme_constant_override("separation", 8)
+	dialogue_content.add_child(command_row)
+	_next_button = Button.new()
+	_next_button.text = "다음 대화"
+	_next_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_next_button.pressed.connect(_advance_line)
+	command_row.add_child(_next_button)
+	var investigation_button := Button.new()
+	investigation_button.text = "조사로 이동"
+	investigation_button.pressed.connect(func() -> void:
+		_go_to_scene("res://scenes/investigation_scene.tscn")
+	)
+	command_row.add_child(investigation_button)
+	var support_button := Button.new()
+	support_button.text = "기록국 지원"
+	support_button.pressed.connect(func() -> void:
+		_support_panel.visible = not _support_panel.visible
+	)
+	command_row.add_child(support_button)
+
+	_support_panel = PanelContainer.new()
+	_support_panel.anchor_left = 0.68
+	_support_panel.anchor_top = 0.12
+	_support_panel.anchor_right = 0.97
+	_support_panel.anchor_bottom = 0.66
+	_support_panel.visible = false
+	_support_panel.add_theme_stylebox_override("panel", ThemeFactory.panel_style(Color("293943"), 0.9))
+	add_child(_support_panel)
+	var support_scroll := ScrollContainer.new()
+	support_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_support_panel.add_child(support_scroll)
+	var hint_content := VBoxContainer.new()
+	hint_content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	hint_content.add_theme_constant_override("separation", 6)
+	support_scroll.add_child(hint_content)
+	hint_content.add_child(_make_vn_label("기록국 지원 정보"))
+	var hint_button := Button.new()
+	hint_button.text = "힌트 확인"
+	hint_button.pressed.connect(_show_next_hint)
+	hint_content.add_child(hint_button)
+	_hint_label = _make_vn_label("힌트는 단서 수집률을 바꾸지 않고 조사 방향만 알려줍니다.")
+	hint_content.add_child(_hint_label)
+	hint_content.add_child(_make_vn_label("단서 목록"))
+	_clue_status_label = _make_vn_label("")
+	hint_content.add_child(_clue_status_label)
+	_agent_status_label = Label.new()
+	_agent_status_label.visible = false
+	add_child(_agent_status_label)
+	_agent_reaction_label = Label.new()
+	_agent_reaction_label.visible = false
+	add_child(_agent_reaction_label)
+
+
+func _make_vn_label(text: String) -> Label:
+	var label := Label.new()
+	label.text = text
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	return label
+
+
+func _populate_vn_agents(speaker_name: String) -> void:
+	for child in _agent_strip.get_children():
+		child.queue_free()
+	var catalog := AssetCatalog.new()
+	for agent in GameState.get_selected_agents():
+		if typeof(agent) != TYPE_DICTIONARY:
+			continue
+		var agent_name := String(agent.get("name", ""))
+		var portrait := TextureRect.new()
+		portrait.texture = catalog.get_agent_expression(String(agent.get("id", "")), 1 if agent_name == speaker_name else 0)
+		portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		portrait.custom_minimum_size = Vector2(220, 360)
+		portrait.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		portrait.modulate = Color.WHITE if agent_name == speaker_name else Color(0.52, 0.58, 0.64, 0.72)
+		portrait.tooltip_text = agent_name
+		_agent_strip.add_child(portrait)
 
 
 func _build_ui() -> void:
@@ -212,7 +348,7 @@ func _show_line() -> void:
 	_standing_label.text = "현장 상황 / 통신 대상: %s" % String(_dialogue_node.get("standing_id", "bureau_control"))
 	_name_label.text = String(line.get("speaker", line.get("name", "")))
 	_dialogue_label.text = _get_line_text(line)
-	SceneVisuals.populate_agent_strip(_agent_strip, GameState.get_selected_agents(), _name_label.text)
+	_populate_vn_agents(_name_label.text)
 	_choice_box.visible = false
 	_waiting_for_result_continue = false
 	_pending_next_node_id = ""
