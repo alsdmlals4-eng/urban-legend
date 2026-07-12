@@ -1,6 +1,8 @@
 # 사건별 액션 판정을 표시하고 결과를 기존 조사·회수 저장 흐름에 연결한다.
 extends Control
 
+const ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")
+
 const RhythmGame = preload("res://scripts/minigames/rhythm_timing_game.gd")
 const RainDodgeGame = preload("res://scripts/minigames/rain_dodge_game.gd")
 
@@ -18,6 +20,7 @@ var _game_control: Control
 
 
 func _ready() -> void:
+	theme = ThemeFactory.create_theme()
 	if GameState.get_current_episode().is_empty():
 		GameState.load_episode()
 

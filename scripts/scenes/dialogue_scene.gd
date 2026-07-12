@@ -1,6 +1,9 @@
 # 대화 씬의 JSON 기반 대사 노드와 선택지 분기를 관리한다.
 extends Control
 
+const SceneVisuals = preload("res://scripts/ui/scene_presentation.gd")
+const RuntimeEditor = preload("res://scripts/ui/runtime_ui_editor.gd")
+
 const FALLBACK_LINES: Array[Dictionary] = [
 	{"speaker": "기록국 관제", "text": "이 역은 지도에도, 기록국 데이터에도 남아 있지 않아요.", "expression": "default"},
 	{"speaker": "신입 요원", "text": "그럼 지금 우리가 보고 있는 전광판은 뭘 기준으로 움직이는 거죠?", "expression": "question"},
@@ -25,6 +28,10 @@ var _next_button: Button
 var _choice_box: VBoxContainer
 var _hint_label: Label
 var _clue_status_label: Label
+var _agent_strip: HBoxContainer
+var _dialogue_panel: PanelContainer
+var _support_panel: PanelContainer
+var _runtime_editor: RuntimeUiEditor
 
 
 func _ready() -> void:
@@ -33,7 +40,9 @@ func _ready() -> void:
 
 	GameState.set_current_scene_path("res://scenes/dialogue_scene.tscn")
 	_dialogue_node = GameState.get_current_dialogue_node()
+	SceneVisuals.apply_background(self, "dialogue")
 	_build_ui()
+	_setup_runtime_editor()
 	_show_line()
 	_refresh_clue_status()
 	_refresh_condition_label()
@@ -41,7 +50,7 @@ func _ready() -> void:
 
 func _build_ui() -> void:
 	var background := ColorRect.new()
-	background.color = Color(0.055, 0.055, 0.075, 1.0)
+	background.color = Color(0.025, 0.035, 0.05, 0.2)
 	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(background)
 
@@ -58,8 +67,6 @@ func _build_ui() -> void:
 	root.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	root.add_theme_constant_override("separation", 10)
 	margin.add_child(root)
-
-	_add_navigation(root)
 
 	var title := Label.new()
 	title.text = "현장 브리핑 / 요원 팀 대화"
@@ -88,9 +95,12 @@ func _build_ui() -> void:
 	standing.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	stage_layout.add_child(standing)
 
+	_agent_strip = HBoxContainer.new()
+	_agent_strip.add_theme_constant_override("separation", 10)
+	_agent_strip.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	standing.add_child(_agent_strip)
 	_standing_label = Label.new()
-	_standing_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_standing_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_standing_label.visible = false
 	standing.add_child(_standing_label)
 
 	var agent_panel := PanelContainer.new()
@@ -115,11 +125,11 @@ func _build_ui() -> void:
 	_agent_reaction_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	agent_content.add_child(_agent_reaction_label)
 
-	var dialogue_panel := PanelContainer.new()
-	root.add_child(dialogue_panel)
+	_dialogue_panel = PanelContainer.new()
+	root.add_child(_dialogue_panel)
 	var dialogue_content := VBoxContainer.new()
 	dialogue_content.add_theme_constant_override("separation", 8)
-	dialogue_panel.add_child(dialogue_content)
+	_dialogue_panel.add_child(dialogue_content)
 
 	_name_label = Label.new()
 	_name_label.text = "발화 요원"
@@ -131,6 +141,7 @@ func _build_ui() -> void:
 	dialogue_content.add_child(_dialogue_label)
 
 	_condition_label = Label.new()
+	_condition_label.visible = false
 	_condition_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	dialogue_content.add_child(_condition_label)
 
@@ -154,13 +165,18 @@ func _build_ui() -> void:
 		_go_to_scene("res://scenes/investigation_scene.tscn")
 	)
 	command_row.add_child(investigation_button)
+	var support_button := Button.new()
+	support_button.text = "기록"
+	support_button.pressed.connect(func() -> void: _support_panel.visible = not _support_panel.visible)
+	command_row.add_child(support_button)
 
-	var hint_panel := PanelContainer.new()
-	root.add_child(hint_panel)
+	_support_panel = PanelContainer.new()
+	_support_panel.visible = false
+	root.add_child(_support_panel)
 
 	var hint_content := VBoxContainer.new()
 	hint_content.add_theme_constant_override("separation", 6)
-	hint_panel.add_child(hint_content)
+	_support_panel.add_child(hint_content)
 
 	var hint_title := Label.new()
 	hint_title.text = "기록국 지원 정보"
@@ -192,13 +208,11 @@ func _show_line() -> void:
 
 	_line_index = clampi(_line_index, 0, lines.size() - 1)
 	var line: Dictionary = lines[_line_index]
-	_stage_label.text = "현장: %s" % String(_dialogue_node.get("background_id", "사라진 승강장"))
+	_stage_label.text = GameState.get_current_episode_title()
 	_standing_label.text = "현장 상황 / 통신 대상: %s" % String(_dialogue_node.get("standing_id", "bureau_control"))
 	_name_label.text = String(line.get("speaker", line.get("name", "")))
-	_dialogue_label.text = "%s\n[표정: %s]" % [
-		String(line.get("text", "")),
-		String(line.get("expression", "default"))
-	]
+	_dialogue_label.text = _get_line_text(line)
+	SceneVisuals.populate_agent_strip(_agent_strip, GameState.get_selected_agents(), _name_label.text)
 	_choice_box.visible = false
 	_waiting_for_result_continue = false
 	_pending_next_node_id = ""
@@ -206,6 +220,34 @@ func _show_line() -> void:
 	_next_button.disabled = false
 	_next_button.text = "다음 대사"
 	_refresh_agent_reactions()
+
+
+func _get_line_text(line: Dictionary) -> String:
+	var source := String(line.get("text", ""))
+	if _runtime_editor == null:
+		return source
+	var node_id := String(_dialogue_node.get("id", "dialogue"))
+	var key := "%s/dialogue/%s/%d/text" % [GameState.get_current_episode_id(), node_id, _line_index]
+	return _runtime_editor.update_text_binding("dialogue_text", key, source)
+
+
+func _setup_runtime_editor() -> void:
+	_runtime_editor = RuntimeEditor.new()
+	add_child(_runtime_editor)
+	_runtime_editor.setup("dialogue", self)
+	_runtime_editor.register_element("dialogue_panel", _dialogue_panel, {
+		"minimum_size": Vector2(520, 150),
+		"free_layout": true,
+		"text_control": _dialogue_label,
+		"style_target": _dialogue_panel,
+		"content_key": "%s/dialogue/initial/text" % GameState.get_current_episode_id(),
+		"source_text": _dialogue_label.text
+	})
+	_runtime_editor.register_element("support_panel", _support_panel, {"minimum_size": Vector2(320, 120)})
+	_runtime_editor.register_element("background", get_node_or_null("ArtLayer/Background"), {
+		"minimum_size": Vector2(640, 360),
+		"image_target": get_node_or_null("ArtLayer/Background")
+	})
 
 
 func _advance_line() -> void:
@@ -311,8 +353,7 @@ func _show_next_hint() -> void:
 	var hint_id := String(hint.get("id", ""))
 	var was_seen := GameState.has_seen_hint(hint_id)
 	GameState.mark_hint_seen(hint_id)
-	_hint_label.text = "대상 단서: %s\n힌트: %s\n단서 수집률 변화 없음: %.0f%%" % [
-		hint.get("target_clue_id", ""),
+	_hint_label.text = "힌트: %s\n단서 수집률 변화 없음: %.0f%%" % [
 		hint.get("text", ""),
 		GameState.get_clue_collection_rate()
 	]
@@ -371,11 +412,10 @@ func _refresh_agent_reactions() -> void:
 		if typeof(reaction) != TYPE_DICTIONARY:
 			continue
 
-		lines.append("%s [%s]: %s\n표정: %s" % [
+		lines.append("%s [%s]: %s" % [
 			String(reaction.get("agent_name", reaction.get("agent_id", ""))),
 			String(reaction.get("temperament_label", reaction.get("temperament", ""))),
-			String(reaction.get("text", "")),
-			String(reaction.get("expression", "default"))
+			String(reaction.get("text", ""))
 		])
 
 	_agent_reaction_label.text = "\n\n".join(lines)

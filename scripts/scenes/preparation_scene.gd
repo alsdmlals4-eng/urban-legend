@@ -1,6 +1,8 @@
 # 사건 준비 화면에서 요원, 장비, 기록물, 로그 안내를 확인하고 조사 시작을 연결한다.
 extends Control
 
+const ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")
+
 var _equipment_list: VBoxContainer
 var _episode_list: VBoxContainer
 var _equipped_label: Label
@@ -12,6 +14,7 @@ var _status_label: Label
 
 
 func _ready() -> void:
+	theme = ThemeFactory.create_theme()
 	if GameState.get_current_episode().is_empty():
 		GameState.load_episode()
 

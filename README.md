@@ -9,6 +9,8 @@
 메인 화면의 `Ver` 표기는 수정 작업이 반영될 때마다 0.1씩 올립니다.
 현재 버전은 `Ver 3.0`이며, MVP 번호를 소수점으로 반영합니다. 예를 들어 MVP-018은 `Ver 1.8`, MVP-022는 `Ver 2.2`, MVP-028은 `Ver 2.8`, MVP-030은 `Ver 3.0`입니다.
 
+Post-MVP UX/UI Polish에서는 대화·조사·회수를 현대 오컬트 애니메이션풍 PC 화면으로 정리하고, 같은 Theme을 메인·준비·미니게임·결과·DB에 적용합니다. 개발 빌드의 F2 편집 모드는 비율별 레이아웃을 `user://ui_layout.cfg`, 서술 문구 override를 `user://content_overrides.json`에 저장하며 원본 에피소드 JSON과 게임 저장은 변경하지 않습니다.
+
 ## 기준 파일
 
 - `C:\Users\user\Downloads\도시괴이담\urban-legend-database.html`

@@ -1,6 +1,8 @@
 # 데이터베이스 화면의 섹션 선택과 완료 사건 기록 표시를 관리한다.
 extends Control
 
+const ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")
+
 const MinigameResultFormatter = preload("res://scripts/minigames/minigame_result_formatter.gd")
 
 var _section_list: VBoxContainer
@@ -10,6 +12,7 @@ var _detail_items: VBoxContainer
 
 
 func _ready() -> void:
+	theme = ThemeFactory.create_theme()
 	if GameState.get_current_episode().is_empty():
 		GameState.load_episode()
 	_build_ui()

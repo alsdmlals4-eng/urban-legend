@@ -1,10 +1,13 @@
 # 결과 화면의 회수 결과, 연구 보상, 기록물과 장비 해금을 표시한다.
 extends Control
 
+const ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")
+
 const MinigameResultFormatter = preload("res://scripts/minigames/minigame_result_formatter.gd")
 
 
 func _ready() -> void:
+	theme = ThemeFactory.create_theme()
 	if GameState.get_current_episode().is_empty():
 		GameState.load_episode()
 
