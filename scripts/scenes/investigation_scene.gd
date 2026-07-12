@@ -1,6 +1,9 @@
 # 조사 씬의 JSON 기반 조사 포인트와 조건부 결과 처리를 관리한다.
 extends Control
 
+const SceneVisuals = preload("res://scripts/ui/scene_presentation.gd")
+const RuntimeEditor = preload("res://scripts/ui/runtime_ui_editor.gd")
+
 const FALLBACK_INVESTIGATION_POINTS: Array[Dictionary] = [
 	{
 		"id": "fallback_phone",
@@ -29,6 +32,9 @@ var _method_title_label: Label
 var _method_button_box: VBoxContainer
 var _method_result_label: Label
 var _team_label: Label
+var _narrative_label: Label
+var _result_panel: PanelContainer
+var _runtime_editor: RuntimeUiEditor
 
 
 func _ready() -> void:
@@ -36,13 +42,15 @@ func _ready() -> void:
 		GameState.load_episode()
 
 	GameState.set_current_scene_path("res://scenes/investigation_scene.tscn")
+	SceneVisuals.apply_background(self, "investigation")
 	_build_ui()
+	_setup_runtime_editor()
 	_refresh_case_status()
 
 
 func _build_ui() -> void:
 	var background := ColorRect.new()
-	background.color = Color(0.07, 0.08, 0.1, 1.0)
+	background.color = Color(0.025, 0.04, 0.05, 0.24)
 	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(background)
 
@@ -60,7 +68,6 @@ func _build_ui() -> void:
 	root.add_theme_constant_override("separation", 10)
 	margin.add_child(root)
 
-	_add_navigation(root)
 	_add_title(root)
 
 	var scene_panel := PanelContainer.new()
@@ -135,10 +142,16 @@ func _build_ui() -> void:
 	progress_content.add_child(_preparation_modifier_label)
 
 	var narrative_content := _add_section(center_column, "상황 묘사", "현장에 남은 반복과 위화감을 읽고, 팀의 다음 수사 방식을 선택합니다.")
-	var narrative_label := Label.new()
-	narrative_label.text = "%s의 현장 기록이 불완전하게 겹칩니다. 확보한 단서와 요원 판단을 근거로 다음 행동을 정하세요." % GameState.get_current_episode_title()
-	narrative_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	narrative_content.add_child(narrative_label)
+	var illustration := TextureRect.new()
+	illustration.texture = (get_node_or_null("ArtLayer/Background") as TextureRect).texture
+	illustration.custom_minimum_size = Vector2(0, 230)
+	illustration.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	illustration.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	narrative_content.add_child(illustration)
+	_narrative_label = Label.new()
+	_narrative_label.text = "%s의 현장 기록이 불완전하게 겹칩니다. 확보한 단서와 요원 판단을 근거로 다음 행동을 정하세요." % GameState.get_current_episode_title()
+	_narrative_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	narrative_content.add_child(_narrative_label)
 
 	var points_content := _add_section(center_column, "수사 선택", "조사 포인트를 고른 뒤 관찰·분석·강행 진입 같은 수사 방식을 선택합니다.")
 	var points := GridContainer.new()
@@ -153,8 +166,9 @@ func _build_ui() -> void:
 	_add_method_panel(center_column)
 
 	var result_content := _add_section(right_column, "선택 결과", "선택 결과와 이번 조사에서 얻은 정보를 순서대로 요약합니다.")
+	_result_panel = result_content.get_parent() as PanelContainer
 	_result_label = Label.new()
-	_result_label.text = "조사 포인트를 선택하면 JSON 결과가 표시됩니다."
+	_result_label.text = "수사 방식을 선택하면 현장 변화와 새 정보가 여기에 정리됩니다."
 	_result_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	result_content.add_child(_result_label)
 
@@ -179,6 +193,19 @@ func _build_ui() -> void:
 	_resolution_attempt_button.pressed.connect(_show_resolution_confirm_panel)
 	recovery_content.add_child(_resolution_attempt_button)
 	_add_resolution_confirm_panel(recovery_content)
+
+
+func _setup_runtime_editor() -> void:
+	_runtime_editor = RuntimeEditor.new()
+	add_child(_runtime_editor)
+	_runtime_editor.setup("investigation", self)
+	_runtime_editor.register_element("result_panel", _result_panel, {"minimum_size": Vector2(260, 180), "free_layout": true})
+	_runtime_editor.register_element("narrative", _narrative_label, {
+		"minimum_size": Vector2(320, 80),
+		"text_control": _narrative_label,
+		"content_key": "%s/investigation/narrative" % GameState.get_current_episode_id(),
+		"source_text": _narrative_label.text
+	})
 
 func _add_title(parent: Control) -> void:
 	var title := Label.new()
@@ -258,7 +285,7 @@ func _make_point_result_text(point: Dictionary, clue_id: String, was_collected: 
 
 	var clue := _find_clue(clue_id)
 	if clue.is_empty():
-		return "선택 결과: %s\n새 정보: 연결된 단서 데이터를 찾지 못했습니다. clue_id: %s\n상태 변화: 없음\n요원 반응: 기록국 단말기로 데이터 확인을 요청합니다.\n다음 선택지: 다른 조사 포인트 확인" % [result_text, clue_id]
+		return "선택 결과: %s\n새 정보: 연결된 단서 기록을 찾지 못했습니다.\n상태 변화: 없음\n요원 반응: 기록국 단말기로 데이터 확인을 요청합니다.\n다음 선택지: 다른 조사 포인트 확인" % result_text
 
 	if collected_now:
 		return "선택 결과: %s\n새 정보: 새 단서 획득 - %s\n%s\n상태 변화: 단서 수집률이 갱신되었습니다.\n요원 반응: 팀이 이 단서를 회수 근거로 기록합니다.\n다음 선택지: 단서 추적을 확인하고 다음 조사 포인트 선택" % [
@@ -397,7 +424,7 @@ func _make_method_result_text(result: Dictionary) -> String:
 	if new_clue_ids.is_empty():
 		lines.append("새 정보: 새 단서 없음")
 	else:
-		lines.append("새 정보: 새 단서 %s" % ", ".join(new_clue_ids))
+		lines.append("새 정보: 새 단서 %s" % ", ".join(_clue_titles(new_clue_ids)))
 
 	var hint_texts_value: Variant = result.get("hint_texts", [])
 	var hint_texts: Array = hint_texts_value if typeof(hint_texts_value) == TYPE_ARRAY else []
@@ -539,10 +566,9 @@ func _refresh_hint_list() -> void:
 		var hint_id := String(hint.get("id", ""))
 		var seen := GameState.has_seen_hint(hint_id)
 		var label := Label.new()
-		label.text = "%s - %s\n대상 단서: %s" % [
+		label.text = "%s - %s" % [
 			"확인됨" if seen else "미확인",
-			String(hint.get("text", "")) if seen else "아직 확인하지 않은 방향 안내입니다.",
-			String(hint.get("target_clue_id", ""))
+			String(hint.get("text", "")) if seen else "아직 확인하지 않은 방향 안내입니다."
 		]
 		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		_hint_list.add_child(label)
@@ -553,6 +579,14 @@ func _find_clue(clue_id: String) -> Dictionary:
 		if typeof(clue) == TYPE_DICTIONARY and clue.get("id", "") == clue_id:
 			return clue
 	return {}
+
+
+func _clue_titles(clue_ids: Array) -> Array[String]:
+	var titles: Array[String] = []
+	for clue_id in clue_ids:
+		var clue := _find_clue(String(clue_id))
+		titles.append(String(clue.get("title", "새 단서")))
+	return titles
 
 
 func _add_resolution_confirm_panel(parent: Control) -> void:

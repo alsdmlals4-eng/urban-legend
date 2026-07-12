@@ -4,7 +4,9 @@
     "title": "비 오는 골목의 빨간 우산",
     "legend_type": "반복 경로형 괴담",
     "summary": "비가 멈춘 골목에서 빨간 우산과 젖지 않은 발자국이 귀가 경로를 되감습니다.",
-    "anomaly_core": "세 번째 빗소리 뒤에만 보이는 붉은 우산 손잡이"
+    "anomaly_core": "세 번째 빗소리 뒤에만 보이는 붉은 우산 손잡이",
+    "visuals": { "dialogue_background_id": "red_alley_entrance", "investigation_background_id": "red_crossroads", "recovery_background_id": "red_recovery", "anomaly_b_asset_id": "red_umbrella_b", "anomaly_d_asset_id": "red_umbrella_d" },
+    "anomaly_profile": { "origin": "집단 인식과 공포에서 발생한 현상", "activity_stage": "learning", "activity_period": "성장 중", "human_understanding": "중간", "observed_form": "피해자와 무관한 20대 초반 여성형", "repetition_rule": "세 번째 빗소리마다 귀가 경로를 되감는다" }
   },
   "victims": [
     {
@@ -22,11 +24,14 @@
     {
       "id": "agent_kang_ijun",
       "name": "강이준",
-      "temperament": "analytical",
-      "temperament_label": "분석형",
-      "class": "현대 요원",
-      "role": "디지털 포렌식 담당",
-      "description": "삭제된 앱 로그, 통신 기록, CCTV 노이즈를 복원하는 분석 담당.",
+      "temperament": "breakthrough",
+      "temperament_label": "열혈·돌파형",
+      "class": "동양 봉인술사",
+      "role": "근접 봉인·현장 돌파",
+      "specialty": "부적을 주먹에 감아 괴이의 반복을 끊는 근접 봉인",
+      "magic_lineage": "eastern_talisman",
+      "visual_asset_id": "kang_ijun_expressions",
+      "description": "현장 감각으로 위험 구간을 먼저 읽고 부적을 감은 주먹으로 봉인선을 확보한다.",
       "investigation_stats": { "destruction": 1, "observation": 2, "analysis": 4 },
       "recovery_support": {
         "id": "support_kang_rain_pattern",
@@ -41,11 +46,14 @@
     {
       "id": "agent_kwon_narae",
       "name": "권나래",
-      "temperament": "empathetic",
-      "temperament_label": "공감형",
-      "class": "현대 요원",
-      "role": "기억 상담 담당",
-      "description": "피해자의 기억 공백과 감정 흔적을 인터뷰로 복원하는 상담 담당.",
+      "temperament": "analytical",
+      "temperament_label": "분석형",
+      "class": "서양 보조 마법사",
+      "role": "탐지·보호·조사 보조",
+      "specialty": "서양식 탐지와 보호 주문으로 단서와 팀의 안전을 보조",
+      "magic_lineage": "western_support",
+      "visual_asset_id": "kwon_narae_expressions",
+      "description": "현상을 논리적으로 분해하고 탐지·보호 주문으로 조사 조건을 정돈한다.",
       "investigation_stats": { "destruction": 1, "observation": 4, "analysis": 2 },
       "recovery_support": {
         "id": "support_kwon_return_route",
@@ -60,11 +68,14 @@
     {
       "id": "agent_oh_hyun",
       "name": "오현",
-      "temperament": "breakthrough",
-      "temperament_label": "돌파형",
-      "class": "현대 요원",
-      "role": "현장 정리반",
-      "description": "괴담 현장을 일반 사고처럼 위장하고, 위험 구역에 빠르게 진입해 현장을 확보하는 요원.",
+      "temperament": "balanced",
+      "temperament_label": "공감·분석 균형형",
+      "class": "현대 이능 공학 요원",
+      "role": "자료 분석·현대 장비 연동",
+      "specialty": "현대 장비에 팀원의 부적과 주문서를 연결하는 이능 공학",
+      "magic_lineage": "modern_occult_engineering",
+      "visual_asset_id": "oh_hyun_expressions",
+      "description": "현대인의 감각으로 피해자와 팀을 연결하고 자료 분석과 공방 장비를 운용한다.",
       "investigation_stats": { "destruction": 4, "observation": 1, "analysis": 1 },
       "recovery_support": {
         "id": "support_oh_umbrella_intercept",

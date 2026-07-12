@@ -1,6 +1,10 @@
 # 시작 화면에서 프로젝트 소개와 데이터베이스 진입을 관리한다.
 extends Control
 
+const ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")
+const Accessibility = preload("res://scripts/ui/accessibility_settings.gd")
+const AssetCatalog = preload("res://scripts/ui/ui_asset_catalog.gd")
+
 const GAME_VERSION := "Ver 3.0"
 
 var _start_episode_button: Button
@@ -8,21 +12,32 @@ var _continue_button: Button
 var _save_status_label: Label
 var _agent_status_label: Label
 var _agent_button_by_id: Dictionary = {}
+var _dev_panel: Control
+var _accessibility := Accessibility.new()
 
 
 func _ready() -> void:
+	theme = ThemeFactory.create_theme()
 	if GameState.get_current_episode().is_empty():
 		GameState.load_episode()
 
 	GameState.set_current_scene_path("res://scenes/main_menu.tscn")
+	set_process_input(true)
 	_build_ui()
 	_refresh_save_controls()
 	_refresh_agent_controls()
 
 
 func _build_ui() -> void:
+	var backdrop := TextureRect.new()
+	backdrop.texture = AssetCatalog.new().get_texture("afterlife_entrance")
+	backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	backdrop.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	backdrop.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	backdrop.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(backdrop)
 	var background := ColorRect.new()
-	background.color = Color(0.055, 0.06, 0.075, 1.0)
+	background.color = Color(0.025, 0.035, 0.05, 0.68)
 	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(background)
 
@@ -67,7 +82,7 @@ func _build_ui() -> void:
 	title_row.add_child(version_label)
 
 	var subtitle := Label.new()
-	subtitle.text = "비주얼노벨 / 호러 미스터리 Godot 이관 프로젝트"
+	subtitle.text = "현대 오컬트 미스터리"
 	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	subtitle.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	content.add_child(subtitle)
@@ -95,7 +110,16 @@ func _build_ui() -> void:
 	control_column.add_theme_constant_override("separation", 12)
 	columns.add_child(control_column)
 
-	_add_update_notice(overview_column)
+	var case_image := TextureRect.new()
+	case_image.texture = AssetCatalog.new().get_texture("afterlife_platform")
+	case_image.custom_minimum_size = Vector2(0, 360)
+	case_image.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	case_image.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	overview_column.add_child(case_image)
+	var case_focus := Label.new()
+	case_focus.text = "첫 기록 · 저승역\n막차 이후 존재하지 않는 승강장에서 반복 규칙을 추적합니다."
+	case_focus.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	overview_column.add_child(case_focus)
 
 	var action_content := _add_section(
 		control_column,
@@ -130,12 +154,15 @@ func _build_ui() -> void:
 	status_content.add_child(_save_status_label)
 
 	_add_agent_selection_panel(status_content)
+	_add_accessibility_panel(control_column)
 
 	var dev_content := _add_section(
 		control_column,
 		"개발 / 테스트",
 		"플레이 루프 검증용 보조 버튼입니다. 실제 진행은 주요 행동에서 시작합니다."
 	)
+	_dev_panel = dev_content.get_parent()
+	_dev_panel.visible = false
 
 	var clear_save_button := Button.new()
 	clear_save_button.text = "저장 초기화"
@@ -154,6 +181,39 @@ func _build_ui() -> void:
 	_add_scene_button(dev_content, "대화씬 열기", "res://scenes/dialogue_scene.tscn")
 	_add_scene_button(dev_content, "회수 페이즈 열기", "res://scenes/battle_scene.tscn")
 	_add_scene_button(dev_content, "미니게임씬 열기", "res://scenes/minigame_scene.tscn")
+
+
+func _input(event: InputEvent) -> void:
+	if not OS.is_debug_build() or not (event is InputEventKey):
+		return
+	var key := event as InputEventKey
+	if key.pressed and not key.echo and key.keycode == KEY_F1 and _dev_panel != null:
+		_dev_panel.visible = not _dev_panel.visible
+		get_viewport().set_input_as_handled()
+
+
+func _add_accessibility_panel(parent: Control) -> void:
+	var content := _add_section(parent, "연출 강도", "화면 연출을 편한 수준으로 조절합니다.")
+	_add_effect_slider(content, "화면 흔들림", "screen_shake")
+	_add_effect_slider(content, "섬광", "flash")
+	_add_effect_slider(content, "공포 왜곡", "horror_distortion")
+
+
+func _add_effect_slider(parent: Control, label_text: String, effect_id: String) -> void:
+	var row := HBoxContainer.new()
+	parent.add_child(row)
+	var label := Label.new()
+	label.text = label_text
+	label.custom_minimum_size.x = 110
+	row.add_child(label)
+	var slider := HSlider.new()
+	slider.min_value = 0
+	slider.max_value = 100
+	slider.step = 10
+	slider.value = _accessibility.get_strength(effect_id) * 100.0
+	slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	slider.value_changed.connect(func(value: float) -> void: _accessibility.set_strength(effect_id, value / 100.0))
+	row.add_child(slider)
 
 
 func _add_section(parent: Control, title_text: String, description_text: String = "") -> VBoxContainer:
@@ -246,10 +306,7 @@ func _refresh_save_controls() -> void:
 	if _continue_button != null:
 		_continue_button.disabled = not has_save
 	if _save_status_label != null:
-		_save_status_label.text = "이어하기: %s\n저장 경로: %s" % [
-			"있음" if has_save else "없음",
-			GameState.get_save_file_path()
-		]
+		_save_status_label.text = "이어하기: %s" % ("있음" if has_save else "없음")
 	_refresh_agent_controls()
 
 

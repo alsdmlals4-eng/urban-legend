@@ -1,6 +1,9 @@
 # 괴이 안정화/회수 페이즈의 단서 반영과 괴이 핵 회수를 관리한다.
 extends Control
 
+const SceneVisuals = preload("res://scripts/ui/scene_presentation.gd")
+const RuntimeEditor = preload("res://scripts/ui/runtime_ui_editor.gd")
+
 const BASE_ANOMALY_STABILITY := 100
 const BASE_RECOVERY_THRESHOLD := 40
 const MAX_RECOVERY_THRESHOLD := 75
@@ -25,6 +28,11 @@ var _auto_effect_label: Label
 var _result_label: Label
 var _recover_button: Button
 var _representative_agent_label: Label
+var _anomaly_panel: PanelContainer
+var _anomaly_image: TextureRect
+var _anomaly_stage_label: Label
+var _action_panel: PanelContainer
+var _runtime_editor: RuntimeUiEditor
 
 
 func _ready() -> void:
@@ -34,13 +42,15 @@ func _ready() -> void:
 	GameState.set_current_scene_path("res://scenes/battle_scene.tscn")
 	_active_effects = GameState.get_collected_battle_effects()
 	_apply_collected_clue_effects()
+	SceneVisuals.apply_background(self, "recovery")
 	_build_ui()
+	_setup_runtime_editor()
 	_update_battle_view(_make_start_message())
 
 
 func _build_ui() -> void:
 	var background := ColorRect.new()
-	background.color = Color(0.075, 0.05, 0.06, 1.0)
+	background.color = Color(0.06, 0.02, 0.035, 0.2)
 	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(background)
 
@@ -61,8 +71,6 @@ func _build_ui() -> void:
 	root.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	root.add_theme_constant_override("separation", 10)
 	scroll.add_child(root)
-
-	_add_navigation(root)
 
 	var title := Label.new()
 	title.text = "괴이 안정화 / 회수 페이즈: %s" % GameState.get_current_episode_title()
@@ -99,6 +107,16 @@ func _build_ui() -> void:
 	_auto_effect_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	effect_content.add_child(_auto_effect_label)
 
+	var anomaly_content := _add_section(root, "중앙 관측: 인간형 괴이", "마법이 아닌 반복, 반사 오류와 공간 왜곡으로 나타나는 현상입니다.")
+	_anomaly_panel = anomaly_content.get_parent() as PanelContainer
+	_anomaly_image = TextureRect.new()
+	_anomaly_image.custom_minimum_size = Vector2(0, 300)
+	var initial_stage := SceneVisuals.apply_anomaly(_anomaly_image, GameState.get_anomaly_risk())
+	anomaly_content.add_child(_anomaly_image)
+	_anomaly_stage_label = _make_label("관측 위험 단계 %s · 인간형 유지" % initial_stage)
+	_anomaly_stage_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	anomaly_content.add_child(_anomaly_stage_label)
+
 	var status := _add_section(root, "안정화 상태", "괴이 안정도와 현장 위험을 보며 회수 가능선을 맞춥니다.")
 
 	status.add_child(_make_label("괴이 안정도"))
@@ -116,6 +134,7 @@ func _build_ui() -> void:
 	status.add_child(_fear_bar)
 
 	var action_content := _add_section(root, "회수 행동 선택", "대표 요원과 팀이 현장 지휘에 따라 안정화 절차를 선택합니다.")
+	_action_panel = action_content.get_parent() as PanelContainer
 	var actions := GridContainer.new()
 	actions.columns = 2
 	actions.add_theme_constant_override("v_separation", 6)
@@ -138,6 +157,26 @@ func _build_ui() -> void:
 	_result_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	recovery_content.add_child(_result_label)
 	_refresh_representative_agent()
+
+
+func _setup_runtime_editor() -> void:
+	_runtime_editor = RuntimeEditor.new()
+	add_child(_runtime_editor)
+	_runtime_editor.setup("recovery", self)
+	_runtime_editor.register_element("anomaly", _anomaly_panel, {
+		"minimum_size": Vector2(420, 260),
+		"free_layout": true,
+		"image_target": _anomaly_image,
+		"style_target": _anomaly_panel
+	})
+	_runtime_editor.register_element("actions", _action_panel, {"minimum_size": Vector2(480, 180), "free_layout": true})
+	_runtime_editor.risk_preview_changed.connect(_preview_risk_stage)
+
+
+func _preview_risk_stage(stage: String) -> void:
+	var preview_risk := int({"B": 20, "C": 50, "D": 85}.get(stage, GameState.get_anomaly_risk()))
+	var applied_stage := SceneVisuals.apply_anomaly(_anomaly_image, preview_risk)
+	_anomaly_stage_label.text = "관측 위험 단계 %s · 미리보기" % applied_stage
 
 
 func _apply_collected_clue_effects() -> void:
