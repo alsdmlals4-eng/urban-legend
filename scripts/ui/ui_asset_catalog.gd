@@ -15,6 +15,9 @@ const ASSET_PATHS := {
 	"afterlife_d": "res://assets/anomalies/afterlife_d.png",
 	"red_umbrella_b": "res://assets/anomalies/red_umbrella_b.png",
 	"red_umbrella_d": "res://assets/anomalies/red_umbrella_d.png",
+	"log_normal": "res://assets/log/log_normal.png",
+	"log_focus": "res://assets/log/log_focus.png",
+	"log_warning": "res://assets/log/log_warning.png",
 }
 
 const BACKGROUNDS := {
@@ -83,3 +86,8 @@ func get_agent_expression(agent_id: String, expression_index: int = 0) -> Textur
 	var frame_width := source.get_width() / 3.0
 	atlas.region = Rect2(frame_width * clampi(expression_index, 0, 2), 0.0, frame_width, source.get_height())
 	return atlas
+
+
+func get_log_expression(expression: String = "normal") -> Texture2D:
+	var clean_expression := expression if expression in ["normal", "focus", "warning"] else "normal"
+	return get_texture("log_%s" % clean_expression)

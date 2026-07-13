@@ -1,6 +1,9 @@
 extends Node
 
 const TestSaveGuard = preload("res://tests/test_save_guard.gd")
+const LogGuide = preload("res://scripts/ui/log_guide.gd")
+const LogTutorialCatalog = preload("res://scripts/ui/log_tutorial_catalog.gd")
+const AssetCatalog = preload("res://scripts/ui/ui_asset_catalog.gd")
 
 var _guard := TestSaveGuard.new()
 var _passed := 0
@@ -14,6 +17,7 @@ func _ready() -> void:
 		get_tree().quit(1)
 		return
 	_run_state_tests()
+	_run_component_tests()
 	_guard.restore()
 	print("MVP-035: %d passed, %d failed" % [_passed, _failed])
 	get_tree().quit(0 if _failed == 0 else 1)
@@ -41,6 +45,31 @@ func _run_state_tests() -> void:
 	legacy_file.close()
 	_check(GameState.load_game(), "mvp034 save migrates")
 	_check(GameState.get_seen_log_tutorial_ids().is_empty(), "legacy save receives empty tutorial state")
+
+
+func _run_component_tests() -> void:
+	var guide := LogGuide.new()
+	add_child(guide)
+	guide.present_lines([
+		{"text": "접속 완료", "expression": "normal"},
+		{"text": "기록 대조 중", "expression": "focus"}
+	], "normal", false)
+	_check(guide.get_current_text() == "접속 완료", "guide presents first line")
+	_check(guide.get_current_expression() == "normal", "guide presents normal expression")
+	guide.advance()
+	_check(guide.get_current_text() == "기록 대조 중", "guide advances sequence")
+	_check(guide.get_current_expression() == "focus", "guide changes expression")
+	_check(guide.make_signature_stream("normal").data.size() > 0, "normal signature waveform exists")
+	_check(guide.make_signature_stream("focus").data.size() > 0, "focus signature waveform exists")
+	_check(guide.make_signature_stream("warning").data.size() > 0, "warning signature waveform exists")
+	_check(not LogTutorialCatalog.get_entry("main_welcome").is_empty(), "tutorial catalog entry exists")
+	_check(LogTutorialCatalog.get_entry("unknown").is_empty(), "unknown tutorial is safe")
+	_check(LogTutorialCatalog.get_repeat_hint("main_welcome").length() > 0, "repeat hint exists")
+	var catalog := AssetCatalog.new()
+	_check(catalog.get_asset_path("log_normal").ends_with("log_normal.png"), "normal Log asset path registered")
+	_check(catalog.get_asset_path("log_focus").ends_with("log_focus.png"), "focus Log asset path registered")
+	_check(catalog.get_asset_path("log_warning").ends_with("log_warning.png"), "warning Log asset path registered")
+	guide.queue_free()
 
 
 func _check(condition: bool, label: String) -> void:
