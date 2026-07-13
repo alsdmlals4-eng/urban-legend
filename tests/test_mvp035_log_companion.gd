@@ -111,6 +111,7 @@ func _run_scene_integration_tests() -> void:
 	_check_scene_claims_tutorial("res://scenes/preparation_scene.tscn", "preparation_agents")
 	_check_scene_claims_tutorial("res://scenes/market_scene.tscn", "market_first_visit")
 	_check_scene_claims_tutorial("res://scenes/result_scene.tscn", "result_first_case")
+	GameState.clear_save_file()
 	_check_scene_claims_tutorial("res://scenes/database_view.tscn", "database_first_visit")
 
 
@@ -131,6 +132,8 @@ func _check_scene_claims_tutorial(scene_path: String, tutorial_id: String) -> vo
 	if scene_path.ends_with("main_menu.tscn"):
 		_check(_node_has_text(scene, "Ver 3.5"), "main menu displays Ver 3.5")
 		_check(not GameState.has_save_file(), "main tutorial does not create a fake continue save")
+	if scene_path.ends_with("database_view.tscn"):
+		_check(not GameState.has_save_file(), "database tutorial does not create a fake continue save")
 	scene.queue_free()
 
 
