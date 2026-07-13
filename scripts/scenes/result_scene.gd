@@ -4,6 +4,8 @@ extends Control
 const ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")
 
 const MinigameResultFormatter = preload("res://scripts/minigames/minigame_result_formatter.gd")
+const LogGuideScript = preload("res://scripts/ui/log_guide.gd")
+const LogTutorialCatalog = preload("res://scripts/ui/log_tutorial_catalog.gd")
 
 
 func _ready() -> void:
@@ -44,6 +46,13 @@ func _build_ui() -> void:
 	title.text = "사건 보고서 / 회수 결과"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	root.add_child(title)
+	var log_guide: LogGuide = LogGuideScript.new()
+	log_guide.set_compact(true)
+	root.add_child(log_guide)
+	if GameState.claim_log_tutorial("result_first_case"):
+		log_guide.present_tutorial("result_first_case", true)
+	else:
+		log_guide.show_compact_hint(LogTutorialCatalog.get_repeat_hint("result_first_case"))
 
 	_add_result_panel(root)
 	_add_case_report_panel(root)

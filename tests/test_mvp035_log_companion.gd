@@ -96,6 +96,21 @@ func _run_scene_integration_tests() -> void:
 			continue
 		_check(not recovery_text.contains(String(pattern.get("correct_response_id", ""))), "telegraph guide hides response id")
 
+	_check_scene_claims_tutorial("res://scenes/main_menu.tscn", "main_welcome")
+	_check_scene_claims_tutorial("res://scenes/preparation_scene.tscn", "preparation_agents")
+	_check_scene_claims_tutorial("res://scenes/market_scene.tscn", "market_first_visit")
+	_check_scene_claims_tutorial("res://scenes/result_scene.tscn", "result_first_case")
+	_check_scene_claims_tutorial("res://scenes/database_view.tscn", "database_first_visit")
+
+
+func _check_scene_claims_tutorial(scene_path: String, tutorial_id: String) -> void:
+	GameState.seen_log_tutorial_ids.erase(tutorial_id)
+	var scene: Node = load(scene_path).instantiate()
+	add_child(scene)
+	_check(not scene.find_children("*", "LogGuide", true, false).is_empty(), "%s contains Log guide" % scene_path.get_file())
+	_check(GameState.has_seen_log_tutorial(tutorial_id), "%s claims %s" % [scene_path.get_file(), tutorial_id])
+	scene.queue_free()
+
 
 func _episode_has_log_speaker(path: String) -> bool:
 	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))

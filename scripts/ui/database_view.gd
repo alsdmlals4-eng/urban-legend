@@ -4,6 +4,8 @@ extends Control
 const ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")
 
 const MinigameResultFormatter = preload("res://scripts/minigames/minigame_result_formatter.gd")
+const LogGuideScript = preload("res://scripts/ui/log_guide.gd")
+const LogTutorialCatalog = preload("res://scripts/ui/log_tutorial_catalog.gd")
 
 var _section_list: VBoxContainer
 var _detail_title: Label
@@ -56,6 +58,13 @@ func _build_ui() -> void:
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	header.add_child(title)
+	var log_guide: LogGuide = LogGuideScript.new()
+	log_guide.set_compact(true)
+	layout.add_child(log_guide)
+	if GameState.claim_log_tutorial("database_first_visit"):
+		log_guide.present_tutorial("database_first_visit", true)
+	else:
+		log_guide.show_compact_hint(LogTutorialCatalog.get_repeat_hint("database_first_visit"))
 
 	var body := HBoxContainer.new()
 	body.size_flags_vertical = Control.SIZE_EXPAND_FILL

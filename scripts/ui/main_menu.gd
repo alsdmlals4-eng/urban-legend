@@ -4,6 +4,8 @@ extends Control
 const ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")
 const Accessibility = preload("res://scripts/ui/accessibility_settings.gd")
 const AssetCatalog = preload("res://scripts/ui/ui_asset_catalog.gd")
+const LogGuideScript = preload("res://scripts/ui/log_guide.gd")
+const LogTutorialCatalog = preload("res://scripts/ui/log_tutorial_catalog.gd")
 
 const GAME_VERSION := "Ver 3.4"
 
@@ -12,6 +14,7 @@ var _continue_button: Button
 var _save_status_label: Label
 var _dev_panel: Control
 var _accessibility := Accessibility.new()
+var _log_guide: LogGuide
 
 
 func _ready() -> void:
@@ -88,6 +91,11 @@ func _build_ui() -> void:
 	body.text = "괴담기록국 요원 팀을 편성해 두 도시괴담의 규칙을 조사하고, 단서를 근거로 괴이를 안정화·회수합니다."
 	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	content.add_child(body)
+
+	_log_guide = LogGuideScript.new()
+	_log_guide.set_compact(true)
+	content.add_child(_log_guide)
+	_present_log_entry()
 
 	var columns := HBoxContainer.new()
 	columns.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -177,6 +185,15 @@ func _build_ui() -> void:
 	_add_scene_button(dev_content, "대화씬 열기", "res://scenes/dialogue_scene.tscn")
 	_add_scene_button(dev_content, "회수 페이즈 열기", "res://scenes/battle_scene.tscn")
 	_add_scene_button(dev_content, "미니게임씬 열기", "res://scenes/minigame_scene.tscn")
+
+
+func _present_log_entry() -> void:
+	if GameState.claim_log_tutorial("main_welcome"):
+		_log_guide.present_tutorial("main_welcome", true)
+	elif GameState.has_save_file() and GameState.claim_log_tutorial("main_continue"):
+		_log_guide.present_tutorial("main_continue", true)
+	else:
+		_log_guide.show_compact_hint(LogTutorialCatalog.get_repeat_hint("main_welcome"))
 
 
 func _input(event: InputEvent) -> void:

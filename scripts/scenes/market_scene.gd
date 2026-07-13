@@ -1,6 +1,8 @@
 extends Control
 
 const ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")
+const LogGuideScript = preload("res://scripts/ui/log_guide.gd")
+const LogTutorialCatalog = preload("res://scripts/ui/log_tutorial_catalog.gd")
 
 var _catalog_box: VBoxContainer
 var _detail_label: Label
@@ -8,6 +10,7 @@ var _status_label: Label
 var _currency_label: Label
 var _selected_item_id := ""
 var _buy_button: Button
+var _log_guide: LogGuide
 
 
 func _ready() -> void:
@@ -49,6 +52,13 @@ func _build_ui() -> void:
 	relation.text = "관계 단계에 따라 가격과 거래 가능 여부가 달라집니다. 단서·기록물·요원 고유 장비는 거래하지 않습니다."
 	relation.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	root.add_child(relation)
+	_log_guide = LogGuideScript.new()
+	_log_guide.set_compact(true)
+	root.add_child(_log_guide)
+	if GameState.claim_log_tutorial("market_first_visit"):
+		_log_guide.present_tutorial("market_first_visit", true)
+	else:
+		_log_guide.show_compact_hint(LogTutorialCatalog.get_repeat_hint("market_first_visit"))
 	var columns := HBoxContainer.new()
 	columns.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	columns.add_theme_constant_override("separation", 12)

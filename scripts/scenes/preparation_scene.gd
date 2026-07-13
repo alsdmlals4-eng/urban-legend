@@ -2,13 +2,15 @@
 extends Control
 
 const ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")
+const LogGuideScript = preload("res://scripts/ui/log_guide.gd")
+const LogTutorialCatalog = preload("res://scripts/ui/log_tutorial_catalog.gd")
 
 var _equipment_list: VBoxContainer
 var _episode_list: VBoxContainer
 var _equipped_label: Label
 var _modifier_label: Label
 var _record_list: VBoxContainer
-var _log_list: VBoxContainer
+var _log_guide: LogGuide
 var _start_button: Button
 var _status_label: Label
 var _agent_list: VBoxContainer
@@ -347,16 +349,10 @@ func _add_record_panel(parent: Control) -> void:
 
 
 func _add_log_panel(parent: Control) -> void:
-	var content := _add_section(parent, "로그", "준비 상태와 사건별 주의 문구를 한 번 더 확인합니다.")
-
-	var profile := Label.new()
-	profile.text = "로그 / 기관에서 지급한 괴담 기록 단말기 속 안내 AI / 작은 픽셀 유령 또는 말하는 부적 스티커"
-	profile.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	content.add_child(profile)
-
-	_log_list = VBoxContainer.new()
-	_log_list.add_theme_constant_override("separation", 5)
-	content.add_child(_log_list)
+	var content := _add_section(parent, "로그 · 준비 지원", "괴담기록국 AI가 전자기기 데스크에서 편성과 외부 접점을 함께 점검합니다.")
+	_log_guide = LogGuideScript.new()
+	_log_guide.set_compact(true)
+	content.add_child(_log_guide)
 
 
 func _add_start_panel(parent: Control) -> void:
@@ -569,11 +565,21 @@ func _refresh_records() -> void:
 
 
 func _refresh_log() -> void:
-	_clear_children(_log_list)
+	if GameState.claim_log_tutorial("preparation_agents"):
+		_log_guide.present_tutorial("preparation_agents", true)
+		return
+	if GameState.claim_log_tutorial("preparation_contacts"):
+		_log_guide.present_tutorial("preparation_contacts", true)
+		return
+	var lines: Array = []
 	for line in GameState.get_preparation_log_lines():
-		_log_list.add_child(_make_label("- %s" % String(line)))
+		lines.append({"text": String(line), "expression": "normal"})
 	for line in GameState.get_episode_log_lines():
-		_log_list.add_child(_make_label("- 로그: %s" % String(line)))
+		lines.append({"text": String(line), "expression": "focus"})
+	if lines.is_empty():
+		_log_guide.show_compact_hint(LogTutorialCatalog.get_repeat_hint("preparation_agents"))
+	else:
+		_log_guide.present_lines(lines.slice(0, 4), "normal", false)
 
 
 func _toggle_equipment(equipment_id: String) -> void:
