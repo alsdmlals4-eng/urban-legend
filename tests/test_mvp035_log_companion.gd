@@ -17,7 +17,7 @@ func _ready() -> void:
 		get_tree().quit(1)
 		return
 	_run_state_tests()
-	_run_component_tests()
+	await _run_component_tests()
 	_run_scene_integration_tests()
 	_guard.restore()
 	print("MVP-035: %d passed, %d failed" % [_passed, _failed])
@@ -60,6 +60,10 @@ func _run_component_tests() -> void:
 	guide.advance()
 	_check(guide.get_current_text() == "기록 대조 중", "guide advances sequence")
 	_check(guide.get_current_expression() == "focus", "guide changes expression")
+	guide.set_compact(true)
+	await get_tree().process_frame
+	var compact_height := guide.get_combined_minimum_size().y
+	_check(compact_height <= 128.0, "compact guide limits vertical footprint (%.0f)" % compact_height)
 	_check(guide.make_signature_stream("normal").data.size() > 0, "normal signature waveform exists")
 	_check(guide.make_signature_stream("focus").data.size() > 0, "focus signature waveform exists")
 	_check(guide.make_signature_stream("warning").data.size() > 0, "warning signature waveform exists")

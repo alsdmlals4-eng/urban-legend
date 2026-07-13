@@ -12,6 +12,7 @@ const VALID_EXPRESSIONS := ["normal", "focus", "warning"]
 const MIX_RATE := 22050
 
 var _portrait: TextureRect
+var _portrait_frame: Control
 var _speaker_label: Label
 var _dialogue_label: Label
 var _next_button: Button
@@ -84,7 +85,8 @@ func set_compact(compact: bool) -> void:
 	_compact = compact
 	if not _built:
 		return
-	_portrait.custom_minimum_size = Vector2(92, 92) if compact else Vector2(156, 156)
+	_portrait_frame.custom_minimum_size = Vector2(92, 92) if compact else Vector2(156, 156)
+	_portrait.custom_minimum_size = Vector2.ZERO
 	_dialogue_label.custom_minimum_size.y = 44 if compact else 72
 
 
@@ -139,21 +141,21 @@ func _ensure_ui() -> void:
 	row.add_theme_constant_override("separation", 12)
 	add_child(row)
 
-	var portrait_frame := Control.new()
-	portrait_frame.custom_minimum_size = Vector2(156, 156)
-	row.add_child(portrait_frame)
+	_portrait_frame = Control.new()
+	_portrait_frame.custom_minimum_size = Vector2(156, 156)
+	row.add_child(_portrait_frame)
 
 	_portrait = TextureRect.new()
 	_portrait.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	_portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-	portrait_frame.add_child(_portrait)
+	_portrait_frame.add_child(_portrait)
 
 	_status_line = ColorRect.new()
 	_status_line.set_anchors_preset(Control.PRESET_TOP_WIDE)
 	_status_line.offset_bottom = 4
 	_status_line.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	portrait_frame.add_child(_status_line)
+	_portrait_frame.add_child(_status_line)
 
 	var copy := VBoxContainer.new()
 	copy.size_flags_horizontal = Control.SIZE_EXPAND_FILL

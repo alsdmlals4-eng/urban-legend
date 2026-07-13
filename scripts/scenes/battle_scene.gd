@@ -181,13 +181,22 @@ func _build_scene_ui() -> void:
 	var action_box := VBoxContainer.new()
 	action_box.add_theme_constant_override("separation", 8)
 	_action_panel.add_child(action_box)
+	var briefing_row := HBoxContainer.new()
+	briefing_row.add_theme_constant_override("separation", 10)
+	action_box.add_child(briefing_row)
 	_log_guide = LogGuideScript.new()
 	_log_guide.set_compact(true)
-	action_box.add_child(_log_guide)
+	_log_guide.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_log_guide.size_flags_stretch_ratio = 0.9
+	briefing_row.add_child(_log_guide)
+	var briefing_text := VBoxContainer.new()
+	briefing_text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	briefing_text.size_flags_stretch_ratio = 1.1
+	briefing_row.add_child(briefing_text)
 	_telegraph_label = _make_label("")
-	action_box.add_child(_telegraph_label)
+	briefing_text.add_child(_telegraph_label)
 	_prediction_summary_label = _make_label("")
-	action_box.add_child(_prediction_summary_label)
+	briefing_text.add_child(_prediction_summary_label)
 	_response_box = GridContainer.new()
 	_response_box.columns = 2
 	_response_box.add_theme_constant_override("h_separation", 8)
