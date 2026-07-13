@@ -14,4 +14,5 @@ Assert-Contains (Join-Path $root 'docs\IMAGE_ASSET_WORKFLOW.md') 'ASSET_MANIFEST
 Assert-Contains (Join-Path $root 'docs\DIALOGUE_AUTHORING_WORKFLOW.md') 'AI_DELEGATION_WORKFLOW.md'
 Assert-Contains (Join-Path $root 'docs\DOCUMENTATION_MAP.md') 'AI_DELEGATION_WORKFLOW.md'
 Assert-Contains (Join-Path $root 'docs\BASE_RULES_VERSION.md') '멀티모델 산출물 계약과 핵심 상태 보호 원칙'
+Assert-Contains (Join-Path $root 'docs\MULTIMODEL_20_TASK_EVALUATION.md') '결과 회수율 | 100% (20/20)'
 'PASS: project multi-model workflow documentation and schema contract'

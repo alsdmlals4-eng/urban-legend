@@ -40,6 +40,7 @@
 | 프로젝트 전용 | `docs/DIALOGUE_AUTHORING_WORKFLOW.md` | 외부 GPT 대사 작성, DeepSeek 검수, Codex 적용·검증 계약 |
 | 프로젝트 전용 | `docs/AI_DELEGATION_WORKFLOW.md` | DeepSeek·외부 GPT·이미지 모델·Codex 라우팅과 공통 산출물 계약 |
 | 프로젝트 전용 | `docs/IMAGE_ASSET_WORKFLOW.md` | 이미지 콘셉트 승인, 변형, manifest, 덮어쓰기·기술 QA 규칙 |
+| 프로젝트 전용 | `docs/MULTIMODEL_20_TASK_EVALUATION.md` | 실제 DeepSeek 20건의 회수율·첫 통과율·토큰·비용 평가 |
 | 프로젝트 전용 | `docs/CODEX_SHARED_WORK_RULES.md` | 도시괴담 기록국 Codex 구현 규칙 |
 | 프로젝트 전용 | `README.md` | 프로젝트 소개, 실행 방법, 현재 MVP 상태 |
 | 프로젝트 전용 | `PROJECT_BRIEF.md` | 한 줄 설명, 장르, 플레이어 역할, 핵심 경험, 차별점 |
