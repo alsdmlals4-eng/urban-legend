@@ -94,12 +94,13 @@ func _run_scene_integration_tests() -> void:
 	_check(not battle.find_children("*", "LogGuide", true, false).is_empty(), "recovery contains Log guide")
 	battle.queue_free()
 
-	var recovery_text := JSON.stringify(LogTutorialCatalog.get_entry("recovery_first_telegraph"))
+	var recovery_text := JSON.stringify(LogTutorialCatalog.TUTORIALS)
 	for pattern in GameState.get_recovery_patterns():
 		if typeof(pattern) != TYPE_DICTIONARY:
 			continue
 		_check(not recovery_text.contains(String(pattern.get("correct_response_id", ""))), "telegraph guide hides response id")
 
+	GameState.clear_save_file()
 	_check_scene_claims_tutorial("res://scenes/main_menu.tscn", "main_welcome")
 	_check_scene_claims_tutorial("res://scenes/preparation_scene.tscn", "preparation_agents")
 	_check_scene_claims_tutorial("res://scenes/market_scene.tscn", "market_first_visit")
@@ -115,6 +116,7 @@ func _check_scene_claims_tutorial(scene_path: String, tutorial_id: String) -> vo
 	_check(GameState.has_seen_log_tutorial(tutorial_id), "%s claims %s" % [scene_path.get_file(), tutorial_id])
 	if scene_path.ends_with("main_menu.tscn"):
 		_check(_node_has_text(scene, "Ver 3.5"), "main menu displays Ver 3.5")
+		_check(not GameState.has_save_file(), "main tutorial does not create a fake continue save")
 	scene.queue_free()
 
 

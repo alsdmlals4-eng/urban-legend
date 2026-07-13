@@ -188,9 +188,10 @@ func _build_ui() -> void:
 
 
 func _present_log_entry() -> void:
-	if GameState.claim_log_tutorial("main_welcome"):
+	var persist_now := GameState.has_save_file()
+	if GameState.claim_log_tutorial("main_welcome", persist_now):
 		_log_guide.present_tutorial("main_welcome", true)
-	elif GameState.has_save_file() and GameState.claim_log_tutorial("main_continue"):
+	elif persist_now and GameState.claim_log_tutorial("main_continue", true):
 		_log_guide.present_tutorial("main_continue", true)
 	else:
 		_log_guide.show_compact_hint(LogTutorialCatalog.get_repeat_hint("main_welcome"))
