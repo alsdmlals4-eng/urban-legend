@@ -69,6 +69,13 @@ const TUTORIALS := {
 		],
 		"repeat_hint": "전조와 확보 단서를 대조해 상황형 대응을 고르세요."
 	},
+	"recovery_first_prediction": {
+		"expression": "focus",
+		"lines": [
+			{"text": "전조와 조사 기록이 맞물렸습니다. 예측된 행동의 이름과 설명은 공개하지만, 실제 효과는 대응 결과로 확인해야 합니다.", "expression": "focus"}
+		],
+		"repeat_hint": "예측은 정답을 대신하지 않습니다. 공개된 행동과 확보 단서를 함께 대조하세요."
+	},
 	"recovery_first_learning": {
 		"expression": "focus",
 		"lines": [

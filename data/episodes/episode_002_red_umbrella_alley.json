@@ -225,6 +225,7 @@
       "legacy_dialogue_node_ids": ["dialogue_intro", "dialogue_after_rhythm"],
       "title": "비 오는 골목의 빨간 우산",
       "opening_dialogue": [
+		{"speaker": "로그", "text": "현장 단말기 접속 완료. 빗소리의 주기와 골목 표지의 위치가 함께 되감기고 있습니다. 어느 쪽이 원인인지는 아직 판단을 보류할게요.", "expression": "focus"},
         {"speaker": "오현", "text": "빗소리가 세 번째마다 되감기고 있습니다."},
         {"speaker": "권나래", "text": "우산보다 피해자의 귀가 경로를 먼저 붙잡아야 해요."},
         {"speaker": "강이준", "text": "반사와 발자국이 먼저 움직이는지 확인하겠습니다."}
@@ -238,7 +239,8 @@
           "after_dialogue": [
             {"speaker": "오현", "text": "세 번째 박자 직후 골목 표지판이 원래 위치로 돌아옵니다."},
             {"speaker": "권나래", "text": "피해자는 우산을 든 채가 아니라 우산에게 따라잡히고 있어요."},
-            {"speaker": "강이준", "text": "물웅덩이의 반사와 젖지 않은 흔적을 나눠 보죠."}
+			{"speaker": "강이준", "text": "물웅덩이의 반사와 젖지 않은 흔적을 나눠 보죠."},
+			{"speaker": "로그", "text": "박자, 반사, 발자국을 별도 기록으로 분리했습니다. 서로 먼저 움직이는 순간이 나오면 연결해서 알려드릴게요.", "expression": "normal"}
           ],
           "next_field_node_id": "field_umbrella_investigation"
         }
@@ -248,7 +250,7 @@
       "id": "field_umbrella_investigation",
       "title": "빨간 우산 골목 조사",
       "opening_dialogue": [
-        {"speaker": "기록국 관제", "text": "반복의 원인과 피해자에게 연결된 경로를 확인하십시오."}
+		{"speaker": "로그", "text": "골목 기록을 열었습니다. 반복의 원인과 피해자에게 이어진 경로를 나눠 확인해 보죠.", "expression": "focus"}
       ],
       "uses_investigation_points": true
     }

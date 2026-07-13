@@ -18,6 +18,7 @@ func _ready() -> void:
 		return
 	_run_state_tests()
 	_run_component_tests()
+	_run_scene_integration_tests()
 	_guard.restore()
 	print("MVP-035: %d passed, %d failed" % [_passed, _failed])
 	get_tree().quit(0 if _failed == 0 else 1)
@@ -63,6 +64,7 @@ func _run_component_tests() -> void:
 	_check(guide.make_signature_stream("focus").data.size() > 0, "focus signature waveform exists")
 	_check(guide.make_signature_stream("warning").data.size() > 0, "warning signature waveform exists")
 	_check(not LogTutorialCatalog.get_entry("main_welcome").is_empty(), "tutorial catalog entry exists")
+	_check(not LogTutorialCatalog.get_entry("recovery_first_prediction").is_empty(), "prediction tutorial exists")
 	_check(LogTutorialCatalog.get_entry("unknown").is_empty(), "unknown tutorial is safe")
 	_check(LogTutorialCatalog.get_repeat_hint("main_welcome").length() > 0, "repeat hint exists")
 	var catalog := AssetCatalog.new()
@@ -70,6 +72,51 @@ func _run_component_tests() -> void:
 	_check(catalog.get_asset_path("log_focus").ends_with("log_focus.png"), "focus Log asset path registered")
 	_check(catalog.get_asset_path("log_warning").ends_with("log_warning.png"), "warning Log asset path registered")
 	guide.queue_free()
+
+
+func _run_scene_integration_tests() -> void:
+	_check(_episode_has_log_speaker(GameState.DEFAULT_EPISODE_PATH), "afterlife field nodes include Log")
+	_check(_episode_has_log_speaker(GameState.RED_UMBRELLA_ALLEY_EPISODE_PATH), "umbrella field nodes include Log")
+
+	GameState.reset_run_state()
+	GameState.set_selected_agent_ids(["agent_kang_ijun", "agent_kwon_narae"])
+	var investigation: Node = load("res://scenes/investigation_scene.tscn").instantiate()
+	add_child(investigation)
+	_check(not investigation.find_children("*", "LogGuide", true, false).is_empty(), "investigation contains Log guide")
+	investigation.queue_free()
+
+	var battle: Node = load("res://scenes/battle_scene.tscn").instantiate()
+	add_child(battle)
+	_check(not battle.find_children("*", "LogGuide", true, false).is_empty(), "recovery contains Log guide")
+	battle.queue_free()
+
+	var recovery_text := JSON.stringify(LogTutorialCatalog.get_entry("recovery_first_telegraph"))
+	for pattern in GameState.get_recovery_patterns():
+		if typeof(pattern) != TYPE_DICTIONARY:
+			continue
+		_check(not recovery_text.contains(String(pattern.get("correct_response_id", ""))), "telegraph guide hides response id")
+
+
+func _episode_has_log_speaker(path: String) -> bool:
+	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
+	if typeof(parsed) != TYPE_DICTIONARY:
+		return false
+	for node in parsed.get("field_nodes", []):
+		if typeof(node) != TYPE_DICTIONARY:
+			continue
+		if _lines_have_log(node.get("opening_dialogue", [])):
+			return true
+		for choice in node.get("choices", []):
+			if typeof(choice) == TYPE_DICTIONARY and _lines_have_log(choice.get("after_dialogue", [])):
+				return true
+	return false
+
+
+func _lines_have_log(lines: Array) -> bool:
+	for line in lines:
+		if typeof(line) == TYPE_DICTIONARY and String(line.get("speaker", "")) == "로그":
+			return true
+	return false
 
 
 func _check(condition: bool, label: String) -> void:

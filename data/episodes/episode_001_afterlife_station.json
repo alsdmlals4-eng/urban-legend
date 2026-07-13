@@ -328,6 +328,7 @@
       "legacy_dialogue_node_ids": ["dialogue_intro", "dialogue_after_photo"],
       "title": "존재하지 않는 저승역",
       "opening_dialogue": [
+		{"speaker": "로그", "text": "현장 단말기 접속 완료. 방송 기록과 전광판 표기가 서로 어긋납니다. 정답은 정하지 않을게요. 먼저 반복되는 차이부터 보죠.", "expression": "focus"},
         {"speaker": "권나래", "text": "안내방송과 전광판의 종착지가 서로 맞지 않아요."},
         {"speaker": "강이준", "text": "먼저 피해자의 기록과 현장 반복을 나눠 확인하죠."},
         {"speaker": "오현", "text": "괴이를 쫓기보다 돌아오는 규칙부터 찾겠습니다."}
@@ -341,7 +342,8 @@
           "after_dialogue": [
             {"speaker": "권나래", "text": "마지막 문자는 장소가 아니라 자정을 가리키고 있어요."},
             {"speaker": "강이준", "text": "시간이 종착지 역할을 한다면 방송도 같은 주기로 반복될 겁니다."},
-            {"speaker": "오현", "text": "그럼 발을 옮기기 전에 스피커와 승차권을 대조하죠."}
+			{"speaker": "오현", "text": "그럼 발을 옮기기 전에 스피커와 승차권을 대조하죠."},
+			{"speaker": "로그", "text": "대조 항목을 현장 기록에 묶었습니다. 다음 관찰에서 서로 맞지 않는 시간과 목적지를 우선 표시할게요.", "expression": "normal"}
           ],
           "next_field_node_id": "field_station_investigation"
         }
@@ -351,7 +353,7 @@
       "id": "field_station_investigation",
       "title": "저승역 현장 조사",
       "opening_dialogue": [
-        {"speaker": "기록국 관제", "text": "전조와 연결될 현장 기록을 선택해 확인하십시오."}
+		{"speaker": "로그", "text": "현장 기록을 열었습니다. 전조와 연결될 가능성이 있는 지점을 고르되, 잠긴 항목은 먼저 근거를 확보해야 합니다.", "expression": "focus"}
       ],
       "uses_investigation_points": true
     }

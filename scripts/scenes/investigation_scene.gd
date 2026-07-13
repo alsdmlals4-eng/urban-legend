@@ -4,6 +4,8 @@ extends Control
 const SceneVisuals = preload("res://scripts/ui/scene_presentation.gd")
 const RuntimeEditor = preload("res://scripts/ui/runtime_ui_editor.gd")
 const AssetCatalog = preload("res://scripts/ui/ui_asset_catalog.gd")
+const LogGuideScript = preload("res://scripts/ui/log_guide.gd")
+const LogTutorialCatalog = preload("res://scripts/ui/log_tutorial_catalog.gd")
 
 const FALLBACK_INVESTIGATION_POINTS: Array[Dictionary] = [
 	{
@@ -46,6 +48,7 @@ var _field_speaker_label: Label
 var _field_dialogue_label: Label
 var _field_next_button: Button
 var _field_choice_box: VBoxContainer
+var _log_guide: LogGuide
 var _points_box: GridContainer
 var _pending_next_field_node_id := ""
 
@@ -261,10 +264,15 @@ func _toggle_record_drawer() -> void:
 	_record_button.text = "기록 닫기" if _record_drawer.visible else "기록 열기"
 	if _record_drawer.visible:
 		_refresh_record_learning()
+		_present_log_tutorial("field_first_record_drawer")
 
 
 func _add_field_dialogue(parent: Control) -> void:
 	var content := _add_section(parent, "현장 대화", "상황을 읽고 팀의 대화를 들은 뒤 다음 행동을 선택합니다.")
+	_log_guide = LogGuideScript.new()
+	_log_guide.set_compact(true)
+	_log_guide.visible = false
+	content.add_child(_log_guide)
 	_field_speaker_label = Label.new()
 	_field_speaker_label.text = "기록국 관제"
 	content.add_child(_field_speaker_label)
@@ -290,6 +298,12 @@ func _show_current_field_node() -> void:
 		return
 	_narrative_label.text = String(_field_node.get("title", GameState.get_current_episode_title()))
 	_field_lines = _field_node.get("opening_dialogue", []).duplicate(true)
+	if GameState.claim_log_tutorial("field_first_choice"):
+		var tutorial := LogTutorialCatalog.get_entry("field_first_choice")
+		_field_lines = tutorial.get("lines", []).duplicate(true) + _field_lines
+		for line in _field_lines:
+			if typeof(line) == TYPE_DICTIONARY and not line.has("speaker"):
+				line["speaker"] = "로그"
 	_field_line_index = 0
 	_pending_next_field_node_id = ""
 	_clear_children(_field_choice_box)
@@ -300,10 +314,21 @@ func _show_current_field_node() -> void:
 func _show_field_line_or_choices() -> void:
 	if _field_line_index < _field_lines.size():
 		var line: Dictionary = _field_lines[_field_line_index]
-		_field_speaker_label.text = String(line.get("speaker", "현장 기록"))
-		_field_dialogue_label.text = String(line.get("text", ""))
+		var speaker := String(line.get("speaker", "현장 기록"))
+		var is_log := speaker == "로그"
+		_log_guide.visible = is_log
+		_field_speaker_label.visible = not is_log
+		_field_dialogue_label.visible = not is_log
+		if is_log:
+			_log_guide.present_lines([line], String(line.get("expression", "normal")), false)
+		else:
+			_field_speaker_label.text = speaker
+			_field_dialogue_label.text = String(line.get("text", ""))
 		_field_next_button.visible = true
 		return
+	_log_guide.visible = false
+	_field_speaker_label.visible = true
+	_field_dialogue_label.visible = true
 	_field_next_button.visible = false
 	if not _pending_next_field_node_id.is_empty():
 		GameState.set_current_field_node_id(_pending_next_field_node_id)
@@ -319,6 +344,9 @@ func _advance_field_dialogue() -> void:
 
 
 func _show_field_choices() -> void:
+	_log_guide.visible = false
+	_field_speaker_label.visible = true
+	_field_dialogue_label.visible = true
 	_clear_children(_field_choice_box)
 	var choices: Array = _field_node.get("choices", [])
 	for choice in choices:
@@ -435,6 +463,8 @@ func _inspect_point(point: Dictionary) -> void:
 
 	_result_label.text = _make_point_result_text(point, clue_id, was_collected, collected_now)
 	_hint_label.text = _make_point_hint_text(point)
+	if collected_now:
+		_present_log_tutorial("field_first_clue")
 	_refresh_case_status()
 
 	var next_scene_path := String(point.get("next_scene_path", ""))
@@ -569,8 +599,20 @@ func _run_method_option(point: Dictionary, method: Dictionary) -> void:
 		_hint_label.text = "이번 조사 힌트: 이번 판정으로 새로 확인한 힌트가 없습니다."
 	else:
 		_hint_label.text = "이번 조사 힌트\n- %s" % "\n- ".join(hint_texts)
+	var new_clue_ids: Array = result.get("new_clue_ids", [])
+	if not new_clue_ids.is_empty():
+		_present_log_tutorial("field_first_clue")
 
 	_refresh_case_status()
+
+
+func _present_log_tutorial(tutorial_id: String) -> void:
+	if _log_guide == null:
+		return
+	if GameState.claim_log_tutorial(tutorial_id):
+		_log_guide.present_tutorial(tutorial_id, true)
+	else:
+		_log_guide.show_compact_hint(LogTutorialCatalog.get_repeat_hint(tutorial_id))
 
 
 func _make_method_button_text(method: Dictionary) -> String:

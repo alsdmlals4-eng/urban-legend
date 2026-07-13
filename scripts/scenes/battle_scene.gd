@@ -5,6 +5,8 @@ const SceneVisuals = preload("res://scripts/ui/scene_presentation.gd")
 const AssetCatalog = preload("res://scripts/ui/ui_asset_catalog.gd")
 const ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")
 const RuntimeEditor = preload("res://scripts/ui/runtime_ui_editor.gd")
+const LogGuideScript = preload("res://scripts/ui/log_guide.gd")
+const LogTutorialCatalog = preload("res://scripts/ui/log_tutorial_catalog.gd")
 
 const BASE_ANOMALY_STABILITY := 0
 const BASE_RECOVERY_THRESHOLD := 70
@@ -43,6 +45,7 @@ var _prediction_summary_label: Label
 var _response_box: GridContainer
 var _turn_auto_success_agents: Dictionary = {}
 var _turn_locked := false
+var _log_guide: LogGuide
 
 
 func _ready() -> void:
@@ -170,7 +173,7 @@ func _build_scene_ui() -> void:
 	_action_panel = PanelContainer.new()
 	_action_panel.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
 	_action_panel.offset_left = 12
-	_action_panel.offset_top = -202
+	_action_panel.offset_top = -310
 	_action_panel.offset_right = -12
 	_action_panel.offset_bottom = -10
 	_action_panel.add_theme_stylebox_override("panel", ThemeFactory.panel_style(Color("17242c"), 0.84))
@@ -178,6 +181,9 @@ func _build_scene_ui() -> void:
 	var action_box := VBoxContainer.new()
 	action_box.add_theme_constant_override("separation", 8)
 	_action_panel.add_child(action_box)
+	_log_guide = LogGuideScript.new()
+	_log_guide.set_compact(true)
+	action_box.add_child(_log_guide)
 	_telegraph_label = _make_label("")
 	action_box.add_child(_telegraph_label)
 	_prediction_summary_label = _make_label("")
@@ -520,12 +526,20 @@ func _begin_recovery_turn() -> void:
 	_clear_children(_response_box)
 	if _current_pattern.is_empty():
 		_telegraph_label.text = "전조 데이터를 찾지 못했습니다."
+		_log_guide.show_compact_hint("전조 기록을 찾지 못했습니다. 현장 기록을 다시 확인해 주세요.")
 		return
+	var first_telegraph := GameState.claim_log_tutorial("recovery_first_telegraph")
+	if first_telegraph:
+		_log_guide.present_tutorial("recovery_first_telegraph", true)
+	else:
+		_log_guide.show_compact_hint(LogTutorialCatalog.get_repeat_hint("recovery_first_telegraph"))
 	var auto_lines := _run_auto_window("analysis")
 	var prediction := GameState.roll_anomaly_prediction(_current_pattern)
 	_telegraph_label.text = "괴이의 전조\n%s" % String(_current_pattern.get("telegraph", "현장이 불규칙하게 흔들린다."))
 	if bool(prediction.get("successful", false)):
 		_prediction_summary_label.text = "자동 예측 성공 %.0f%%\n%s" % [float(prediction.get("rate", 0.0)), String(prediction.get("next_action", ""))]
+		if not first_telegraph and GameState.claim_log_tutorial("recovery_first_prediction"):
+			_log_guide.present_tutorial("recovery_first_prediction", true)
 	else:
 		_prediction_summary_label.text = "자동 예측 실패 %.0f%%\n전조와 확보한 단서만으로 대응해야 합니다." % float(prediction.get("rate", 0.0))
 	if not auto_lines.is_empty():
@@ -600,6 +614,11 @@ func _select_pattern_response(response: Dictionary) -> void:
 		lines.append("괴이 반응: %s 정신력 -%d" % [String(target.get("name", "대표 요원")), remaining])
 	var reason := "규칙에 맞는 대응을 확인했다." if correct else String(_current_pattern.get("failure_reason", "오대응 원인을 기록했다."))
 	GameState.record_recovery_pattern_outcome(String(_current_pattern.get("id", "")), response_id, correct, reason)
+	if not correct:
+		if GameState.claim_log_tutorial("recovery_first_learning"):
+			_log_guide.present_tutorial("recovery_first_learning", true)
+		else:
+			_log_guide.show_compact_hint("오대응 이유를 기록 서랍에 보존했습니다. 같은 전조가 돌아오면 판단 근거로 사용하세요.")
 	lines.append_array(_run_auto_window("treatment"))
 	lines.append_array(_run_auto_window("rapport"))
 	GameState.save_game()
