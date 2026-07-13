@@ -1,5 +1,9 @@
 # Documentation Map
 
+멀티모델 작업 분류·공통 산출물 계약은 `docs/AI_DELEGATION_WORKFLOW.md`, 래스터 콘셉트·변형·manifest 검수는 `docs/IMAGE_ASSET_WORKFLOW.md`, 대사 세부 규칙은 `docs/DIALOGUE_AUTHORING_WORKFLOW.md`를 따른다.
+
+대사·튜토리얼·상황별 반응문 작업은 `docs/DIALOGUE_AUTHORING_WORKFLOW.md`를 기준으로 외부 GPT 작성, DeepSeek 읽기 전용 검수, Codex 적용·검증 순서로 진행한다.
+
 이 문서는 `urban-legend`에서 Base 공용 규칙과 도시괴담 기록국 프로젝트 전용 문서의 책임을 구분한다.
 
 **Base는 공용 규칙의 원본 저장소이고, urban-legend는 프로젝트 전용 저장소다.** 작업자는 Base 링크만 읽지 않는다. 먼저 이 저장소 안에 동기화된 공용 문서의 로컬 사본을 읽고, Base 원격은 동기화와 기준 확인에 사용한다.
@@ -33,6 +37,9 @@
 | 공용 로컬 사본 | `docs/DOCUMENTATION_MAP.md` | 문서 역할표와 공용/전용 구분 |
 | Base 동기화 기록 | `docs/BASE_RULES_VERSION.md` | Base 기준 커밋 SHA, 동기화 날짜, 로컬 확장 이력 |
 | 프로젝트 전용 | `AGENTS.md` | 도시괴담 기록국 최상위 규칙 |
+| 프로젝트 전용 | `docs/DIALOGUE_AUTHORING_WORKFLOW.md` | 외부 GPT 대사 작성, DeepSeek 검수, Codex 적용·검증 계약 |
+| 프로젝트 전용 | `docs/AI_DELEGATION_WORKFLOW.md` | DeepSeek·외부 GPT·이미지 모델·Codex 라우팅과 공통 산출물 계약 |
+| 프로젝트 전용 | `docs/IMAGE_ASSET_WORKFLOW.md` | 이미지 콘셉트 승인, 변형, manifest, 덮어쓰기·기술 QA 규칙 |
 | 프로젝트 전용 | `docs/CODEX_SHARED_WORK_RULES.md` | 도시괴담 기록국 Codex 구현 규칙 |
 | 프로젝트 전용 | `README.md` | 프로젝트 소개, 실행 방법, 현재 MVP 상태 |
 | 프로젝트 전용 | `PROJECT_BRIEF.md` | 한 줄 설명, 장르, 플레이어 역할, 핵심 경험, 차별점 |

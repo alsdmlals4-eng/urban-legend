@@ -41,6 +41,10 @@ Default responsibility split:
 2. **Codex**: actual file edits, Godot/GDScript implementation, JSON/TSCN updates, documentation patches, validation, and final change reports.
 3. **GitHub**: single source for Issues, Goals, changed files, review history, completion criteria, validation notes, and future handoff context.
 
+Dialogue, tutorial, and situational reaction rewrites follow `docs/DIALOGUE_AUTHORING_WORKFLOW.md`. External GPT is the default prose author, DeepSeek performs read-only extraction and leak/structure review, and Codex prepares the prompt, applies only reviewed patches, and runs the minimum relevant validation. Request `dialogue_rewrite.patch` and `dialogue_review.md` as files instead of pasting full rewritten files into chat. Do not use Codex or its internal subagents for bulk dialogue drafting by default.
+
+All delegation follows `docs/AI_DELEGATION_WORKFLOW.md`; dialogue rules are its prose-specific subset and raster work follows `docs/IMAGE_ASSET_WORKFLOW.md`. DeepSeek and external GPT drafts, patches, reports, and generated images are untrusted inputs. Codex retains protected paths, core state, actual application, conflict resolution, runtime verification, and final quality approval. Do not automatically apply changes to save, economy, progression, episode data, or other configured protected paths.
+
 If a plugin cannot be installed, downloaded, or invoked, do not block the project. Fall back to `AGENTS.md`, `docs/CODEX_SHARED_WORK_RULES.md`, GitHub Issue, and Codex Goal.
 
 ## Spec, Tools, and Review

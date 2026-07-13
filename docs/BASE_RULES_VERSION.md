@@ -1,5 +1,9 @@
 # Base Rules Version
 
+## 2026-07-14 Base 승격 후보
+
+Base 원격은 이번 작업에서 직접 수정하지 않았다. 여러 프로젝트에 재사용할 후보로 **멀티모델 산출물 계약과 핵심 상태 보호 원칙**, 비동기 실행 수명 분리, 원인별 동일 세션 1회 복구, 20건 기반 위임 효율 측정을 기록한다. urban-legend의 구체적인 보호 경로·Godot 검증 명령·이미지 스타일은 프로젝트 전용으로 유지한다.
+
 ## 동기화 기준
 
 - 공용 원본: [`alsdmlals4-eng/Base`](https://github.com/alsdmlals4-eng/Base)
