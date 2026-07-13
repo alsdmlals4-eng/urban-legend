@@ -1,5 +1,8 @@
 extends SceneTree
 
+const TestSaveGuard = preload("res://tests/test_save_guard.gd")
+var _guard := TestSaveGuard.new()
+
 
 func _init() -> void:
 	call_deferred("_capture")
@@ -16,11 +19,17 @@ func _capture() -> void:
 	var episode_id := String(args[2]) if args.size() > 2 else "episode_001_afterlife_station"
 	var episode_path := "res://data/episodes/episode_002_red_umbrella_alley.json" if episode_id == "episode_002_red_umbrella_alley" else "res://data/episodes/episode_001_afterlife_station.json"
 	var game_state := root.get_node("GameState")
+	var guard_error := _guard.prepare(game_state.SAVE_FILE_PATH)
+	if not guard_error.is_empty():
+		push_error("visual capture save guard failed: %s" % guard_error)
+		quit(4)
+		return
 	game_state.load_episode(episode_path)
 	game_state.set_selected_agent_ids(["agent_kang_ijun", "agent_kwon_narae", "agent_oh_hyun"])
 	var error := change_scene_to_file(scene_path)
 	if error != OK:
 		push_error("failed to load scene: %s" % scene_path)
+		_guard.restore()
 		quit(error)
 		return
 	for _frame in range(5):
@@ -35,12 +44,19 @@ func _capture() -> void:
 	var image := root.get_viewport().get_texture().get_image()
 	if image == null or image.is_empty():
 		push_error("captured image is empty")
+		_guard.restore()
 		quit(3)
 		return
 	var save_error := image.save_png(output_path)
 	if save_error != OK:
 		push_error("failed to save capture: %s" % output_path)
+		_guard.restore()
 		quit(save_error)
 		return
 	print("UI CAPTURE: %s %dx%d" % [output_path, image.get_width(), image.get_height()])
+	var restore_error := _guard.restore()
+	if not restore_error.is_empty():
+		push_error("visual capture save restore failed: %s" % restore_error)
+		quit(5)
+		return
 	quit(0)

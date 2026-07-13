@@ -16,6 +16,8 @@ var _agent_detail_panel: PanelContainer
 var _agent_detail_label: Label
 var _selected_detail_agent_id := ""
 var _agent_card_by_id: Dictionary = {}
+var _contact_list: VBoxContainer
+var _consumable_list: VBoxContainer
 
 
 func _ready() -> void:
@@ -56,6 +58,7 @@ func _build_ui() -> void:
 	_add_header(root)
 	_add_current_case_panel(root)
 	_add_episode_panel(root)
+	_add_external_contact_panel(root)
 	_add_agent_panel(root)
 	_add_equipment_panel(root)
 	_add_record_panel(root)
@@ -127,6 +130,16 @@ func _add_agent_panel(parent: Control) -> void:
 		_agent_detail_panel.visible = false
 	)
 	detail_content.add_child(close_detail_button)
+
+
+func _add_external_contact_panel(parent: Control) -> void:
+	var content := _add_section(parent, "외부 접점", "사건 사이에 세력과 교류하고 시장 거래·연구 의뢰·현장 의뢰를 준비합니다.")
+	_contact_list = VBoxContainer.new()
+	_contact_list.add_theme_constant_override("separation", 6)
+	content.add_child(_contact_list)
+	_consumable_list = VBoxContainer.new()
+	_consumable_list.add_theme_constant_override("separation", 6)
+	content.add_child(_consumable_list)
 
 
 func _refresh_agents() -> void:
@@ -395,10 +408,78 @@ func _add_section(parent: Control, title_text: String, description_text: String 
 
 func _refresh() -> void:
 	_refresh_episode_selection()
+	_refresh_external_contacts()
 	_refresh_agents()
 	_refresh_equipment()
 	_refresh_records()
 	_refresh_log()
+
+
+func _refresh_external_contacts() -> void:
+	_clear_children(_contact_list)
+	var currency := Label.new()
+	currency.text = "잔향 파편: %d" % GameState.get_echo_fragments()
+	_contact_list.add_child(currency)
+	for faction in [
+		{"id": "rumor_market", "name": "소문시장"},
+		{"id": "mage_society", "name": "마도회"},
+		{"id": "exorcist_lineage", "name": "퇴마사 계열"}
+	]:
+		var label := Label.new()
+		label.text = "%s · %s (%d)" % [faction.name, GameState.get_faction_tier_label(faction.id), GameState.get_faction_relation(faction.id)]
+		_contact_list.add_child(label)
+	var market := Button.new()
+	market.text = "소문시장 방문 · 장비와 소모품 구매"
+	market.pressed.connect(func() -> void:
+		GameState.set_current_scene_path(GameState.SCENE_MARKET)
+		GameState.save_game()
+		get_tree().change_scene_to_file(GameState.SCENE_MARKET)
+	)
+	_contact_list.add_child(market)
+	var mage := Button.new()
+	mage.text = "마도회 분석 의뢰 전달 (최초 1회)"
+	mage.disabled = GameState.get_completed_faction_requests().has("request_mage_first_analysis")
+	mage.pressed.connect(func() -> void:
+		GameState.complete_faction_request("request_mage_first_analysis", "mage_society")
+		GameState.save_game()
+		_refresh_external_contacts()
+	)
+	_contact_list.add_child(mage)
+	var exorcist := Button.new()
+	exorcist.text = "퇴마사 현장 방호 의뢰 전달 (최초 1회)"
+	exorcist.disabled = GameState.get_completed_faction_requests().has("request_exorcist_first_guard")
+	exorcist.pressed.connect(func() -> void:
+		GameState.complete_faction_request("request_exorcist_first_guard", "exorcist_lineage")
+		GameState.save_game()
+		_refresh_external_contacts()
+	)
+	_contact_list.add_child(exorcist)
+	_clear_children(_consumable_list)
+	var loadout_title := Label.new()
+	loadout_title.text = "사건 반입 소모품 · 최대 2종, 종류별 3개"
+	_consumable_list.add_child(loadout_title)
+	var inventory := GameState.get_consumable_inventory()
+	var loadout := GameState.get_consumable_loadout()
+	for item in GameState.get_market_catalog():
+		if String(item.get("category", "")) != "consumable":
+			continue
+		var item_id := String(item.get("id", ""))
+		var owned := int(inventory.get(item_id, 0))
+		if owned <= 0:
+			continue
+		var button := Button.new()
+		button.text = "%s · 보유 %d / 반입 %d" % [String(item.get("name", item_id)), owned, int(loadout.get(item_id, 0))]
+		button.pressed.connect(_cycle_consumable_loadout.bind(item_id, owned))
+		_consumable_list.add_child(button)
+
+
+func _cycle_consumable_loadout(item_id: String, owned: int) -> void:
+	var current := int(GameState.get_consumable_loadout().get(item_id, 0))
+	var next := 0 if current >= owned else current + 1
+	if not GameState.set_consumable_loadout(item_id, next):
+		_status_label.text = "반입 소모품은 최대 2종까지 선택할 수 있습니다."
+	GameState.save_game()
+	_refresh_external_contacts()
 
 
 func _refresh_episode_selection() -> void:

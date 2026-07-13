@@ -4,7 +4,7 @@ extends Node
 const DEFAULT_EPISODE_PATH := "res://data/episodes/episode_001_afterlife_station.json"
 const RED_UMBRELLA_ALLEY_EPISODE_PATH := "res://data/episodes/episode_002_red_umbrella_alley.json"
 const SAVE_FILE_PATH := "user://urban_legend_save.json"
-const SAVE_VERSION := "mvp-033"
+const SAVE_VERSION := "mvp-034"
 const DEFAULT_DIALOGUE_NODE_ID := "dialogue_intro"
 const DEFAULT_FIELD_NODE_ID := "dialogue_intro"
 const STABILITY_SCHEMA_VERSION := 2
@@ -16,6 +16,7 @@ const SCENE_PREPARATION := "res://scenes/preparation_scene.tscn"
 const SCENE_INVESTIGATION := "res://scenes/investigation_scene.tscn"
 const SCENE_BATTLE := "res://scenes/battle_scene.tscn"
 const SCENE_RESULT := "res://scenes/result_scene.tscn"
+const SCENE_MARKET := "res://scenes/market_scene.tscn"
 const FLAG_CAPTURE_SUCCESS := "capture_success"
 const MIN_SELECTED_AGENTS := 2
 const MAX_SELECTED_AGENTS := 3
@@ -30,6 +31,18 @@ const ABILITY_LABELS := {
 	"treatment": "치료",
 	"rapport": "교감"
 }
+const FACTION_IDS := ["rumor_market", "mage_society", "exorcist_lineage"]
+const MARKET_ITEMS: Array[Dictionary] = [
+	{"id": "gear_resonance_prism", "name": "잔향 분광경", "category": "permanent", "price": 100, "description": "회수 첫 예측률 +10%"},
+	{"id": "gear_inverse_listener", "name": "역위상 청음기", "category": "permanent", "price": 90, "description": "전조와 연결된 확보 단서 하나를 강조"},
+	{"id": "gear_sealing_pin", "name": "봉인선 고정핀", "category": "permanent", "price": 80, "description": "사건 최초 오대응 피해 10 감소"},
+	{"id": "gear_resonance_buffer", "name": "공명 완충기", "category": "permanent", "price": 110, "description": "교감 자동행동 발동률 +10%"},
+	{"id": "consumable_prediction_film", "name": "전조 기록 필름", "category": "consumable", "price": 30, "description": "다음 예측률 +20%"},
+	{"id": "consumable_temporary_seal", "name": "임시 봉인지", "category": "consumable", "price": 30, "description": "다음 정답 대응 안정도 +10"},
+	{"id": "consumable_mental_incense", "name": "정신 안정 향", "category": "consumable", "price": 25, "description": "대표 요원 정신력 25 회복"},
+	{"id": "consumable_first_aid", "name": "응급 지혈부", "category": "consumable", "price": 25, "description": "대표 요원 체력 25 회복"},
+	{"id": "consumable_shielding_cloth", "name": "잔향 차폐포", "category": "consumable", "price": 35, "description": "다음 괴이 행동 피해 12 흡수"}
+]
 const RECOVERY_ACTION_FORMULAS := {
 	"suppression": { "base": 4, "multiplier": 2, "description": "제압으로 괴이 안정도를 낮추고 위험을 억제합니다." },
 	"analysis": { "base": 3, "multiplier": 2, "description": "분석으로 괴이 패턴을 읽고 안정화 근거를 확보합니다." },
@@ -111,6 +124,16 @@ var used_equipment_effects: Array = []
 var completed_case_reports: Array = []
 var agent_case_states: Dictionary = {}
 var victim_state: Dictionary = {}
+var echo_fragments := 30
+var granted_reward_ids: Array = []
+var faction_relations: Dictionary = {}
+var triggered_faction_event_ids: Array = []
+var completed_faction_request_ids: Array = []
+var purchased_market_item_ids: Array = []
+var consumable_inventory: Dictionary = {}
+var consumable_loadout: Dictionary = {}
+var active_consumable_effects: Dictionary = {}
+var rewarded_resolution_grades: Dictionary = {}
 
 
 func _ready() -> void:
@@ -153,6 +176,7 @@ func start_episode_from_preparation(file_path: String) -> bool:
 	seen_hint_ids.clear()
 	minigame_results.clear()
 	used_equipment_effects.clear()
+	active_consumable_effects.clear()
 	agent_case_states.clear()
 	victim_state.clear()
 	_clear_investigation_method_state()
@@ -180,6 +204,16 @@ func reset_run_state() -> void:
 	completed_case_reports.clear()
 	agent_case_states.clear()
 	victim_state.clear()
+	echo_fragments = 30
+	granted_reward_ids.clear()
+	faction_relations.clear()
+	triggered_faction_event_ids.clear()
+	completed_faction_request_ids.clear()
+	purchased_market_item_ids.clear()
+	consumable_inventory.clear()
+	consumable_loadout.clear()
+	active_consumable_effects.clear()
+	rewarded_resolution_grades.clear()
 	current_scene_path = SCENE_DIALOGUE
 	current_dialogue_node_id = DEFAULT_DIALOGUE_NODE_ID
 	current_field_node_id = DEFAULT_FIELD_NODE_ID
@@ -396,7 +430,10 @@ func apply_story_effects(result_data: Dictionary) -> void:
 		clue_ids.append(direct_clue_id)
 
 	for clue_id in clue_ids:
-		collect_clue(clue_id)
+		var was_collected := has_collected_clue(clue_id)
+		_set_clue_collected_without_save(clue_id, true)
+		if not was_collected and has_collected_clue(clue_id):
+			grant_echo_reward("clue:%s:%s" % [get_current_episode_id(), clue_id], 5)
 
 	for hint_id in _to_string_array(result_data.get("show_hint_ids", [])):
 		mark_hint_seen(hint_id)
@@ -1043,6 +1080,8 @@ func get_save_state_summary() -> Dictionary:
 		"unlocked_record_count": unlocked_records.size(),
 		"unlocked_equipment_count": unlocked_equipment.size(),
 		"equipped_item_count": equipped_items.size(),
+		"echo_fragments": echo_fragments,
+		"completed_faction_request_count": completed_faction_request_ids.size(),
 		"recovery_saved": recovery_successful,
 		"recovery_status": recovery_result_status
 	}
@@ -1303,6 +1342,13 @@ func get_current_prediction_rate() -> float:
 ## Rolls one anomaly prediction and updates decay state.
 func roll_anomaly_prediction(pattern: Dictionary = {}) -> Dictionary:
 	var rate := get_current_prediction_rate()
+	if seen_recovery_pattern_ids.size() <= 1 and has_equipped_item("gear_resonance_prism") and not has_used_equipment_effect("market:first_prediction:%s" % get_current_episode_id()):
+		rate = clampf(rate + 10.0, 5.0, 95.0)
+		mark_equipment_effect_used("market:first_prediction:%s" % get_current_episode_id())
+	if int(consumable_loadout.get("consumable_prediction_film", 0)) > 0:
+		use_loaded_consumable("consumable_prediction_film")
+		consume_active_consumable_effect("consumable_prediction_film")
+		rate = clampf(rate + 20.0, 5.0, 95.0)
 	var successful := randf() * 100.0 <= rate
 	var next_action := "괴이의 다음 움직임을 안정적으로 읽지 못했습니다."
 	if successful:
@@ -1418,6 +1464,8 @@ func record_recovery_pattern_outcome(pattern_id: String, response_id: String, co
 		"attempts": int(_to_dictionary(recovery_pattern_learning.get(pattern_id, {})).get("attempts", 0)) + 1
 	}
 	recovery_pattern_learning[pattern_id] = record
+	if correct:
+		grant_echo_reward("pattern:%s:%s" % [get_current_episode_id(), pattern_id], 5)
 
 
 func get_recovery_pattern_learning() -> Dictionary:
@@ -1428,6 +1476,8 @@ func get_agent_auto_action_chance(agent_id: String, ability_key: String) -> floa
 	if not is_agent_active(agent_id):
 		return 0.0
 	var chance := clampf(float(15 + get_agent_ability(agent_id, ability_key) * 8 + get_agent_trust(agent_id) * 3), 15.0, 70.0)
+	if ability_key == "rapport" and has_equipped_item("gear_resonance_buffer"):
+		chance = minf(70.0, chance + 10.0)
 	if get_agent_current_mental(agent_id) * 4 <= get_agent_max_mental(agent_id):
 		chance *= 0.5
 	return chance
@@ -1524,12 +1574,194 @@ func get_record_by_id(record_id: String) -> Dictionary:
 
 ## Returns equipment definitions.
 func get_equipment() -> Array:
-	return CaseDataScript.get_equipment(current_episode_data)
+	var result := CaseDataScript.get_equipment(current_episode_data).duplicate(true)
+	for item in MARKET_ITEMS:
+		if String(item.get("category", "")) == "permanent":
+			result.append(item.duplicate(true))
+	return result
 
 
 ## Returns one equipment definition.
 func get_equipment_by_id(equipment_id: String) -> Dictionary:
-	return CaseDataScript.get_equipment_by_id(current_episode_data, equipment_id)
+	var item := CaseDataScript.get_equipment_by_id(current_episode_data, equipment_id)
+	if not item.is_empty():
+		return item
+	return get_market_item(equipment_id)
+
+
+func get_echo_fragments() -> int:
+	return echo_fragments
+
+
+## Grants currency once for a globally unique reward id.
+func grant_echo_reward(reward_id: String, amount: int) -> bool:
+	var clean_id := reward_id.strip_edges()
+	if clean_id.is_empty() or amount <= 0 or granted_reward_ids.has(clean_id):
+		return false
+	granted_reward_ids.append(clean_id)
+	echo_fragments += amount
+	return true
+
+
+func get_granted_reward_ids() -> Array:
+	return granted_reward_ids.duplicate()
+
+
+func get_faction_relation(faction_id: String) -> int:
+	return clampi(int(faction_relations.get(faction_id, 0)), -100, 100)
+
+
+func get_faction_tier(faction_id: String) -> String:
+	var value := get_faction_relation(faction_id)
+	if value <= -50: return "hostile"
+	if value <= -20: return "wary"
+	if value < 20: return "neutral"
+	if value < 50: return "favorable"
+	return "trusted"
+
+
+func get_faction_tier_label(faction_id: String) -> String:
+	return {"hostile": "적대", "wary": "경계", "neutral": "중립", "favorable": "우호", "trusted": "신뢰"}.get(get_faction_tier(faction_id), "중립")
+
+
+func change_faction_relation(faction_id: String, delta: int, event_id: String = "") -> int:
+	if not FACTION_IDS.has(faction_id):
+		return 0
+	var clean_event := event_id.strip_edges()
+	if not clean_event.is_empty() and triggered_faction_event_ids.has(clean_event):
+		return get_faction_relation(faction_id)
+	if not clean_event.is_empty():
+		triggered_faction_event_ids.append(clean_event)
+	faction_relations[faction_id] = clampi(get_faction_relation(faction_id) + delta, -100, 100)
+	return get_faction_relation(faction_id)
+
+
+func complete_faction_request(request_id: String, faction_id: String) -> bool:
+	var clean_id := request_id.strip_edges()
+	if clean_id.is_empty() or completed_faction_request_ids.has(clean_id):
+		return false
+	completed_faction_request_ids.append(clean_id)
+	change_faction_relation(faction_id, 10, "request_relation:%s" % clean_id)
+	grant_echo_reward("request_reward:%s" % clean_id, 20)
+	return true
+
+
+func get_completed_faction_requests() -> Array:
+	return completed_faction_request_ids.duplicate()
+
+
+func get_market_catalog() -> Array:
+	return MARKET_ITEMS.duplicate(true)
+
+
+func get_market_item(item_id: String) -> Dictionary:
+	for item in MARKET_ITEMS:
+		if String(item.get("id", "")) == item_id:
+			return item.duplicate(true)
+	return {}
+
+
+func get_market_price(item_id: String) -> int:
+	var item := get_market_item(item_id)
+	if item.is_empty():
+		return 0
+	var multiplier := 1.0
+	match get_faction_tier("rumor_market"):
+		"wary": multiplier = 1.1
+		"favorable": multiplier = 0.9
+		"trusted": multiplier = 0.8
+	return int(round(float(item.get("price", 0)) * multiplier))
+
+
+func purchase_market_item(item_id: String) -> Dictionary:
+	var item := get_market_item(item_id)
+	if item.is_empty():
+		return {"successful": false, "message": "상품을 찾지 못했습니다."}
+	if get_faction_tier("rumor_market") == "hostile":
+		return {"successful": false, "message": "소문시장이 거래를 거부합니다."}
+	var category := String(item.get("category", ""))
+	if category == "permanent" and purchased_market_item_ids.has(item_id):
+		return {"successful": false, "message": "이미 구매한 영구 장비입니다."}
+	if category == "consumable" and int(consumable_inventory.get(item_id, 0)) >= 3:
+		return {"successful": false, "message": "소모품은 종류별로 최대 3개까지 보유할 수 있습니다."}
+	var price := get_market_price(item_id)
+	if echo_fragments < price:
+		return {"successful": false, "message": "잔향 파편이 부족합니다."}
+	echo_fragments -= price
+	if category == "permanent":
+		purchased_market_item_ids.append(item_id)
+		_unlock_unique(unlocked_equipment, item_id)
+	else:
+		consumable_inventory[item_id] = int(consumable_inventory.get(item_id, 0)) + 1
+	save_game()
+	return {"successful": true, "message": "%s 구매 완료" % String(item.get("name", item_id)), "price": price}
+
+
+func get_consumable_inventory() -> Dictionary:
+	return consumable_inventory.duplicate(true)
+
+
+func get_consumable_loadout() -> Dictionary:
+	return consumable_loadout.duplicate(true)
+
+
+func set_consumable_loadout(item_id: String, amount: int) -> bool:
+	var item := get_market_item(item_id)
+	if String(item.get("category", "")) != "consumable":
+		return false
+	var bounded := clampi(amount, 0, mini(3, int(consumable_inventory.get(item_id, 0))))
+	var types := 0
+	for loaded_id in consumable_loadout:
+		if int(consumable_loadout.get(loaded_id, 0)) > 0 and String(loaded_id) != item_id:
+			types += 1
+	if bounded > 0 and types >= 2:
+		return false
+	if bounded <= 0:
+		consumable_loadout.erase(item_id)
+	else:
+		consumable_loadout[item_id] = bounded
+	return true
+
+
+func use_loaded_consumable(item_id: String) -> bool:
+	var loaded := int(consumable_loadout.get(item_id, 0))
+	var owned := int(consumable_inventory.get(item_id, 0))
+	if loaded <= 0 or owned <= 0:
+		return false
+	consumable_loadout[item_id] = loaded - 1
+	consumable_inventory[item_id] = owned - 1
+	active_consumable_effects[item_id] = int(active_consumable_effects.get(item_id, 0)) + 1
+	if int(consumable_loadout[item_id]) <= 0: consumable_loadout.erase(item_id)
+	if int(consumable_inventory[item_id]) <= 0: consumable_inventory.erase(item_id)
+	save_game()
+	return true
+
+
+func consume_active_consumable_effect(item_id: String) -> bool:
+	var count := int(active_consumable_effects.get(item_id, 0))
+	if count <= 0:
+		return false
+	if count == 1: active_consumable_effects.erase(item_id)
+	else: active_consumable_effects[item_id] = count - 1
+	return true
+
+
+## Grants only the positive difference when an episode improves its best resolution grade.
+func grant_resolution_echo_reward(episode_id: String, grade: String) -> int:
+	var amounts := {"temporary": 30, "standard": 55, "complete": 75}
+	var clean_episode := episode_id.strip_edges()
+	if clean_episode.is_empty() or not amounts.has(grade):
+		return 0
+	var previous_grade := String(rewarded_resolution_grades.get(clean_episode, ""))
+	var previous_amount := int(amounts.get(previous_grade, 0))
+	var next_amount := int(amounts.get(grade, 0))
+	if next_amount <= previous_amount:
+		return 0
+	var delta := next_amount - previous_amount
+	if not grant_echo_reward("resolution:%s:%s" % [clean_episode, grade], delta):
+		return 0
+	rewarded_resolution_grades[clean_episode] = grade
+	return delta
 
 
 ## Returns one minigame by id.
@@ -1946,7 +2178,9 @@ func save_recovery_result(successful: bool, result_status: String, anomaly_stabi
 	if successful:
 		add_flag(FLAG_CAPTURE_SUCCESS)
 		add_flag("capture_result_%s" % result_status)
-		_apply_resolution_unlocks(get_result_resolution_grade())
+		var grade := get_result_resolution_grade()
+		_apply_resolution_unlocks(grade)
+		grant_resolution_echo_reward(get_current_episode_id(), grade)
 	save_game()
 
 
@@ -2021,6 +2255,18 @@ func load_game() -> bool:
 			equipped_items.erase(equipment_id)
 	used_equipment_effects = _to_unique_string_array(save_data.get("used_equipment_effects", []))
 	completed_case_reports = _to_dictionary_array(save_data.get("completed_case_reports", []))
+	echo_fragments = maxi(0, int(save_data.get("echo_fragments", 30)))
+	granted_reward_ids = _to_unique_string_array(save_data.get("granted_reward_ids", []))
+	faction_relations = _to_dictionary(save_data.get("faction_relations", {}))
+	for faction_id in faction_relations:
+		faction_relations[faction_id] = clampi(int(faction_relations[faction_id]), -100, 100)
+	triggered_faction_event_ids = _to_unique_string_array(save_data.get("triggered_faction_event_ids", []))
+	completed_faction_request_ids = _to_unique_string_array(save_data.get("completed_faction_request_ids", []))
+	purchased_market_item_ids = _to_unique_string_array(save_data.get("purchased_market_item_ids", []))
+	consumable_inventory = _to_dictionary(save_data.get("consumable_inventory", {}))
+	consumable_loadout = _to_dictionary(save_data.get("consumable_loadout", {}))
+	active_consumable_effects = _to_dictionary(save_data.get("active_consumable_effects", {}))
+	rewarded_resolution_grades = _to_dictionary(save_data.get("rewarded_resolution_grades", {}))
 	investigation_risk = clampi(int(save_data.get("anomaly_risk", save_data.get("investigation_risk", 0))), 0, 100)
 	case_understanding = clampi(int(save_data.get("anomaly_understanding", save_data.get("case_understanding", 0))), 0, 100)
 	victim_understanding = clampi(int(save_data.get("victim_understanding", 0)), 0, 100)
@@ -2132,6 +2378,16 @@ func _make_save_data() -> Dictionary:
 		"equipped_items": get_equipped_items(),
 		"used_equipment_effects": get_used_equipment_effects(),
 		"completed_case_reports": get_completed_case_reports(),
+		"echo_fragments": echo_fragments,
+		"granted_reward_ids": granted_reward_ids.duplicate(),
+		"faction_relations": faction_relations.duplicate(true),
+		"triggered_faction_event_ids": triggered_faction_event_ids.duplicate(),
+		"completed_faction_request_ids": completed_faction_request_ids.duplicate(),
+		"purchased_market_item_ids": purchased_market_item_ids.duplicate(),
+		"consumable_inventory": consumable_inventory.duplicate(true),
+		"consumable_loadout": consumable_loadout.duplicate(true),
+		"active_consumable_effects": active_consumable_effects.duplicate(true),
+		"rewarded_resolution_grades": rewarded_resolution_grades.duplicate(true),
 		"investigation_risk": investigation_risk,
 		"case_understanding": case_understanding,
 		"victim_understanding": victim_understanding,

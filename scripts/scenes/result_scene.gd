@@ -59,6 +59,7 @@ func _add_result_panel(parent: Control) -> void:
 	content.add_child(_make_label("피해자 구조 결과: %s" % GameState.get_current_victim_rescue_result()))
 	content.add_child(_make_label("피해자 후일담: %s" % GameState.get_current_victim_after_story()))
 	content.add_child(_make_label("괴이 핵 회수 상태: %s" % _make_recovery_status_text()))
+	content.add_child(_make_label("현재 잔향 파편: %d · 사건 준비의 외부 접점에서 사용할 수 있습니다." % GameState.get_echo_fragments()))
 	_add_text_list(content, "연구 결과", [GameState.get_current_research_result()])
 	_add_unlock_list(content, "기록물 획득", GameState.get_current_result_unlocked_records(), "title", "description")
 	_add_unlock_list(content, "연구 보상", GameState.get_current_result_unlocked_research_rewards(), "ability_name", "ability_description")

@@ -530,6 +530,18 @@ func _begin_recovery_turn() -> void:
 		_prediction_summary_label.text = "자동 예측 실패 %.0f%%\n전조와 확보한 단서만으로 대응해야 합니다." % float(prediction.get("rate", 0.0))
 	if not auto_lines.is_empty():
 		_prediction_summary_label.text += "\n%s" % "\n".join(auto_lines)
+	if GameState.has_equipped_item("gear_inverse_listener"):
+		for clue_id in _current_pattern.get("related_clue_ids", []):
+			if GameState.has_collected_clue(String(clue_id)):
+				_prediction_summary_label.text += "\n역위상 청음기: 확보 단서 %s가 이 전조와 연결됩니다." % String(clue_id)
+				break
+	for loaded_id in GameState.get_consumable_loadout():
+		if String(loaded_id) in ["consumable_mental_incense", "consumable_first_aid"]:
+			var consumable_id := String(loaded_id)
+			var use_button := Button.new()
+			use_button.text = "사용: %s" % String(GameState.get_market_item(consumable_id).get("name", consumable_id))
+			use_button.pressed.connect(_use_recovery_consumable.bind(consumable_id, use_button))
+			_response_box.add_child(use_button)
 	for response in _current_pattern.get("responses", []):
 		if typeof(response) != TYPE_DICTIONARY:
 			continue
@@ -561,6 +573,10 @@ func _select_pattern_response(response: Dictionary) -> void:
 	var correct := response_id == String(_current_pattern.get("correct_response_id", ""))
 	if correct:
 		var gain := int(response.get("stability_gain", 15))
+		if int(GameState.get_consumable_loadout().get("consumable_temporary_seal", 0)) > 0 and GameState.use_loaded_consumable("consumable_temporary_seal"):
+			GameState.consume_active_consumable_effect("consumable_temporary_seal")
+			gain += 10
+			lines.append("임시 봉인지 자동 사용: 안정도 추가 +10")
 		_anomaly_stability = GameState.change_anomaly_stability(gain)
 		lines.append("대응 성공: 괴이 규칙을 끊어 안정도 +%d" % gain)
 	else:
@@ -568,6 +584,15 @@ func _select_pattern_response(response: Dictionary) -> void:
 		var target := _get_representative_agent()
 		var target_id := String(target.get("id", ""))
 		var damage := 10 + int(GameState.get_anomaly_risk() / 20)
+		var pin_key := "market:first_wrong:%s" % GameState.get_current_episode_id()
+		if GameState.has_equipped_item("gear_sealing_pin") and not GameState.has_used_equipment_effect(pin_key):
+			damage = maxi(0, damage - 10)
+			GameState.mark_equipment_effect_used(pin_key)
+			lines.append("봉인선 고정핀: 사건 최초 오대응 피해 10 감소")
+		if int(GameState.get_consumable_loadout().get("consumable_shielding_cloth", 0)) > 0 and GameState.use_loaded_consumable("consumable_shielding_cloth"):
+			GameState.consume_active_consumable_effect("consumable_shielding_cloth")
+			damage = maxi(0, damage - 12)
+			lines.append("잔향 차폐포 자동 사용: 피해 12 흡수")
 		var remaining := GameState.consume_protection(target_id, damage)
 		if remaining > 0:
 			GameState.change_agent_mental(target_id, -remaining)
@@ -583,6 +608,23 @@ func _select_pattern_response(response: Dictionary) -> void:
 	next_button.pressed.connect(_begin_recovery_turn)
 	_response_box.add_child(next_button)
 	_update_battle_view("\n".join(lines))
+
+
+func _use_recovery_consumable(item_id: String, button: Button) -> void:
+	if not GameState.use_loaded_consumable(item_id):
+		button.disabled = true
+		return
+	var representative := _get_representative_agent()
+	var agent_id := String(representative.get("id", ""))
+	if item_id == "consumable_mental_incense":
+		GameState.change_agent_mental(agent_id, 25)
+		_update_battle_view("정신 안정 향 사용: %s 정신력 +25" % String(representative.get("name", "대표 요원")))
+	elif item_id == "consumable_first_aid":
+		GameState.change_agent_hp(agent_id, 25)
+		_update_battle_view("응급 지혈부 사용: %s 체력 +25" % String(representative.get("name", "대표 요원")))
+	GameState.consume_active_consumable_effect(item_id)
+	GameState.save_game()
+	button.disabled = int(GameState.get_consumable_loadout().get(item_id, 0)) <= 0
 
 
 func _run_auto_window(ability_key: String) -> Array[String]:
@@ -938,18 +980,18 @@ func _refresh_representative_agent() -> void:
 	var rep_id := String(representative.get("id", ""))
 	var hp_info := ""
 	if not rep_id.is_empty():
-		hp_info = "\n체력 %d/%d · 정신 %d/%d%s" % [
+		hp_info = " · 체력 %d/%d · 정신 %d/%d%s" % [
 			GameState.get_agent_current_hp(rep_id),
 			GameState.get_agent_max_hp(rep_id),
 			GameState.get_agent_current_mental(rep_id),
 			GameState.get_agent_max_mental(rep_id),
 			" [방호]" if GameState.has_protection(rep_id) else ""
 		]
-	_representative_agent_label.text = "대표 요원: %s [%s]\n역할: 현장 지휘 / 회수 담당\n팀: %s%s" % [
+	_representative_agent_label.text = "대표 요원: %s [%s]%s\n팀: %s" % [
 		String(representative.get("name", representative.get("id", "요원"))),
 		String(representative.get("temperament_label", representative.get("temperament", ""))),
-		GameState.get_selected_agent_summary(),
-		hp_info
+		hp_info,
+		GameState.get_selected_agent_summary()
 	]
 
 
