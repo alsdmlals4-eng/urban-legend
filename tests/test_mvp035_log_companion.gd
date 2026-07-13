@@ -64,6 +64,9 @@ func _run_component_tests() -> void:
 	await get_tree().process_frame
 	var compact_height := guide.get_combined_minimum_size().y
 	_check(compact_height <= 128.0, "compact guide limits vertical footprint (%.0f)" % compact_height)
+	_check(guide.is_sequence_active(), "guide remains active on final line")
+	guide.advance()
+	_check(not guide.visible, "final action closes guide")
 	_check(guide.make_signature_stream("normal").data.size() > 0, "normal signature waveform exists")
 	_check(guide.make_signature_stream("focus").data.size() > 0, "focus signature waveform exists")
 	_check(guide.make_signature_stream("warning").data.size() > 0, "warning signature waveform exists")
@@ -86,7 +89,10 @@ func _run_scene_integration_tests() -> void:
 	GameState.set_selected_agent_ids(["agent_kang_ijun", "agent_kwon_narae"])
 	var investigation: Node = load("res://scenes/investigation_scene.tscn").instantiate()
 	add_child(investigation)
-	_check(not investigation.find_children("*", "LogGuide", true, false).is_empty(), "investigation contains Log guide")
+	var investigation_guides := investigation.find_children("*", "LogGuide", true, false)
+	_check(not investigation_guides.is_empty(), "investigation contains Log guide")
+	if not investigation_guides.is_empty():
+		_check((investigation_guides[0] as LogGuide).get_signature_play_count() == 1, "first field Log line plays one signature")
 	investigation.queue_free()
 
 	var battle: Node = load("res://scenes/battle_scene.tscn").instantiate()
@@ -112,8 +118,16 @@ func _check_scene_claims_tutorial(scene_path: String, tutorial_id: String) -> vo
 	GameState.seen_log_tutorial_ids.erase(tutorial_id)
 	var scene: Node = load(scene_path).instantiate()
 	add_child(scene)
-	_check(not scene.find_children("*", "LogGuide", true, false).is_empty(), "%s contains Log guide" % scene_path.get_file())
-	_check(GameState.has_seen_log_tutorial(tutorial_id), "%s claims %s" % [scene_path.get_file(), tutorial_id])
+	var guides := scene.find_children("*", "LogGuide", true, false)
+	_check(not guides.is_empty(), "%s contains Log guide" % scene_path.get_file())
+	_check(not GameState.has_seen_log_tutorial(tutorial_id), "%s waits for tutorial acknowledgement" % scene_path.get_file())
+	if not guides.is_empty():
+		var guide: LogGuide = guides[0]
+		for _step in range(4):
+			if not guide.visible:
+				break
+			guide.advance()
+	_check(GameState.has_seen_log_tutorial(tutorial_id), "%s claims %s after close" % [scene_path.get_file(), tutorial_id])
 	if scene_path.ends_with("main_menu.tscn"):
 		_check(_node_has_text(scene, "Ver 3.5"), "main menu displays Ver 3.5")
 		_check(not GameState.has_save_file(), "main tutorial does not create a fake continue save")

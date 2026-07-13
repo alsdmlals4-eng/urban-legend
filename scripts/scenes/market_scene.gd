@@ -55,8 +55,9 @@ func _build_ui() -> void:
 	_log_guide = LogGuideScript.new()
 	_log_guide.set_compact(true)
 	root.add_child(_log_guide)
-	if GameState.claim_log_tutorial("market_first_visit"):
+	if not GameState.has_seen_log_tutorial("market_first_visit"):
 		_log_guide.present_tutorial("market_first_visit", true)
+		_log_guide.sequence_finished.connect(func() -> void: GameState.claim_log_tutorial("market_first_visit"), CONNECT_ONE_SHOT)
 	else:
 		_log_guide.show_compact_hint(LogTutorialCatalog.get_repeat_hint("market_first_visit"))
 	var columns := HBoxContainer.new()

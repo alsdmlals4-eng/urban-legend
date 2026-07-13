@@ -61,8 +61,9 @@ func _build_ui() -> void:
 	var log_guide: LogGuide = LogGuideScript.new()
 	log_guide.set_compact(true)
 	layout.add_child(log_guide)
-	if GameState.claim_log_tutorial("database_first_visit"):
+	if not GameState.has_seen_log_tutorial("database_first_visit"):
 		log_guide.present_tutorial("database_first_visit", true)
+		log_guide.sequence_finished.connect(func() -> void: GameState.claim_log_tutorial("database_first_visit"), CONNECT_ONE_SHOT)
 	else:
 		log_guide.show_compact_hint(LogTutorialCatalog.get_repeat_hint("database_first_visit"))
 

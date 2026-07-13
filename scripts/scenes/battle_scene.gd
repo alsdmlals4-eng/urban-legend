@@ -537,18 +537,18 @@ func _begin_recovery_turn() -> void:
 		_telegraph_label.text = "전조 데이터를 찾지 못했습니다."
 		_log_guide.show_compact_hint("전조 기록을 찾지 못했습니다. 현장 기록을 다시 확인해 주세요.")
 		return
-	var first_telegraph := GameState.claim_log_tutorial("recovery_first_telegraph")
+	var first_telegraph := not GameState.has_seen_log_tutorial("recovery_first_telegraph")
 	if first_telegraph:
-		_log_guide.present_tutorial("recovery_first_telegraph", true)
-	else:
+		_present_log_tutorial("recovery_first_telegraph")
+	elif not _log_guide.is_sequence_active():
 		_log_guide.show_compact_hint(LogTutorialCatalog.get_repeat_hint("recovery_first_telegraph"))
 	var auto_lines := _run_auto_window("analysis")
 	var prediction := GameState.roll_anomaly_prediction(_current_pattern)
 	_telegraph_label.text = "괴이의 전조\n%s" % String(_current_pattern.get("telegraph", "현장이 불규칙하게 흔들린다."))
 	if bool(prediction.get("successful", false)):
 		_prediction_summary_label.text = "자동 예측 성공 %.0f%%\n%s" % [float(prediction.get("rate", 0.0)), String(prediction.get("next_action", ""))]
-		if not first_telegraph and GameState.claim_log_tutorial("recovery_first_prediction"):
-			_log_guide.present_tutorial("recovery_first_prediction", true)
+		if not first_telegraph and not GameState.has_seen_log_tutorial("recovery_first_prediction"):
+			_present_log_tutorial("recovery_first_prediction")
 	else:
 		_prediction_summary_label.text = "자동 예측 실패 %.0f%%\n전조와 확보한 단서만으로 대응해야 합니다." % float(prediction.get("rate", 0.0))
 	if not auto_lines.is_empty():
@@ -624,9 +624,9 @@ func _select_pattern_response(response: Dictionary) -> void:
 	var reason := "규칙에 맞는 대응을 확인했다." if correct else String(_current_pattern.get("failure_reason", "오대응 원인을 기록했다."))
 	GameState.record_recovery_pattern_outcome(String(_current_pattern.get("id", "")), response_id, correct, reason)
 	if not correct:
-		if GameState.claim_log_tutorial("recovery_first_learning"):
-			_log_guide.present_tutorial("recovery_first_learning", true)
-		else:
+		if not GameState.has_seen_log_tutorial("recovery_first_learning"):
+			_present_log_tutorial("recovery_first_learning")
+		elif not _log_guide.is_sequence_active():
 			_log_guide.show_compact_hint("오대응 이유를 기록 서랍에 보존했습니다. 같은 전조가 돌아오면 판단 근거로 사용하세요.")
 	lines.append_array(_run_auto_window("treatment"))
 	lines.append_array(_run_auto_window("rapport"))
@@ -653,6 +653,15 @@ func _use_recovery_consumable(item_id: String, button: Button) -> void:
 	GameState.consume_active_consumable_effect(item_id)
 	GameState.save_game()
 	button.disabled = int(GameState.get_consumable_loadout().get(item_id, 0)) <= 0
+
+
+func _present_log_tutorial(tutorial_id: String) -> bool:
+	if _log_guide == null or _log_guide.is_sequence_active():
+		return false
+	if not _log_guide.present_tutorial(tutorial_id, true):
+		return false
+	_log_guide.sequence_finished.connect(func() -> void: GameState.claim_log_tutorial(tutorial_id), CONNECT_ONE_SHOT)
+	return true
 
 
 func _run_auto_window(ability_key: String) -> Array[String]:

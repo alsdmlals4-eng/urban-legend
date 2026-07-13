@@ -23,6 +23,8 @@ var _line_index := 0
 var _current_expression := "normal"
 var _built := false
 var _compact := false
+var _signature_play_count := 0
+var _internal_advance_enabled := true
 
 
 func _ready() -> void:
@@ -67,6 +69,8 @@ func advance() -> void:
 		return
 	if _line_index + 1 >= _lines.size():
 		_next_button.visible = false
+		visible = false
+		_lines.clear()
 		sequence_finished.emit()
 		return
 	_line_index += 1
@@ -79,6 +83,20 @@ func get_current_text() -> String:
 
 func get_current_expression() -> String:
 	return _current_expression
+
+
+func is_sequence_active() -> bool:
+	return visible and not _lines.is_empty()
+
+
+func get_signature_play_count() -> int:
+	return _signature_play_count
+
+
+func set_internal_advance_enabled(enabled: bool) -> void:
+	_internal_advance_enabled = enabled
+	if _next_button != null:
+		_next_button.visible = enabled and not _lines.is_empty()
 
 
 func set_compact(compact: bool) -> void:
@@ -162,21 +180,26 @@ func _ensure_ui() -> void:
 	copy.add_theme_constant_override("separation", 6)
 	row.add_child(copy)
 
+	var header := HBoxContainer.new()
+	header.add_theme_constant_override("separation", 8)
+	copy.add_child(header)
+
 	_speaker_label = Label.new()
 	_speaker_label.text = "로그 · 괴담기록국 AI"
 	_speaker_label.add_theme_color_override("font_color", ThemeFactory.COLOR_TEAL)
-	copy.add_child(_speaker_label)
+	_speaker_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	header.add_child(_speaker_label)
+
+	_next_button = Button.new()
+	_next_button.text = "로그 계속"
+	_next_button.pressed.connect(advance)
+	header.add_child(_next_button)
 
 	_dialogue_label = Label.new()
 	_dialogue_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_dialogue_label.custom_minimum_size.y = 72
 	_dialogue_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	copy.add_child(_dialogue_label)
-
-	_next_button = Button.new()
-	_next_button.text = "로그 계속"
-	_next_button.pressed.connect(advance)
-	copy.add_child(_next_button)
 
 	_audio_player = AudioStreamPlayer.new()
 	add_child(_audio_player)
@@ -190,7 +213,8 @@ func _apply_current_line() -> void:
 		_current_expression = "normal"
 	_dialogue_label.text = String(line.get("text", ""))
 	_portrait.texture = AssetCatalog.new().get_log_expression(_current_expression)
-	_next_button.visible = _line_index + 1 < _lines.size()
+	_next_button.visible = _internal_advance_enabled
+	_next_button.text = "로그 계속" if _line_index + 1 < _lines.size() else "닫기"
 	_status_line.color = _expression_color(_current_expression)
 	_portrait.modulate = Color.WHITE
 
@@ -199,6 +223,7 @@ func _play_signature(mode: String) -> void:
 	var clean_mode := mode if mode in VALID_EXPRESSIONS else "normal"
 	_audio_player.stream = make_signature_stream(clean_mode)
 	_audio_player.play()
+	_signature_play_count += 1
 	_current_expression = clean_mode
 	_status_line.color = _expression_color(clean_mode)
 	_portrait.modulate = Color(0.64, 0.86, 1.0, 0.72)

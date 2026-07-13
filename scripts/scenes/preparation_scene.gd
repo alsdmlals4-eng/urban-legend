@@ -565,11 +565,15 @@ func _refresh_records() -> void:
 
 
 func _refresh_log() -> void:
-	if GameState.claim_log_tutorial("preparation_agents"):
-		_log_guide.present_tutorial("preparation_agents", true)
+	if _log_guide.is_sequence_active():
 		return
-	if GameState.claim_log_tutorial("preparation_contacts"):
+	if not GameState.has_seen_log_tutorial("preparation_agents"):
+		_log_guide.present_tutorial("preparation_agents", true)
+		_log_guide.sequence_finished.connect(func() -> void: GameState.claim_log_tutorial("preparation_agents"), CONNECT_ONE_SHOT)
+		return
+	if not GameState.has_seen_log_tutorial("preparation_contacts"):
 		_log_guide.present_tutorial("preparation_contacts", true)
+		_log_guide.sequence_finished.connect(func() -> void: GameState.claim_log_tutorial("preparation_contacts"), CONNECT_ONE_SHOT)
 		return
 	var lines: Array = []
 	for line in GameState.get_preparation_log_lines():

@@ -49,8 +49,9 @@ func _build_ui() -> void:
 	var log_guide: LogGuide = LogGuideScript.new()
 	log_guide.set_compact(true)
 	root.add_child(log_guide)
-	if GameState.claim_log_tutorial("result_first_case"):
+	if not GameState.has_seen_log_tutorial("result_first_case"):
 		log_guide.present_tutorial("result_first_case", true)
+		log_guide.sequence_finished.connect(func() -> void: GameState.claim_log_tutorial("result_first_case"), CONNECT_ONE_SHOT)
 	else:
 		log_guide.show_compact_hint(LogTutorialCatalog.get_repeat_hint("result_first_case"))
 

@@ -189,10 +189,12 @@ func _build_ui() -> void:
 
 func _present_log_entry() -> void:
 	var persist_now := GameState.has_save_file()
-	if GameState.claim_log_tutorial("main_welcome", persist_now):
+	if not GameState.has_seen_log_tutorial("main_welcome"):
 		_log_guide.present_tutorial("main_welcome", true)
-	elif persist_now and GameState.claim_log_tutorial("main_continue", true):
+		_log_guide.sequence_finished.connect(func() -> void: GameState.claim_log_tutorial("main_welcome", persist_now), CONNECT_ONE_SHOT)
+	elif persist_now and not GameState.has_seen_log_tutorial("main_continue"):
 		_log_guide.present_tutorial("main_continue", true)
+		_log_guide.sequence_finished.connect(func() -> void: GameState.claim_log_tutorial("main_continue", true), CONNECT_ONE_SHOT)
 	else:
 		_log_guide.show_compact_hint(LogTutorialCatalog.get_repeat_hint("main_welcome"))
 

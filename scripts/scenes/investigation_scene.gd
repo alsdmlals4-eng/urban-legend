@@ -51,6 +51,7 @@ var _field_choice_box: VBoxContainer
 var _log_guide: LogGuide
 var _points_box: GridContainer
 var _pending_next_field_node_id := ""
+var _field_log_intro_played := false
 
 
 func _ready() -> void:
@@ -298,12 +299,13 @@ func _show_current_field_node() -> void:
 		return
 	_narrative_label.text = String(_field_node.get("title", GameState.get_current_episode_title()))
 	_field_lines = _field_node.get("opening_dialogue", []).duplicate(true)
-	if GameState.claim_log_tutorial("field_first_choice"):
+	if not GameState.has_seen_log_tutorial("field_first_choice"):
 		var tutorial := LogTutorialCatalog.get_entry("field_first_choice")
 		_field_lines = tutorial.get("lines", []).duplicate(true) + _field_lines
 		for line in _field_lines:
 			if typeof(line) == TYPE_DICTIONARY and not line.has("speaker"):
 				line["speaker"] = "로그"
+				line["tutorial_id"] = "field_first_choice"
 	_field_line_index = 0
 	_pending_next_field_node_id = ""
 	_clear_children(_field_choice_box)
@@ -320,8 +322,11 @@ func _show_field_line_or_choices() -> void:
 		_field_speaker_label.visible = not is_log
 		_field_dialogue_label.visible = not is_log
 		if is_log:
-			_log_guide.present_lines([line], String(line.get("expression", "normal")), false)
+			_log_guide.set_internal_advance_enabled(false)
+			_log_guide.present_lines([line], String(line.get("expression", "normal")), not _field_log_intro_played)
+			_field_log_intro_played = true
 		else:
+			_log_guide.set_internal_advance_enabled(true)
 			_field_speaker_label.text = speaker
 			_field_dialogue_label.text = String(line.get("text", ""))
 		_field_next_button.visible = true
@@ -339,6 +344,11 @@ func _show_field_line_or_choices() -> void:
 
 
 func _advance_field_dialogue() -> void:
+	if _field_line_index < _field_lines.size():
+		var current_line: Dictionary = _field_lines[_field_line_index]
+		var tutorial_id := String(current_line.get("tutorial_id", ""))
+		if not tutorial_id.is_empty():
+			GameState.claim_log_tutorial(tutorial_id)
 	_field_line_index += 1
 	_show_field_line_or_choices()
 
@@ -609,8 +619,12 @@ func _run_method_option(point: Dictionary, method: Dictionary) -> void:
 func _present_log_tutorial(tutorial_id: String) -> void:
 	if _log_guide == null:
 		return
-	if GameState.claim_log_tutorial(tutorial_id):
+	if _log_guide.is_sequence_active():
+		return
+	_log_guide.set_internal_advance_enabled(true)
+	if not GameState.has_seen_log_tutorial(tutorial_id):
 		_log_guide.present_tutorial(tutorial_id, true)
+		_log_guide.sequence_finished.connect(func() -> void: GameState.claim_log_tutorial(tutorial_id), CONNECT_ONE_SHOT)
 	else:
 		_log_guide.show_compact_hint(LogTutorialCatalog.get_repeat_hint(tutorial_id))
 
