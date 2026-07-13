@@ -28,6 +28,10 @@ static func create_theme() -> Theme:
 	theme.set_stylebox("pressed", "Button", _style(Color("26333a"), COLOR_AMBER, 6, 12))
 	theme.set_stylebox("disabled", "Button", _style(Color("10151b"), Color("252f35"), 6, 12))
 	theme.set_stylebox("panel", "PanelContainer", _style(Color(0.045, 0.065, 0.085, 0.94), Color("293943"), 6, 14))
+	theme.set_type_variation("AgentCard", "PanelContainer")
+	theme.set_stylebox("panel", "AgentCard", _style(Color("111923"), Color("31434d"), 6, 14))
+	theme.set_type_variation("AgentCardSelected", "PanelContainer")
+	theme.set_stylebox("panel", "AgentCardSelected", _style(Color("16252b"), COLOR_TEAL, 6, 14))
 	theme.set_stylebox("background", "ProgressBar", _style(Color("0a1016"), Color("26343c"), 4, 0))
 	theme.set_stylebox("fill", "ProgressBar", _style(COLOR_TEAL, COLOR_TEAL, 4, 0))
 	return theme

@@ -11,7 +11,7 @@ func _init() -> void:
 func _capture() -> void:
 	var args := OS.get_cmdline_user_args()
 	if args.size() < 2:
-		push_error("usage: -- <scene_path> <output_path> [episode_id]")
+		push_error("usage: -- <scene_path> <output_path> [episode_id] [editor] [focus_node_name]")
 		quit(2)
 		return
 	var scene_path := String(args[0])
@@ -41,6 +41,13 @@ func _capture() -> void:
 		Input.parse_input_event(f2)
 		for _frame in range(3):
 			await process_frame
+	if args.size() > 4:
+		var focus_control := current_scene.find_child(String(args[4]), true, false) as Control
+		var scroll := _find_scroll_container(focus_control)
+		if focus_control != null and scroll != null:
+			scroll.ensure_control_visible(focus_control)
+			for _frame in range(3):
+				await process_frame
 	var image := root.get_viewport().get_texture().get_image()
 	if image == null or image.is_empty():
 		push_error("captured image is empty")
@@ -60,3 +67,12 @@ func _capture() -> void:
 		quit(5)
 		return
 	quit(0)
+
+
+func _find_scroll_container(control: Control) -> ScrollContainer:
+	var current: Node = control
+	while current != null:
+		if current is ScrollContainer:
+			return current as ScrollContainer
+		current = current.get_parent()
+	return null

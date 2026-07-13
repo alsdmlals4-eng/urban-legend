@@ -4,6 +4,7 @@ extends Control
 const ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")
 const LogGuideScript = preload("res://scripts/ui/log_guide.gd")
 const LogTutorialCatalog = preload("res://scripts/ui/log_tutorial_catalog.gd")
+const AgentSelectionCardScene = preload("res://scenes/ui/agent_selection_card.tscn")
 
 var _equipment_list: VBoxContainer
 var _episode_list: VBoxContainer
@@ -17,7 +18,6 @@ var _agent_list: VBoxContainer
 var _agent_detail_panel: PanelContainer
 var _agent_detail_label: Label
 var _selected_detail_agent_id := ""
-var _agent_card_by_id: Dictionary = {}
 var _contact_list: VBoxContainer
 var _consumable_list: VBoxContainer
 
@@ -110,10 +110,12 @@ func _add_agent_panel(parent: Control) -> void:
 	var content := _add_section(parent, "요원 편성", "임무에 투입할 요원 2~3명을 선택하고 상세 정보를 확인합니다.")
 
 	_agent_list = VBoxContainer.new()
+	_agent_list.name = "AgentList"
 	_agent_list.add_theme_constant_override("separation", 8)
 	content.add_child(_agent_list)
 
 	_agent_detail_panel = PanelContainer.new()
+	_agent_detail_panel.name = "AgentDetailPanel"
 	_agent_detail_panel.visible = false
 	content.add_child(_agent_detail_panel)
 
@@ -167,107 +169,33 @@ func _add_agent_card(parent: Control, agent: Dictionary) -> void:
 	if agent_id.is_empty():
 		return
 
-	var card := PanelContainer.new()
-	parent.add_child(card)
-
-	var card_content := VBoxContainer.new()
-	card_content.add_theme_constant_override("separation", 4)
-	card.add_child(card_content)
-
-	# Name and class row
-	var name_row := HBoxContainer.new()
-	name_row.add_theme_constant_override("separation", 8)
-	card_content.add_child(name_row)
-
 	var selected := GameState.is_agent_selected(agent_id)
-	var toggle_button := Button.new()
-	toggle_button.text = "해제" if selected else "선택"
-	toggle_button.pressed.connect(func() -> void:
-		if GameState.is_agent_selected(agent_id):
-			GameState.deselect_agent(agent_id)
+	var abilities := {}
+	for key in GameState.ABILITY_KEYS:
+		abilities[key] = GameState.get_agent_ability(agent_id, key)
+
+	var card := AgentSelectionCardScene.instantiate()
+	if card == null:
+		return
+	parent.add_child(card)
+	card.configure(agent, {
+		"selected": selected,
+		"selection_disabled": not selected and GameState.get_selected_agent_ids().size() >= GameState.MAX_SELECTED_AGENTS,
+		"current_hp": GameState.get_agent_current_hp(agent_id),
+		"max_hp": GameState.get_agent_max_hp(agent_id),
+		"current_mental": GameState.get_agent_current_mental(agent_id),
+		"max_mental": GameState.get_agent_max_mental(agent_id),
+		"abilities": abilities,
+		"ability_labels": GameState.ABILITY_LABELS
+	})
+	card.selection_requested.connect(func(requested_agent_id: String) -> void:
+		if GameState.is_agent_selected(requested_agent_id):
+			GameState.deselect_agent(requested_agent_id)
 		else:
-			GameState.select_agent(agent_id)
+			GameState.select_agent(requested_agent_id)
 		_refresh_agents()
 	)
-	toggle_button.disabled = not selected and GameState.get_selected_agent_ids().size() >= GameState.MAX_SELECTED_AGENTS
-	name_row.add_child(toggle_button)
-
-	var name_label := Label.new()
-	name_label.text = "%s [%s] · %s / %s" % [
-		String(agent.get("name", "")),
-		String(agent.get("temperament_label", "")),
-		String(agent.get("class", "")),
-		String(agent.get("role", ""))
-	]
-	name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	name_row.add_child(name_label)
-
-	# HP and Mental bars
-	var hp_row := HBoxContainer.new()
-	hp_row.add_theme_constant_override("separation", 6)
-	card_content.add_child(hp_row)
-	var hp_label := Label.new()
-	hp_label.text = "체력"
-	hp_label.custom_minimum_size.x = 40
-	hp_row.add_child(hp_label)
-	var hp_bar := ProgressBar.new()
-	hp_bar.min_value = 0
-	hp_bar.max_value = GameState.get_agent_max_hp(agent_id)
-	hp_bar.value = GameState.get_agent_current_hp(agent_id)
-	hp_bar.custom_minimum_size = Vector2(120, 14)
-	hp_bar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	hp_row.add_child(hp_bar)
-	var hp_value := Label.new()
-	hp_value.text = "%d/%d" % [GameState.get_agent_current_hp(agent_id), GameState.get_agent_max_hp(agent_id)]
-	hp_value.custom_minimum_size.x = 70
-	hp_row.add_child(hp_value)
-
-	var mental_row := HBoxContainer.new()
-	mental_row.add_theme_constant_override("separation", 6)
-	card_content.add_child(mental_row)
-	var mental_label := Label.new()
-	mental_label.text = "정신"
-	mental_label.custom_minimum_size.x = 40
-	mental_row.add_child(mental_label)
-	var mental_bar := ProgressBar.new()
-	mental_bar.min_value = 0
-	mental_bar.max_value = GameState.get_agent_max_mental(agent_id)
-	mental_bar.value = GameState.get_agent_current_mental(agent_id)
-	mental_bar.custom_minimum_size = Vector2(120, 14)
-	mental_bar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	mental_row.add_child(mental_bar)
-	var mental_value := Label.new()
-	mental_value.text = "%d/%d" % [GameState.get_agent_current_mental(agent_id), GameState.get_agent_max_mental(agent_id)]
-	mental_value.custom_minimum_size.x = 70
-	mental_row.add_child(mental_value)
-
-	# Five ability bars
-	var abilities := ["suppression", "analysis", "protection", "treatment", "rapport"]
-	var ability_row := HBoxContainer.new()
-	ability_row.add_theme_constant_override("separation", 4)
-	card_content.add_child(ability_row)
-	for key in abilities:
-		var val := GameState.get_agent_ability(agent_id, key)
-		var label: String = String(GameState.ABILITY_LABELS.get(key, key))
-		var ab_label := Label.new()
-		ab_label.text = "%s %d" % [label, val]
-		ab_label.add_theme_font_size_override("font_size", 10)
-		ability_row.add_child(ab_label)
-
-	# Description and detail button
-	var desc := Label.new()
-	desc.text = String(agent.get("description", ""))
-	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	card_content.add_child(desc)
-
-	var detail_button := Button.new()
-	detail_button.text = "상세 정보"
-	detail_button.pressed.connect(func() -> void:
-		_show_agent_detail(agent_id)
-	)
-	card_content.add_child(detail_button)
-
-	_agent_card_by_id[agent_id] = { "card": card, "toggle": toggle_button }
+	card.detail_requested.connect(_show_agent_detail)
 
 
 func _show_agent_detail(agent_id: String) -> void:
