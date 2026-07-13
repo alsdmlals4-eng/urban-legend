@@ -5,7 +5,7 @@ const ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")
 const Accessibility = preload("res://scripts/ui/accessibility_settings.gd")
 const AssetCatalog = preload("res://scripts/ui/ui_asset_catalog.gd")
 
-const GAME_VERSION := "Ver 3.2"
+const GAME_VERSION := "Ver 3.3"
 
 var _start_episode_button: Button
 var _continue_button: Button

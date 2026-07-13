@@ -4,8 +4,10 @@ extends Node
 const DEFAULT_EPISODE_PATH := "res://data/episodes/episode_001_afterlife_station.json"
 const RED_UMBRELLA_ALLEY_EPISODE_PATH := "res://data/episodes/episode_002_red_umbrella_alley.json"
 const SAVE_FILE_PATH := "user://urban_legend_save.json"
-const SAVE_VERSION := "mvp-032"
+const SAVE_VERSION := "mvp-033"
 const DEFAULT_DIALOGUE_NODE_ID := "dialogue_intro"
+const DEFAULT_FIELD_NODE_ID := "dialogue_intro"
+const STABILITY_SCHEMA_VERSION := 2
 const DEFAULT_MINIGAME_ID := "minigame_frequency_sync"
 const EQUIP_FREQUENCY_FILTER := "equip_frequency_filter"
 const SCENE_MAIN_MENU := "res://scenes/main_menu.tscn"
@@ -69,6 +71,7 @@ var current_episode_path := DEFAULT_EPISODE_PATH
 var current_episode_data: Dictionary = {}
 var current_scene_path := SCENE_MAIN_MENU
 var current_dialogue_node_id := DEFAULT_DIALOGUE_NODE_ID
+var current_field_node_id := DEFAULT_FIELD_NODE_ID
 var current_minigame_id := DEFAULT_MINIGAME_ID
 var minigame_results: Dictionary = {}
 var selected_agent_ids: Array = []
@@ -83,9 +86,15 @@ var recovery_result_stability := 100
 var investigation_risk := 0
 var case_understanding := 0
 var victim_understanding := 0
-var case_anomaly_stability := 100
+var case_anomaly_stability := 0
 var mental_stamina := 100
 var prediction_success_streak := 0
+var prediction_failure_streak := 0
+var current_recovery_pattern_id := ""
+var last_recovery_pattern_id := ""
+var confirmed_recovery_pattern_id := ""
+var seen_recovery_pattern_ids: Array = []
+var recovery_pattern_learning: Dictionary = {}
 var last_random_event_id := ""
 var last_random_event_result: Dictionary = {}
 var forced_recovery_phase := false
@@ -148,6 +157,8 @@ func start_episode_from_preparation(file_path: String) -> bool:
 	victim_state.clear()
 	_clear_investigation_method_state()
 	current_dialogue_node_id = DEFAULT_DIALOGUE_NODE_ID
+	current_field_node_id = DEFAULT_FIELD_NODE_ID
+	reset_recovery_pattern_state(false)
 	current_minigame_id = DEFAULT_MINIGAME_ID
 	current_scene_path = SCENE_PREPARATION
 	return true
@@ -171,9 +182,11 @@ func reset_run_state() -> void:
 	victim_state.clear()
 	current_scene_path = SCENE_DIALOGUE
 	current_dialogue_node_id = DEFAULT_DIALOGUE_NODE_ID
+	current_field_node_id = DEFAULT_FIELD_NODE_ID
 	current_minigame_id = DEFAULT_MINIGAME_ID
 	load_episode(DEFAULT_EPISODE_PATH)
 	_clear_investigation_method_state()
+	reset_recovery_pattern_state(false)
 
 
 ## Returns the active episode title.
@@ -217,6 +230,21 @@ func get_current_dialogue_node_id() -> String:
 	if current_dialogue_node_id.strip_edges().is_empty():
 		return DEFAULT_DIALOGUE_NODE_ID
 	return current_dialogue_node_id
+
+
+## Stores the continuous field node used by the unified dialogue/investigation scene.
+func set_current_field_node_id(field_node_id: String) -> void:
+	var clean_id := field_node_id.strip_edges()
+	if clean_id.is_empty():
+		return
+	current_field_node_id = clean_id
+
+
+## Returns the current continuous field node id.
+func get_current_field_node_id() -> String:
+	if current_field_node_id.strip_edges().is_empty():
+		return DEFAULT_FIELD_NODE_ID
+	return current_field_node_id
 
 
 ## Stores the current minigame id for minigame scene loading.
@@ -1068,6 +1096,65 @@ func get_current_dialogue_node() -> Dictionary:
 	return first_node
 
 
+## Returns authored continuous field nodes.
+func get_field_nodes() -> Array:
+	return CaseDataScript.get_field_nodes(current_episode_data)
+
+
+## Returns one continuous field node.
+func get_field_node(field_node_id: String) -> Dictionary:
+	return CaseDataScript.get_field_node_by_id(current_episode_data, field_node_id)
+
+
+## Maps an old dialogue save id to a field node without discarding the old id.
+func map_legacy_dialogue_node_to_field_node(dialogue_node_id: String) -> String:
+	var clean_id := dialogue_node_id.strip_edges()
+	if not get_field_node(clean_id).is_empty():
+		return clean_id
+	for node in get_field_nodes():
+		if typeof(node) != TYPE_DICTIONARY:
+			continue
+		if _to_string_array(node.get("legacy_dialogue_node_ids", [])).has(clean_id):
+			return String(node.get("id", DEFAULT_FIELD_NODE_ID))
+	var nodes := get_field_nodes()
+	if not nodes.is_empty() and typeof(nodes[0]) == TYPE_DICTIONARY:
+		return String(nodes[0].get("id", DEFAULT_FIELD_NODE_ID))
+	return DEFAULT_FIELD_NODE_ID
+
+
+## Returns the current field node, falling back through the legacy dialogue id.
+func get_current_field_node() -> Dictionary:
+	var node := get_field_node(get_current_field_node_id())
+	if not node.is_empty():
+		return node
+	var mapped := map_legacy_dialogue_node_to_field_node(get_current_dialogue_node_id())
+	set_current_field_node_id(mapped)
+	return get_field_node(mapped)
+
+
+## Resolves a field choice exactly once and returns its aftermath dialogue.
+func resolve_field_choice(field_node_id: String, choice_id: String) -> Dictionary:
+	var node := get_field_node(field_node_id)
+	if node.is_empty():
+		return {"error": "통합 현장 노드를 찾지 못했습니다."}
+	for choice in node.get("choices", []):
+		if typeof(choice) != TYPE_DICTIONARY or String(choice.get("id", "")) != choice_id:
+			continue
+		var effect_key := "field_choice_applied:%s:%s" % [field_node_id, choice_id]
+		if not has_flag(effect_key):
+			var point_id := String(choice.get("point_id", ""))
+			if not point_id.is_empty():
+				var point := get_investigation_point_by_id(point_id)
+				if not point.is_empty() and point.get("method_options", []).is_empty():
+					apply_story_effects(point)
+			apply_story_effects(choice.get("effects", choice))
+			add_flag(effect_key)
+		set_current_field_node_id(String(choice.get("next_field_node_id", field_node_id)))
+		save_game()
+		return choice.duplicate(true)
+	return {"error": "통합 현장 선택지를 찾지 못했습니다."}
+
+
 ## Returns investigation points defined in the active episode data.
 func get_investigation_points() -> Array:
 	return CaseDataScript.get_investigation_points(current_episode_data)
@@ -1208,18 +1295,21 @@ func is_forced_recovery_phase() -> bool:
 	return forced_recovery_phase
 
 
-## Returns current anomaly prediction rate after consecutive-success decay.
+## Returns current anomaly prediction rate with success suppression and failure recovery.
 func get_current_prediction_rate() -> float:
-	return clampf(float(case_understanding) * _get_prediction_decay_multiplier(), 0.0, 100.0)
+	return clampf(float(case_understanding - prediction_success_streak * 15 + prediction_failure_streak * 10), 5.0, 95.0)
 
 
 ## Rolls one anomaly prediction and updates decay state.
-func roll_anomaly_prediction() -> Dictionary:
+func roll_anomaly_prediction(pattern: Dictionary = {}) -> Dictionary:
 	var rate := get_current_prediction_rate()
 	var successful := randf() * 100.0 <= rate
 	var next_action := "괴이의 다음 움직임을 안정적으로 읽지 못했습니다."
 	if successful:
-		next_action = _get_prediction_success_text()
+		next_action = "%s — %s" % [String(pattern.get("name", "행동 확인")), String(pattern.get("description", _get_prediction_success_text()))]
+		confirmed_recovery_pattern_id = String(pattern.get("id", ""))
+	else:
+		confirmed_recovery_pattern_id = ""
 
 	apply_prediction_result(successful)
 	var result := {
@@ -1227,6 +1317,7 @@ func roll_anomaly_prediction() -> Dictionary:
 		"rate": rate,
 		"next_action": next_action,
 		"prediction_success_streak": prediction_success_streak,
+		"prediction_failure_streak": prediction_failure_streak,
 		"mental_stamina": mental_stamina
 	}
 	save_game()
@@ -1237,8 +1328,10 @@ func roll_anomaly_prediction() -> Dictionary:
 func apply_prediction_result(successful: bool) -> void:
 	if successful:
 		prediction_success_streak += 1
+		prediction_failure_streak = 0
 		add_flag("prediction_success")
 	else:
+		prediction_failure_streak += 1
 		prediction_success_streak = 0
 		add_flag("prediction_failed")
 
@@ -1246,7 +1339,109 @@ func apply_prediction_result(successful: bool) -> void:
 ## Resets consecutive prediction decay.
 func reset_prediction_decay() -> void:
 	prediction_success_streak = 0
+	prediction_failure_streak = 0
 	save_game()
+
+
+func get_prediction_streaks() -> Dictionary:
+	return {"success": prediction_success_streak, "failure": prediction_failure_streak}
+
+
+## Test/content authoring helper that keeps understanding bounded.
+func set_anomaly_understanding_for_test(value: int) -> void:
+	case_understanding = clampi(value, 0, 100)
+
+
+func change_anomaly_understanding(delta: int) -> int:
+	case_understanding = clampi(case_understanding + delta, 0, 100)
+	return case_understanding
+
+
+func change_anomaly_stability(delta: int) -> int:
+	case_anomaly_stability = clampi(case_anomaly_stability + delta, 0, 100)
+	return case_anomaly_stability
+
+
+func get_recovery_patterns() -> Array:
+	return CaseDataScript.get_recovery_patterns(current_episode_data)
+
+
+func get_recovery_pattern(pattern_id: String) -> Dictionary:
+	return CaseDataScript.get_recovery_pattern_by_id(current_episode_data, pattern_id)
+
+
+## Selects unseen patterns in authored order, then weighted random without an immediate repeat.
+func select_next_recovery_pattern() -> Dictionary:
+	var patterns := get_recovery_patterns()
+	if patterns.is_empty():
+		return {}
+	var unseen: Array = []
+	for pattern in patterns:
+		if typeof(pattern) == TYPE_DICTIONARY and not seen_recovery_pattern_ids.has(String(pattern.get("id", ""))):
+			unseen.append(pattern)
+	var selected: Dictionary = {}
+	if not unseen.is_empty():
+		unseen.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return int(a.get("order", 0)) < int(b.get("order", 0)))
+		selected = unseen[0]
+	else:
+		var candidates: Array = []
+		for pattern in patterns:
+			if typeof(pattern) == TYPE_DICTIONARY and String(pattern.get("id", "")) != last_recovery_pattern_id:
+				candidates.append(pattern)
+		selected = candidates.pick_random() if not candidates.is_empty() else patterns[0]
+	var selected_id := String(selected.get("id", ""))
+	current_recovery_pattern_id = selected_id
+	last_recovery_pattern_id = selected_id
+	if not seen_recovery_pattern_ids.has(selected_id):
+		seen_recovery_pattern_ids.append(selected_id)
+	return selected.duplicate(true)
+
+
+func reset_recovery_pattern_state(save_after: bool = true) -> void:
+	current_recovery_pattern_id = ""
+	last_recovery_pattern_id = ""
+	confirmed_recovery_pattern_id = ""
+	seen_recovery_pattern_ids.clear()
+	recovery_pattern_learning.clear()
+	prediction_success_streak = 0
+	prediction_failure_streak = 0
+	if save_after:
+		save_game()
+
+
+func record_recovery_pattern_outcome(pattern_id: String, response_id: String, correct: bool, reason: String) -> void:
+	var record := {
+		"pattern_id": pattern_id,
+		"response_id": response_id,
+		"correct": correct,
+		"reason": reason,
+		"attempts": int(_to_dictionary(recovery_pattern_learning.get(pattern_id, {})).get("attempts", 0)) + 1
+	}
+	recovery_pattern_learning[pattern_id] = record
+
+
+func get_recovery_pattern_learning() -> Dictionary:
+	return recovery_pattern_learning.duplicate(true)
+
+
+func get_agent_auto_action_chance(agent_id: String, ability_key: String) -> float:
+	if not is_agent_active(agent_id):
+		return 0.0
+	var chance := clampf(float(15 + get_agent_ability(agent_id, ability_key) * 8 + get_agent_trust(agent_id) * 3), 15.0, 70.0)
+	if get_agent_current_mental(agent_id) * 4 <= get_agent_max_mental(agent_id):
+		chance *= 0.5
+	return chance
+
+
+func roll_agent_auto_action(agent_id: String, ability_key: String) -> Dictionary:
+	var chance := get_agent_auto_action_chance(agent_id, ability_key)
+	return {
+		"agent_id": agent_id,
+		"agent_name": String(get_agent_by_id(agent_id).get("name", "요원")),
+		"ability": ability_key,
+		"chance": chance,
+		"triggered": chance > 0.0 and randf() * 100.0 <= chance
+	}
 
 
 ## Returns the latest random event result.
@@ -1307,6 +1502,7 @@ func get_anomaly_status_summary() -> Dictionary:
 		"mental_stamina": mental_stamina,
 		"prediction_rate": get_current_prediction_rate(),
 		"prediction_success_streak": prediction_success_streak,
+		"prediction_failure_streak": prediction_failure_streak,
 		"forced_recovery_phase": forced_recovery_phase
 	}
 
@@ -1828,9 +2024,12 @@ func load_game() -> bool:
 	investigation_risk = clampi(int(save_data.get("anomaly_risk", save_data.get("investigation_risk", 0))), 0, 100)
 	case_understanding = clampi(int(save_data.get("anomaly_understanding", save_data.get("case_understanding", 0))), 0, 100)
 	victim_understanding = clampi(int(save_data.get("victim_understanding", 0)), 0, 100)
-	case_anomaly_stability = clampi(int(save_data.get("anomaly_stability", 100)), 0, 100)
+	var loaded_stability := clampi(int(save_data.get("anomaly_stability", 100)), 0, 100)
+	var loaded_stability_schema := int(save_data.get("stability_schema_version", 1))
+	case_anomaly_stability = loaded_stability if loaded_stability_schema >= STABILITY_SCHEMA_VERSION else 100 - loaded_stability
 	mental_stamina = clampi(int(save_data.get("mental_stamina", 100)), 0, 100)
 	prediction_success_streak = max(0, int(save_data.get("prediction_success_streak", 0)))
+	prediction_failure_streak = max(0, int(save_data.get("prediction_failure_streak", 0)))
 	last_random_event_id = String(save_data.get("last_random_event_id", ""))
 	last_random_event_result = _to_dictionary(save_data.get("last_random_event_result", {}))
 	forced_recovery_phase = bool(save_data.get("forced_recovery_phase", false)) or investigation_risk >= 100
@@ -1857,6 +2056,14 @@ func load_game() -> bool:
 	current_dialogue_node_id = String(save_data.get("current_dialogue_node_id", DEFAULT_DIALOGUE_NODE_ID))
 	if current_dialogue_node_id.is_empty():
 		current_dialogue_node_id = DEFAULT_DIALOGUE_NODE_ID
+	current_field_node_id = String(save_data.get("current_field_node_id", ""))
+	if current_field_node_id.is_empty():
+		current_field_node_id = map_legacy_dialogue_node_to_field_node(current_dialogue_node_id)
+	current_recovery_pattern_id = String(save_data.get("current_recovery_pattern_id", ""))
+	last_recovery_pattern_id = String(save_data.get("last_recovery_pattern_id", ""))
+	confirmed_recovery_pattern_id = String(save_data.get("confirmed_recovery_pattern_id", ""))
+	seen_recovery_pattern_ids = _to_unique_string_array(save_data.get("seen_recovery_pattern_ids", []))
+	recovery_pattern_learning = _to_dictionary(save_data.get("recovery_pattern_learning", {}))
 
 	current_minigame_id = String(save_data.get("current_minigame_id", DEFAULT_MINIGAME_ID))
 	if current_minigame_id.is_empty():
@@ -1909,6 +2116,7 @@ func _make_save_data() -> Dictionary:
 		"episode_path": current_episode_path,
 		"current_scene_path": get_current_scene_path(),
 		"current_dialogue_node_id": get_current_dialogue_node_id(),
+		"current_field_node_id": get_current_field_node_id(),
 		"current_minigame_id": get_current_minigame_id(),
 		"selected_agent_ids": get_selected_agent_ids(),
 		"flags": get_flags(),
@@ -1930,8 +2138,15 @@ func _make_save_data() -> Dictionary:
 		"anomaly_risk": investigation_risk,
 		"anomaly_understanding": case_understanding,
 		"anomaly_stability": case_anomaly_stability,
+		"stability_schema_version": STABILITY_SCHEMA_VERSION,
 		"mental_stamina": mental_stamina,
 		"prediction_success_streak": prediction_success_streak,
+		"prediction_failure_streak": prediction_failure_streak,
+		"current_recovery_pattern_id": current_recovery_pattern_id,
+		"last_recovery_pattern_id": last_recovery_pattern_id,
+		"confirmed_recovery_pattern_id": confirmed_recovery_pattern_id,
+		"seen_recovery_pattern_ids": seen_recovery_pattern_ids.duplicate(),
+		"recovery_pattern_learning": recovery_pattern_learning.duplicate(true),
 		"last_random_event_id": last_random_event_id,
 		"last_random_event_result": last_random_event_result,
 		"forced_recovery_phase": forced_recovery_phase,
@@ -2125,7 +2340,7 @@ func _apply_status_deltas(effect_data: Dictionary) -> void:
 		100
 	)
 	case_anomaly_stability = clampi(
-		case_anomaly_stability + _get_effect_int(effect_data, ["anomaly_stability_delta"]),
+		case_anomaly_stability - _get_effect_int(effect_data, ["anomaly_stability_delta"]),
 		0,
 		100
 	)
@@ -2300,9 +2515,11 @@ func _apply_initial_anomaly_status() -> void:
 	investigation_risk = clampi(int(status.get("anomaly_risk", 0)), 0, 100)
 	case_understanding = clampi(int(status.get("anomaly_understanding", 0)), 0, 100)
 	victim_understanding = clampi(int(status.get("victim_understanding", 0)), 0, 100)
-	case_anomaly_stability = clampi(int(status.get("anomaly_stability", 100)), 0, 100)
+	# Episode data before MVP-033 authored stability as 100 unstable -> 0 stable.
+	case_anomaly_stability = 100 - clampi(int(status.get("anomaly_stability", 100)), 0, 100)
 	mental_stamina = clampi(int(status.get("mental_stamina", 100)), 0, 100)
 	prediction_success_streak = max(0, int(status.get("prediction_success_streak", 0)))
+	prediction_failure_streak = 0
 	last_random_event_id = ""
 	last_random_event_result.clear()
 	forced_recovery_phase = bool(status.get("forced_recovery_phase", false))

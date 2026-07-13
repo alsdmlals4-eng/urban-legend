@@ -36,6 +36,18 @@ var _team_label: Label
 var _narrative_label: Label
 var _result_panel: PanelContainer
 var _runtime_editor: RuntimeUiEditor
+var _record_drawer: PanelContainer
+var _record_button: Button
+var _learning_list: VBoxContainer
+var _field_node: Dictionary = {}
+var _field_lines: Array = []
+var _field_line_index := 0
+var _field_speaker_label: Label
+var _field_dialogue_label: Label
+var _field_next_button: Button
+var _field_choice_box: VBoxContainer
+var _points_box: GridContainer
+var _pending_next_field_node_id := ""
 
 
 func _ready() -> void:
@@ -43,6 +55,7 @@ func _ready() -> void:
 		GameState.load_episode()
 
 	GameState.set_current_scene_path("res://scenes/investigation_scene.tscn")
+	_field_node = GameState.get_current_field_node()
 	SceneVisuals.apply_background(self, "investigation")
 	_build_ui()
 	_setup_runtime_editor()
@@ -108,12 +121,6 @@ func _build_ui() -> void:
 	center_column.size_flags_stretch_ratio = 1.7
 	columns.add_child(center_column)
 
-	var right_column := VBoxContainer.new()
-	right_column.add_theme_constant_override("separation", 10)
-	right_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	right_column.size_flags_stretch_ratio = 0.65
-	columns.add_child(right_column)
-
 	var team_content := _add_section(left_column, "현장 요원 팀", "별도 주인공이 아닌 편성 요원 팀이 현장을 분담합니다.")
 	_team_label = Label.new()
 	_team_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -143,6 +150,19 @@ func _build_ui() -> void:
 	_preparation_modifier_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	progress_content.add_child(_preparation_modifier_label)
 
+	_record_button = Button.new()
+	_record_button.text = "기록 열기"
+	_record_button.pressed.connect(_toggle_record_drawer)
+	left_column.add_child(_record_button)
+	_add_record_drawer(left_column)
+
+	var recovery_content := _add_section(left_column, "회수 / 안정화", "단서가 충분하면 괴이의 전조에 대응하는 회수 페이즈로 넘어갑니다.")
+	_resolution_attempt_button = Button.new()
+	_resolution_attempt_button.text = "회수/안정화 시도"
+	_resolution_attempt_button.pressed.connect(_show_resolution_confirm_panel)
+	recovery_content.add_child(_resolution_attempt_button)
+	_add_resolution_confirm_panel(recovery_content)
+
 	var narrative_content := _add_section(center_column, "상황 묘사", "현장에 남은 반복과 위화감을 읽고, 팀의 다음 수사 방식을 선택합니다.")
 	var illustration := TextureRect.new()
 	illustration.texture = (get_node_or_null("ArtLayer/Background") as TextureRect).texture
@@ -154,47 +174,24 @@ func _build_ui() -> void:
 	_narrative_label.text = "%s의 현장 기록이 불완전하게 겹칩니다. 확보한 단서와 요원 판단을 근거로 다음 행동을 정하세요." % GameState.get_current_episode_title()
 	_narrative_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	narrative_content.add_child(_narrative_label)
+	_add_field_dialogue(center_column)
 
 	var points_content := _add_section(center_column, "수사 선택", "조사 포인트를 고른 뒤 관찰·분석·강행 진입 같은 수사 방식을 선택합니다.")
-	var points := GridContainer.new()
-	points.columns = 1
-	points.add_theme_constant_override("v_separation", 8)
-	points_content.add_child(points)
+	_points_box = GridContainer.new()
+	_points_box.columns = 1
+	_points_box.add_theme_constant_override("v_separation", 8)
+	points_content.add_child(_points_box)
 
 	for point in _get_investigation_points():
 		if typeof(point) == TYPE_DICTIONARY:
-			_add_investigation_point(points, point)
+			_add_investigation_point(_points_box, point)
 
 	_add_method_panel(center_column)
 
-	var result_content := _add_section(right_column, "선택 결과", "선택 결과와 이번 조사에서 얻은 정보를 순서대로 요약합니다.")
-	_result_panel = result_content.get_parent() as PanelContainer
 	_result_label = Label.new()
-	_result_label.text = "수사 방식을 선택하면 현장 변화와 새 정보가 여기에 정리됩니다."
-	_result_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	result_content.add_child(_result_label)
-
 	_hint_label = Label.new()
-	_hint_label.text = "이번 조사 힌트: 아직 새 힌트가 없습니다."
-	_hint_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	result_content.add_child(_hint_label)
-
-	var clue_content := _add_section(right_column, "단서 추적", "수집/미수집 상태와 이번 조사로 얻은 새 단서를 구분합니다.")
-	_clue_list = VBoxContainer.new()
-	_clue_list.add_theme_constant_override("separation", 4)
-	clue_content.add_child(_clue_list)
-
-	var hint_content := _add_section(right_column, "힌트 추적", "힌트는 단서 수집률에 포함되지 않는 방향 안내입니다.")
-	_hint_list = VBoxContainer.new()
-	_hint_list.add_theme_constant_override("separation", 4)
-	hint_content.add_child(_hint_list)
-
-	var recovery_content := _add_section(right_column, "다음 단계: 회수 / 안정화", "단서가 충분하면 팀이 괴이 핵 안정화와 회수 페이즈로 넘어갑니다.")
-	_resolution_attempt_button = Button.new()
-	_resolution_attempt_button.text = "회수/안정화 시도"
-	_resolution_attempt_button.pressed.connect(_show_resolution_confirm_panel)
-	recovery_content.add_child(_resolution_attempt_button)
-	_add_resolution_confirm_panel(recovery_content)
+	_result_panel = _record_drawer
+	_show_current_field_node()
 
 
 func _add_team_portraits(parent: Control) -> void:
@@ -227,13 +224,154 @@ func _setup_runtime_editor() -> void:
 	_runtime_editor = RuntimeEditor.new()
 	add_child(_runtime_editor)
 	_runtime_editor.setup("investigation", self)
-	_runtime_editor.register_element("result_panel", _result_panel, {"minimum_size": Vector2(260, 180), "free_layout": true})
+	_runtime_editor.register_element("record_drawer", _record_drawer, {"minimum_size": Vector2(260, 180), "free_layout": false})
 	_runtime_editor.register_element("narrative", _narrative_label, {
 		"minimum_size": Vector2(320, 80),
 		"text_control": _narrative_label,
 		"content_key": "%s/investigation/narrative" % GameState.get_current_episode_id(),
 		"source_text": _narrative_label.text
 	})
+
+
+func _add_record_drawer(parent: Control) -> void:
+	_record_drawer = PanelContainer.new()
+	_record_drawer.visible = false
+	parent.add_child(_record_drawer)
+	var scroll := ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(0, 220)
+	_record_drawer.add_child(scroll)
+	var content := VBoxContainer.new()
+	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	content.add_theme_constant_override("separation", 8)
+	scroll.add_child(content)
+	var title := Label.new()
+	title.text = "현장 기록"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	content.add_child(title)
+	_clue_list = VBoxContainer.new()
+	content.add_child(_clue_list)
+	_hint_list = VBoxContainer.new()
+	content.add_child(_hint_list)
+	_learning_list = VBoxContainer.new()
+	content.add_child(_learning_list)
+
+
+func _toggle_record_drawer() -> void:
+	_record_drawer.visible = not _record_drawer.visible
+	_record_button.text = "기록 닫기" if _record_drawer.visible else "기록 열기"
+	if _record_drawer.visible:
+		_refresh_record_learning()
+
+
+func _add_field_dialogue(parent: Control) -> void:
+	var content := _add_section(parent, "현장 대화", "상황을 읽고 팀의 대화를 들은 뒤 다음 행동을 선택합니다.")
+	_field_speaker_label = Label.new()
+	_field_speaker_label.text = "기록국 관제"
+	content.add_child(_field_speaker_label)
+	_field_dialogue_label = Label.new()
+	_field_dialogue_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_field_dialogue_label.custom_minimum_size.y = 54
+	content.add_child(_field_dialogue_label)
+	_field_next_button = Button.new()
+	_field_next_button.text = "계속"
+	_field_next_button.pressed.connect(_advance_field_dialogue)
+	content.add_child(_field_next_button)
+	_field_choice_box = VBoxContainer.new()
+	_field_choice_box.add_theme_constant_override("separation", 6)
+	content.add_child(_field_choice_box)
+
+
+func _show_current_field_node() -> void:
+	_field_node = GameState.get_current_field_node()
+	if _field_node.is_empty():
+		_field_dialogue_label.text = "현장 기록을 불러오지 못했습니다. 기존 조사 포인트를 확인하세요."
+		_field_next_button.visible = false
+		_points_box.visible = true
+		return
+	_narrative_label.text = String(_field_node.get("title", GameState.get_current_episode_title()))
+	_field_lines = _field_node.get("opening_dialogue", []).duplicate(true)
+	_field_line_index = 0
+	_pending_next_field_node_id = ""
+	_clear_children(_field_choice_box)
+	_points_box.visible = false
+	_show_field_line_or_choices()
+
+
+func _show_field_line_or_choices() -> void:
+	if _field_line_index < _field_lines.size():
+		var line: Dictionary = _field_lines[_field_line_index]
+		_field_speaker_label.text = String(line.get("speaker", "현장 기록"))
+		_field_dialogue_label.text = String(line.get("text", ""))
+		_field_next_button.visible = true
+		return
+	_field_next_button.visible = false
+	if not _pending_next_field_node_id.is_empty():
+		GameState.set_current_field_node_id(_pending_next_field_node_id)
+		GameState.save_game()
+		_show_current_field_node()
+		return
+	_show_field_choices()
+
+
+func _advance_field_dialogue() -> void:
+	_field_line_index += 1
+	_show_field_line_or_choices()
+
+
+func _show_field_choices() -> void:
+	_clear_children(_field_choice_box)
+	var choices: Array = _field_node.get("choices", [])
+	for choice in choices:
+		if typeof(choice) != TYPE_DICTIONARY:
+			continue
+		var choice_copy: Dictionary = choice.duplicate(true)
+		var ability := String(choice_copy.get("ability", "analysis"))
+		var helper := GameState.find_best_agent_for_ability(ability)
+		var button := Button.new()
+		button.text = "%s — %s / %s %d" % [
+			String(choice_copy.get("label", "현장을 확인한다")),
+			String(helper.get("name", "팀")),
+			GameState.ABILITY_LABELS.get(ability, ability),
+			GameState.get_agent_ability(String(helper.get("id", "")), ability)
+		]
+		button.pressed.connect(func() -> void: _select_field_choice(choice_copy))
+		_field_choice_box.add_child(button)
+	if choices.is_empty() or bool(_field_node.get("uses_investigation_points", false)):
+		_points_box.visible = true
+		_field_speaker_label.text = "현장 선택"
+		_field_dialogue_label.text = "확보한 단서와 팀의 판단을 근거로 조사할 대상을 고르세요."
+
+
+func _select_field_choice(choice: Dictionary) -> void:
+	var result := GameState.resolve_field_choice(String(_field_node.get("id", "")), String(choice.get("id", "")))
+	if result.has("error"):
+		_field_dialogue_label.text = String(result.error)
+		return
+	_clear_children(_field_choice_box)
+	_field_lines = result.get("after_dialogue", []).duplicate(true)
+	_field_line_index = 0
+	_pending_next_field_node_id = String(result.get("next_field_node_id", ""))
+	_show_field_line_or_choices()
+	_refresh_case_status()
+
+
+func _refresh_record_learning() -> void:
+	_clear_children(_learning_list)
+	var title := Label.new()
+	title.text = "오대응 학습 기록"
+	_learning_list.add_child(title)
+	var learning := GameState.get_recovery_pattern_learning()
+	if learning.is_empty():
+		var empty := Label.new()
+		empty.text = "아직 기록된 오대응이 없습니다."
+		_learning_list.add_child(empty)
+		return
+	for pattern_id in learning:
+		var record: Dictionary = learning[pattern_id]
+		var label := Label.new()
+		label.text = "- %s" % String(record.get("reason", "대응 결과를 재검토해야 합니다."))
+		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		_learning_list.add_child(label)
 
 func _add_title(parent: Control) -> void:
 	var title := Label.new()
@@ -593,14 +731,12 @@ func _refresh_clue_list() -> void:
 	for clue in GameState.get_clues():
 		if typeof(clue) != TYPE_DICTIONARY:
 			continue
+		if not bool(clue.get("collected", false)):
+			continue
 
 		var label := Label.new()
-		var state_text := "수집됨" if bool(clue.get("collected", false)) else "미수집"
 		var description := String(clue.get("description", ""))
-		if bool(clue.get("collected", false)):
-			label.text = "%s - %s\n%s" % [state_text, clue.get("title", ""), description]
-		else:
-			label.text = "%s - %s\n아직 기록되지 않았습니다." % [state_text, clue.get("title", "")]
+		label.text = "확보 - %s\n%s" % [clue.get("title", ""), description]
 		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		_clue_list.add_child(label)
 
@@ -613,11 +749,10 @@ func _refresh_hint_list() -> void:
 
 		var hint_id := String(hint.get("id", ""))
 		var seen := GameState.has_seen_hint(hint_id)
+		if not seen:
+			continue
 		var label := Label.new()
-		label.text = "%s - %s" % [
-			"확인됨" if seen else "미확인",
-			String(hint.get("text", "")) if seen else "아직 확인하지 않은 방향 안내입니다."
-		]
+		label.text = "추론 - %s" % String(hint.get("text", ""))
 		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		_hint_list.add_child(label)
 

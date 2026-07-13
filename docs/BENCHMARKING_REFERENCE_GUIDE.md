@@ -72,6 +72,19 @@
 
 ### MVP-032 벤치마킹 개선서 (확인일 2026-07-13)
 
+### MVP-033 벤치마킹 개선서 (확인일 2026-07-13)
+
+| 사례 | 공개 근거·반응 | 플레이어 효과 | 도시괴담 기록국식 재해석 | 제외 기준 |
+|---|---|---|---|---|
+| PARANORMASIGHT | https://store.steampowered.com/app/2106840/PARANORMASIGHT_The_Seven_Mysteries_of_Honjo/ | 배경·인물·대화가 한 장면에서 이어지는 오컬트 몰입 | 대화와 현장 선택을 `field_nodes`로 연결 | 고유 화면 구성·저주 규칙 복제 금지 |
+| The Case of the Golden Idol | https://store.steampowered.com/app/1677770/The_Case_of_the_Golden_Idol/ · Steam 사용자 평가 매우 긍정적 | 관찰한 단서를 플레이어가 직접 연결하는 만족 | 확보 단서와 패턴 전조를 연결해 대응을 추론 | 단어 끼워넣기 퍼즐·고유 미술 복제 금지 |
+| Return of the Obra Dinn | https://store.steampowered.com/app/653530/Return_of_the_Obra_Dinn | 관찰 기록의 재검토가 추론 진전을 만든다 | 오대응도 다음 턴에 쓰는 학습 기록으로 보존 | 장면 재생 장치·1비트 외형 복제 금지 |
+| Disco Elysium | https://store.steampowered.com/app/632470/DiscoElysium/ · Steam 사용자 평가 매우 긍정적 | 실패도 새 정보와 대화를 남겨 진행이 끊기지 않는다 | 선택 후 3~5회 팀 대화와 부분 정보를 제공 | 장문 독백 밀도·스킬 인격화 복제 금지 |
+| Lobotomy Corporation | https://store.steampowered.com/app/568220/Lobotomy_Corporation__Monster_Management_Simulation/ | 대상 규칙과 요원 적합성을 학습하는 반복 | 괴이별 전조·맞춤 대응과 체력/정신 부담 | 시설 경영·E.G.O·사망 반복·작업명 복제 금지 |
+| Darkest Dungeon | https://store.steampowered.com/app/262060/Darkest_Dungeon/ | 팀의 육체·정신 부담이 선택의 긴장을 만든다 | 방호·치료·교감 자동 보조로 사건 상태를 관리 | 영구 사망·소모적 영웅 운용은 도입하지 않음 |
+
+반대 검토: 자동행동이 정답을 대신하면 플레이어의 추리가 약해진다. 따라서 자동행동은 예측 보조·안정도·피해 경감·회복만 담당하고 최종 상황 대응은 항상 플레이어가 고른다. 예측 실패는 거짓 정답을 보여주지 않으며 전조와 확보 단서는 그대로 남긴다.
+
 | 사례·공개 근거 | 플레이어 효과와 반응 | 프로젝트식 재해석·채택 판단 |
 |---|---|---|
 | [Lobotomy Corporation](https://store.steampowered.com/app/568220/Lobotomy_Corporation__Monster_Management_Simulation/) | 대상별 적합 작업과 육체·정신 이중 부담이 요원 선택에 의미를 준다. 반복 손실과 높은 학습 비용은 진입 장벽이 된다. | 5능력 적합도와 체력/정신력은 채택. 시설 경영·고유 작업명·E.G.O·사망 반복은 제외. |

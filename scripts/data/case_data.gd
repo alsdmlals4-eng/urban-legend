@@ -61,6 +61,32 @@ static func get_dialogue_node_by_id(episode_data: Dictionary, dialogue_node_id: 
 	return {}
 
 
+## Returns continuous field nodes that combine dialogue and investigation.
+static func get_field_nodes(episode_data: Dictionary) -> Array:
+	return _get_array(episode_data, "field_nodes")
+
+
+## Finds one continuous field node by id.
+static func get_field_node_by_id(episode_data: Dictionary, field_node_id: String) -> Dictionary:
+	for node in get_field_nodes(episode_data):
+		if typeof(node) == TYPE_DICTIONARY and node.get("id", "") == field_node_id:
+			return node
+	return {}
+
+
+## Returns anomaly recovery patterns in their authored first-appearance order.
+static func get_recovery_patterns(episode_data: Dictionary) -> Array:
+	return _get_array(episode_data, "recovery_patterns")
+
+
+## Finds one anomaly recovery pattern by id.
+static func get_recovery_pattern_by_id(episode_data: Dictionary, pattern_id: String) -> Dictionary:
+	for pattern in get_recovery_patterns(episode_data):
+		if typeof(pattern) == TYPE_DICTIONARY and pattern.get("id", "") == pattern_id:
+			return pattern
+	return {}
+
+
 ## Returns investigation point records for data-driven investigation scenes.
 static func get_investigation_points(episode_data: Dictionary) -> Array:
 	return _get_array(episode_data, "investigation_points")

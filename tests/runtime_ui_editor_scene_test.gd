@@ -33,9 +33,9 @@ func _run() -> void:
 		_fail("F2 input did not enable edit mode")
 		return
 
-	var before := editor.get_element_rect("dialogue_panel")
-	if before.size.x < 520.0 or before.size.y < 150.0:
-		_fail("dialogue panel has an invalid editable rect: %s" % before)
+	var before := editor.get_element_rect("narrative")
+	if before.size.x < 320.0 or before.size.y < 20.0:
+		_fail("unified field narrative has an invalid editable rect: %s" % before)
 		return
 	var press := InputEventMouseButton.new()
 	press.button_index = MOUSE_BUTTON_LEFT
@@ -49,7 +49,7 @@ func _run() -> void:
 	release.button_index = MOUSE_BUTTON_LEFT
 	release.position = motion.position
 	editor.handle_surface_input(release)
-	var after := editor.get_element_rect("dialogue_panel")
+	var after := editor.get_element_rect("narrative")
 	if after.position == before.position or fmod(after.position.x, 8.0) != 0.0 or fmod(after.position.y, 8.0) != 0.0:
 		_fail("drag did not persist: before=%s after=%s" % [before, after])
 		return

@@ -39,6 +39,20 @@ var _runtime_editor: RuntimeUiEditor
 func _ready() -> void:
 	if GameState.get_current_episode().is_empty():
 		GameState.load_episode()
+	# Ver 3.3 keeps this scene only as a compatibility entry for old saves and tools.
+	var field_id := GameState.map_legacy_dialogue_node_to_field_node(GameState.get_current_dialogue_node_id())
+	GameState.set_current_field_node_id(field_id)
+	GameState.set_current_scene_path("res://scenes/investigation_scene.tscn")
+	GameState.save_game()
+	call_deferred("_redirect_to_unified_field")
+	return
+
+
+func _redirect_to_unified_field() -> void:
+	get_tree().change_scene_to_file("res://scenes/investigation_scene.tscn")
+
+
+func _legacy_ready() -> void:
 
 	GameState.set_current_scene_path("res://scenes/dialogue_scene.tscn")
 	_dialogue_node = GameState.get_current_dialogue_node()

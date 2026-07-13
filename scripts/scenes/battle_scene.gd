@@ -6,9 +6,9 @@ const AssetCatalog = preload("res://scripts/ui/ui_asset_catalog.gd")
 const ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")
 const RuntimeEditor = preload("res://scripts/ui/runtime_ui_editor.gd")
 
-const BASE_ANOMALY_STABILITY := 100
-const BASE_RECOVERY_THRESHOLD := 40
-const MAX_RECOVERY_THRESHOLD := 75
+const BASE_ANOMALY_STABILITY := 0
+const BASE_RECOVERY_THRESHOLD := 70
+const MAX_RECOVERY_THRESHOLD := 90
 const CLUE_THRESHOLD_FACTOR := 0.5
 const CLUE_START_WEAKEN_FACTOR := 0.2
 var _anomaly_stability := BASE_ANOMALY_STABILITY
@@ -37,6 +37,12 @@ var _anomaly_image: TextureRect
 var _anomaly_stage_label: Label
 var _action_panel: PanelContainer
 var _runtime_editor: RuntimeUiEditor
+var _current_pattern: Dictionary = {}
+var _telegraph_label: Label
+var _prediction_summary_label: Label
+var _response_box: GridContainer
+var _turn_auto_success_agents: Dictionary = {}
+var _turn_locked := false
 
 
 func _ready() -> void:
@@ -49,7 +55,7 @@ func _ready() -> void:
 	SceneVisuals.apply_background(self, "recovery")
 	_build_scene_ui()
 	_setup_runtime_editor()
-	_update_battle_view(_make_start_message())
+	_begin_recovery_turn()
 
 
 func _build_scene_ui() -> void:
@@ -172,19 +178,15 @@ func _build_scene_ui() -> void:
 	var action_box := VBoxContainer.new()
 	action_box.add_theme_constant_override("separation", 8)
 	_action_panel.add_child(action_box)
-	var actions := GridContainer.new()
-	actions.columns = 3
-	actions.add_theme_constant_override("h_separation", 8)
-	actions.add_theme_constant_override("v_separation", 6)
-	action_box.add_child(actions)
-	_add_prediction_action(actions)
-	_add_ability_action(actions, "suppression", "제압")
-	_add_ability_action(actions, "analysis", "분석")
-	_add_ability_action(actions, "protection", "방호")
-	_add_ability_action(actions, "treatment", "치료")
-	_add_ability_action(actions, "rapport", "교감")
-	_add_representative_switch_action(actions)
-	_add_target_switch_action(actions)
+	_telegraph_label = _make_label("")
+	action_box.add_child(_telegraph_label)
+	_prediction_summary_label = _make_label("")
+	action_box.add_child(_prediction_summary_label)
+	_response_box = GridContainer.new()
+	_response_box.columns = 2
+	_response_box.add_theme_constant_override("h_separation", 8)
+	_response_box.add_theme_constant_override("v_separation", 6)
+	action_box.add_child(_response_box)
 	var result_row := HBoxContainer.new()
 	result_row.add_theme_constant_override("separation", 10)
 	action_box.add_child(result_row)
@@ -211,7 +213,7 @@ func _make_clue_summary() -> String:
 	for effect in _active_effects:
 		if typeof(effect) == TYPE_DICTIONARY:
 			names.append(String(effect.get("clue_title", "이름 없는 단서")))
-	return "핵심 단서 %d개\n%s\n회수 기준: 안정도 %d 이하" % [
+	return "핵심 단서 %d개\n%s\n회수 기준: 안정도 %d 이상" % [
 		_active_effects.size(),
 		", ".join(names),
 		_recovery_threshold
@@ -357,26 +359,25 @@ func _apply_collected_clue_effects() -> void:
 
 	var threshold_bonus := int(floor(float(_total_clue_effect_value) * CLUE_THRESHOLD_FACTOR))
 	_recovery_threshold = clampi(
-		BASE_RECOVERY_THRESHOLD + threshold_bonus,
-		BASE_RECOVERY_THRESHOLD,
+		BASE_RECOVERY_THRESHOLD - threshold_bonus,
+		50,
 		MAX_RECOVERY_THRESHOLD
 	)
 
 	var start_weaken_amount := int(floor(float(_total_clue_effect_value) * CLUE_START_WEAKEN_FACTOR))
 	_anomaly_stability = clampi(
-		BASE_ANOMALY_STABILITY - start_weaken_amount,
+		GameState.get_anomaly_stability() + start_weaken_amount,
 		0,
-		BASE_ANOMALY_STABILITY
+		100
 	)
 
 	_apply_minigame_recovery_effects()
 
-	var investigation_stability_delta := GameState.get_anomaly_stability() - BASE_ANOMALY_STABILITY
 	var risk_penalty := int(floor(float(GameState.get_anomaly_risk()) / 25.0))
 	_anomaly_stability = clampi(
-		_anomaly_stability + investigation_stability_delta + risk_penalty,
+		_anomaly_stability - risk_penalty,
 		0,
-		BASE_ANOMALY_STABILITY
+		100
 	)
 	_fear_level = clampi(int(floor(float(100 - GameState.get_mental_stamina()) / 5.0)), 0, 100)
 
@@ -396,9 +397,9 @@ func _apply_minigame_recovery_effects() -> void:
 			MAX_RECOVERY_THRESHOLD
 		)
 		_anomaly_stability = clampi(
-			_anomaly_stability + int(minigame.get("%s_recovery_stability_delta" % prefix, 0)),
+			_anomaly_stability - int(minigame.get("%s_recovery_stability_delta" % prefix, 0)),
 			0,
-			BASE_ANOMALY_STABILITY
+			100
 		)
 		var outcome := "성공" if prefix == "success" else "실패"
 		_minigame_recovery_messages.append("%s %s: %s" % [
@@ -414,7 +415,7 @@ func _make_start_message() -> String:
 	if _active_effects.is_empty():
 		return "수집한 단서가 없어 회수 조건 보정 없이 회수 페이즈를 시작합니다.%s%s" % [minigame_text, investigation_text]
 
-	return "수집한 단서 %d개가 회수 조건에 반영되었습니다. 현재 회수 가능 기준은 괴이 안정도 %d 이하입니다.%s%s" % [
+	return "수집한 단서 %d개가 회수 조건에 반영되었습니다. 현재 회수 가능 기준은 괴이 안정도 %d 이상입니다.%s%s" % [
 		_active_effects.size(),
 		_recovery_threshold,
 		minigame_text,
@@ -510,6 +511,122 @@ func _make_resolution_phase_text() -> String:
 		selected_label,
 		GameState.get_selected_resolution_rate()
 	]
+
+
+func _begin_recovery_turn() -> void:
+	_turn_locked = false
+	_turn_auto_success_agents.clear()
+	_current_pattern = GameState.select_next_recovery_pattern()
+	_clear_children(_response_box)
+	if _current_pattern.is_empty():
+		_telegraph_label.text = "전조 데이터를 찾지 못했습니다."
+		return
+	var auto_lines := _run_auto_window("analysis")
+	var prediction := GameState.roll_anomaly_prediction(_current_pattern)
+	_telegraph_label.text = "괴이의 전조\n%s" % String(_current_pattern.get("telegraph", "현장이 불규칙하게 흔들린다."))
+	if bool(prediction.get("successful", false)):
+		_prediction_summary_label.text = "자동 예측 성공 %.0f%%\n%s" % [float(prediction.get("rate", 0.0)), String(prediction.get("next_action", ""))]
+	else:
+		_prediction_summary_label.text = "자동 예측 실패 %.0f%%\n전조와 확보한 단서만으로 대응해야 합니다." % float(prediction.get("rate", 0.0))
+	if not auto_lines.is_empty():
+		_prediction_summary_label.text += "\n%s" % "\n".join(auto_lines)
+	for response in _current_pattern.get("responses", []):
+		if typeof(response) != TYPE_DICTIONARY:
+			continue
+		var response_copy: Dictionary = response.duplicate(true)
+		var ability := String(response_copy.get("ability", "analysis"))
+		var agent := GameState.find_best_agent_for_ability(ability)
+		var button := Button.new()
+		button.text = "%s\n%s / %s %d" % [
+			String(response_copy.get("label", "상황에 대응한다")),
+			String(agent.get("name", "팀")),
+			GameState.ABILITY_LABELS.get(ability, ability),
+			GameState.get_agent_ability(String(agent.get("id", "")), ability)
+		]
+		button.pressed.connect(func() -> void: _select_pattern_response(response_copy))
+		_response_box.add_child(button)
+	_update_battle_view(_make_start_message())
+
+
+func _select_pattern_response(response: Dictionary) -> void:
+	if _turn_locked:
+		return
+	_turn_locked = true
+	for child in _response_box.get_children():
+		if child is Button:
+			child.disabled = true
+	var lines: Array[String] = []
+	lines.append_array(_run_auto_window("suppression"))
+	var response_id := String(response.get("id", ""))
+	var correct := response_id == String(_current_pattern.get("correct_response_id", ""))
+	if correct:
+		var gain := int(response.get("stability_gain", 15))
+		_anomaly_stability = GameState.change_anomaly_stability(gain)
+		lines.append("대응 성공: 괴이 규칙을 끊어 안정도 +%d" % gain)
+	else:
+		lines.append_array(_run_auto_window("protection"))
+		var target := _get_representative_agent()
+		var target_id := String(target.get("id", ""))
+		var damage := 10 + int(GameState.get_anomaly_risk() / 20)
+		var remaining := GameState.consume_protection(target_id, damage)
+		if remaining > 0:
+			GameState.change_agent_mental(target_id, -remaining)
+		lines.append("오대응: %s" % String(_current_pattern.get("failure_reason", "패턴과 맞지 않는 대응이었습니다.")))
+		lines.append("괴이 반응: %s 정신력 -%d" % [String(target.get("name", "대표 요원")), remaining])
+	var reason := "규칙에 맞는 대응을 확인했다." if correct else String(_current_pattern.get("failure_reason", "오대응 원인을 기록했다."))
+	GameState.record_recovery_pattern_outcome(String(_current_pattern.get("id", "")), response_id, correct, reason)
+	lines.append_array(_run_auto_window("treatment"))
+	lines.append_array(_run_auto_window("rapport"))
+	GameState.save_game()
+	var next_button := Button.new()
+	next_button.text = "다음 전조 관측"
+	next_button.pressed.connect(_begin_recovery_turn)
+	_response_box.add_child(next_button)
+	_update_battle_view("\n".join(lines))
+
+
+func _run_auto_window(ability_key: String) -> Array[String]:
+	var lines: Array[String] = []
+	for agent in GameState.get_selected_agents():
+		if typeof(agent) != TYPE_DICTIONARY:
+			continue
+		var agent_id := String(agent.get("id", ""))
+		if _turn_auto_success_agents.has(agent_id):
+			continue
+		var roll := GameState.roll_agent_auto_action(agent_id, ability_key)
+		if not bool(roll.get("triggered", false)):
+			continue
+		_turn_auto_success_agents[agent_id] = true
+		var ability := GameState.get_agent_ability(agent_id, ability_key)
+		match ability_key:
+			"analysis":
+				GameState.change_anomaly_understanding(2 + ability)
+				lines.append("%s의 분석 보조: 전조 이해도 +%d" % [String(agent.get("name", "요원")), 2 + ability])
+			"suppression":
+				var gain := 3 + ability
+				_anomaly_stability = GameState.change_anomaly_stability(gain)
+				lines.append("%s의 제압 보조: 규칙 억제 안정도 +%d" % [String(agent.get("name", "요원")), gain])
+			"protection":
+				var amount := 5 + ability * 3
+				GameState.activate_protection(agent_id, amount)
+				lines.append("%s의 방호 보조: 피해 흡수 %d" % [String(agent.get("name", "요원")), amount])
+			"treatment":
+				var heal := 4 + ability * 2
+				GameState.change_agent_hp(agent_id, heal)
+				lines.append("%s의 치료 보조: 체력 +%d" % [String(agent.get("name", "요원")), heal])
+			"rapport":
+				var restore := 4 + ability * 2
+				GameState.change_agent_mental(agent_id, restore)
+				_anomaly_stability = GameState.change_anomaly_stability(2 + ability)
+				lines.append("%s의 교감 보조: 정신력 +%d, 안정도 +%d" % [String(agent.get("name", "요원")), restore, 2 + ability])
+	return lines
+
+
+func _clear_children(parent: Node) -> void:
+	if parent == null:
+		return
+	for child in parent.get_children():
+		child.queue_free()
 
 
 func _add_stability_action(parent: Control, label: String, stability_delta: int, fear_gain: int, message: String) -> void:
@@ -744,11 +861,8 @@ func _use_agent_recovery_support(support: Dictionary, button: Button) -> void:
 		return
 
 	GameState.mark_agent_support_used(support_id)
-	_anomaly_stability = clampi(
-		_anomaly_stability + int(support.get("stability_delta", 0)),
-		0,
-		BASE_ANOMALY_STABILITY
-	)
+	var stability_gain := -int(support.get("stability_delta", 0))
+	_anomaly_stability = GameState.change_anomaly_stability(stability_gain)
 	_fear_level = clampi(
 		_fear_level + int(support.get("fear_delta", 0)),
 		0,
@@ -775,18 +889,19 @@ func _update_battle_view(message: String) -> void:
 	if _fear_bar != null:
 		_fear_bar.value = _fear_level
 	if _threshold_label != null:
-		_threshold_label.text = "회수 가능 조건: 괴이 안정도 %d 이하 / 현재 %d" % [
+		_threshold_label.text = "회수 가능 조건: 괴이 안정도 %d 이상 / 현재 %d" % [
 			_recovery_threshold,
 			_anomaly_stability
 		]
 	if _prediction_label != null:
 		var status := GameState.get_anomaly_status_summary()
-		_prediction_label.text = "괴이 위험도 %d / 괴이 이해도 %d / 정신력 %d / 예측률 %.1f%% / 연속 예측 %d" % [
+		_prediction_label.text = "괴이 위험도 %d / 괴이 이해도 %d / 정신력 %d / 예측률 %.1f%% / 성공 %d·실패 %d" % [
 			int(status.get("anomaly_risk", 0)),
 			int(status.get("anomaly_understanding", 0)),
 			int(status.get("mental_stamina", 100)),
 			float(status.get("prediction_rate", 0.0)),
-			int(status.get("prediction_success_streak", 0))
+			int(status.get("prediction_success_streak", 0)),
+			int(status.get("prediction_failure_streak", 0))
 		]
 	if _recover_button != null:
 		_recover_button.disabled = _recovery_completed or not _can_recover()
@@ -861,20 +976,13 @@ func _get_target_agent() -> Dictionary:
 
 
 func _can_recover() -> bool:
-	return _anomaly_stability <= _recovery_threshold
+	return _anomaly_stability >= _recovery_threshold
 
 
 func _recover_anomaly_core() -> void:
 	if not _can_recover():
 		_update_battle_view("아직 괴이의 핵이 충분히 안정화되지 않았습니다.")
 		return
-
-
-func _return_to_investigation() -> void:
-	GameState.set_current_scene_path("res://scenes/investigation_scene.tscn")
-	GameState.save_game()
-	get_tree().change_scene_to_file("res://scenes/investigation_scene.tscn")
-
 	_recovery_completed = true
 	GameState.save_recovery_result(true, "core_recovered", _anomaly_stability)
 	GameState.set_current_scene_path("res://scenes/result_scene.tscn")
@@ -885,6 +993,12 @@ func _return_to_investigation() -> void:
 		button.disabled = true
 	_recover_button.disabled = true
 	get_tree().change_scene_to_file("res://scenes/result_scene.tscn")
+
+
+func _return_to_investigation() -> void:
+	GameState.set_current_scene_path("res://scenes/investigation_scene.tscn")
+	GameState.save_game()
+	get_tree().change_scene_to_file("res://scenes/investigation_scene.tscn")
 
 
 func _add_navigation(parent: Control) -> void:

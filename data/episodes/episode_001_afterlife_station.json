@@ -322,6 +322,94 @@
       ]
     }
   ],
+  "field_nodes": [
+    {
+      "id": "dialogue_intro",
+      "legacy_dialogue_node_ids": ["dialogue_intro", "dialogue_after_photo"],
+      "title": "존재하지 않는 저승역",
+      "opening_dialogue": [
+        {"speaker": "권나래", "text": "안내방송과 전광판의 종착지가 서로 맞지 않아요."},
+        {"speaker": "강이준", "text": "먼저 피해자의 기록과 현장 반복을 나눠 확인하죠."},
+        {"speaker": "오현", "text": "괴이를 쫓기보다 돌아오는 규칙부터 찾겠습니다."}
+      ],
+      "choices": [
+        {
+          "id": "field_begin_station_investigation",
+          "label": "피해자의 기록부터 시간 순서로 맞춘다",
+          "ability": "analysis",
+          "point_id": "point_victim_phone",
+          "after_dialogue": [
+            {"speaker": "권나래", "text": "마지막 문자는 장소가 아니라 자정을 가리키고 있어요."},
+            {"speaker": "강이준", "text": "시간이 종착지 역할을 한다면 방송도 같은 주기로 반복될 겁니다."},
+            {"speaker": "오현", "text": "그럼 발을 옮기기 전에 스피커와 승차권을 대조하죠."}
+          ],
+          "next_field_node_id": "field_station_investigation"
+        }
+      ]
+    },
+    {
+      "id": "field_station_investigation",
+      "title": "저승역 현장 조사",
+      "opening_dialogue": [
+        {"speaker": "기록국 관제", "text": "전조와 연결될 현장 기록을 선택해 확인하십시오."}
+      ],
+      "uses_investigation_points": true
+    }
+  ],
+  "recovery_patterns": [
+    {
+      "id": "pattern_station_false_terminal", "order": 0, "name": "거짓 종착 안내",
+      "telegraph": "스피커가 없는 승강장 이름을 세 번 반복하고 전광판의 글자가 한 칸씩 비어 간다.",
+      "description": "거짓 안내를 따라간 사람의 경로를 존재하지 않는 종착지로 덮어쓴다.",
+      "related_clue_ids": ["clue_repeating_announcement", "clue_missing_terminal_sign"],
+      "responses": [
+        {"id": "cut_false_broadcast", "label": "방송 주기와 전광판 불일치를 대조해 안내를 끊는다", "ability": "analysis", "stability_gain": 18},
+        {"id": "follow_terminal", "label": "전광판에 표시된 승강장으로 이동한다", "ability": "suppression"},
+        {"id": "answer_broadcast", "label": "안내방송에 목적지를 말해 응답한다", "ability": "rapport"}
+      ],
+      "correct_response_id": "cut_false_broadcast",
+      "failure_reason": "거짓 안내를 목적지 정보로 믿으면 이동 경로가 잠긴다."
+    },
+    {
+      "id": "pattern_station_gaze_lure", "order": 1, "name": "역무원의 시선 유도",
+      "telegraph": "얼굴이 흐린 역무원이 피해자와 반대쪽 선로를 오래 바라본다.",
+      "description": "시선을 따라간 대상을 피해자의 실제 동선에서 떼어 낸다.",
+      "related_clue_ids": ["clue_last_message", "clue_staff_room_log"],
+      "responses": [
+        {"id": "trace_victim_time", "label": "시선을 무시하고 피해자의 시간 기록으로 동선을 고정한다", "ability": "rapport", "stability_gain": 16},
+        {"id": "meet_stationmaster_gaze", "label": "역무원의 시선을 정면으로 따라간다", "ability": "suppression"},
+        {"id": "enter_tracks", "label": "역무원이 보는 선로로 먼저 진입한다", "ability": "protection"}
+      ],
+      "correct_response_id": "trace_victim_time",
+      "failure_reason": "역무원의 시선을 따라가면 피해자 동선에서 멀어진다."
+    },
+    {
+      "id": "pattern_station_ticket_imprint", "order": 2, "name": "검은 승차권 각인",
+      "telegraph": "검은 승차권의 구멍이 요원 이름의 획처럼 번지기 시작한다.",
+      "description": "표를 개찰한 대상을 존재하지 않는 종착지의 승객으로 각인한다.",
+      "related_clue_ids": ["clue_black_ticket", "clue_last_message"],
+      "responses": [
+        {"id": "isolate_ticket", "label": "자정 기록을 확인하며 승차권 접촉을 차단한다", "ability": "protection", "stability_gain": 17},
+        {"id": "punch_ticket", "label": "승차권을 개찰해 목적지를 확인한다", "ability": "analysis"},
+        {"id": "carry_ticket", "label": "대표 요원이 승차권을 소지한다", "ability": "suppression"}
+      ],
+      "correct_response_id": "isolate_ticket",
+      "failure_reason": "승차권을 개찰하거나 소지하면 종착지 표식이 요원에게 옮겨간다."
+    },
+    {
+      "id": "pattern_station_boundary_collapse", "order": 3, "name": "선로 경계 붕괴",
+      "telegraph": "승강장 끝의 안전선이 끊기고 선로가 양쪽에서 같은 방향으로 이어진다.",
+      "description": "현실 승강장과 괴이 노선의 경계를 겹친다.",
+      "related_clue_ids": ["clue_missing_terminal_sign", "clue_staff_room_log"],
+      "responses": [
+        {"id": "restore_platform_boundary", "label": "표지판과 근무 기록으로 현실 승강장 경계를 재고정한다", "ability": "protection", "stability_gain": 20},
+        {"id": "retreat_to_tracks", "label": "선로 아래로 내려가 괴이를 우회한다", "ability": "suppression"},
+        {"id": "cross_broken_line", "label": "끊어진 안전선을 빠르게 넘어간다", "ability": "treatment"}
+      ],
+      "correct_response_id": "restore_platform_boundary",
+      "failure_reason": "선로로 후퇴하면 현실 경계가 아니라 괴이의 노선으로 진입한다."
+    }
+  ],
   "dialogue_nodes": [
     {
       "id": "dialogue_intro",

@@ -219,6 +219,90 @@
       "condition_flags": ["red_umbrella_sync_requested"]
     }
   ],
+  "field_nodes": [
+    {
+      "id": "dialogue_intro",
+      "legacy_dialogue_node_ids": ["dialogue_intro", "dialogue_after_rhythm"],
+      "title": "비 오는 골목의 빨간 우산",
+      "opening_dialogue": [
+        {"speaker": "오현", "text": "빗소리가 세 번째마다 되감기고 있습니다."},
+        {"speaker": "권나래", "text": "우산보다 피해자의 귀가 경로를 먼저 붙잡아야 해요."},
+        {"speaker": "강이준", "text": "반사와 발자국이 먼저 움직이는지 확인하겠습니다."}
+      ],
+      "choices": [
+        {
+          "id": "field_begin_umbrella_investigation",
+          "label": "빗소리의 세 번째 박자와 피해자 동선을 기록한다",
+          "ability": "analysis",
+          "point_id": "point_dry_red_umbrella",
+          "after_dialogue": [
+            {"speaker": "오현", "text": "세 번째 박자 직후 골목 표지판이 원래 위치로 돌아옵니다."},
+            {"speaker": "권나래", "text": "피해자는 우산을 든 채가 아니라 우산에게 따라잡히고 있어요."},
+            {"speaker": "강이준", "text": "물웅덩이의 반사와 젖지 않은 흔적을 나눠 보죠."}
+          ],
+          "next_field_node_id": "field_umbrella_investigation"
+        }
+      ]
+    },
+    {
+      "id": "field_umbrella_investigation",
+      "title": "빨간 우산 골목 조사",
+      "opening_dialogue": [
+        {"speaker": "기록국 관제", "text": "반복의 원인과 피해자에게 연결된 경로를 확인하십시오."}
+      ],
+      "uses_investigation_points": true
+    }
+  ],
+  "recovery_patterns": [
+    {
+      "id": "pattern_red_rain_rewind", "order": 0, "name": "세 번째 빗소리 되감기",
+      "telegraph": "빗소리가 두 번 멀어졌다가 세 번째에 바로 귓가에서 다시 시작된다.",
+      "description": "세 번째 박자에 움직인 대상을 같은 골목의 시작점으로 되감는다.",
+      "related_clue_ids": ["clue_reverse_rain_flow", "clue_repeating_alley_sign"],
+      "responses": [
+        {"id": "wait", "label": "세 번째 빗소리가 지난 뒤 경로를 고정한다", "ability": "analysis", "stability_gain": 18},
+        {"id": "run_on_third", "label": "세 번째 박자에 맞춰 골목을 돌파한다", "ability": "suppression"},
+        {"id": "silence_rain", "label": "소리를 막고 계속 이동한다", "ability": "protection"}
+      ],
+      "correct_response_id": "wait", "failure_reason": "세 번째 박자에 이동하면 같은 골목으로 되감긴다."
+    },
+    {
+      "id": "pattern_red_reverse_reflection", "order": 1, "name": "거꾸로 흐르는 반사",
+      "telegraph": "물웅덩이 속 요원들이 현실보다 반 박자 먼저 반대 방향으로 고개를 돌린다.",
+      "description": "반사상의 선행 움직임으로 대응 방향을 뒤집는다.",
+      "related_clue_ids": ["clue_reverse_rain_flow", "clue_red_umbrella_fabric"],
+      "responses": [
+        {"id": "block_reflection", "label": "먼저 움직이는 반사상을 식별해 반사 경로를 가린다", "ability": "analysis", "stability_gain": 17},
+        {"id": "copy_reflection", "label": "반사상이 가리키는 방향으로 몸을 돌린다", "ability": "rapport"},
+        {"id": "step_into_puddle", "label": "물웅덩이를 밟아 반사를 깨뜨린다", "ability": "suppression"}
+      ],
+      "correct_response_id": "block_reflection", "failure_reason": "반사상의 움직임을 현실로 판단하면 대응 방향이 반전된다."
+    },
+    {
+      "id": "pattern_red_victim_approach", "order": 2, "name": "우산의 피해자 접근",
+      "telegraph": "빨간 우산이 바람과 반대로 기울며 피해자의 손 높이까지 천천히 내려온다.",
+      "description": "우산과 피해자의 귀가 기억을 다시 연결한다.",
+      "related_clue_ids": ["clue_red_umbrella_fabric", "clue_repeating_alley_sign"],
+      "responses": [
+        {"id": "separate_victim_route", "label": "손자국과 귀가 경로 사이의 연결을 분리한다", "ability": "rapport", "stability_gain": 19},
+        {"id": "break_umbrella", "label": "우산 자체를 제압해 부순다", "ability": "suppression"},
+        {"id": "hand_umbrella", "label": "피해자에게 우산을 돌려준다", "ability": "treatment"}
+      ],
+      "correct_response_id": "separate_victim_route", "failure_reason": "우산을 파괴해도 피해자 기억과 연결된 경로는 남는다."
+    },
+    {
+      "id": "pattern_red_dry_footprint_transfer", "order": 3, "name": "젖지 않은 발자국 전이",
+      "telegraph": "빗물 위에 마른 발자국이 생겨 가장 가까운 요원의 발끝을 향한다.",
+      "description": "마른 반사 경로를 따라 괴이의 표적을 요원에게 옮긴다.",
+      "related_clue_ids": ["clue_reverse_rain_flow", "clue_red_umbrella_fabric"],
+      "responses": [
+        {"id": "isolate_dry_trace", "label": "젖은 현실 흔적과 마른 반사 경로를 분리해 격리한다", "ability": "protection", "stability_gain": 20},
+        {"id": "follow_dry_steps", "label": "젖지 않은 발자국을 따라 피해자를 찾는다", "ability": "analysis"},
+        {"id": "erase_steps", "label": "발자국을 밟아 지운다", "ability": "suppression"}
+      ],
+      "correct_response_id": "isolate_dry_trace", "failure_reason": "젖지 않은 발자국을 따라가면 경로가 요원에게 전이된다."
+    }
+  ],
   "dialogue_nodes": [
     {
       "id": "dialogue_intro",
