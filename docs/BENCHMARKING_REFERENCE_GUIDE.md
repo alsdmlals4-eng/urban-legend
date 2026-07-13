@@ -1,5 +1,13 @@
 # Benchmarking Reference Guide
 
+## 2026-07-13 MVP-035 로그 AI 동료
+
+- 개선서: `docs/benchmarks/MVP-035_LOG_AI_COMPANION.md`
+- 조사 범위: 다이제틱 AI 동료, 서사형 튜토리얼, 반복 안내 억제, 접속음 접근성
+- 채택: 첫 상세 안내와 반복 축약 분리, 확보 정보만 대조, 평상·분석·위험의 공통 접속 모티프
+- 제외: 상시 팝업, 정답 누설, 캐릭터·고유 음형·UI 외형 복제, 과도한 화면 점멸
+- DeepSeek R0는 실행 제한으로 결과 없이 종료되어 재시도하지 않았고 Codex가 공개 근거를 확인했다.
+
 > **Base 기반 로컬 사본 + 도시괴담 기록국 사례 확장**: 공용 벤치마킹 기록 방식은 [`alsdmlals4-eng/Base`](https://github.com/alsdmlals4-eng/Base)에서 유래하며, 기준 커밋은 `docs/BASE_RULES_VERSION.md`에 기록한다. 아래 초기 사례 목록과 적용 결론은 이 프로젝트 전용이다.
 
 이 문서는 `도시괴담 기록국` 프로젝트에서 기획, MVP 정의, 시스템 개선, UI/UX 판단을 할 때 참조할 벤치마킹 규칙과 초기 사례 목록을 정리한다.
