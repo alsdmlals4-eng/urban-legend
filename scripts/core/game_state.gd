@@ -4,7 +4,7 @@ extends Node
 const DEFAULT_EPISODE_PATH := "res://data/episodes/episode_001_afterlife_station.json"
 const RED_UMBRELLA_ALLEY_EPISODE_PATH := "res://data/episodes/episode_002_red_umbrella_alley.json"
 const SAVE_FILE_PATH := "user://urban_legend_save.json"
-const SAVE_VERSION := "mvp-034"
+const SAVE_VERSION := "mvp-035"
 const DEFAULT_DIALOGUE_NODE_ID := "dialogue_intro"
 const DEFAULT_FIELD_NODE_ID := "dialogue_intro"
 const STABILITY_SCHEMA_VERSION := 2
@@ -90,6 +90,7 @@ var minigame_results: Dictionary = {}
 var selected_agent_ids: Array = []
 var flags: Array = []
 var seen_hint_ids: Array = []
+var seen_log_tutorial_ids: Array = []
 var selected_resolution_grade := ""
 var selected_resolution_label := ""
 var selected_resolution_rate := 0.0
@@ -192,6 +193,7 @@ func start_episode_from_preparation(file_path: String) -> bool:
 func reset_run_state() -> void:
 	flags.clear()
 	seen_hint_ids.clear()
+	seen_log_tutorial_ids.clear()
 	minigame_results.clear()
 	selected_agent_ids.clear()
 	agent_trust.clear()
@@ -365,6 +367,27 @@ func get_seen_hint_ids() -> Array:
 ## Clears every seen hint id.
 func clear_seen_hint_ids() -> void:
 	seen_hint_ids.clear()
+
+
+## Returns true when one Log tutorial has already shown its full sequence.
+func has_seen_log_tutorial(tutorial_id: String) -> bool:
+	return seen_log_tutorial_ids.has(tutorial_id)
+
+
+## Atomically claims one first-time Log tutorial.
+func claim_log_tutorial(tutorial_id: String, save_after: bool = true) -> bool:
+	var clean_id := tutorial_id.strip_edges()
+	if clean_id.is_empty() or has_seen_log_tutorial(clean_id):
+		return false
+	seen_log_tutorial_ids.append(clean_id)
+	if save_after:
+		save_game()
+	return true
+
+
+## Returns a copy of claimed Log tutorial ids.
+func get_seen_log_tutorial_ids() -> Array:
+	return seen_log_tutorial_ids.duplicate()
 
 
 ## Checks simple flag, clue, resolution, and capture conditions.
@@ -2238,6 +2261,7 @@ func load_game() -> bool:
 	set_selected_agent_ids(_to_string_array(save_data.get("selected_agent_ids", [])))
 	flags = _to_unique_string_array(save_data.get("flags", []))
 	seen_hint_ids = _to_unique_string_array(save_data.get("seen_hint_ids", []))
+	seen_log_tutorial_ids = _to_unique_string_array(save_data.get("seen_log_tutorial_ids", []))
 	minigame_results = _to_dictionary(save_data.get("minigame_results", {}))
 	method_results = _to_dictionary(save_data.get("method_results", {}))
 	agent_trust = _to_dictionary(save_data.get("agent_trust", save_data.get("agent_trust_changes", {})))
@@ -2408,6 +2432,7 @@ func _make_save_data() -> Dictionary:
 		"forced_recovery_phase": forced_recovery_phase,
 		"collected_clue_ids": get_collected_clue_ids(),
 		"seen_hint_ids": get_seen_hint_ids(),
+		"seen_log_tutorial_ids": get_seen_log_tutorial_ids(),
 		"selected_resolution_grade": selected_resolution_grade,
 		"selected_resolution_label": selected_resolution_label,
 		"selected_resolution_rate": selected_resolution_rate,
