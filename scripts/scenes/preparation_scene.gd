@@ -11,6 +11,11 @@ var _record_list: VBoxContainer
 var _log_list: VBoxContainer
 var _start_button: Button
 var _status_label: Label
+var _agent_list: VBoxContainer
+var _agent_detail_panel: PanelContainer
+var _agent_detail_label: Label
+var _selected_detail_agent_id := ""
+var _agent_card_by_id: Dictionary = {}
 
 
 func _ready() -> void:
@@ -97,15 +102,211 @@ func _add_episode_panel(parent: Control) -> void:
 
 
 func _add_agent_panel(parent: Control) -> void:
-	var content := _add_section(parent, "요원", "조사 시작 조건과 현재 편성 요원을 확인합니다.")
+	var content := _add_section(parent, "요원 편성", "임무에 투입할 요원 2~3명을 선택하고 상세 정보를 확인합니다.")
 
-	var summary := Label.new()
-	summary.text = "%s\n선택된 요원: %s" % [
-		GameState.get_agent_selection_status_text(),
-		GameState.get_selected_agent_summary()
+	_agent_list = VBoxContainer.new()
+	_agent_list.add_theme_constant_override("separation", 8)
+	content.add_child(_agent_list)
+
+	_agent_detail_panel = PanelContainer.new()
+	_agent_detail_panel.visible = false
+	content.add_child(_agent_detail_panel)
+
+	var detail_content := VBoxContainer.new()
+	detail_content.add_theme_constant_override("separation", 6)
+	_agent_detail_panel.add_child(detail_content)
+
+	_agent_detail_label = Label.new()
+	_agent_detail_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	detail_content.add_child(_agent_detail_label)
+
+	var close_detail_button := Button.new()
+	close_detail_button.text = "상세 닫기"
+	close_detail_button.pressed.connect(func() -> void:
+		_selected_detail_agent_id = ""
+		_agent_detail_panel.visible = false
+	)
+	detail_content.add_child(close_detail_button)
+
+
+func _refresh_agents() -> void:
+	_clear_children(_agent_list)
+	for agent in GameState.get_agents():
+		if typeof(agent) != TYPE_DICTIONARY:
+			continue
+		_add_agent_card(_agent_list, agent)
+
+	var selected_count := GameState.get_selected_agent_ids().size()
+	if _start_button != null:
+		_start_button.disabled = not GameState.can_start_mission_with_agents()
+
+	if _status_label != null:
+		if GameState.can_start_mission_with_agents():
+			_status_label.text = "시작 가능: 요원 %d명 편성됨. 장비와 기록물을 확인한 뒤 조사를 시작하세요." % selected_count
+		else:
+			_status_label.text = GameState.get_agent_selection_status_text()
+
+
+func _add_agent_card(parent: Control, agent: Dictionary) -> void:
+	var agent_id := String(agent.get("id", ""))
+	if agent_id.is_empty():
+		return
+
+	var card := PanelContainer.new()
+	parent.add_child(card)
+
+	var card_content := VBoxContainer.new()
+	card_content.add_theme_constant_override("separation", 4)
+	card.add_child(card_content)
+
+	# Name and class row
+	var name_row := HBoxContainer.new()
+	name_row.add_theme_constant_override("separation", 8)
+	card_content.add_child(name_row)
+
+	var selected := GameState.is_agent_selected(agent_id)
+	var toggle_button := Button.new()
+	toggle_button.text = "해제" if selected else "선택"
+	toggle_button.pressed.connect(func() -> void:
+		if GameState.is_agent_selected(agent_id):
+			GameState.deselect_agent(agent_id)
+		else:
+			GameState.select_agent(agent_id)
+		_refresh_agents()
+	)
+	toggle_button.disabled = not selected and GameState.get_selected_agent_ids().size() >= GameState.MAX_SELECTED_AGENTS
+	name_row.add_child(toggle_button)
+
+	var name_label := Label.new()
+	name_label.text = "%s [%s] · %s / %s" % [
+		String(agent.get("name", "")),
+		String(agent.get("temperament_label", "")),
+		String(agent.get("class", "")),
+		String(agent.get("role", ""))
 	]
-	summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	content.add_child(summary)
+	name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	name_row.add_child(name_label)
+
+	# HP and Mental bars
+	var hp_row := HBoxContainer.new()
+	hp_row.add_theme_constant_override("separation", 6)
+	card_content.add_child(hp_row)
+	var hp_label := Label.new()
+	hp_label.text = "체력"
+	hp_label.custom_minimum_size.x = 40
+	hp_row.add_child(hp_label)
+	var hp_bar := ProgressBar.new()
+	hp_bar.min_value = 0
+	hp_bar.max_value = GameState.get_agent_max_hp(agent_id)
+	hp_bar.value = GameState.get_agent_current_hp(agent_id)
+	hp_bar.custom_minimum_size = Vector2(120, 14)
+	hp_bar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	hp_row.add_child(hp_bar)
+	var hp_value := Label.new()
+	hp_value.text = "%d/%d" % [GameState.get_agent_current_hp(agent_id), GameState.get_agent_max_hp(agent_id)]
+	hp_value.custom_minimum_size.x = 70
+	hp_row.add_child(hp_value)
+
+	var mental_row := HBoxContainer.new()
+	mental_row.add_theme_constant_override("separation", 6)
+	card_content.add_child(mental_row)
+	var mental_label := Label.new()
+	mental_label.text = "정신"
+	mental_label.custom_minimum_size.x = 40
+	mental_row.add_child(mental_label)
+	var mental_bar := ProgressBar.new()
+	mental_bar.min_value = 0
+	mental_bar.max_value = GameState.get_agent_max_mental(agent_id)
+	mental_bar.value = GameState.get_agent_current_mental(agent_id)
+	mental_bar.custom_minimum_size = Vector2(120, 14)
+	mental_bar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	mental_row.add_child(mental_bar)
+	var mental_value := Label.new()
+	mental_value.text = "%d/%d" % [GameState.get_agent_current_mental(agent_id), GameState.get_agent_max_mental(agent_id)]
+	mental_value.custom_minimum_size.x = 70
+	mental_row.add_child(mental_value)
+
+	# Five ability bars
+	var abilities := ["suppression", "analysis", "protection", "treatment", "rapport"]
+	var ability_row := HBoxContainer.new()
+	ability_row.add_theme_constant_override("separation", 4)
+	card_content.add_child(ability_row)
+	for key in abilities:
+		var val := GameState.get_agent_ability(agent_id, key)
+		var label: String = String(GameState.ABILITY_LABELS.get(key, key))
+		var ab_label := Label.new()
+		ab_label.text = "%s %d" % [label, val]
+		ab_label.add_theme_font_size_override("font_size", 10)
+		ability_row.add_child(ab_label)
+
+	# Description and detail button
+	var desc := Label.new()
+	desc.text = String(agent.get("description", ""))
+	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	card_content.add_child(desc)
+
+	var detail_button := Button.new()
+	detail_button.text = "상세 정보"
+	detail_button.pressed.connect(func() -> void:
+		_show_agent_detail(agent_id)
+	)
+	card_content.add_child(detail_button)
+
+	_agent_card_by_id[agent_id] = { "card": card, "toggle": toggle_button }
+
+
+func _show_agent_detail(agent_id: String) -> void:
+	var agent := GameState.get_agent_by_id(agent_id)
+	if agent.is_empty():
+		return
+
+	_selected_detail_agent_id = agent_id
+	var lines: Array = [
+		"=== %s [%s] ===" % [String(agent.get("name", "")), String(agent.get("temperament_label", ""))],
+		"직책: %s / %s" % [String(agent.get("class", "")), String(agent.get("role", ""))],
+		"전문분야: %s" % String(agent.get("specialty", "")),
+		"계통: %s" % String(agent.get("magic_lineage", "")),
+		"",
+		"체력: %d/%d" % [GameState.get_agent_current_hp(agent_id), GameState.get_agent_max_hp(agent_id)],
+		"정신력: %d/%d" % [GameState.get_agent_current_mental(agent_id), GameState.get_agent_max_mental(agent_id)],
+		"",
+		"능력치:",
+	]
+	for key in GameState.ABILITY_KEYS:
+		lines.append("  %s: %d/5" % [GameState.ABILITY_LABELS.get(key, key), GameState.get_agent_ability(agent_id, key)])
+	lines.append("")
+	lines.append("고유 장비:")
+	for item in agent.get("equipment", []):
+		lines.append("  · %s" % _format_agent_feature(item))
+	lines.append("")
+	lines.append("기술:")
+	for skill in agent.get("skills", []):
+		lines.append("  · %s" % _format_agent_feature(skill))
+	lines.append("")
+
+	var aspects: Array = agent.get("aspects", [])
+	if not aspects.is_empty():
+		lines.append("면모:")
+		for aspect in aspects:
+			if typeof(aspect) == TYPE_DICTIONARY:
+				lines.append("  · %s: %s" % [String(aspect.get("name", "")), String(aspect.get("description", ""))])
+		lines.append("")
+
+	lines.append("배경:")
+	lines.append("  %s" % String(agent.get("backstory", "")))
+	lines.append("")
+	lines.append("설명: %s" % String(agent.get("description", "")))
+
+	_agent_detail_label.text = "\n".join(lines)
+	_agent_detail_panel.visible = true
+
+
+func _format_agent_feature(value: Variant) -> String:
+	if typeof(value) != TYPE_DICTIONARY:
+		return String(value)
+	var ability_key := String(value.get("ability", ""))
+	var ability_label := String(GameState.ABILITY_LABELS.get(ability_key, ability_key))
+	return "%s — %s 효과 +%d" % [String(value.get("name", "")), ability_label, int(value.get("bonus", 0))]
 
 
 func _add_equipment_panel(parent: Control) -> void:
@@ -194,16 +395,10 @@ func _add_section(parent: Control, title_text: String, description_text: String 
 
 func _refresh() -> void:
 	_refresh_episode_selection()
+	_refresh_agents()
 	_refresh_equipment()
 	_refresh_records()
 	_refresh_log()
-	var can_start := GameState.can_start_mission_with_agents()
-	if _start_button != null:
-		_start_button.disabled = not can_start
-	if can_start:
-		_status_label.text = "시작 가능: 장비와 기록물을 확인한 뒤 현재 사건 조사를 시작할 수 있습니다."
-	else:
-		_status_label.text = "시작 불가: %s" % GameState.get_agent_selection_status_text()
 
 
 func _refresh_episode_selection() -> void:

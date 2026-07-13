@@ -39,6 +39,32 @@
         "observation": 2,
         "analysis": 4
       },
+      "abilities": {
+        "suppression": 5,
+        "analysis": 3,
+        "protection": 3,
+        "treatment": 1,
+        "rapport": 2
+      },
+      "max_health": 120,
+      "max_mental": 80,
+      "equipment": [{"name": "부적 권갑", "ability": "suppression", "bonus": 1}, {"name": "봉인못", "ability": "protection", "bonus": 1}],
+      "skills": [{"name": "봉인선 타격", "ability": "suppression", "bonus": 2}, {"name": "위험 돌파", "ability": "protection", "bonus": 2}],
+      "aspects": [
+        {
+          "name": "현장 직감",
+          "bonus_ability": "suppression",
+          "match_tags": ["time_pressure", "anomaly_alert"],
+          "description": "위험한 현장에서 몸으로 부딪히며 길을 여는 데 익숙합니다."
+        },
+        {
+          "name": "저돌적",
+          "bonus_ability": "analysis",
+          "match_tags": ["noise_pattern", "ritual_rule"],
+          "description": "반복과 규칙을 체감으로 읽어내 다음 패턴을 직감합니다."
+        }
+      ],
+      "backstory": "부적을 무기화하는 가문 출신으로, 봉인 현장에서 몸으로 부딪히며 자랐다. 위험을 읽는 감각이 뛰어나지만, 미묘한 감정 흐름은 종종 놓친다.",
       "recovery_support": {
         "id": "support_kang_pattern_observation",
         "label": "패턴 예측",
@@ -67,6 +93,32 @@
         "observation": 4,
         "analysis": 2
       },
+      "abilities": {
+        "suppression": 1,
+        "analysis": 5,
+        "protection": 4,
+        "treatment": 3,
+        "rapport": 4
+      },
+      "max_health": 85,
+      "max_mental": 120,
+      "equipment": [{"name": "탐지봉", "ability": "analysis", "bonus": 1}, {"name": "보호 주문서", "ability": "protection", "bonus": 1}],
+      "skills": [{"name": "영적 스캔", "ability": "analysis", "bonus": 2}, {"name": "보호 결계", "ability": "protection", "bonus": 2}, {"name": "기억 고정", "ability": "rapport", "bonus": 2}],
+      "aspects": [
+        {
+          "name": "냉철한 관찰",
+          "bonus_ability": "analysis",
+          "match_tags": ["evidence_sensitive", "ritual_rule"],
+          "description": "증거와 규칙을 논리적으로 분해해 현상의 구조를 먼저 읽습니다."
+        },
+        {
+          "name": "신중함",
+          "bonus_ability": "protection",
+          "match_tags": ["victim_risk", "memory_gap"],
+          "description": "탐지·보호 주문으로 팀원과 피해자의 흔적을 위험으로부터 방호합니다."
+        }
+      ],
+      "backstory": "서양 마법과 동양 부적을 병용하는 탐지 전문가. 현상을 논리적으로 분해하는 데 능숙하며, 팀원 보호를 최우선으로 삼는다.",
       "recovery_support": {
         "id": "support_kwon_victim_guard",
         "label": "피해자 보호",
@@ -87,14 +139,32 @@
       "specialty": "현대 장비에 팀원의 부적과 주문서를 연결하는 이능 공학",
       "magic_lineage": "modern_occult_engineering",
       "visual_asset_id": "oh_hyun_expressions",
-      "description": "현대인의 감각으로 피해자와 팀을 연결하고 자료 분석과 공방 장비를 운용한다.",
-      "mvp10_dialogue_focus": "오래 망설이면 괴담에 말려든다고 판단하고 빠른 진입을 제안한다.",
-      "mvp11_future_role": "파괴, 강행 돌입, 공격형 안정화, 위험을 대가로 빠른 해결",
-      "investigation_stats": {
-        "destruction": 4,
-        "observation": 1,
-        "analysis": 1
+      "abilities": {
+        "suppression": 3,
+        "analysis": 4,
+        "protection": 2,
+        "treatment": 4,
+        "rapport": 5
       },
+      "max_health": 100,
+      "max_mental": 100,
+      "equipment": [{"name": "이능 단말기", "ability": "analysis", "bonus": 1}, {"name": "공명 주입기", "ability": "rapport", "bonus": 1}],
+      "skills": [{"name": "증거 중계", "ability": "analysis", "bonus": 2}, {"name": "응급 패치", "ability": "treatment", "bonus": 2}, {"name": "감정 동조", "ability": "rapport", "bonus": 2}],
+      "aspects": [
+        {
+          "name": "현대적 적응력",
+          "bonus_ability": "rapport",
+          "match_tags": ["frequency_related", "noise_pattern"],
+          "description": "현대 장비로 팀원의 부적과 주문서를 연결해 교감을 기술로 증폭합니다."
+        },
+        {
+          "name": "사람 중심",
+          "bonus_ability": "treatment",
+          "match_tags": ["time_pressure", "victim_risk"],
+          "description": "이론보다 현장의 실용적 판단을 우선해 빠른 회복 조치를 취합니다."
+        }
+      ],
+      "backstory": "현대 장비와 전통 봉인술을 연결하는 공학자 출신 요원. 팀원 간 교감을 중시하며, 현대 기술과 전통 마법 사이의 가교 역할을 맡는다.",
       "recovery_support": {
         "id": "support_oh_direct_stabilize",
         "label": "강행 안정화",
@@ -503,6 +573,7 @@
           "label": "파괴 판정으로 돌파",
           "method_type": "destruction",
           "stat_key": "destruction",
+          "approach_type": "suppression",
           "difficulty": 7,
           "situation_tags": [
             "locked_route",
@@ -568,6 +639,7 @@
           "label": "주변을 관찰해 열쇠를 찾는다",
           "method_type": "observation",
           "stat_key": "observation",
+          "approach_type": "protection",
           "difficulty": 6,
           "situation_tags": [
             "locked_route",
@@ -642,6 +714,7 @@
           "label": "잠금 패턴을 분석한다",
           "method_type": "analysis",
           "stat_key": "analysis",
+          "approach_type": "analysis",
           "difficulty": 8,
           "situation_tags": [
             "locked_route",

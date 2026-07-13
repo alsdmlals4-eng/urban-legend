@@ -5,13 +5,11 @@ const ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")
 const Accessibility = preload("res://scripts/ui/accessibility_settings.gd")
 const AssetCatalog = preload("res://scripts/ui/ui_asset_catalog.gd")
 
-const GAME_VERSION := "Ver 3.1"
+const GAME_VERSION := "Ver 3.2"
 
 var _start_episode_button: Button
 var _continue_button: Button
 var _save_status_label: Label
-var _agent_status_label: Label
-var _agent_button_by_id: Dictionary = {}
 var _dev_panel: Control
 var _accessibility := Accessibility.new()
 
@@ -25,7 +23,6 @@ func _ready() -> void:
 	set_process_input(true)
 	_build_ui()
 	_refresh_save_controls()
-	_refresh_agent_controls()
 
 
 func _build_ui() -> void:
@@ -144,8 +141,8 @@ func _build_ui() -> void:
 
 	var status_content := _add_section(
 		control_column,
-		"저장 / 요원 상태",
-		"조사 시작 가능 여부와 이어하기 가능 여부를 먼저 확인합니다."
+		"저장 상태",
+		"이어하기 가능 여부를 확인합니다."
 	)
 
 	_save_status_label = Label.new()
@@ -153,7 +150,6 @@ func _build_ui() -> void:
 	_save_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	status_content.add_child(_save_status_label)
 
-	_add_agent_selection_panel(status_content)
 	_add_accessibility_panel(control_column)
 
 	var dev_content := _add_section(
@@ -270,14 +266,8 @@ func _open_database() -> void:
 
 
 func _start_afterlife_station() -> void:
-	if not GameState.can_start_mission_with_agents():
-		_save_status_label.text = GameState.get_agent_selection_status_text()
-		_refresh_agent_controls()
-		return
-
-	var selected_agent_ids := GameState.get_selected_agent_ids()
 	GameState.clear_save_file()
-	GameState.restart_afterlife_station_flow(selected_agent_ids)
+	GameState.reset_run_state()
 	GameState.set_current_scene_path(GameState.SCENE_PREPARATION)
 	GameState.save_game()
 	get_tree().change_scene_to_file(GameState.SCENE_PREPARATION)
@@ -307,101 +297,6 @@ func _refresh_save_controls() -> void:
 		_continue_button.disabled = not has_save
 	if _save_status_label != null:
 		_save_status_label.text = "이어하기: %s" % ("있음" if has_save else "없음")
-	_refresh_agent_controls()
-
-
-func _add_agent_selection_panel(parent: Control) -> void:
-	var panel := PanelContainer.new()
-	parent.add_child(panel)
-
-	var content := VBoxContainer.new()
-	content.add_theme_constant_override("separation", 8)
-	panel.add_child(content)
-
-	var title := Label.new()
-	title.text = "임무 투입 요원 편성"
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	content.add_child(title)
-
-	_agent_status_label = Label.new()
-	_agent_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_agent_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	content.add_child(_agent_status_label)
-
-	for agent in GameState.get_agents():
-		if typeof(agent) == TYPE_DICTIONARY:
-			_add_agent_button(content, agent)
-
-
-func _add_agent_button(parent: Control, agent: Dictionary) -> void:
-	var agent_id := String(agent.get("id", ""))
-	if agent_id.is_empty():
-		return
-
-	var button := Button.new()
-	button.toggle_mode = true
-	button.text = _make_agent_button_text(agent, false)
-	button.pressed.connect(func() -> void:
-		_toggle_agent_selection(agent_id)
-	)
-	_agent_button_by_id[agent_id] = button
-	parent.add_child(button)
-
-	var description := Label.new()
-	description.text = "%s / %s\n%s" % [
-		String(agent.get("class", "")),
-		String(agent.get("role", "")),
-		String(agent.get("description", ""))
-	]
-	description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	parent.add_child(description)
-
-
-func _toggle_agent_selection(agent_id: String) -> void:
-	if GameState.is_agent_selected(agent_id):
-		GameState.deselect_agent(agent_id)
-	elif not GameState.select_agent(agent_id):
-		_save_status_label.text = "요원은 최대 %d명까지만 편성할 수 있습니다." % GameState.MAX_SELECTED_AGENTS
-	_refresh_agent_controls()
-
-
-func _refresh_agent_controls() -> void:
-	if _agent_status_label == null:
-		return
-
-	var selected_count := GameState.get_selected_agent_ids().size()
-	_agent_status_label.text = "%s\n선택: %d/%d\n현재 편성: %s" % [
-		GameState.get_agent_selection_status_text(),
-		selected_count,
-		GameState.MAX_SELECTED_AGENTS,
-		GameState.get_selected_agent_summary()
-	]
-
-	for agent in GameState.get_agents():
-		if typeof(agent) != TYPE_DICTIONARY:
-			continue
-
-		var agent_id := String(agent.get("id", ""))
-		var button: Button = _agent_button_by_id.get(agent_id, null)
-		if button == null:
-			continue
-
-		var selected := GameState.is_agent_selected(agent_id)
-		button.button_pressed = selected
-		button.disabled = not selected and selected_count >= GameState.MAX_SELECTED_AGENTS
-		button.text = _make_agent_button_text(agent, selected)
-
-	if _start_episode_button != null:
-		_start_episode_button.disabled = not GameState.can_start_mission_with_agents()
-
-
-func _make_agent_button_text(agent: Dictionary, selected: bool) -> String:
-	var prefix := "선택됨" if selected else "선택"
-	return "%s: %s [%s]" % [
-		prefix,
-		String(agent.get("name", "")),
-		String(agent.get("temperament_label", ""))
-	]
 
 
 func _add_scene_button(parent: Control, label: String, scene_path: String) -> void:

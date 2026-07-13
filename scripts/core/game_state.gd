@@ -4,7 +4,7 @@ extends Node
 const DEFAULT_EPISODE_PATH := "res://data/episodes/episode_001_afterlife_station.json"
 const RED_UMBRELLA_ALLEY_EPISODE_PATH := "res://data/episodes/episode_002_red_umbrella_alley.json"
 const SAVE_FILE_PATH := "user://urban_legend_save.json"
-const SAVE_VERSION := "mvp-018"
+const SAVE_VERSION := "mvp-032"
 const DEFAULT_DIALOGUE_NODE_ID := "dialogue_intro"
 const DEFAULT_MINIGAME_ID := "minigame_frequency_sync"
 const EQUIP_FREQUENCY_FILTER := "equip_frequency_filter"
@@ -20,6 +20,21 @@ const MAX_SELECTED_AGENTS := 3
 const AGENT_TRUST_MIN := -3
 const AGENT_TRUST_MAX := 3
 const ALLOWED_AGENT_TEMPERAMENTS := ["analytical", "empathetic", "breakthrough"]
+const ABILITY_KEYS := ["suppression", "analysis", "protection", "treatment", "rapport"]
+const ABILITY_LABELS := {
+	"suppression": "제압",
+	"analysis": "분석",
+	"protection": "방호",
+	"treatment": "치료",
+	"rapport": "교감"
+}
+const RECOVERY_ACTION_FORMULAS := {
+	"suppression": { "base": 4, "multiplier": 2, "description": "제압으로 괴이 안정도를 낮추고 위험을 억제합니다." },
+	"analysis": { "base": 3, "multiplier": 2, "description": "분석으로 괴이 패턴을 읽고 안정화 근거를 확보합니다." },
+	"protection": { "base": 5, "multiplier": 3, "description": "방호로 팀원을 보호하고 적대적 반응을 막습니다." },
+	"treatment": { "base": 6, "multiplier": 4, "description": "치료로 부상당한 요원의 체력을 회복합니다." },
+	"rapport": { "base": 6, "multiplier": 4, "description": "교감으로 패닉 상태 요원의 정신력을 회복합니다." }
+}
 const INVESTIGATION_METHOD_KEYS := ["destruction", "observation", "analysis"]
 const AGENT_TRUST_EVENTS: Array[Dictionary] = [
 	{
@@ -85,6 +100,8 @@ var unlocked_research_rewards: Array = []
 var equipped_items: Array = []
 var used_equipment_effects: Array = []
 var completed_case_reports: Array = []
+var agent_case_states: Dictionary = {}
+var victim_state: Dictionary = {}
 
 
 func _ready() -> void:
@@ -127,6 +144,8 @@ func start_episode_from_preparation(file_path: String) -> bool:
 	seen_hint_ids.clear()
 	minigame_results.clear()
 	used_equipment_effects.clear()
+	agent_case_states.clear()
+	victim_state.clear()
 	_clear_investigation_method_state()
 	current_dialogue_node_id = DEFAULT_DIALOGUE_NODE_ID
 	current_minigame_id = DEFAULT_MINIGAME_ID
@@ -148,6 +167,8 @@ func reset_run_state() -> void:
 	equipped_items.clear()
 	used_equipment_effects.clear()
 	completed_case_reports.clear()
+	agent_case_states.clear()
+	victim_state.clear()
 	current_scene_path = SCENE_DIALOGUE
 	current_dialogue_node_id = DEFAULT_DIALOGUE_NODE_ID
 	current_minigame_id = DEFAULT_MINIGAME_ID
@@ -532,6 +553,7 @@ func select_agent(agent_id: String) -> bool:
 	selected_agent_ids.append(clean_agent_id)
 	if not agent_trust.has(clean_agent_id):
 		agent_trust[clean_agent_id] = 0
+	_ensure_agent_case_state(clean_agent_id)
 	return true
 
 
@@ -706,6 +728,209 @@ func get_agent_trust_support_texts() -> Array:
 	return lines
 
 
+## Returns an agent's ability value (1..5) from episode data.
+func get_agent_ability(agent_id: String, ability_key: String) -> int:
+	var agent := get_agent_by_id(agent_id)
+	if agent.is_empty():
+		return 0
+	var abilities := _to_dictionary(agent.get("abilities", {}))
+	return clampi(int(abilities.get(ability_key, 0)), 0, 5)
+
+
+## Returns an agent's max HP from profile data.
+func get_agent_max_hp(agent_id: String) -> int:
+	var agent := get_agent_by_id(agent_id)
+	if agent.is_empty():
+		return 100
+	return clampi(int(agent.get("max_health", agent.get("hp_max", 100))), 1, 200)
+
+
+## Returns an agent's max mental from profile data.
+func get_agent_max_mental(agent_id: String) -> int:
+	var agent := get_agent_by_id(agent_id)
+	if agent.is_empty():
+		return 100
+	return clampi(int(agent.get("max_mental", agent.get("mental_max", 100))), 1, 200)
+
+
+## Returns an agent's current HP for the active case (defaults to max).
+func get_agent_current_hp(agent_id: String) -> int:
+	var state := get_agent_case_state(agent_id)
+	var current := int(state.get("hp", get_agent_max_hp(agent_id)))
+	return clampi(current, 0, get_agent_max_hp(agent_id))
+
+
+## Returns an agent's current mental for the active case (defaults to max).
+func get_agent_current_mental(agent_id: String) -> int:
+	var state := get_agent_case_state(agent_id)
+	var current := int(state.get("mental", get_agent_max_mental(agent_id)))
+	return clampi(current, 0, get_agent_max_mental(agent_id))
+
+
+## Changes one agent's HP by delta, clamped to [0, max_hp].
+func change_agent_hp(agent_id: String, delta: int) -> void:
+	var state := _ensure_agent_case_state(agent_id)
+	var current := int(state.get("hp", get_agent_max_hp(agent_id)))
+	state["hp"] = clampi(current + delta, 0, get_agent_max_hp(agent_id))
+	agent_case_states[agent_id] = state
+
+
+## Changes one agent's mental by delta, clamped to [0, max_mental].
+func change_agent_mental(agent_id: String, delta: int) -> void:
+	var state := _ensure_agent_case_state(agent_id)
+	var current := int(state.get("mental", get_agent_max_mental(agent_id)))
+	state["mental"] = clampi(current + delta, 0, get_agent_max_mental(agent_id))
+	agent_case_states[agent_id] = state
+
+
+## Returns true when the agent is neither incapacitated (HP 0) nor panicked (mental 0).
+func is_agent_active(agent_id: String) -> bool:
+	return get_agent_current_hp(agent_id) > 0 and get_agent_current_mental(agent_id) > 0
+
+
+## Returns true when all selected agents are inactive.
+func are_all_agents_inactive() -> bool:
+	for agent_id in selected_agent_ids:
+		if is_agent_active(String(agent_id)):
+			return false
+	return not selected_agent_ids.is_empty()
+
+
+## Activates single-use protection on one agent.
+func activate_protection(agent_id: String, amount: int = 1) -> void:
+	var state := _ensure_agent_case_state(agent_id)
+	state["protection_amount"] = maxi(0, amount)
+	agent_case_states[agent_id] = state
+
+
+## Returns true when the agent currently has active protection.
+func has_protection(agent_id: String) -> bool:
+	var state := get_agent_case_state(agent_id)
+	return int(state.get("protection_amount", 1 if bool(state.get("protection_active", false)) else 0)) > 0
+
+
+## Consumes shield points and returns the unabsorbed incoming damage.
+func consume_protection(agent_id: String, amount: int) -> int:
+	var state := _ensure_agent_case_state(agent_id)
+	var shield := int(state.get("protection_amount", 1 if bool(state.get("protection_active", false)) else 0))
+	var remaining := maxi(0, amount - shield)
+	state["protection_amount"] = maxi(0, shield - amount)
+	state.erase("protection_active")
+	agent_case_states[agent_id] = state
+	return remaining
+
+
+## Finds the best active selected agent for a given ability key.
+func find_best_agent_for_ability(ability_key: String) -> Dictionary:
+	var best_agent: Dictionary = {}
+	var best_value := -1
+	for agent_id in selected_agent_ids:
+		var sid := String(agent_id)
+		if not is_agent_active(sid):
+			continue
+		var value := get_agent_ability(sid, ability_key)
+		if value > best_value:
+			best_value = value
+			best_agent = get_agent_by_id(sid)
+	return best_agent
+
+
+## Returns aspect modifier info for an agent using a given ability in a context.
+func get_aspect_modifier(agent_id: String, ability_key: String, tags: Array) -> Dictionary:
+	var agent := get_agent_by_id(agent_id)
+	if agent.is_empty():
+		return { "value": 0, "reason": "", "aspect_name": "" }
+
+	var aspects: Array = agent.get("aspects", [])
+	var clean_tags := _to_string_array(tags)
+	for aspect in aspects:
+		if typeof(aspect) != TYPE_DICTIONARY:
+			continue
+		var bonus_ability := String(aspect.get("bonus_ability", ""))
+		if bonus_ability != ability_key:
+			continue
+		for conflict_tag in _to_string_array(aspect.get("conflict_tags", [])):
+			if clean_tags.has(conflict_tag):
+				return {
+					"value": -1,
+					"reason": String(aspect.get("description", "")),
+					"aspect_name": String(aspect.get("name", ""))
+				}
+		var match_tags: Array = aspect.get("match_tags", [])
+		for tag in _to_string_array(match_tags):
+			if clean_tags.has(tag):
+				return {
+					"value": 2,
+					"reason": String(aspect.get("description", "")),
+					"aspect_name": String(aspect.get("name", ""))
+				}
+	return { "value": 0, "reason": "", "aspect_name": "" }
+
+
+## Resolves one recovery action for a given ability and agent.
+func resolve_recovery_action(ability_key: String, agent_id: String) -> Dictionary:
+	if not ABILITY_KEYS.has(ability_key):
+		return { "error": "지원하지 않는 회수 행동입니다: %s" % ability_key }
+
+	var formula: Dictionary = RECOVERY_ACTION_FORMULAS.get(ability_key, {})
+	var ability_value := get_agent_ability(agent_id, ability_key)
+	var base := int(formula.get("base", 0))
+	var mult := int(formula.get("multiplier", 0))
+	var agent := get_agent_by_id(agent_id)
+	var equipment_bonus := _get_agent_loadout_bonus(agent, "equipment", ability_key)
+	var skill_bonus := _get_agent_loadout_bonus(agent, "skills", ability_key)
+	var effect_value := base + ability_value * mult + equipment_bonus + skill_bonus
+
+	var label := String(ABILITY_LABELS.get(ability_key, ability_key))
+	return {
+		"ability_key": ability_key,
+		"ability_label": label,
+		"agent_id": agent_id,
+		"agent_name": String(agent.get("name", "")),
+		"ability_value": ability_value,
+		"effect_value": effect_value,
+		"equipment_bonus": equipment_bonus,
+		"skill_bonus": skill_bonus,
+		"formula": "%d + %d × %d + 장비 %d + 기술 %d" % [base, ability_value, mult, equipment_bonus, skill_bonus],
+		"description": String(formula.get("description", ""))
+	}
+
+
+func _get_agent_loadout_bonus(agent: Dictionary, field: String, ability_key: String) -> int:
+	var total := 0
+	for entry in agent.get(field, []):
+		if typeof(entry) == TYPE_DICTIONARY and String(entry.get("ability", "")) == ability_key:
+			total += int(entry.get("bonus", 0))
+	return total
+
+
+## Returns the saved case state for one agent.
+func get_agent_case_state(agent_id: String) -> Dictionary:
+	var state: Variant = agent_case_states.get(agent_id, {})
+	if typeof(state) == TYPE_DICTIONARY:
+		return state.duplicate(true)
+	return {}
+
+
+## Clears all per-case agent state (HP, mental, protection).
+func clear_agent_case_states() -> void:
+	agent_case_states.clear()
+	victim_state.clear()
+
+
+## Initializes an agent's case state to profile defaults.
+func _ensure_agent_case_state(agent_id: String) -> Dictionary:
+	var state: Variant = agent_case_states.get(agent_id, {})
+	if typeof(state) != TYPE_DICTIONARY or state.is_empty():
+		state = {
+			"hp": get_agent_max_hp(agent_id),
+			"mental": get_agent_max_mental(agent_id),
+			"protection_amount": 0
+		}
+		agent_case_states[agent_id] = state
+	return state
+
+
 ## Collects only the current case records needed by the result-screen case report.
 func get_case_report_summary() -> Dictionary:
 	var selected_agents: Array = []
@@ -864,11 +1089,16 @@ func resolve_investigation_method(point_id: String, method: Dictionary) -> Dicti
 
 	var player_stats := get_player_investigation_stats()
 	var player_stat := int(player_stats.get(stat_key, 0))
-	var helper_agent := _find_best_selected_agent_for_stat(stat_key)
+	var approach_type := String(method.get("approach_type", _legacy_method_to_ability(stat_key)))
+	if not ABILITY_KEYS.has(approach_type):
+		return {"successful": false, "error": "지원하지 않는 요원 능력입니다: %s" % approach_type}
+	var helper_agent := find_best_agent_for_ability(approach_type)
 	var helper_agent_id := String(helper_agent.get("id", ""))
-	var helper_stat := get_agent_investigation_stat(helper_agent_id, stat_key) if not helper_agent_id.is_empty() else 0
+	var helper_stat := get_agent_ability(helper_agent_id, approach_type) if not helper_agent_id.is_empty() else 0
+	var aspect_modifier := get_aspect_modifier(helper_agent_id, approach_type, _to_string_array(method.get("situation_tags", [])))
+	var aspect_value := int(aspect_modifier.get("value", 0))
 	var dice := randi_range(1, 6)
-	var total := player_stat + helper_stat + dice
+	var total := player_stat + helper_stat + aspect_value + dice
 	var difficulty := int(method.get("difficulty", 0))
 	var successful := total >= difficulty
 	var effects := _to_dictionary(method.get("success_effects", {})) if successful else _to_dictionary(method.get("failure_effects", {}))
@@ -885,12 +1115,14 @@ func resolve_investigation_method(point_id: String, method: Dictionary) -> Dicti
 		"method_label": String(method.get("label", "조사 방법")),
 		"method_type": String(method.get("method_type", stat_key)),
 		"stat_key": stat_key,
+		"approach_type": approach_type,
 		"difficulty": difficulty,
 		"player_stat": player_stat,
 		"helper_agent_id": helper_agent_id,
 		"helper_agent_name": String(helper_agent.get("name", "도우미 없음")),
 		"helper_temperament_label": String(helper_agent.get("temperament_label", "")),
 		"helper_stat": helper_stat,
+		"aspect_modifier": aspect_modifier,
 		"dice": dice,
 		"total": total,
 		"successful": successful,
@@ -909,6 +1141,13 @@ func resolve_investigation_method(point_id: String, method: Dictionary) -> Dicti
 	method_results[point_id] = method_result
 	save_game()
 	return method_result
+
+
+func _legacy_method_to_ability(stat_key: String) -> String:
+	match stat_key:
+		"destruction": return "suppression"
+		"analysis": return "analysis"
+		_: return "analysis"
 
 
 ## Returns saved investigation method results.
@@ -1622,6 +1861,24 @@ func load_game() -> bool:
 	current_minigame_id = String(save_data.get("current_minigame_id", DEFAULT_MINIGAME_ID))
 	if current_minigame_id.is_empty():
 		current_minigame_id = DEFAULT_MINIGAME_ID
+
+	agent_case_states = _to_dictionary(save_data.get("agent_case_states", {}))
+	if agent_case_states.is_empty():
+		for agent_id in selected_agent_ids:
+			_ensure_agent_case_state(String(agent_id))
+	else:
+		for agent_id in selected_agent_ids:
+			var sid := String(agent_id)
+			if not agent_case_states.has(sid):
+				_ensure_agent_case_state(sid)
+			else:
+				var state := _to_dictionary(agent_case_states.get(sid, {}))
+				state["hp"] = clampi(int(state.get("hp", get_agent_max_hp(sid))), 0, get_agent_max_hp(sid))
+				state["mental"] = clampi(int(state.get("mental", get_agent_max_mental(sid))), 0, get_agent_max_mental(sid))
+				state["protection_amount"] = maxi(0, int(state.get("protection_amount", 1 if bool(state.get("protection_active", false)) else 0)))
+				state.erase("protection_active")
+				agent_case_states[sid] = state
+	victim_state = _to_dictionary(save_data.get("victim_state", {}))
 	return true
 
 
@@ -1685,7 +1942,9 @@ func _make_save_data() -> Dictionary:
 		"selected_resolution_rate": selected_resolution_rate,
 		"capture_success": recovery_successful,
 		"capture_result_state": recovery_result_status,
-		"capture_result_stability": recovery_result_stability
+		"capture_result_stability": recovery_result_stability,
+		"agent_case_states": agent_case_states.duplicate(true),
+		"victim_state": victim_state.duplicate(true)
 	}
 
 

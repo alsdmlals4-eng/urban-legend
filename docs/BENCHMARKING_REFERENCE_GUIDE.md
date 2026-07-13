@@ -70,6 +70,18 @@
 | 14 | Why Do Urban Legends Go Viral? | 도시괴담은 믿을 만한 현실성과 기억에 남는 비현실성의 긴장으로 작동 | 연구는 who/where/when 같은 뉴스적 구체성과 동화적 기억성을 함께 지적 | 실제 장소/기록국 문서성 + 비현실적 괴이 규칙을 함께 유지 |
 | 15 | Deduction Game Framework / Fair Play 연구 | 추리 게임의 정보량, 설명 가능한 의사결정, 페어플레이 | 추리는 놀라움과 납득 가능성의 균형이 중요 | 단서 없는 반전/찍기 금지. 플레이어가 사후에 납득할 수 있는 기록 구조 필요 |
 
+### MVP-032 벤치마킹 개선서 (확인일 2026-07-13)
+
+| 사례·공개 근거 | 플레이어 효과와 반응 | 프로젝트식 재해석·채택 판단 |
+|---|---|---|
+| [Lobotomy Corporation](https://store.steampowered.com/app/568220/Lobotomy_Corporation__Monster_Management_Simulation/) | 대상별 적합 작업과 육체·정신 이중 부담이 요원 선택에 의미를 준다. 반복 손실과 높은 학습 비용은 진입 장벽이 된다. | 5능력 적합도와 체력/정신력은 채택. 시설 경영·고유 작업명·E.G.O·사망 반복은 제외. |
+| [PARANORMASIGHT](https://store.steampowered.com/app/2106840/PARANORMASIGHT_The_Seven_Mysteries_of_Honjo/) | 배경·인물·대사 위계와 도시괴담 몰입이 강점이며, 분기 탐색이 불편해질 수 있다. | 조사 장면과 선택 정보의 위계는 채택. 복잡한 플로우차트 복제는 보류. |
+| [The Case of the Golden Idol](https://store.steampowered.com/app/1677770/The_Case_of_the_Golden_Idol/) | 자유 관찰과 근거 조합이 높은 평가를 받지만 후반 찍기 가능성은 주의가 필요하다. | 실패해도 관찰 정보와 다음 대응 근거를 남긴다. 무근거 정답 맞히기는 제외. |
+| [Disco Elysium](https://store.steampowered.com/app/632470/DiscoElysium/) | 능력 기반 선택과 실패 서사가 캐릭터성을 만들지만 정보량이 많으면 선택 피로가 커진다. | 관련 선택 순간에만 능력·보정 이유를 표시한다. 상시 스탯 벽은 제외. |
+| [Darkest Dungeon](https://store.steampowered.com/app/262060/Darkest_Dungeon/) | 체력과 스트레스의 이중 압박이 팀 상태를 명확히 하지만 영구 손실은 좌절을 키울 수 있다. | 체력 0/정신력 0 행동 불능과 후퇴는 채택. 사망·영구 이탈은 제외. |
+
+반대 검토: 다섯 능력을 모든 화면에 상시 노출하면 기존 대시보드 인상이 되살아나므로 조사에서는 현재 선택에 필요한 능력만 보여준다. 장비·기술 보정은 고유성을 강화하지만 수치가 기본 능력을 압도하지 않도록 작은 고정 보정으로 제한한다.
+
 ---
 
 ## 4. 도시괴담 기록국에 반영할 공통 결론

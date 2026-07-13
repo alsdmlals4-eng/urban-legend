@@ -3,6 +3,7 @@ extends Control
 
 const SceneVisuals = preload("res://scripts/ui/scene_presentation.gd")
 const RuntimeEditor = preload("res://scripts/ui/runtime_ui_editor.gd")
+const AssetCatalog = preload("res://scripts/ui/ui_asset_catalog.gd")
 
 const FALLBACK_INVESTIGATION_POINTS: Array[Dictionary] = [
 	{
@@ -98,25 +99,26 @@ func _build_ui() -> void:
 	var left_column := VBoxContainer.new()
 	left_column.add_theme_constant_override("separation", 10)
 	left_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	left_column.size_flags_stretch_ratio = 0.85
+	left_column.size_flags_stretch_ratio = 0.65
 	columns.add_child(left_column)
 
 	var center_column := VBoxContainer.new()
 	center_column.add_theme_constant_override("separation", 10)
 	center_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	center_column.size_flags_stretch_ratio = 1.3
+	center_column.size_flags_stretch_ratio = 1.7
 	columns.add_child(center_column)
 
 	var right_column := VBoxContainer.new()
 	right_column.add_theme_constant_override("separation", 10)
 	right_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	right_column.size_flags_stretch_ratio = 1.0
+	right_column.size_flags_stretch_ratio = 0.65
 	columns.add_child(right_column)
 
 	var team_content := _add_section(left_column, "현장 요원 팀", "별도 주인공이 아닌 편성 요원 팀이 현장을 분담합니다.")
 	_team_label = Label.new()
 	_team_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	team_content.add_child(_team_label)
+	_add_team_portraits(team_content)
 
 	var progress_content := _add_section(left_column, "사건 상태", "단서 수집률과 현장 변화를 먼저 확인합니다.")
 
@@ -144,7 +146,7 @@ func _build_ui() -> void:
 	var narrative_content := _add_section(center_column, "상황 묘사", "현장에 남은 반복과 위화감을 읽고, 팀의 다음 수사 방식을 선택합니다.")
 	var illustration := TextureRect.new()
 	illustration.texture = (get_node_or_null("ArtLayer/Background") as TextureRect).texture
-	illustration.custom_minimum_size = Vector2(0, 230)
+	illustration.custom_minimum_size = Vector2(0, 300)
 	illustration.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	illustration.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 	narrative_content.add_child(illustration)
@@ -193,6 +195,32 @@ func _build_ui() -> void:
 	_resolution_attempt_button.pressed.connect(_show_resolution_confirm_panel)
 	recovery_content.add_child(_resolution_attempt_button)
 	_add_resolution_confirm_panel(recovery_content)
+
+
+func _add_team_portraits(parent: Control) -> void:
+	var catalog := AssetCatalog.new()
+	for agent in GameState.get_selected_agents():
+		if typeof(agent) != TYPE_DICTIONARY:
+			continue
+		var agent_id := String(agent.get("id", ""))
+		var card := HBoxContainer.new()
+		card.add_theme_constant_override("separation", 6)
+		var portrait := TextureRect.new()
+		portrait.texture = catalog.get_agent_expression(agent_id, 1)
+		portrait.custom_minimum_size = Vector2(64, 82)
+		portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		card.add_child(portrait)
+		var status := Label.new()
+		status.text = "%s\n체력 %d/%d\n정신 %d/%d\n%s" % [
+			String(agent.get("name", "")),
+			GameState.get_agent_current_hp(agent_id), GameState.get_agent_max_hp(agent_id),
+			GameState.get_agent_current_mental(agent_id), GameState.get_agent_max_mental(agent_id),
+			"행동 가능" if GameState.is_agent_active(agent_id) else "행동 불능"
+		]
+		status.add_theme_font_size_override("font_size", 11)
+		card.add_child(status)
+		parent.add_child(card)
 
 
 func _setup_runtime_editor() -> void:
@@ -366,6 +394,26 @@ func _show_method_options(point: Dictionary) -> void:
 			_run_method_option(point_copy, method_copy)
 		)
 		_method_button_box.add_child(button)
+
+		# Show responsible agent and ability info for this approach
+		var approach_type := String(method.get("approach_type", method.get("method_type", "")))
+		var best_agent := GameState.find_best_agent_for_ability(approach_type)
+		if not best_agent.is_empty():
+			var agent_id := String(best_agent.get("id", ""))
+			var ability_val := GameState.get_agent_ability(agent_id, approach_type)
+			var tags := _to_string_array(method.get("situation_tags", []))
+			var aspect := GameState.get_aspect_modifier(agent_id, approach_type, tags)
+			var info_label := Label.new()
+			var info_lines: Array = ["  → 담당: %s / %s 능력치 %d" % [
+				String(best_agent.get("name", "")),
+				GameState.ABILITY_LABELS.get(approach_type, approach_type),
+				ability_val
+			]]
+			if aspect.value > 0:
+				info_lines.append("  → 특성 보정: +%d (%s: %s)" % [aspect.value, aspect.aspect_name, aspect.reason])
+			info_label.text = "\n".join(info_lines)
+			info_label.add_theme_font_size_override("font_size", 10)
+			_method_button_box.add_child(info_label)
 
 
 func _run_method_option(point: Dictionary, method: Dictionary) -> void:
@@ -686,6 +734,17 @@ func _clear_children(parent: Node) -> void:
 
 	for child in parent.get_children():
 		child.queue_free()
+
+
+func _to_string_array(value: Variant) -> Array:
+	var result: Array = []
+	if typeof(value) != TYPE_ARRAY:
+		return result
+	for item in value:
+		var text := String(item).strip_edges()
+		if not text.is_empty():
+			result.append(text)
+	return result
 
 
 func _add_navigation(parent: Control) -> void:

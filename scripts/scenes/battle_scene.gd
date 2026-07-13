@@ -21,6 +21,7 @@ var _minigame_recovery_messages: Array[String] = []
 var _action_buttons: Array[Button] = []
 var _agent_support_buttons: Array[Button] = []
 var _representative_agent_index := 0
+var _target_agent_index := 0
 
 var _stability_bar: ProgressBar
 var _fear_bar: ProgressBar
@@ -177,11 +178,13 @@ func _build_scene_ui() -> void:
 	actions.add_theme_constant_override("v_separation", 6)
 	action_box.add_child(actions)
 	_add_prediction_action(actions)
-	_add_stability_action(actions, "기록 스캔", 18, 6, "기록된 패턴으로 괴이의 반복 규칙을 좁혔습니다.")
-	_add_stability_action(actions, "안정화 시도", 24, 9, "임시 봉인지로 괴이의 행동 반경을 고정했습니다.")
-	_add_defense_action(actions)
+	_add_ability_action(actions, "suppression", "제압")
+	_add_ability_action(actions, "analysis", "분석")
+	_add_ability_action(actions, "protection", "방호")
+	_add_ability_action(actions, "treatment", "치료")
+	_add_ability_action(actions, "rapport", "교감")
 	_add_representative_switch_action(actions)
-	_add_support_action(actions)
+	_add_target_switch_action(actions)
 	var result_row := HBoxContainer.new()
 	result_row.add_theme_constant_override("separation", 10)
 	action_box.add_child(result_row)
@@ -521,9 +524,129 @@ func _add_stability_action(parent: Control, label: String, stability_delta: int,
 	_action_buttons.append(button)
 
 
+func _add_ability_action(parent: Control, ability_key: String, display_label: String) -> void:
+	var button := Button.new()
+	button.text = display_label
+	button.pressed.connect(func() -> void:
+		var agents := GameState.get_selected_agents()
+		if agents.is_empty():
+			_update_battle_view("선택된 요원이 없습니다.")
+			return
+
+		var rep := _get_representative_agent()
+		if rep.is_empty():
+			_update_battle_view("대표 요원이 설정되지 않았습니다.")
+			return
+
+		var rep_id := String(rep.get("id", ""))
+		if not GameState.is_agent_active(rep_id):
+			_update_battle_view("%s는 현재 행동할 수 없는 상태입니다." % String(rep.get("name", "")))
+			return
+
+		var result := GameState.resolve_recovery_action(ability_key, rep_id)
+		if result.has("error"):
+			_update_battle_view(String(result.get("error", "")))
+			return
+
+		var effect := int(result.get("effect_value", 0))
+		var msg := "%s: %s → %s (공식: %s, 효과값 %d)" % [
+			String(result.get("agent_name", "")),
+			String(result.get("ability_label", "")),
+			String(result.get("description", "")),
+			String(result.get("formula", "")),
+			effect
+		]
+
+		match ability_key:
+			"suppression":
+				var fear_gain: int = maxi(1, effect / 3)
+				if GameState.has_protection(rep_id):
+					GameState.consume_protection(rep_id, fear_gain)
+					msg += "\n[방호 소모] %s의 방호가 억제 부담을 흡수했습니다." % String(rep.get("name", ""))
+				else:
+					_fear_level = clampi(_fear_level + fear_gain, 0, 100)
+					msg += "\n위험도 +%d" % fear_gain
+				_anomaly_stability = max(0, _anomaly_stability - effect)
+				msg += "\n괴이 안정도 -%d" % effect
+			"analysis":
+				_fear_level = max(0, _fear_level - effect)
+				msg += "\n현장 위험/공포도 -%d" % effect
+			"protection":
+				_fear_level = max(0, _fear_level - (effect / 2))
+				GameState.activate_protection(rep_id, effect)
+				msg += "\n위험도 -%d, %s에게 방호 %d 부여" % [effect / 2, String(rep.get("name", "")), effect]
+			"treatment":
+				var target := _get_target_agent()
+				if target.is_empty():
+					_update_battle_view("치료할 대상 요원이 없습니다.")
+					return
+				var target_id := String(target.get("id", ""))
+				GameState.change_agent_hp(target_id, effect)
+				msg += "\n%s 체력 +%d (현재 %d/%d)" % [
+					String(target.get("name", "")),
+					effect,
+					GameState.get_agent_current_hp(target_id),
+					GameState.get_agent_max_hp(target_id)
+				]
+			"rapport":
+				var target := _get_target_agent()
+				if target.is_empty():
+					_update_battle_view("교감할 대상 요원이 없습니다.")
+					return
+				var target_id := String(target.get("id", ""))
+				GameState.change_agent_mental(target_id, effect)
+				msg += "\n%s 정신력 +%d (현재 %d/%d)" % [
+					String(target.get("name", "")),
+					effect,
+					GameState.get_agent_current_mental(target_id),
+					GameState.get_agent_max_mental(target_id)
+				]
+
+		msg += _apply_anomaly_reaction(rep_id, ability_key)
+		_update_battle_view(msg)
+	)
+	parent.add_child(button)
+	_action_buttons.append(button)
+
+
+func _add_target_switch_action(parent: Control) -> void:
+	var button := Button.new()
+	button.text = "대상 교체"
+	button.pressed.connect(func() -> void:
+		var agents := GameState.get_selected_agents()
+		if agents.size() < 2:
+			_update_battle_view("대상 교체: 전환할 다른 요원이 없습니다.")
+			return
+		_target_agent_index = (_target_agent_index + 1) % agents.size()
+		var target := _get_target_agent()
+		_update_battle_view("치료/교감 대상 전환: %s" % String(target.get("name", "없음")))
+	)
+	parent.add_child(button)
+	_action_buttons.append(button)
+
+
+func _apply_anomaly_reaction(agent_id: String, ability_key: String) -> String:
+	var risk := GameState.get_anomaly_risk()
+	var damage := 8 if risk < 40 else (12 if risk < 70 else 16)
+	var remaining := GameState.consume_protection(agent_id, damage)
+	var absorbed := damage - remaining
+	var state_label := "B" if risk < 40 else ("C" if risk < 70 else "D")
+	var text := "\n\n괴이 반응 [%s단계]: " % state_label
+	if absorbed > 0:
+		text += "방호가 %d 피해를 흡수했습니다. " % absorbed
+	if remaining <= 0:
+		return text + "추가 피해 없음."
+
+	if ability_key in ["analysis", "rapport"]:
+		GameState.change_agent_mental(agent_id, -remaining)
+		return text + "정신력 -%d" % remaining
+	GameState.change_agent_hp(agent_id, -remaining)
+	return text + "체력 -%d" % remaining
+
+
 func _add_prediction_action(parent: Control) -> void:
 	var button := Button.new()
-	button.text = "패턴 분석"
+	button.text = "괴이 행동 예측"
 	button.pressed.connect(func() -> void:
 		var prediction := GameState.roll_anomaly_prediction()
 		if bool(prediction.get("successful", false)):
@@ -674,6 +797,9 @@ func _update_battle_view(message: String) -> void:
 
 	if _result_label != null:
 		_result_label.text = status_message
+		if GameState.are_all_agents_inactive():
+			_result_label.text += "\n\n모든 요원이 행동 불능 상태입니다. 조사 화면으로 돌아가 재정비합니다."
+			call_deferred("_return_to_investigation")
 
 
 func _refresh_representative_agent() -> void:
@@ -694,11 +820,44 @@ func _refresh_representative_agent() -> void:
 			String(representative.get("name", "요원")),
 			String(representative.get("temperament_label", representative.get("temperament", "")))
 		]
-	_representative_agent_label.text = "대표 요원: %s [%s]\n역할: 현장 지휘 / 회수 담당\n팀: %s" % [
+	var rep_id := String(representative.get("id", ""))
+	var hp_info := ""
+	if not rep_id.is_empty():
+		hp_info = "\n체력 %d/%d · 정신 %d/%d%s" % [
+			GameState.get_agent_current_hp(rep_id),
+			GameState.get_agent_max_hp(rep_id),
+			GameState.get_agent_current_mental(rep_id),
+			GameState.get_agent_max_mental(rep_id),
+			" [방호]" if GameState.has_protection(rep_id) else ""
+		]
+	_representative_agent_label.text = "대표 요원: %s [%s]\n역할: 현장 지휘 / 회수 담당\n팀: %s%s" % [
 		String(representative.get("name", representative.get("id", "요원"))),
 		String(representative.get("temperament_label", representative.get("temperament", ""))),
-		GameState.get_selected_agent_summary()
+		GameState.get_selected_agent_summary(),
+		hp_info
 	]
+
+
+func _get_representative_agent() -> Dictionary:
+	var agents := GameState.get_selected_agents()
+	if agents.is_empty():
+		return {}
+	_representative_agent_index = posmod(_representative_agent_index, agents.size())
+	var agent: Variant = agents[_representative_agent_index]
+	if typeof(agent) == TYPE_DICTIONARY:
+		return agent
+	return {}
+
+
+func _get_target_agent() -> Dictionary:
+	var agents := GameState.get_selected_agents()
+	if agents.is_empty():
+		return {}
+	_target_agent_index = posmod(_target_agent_index, agents.size())
+	var agent: Variant = agents[_target_agent_index]
+	if typeof(agent) == TYPE_DICTIONARY:
+		return agent
+	return {}
 
 
 func _can_recover() -> bool:
@@ -709,6 +868,12 @@ func _recover_anomaly_core() -> void:
 	if not _can_recover():
 		_update_battle_view("아직 괴이의 핵이 충분히 안정화되지 않았습니다.")
 		return
+
+
+func _return_to_investigation() -> void:
+	GameState.set_current_scene_path("res://scenes/investigation_scene.tscn")
+	GameState.save_game()
+	get_tree().change_scene_to_file("res://scenes/investigation_scene.tscn")
 
 	_recovery_completed = true
 	GameState.save_recovery_result(true, "core_recovered", _anomaly_stability)
