@@ -109,7 +109,18 @@ func _check_scene_claims_tutorial(scene_path: String, tutorial_id: String) -> vo
 	add_child(scene)
 	_check(not scene.find_children("*", "LogGuide", true, false).is_empty(), "%s contains Log guide" % scene_path.get_file())
 	_check(GameState.has_seen_log_tutorial(tutorial_id), "%s claims %s" % [scene_path.get_file(), tutorial_id])
+	if scene_path.ends_with("main_menu.tscn"):
+		_check(_node_has_text(scene, "Ver 3.5"), "main menu displays Ver 3.5")
 	scene.queue_free()
+
+
+func _node_has_text(node: Node, expected: String) -> bool:
+	if node is Label and expected in String((node as Label).text):
+		return true
+	for child in node.get_children():
+		if _node_has_text(child, expected):
+			return true
+	return false
 
 
 func _episode_has_log_speaker(path: String) -> bool:

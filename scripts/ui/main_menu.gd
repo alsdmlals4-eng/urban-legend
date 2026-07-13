@@ -7,7 +7,7 @@ const AssetCatalog = preload("res://scripts/ui/ui_asset_catalog.gd")
 const LogGuideScript = preload("res://scripts/ui/log_guide.gd")
 const LogTutorialCatalog = preload("res://scripts/ui/log_tutorial_catalog.gd")
 
-const GAME_VERSION := "Ver 3.4"
+const GAME_VERSION := "Ver 3.5"
 
 var _start_episode_button: Button
 var _continue_button: Button
