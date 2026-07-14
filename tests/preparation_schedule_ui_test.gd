@@ -1,4 +1,4 @@
-# 준비 화면이 10일 캠페인의 전 요원 오전·오후 일정 편성을 노출하는지 검증한다.
+# 준비 화면이 현재 반일 일정만 순차적으로 노출하는지 검증한다.
 extends SceneTree
 
 const TestSaveGuard = preload("res://tests/test_save_guard.gd")
@@ -35,18 +35,17 @@ func _run() -> void:
 		return
 
 	var options := schedule_list.find_children("*", "OptionButton", true, false)
-	if options.size() != game_state.get_agents().size() * 2:
-		_fail("each agent must expose morning and afternoon assignment controls")
+	if options.size() != game_state.get_agents().size():
+		_fail("each agent must expose only the current half-day assignment control")
 		return
 
 	var first_agent: Dictionary = game_state.get_agents()[0]
 	var agent_id := String(first_agent.get("id", ""))
-	(options[0] as OptionButton).item_selected.emit(_find_metadata_index(options[0], "investigation"))
-	(options[1] as OptionButton).item_selected.emit(_find_metadata_index(options[1], "research"))
+	(options[0] as OptionButton).item_selected.emit(_find_metadata_index(options[0], "rest"))
 	await process_frame
 	var schedule: Dictionary = game_state.get_campaign_agent_schedule(agent_id)
-	if String(schedule.get("morning", "")) != "investigation" or String(schedule.get("afternoon", "")) != "research":
-		_fail("schedule UI did not persist assignments through GameState")
+	if String(schedule.get("morning", "")) != "rest" or schedule.has("afternoon"):
+		_fail("schedule UI did not persist only the morning assignment")
 		return
 
 	var restore_error := _guard.restore()

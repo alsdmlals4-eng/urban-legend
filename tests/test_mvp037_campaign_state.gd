@@ -1,4 +1,4 @@
-# MVP-037의 10일 캠페인 상태와 구버전 저장 이관을 검증한다.
+# MVP-038의 순차 반일 캠페인 상태와 구버전 저장 이관을 검증한다.
 extends Node
 
 const TestSaveGuard = preload("res://tests/test_save_guard.gd")
@@ -26,7 +26,7 @@ func _ready() -> void:
 		push_error("test save guard restore failed: %s" % restore_error)
 		_failed += 1
 
-	print("MVP-037 campaign: %d passed, %d failed" % [_passed, _failed])
+	print("MVP-038 campaign: %d passed, %d failed" % [_passed, _failed])
 	get_tree().quit(0 if _failed == 0 else 1)
 
 
@@ -58,20 +58,25 @@ func _test_agent_schedule_persistence() -> void:
 	GameState.call("reset_campaign_state")
 	_expect(not bool(GameState.call("is_campaign_schedule_complete", ["agent_kang_ijun"])), "empty agent schedule is incomplete")
 	_expect(bool(GameState.call("set_campaign_schedule", "agent_kang_ijun", "morning", "investigation")), "morning assignment is accepted")
-	_expect(bool(GameState.call("set_campaign_schedule", "agent_kang_ijun", "afternoon", "research")), "afternoon assignment is accepted")
-	_expect(bool(GameState.call("is_campaign_schedule_complete", ["agent_kang_ijun"])), "both slots complete one agent schedule")
+	_expect(not bool(GameState.call("set_campaign_schedule", "agent_kang_ijun", "afternoon", "rest")), "future afternoon assignment is rejected")
+	_expect(bool(GameState.call("is_campaign_schedule_complete", ["agent_kang_ijun"])), "current morning completes one agent schedule")
 	var schedule: Dictionary = GameState.call("get_campaign_agent_schedule", "agent_kang_ijun")
-	_expect(String(schedule.get("morning", "")) == "investigation" and String(schedule.get("afternoon", "")) == "research", "schedule returns both assignments")
-	_expect(not bool(GameState.call("set_campaign_schedule", "agent_kang_ijun", "night", "research")), "unknown time slot is rejected")
+	_expect(String(schedule.get("morning", "")) == "investigation" and not schedule.has("afternoon"), "schedule returns only the current assignment")
+	_expect(not bool(GameState.call("set_campaign_schedule", "agent_kang_ijun", "night", "rest")), "unknown time slot is rejected")
 
 
 func _test_operation_finishes_one_day_once() -> void:
 	GameState.call("reset_campaign_state")
+	_expect(bool(GameState.call("set_campaign_planned_case", AFTERLIFE)), "case is planned explicitly")
 	_expect(bool(GameState.call("begin_campaign_operation", AFTERLIFE)), "investigation marks the current operation day")
-	var result: Dictionary = GameState.call("finish_campaign_operation_day")
-	_expect(bool(result.get("advanced", false)) and int(result.get("day", 0)) == 2, "result return advances exactly one day")
-	result = GameState.call("finish_campaign_operation_day")
-	_expect(not bool(result.get("advanced", true)), "reopening result cannot advance the same operation twice")
+	_expect(bool(GameState.call("complete_campaign_slot", {"kind": "investigation"})), "operation completes the morning slot")
+	_expect(not bool(GameState.call("complete_campaign_slot", {"kind": "investigation"})), "reopening result cannot complete the same slot twice")
+	var result: Dictionary = GameState.call("acknowledge_campaign_slot_result")
+	_expect(bool(result.get("advanced", false)) and String(result.get("time_slot", "")) == "afternoon" and int(result.get("day", 0)) == 1, "morning result advances only to afternoon")
+	_expect(bool(GameState.call("set_campaign_schedule", "agent_kang_ijun", "afternoon", "rest")), "afternoon can be planned after morning result")
+	_expect(bool(GameState.call("complete_campaign_slot", {"kind": "schedule"})), "afternoon slot completes")
+	result = GameState.call("acknowledge_campaign_slot_result")
+	_expect(bool(result.get("advanced", false)) and int(result.get("day", 0)) == 2 and String(result.get("time_slot", "")) == "morning", "afternoon result advances exactly one day")
 
 
 func _test_resolved_case_leaves_risk_rotation() -> void:
@@ -138,16 +143,38 @@ func _test_save_round_trip_and_mvp035_migration() -> void:
 	GameState.call("reset_campaign_state")
 	GameState.call("advance_campaign_day", true)
 	GameState.call("grant_daily_case_understanding", RED_UMBRELLA, "first_view", "daily_red_umbrella_01")
-	GameState.call("set_campaign_schedule", "agent_kang_ijun", "morning", "maintenance")
-	GameState.call("set_campaign_schedule", "agent_kang_ijun", "afternoon", "rest")
-	_expect(GameState.save_game(), "mvp-037 campaign save writes")
+	GameState.call("set_campaign_schedule", "agent_kang_ijun", "morning", "rest")
+	_expect(GameState.save_game(), "mvp-038 campaign save writes")
 	GameState.call("reset_campaign_state")
-	_expect(GameState.load_game(), "mvp-037 campaign save loads")
+	_expect(GameState.load_game(), "mvp-038 campaign save loads")
 	var restored: Dictionary = GameState.call("get_campaign_snapshot")
 	_expect(int(restored.get("day", 0)) == 2, "campaign day survives save round trip")
 	_expect(int(restored.get("cases", {}).get(RED_UMBRELLA, {}).get("daily_understanding", 0)) == 2, "daily understanding survives save round trip")
 	var restored_schedule: Dictionary = GameState.call("get_campaign_agent_schedule", "agent_kang_ijun")
-	_expect(String(restored_schedule.get("morning", "")) == "maintenance" and String(restored_schedule.get("afternoon", "")) == "rest", "current-day schedule survives save round trip")
+	_expect(String(restored_schedule.get("morning", "")) == "rest" and not restored_schedule.has("afternoon"), "current-slot schedule survives save round trip")
+	_expect((restored.get("request_board", []) as Array).size() == 3, "request board survives save round trip")
+
+	var mvp037_file := FileAccess.open(GameState.SAVE_FILE_PATH, FileAccess.WRITE)
+	mvp037_file.store_string(JSON.stringify({
+		"save_version": "mvp-037",
+		"episode_path": GameState.DEFAULT_EPISODE_PATH,
+		"current_scene_path": GameState.SCENE_INVESTIGATION,
+		"selected_agent_ids": ["agent_kang_ijun"],
+		"campaign_state": {
+			"day": 4,
+			"time_slot": "morning",
+			"schedules": {"4": {"agent_kang_ijun": {"morning": "investigation", "afternoon": "rest"}}},
+			"active_operation": {"case_id": AFTERLIFE, "day": 4}
+		}
+	}))
+	mvp037_file.close()
+	_expect(GameState.load_game(), "mvp-037 campaign save migrates")
+	var migrated_037: Dictionary = GameState.call("get_campaign_snapshot")
+	var migrated_037_schedule: Dictionary = GameState.call("get_campaign_agent_schedule", "agent_kang_ijun")
+	_expect(int(migrated_037.get("day", 0)) == 4, "mvp-037 migration preserves campaign day")
+	_expect(String(migrated_037_schedule.get("morning", "")) == "investigation" and not migrated_037_schedule.has("afternoon"), "mvp-037 migration drops future afternoon assignment")
+	_expect(String(migrated_037.get("active_operation", {}).get("status", "")) == "suspended", "mvp-037 active operation migrates as suspended")
+	_expect(String(migrated_037.get("slot_phase", "")) == "in_progress", "mvp-037 active operation keeps current slot in progress")
 
 	var legacy_file := FileAccess.open(GameState.SAVE_FILE_PATH, FileAccess.WRITE)
 	legacy_file.store_string(JSON.stringify({

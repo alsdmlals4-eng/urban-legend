@@ -111,6 +111,11 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "회수/안정화"
 
+[node name="ReturnHqButton" type="Button" parent="TopHud/CaseSummaryPanel/CaseSummaryRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "HQ로 복귀"
+
 [node name="ResultToast" type="PanelContainer" parent="."]
 unique_name_in_owner = true
 visible = false
@@ -208,12 +213,15 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "계속"
 
-[node name="UtilityLabel" type="Label" parent="DialogueDock/Content/FooterRow"]
+[node name="LogUtilityButton" type="Button" parent="DialogueDock/Content/FooterRow"]
+unique_name_in_owner = true
 layout_mode = 2
-text = "LOG  ·  AUTO  ·  SKIP  ·  설정"
-vertical_alignment = 1
-theme_override_font_sizes/font_size = 12
-modulate = Color(0.65, 0.74, 0.78, 1)
+text = "LOG"
+
+[node name="SettingsButton" type="Button" parent="DialogueDock/Content/FooterRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "설정"
 
 [node name="PointMethodDock" type="PanelContainer" parent="."]
 unique_name_in_owner = true
