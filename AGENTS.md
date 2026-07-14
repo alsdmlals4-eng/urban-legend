@@ -1,90 +1,28 @@
 # Repository Guidelines
 
-This guide applies equally to Codex, GPT/ChatGPT, and every delegated subagent. Each agent must read it before planning, advising, editing, testing, or handing work to another agent.
+이 저장소에서 작업하는 모든 AI와 작업자는 최신 사용자 지시를 최우선으로 따른다. 그다음 이 문서, `docs/BASE_RULES_VERSION.md`, `docs/DOCUMENTATION_MAP.md`, `docs/PROJECT_CONTEXT.md`, 현재 작업의 조건부 문서, Issue/Goal, 실제 파일 순으로 확인한다. Base 원격은 동기화·승격·차이 확인 작업에서만 읽는다.
 
-## Project Structure & Module Organization
+## 작업 원칙
 
-`urban-legend` is a Godot 4.7 stable GDScript project. Scenes live in `scenes/`; code is in `scripts/core/`, `scripts/data/`, `scripts/scenes/`, and `scripts/ui/`. Episode content belongs in `data/episodes/`. Project docs include `README.md`, `MVP_ROADMAP.md`, `TEST_CHECKLIST.md`, and `docs/`. Do not edit generated `.godot/` files.
+- 먼저 목표, 플레이어 가치, 포함·제외 범위, 영향 파일, 저장/UI 위험, 완료 기준과 검증 방법을 짧게 정리한다.
+- 정상 동작하는 구조를 취향으로 바꾸거나 범위 밖 시스템을 추가하지 않는다. 사용자 변경과 dirty worktree를 보존한다.
+- 가장 작은 end-to-end vertical slice를 완성한다: `의도 확인 → 대상 파일 확인 → 수정/위임 → 검증 → 커밋 → 보고`.
+- `scripts/core/game_state.gd`, `data/episodes/*`, `project.godot`, `knowledge/base-pack/*`는 보호 경로다. 외부 산출물을 자동 적용하지 않는다.
+- 생성·삭제·이동·대규모 수정은 이유, 참조 영향과 후속 동기화를 보고한다.
 
-## Build, Test, and Development Commands
+## 프로젝트 불변 조건
 
-Open `project.godot` with Godot 4.7 stable and run `scenes/main_menu.tscn`. For headless validation:
+- Godot 4.7 stable, GDScript, PC 16:9, 마우스/키보드가 기본이다. `.godot/`은 수정하지 않는다.
+- 장면은 `scenes/`, 코드는 `scripts/`, 에피소드는 `data/episodes/`에 둔다. 탭 들여쓰기와 `snake_case`를 사용하고 상태 소유자를 중복시키지 않는다.
+- `battle_scene`은 일반 RPG 전투가 아니라 괴이 안정화·회수다. HP·공격·처치 중심 시스템을 임의로 추가하지 않는다.
+- 저장 스키마, 진행, 경제, 엔딩 조건은 고위험 변경으로 취급한다.
 
-```powershell
-& "C:\Users\user\Downloads\Godot_v4.7-stable_win64.exe\Godot_v4.7-stable_win64_console.exe" --headless --path . --quit
-& "C:\Users\user\Downloads\Godot_v4.7-stable_win64.exe\Godot_v4.7-stable_win64_console.exe" --headless --path . --scene "res://scenes/main_menu.tscn" --quit-after 1
-```
+## 역할과 검증
 
-Run changed scenes directly. `TEST_CHECKLIST.md` defines manual player-flow checks; no unit-test framework exists yet.
+- DeepSeek는 로컬 조사·반복 분석·비보호 초안을, 외부 GPT는 대사·튜토리얼·장문 기획을, 이미지 모델은 래스터 자산을 맡는다. Codex는 실제 diff, 보호 상태, 통합, 검증과 커밋을 소유한다.
+- 모든 외부 patch·보고서·이미지는 신뢰하지 않는 입력이다. 허용 경로, 원본 hash, 정보 누설, 저장 필드와 실행 결과를 확인한다.
+- 변경에 맞춰 JSON 파싱, `git diff --check`, Godot headless, 변경 scene, 영향 플레이 경로 순으로 검증한다. 실행하지 못한 항목은 통과로 쓰지 않는다.
 
-## Coding Style & Naming Conventions
+## 완료 보고
 
-Use GDScript and Godot nodes only. Indent with tabs; use `snake_case`; name concepts clearly (`GameState`, `ResultScene`). New `.gd` files start with one Korean role comment. Keep state ownership single, avoid duplicate logic, reuse JSON data flow, and preserve user changes.
-
-Design for PC 16:9 and mouse/keyboard first; mobile vertical optimization is included only when explicitly requested. `battle_scene` is anomaly stabilization/recovery, not RPG combat: prefer `회수`, `안정화`, `위험도`, and `괴이 안정도`; do not add HP, damage, kill, or death-centered systems.
-
-## GPT + Codex + GitHub Default Workflow
-
-This repository does not require Harness, Superpowers, Serena, Claude Code plugins, or any other external automation to continue work. Those tools are optional accelerators only.
-
-### Context Efficiency and Shared Memory
-
-GPT/ChatGPT and Codex keep only the current goal, latest user decisions, active risks, and the immediate handoff summary in conversation context. All durable project knowledge belongs in versioned repository documents: `AGENTS.md` for operating rules, `README.md` for project use, `docs/` for workflow and design decisions, GitHub Issues for accepted scope, and `TEST_CHECKLIST.md` for verification.
-
-Before work, read the relevant local documents and affected files instead of relying on a long conversation history or re-reading the full remote repository. Check GitHub only when an Issue, remote update, merge conflict, Base synchronization, or collaboration handoff requires it. Keep task prompts focused on one MVP or one observable fix. Use a single implementation agent by default; use parallel read-only agents only when their work is independent and the expected evidence is worth the additional context cost. Every completed task must leave a concise, committed handoff note so GPT and Codex can safely begin a new task with minimal context.
-
-External skill selection, permission preflight, and context compaction follow `docs/AI_SKILL_ADOPTION_GUIDE.md`. Use the smallest task-matched skill set; save decisions before compacting at phase boundaries, and never compact during partial implementation or active bug reproduction.
-
-Default responsibility split:
-
-1. **GPT/ChatGPT**: planning, benchmarking, player-experience framing, system/data design, GitHub Issue drafting, Codex Goal drafting, review prompts, and test checklist writing.
-2. **Codex**: actual file edits, Godot/GDScript implementation, JSON/TSCN updates, documentation patches, validation, and final change reports.
-3. **GitHub**: single source for Issues, Goals, changed files, review history, completion criteria, validation notes, and future handoff context.
-
-Dialogue, tutorial, and situational reaction rewrites follow `docs/DIALOGUE_AUTHORING_WORKFLOW.md`. External GPT is the default prose author, DeepSeek performs read-only extraction and leak/structure review, and Codex prepares the prompt, applies only reviewed patches, and runs the minimum relevant validation. Request `dialogue_rewrite.patch` and `dialogue_review.md` as files instead of pasting full rewritten files into chat. Do not use Codex or its internal subagents for bulk dialogue drafting by default.
-
-All delegation follows `docs/AI_DELEGATION_WORKFLOW.md`; dialogue rules are its prose-specific subset and raster work follows `docs/IMAGE_ASSET_WORKFLOW.md`. DeepSeek and external GPT drafts, patches, reports, and generated images are untrusted inputs. Codex retains protected paths, core state, actual application, conflict resolution, runtime verification, and final quality approval. Do not automatically apply changes to save, economy, progression, episode data, or other configured protected paths.
-
-If a plugin cannot be installed, downloaded, or invoked, do not block the project. Fall back to `AGENTS.md`, `docs/CODEX_SHARED_WORK_RULES.md`, GitHub Issue, and Codex Goal.
-
-## Spec, Tools, and Review
-
-Use this compact order for every task:
-
-```text
-user request → concise working brief → local rules and affected files → smallest safe change → validation → handoff review
-```
-
-The brief states the goal, player value, allowed and excluded scope, affected files, save/UI risk, completion checks, and any uncertainty. Do not redefine product direction or add unrequested systems.
-
-Plugins such as Superpowers, Harness, and Serena are optional. They may help plan, debug, or review, but never override the latest user request, repository documents, Issue/Goal, or actual files. If a plugin is unavailable, continue with this document-based workflow.
-
-Before reporting completion, record mistakes or near-misses, their prevention step, untested items, and whether the lesson belongs in Base or this project. Use `docs/MVP_WORKFLOW_CHECKLIST.md` for the detailed checklist instead of duplicating it in every Goal.
-
-## Testing Guidelines
-
-Validate JSON, run headless project and changed-scene checks, then test the affected player path. Verify saves after `GameState` changes and inspect PC 16:9 windowed/fullscreen wrapping. Report untested items plainly.
-
-## Agent Use
-
-Use one implementation owner by default. Add read-only reviewers only when a task has independent rule, code-flow, benchmark, or QA questions whose evidence justifies the extra context cost. Reviewers never edit overlapping files or commit, push, revert, delete, or rename files. The final owner rereads changed files and `git diff` before validation.
-
-## Tooling Blockers
-
-When a required workflow capability is missing, such as subagents, a connector, a command runtime, a plugin, or credentials, first check whether it is already available in the current session or project configuration. Fix it directly only when the change is safe, scoped, and does not need user or administrator approval. Do not pretend a missing capability ran successfully or continue work that depends on it.
-
-If direct recovery is impossible or requires user action, stop only the dependent task and report the exact blocker, why it prevents reliable work, what was tried, the smallest user action needed, and how recovery will be verified. Independent work may continue when it does not hide, weaken, or conflict with the blocked goal.
-
-A plugin installation failure is not a project failure. Continue with the repository rules, Issue, Codex Goal, and manual verification checklist.
-
-## Commit & Pull Request Guidelines
-
-Use focused messages such as `MVP-018 완료 사건 보고서 DB 재확인 구현` or `docs: update MVP status audit`. PRs state the Issue/MVP, player-visible behavior, validation, UI screenshots, and Compound Review notes.
-
-## Agent Workflow
-
-Read the latest user instruction first, then `AGENTS.md`, `docs/BASE_RULES_VERSION.md`, `docs/DOCUMENTATION_MAP.md`, local Base-derived docs, project rules, Issue/Goal, Git status, and relevant files. Use the remote `alsdmlals4-eng/Base` reference only when the task is Base synchronization, Base promotion, or common-rule comparison. Latest user instructions win.
-
-Before editing, turn requests into a plan with purpose, player value, scope, exclusions, completion criteria, owned files, and verification. Follow the Superpowers / Harness Replacement Workflow: clarify the user's idea through questions and discussion when needed, confirm or summarize the specification, convert it into a high-quality working prompt that starts with `@Superpowers` or another plugin invocation only when available, and only then start work. Explain a better in-scope solution before applying it.
-
-Display versions follow MVP numbers: MVP-018 is `Ver 1.8`, MVP-020 is `Ver 2.0`. Update the start screen with changed behavior and user checks, then explain work in simple Korean. State whether Superpowers, Harness, Serena, or subagents were available, which roles were used, what each role found, what the Compound Review found, and whether a Base-promotion candidate exists.
+변경 파일과 이유, 구현 결과, 검증 근거, 미검증 항목, 남은 위험, 사용자 확인 순서, Base 승격 후보를 보고한다. 공용화할 내용이 없으면 `Base 승격 후보 없음`이라고 명시한다. 요청된 작업은 검증 후 집중된 커밋으로 남기며 자동 push하지 않는다.
