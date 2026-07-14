@@ -22,7 +22,7 @@ const MIN_SELECTED_AGENTS := 2
 const MAX_SELECTED_AGENTS := 3
 const AGENT_TRUST_MIN := -3
 const AGENT_TRUST_MAX := 3
-const ALLOWED_AGENT_TEMPERAMENTS := ["analytical", "empathetic", "breakthrough"]
+const ALLOWED_AGENT_TEMPERAMENTS := ["analytical", "empathetic", "breakthrough", "balanced"]
 const ABILITY_KEYS := ["suppression", "analysis", "protection", "treatment", "rapport"]
 const ABILITY_LABELS := {
 	"suppression": "제압",

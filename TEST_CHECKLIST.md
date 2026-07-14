@@ -40,6 +40,8 @@ git diff --check
 
 ## 신규 캠페인·순차 반일
 
+완료 기록: [`TWO_CASE_CAMPAIGN_MANUAL_QA.md`](docs/qa/TWO_CASE_CAMPAIGN_MANUAL_QA.md) — 3인 편성, 두 사건, 반일 전환, 저장, 의뢰, 10일 마감을 재현 검증했다.
+
 1. 신규 캠페인의 오전 계획 화면을 연다.
 2. 조사 배치가 없으면 사건 선택이 요구되지 않는지 확인한다.
 3. 조사·휴식·수락한 파견 의뢰를 배치한다.
@@ -48,6 +50,8 @@ git diff --check
 6. 저장 왕복으로 날짜·반일·단계·일정·게시판이 유지되는지 확인한다.
 
 ## 조사·HQ 중단·재개
+
+완료 기록: 저승역 오전 작전을 HQ로 중단한 뒤 저장·불러오기·재개하여 같은 반일과 작전 상태가 유지됨을 확인했다. 상세는 [`TWO_CASE_CAMPAIGN_MANUAL_QA.md`](docs/qa/TWO_CASE_CAMPAIGN_MANUAL_QA.md)를 따른다.
 
 1. 조사 배치와 사건을 선택해 현장에 진입한다.
 2. 조사 중 HQ 복귀를 선택한다.

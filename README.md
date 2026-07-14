@@ -17,7 +17,7 @@
 
 현재 구현에는 최대 10일 캠페인, 오전·오후 순차 반일 운영, 조사 중 HQ 중단·재개, 요원 5능력, 괴이 안정화·회수, 사건 보고서·DB, 소문시장·마도회·퇴마사 계보와 3칸 의뢰 게시판이 포함된다.
 
-MVP-039의 두 사건 성공·오대응 경로 UX 검증은 완료했다. 현재 다음 작업은 **두 구현 사건 전체 캠페인 수동 QA**다. 신규 캠페인부터 오전·오후 순차 진행, HQ 중단·재개, 사건 보고서·DB와 저장 왕복을 실제 흐름으로 확인한다. 상세 근거는 [`docs/qa/MVP039_MANUAL_UX_VALIDATION.md`](docs/qa/MVP039_MANUAL_UX_VALIDATION.md)를 따른다.
+MVP-039과 두 구현 사건 전체 캠페인 QA는 완료했다. 오현의 `balanced` 성향은 임시 3인 편성을 위해 허용했으며, 저장·사건 데이터는 바꾸지 않았다. 현재 다음 작업은 **MVP-040 폐주파수 방송국 vertical slice**의 사건 카드·근거·실패·회수·보고서 설계다. 상세 근거는 [`MVP039_MANUAL_UX_VALIDATION.md`](docs/qa/MVP039_MANUAL_UX_VALIDATION.md)와 [`TWO_CASE_CAMPAIGN_MANUAL_QA.md`](docs/qa/TWO_CASE_CAMPAIGN_MANUAL_QA.md)를 따른다.
 
 ## 기획서
 
@@ -70,7 +70,6 @@ tools/docs/             기획서 DOCX 생성기
 
 ## 현재 남은 작업
 
-- 두 구현 사건의 신규 캠페인 전체 수동 QA
 - 폐주파수 방송국 vertical slice
 - 선택형 일상 에피소드 최소 세트
 - 연구·장비·세력 콘텐츠 확장과 밸런스

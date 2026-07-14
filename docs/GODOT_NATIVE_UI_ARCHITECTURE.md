@@ -39,7 +39,7 @@ GPT의 Godot 네이티브 UI Toolkit 제안은 방향을 채택하되 현재 프
 
 컴포넌트 계약, 준비 화면 연결, Godot 전체 파싱과 기존 요원·저장·런타임 편집기·로그 테스트를 통과한 뒤 다른 반복 UI에 같은 원칙을 적용할지 판단한다. 해상도 확인은 1280×720과 1920×1080을 기준으로 한다.
 
-파일럿 중 `agent_oh_hyun`의 데이터 성향 `balanced`가 `GameState.ALLOWED_AGENT_TEMPERAMENTS`에 포함되지 않아 선택이 거부되는 기존 불일치를 확인했다. 이번 작업은 핵심 규칙을 변경하지 않으며, 성향 정책을 확정하는 별도 데이터·규칙 작업에서 해결한다.
+후속 전체 캠페인 QA에서 사용자 승인에 따라 `agent_oh_hyun`의 데이터 성향 `balanced`를 `GameState.ALLOWED_AGENT_TEMPERAMENTS`에 임시 허용했다. 저장 스키마와 에피소드 데이터는 바꾸지 않았으며, 3인 편성·저장 재개·회수 보조를 검증했다. 상세는 `docs/qa/TWO_CASE_CAMPAIGN_MANUAL_QA.md`를 따른다.
 
 ## Base 승격 후보
 
