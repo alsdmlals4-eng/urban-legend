@@ -19,6 +19,7 @@
 | 조사·회수 장면 중심 UI | `CINEMATIC_FIELD_RECOVERY_UI.md` |
 | 저장·진행·일정·위험도·연구·장비 | `MVP037_CAMPAIGN_CORE.md`와 해당 Goal |
 | 실제 MVP 시작·종료 점검 | `MVP_WORKFLOW_CHECKLIST.md` |
+| Codex 계정 교대·저사용량 checkpoint·새 작업 인수 | `CURRENT_HANDOFF.md`, `CODEX_ACCOUNT_HANDOFF.md` |
 | 공용 규칙 동기화·Base 승격 | `AI_SHARED_WORK_RULES.md`, `BASE_RULES_VERSION.md` |
 | 과거 Codex 운영 방식 조사 | `CODEX_SHARED_WORK_RULES.md` |
 
@@ -31,6 +32,7 @@
 - Base 기준 커밋과 승격 후보: `BASE_RULES_VERSION.md`
 - 실행·수동 검증 목록: `TEST_CHECKLIST.md`
 - 현재 범위와 상태: 최신 Issue/Goal, `MVP_ROADMAP.md`
+- 현재 계정 인수 상태: `CURRENT_HANDOFF.md`
 - 프로젝트 소개와 실행: `README.md`
 
 다른 문서가 같은 내용을 반복하면 위 원본을 링크하고 작업별 차이만 기록한다.
