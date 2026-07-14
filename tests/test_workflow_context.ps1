@@ -22,6 +22,8 @@ foreach ($branch in @('DIALOGUE_AUTHORING_WORKFLOW', 'IMAGE_ASSET_WORKFLOW', 'BE
 Require ($map.Contains('Conditional routing')) 'Documentation map must state conditional loading'
 
 if (Test-Path -LiteralPath $contextPath) {
+	$context = Get-Content -LiteralPath $contextPath -Raw -Encoding utf8
+	Require ($context.Contains('HIGH_RISK_DOMAIN')) 'Project context must distinguish semantic risk from protected paths'
 	$activeWords = (Words 'AGENTS.md') + (Words 'docs/BASE_RULES_VERSION.md') + (Words 'docs/DOCUMENTATION_MAP.md') + (Words 'docs/PROJECT_CONTEXT.md')
 	Require ($activeWords -le 4056) "Active startup context is $activeWords words; target is 4056"
 }
