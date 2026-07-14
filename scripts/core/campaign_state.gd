@@ -110,7 +110,6 @@ func resolve_case(case_id: String, resolution_grade: String) -> bool:
 	var case_state := _get_case_state(case_id)
 	case_state["resolution_state"] = "resolved"
 	case_state["resolution_grade"] = resolution_grade.strip_edges()
-	case_state["discovery_state"] = "resolved"
 	_set_case_state(case_id, case_state)
 	if String(_state.get("emergency_case_id", "")) == case_id:
 		_state["emergency_case_id"] = ""
