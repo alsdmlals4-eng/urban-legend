@@ -3,17 +3,17 @@
 이 문서는 계정·채팅 교대 시 가장 먼저 읽는 짧은 작업 상태다. 실제 완료 여부는 Git과 테스트로 다시 확인한다.
 
 ```yaml
-status: READY_FOR_INTEGRATION
+status: COMPLETE
 goal: Codex 이중 계정 및 저사용량 인수인계 구조 구현
-branch: codex/account-handoff
-completed_work_commit: b0f493f
-tests: account handoff PASS; PowerShell parse PASS; dialogue/workflow/multimodel contracts PASS; profile isolation review fixes PASS
+branch: main
+completed_work_commit: 6dda0efb5ac1cde8a4243c486ea62115bfa0ce8f
+tests: account handoff PASS; PowerShell parse PASS; dialogue/workflow/multimodel contracts PASS; A/B profile validation PASS; running-process guard PASS
 changed_files: account handoff policy, documentation, profile tools, contract tests
 external_artifacts: none
-remaining_work: merge main; install A/B profiles from main; validate isolation; update COMPLETE handoff; push origin/main
-next_action: merge codex/account-handoff into main and run the profile installer from the actual execution path
-main_integrated: false
-origin_pushed: false
+remaining_work: user must perform the first ChatGPT sign-in once inside each isolated profile; no authentication content was created or copied
+next_action: close every ChatGPT/Codex process, run C:\Users\user\.codex-profiles\Start-Codex-B.ps1, sign in, then use the first-account prompt in CODEX_ACCOUNT_HANDOFF.md
+main_integrated: true
+origin_pushed: true
 ```
 
 ## 인수 규칙
