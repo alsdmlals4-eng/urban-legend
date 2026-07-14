@@ -328,7 +328,7 @@
       "legacy_dialogue_node_ids": ["dialogue_intro", "dialogue_after_photo"],
       "title": "존재하지 않는 저승역",
       "opening_dialogue": [
-		{"speaker": "로그", "text": "현장 단말기 접속 완료. 방송 기록과 전광판 표기가 서로 어긋납니다. 정답은 정하지 않을게요. 먼저 반복되는 차이부터 보죠.", "expression": "focus"},
+		{"speaker": "로그", "text": "관찰됨: 안내방송과 전광판의 종착지 표기가 서로 다릅니다. 어느 쪽이 실제 경로인지는 미확인입니다.", "expression": "focus"},
         {"speaker": "권나래", "text": "안내방송과 전광판의 종착지가 서로 맞지 않아요."},
         {"speaker": "강이준", "text": "먼저 피해자의 기록과 현장 반복을 나눠 확인하죠."},
         {"speaker": "오현", "text": "괴이를 쫓기보다 돌아오는 규칙부터 찾겠습니다."}
@@ -336,14 +336,14 @@
       "choices": [
         {
           "id": "field_begin_station_investigation",
-          "label": "피해자의 기록부터 시간 순서로 맞춘다",
+          "label": "피해자의 휴대폰 기록을 시간 순서로 확인한다",
           "ability": "analysis",
           "point_id": "point_victim_phone",
           "after_dialogue": [
             {"speaker": "권나래", "text": "마지막 문자는 장소가 아니라 자정을 가리키고 있어요."},
             {"speaker": "강이준", "text": "시간이 종착지 역할을 한다면 방송도 같은 주기로 반복될 겁니다."},
 			{"speaker": "오현", "text": "그럼 발을 옮기기 전에 스피커와 승차권을 대조하죠."},
-			{"speaker": "로그", "text": "대조 항목을 현장 기록에 묶었습니다. 다음 관찰에서 서로 맞지 않는 시간과 목적지를 우선 표시할게요.", "expression": "normal"}
+			{"speaker": "로그", "text": "피해자 기록, 방송 주기와 종착지 표기를 대조 항목으로 등록했습니다.", "expression": "normal"}
           ],
           "next_field_node_id": "field_station_investigation"
         }
@@ -353,60 +353,60 @@
       "id": "field_station_investigation",
       "title": "저승역 현장 조사",
       "opening_dialogue": [
-		{"speaker": "로그", "text": "현장 기록을 열었습니다. 전조와 연결될 가능성이 있는 지점을 고르되, 잠긴 항목은 먼저 근거를 확보해야 합니다.", "expression": "focus"}
+		{"speaker": "로그", "text": "조사 지점을 선택하세요. 잠긴 지점은 조건을 충족하면 다시 표시됩니다.", "expression": "focus"}
       ],
       "uses_investigation_points": true
     }
   ],
   "recovery_patterns": [
     {
-      "id": "pattern_station_false_terminal", "order": 0, "name": "거짓 종착 안내",
-      "telegraph": "스피커가 없는 승강장 이름을 세 번 반복하고 전광판의 글자가 한 칸씩 비어 간다.",
-      "description": "거짓 안내를 따라간 사람의 경로를 존재하지 않는 종착지로 덮어쓴다.",
+      "id": "pattern_station_false_terminal", "order": 0, "name": "존재하지 않는 종착 안내",
+      "telegraph": "스피커가 같은 승강장 이름을 세 번 반복한다. 반복될 때마다 전광판의 글자가 한 칸씩 사라진다.",
+      "description": "반복 안내와 전광판 표기가 서로 다른 경로를 가리키고 있다.",
       "related_clue_ids": ["clue_repeating_announcement", "clue_missing_terminal_sign"],
       "responses": [
-        {"id": "cut_false_broadcast", "label": "방송 주기와 전광판 불일치를 대조해 안내를 끊는다", "ability": "analysis", "stability_gain": 18},
-        {"id": "follow_terminal", "label": "전광판에 표시된 승강장으로 이동한다", "ability": "suppression"},
-        {"id": "answer_broadcast", "label": "안내방송에 목적지를 말해 응답한다", "ability": "rapport"}
+        {"id": "cut_false_broadcast", "label": "방송 주기와 전광판 표기를 대조해 안내 신호를 차단한다", "ability": "analysis", "stability_gain": 18},
+        {"id": "follow_terminal", "label": "전광판이 가리키는 승강장으로 이동한다", "ability": "suppression"},
+        {"id": "answer_broadcast", "label": "방송에 현재 목적지를 말해 응답한다", "ability": "rapport"}
       ],
       "correct_response_id": "cut_false_broadcast",
-      "failure_reason": "거짓 안내를 목적지 정보로 믿으면 이동 경로가 잠긴다."
+      "failure_reason": "전광판의 목적지를 실제 경로로 따르면 이동 경로가 잠긴다."
     },
     {
       "id": "pattern_station_gaze_lure", "order": 1, "name": "역무원의 시선 유도",
-      "telegraph": "얼굴이 흐린 역무원이 피해자와 반대쪽 선로를 오래 바라본다.",
-      "description": "시선을 따라간 대상을 피해자의 실제 동선에서 떼어 낸다.",
+      "telegraph": "얼굴이 흐린 역무원이 피해자와 반대쪽 선로를 바라본다. 시선은 움직이지 않는다.",
+      "description": "역무원의 시선과 피해자의 마지막 동선이 서로 다른 방향을 가리킨다.",
       "related_clue_ids": ["clue_last_message", "clue_staff_room_log"],
       "responses": [
-        {"id": "trace_victim_time", "label": "시선을 무시하고 피해자의 시간 기록으로 동선을 고정한다", "ability": "rapport", "stability_gain": 16},
-        {"id": "meet_stationmaster_gaze", "label": "역무원의 시선을 정면으로 따라간다", "ability": "suppression"},
-        {"id": "enter_tracks", "label": "역무원이 보는 선로로 먼저 진입한다", "ability": "protection"}
+        {"id": "trace_victim_time", "label": "역무원의 시선을 무시하고 피해자의 시간 기록으로 동선을 고정한다", "ability": "rapport", "stability_gain": 16},
+        {"id": "meet_stationmaster_gaze", "label": "역무원이 바라보는 방향을 따라간다", "ability": "suppression"},
+        {"id": "enter_tracks", "label": "역무원이 바라보는 선로로 먼저 진입한다", "ability": "protection"}
       ],
       "correct_response_id": "trace_victim_time",
-      "failure_reason": "역무원의 시선을 따라가면 피해자 동선에서 멀어진다."
+      "failure_reason": "역무원의 시선을 따라가면 피해자의 마지막 동선에서 멀어진다."
     },
     {
       "id": "pattern_station_ticket_imprint", "order": 2, "name": "검은 승차권 각인",
-      "telegraph": "검은 승차권의 구멍이 요원 이름의 획처럼 번지기 시작한다.",
-      "description": "표를 개찰한 대상을 존재하지 않는 종착지의 승객으로 각인한다.",
+      "telegraph": "검은 승차권의 천공 자국이 번지며 가장 가까운 요원의 이름과 비슷한 획을 만든다.",
+      "description": "승차권의 표식이 접촉한 대상을 새 승객으로 기록하려 한다.",
       "related_clue_ids": ["clue_black_ticket", "clue_last_message"],
       "responses": [
-        {"id": "isolate_ticket", "label": "자정 기록을 확인하며 승차권 접촉을 차단한다", "ability": "protection", "stability_gain": 17},
-        {"id": "punch_ticket", "label": "승차권을 개찰해 목적지를 확인한다", "ability": "analysis"},
-        {"id": "carry_ticket", "label": "대표 요원이 승차권을 소지한다", "ability": "suppression"}
+        {"id": "isolate_ticket", "label": "자정 기록을 대조하며 승차권과의 접촉을 차단한다", "ability": "protection", "stability_gain": 17},
+        {"id": "punch_ticket", "label": "승차권을 개찰해 인쇄된 목적지를 확인한다", "ability": "analysis"},
+        {"id": "carry_ticket", "label": "한 명이 승차권을 직접 소지한다", "ability": "suppression"}
       ],
       "correct_response_id": "isolate_ticket",
       "failure_reason": "승차권을 개찰하거나 소지하면 종착지 표식이 요원에게 옮겨간다."
     },
     {
       "id": "pattern_station_boundary_collapse", "order": 3, "name": "선로 경계 붕괴",
-      "telegraph": "승강장 끝의 안전선이 끊기고 선로가 양쪽에서 같은 방향으로 이어진다.",
-      "description": "현실 승강장과 괴이 노선의 경계를 겹친다.",
+      "telegraph": "승강장 안전선이 중간에서 끊긴다. 양쪽 선로가 같은 방향으로 이어져 보인다.",
+      "description": "현실 승강장과 괴이 노선의 경계가 겹치고 있다.",
       "related_clue_ids": ["clue_missing_terminal_sign", "clue_staff_room_log"],
       "responses": [
-        {"id": "restore_platform_boundary", "label": "표지판과 근무 기록으로 현실 승강장 경계를 재고정한다", "ability": "protection", "stability_gain": 20},
-        {"id": "retreat_to_tracks", "label": "선로 아래로 내려가 괴이를 우회한다", "ability": "suppression"},
-        {"id": "cross_broken_line", "label": "끊어진 안전선을 빠르게 넘어간다", "ability": "treatment"}
+        {"id": "restore_platform_boundary", "label": "표지판과 근무 기록을 대조해 현실 승강장 경계를 고정한다", "ability": "protection", "stability_gain": 20},
+        {"id": "retreat_to_tracks", "label": "선로 아래로 내려가 끊어진 경계를 우회한다", "ability": "suppression"},
+        {"id": "cross_broken_line", "label": "끊어진 안전선을 넘어 반대편으로 이동한다", "ability": "treatment"}
       ],
       "correct_response_id": "restore_platform_boundary",
       "failure_reason": "선로로 후퇴하면 현실 경계가 아니라 괴이의 노선으로 진입한다."
@@ -554,32 +554,32 @@
       "agent_id": "agent_kang_ijun",
       "temperament": "analytical",
       "conditions": {},
-      "text": "전광판의 표시 주기가 일정합니다. 노이즈 안에 반복 패턴이 있어요. 바로 건드리기 전에 기록부터 따야 합니다.",
+      "text": "반복 주기가 끊기는 지점을 찾으면 봉인선을 밀어 넣을 틈이 생깁니다.",
       "expression": "focused"
     },
     {
       "agent_id": "agent_kwon_narae",
       "temperament": "empathetic",
       "conditions": {},
-      "text": "피해자가 마지막으로 본 건 출구가 아니라 누군가를 기다리는 표정이었을 가능성이 커요. 급하게 몰아붙이면 기억이 더 흐려질 수 있어요.",
+      "text": "피해자의 기록과 현장 표기가 어긋나는 지점을 먼저 분리해 보겠습니다.",
       "expression": "worried"
     },
     {
       "agent_id": "agent_oh_hyun",
       "temperament": "breakthrough",
       "conditions": {},
-      "text": "이상한 건 알겠는데, 저 문 너머에서 소리가 납니다. 오래 보면 더 말릴 수 있어요. 들어갈 거면 지금입니다.",
+      "text": "단말기에 방송, 전광판과 승차권 기록을 별도 채널로 저장하겠습니다.",
       "expression": "serious"
     }
   ],
   "investigation_points": [
     {
       "id": "point_victim_phone",
-      "label": "피해자의 휴대폰",
+      "label": "피해자의 마지막 휴대폰 기록",
       "clue_id": "clue_last_message",
       "conditions": {},
       "locked_text": "",
-      "result_text": "피해자의 휴대폰에서 00:00으로 고정된 마지막 문자를 확인했습니다.",
+      "result_text": "마지막 세 문자의 도착 예정 시각이 모두 00:00으로 고정되어 있습니다.",
       "add_flags": [
         "inspected_phone"
       ],
@@ -589,11 +589,11 @@
     },
     {
       "id": "point_black_ticket",
-      "label": "검은 승차권 조각",
+      "label": "개찰구 아래의 검은 승차권 조각",
       "clue_id": "clue_black_ticket",
       "conditions": {},
       "locked_text": "",
-      "result_text": "개찰구 아래에서 존재하지 않는 종착지가 찍힌 검은 승차권 조각을 발견했습니다.",
+      "result_text": "개찰구 아래에서 검은 종이 조각을 발견했습니다. 표면에는 운행 데이터에 없는 종착지가 인쇄되어 있습니다.",
       "add_flags": [
         "visited_ticket_gate",
         "inspected_black_ticket"
@@ -604,11 +604,11 @@
     },
     {
       "id": "point_platform_speaker",
-      "label": "플랫폼 스피커",
+      "label": "반복되는 플랫폼 안내방송",
       "clue_id": "clue_repeating_announcement",
       "conditions": {},
       "locked_text": "",
-      "result_text": "반복 안내방송 사이에서 피해자의 이름이 섞인 녹음을 확보했습니다.",
+      "result_text": "같은 안내문이 반복되는 사이, 잡음 속에서 피해자의 이름이 들립니다. 해당 구간을 녹음했습니다.",
       "add_flags": [
         "heard_station_noise",
         "inspected_platform_speaker"
@@ -619,7 +619,7 @@
     },
     {
       "id": "point_frequency_terminal",
-      "label": "기록국 단말기: 폐주파수 동기화",
+      "label": "기록국 단말기 — 폐주파수 동기화",
       "conditions": {
         "required_flags": [
           "heard_station_noise"
@@ -629,8 +629,8 @@
           "minigame_frequency_failed"
         ]
       },
-      "locked_text": "플랫폼 스피커의 잡음이 필요하거나, 이번 사건의 폐주파수 판정을 이미 기록했습니다.",
-      "result_text": "기록국 단말기가 반복 안내방송의 잡음을 분석하기 시작합니다.",
+      "locked_text": "플랫폼 스피커의 잡음 기록이 없거나, 이번 사건의 동기화 결과가 이미 저장되어 있습니다.",
+      "result_text": "단말기가 안내방송의 반복 구간과 잡음 파형을 분리하기 시작합니다.",
       "add_flags": [
         "started_frequency_sync"
       ],
@@ -639,11 +639,11 @@
     },
     {
       "id": "point_terminal_sign",
-      "label": "꺼진 종착지 표지판",
+      "label": "꺼졌다 켜지는 종착지 전광판",
       "clue_id": "clue_missing_terminal_sign",
       "conditions": {},
       "locked_text": "",
-      "result_text": "꺼진 전광판에 지도에 없는 종착지명이 잠깐 비친 기록을 확보했습니다.",
+      "result_text": "전광판이 꺼지는 순간, 지도와 운행 데이터에 없는 종착지명이 잠깐 나타납니다. 화면 기록을 확보했습니다.",
       "add_flags": [
         "inspected_terminal_sign"
       ],
@@ -653,14 +653,14 @@
     },
     {
       "id": "point_staff_room_door",
-      "label": "역무원실 잠긴 문",
+      "label": "잠긴 역무원실 문",
       "conditions": {},
       "locked_text": "",
-      "result_text": "역무원실 문은 닫혀 있습니다. 접근 방식을 정해야 합니다.",
+      "result_text": "손잡이는 움직이지 않고 잠금장치가 안쪽에서 걸려 있습니다. 접근 방식을 선택해야 합니다.",
       "method_options": [
         {
           "id": "method_staff_room_destruction",
-          "label": "파괴 판정으로 돌파",
+          "label": "잠금장치를 강제로 밀어 연다",
           "method_type": "destruction",
           "stat_key": "destruction",
           "approach_type": "suppression",
@@ -670,9 +670,9 @@
             "time_pressure",
             "anomaly_alert"
           ],
-          "summary": "빠르게 문을 열지만 소음과 현장 위험을 감수합니다.",
-          "success_text": "잠금장치를 강하게 밀어붙여 역무원실 진입로를 확보했습니다. 대신 승강장에 짧은 경계음이 퍼집니다.",
-          "failure_text": "문은 열리지 않았고 금속음이 크게 울렸습니다. 괴이가 역무원실 주변을 더 강하게 의식합니다.",
+          "summary": "가장 빠르지만 큰 소음과 위험 상승을 감수합니다.",
+          "success_text": "잠금장치가 밀려나 문이 열립니다. 금속 경계음이 승강장에 퍼집니다.",
+          "failure_text": "문은 열리지 않습니다. 충격음 뒤로 역무원실 주변의 소음이 커집니다.",
           "success_effects": {
             "add_flags": [
               "unlocked_staff_room",
@@ -726,7 +726,7 @@
         },
         {
           "id": "method_staff_room_observation",
-          "label": "주변을 관찰해 열쇠를 찾는다",
+          "label": "문 주변에서 열쇠와 통과 흔적을 찾는다",
           "method_type": "observation",
           "stat_key": "observation",
           "approach_type": "protection",
@@ -736,9 +736,9 @@
             "victim_risk",
             "memory_gap"
           ],
-          "summary": "시간은 조금 쓰지만 피해자의 동선과 감정 흔적을 안정적으로 확인합니다.",
-          "success_text": "문틈 아래의 작은 열쇠와 피해자가 남긴 손자국을 찾았습니다. 역무원실 기록까지 안전하게 확인할 수 있습니다.",
-          "failure_text": "손자국은 확인했지만 열쇠 위치를 특정하지 못했습니다. 피해자 동선에 대한 이해만 조금 남았습니다.",
+          "summary": "시간을 들여 문 주변과 피해자의 동선을 훼손 없이 확인합니다.",
+          "success_text": "문틈 아래에서 작은 열쇠와 손자국을 발견합니다. 열쇠로 문을 열고 기록을 보존합니다.",
+          "failure_text": "손자국은 확인했지만 열쇠 위치를 찾지 못합니다. 문은 잠긴 채로 남습니다.",
           "success_effects": {
             "add_flags": [
               "unlocked_staff_room",
@@ -801,7 +801,7 @@
         },
         {
           "id": "method_staff_room_analysis",
-          "label": "잠금 패턴을 분석한다",
+          "label": "잠금장치와 안내방송의 반복 주기를 대조한다",
           "method_type": "analysis",
           "stat_key": "analysis",
           "approach_type": "analysis",
@@ -812,9 +812,9 @@
             "noise_pattern",
             "evidence_sensitive"
           ],
-          "summary": "느리지만 괴담 규칙과 미니게임 보조 정보를 얻을 수 있습니다.",
-          "success_text": "잠금 패턴이 안내방송 주기와 맞물린다는 사실을 확인했습니다. 역무원실 접근권과 폐주파수 분석 보조값을 확보합니다.",
-          "failure_text": "잠금 패턴 해석이 어긋나 폐주파수 잡음이 강해졌습니다. 다음 판정에서 더 조심해야 합니다.",
+          "summary": "시간과 정신력을 쓰지만 잠금 규칙과 동기화 보조 정보를 함께 확인합니다.",
+          "success_text": "잠금장치가 안내방송의 반복 주기마다 해제되는 순간을 확인합니다. 문이 열리고 동기화 보조값이 저장됩니다.",
+          "failure_text": "주기를 잘못 맞춰 잠금장치의 잡음이 커집니다. 문은 열리지 않습니다.",
           "success_effects": {
             "add_flags": [
               "unlocked_staff_room",
@@ -882,8 +882,8 @@
           "unlocked_staff_room"
         ]
       },
-      "locked_text": "아직 확인할 근거가 부족합니다. 대화씬에서 역무원실 접근 근거를 먼저 확보하세요.",
-      "result_text": "역무원실 기록에서 막차 이후에도 반복된 출근 도장을 발견했습니다.",
+      "locked_text": "역무원실 접근 권한이 없습니다. 먼저 문을 열 수 있는 근거를 확보해야 합니다.",
+      "result_text": "근무 기록에는 막차 이후의 출근 도장이 여러 날짜에 반복되어 있습니다. 필체와 시각도 모두 같습니다.",
       "add_flags": [
         "inspected_staff_room_log"
       ],
