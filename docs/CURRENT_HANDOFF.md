@@ -4,14 +4,14 @@
 
 ```yaml
 status: COMPLETE
-goal: Codex 이중 계정 및 저사용량 인수인계 구조 구현
+goal: MVP-038 순차 일정·세력 의뢰·조사 탈출 흐름 개선
 branch: main
-completed_work_commit: 6dda0efb5ac1cde8a4243c486ea62115bfa0ce8f
-tests: account handoff PASS; PowerShell parse PASS; dialogue/workflow/multimodel contracts PASS; A/B profile validation PASS; running-process guard PASS
-changed_files: account handoff policy, documentation, profile tools, contract tests
-external_artifacts: none
-remaining_work: user must perform the first ChatGPT sign-in once inside each isolated profile; no authentication content was created or copied
-next_action: close every ChatGPT/Codex process, run C:\Users\user\.codex-profiles\Start-Codex-B.ps1, sign in, then use the first-account prompt in CODEX_ACCOUNT_HANDOFF.md
+completed_work_commit: 0ea2918dc51db14560d6e38c3f42d7f6e2483e8b
+tests: campaign 52/0; requests 51/0; agent 15/0; recovery 36/0; faction market 52/0; log 54/0; preparation/cinematic/runtime editor/HQ return PASS; full project parse/load PASS; 1280x720 and 1920x1080 visual QA PASS
+changed_files: campaign state and save migration, preparation/investigation/result/recovery UI flow, faction request data and tests, MVP-038 docs
+external_artifacts: C:\Users\user\Downloads\urban-legend-mvp038-faction-request-gpt-input-2026-07-14.zip
+remaining_work: external GPT copy pass is optional and not yet applied; third case, daily episodes, research/equipment content and final 180-220 minute playtime measurement remain later milestones
+next_action: run a new campaign through morning result confirmation, afternoon planning, HQ suspend/resume, and one dispatch/recovery request; then send the GPT input ZIP and return its result ZIP for review
 main_integrated: true
 origin_pushed: true
 ```
