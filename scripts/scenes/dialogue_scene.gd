@@ -123,6 +123,7 @@ func _build_vn_ui() -> void:
 	command_row.add_child(_next_button)
 	var investigation_button := Button.new()
 	investigation_button.text = "조사로 이동"
+	investigation_button.visible = GameState.get_current_episode_id() != "episode_001_afterlife_station"
 	investigation_button.pressed.connect(func() -> void:
 		_go_to_scene("res://scenes/investigation_scene.tscn")
 	)

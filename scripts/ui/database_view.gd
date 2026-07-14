@@ -258,8 +258,9 @@ func _show_completed_case_report(report: Dictionary, parent: VBoxContainer) -> v
 		"episode_id: %s" % String(report.get("episode_id", "")),
 		"저승역과 빨간 우산은 사건 id와 제목 기준으로 별도 최신 보고서 1건씩 보관됩니다."
 	], parent)
+	var recovery_label := "저승역 반복 안내 잔향 회수 결과" if String(report.get("episode_id", "")) == "episode_001_afterlife_station" else "괴이 핵 회수 결과"
 	_add_text_entries("회수 결과", [
-		"괴이 핵 회수 결과: %s" % _make_recovery_text(report.get("recovery_result", {}))
+		"%s: %s" % [recovery_label, _make_recovery_text(report.get("recovery_result", {}))]
 	], parent)
 	_add_report_entries("수집 단서", report.get("collected_clues", []), "title", "description", parent)
 	_add_minigame_entries(report.get("minigame_results", {}), parent)

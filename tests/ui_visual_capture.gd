@@ -34,6 +34,8 @@ func _capture() -> void:
 	var ui_state := String(args[5]) if args.size() > 5 else ""
 	if ui_state == "risk_d":
 		game_state.investigation_risk = 85
+	if ui_state == "mvp043_point_picker":
+		game_state.set_current_field_node_id("field_station_investigation")
 	if ui_state.begins_with("mvp039_"):
 		_prepare_mvp039_evidence(game_state)
 		if ui_state == "mvp039_result":

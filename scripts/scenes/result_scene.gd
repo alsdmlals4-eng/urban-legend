@@ -103,7 +103,7 @@ func _add_case_report_panel(parent: Control) -> void:
 	_add_text_list(content, "수집한 단서", _make_entry_lines(report.get("collected_clues", []), "title", "description"))
 	content.add_child(_make_label("확인한 힌트: %d건" % int(report.get("seen_hint_count", 0))))
 	_add_text_list(content, "미니게임 기록", _make_minigame_lines(report.get("minigame_results", {})))
-	content.add_child(_make_label("괴이 핵 회수 결과: %s" % _make_report_recovery_text(report.get("recovery_result", {}))))
+	content.add_child(_make_label("저승역 반복 안내 잔향 회수 결과: %s" % _make_report_recovery_text(report.get("recovery_result", {}))) if GameState.get_current_episode_id() == "episode_001_afterlife_station" else _make_label("괴이 핵 회수 결과: %s" % _make_report_recovery_text(report.get("recovery_result", {}))))
 	_add_text_list(content, "해금 기록물", _make_entry_lines(report.get("unlocked_records", []), "title", "description"))
 	_add_text_list(content, "연구 보상", _make_entry_lines(report.get("unlocked_research_rewards", []), "ability_name", "ability_description"))
 	_add_text_list(content, "해금 장비", _make_entry_lines(report.get("unlocked_equipment", []), "name", "description"))

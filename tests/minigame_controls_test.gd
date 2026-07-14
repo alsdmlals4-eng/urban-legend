@@ -15,6 +15,7 @@ func _init() -> void:
 func _run() -> void:
 	await _test_route_danger_and_broken_paths()
 	await _test_route_reset_preserves_danger_case()
+	await _test_route_variables_are_deterministic()
 	await _test_route_clear_grades()
 	await _test_route_mouse_and_keyboard_inputs()
 	await _test_games_wait_for_start()
@@ -66,6 +67,21 @@ func _test_route_reset_preserves_danger_case() -> void:
 	await process_frame
 
 
+func _test_route_variables_are_deterministic() -> void:
+	var first := _new_route_game({"route_risk": 5, "route_entrenchment": 5})
+	var second := _new_route_game({"route_risk": 5, "route_entrenchment": 5})
+	_expect(bool(first.get("_route_lock")), "high entrenchment should enable the route lock")
+	_expect(bool(first.get("_route_wobble")), "combined risk and entrenchment should enable the announced route wobble")
+	first.call("_build_final_board")
+	second.call("_build_final_board")
+	_expect(first.get("_tiles") == second.get("_tiles"), "the same checkpoint risk inputs should create the same final board")
+	var locked_tile: Dictionary = first.get("_tiles")[first.call("_coord_to_index", Vector2i(2, 1))]
+	_expect(bool(locked_tile.get("locked", false)), "route lock should mark the documented final-board tile")
+	first.queue_free()
+	second.queue_free()
+	await process_frame
+
+
 func _test_route_clear_grades() -> void:
 	var optimal := _complete_route(0)
 	_assert_route_result(optimal, 8, "optimal", "최적 복원")
@@ -104,11 +120,14 @@ func _test_route_mouse_and_keyboard_inputs() -> void:
 	await process_frame
 
 
-func _new_route_game() -> Control:
+func _new_route_game(config: Dictionary = {}) -> Control:
 	var game := RouteGame.new()
 	root.add_child(game)
 	game.size = Vector2(620, 440)
-	game.configure({"optimal_move_count": 4, "precision_move_limit": 6}, false)
+	var route_config := {"optimal_move_count": 4, "precision_move_limit": 6}
+	for key in config:
+		route_config[key] = config[key]
+	game.configure(route_config, false)
 	return game
 
 

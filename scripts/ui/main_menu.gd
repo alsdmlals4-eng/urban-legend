@@ -71,7 +71,7 @@ func _build_ui() -> void:
 	content.add_child(title_row)
 
 	var title := Label.new()
-	title.text = "도시괴담 기록국"
+	title.text = "괴이 기록국"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title_row.add_child(title)
 
@@ -88,7 +88,7 @@ func _build_ui() -> void:
 	content.add_child(subtitle)
 
 	var body := Label.new()
-	body.text = "괴담기록국 요원 팀을 편성해 두 도시괴담의 규칙을 조사하고, 단서를 근거로 괴이를 안정화·회수합니다."
+	body.text = "인간의 마음과 기억에서 되살아나는 괴이의 규칙을 조사하고, 현재 출현을 안정화한 뒤 다음 피해를 막을 괴이 매뉴얼을 기록합니다."
 	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	content.add_child(body)
 

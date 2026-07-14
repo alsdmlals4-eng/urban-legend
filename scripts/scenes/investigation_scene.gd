@@ -65,6 +65,7 @@ var _case_summary_label: Label
 var _mode_label: Label
 var _return_dialog: ConfirmationDialog
 var _settings_dialog: AcceptDialog
+var _return_field_button: Button
 var _accessibility := AccessibilitySettingsScript.new()
 
 
@@ -111,6 +112,7 @@ func _build_ui() -> void:
 	_field_choice_box = %FieldChoiceBox
 	_agent_reaction_box = %AgentReactionBox
 	_points_box = %PointsBox
+	_return_field_button = %ReturnFieldButton
 	_method_panel = _point_method_dock
 	_method_title_label = %MethodTitleLabel
 	_method_button_box = %MethodButtonBox
@@ -129,6 +131,7 @@ func _build_ui() -> void:
 	%LogUtilityButton.pressed.connect(_toggle_record_drawer)
 	%SettingsButton.pressed.connect(_show_settings)
 	%ReturnHqButton.pressed.connect(_show_return_confirmation)
+	_return_field_button.pressed.connect(_return_to_field_choice)
 
 	_log_guide = LogGuideScript.new()
 	_log_guide.set_compact(true)
@@ -324,6 +327,7 @@ func _show_current_field_node() -> void:
 		_field_dialogue_label.text = "현장 기록을 불러오지 못했습니다. 기존 조사 포인트를 확인하세요."
 		_field_next_button.visible = false
 		_points_box.visible = true
+		_configure_point_picker_escape()
 		_set_ui_mode("POINT_PICKER")
 		return
 	_narrative_label.text = String(_field_node.get("title", GameState.get_current_episode_title()))
@@ -442,7 +446,30 @@ func _show_field_choices() -> void:
 		card.action_requested.connect(func(_action_id: String) -> void: _select_field_choice(choice_copy))
 	if choices.is_empty() or bool(_field_node.get("uses_investigation_points", false)):
 		_points_box.visible = true
+		_configure_point_picker_escape()
 		_set_ui_mode("POINT_PICKER")
+
+
+func _configure_point_picker_escape() -> void:
+	if _return_field_button == null:
+		return
+	var return_field_node_id := String(_field_node.get("return_field_node_id", "")).strip_edges()
+	var has_visible_point := _points_box != null and _points_box.get_child_count() > 0
+	_return_field_button.visible = not return_field_node_id.is_empty() or not has_visible_point
+	if not _return_field_button.visible:
+		return
+	_return_field_button.text = "조사 선택으로 돌아가기" if not return_field_node_id.is_empty() else "HQ로 복귀"
+	_return_field_button.tooltip_text = "확보한 단서와 위험 사례는 유지됩니다." if not return_field_node_id.is_empty() else "현재 진행을 저장하고 HQ로 돌아갑니다."
+
+
+func _return_to_field_choice() -> void:
+	var return_field_node_id := String(_field_node.get("return_field_node_id", "")).strip_edges()
+	if return_field_node_id.is_empty():
+		_show_return_confirmation()
+		return
+	GameState.set_current_field_node_id(return_field_node_id)
+	GameState.save_game()
+	_show_current_field_node()
 
 
 func _select_field_choice(choice: Dictionary) -> void:

@@ -130,9 +130,9 @@ def configure_document(doc: Document, build_hash: str, version: str) -> None:
 		if name.startswith("Heading"):
 			style.paragraph_format.keep_with_next = True
 
-	doc.core_properties.title = "괴담기록국 게임기획서"
-	doc.core_properties.subject = "MVP-040 기준 살아 있는 게임 설계"
-	doc.core_properties.author = "괴담기록국 프로젝트"
+	doc.core_properties.title = "괴이 기록국 게임기획서"
+	doc.core_properties.subject = "MVP-043 기준 살아 있는 게임 설계"
+	doc.core_properties.author = "괴이 기록국 프로젝트"
 	doc.core_properties.keywords = f"{HASH_PREFIX}{build_hash}"
 	doc.core_properties.comments = "편집 원본: docs/GAME_DESIGN_DOCUMENT.md"
 
@@ -141,7 +141,7 @@ def configure_document(doc: Document, build_hash: str, version: str) -> None:
 	hp = header.paragraphs[0]
 	hp.clear()
 	hp.alignment = WD_ALIGN_PARAGRAPH.RIGHT
-	hr = hp.add_run("괴담기록국  ·  GAME DESIGN DOCUMENT  ·  %s" % version)
+	hr = hp.add_run("괴이 기록국  ·  GAME DESIGN DOCUMENT  ·  %s" % version)
 	set_run_font(hr, size=7.5, color=MUTED, bold=True)
 
 	footer = section.footer
@@ -149,7 +149,7 @@ def configure_document(doc: Document, build_hash: str, version: str) -> None:
 	fp = footer.paragraphs[0]
 	fp.clear()
 	fp.alignment = WD_ALIGN_PARAGRAPH.CENTER
-	fr = fp.add_run("MVP-040  |  Ver 4.0  |  ")
+	fr = fp.add_run("MVP-043  |  Ver 4.3  |  ")
 	set_run_font(fr, size=7.5, color=MUTED)
 	field = OxmlElement("w:fldSimple")
 	field.set(qn("w:instr"), "PAGE")
@@ -293,7 +293,7 @@ def add_agent_composite(doc: Document, paths: list[Path]) -> None:
 	paragraph = doc.add_paragraph()
 	paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
 	shape = paragraph.add_run().add_picture(agent_composite(paths), width=Inches(7.0))
-	shape._inline.docPr.set("title", "괴담기록국 요원 3명")
+	shape._inline.docPr.set("title", "괴이 기록국 요원 3명")
 	shape._inline.docPr.set("descr", "강이준, 권나래, 오현의 현재 프로젝트 표현 시트에서 만든 요원 구성 이미지")
 	paragraph.paragraph_format.space_after = Pt(4)
 
