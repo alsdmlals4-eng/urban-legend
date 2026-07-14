@@ -9,6 +9,13 @@
 - Godot/GDScript 프로젝트에서는 Godot 에디터를 열어둔 상태에서 Serena를 사용하는 것이 좋다.
 - 저장소에는 `.serena/project.yml`이 있어야 한다.
 
+## 자원 사용 원칙
+
+- Serena는 기본 비활성화한다. 문서 정리, 기획, 단순 파일 확인에는 실행하지 않는다.
+- GDScript 심볼, 호출 관계, 여러 파일에 걸친 코드 흐름을 탐색할 때만 활성화한다.
+- Serena를 활성화한 동안에는 같은 프로젝트의 Codex 구현 작업을 하나만 진행한다.
+- 탐색이 끝나면 결과를 작업 문서나 Active Context에 요약하고 Serena를 다시 비활성화한다.
+
 ## 1. Codex 설정 파일 백업
 
 수정 전 반드시 `C:\Users\user\.codex\config.toml`을 복사해 백업한다.
@@ -41,6 +48,7 @@ C:\Users\user\.local\bin\serena.exe
 
 ```toml
 [mcp_servers.serena]
+enabled = false
 startup_timeout_sec = 120
 command = 'C:\Users\user\.local\bin\serena.exe'
 args = ['start-mcp-server', '--context=codex', '--project', 'C:\Users\user\Documents\GitHub\urban-legend']
@@ -53,7 +61,17 @@ args = ['start-mcp-server', '--context=codex', '--project', 'C:\Users\user\Docum
 - 기존 `[features]` 블록을 삭제하지 않는다.
 - `notify`, `plugins`, `marketplaces`, `desktop`, `projects`, `windows`, `apps` 설정을 수정하지 않는다.
 
-## 4. 저장 후 Codex 재시작
+## 4. 필요할 때만 활성화
+
+Codex 데스크톱 앱에서는 `Settings → MCP servers`에서 Serena를 활성화한 뒤 앱을 재시작한다. 작업이 끝나면 같은 화면에서 비활성화하고 다시 시작한다.
+
+CLI에서 한 세션에만 활성화할 때는 다음처럼 실행한다.
+
+```powershell
+codex --config mcp_servers.serena.enabled=true
+```
+
+## 5. 저장 후 Codex 재시작
 
 설정 파일을 저장한 뒤 Codex 앱을 완전히 종료하고 다시 실행한다.
 
@@ -63,18 +81,18 @@ Codex에서 확인:
 /mcp
 ```
 
-`serena`가 목록에 표시되면 연결 성공이다.
+기본 상태에서는 `serena`가 비활성화로 표시되어야 한다. 활성화한 작업에서는 연결된 서버로 표시되는지 확인한다.
 
-## 5. Codex 첫 메시지 권장문
+## 6. Codex 첫 메시지 권장문
 
-Codex 세션 시작 후 다음 문장을 먼저 보낸다.
+Serena를 활성화한 코드 탐색 세션에서만 다음 문장을 먼저 보낸다.
 
 ```text
 Serena를 사용할 수 있으면 현재 프로젝트를 활성화하고 initial instructions를 읽어줘.
 그다음 AGENTS.md, docs/AI_WORKFLOW_RULES.md, README.md, 현재 Issue 본문을 확인한 뒤 작업 범위를 정리해줘.
 ```
 
-## 6. 실패 시 확인할 것
+## 7. 실패 시 확인할 것
 
 ### serena 명령을 찾을 수 없음
 

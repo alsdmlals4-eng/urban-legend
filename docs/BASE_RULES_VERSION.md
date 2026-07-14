@@ -4,8 +4,17 @@
 
 - 공용 원본: [`alsdmlals4-eng/Base`](https://github.com/alsdmlals4-eng/Base)
 - 기준 브랜치: `main`
-- 기준 커밋: [`67445f5`](https://github.com/alsdmlals4-eng/Base/commit/67445f5)
-- 동기화 확인 날짜: `2026-07-13`
+- 기준 커밋: [`f8cf0a1`](https://github.com/alsdmlals4-eng/Base/commit/f8cf0a1)
+- 동기화 확인 날짜: `2026-07-14`
+
+## 2026-07-14 자원 인식형 AI 작업 운영 동기화
+
+- 성능 문제는 작업량 축소 전에 메모리와 중복 프로세스를 측정한다.
+- 선택형 MCP, 대시보드, 언어 서버는 필요한 작업에서만 실행한다.
+- 핵심 작업량은 보존하면서 대용량 외부 worker와 결과 회수 범위를 제한한다.
+- 재시작 후 프로세스 수와 전후 자원 사용량으로 최적화 결과를 검증한다.
+
+GPT 탭 수, DeepSeek provider, Serena 설정, PC RAM 구성은 프로젝트·사용자 환경 전용 규칙으로 남긴다.
 
 ## 2026-07-13 MVP-032 공용 Base 반영안
 
