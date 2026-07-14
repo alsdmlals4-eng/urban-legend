@@ -31,9 +31,28 @@ func _run() -> void:
 	if not await _test_scene_contract("res://scenes/investigation_scene.tscn", [
 		"CinematicStage", "TeamHud", "RecordButton", "DialogueDock",
 		"PointMethodDock", "PointScroll", "MethodScroll", "ResultToast",
-		"AgentReactionBox"
+		"AgentReactionBox", "ReturnHqButton", "LogUtilityButton", "SettingsButton"
 	]):
 		return
+	if current_scene.find_child("UtilityLabel", true, false) != null:
+		_fail("inert LOG/AUTO/SKIP/settings label must be removed")
+		return
+	var record_drawer := current_scene.get_node("%RecordDrawer") as Control
+	(current_scene.get_node("%LogUtilityButton") as Button).pressed.emit()
+	if not record_drawer.visible:
+		_fail("LOG utility button must open the record drawer")
+		return
+	(current_scene.get_node("%SettingsButton") as Button).pressed.emit()
+	var settings_dialog := current_scene.find_child("@AcceptDialog@*", true, false)
+	if settings_dialog == null:
+		for child in current_scene.get_children():
+			if child is AcceptDialog:
+				settings_dialog = child
+				break
+	if settings_dialog == null or not (settings_dialog as AcceptDialog).visible:
+		_fail("settings utility button must open the accessibility dialog")
+		return
+	(settings_dialog as AcceptDialog).hide()
 	if not _test_situation_choice_presentation():
 		return
 	var dialogue_dock := current_scene.get_node("%DialogueDock") as Control

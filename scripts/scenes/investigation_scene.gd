@@ -8,6 +8,7 @@ const LogGuideScript = preload("res://scripts/ui/log_guide.gd")
 const LogTutorialCatalog = preload("res://scripts/ui/log_tutorial_catalog.gd")
 const ActionChoiceCardScene = preload("res://scenes/ui/action_choice_card.tscn")
 const TeamStatusChipScene = preload("res://scenes/ui/team_status_chip.tscn")
+const AccessibilitySettingsScript = preload("res://scripts/ui/accessibility_settings.gd")
 
 const FALLBACK_INVESTIGATION_POINTS: Array[Dictionary] = [
 	{
@@ -62,6 +63,9 @@ var _point_method_dock: PanelContainer
 var _result_toast: PanelContainer
 var _case_summary_label: Label
 var _mode_label: Label
+var _return_dialog: ConfirmationDialog
+var _settings_dialog: AcceptDialog
+var _accessibility := AccessibilitySettingsScript.new()
 
 
 func _ready() -> void:
@@ -122,11 +126,17 @@ func _build_ui() -> void:
 	_field_next_button.pressed.connect(_advance_field_dialogue)
 	%ContinueInvestigationButton.pressed.connect(func() -> void: _resolution_confirm_panel.visible = false)
 	%EnterRecoveryButton.pressed.connect(_start_resolution_attempt)
+	%LogUtilityButton.pressed.connect(_toggle_record_drawer)
+	%SettingsButton.pressed.connect(_show_settings)
+	%ReturnHqButton.pressed.connect(_show_return_confirmation)
 
 	_log_guide = LogGuideScript.new()
 	_log_guide.set_compact(true)
+	_log_guide.custom_minimum_size = Vector2.ZERO
+	_log_guide.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	_log_guide.visible = false
 	%LogHost.add_child(_log_guide)
+	_build_utility_dialogs()
 	_add_team_status_chips(_team_hud)
 	_agent_stage.visible = false
 
@@ -134,6 +144,66 @@ func _build_ui() -> void:
 		if typeof(point) == TYPE_DICTIONARY:
 			_add_investigation_point(_points_box, point)
 	_show_current_field_node()
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_cancel"):
+		_show_return_confirmation()
+		get_viewport().set_input_as_handled()
+
+
+func _build_utility_dialogs() -> void:
+	_return_dialog = ConfirmationDialog.new()
+	_return_dialog.title = "현장 진행 일시 중단"
+	_return_dialog.dialog_text = "현재 조사 진행을 저장하고 기록국 HQ로 돌아갑니다.\n시간은 소비되지 않으며 같은 현장을 재개해야 합니다."
+	_return_dialog.ok_button_text = "저장하고 복귀"
+	_return_dialog.cancel_button_text = "조사 계속"
+	_return_dialog.confirmed.connect(_return_to_hq)
+	add_child(_return_dialog)
+
+	_settings_dialog = AcceptDialog.new()
+	_settings_dialog.title = "연출 설정"
+	_settings_dialog.ok_button_text = "닫기"
+	var content := VBoxContainer.new()
+	content.custom_minimum_size = Vector2(420, 0)
+	content.add_theme_constant_override("separation", 8)
+	_settings_dialog.add_child(content)
+	for entry in [
+		{"id": "screen_shake", "label": "화면 흔들림"},
+		{"id": "flash", "label": "섬광"},
+		{"id": "horror_distortion", "label": "공포 왜곡"}
+	]:
+		_add_settings_slider(content, String(entry.label), String(entry.id))
+	add_child(_settings_dialog)
+
+
+func _add_settings_slider(parent: Control, label_text: String, effect_id: String) -> void:
+	var label := Label.new()
+	label.text = label_text
+	parent.add_child(label)
+	var slider := HSlider.new()
+	slider.min_value = 0
+	slider.max_value = 100
+	slider.value = _accessibility.get_strength(effect_id) * 100.0
+	slider.value_changed.connect(func(value: float) -> void: _accessibility.set_strength(effect_id, value / 100.0))
+	parent.add_child(slider)
+
+
+func _show_return_confirmation() -> void:
+	if _return_dialog != null:
+		_return_dialog.popup_centered()
+
+
+func _show_settings() -> void:
+	if _settings_dialog != null:
+		_settings_dialog.popup_centered(Vector2i(480, 320))
+
+
+func _return_to_hq() -> void:
+	GameState.suspend_campaign_operation()
+	GameState.set_current_scene_path(GameState.SCENE_PREPARATION)
+	GameState.save_game()
+	get_tree().change_scene_to_file(GameState.SCENE_PREPARATION)
 
 
 func _add_team_portraits(parent: Control) -> void:
@@ -658,14 +728,15 @@ func _make_method_result_text(result: Dictionary) -> String:
 	var success_text := "성공" if bool(result.get("successful", false)) else "실패"
 	var lines: Array = [
 		"수사 방식: %s" % String(result.get("method_label", "")),
-		"성공/실패: %s" % success_text,
-		"판정식: 플레이어 %d + 도우미 %s %d + 주사위 %d = %d / 난이도 %d" % [
+		"판정 결과: %s · %s" % [success_text, String(result.get("result_grade", "failure"))],
+		"판정식: 플레이어 %d + 도우미 %s %d = 점수 %d / 난이도 %d · 성공률 %d%% · 1d100 %d" % [
 			int(result.get("player_stat", 0)),
 			String(result.get("helper_agent_name", "도우미 없음")),
 			int(result.get("helper_stat", 0)),
-			int(result.get("dice", 0)),
 			int(result.get("total", 0)),
-			int(result.get("difficulty", 0))
+			int(result.get("difficulty", 0)),
+			int(result.get("chance", 0)),
+			int(result.get("dice", 0))
 		]
 	]
 

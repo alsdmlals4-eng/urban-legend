@@ -1837,7 +1837,8 @@ func resolve_faction_request(instance_id: String, agent_id: String, roll_overrid
 		change_faction_relation(String(request.get("faction_id", "")), relation_delta, "request_relation:%s" % instance_id)
 	if fragments > 0:
 		grant_echo_reward("request_reward:%s" % instance_id, fragments)
-	return {"request": completed, "check": check, "fragments": fragments, "relation": relation_delta}
+	var result_text := String(request.get("%s_text" % grade, ""))
+	return {"request": completed, "check": check, "fragments": fragments, "relation": relation_delta, "result_text": result_text}
 
 
 func try_resolve_recovery_faction_requests(ability_key: String, agent_id: String) -> Array:
@@ -1858,6 +1859,15 @@ func resolve_non_investigation_campaign_slot(agent_ids: Array) -> Dictionary:
 		return {"error": "현재 반일의 전 요원 일정을 먼저 정하세요."}
 	var slot := String(get_campaign_snapshot().get("time_slot", "morning"))
 	var results: Array = []
+	var assigned_request_ids: Array = []
+	for agent_id_value in agent_ids:
+		var activity := String(get_campaign_agent_schedule(String(agent_id_value)).get(slot, ""))
+		if not activity.begins_with("request:"):
+			continue
+		var request_id := activity.trim_prefix("request:")
+		if assigned_request_ids.has(request_id):
+			return {"error": "같은 의뢰에는 요원 한 명만 배치할 수 있습니다."}
+		assigned_request_ids.append(request_id)
 	for agent_id_value in agent_ids:
 		var agent_id := String(agent_id_value)
 		var activity := String(get_campaign_agent_schedule(agent_id).get(slot, ""))

@@ -26,7 +26,7 @@ func _ready() -> void:
 
 func _run_state_tests() -> void:
 	GameState.reset_run_state()
-	_check(GameState.SAVE_VERSION == "mvp-037", "save version is mvp037 after campaign migration")
+	_check(GameState.SAVE_VERSION == "mvp-038", "save version is mvp038 after sequential campaign migration")
 	_check(not GameState.has_seen_log_tutorial("main_welcome"), "tutorial starts unseen")
 	_check(GameState.claim_log_tutorial("main_welcome", false), "first claim succeeds")
 	_check(not GameState.claim_log_tutorial("main_welcome", false), "duplicate claim is rejected")

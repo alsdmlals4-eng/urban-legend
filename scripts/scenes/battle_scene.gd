@@ -617,6 +617,14 @@ func _add_ability_action(parent: Control, ability_key: String, display_label: St
 					GameState.get_agent_max_mental(target_id)
 				]
 
+		var request_results := GameState.try_resolve_recovery_faction_requests(ability_key, rep_id)
+		for request_result in request_results:
+			if typeof(request_result) == TYPE_DICTIONARY and not request_result.has("error"):
+				var check: Dictionary = request_result.get("check", {})
+				msg += "\n세력 의뢰 판정: 1d100 %d / %d%% · %s · 잔향 +%d · 관계 +%d" % [int(check.get("roll", 0)), int(check.get("chance", 0)), String(check.get("grade", "failure")), int(request_result.get("fragments", 0)), int(request_result.get("relation", 0))]
+				var request_result_text := String(request_result.get("result_text", "")).strip_edges()
+				if not request_result_text.is_empty():
+					msg += "\n%s" % request_result_text
 		msg += _apply_anomaly_reaction(rep_id, ability_key)
 		_update_battle_view(msg)
 	)

@@ -1,6 +1,7 @@
 extends Node
 
 const TestSaveGuard = preload("res://tests/test_save_guard.gd")
+const CampaignStateScript = preload("res://scripts/core/campaign_state.gd")
 
 var _guard := TestSaveGuard.new()
 var _passed := 0
@@ -26,6 +27,7 @@ func _run_tests() -> void:
 	_test_percentile_boundaries()
 	_test_board_accept_cancel_and_persistence()
 	_test_request_rewards_are_idempotent()
+	_test_half_day_refresh_uses_retention_and_replacement()
 
 
 func _test_percentile_boundaries() -> void:
@@ -68,8 +70,33 @@ func _test_request_rewards_are_idempotent() -> void:
 	var result := GameState.resolve_faction_request(instance_id, "agent_kwon_narae", 1)
 	_expect(not result.has("error") and String(result.get("check", {}).get("grade", "")) == "critical", "fixed roll produces critical request result")
 	_expect(GameState.get_echo_fragments() == before_fragments + 12, "critical request grants 12 fragments")
+	_expect(not String(result.get("result_text", "")).is_empty(), "request result exposes authored outcome copy")
 	var repeated := GameState.resolve_faction_request(instance_id, "agent_kwon_narae", 1)
 	_expect(repeated.has("error") and GameState.get_echo_fragments() == before_fragments + 12, "completed request cannot pay twice")
+
+
+func _test_half_day_refresh_uses_retention_and_replacement() -> void:
+	var campaign = CampaignStateScript.new()
+	campaign.reset(380714)
+	var saw_retention := false
+	var saw_replacement := false
+	for _step in range(8):
+		var before: Array = campaign.get_request_board()
+		campaign.complete_current_slot({"kind": "test"})
+		campaign.acknowledge_slot_result(false)
+		var after: Array = campaign.get_request_board()
+		_expect(after.size() == 3, "refresh keeps exactly three request slots")
+		var template_ids: Array = []
+		for index in range(after.size()):
+			var template_id := String(after[index].get("template_id", ""))
+			if String(before[index].get("instance_id", "")) == String(after[index].get("instance_id", "")):
+				saw_retention = true
+			else:
+				saw_replacement = true
+			if not template_id.is_empty():
+				_expect(not template_ids.has(template_id), "simultaneous request templates do not duplicate")
+				template_ids.append(template_id)
+	_expect(saw_retention and saw_replacement, "deterministic half-day sequence exercises both 50 percent outcomes")
 
 
 func _expect(condition: bool, label: String) -> void:

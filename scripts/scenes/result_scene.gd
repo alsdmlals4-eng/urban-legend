@@ -241,9 +241,9 @@ func _add_navigation_buttons(parent: Control) -> void:
 	row.add_child(restart_button)
 
 	var prepare_button := Button.new()
-	prepare_button.text = "하루 마감 후 사건 준비로"
+	prepare_button.text = "현재 반일 결과 확인"
 	prepare_button.pressed.connect(func() -> void:
-		GameState.finish_campaign_operation_day()
+		GameState.complete_campaign_slot({"kind": "investigation", "episode_id": GameState.get_current_episode_id()})
 		GameState.set_current_scene_path(GameState.SCENE_PREPARATION)
 		GameState.save_game()
 		get_tree().change_scene_to_file(GameState.SCENE_PREPARATION)
