@@ -3,6 +3,7 @@ extends SceneTree
 
 const RhythmGame = preload("res://scripts/minigames/rhythm_timing_game.gd")
 const RainGame = preload("res://scripts/minigames/rain_dodge_game.gd")
+const RouteGame = preload("res://scripts/minigames/route_restore_game.gd")
 
 var _failures: Array[String] = []
 
@@ -12,6 +13,10 @@ func _init() -> void:
 
 
 func _run() -> void:
+	await _test_route_danger_and_broken_paths()
+	await _test_route_reset_preserves_danger_case()
+	await _test_route_clear_grades()
+	await _test_route_mouse_and_keyboard_inputs()
 	await _test_games_wait_for_start()
 	await _test_rhythm_success()
 	await _test_rhythm_failure()
@@ -28,6 +33,126 @@ func _run() -> void:
 	for failure in _failures:
 		push_error(failure)
 	quit(1)
+
+
+func _test_route_danger_and_broken_paths() -> void:
+	var game := _new_route_game()
+	var initial_tiles: Array = game.get("_tiles").duplicate(true)
+	game.call("_confirm_route")
+	_expect(bool(game.get("_danger_case_seen")), "the initial false destination should record a danger case")
+	_expect(int(game.get("_wrong_destination_count")) == 1, "the initial false destination should increment danger cases once")
+	_expect(int(game.get("_move_count")) == 0, "a danger case should preserve the move count")
+	_expect(game.get("_tiles") == initial_tiles, "a danger case should preserve the board")
+
+	game.call("_rotate_selected")
+	game.call("_confirm_route")
+	_expect(int(game.get("_wrong_destination_count")) == 1, "a broken route should not increment danger cases")
+	_expect(not bool(game.get("_finished")), "a broken route should keep the board playable")
+	game.queue_free()
+	await process_frame
+
+
+func _test_route_reset_preserves_danger_case() -> void:
+	var game := _new_route_game()
+	game.call("_confirm_route")
+	game.call("_rotate_selected")
+	game.call("_reset_attempt")
+	_expect(game.get("_tiles") == game.get("_initial_tiles"), "reset should restore the initial route board")
+	_expect(int(game.get("_move_count")) == 0, "reset should clear only the current move count")
+	_expect(Vector2i(game.get("_selected")) == Vector2i(1, 2), "reset should restore the initial selection")
+	_expect(bool(game.get("_danger_case_seen")), "reset should preserve an observed danger case")
+	_expect(int(game.get("_wrong_destination_count")) == 1, "reset should preserve the danger case count")
+	game.queue_free()
+	await process_frame
+
+
+func _test_route_clear_grades() -> void:
+	var optimal := _complete_route(1, 1, 2)
+	_assert_route_result(optimal, 4, "optimal", "최적 복원")
+	var precision := _complete_route(3, 1, 2)
+	_assert_route_result(precision, 6, "precision", "정밀 복원")
+	var standard := _complete_route(1, 5, 2)
+	_assert_route_result(standard, 8, "standard", "일반 복원")
+	await process_frame
+
+
+func _test_route_mouse_and_keyboard_inputs() -> void:
+	var keyboard_game := _new_route_game()
+	keyboard_game.call("_unhandled_key_input", _key_event(KEY_ENTER))
+	_expect(int(keyboard_game.get("_move_count")) == 1, "Enter should rotate the selected route tile")
+	keyboard_game.call("_unhandled_key_input", _key_event(KEY_C))
+	_expect(int(keyboard_game.get("_wrong_destination_count")) == 0, "C on a broken route should use the normal confirmation path")
+	keyboard_game.call("_unhandled_key_input", _key_event(KEY_R))
+	_expect(int(keyboard_game.get("_move_count")) == 0, "R should use the normal route reset path")
+	keyboard_game.queue_free()
+	await process_frame
+
+	var mouse_game := _new_route_game()
+	var board_rect: Rect2 = mouse_game.call("_board_rect")
+	var cell_size := board_rect.size.x / 3.0
+	var center_cell := board_rect.position + Vector2(cell_size * 1.5, cell_size * 1.5)
+	mouse_game.call("_gui_input", _mouse_event(center_cell))
+	_expect(Vector2i(mouse_game.get("_selected")) == Vector2i(1, 1), "a board click should select the clicked route tile")
+	_expect(int(mouse_game.get("_move_count")) == 1, "a board click should rotate through the normal route path")
+	var reset_rect: Rect2 = mouse_game.call("_reset_rect")
+	mouse_game.call("_gui_input", _mouse_event(reset_rect.get_center()))
+	_expect(int(mouse_game.get("_move_count")) == 0, "the mouse reset button should use the normal reset path")
+	var confirm_rect: Rect2 = mouse_game.call("_confirm_rect")
+	mouse_game.call("_gui_input", _mouse_event(confirm_rect.get_center()))
+	_expect(int(mouse_game.get("_wrong_destination_count")) == 1, "the mouse confirm button should use the normal confirmation path")
+	mouse_game.queue_free()
+	await process_frame
+
+
+func _new_route_game() -> Control:
+	var game := RouteGame.new()
+	root.add_child(game)
+	game.size = Vector2(620, 440)
+	game.configure({"optimal_move_count": 4, "precision_move_limit": 6}, false)
+	return game
+
+
+func _complete_route(switch_turns: int, center_turns: int, right_turns: int) -> Array:
+	var game := _new_route_game()
+	var captured: Array = []
+	game.completed.connect(func(successful: bool, details: Dictionary) -> void: captured.assign([successful, details]))
+	_rotate_route_tile(game, Vector2i(1, 2), switch_turns)
+	_rotate_route_tile(game, Vector2i(1, 1), center_turns)
+	_rotate_route_tile(game, Vector2i(2, 1), right_turns)
+	game.call("_confirm_route")
+	game.queue_free()
+	return captured
+
+
+func _rotate_route_tile(game: Control, coord: Vector2i, count: int) -> void:
+	game.set("_selected", coord)
+	for turn in range(count):
+		game.call("_rotate_selected")
+
+
+func _assert_route_result(captured: Array, move_count: int, grade: String, grade_label: String) -> void:
+	_expect(captured.size() == 2 and bool(captured[0]), "%d route moves should complete successfully" % move_count)
+	if captured.size() != 2:
+		return
+	var details: Dictionary = captured[1]
+	_expect(int(details.get("move_count", -1)) == move_count, "route completion should store %d moves" % move_count)
+	_expect(String(details.get("clear_grade", "")) == grade, "%d route moves should receive the %s grade" % [move_count, grade])
+	_expect(String(details.get("clear_grade_label", "")) == grade_label, "%d route moves should use the expected grade label" % move_count)
+
+
+func _key_event(keycode: Key) -> InputEventKey:
+	var event := InputEventKey.new()
+	event.keycode = keycode
+	event.pressed = true
+	return event
+
+
+func _mouse_event(position: Vector2) -> InputEventMouseButton:
+	var event := InputEventMouseButton.new()
+	event.button_index = MOUSE_BUTTON_LEFT
+	event.pressed = true
+	event.position = position
+	return event
 
 
 func _test_games_wait_for_start() -> void:

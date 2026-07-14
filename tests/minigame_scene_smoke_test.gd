@@ -34,7 +34,7 @@ func _run() -> void:
 		await process_frame
 
 	var scene := current_scene
-	var expected_script := "rain_dodge_game.gd" if red_umbrella else "rhythm_timing_game.gd"
+	var expected_script := "rain_dodge_game.gd" if red_umbrella else "route_restore_game.gd"
 	var found := _has_script_named(scene, expected_script)
 	if not found:
 		_finish(1, "Expected child script was not created: %s" % expected_script)

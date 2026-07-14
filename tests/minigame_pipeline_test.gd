@@ -2,6 +2,7 @@
 extends SceneTree
 
 const TestSaveGuard = preload("res://tests/test_save_guard.gd")
+const RouteGame = preload("res://scripts/minigames/route_restore_game.gd")
 
 var _failures: Array[String] = []
 var _save_guard := TestSaveGuard.new()
@@ -19,14 +20,17 @@ func _run() -> void:
 		_report_failures_and_quit()
 		return
 	game_state.reset_run_state()
+	await _assert_incomplete_route_is_not_persisted(game_state)
 	game_state.set_current_minigame_id("minigame_frequency_sync")
 	game_state.save_minigame_result("minigame_frequency_sync", true, {
-		"game_type": "rhythm_timing",
-		"input_summary": "5박자 중 4회 동기화",
+		"game_type": "route_restore",
+		"display_title": "저승역 노선 복원",
+		"input_summary": "노선 조작 4회 / 정밀 기준 6회 / 최적 복원",
 		"effect_summary": "위험도 -5"
 	})
-	_assert_pipeline(game_state, "minigame_frequency_sync", "rhythm_timing", true)
-	await _assert_completed_game_does_not_reapply(game_state, "rhythm_timing_game.gd")
+	_assert_pipeline(game_state, "minigame_frequency_sync", "route_restore", true)
+	_assert_save_payload(game_state.get_save_file_path(), "minigame_frequency_sync", "route_restore")
+	await _assert_completed_game_does_not_reapply(game_state, "route_restore_game.gd")
 
 	game_state.start_episode_from_preparation("res://data/episodes/episode_002_red_umbrella_alley.json")
 	game_state.set_current_minigame_id("minigame_rain_sync")
@@ -79,14 +83,43 @@ func _assert_save_payload(save_path: String, minigame_id: String, game_type: Str
 	_expect(String(result.get("game_type", "")) == game_type, "save payload should preserve game-specific details")
 
 
+func _assert_incomplete_route_is_not_persisted(game_state: Node) -> void:
+	game_state.set_current_minigame_id("minigame_frequency_sync")
+	_expect(game_state.save_game(), "the minigame entry checkpoint should be saved")
+	var route := RouteGame.new()
+	root.add_child(route)
+	route.configure({"optimal_move_count": 4, "precision_move_limit": 6}, false)
+	route.call("_rotate_selected")
+	route.call("_confirm_route")
+	_expect(int(route.get("_move_count")) == 1, "the in-progress route should have a local move before reload")
+	var file := FileAccess.open(game_state.get_save_file_path(), FileAccess.READ)
+	_expect(file != null, "the entry checkpoint payload should be readable")
+	if file != null:
+		var payload := file.get_as_text()
+		_expect(not payload.contains("\"move_count\""), "the checkpoint should not persist route move state")
+		_expect(not payload.contains("\"danger_case_seen\""), "the checkpoint should not persist route danger observations")
+	_expect(game_state.load_game(), "the entry checkpoint should reload")
+	var reloaded_route := RouteGame.new()
+	root.add_child(reloaded_route)
+	reloaded_route.configure({"optimal_move_count": 4, "precision_move_limit": 6}, false)
+	_expect(int(reloaded_route.get("_move_count")) == 0, "a reloaded route should start at zero moves")
+	_expect(reloaded_route.get("_tiles") == reloaded_route.get("_initial_tiles"), "a reloaded route should start from the initial board")
+	_expect(not bool(reloaded_route.get("_danger_case_seen")), "a reloaded route should not restore an incomplete danger observation")
+	route.queue_free()
+	reloaded_route.queue_free()
+	await process_frame
+
+
 func _assert_completed_game_does_not_reapply(game_state: Node, game_script_name: String) -> void:
 	var risk_before := int(game_state.get_anomaly_risk())
+	var results_before: Dictionary = game_state.get_minigame_results().duplicate(true)
 	var packed_scene: PackedScene = load("res://scenes/minigame_scene.tscn")
 	var scene: Node = packed_scene.instantiate()
 	root.add_child(scene)
 	await process_frame
 	await process_frame
 	_expect(int(game_state.get_anomaly_risk()) == risk_before, "re-entering a completed minigame should not apply its effects again")
+	_expect(game_state.get_minigame_results() == results_before, "re-entering a completed minigame should not save its result again")
 	_expect(not _has_script_name(scene, game_script_name), "re-entering a completed minigame should show its saved record instead of restarting gameplay")
 	scene.queue_free()
 	await process_frame
