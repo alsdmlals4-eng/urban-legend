@@ -226,9 +226,9 @@
       "title": "비 오는 골목의 빨간 우산",
       "opening_dialogue": [
 		{"speaker": "로그", "text": "관찰됨: 빗소리 주기와 골목 표지의 위치가 함께 되돌아갑니다. 어느 현상이 원인인지는 미확인입니다.", "expression": "focus"},
-        {"speaker": "오현", "text": "빗소리가 세 번째마다 되감기고 있습니다."},
-        {"speaker": "권나래", "text": "우산보다 피해자의 귀가 경로를 먼저 붙잡아야 해요."},
-        {"speaker": "강이준", "text": "반사와 발자국이 먼저 움직이는지 확인하겠습니다."}
+        {"speaker": "오현", "text": "빗소리와 표지판 변화는 같은 시각 기준으로 기록하겠습니다."},
+        {"speaker": "권나래", "text": "피해자 동선이 흔들리는 구간부터 보호하겠습니다."},
+        {"speaker": "강이준", "text": "위험 구간이 확인되면 봉인선을 확보하겠습니다."}
       ],
       "choices": [
         {
@@ -238,9 +238,9 @@
           "point_id": "point_dry_red_umbrella",
           "after_dialogue": [
             {"speaker": "오현", "text": "세 번째 박자 직후 골목 표지판이 원래 위치로 돌아옵니다."},
-            {"speaker": "권나래", "text": "피해자는 우산을 든 채가 아니라 우산에게 따라잡히고 있어요."},
-			{"speaker": "강이준", "text": "물웅덩이의 반사와 젖지 않은 흔적을 나눠 보죠."},
-			{"speaker": "로그", "text": "빗소리, 반사와 발자국을 별도 기록으로 분리했습니다. 선행 변화가 확인되면 연결 항목으로 표시합니다.", "expression": "normal"}
+            {"speaker": "권나래", "text": "피해자 동선과 우산의 위치가 가까워지는 구간이 확인됩니다."},
+			{"speaker": "강이준", "text": "물웅덩이 반사와 마른 흔적은 별도로 확인하죠."},
+			{"speaker": "로그", "text": "빗소리, 반사와 발자국을 별도 기록으로 저장했습니다. 선행 변화는 연결 항목으로 표시합니다.", "expression": "normal"}
           ],
           "next_field_node_id": "field_umbrella_investigation"
         }
@@ -259,7 +259,7 @@
     {
       "id": "pattern_red_rain_rewind", "order": 0, "name": "세 번째 빗소리의 되감기",
       "telegraph": "빗소리가 두 번 멀어진다. 세 번째 소리는 바로 귓가에서 다시 시작된다.",
-      "description": "세 번째 박자와 골목의 위치가 동시에 처음 상태로 돌아간다.",
+      "description": "세 번째 박자에 골목의 표지와 발자국이 이전 위치로 돌아간다.",
       "related_clue_ids": ["clue_reverse_rain_flow", "clue_repeating_alley_sign"],
       "responses": [
         {"id": "wait", "label": "세 번째 빗소리가 끝날 때까지 멈춘 뒤 경로를 고정한다", "ability": "analysis", "stability_gain": 18},
@@ -283,7 +283,7 @@
     {
       "id": "pattern_red_victim_approach", "order": 2, "name": "빨간 우산의 피해자 접근",
       "telegraph": "빨간 우산이 바람과 반대로 기울어진다. 손잡이가 피해자의 손 높이까지 내려온다.",
-      "description": "우산이 피해자의 손 높이로 내려오며 귀가 흔적과 다시 겹친다.",
+      "description": "우산 손잡이가 피해자의 손 높이로 내려오며 귀가 흔적과 겹친다.",
       "related_clue_ids": ["clue_red_umbrella_fabric", "clue_repeating_alley_sign"],
       "responses": [
         {"id": "separate_victim_route", "label": "우산의 손자국과 피해자의 귀가 경로를 분리한다", "ability": "rapport", "stability_gain": 19},
@@ -374,7 +374,7 @@
       "agent_id": "agent_oh_hyun",
       "temperament": "breakthrough",
       "conditions": {},
-      "text": "빗소리, 표지판과 CCTV 시간을 같은 기준으로 맞춰 보겠습니다.",
+      "text": "단말기에서 빗소리·표지판·CCTV 시각을 분리한 뒤 같은 기준으로 맞추겠습니다.",
       "expression": "serious"
     }
   ],
@@ -386,7 +386,7 @@
       "tags": ["umbrella_mark", "evidence_sensitive"],
       "conditions": {},
       "locked_text": "우산이 나타나는 빗소리 주기가 아직 기록되지 않았습니다.",
-      "result_text": "골목 바닥은 젖어 있지만 우산 천에는 물기가 없습니다. 조사 방식을 선택해야 합니다.",
+      "result_text": "골목 바닥은 젖어 있지만 우산 천에는 물기가 없습니다. 조사 방식을 선택하세요.",
       "method_options": [
         {
           "id": "method_umbrella_destruction",
@@ -452,7 +452,7 @@
       "tags": ["route_loop", "frequency_related"],
       "conditions": {},
       "locked_text": "표지판이 바뀌는 빗소리 주기가 아직 기록되지 않았습니다.",
-      "result_text": "출구 화살표가 세 번째 빗소리마다 다른 모퉁이를 가리킵니다. 조사 방식을 선택해야 합니다.",
+      "result_text": "출구 화살표가 세 번째 빗소리마다 다른 모퉁이를 가리킵니다. 조사 방식을 선택하세요.",
       "method_options": [
         {
           "id": "method_sign_destruction",
@@ -505,7 +505,7 @@
       "tags": ["frequency_related", "ritual_rule", "victim_risk"],
       "conditions": { "required_clues": ["clue_red_umbrella_fabric"] },
       "locked_text": "우산이 남긴 흔적을 확보해야 반사와 현실을 구분할 수 있습니다.",
-      "result_text": "물웅덩이 속 골목에는 실제보다 한 박자 먼저 비가 내립니다. 조사 방식을 선택해야 합니다.",
+      "result_text": "물웅덩이 속 골목에는 실제보다 한 박자 먼저 비가 내립니다. 조사 방식을 선택하세요.",
       "method_options": [
         {
           "id": "method_puddle_destruction",
@@ -560,7 +560,7 @@
         "required_clues": ["clue_red_umbrella_fabric", "clue_repeating_alley_sign"],
         "blocked_flags": ["minigame_rain_sync_success", "minigame_rain_sync_failed"]
       },
-      "locked_text": "우산과 표지판 기록이 부족하거나, 이번 사건의 동기화 결과가 이미 저장되어 있습니다.",
+      "locked_text": "우산과 표지판 기록을 모두 확보해야 합니다. 이미 동기화 결과가 저장된 사건에서는 다시 실행할 수 없습니다.",
       "result_text": "단말기가 빗소리의 세 번째 박자와 CCTV의 빈 프레임을 맞추기 시작합니다.",
       "add_flags": ["red_umbrella_sync_requested"],
       "show_hint_ids": ["hint_red_umbrella_003"],

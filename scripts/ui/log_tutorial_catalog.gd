@@ -7,7 +7,7 @@ const TUTORIALS := {
 		"expression": "normal",
 		"lines": [
 			{"text": "괴담기록국 현장 지원 AI, 로그입니다. 새 수사는 사건과 투입 요원을 준비하는 단계부터 시작합니다.", "expression": "normal"},
-			{"text": "목표는 괴이를 처치하는 것이 아니라, 관찰한 규칙을 기록하고 안전하게 회수하는 것입니다.", "expression": "focus"}
+			{"text": "목표는 괴이를 처치하는 것이 아니라, 확인한 규칙을 기록하고 안전하게 회수하는 것입니다.", "expression": "focus"}
 		],
 		"repeat_hint": "새 수사는 준비 화면에서 시작하며, 저장 기록은 이어하기로 불러옵니다."
 	},
@@ -21,7 +21,7 @@ const TUTORIALS := {
 	"preparation_agents": {
 		"expression": "normal",
 		"lines": [
-			{"text": "현장에는 요원 두세 명을 편성합니다. 사건에 필요한 능력과 역할이 겹치지 않는지 확인하세요.", "expression": "normal"},
+			{"text": "현장에는 요원 두세 명을 편성합니다. 사건에 필요한 역할을 서로 보완하는지 확인하세요.", "expression": "normal"},
 			{"text": "요원 카드에서 능력, 장비, 기술, 면모와 이력을 확인할 수 있습니다.", "expression": "focus"}
 		],
 		"repeat_hint": "요원 두세 명을 편성하면 조사를 시작할 수 있습니다."
@@ -44,14 +44,14 @@ const TUTORIALS := {
 	"field_first_choice": {
 		"expression": "focus",
 		"lines": [
-			{"text": "현장 기록이 동기화됐습니다. 화면에 제시된 상황과 확보 기록을 확인한 뒤 행동을 선택하세요.", "expression": "focus"}
+			{"text": "현장 기록이 동기화됐습니다. 현재 상황과 확보 기록을 확인한 뒤 행동을 선택하세요.", "expression": "focus"}
 		],
 		"repeat_hint": "선택지에는 관련 능력과 담당 요원이 표시됩니다."
 	},
 	"field_first_record_drawer": {
 		"expression": "focus",
 		"lines": [
-			{"text": "기록 서랍에는 확보 단서, 단서 연결과 이전 오대응 기록이 저장됩니다. 확인되지 않은 연결은 표시하지 않습니다.", "expression": "focus"}
+			{"text": "기록 서랍에는 확보 단서, 단서 연결, 이전 오대응 기록이 저장됩니다. 미확인 연결은 확정 정보와 구분됩니다.", "expression": "focus"}
 		],
 		"repeat_hint": "기록 서랍에서 확보 단서와 이전 오대응 기록을 확인할 수 있습니다."
 	},
@@ -72,9 +72,9 @@ const TUTORIALS := {
 	"recovery_first_prediction": {
 		"expression": "focus",
 		"lines": [
-			{"text": "전조와 조사 기록 사이에 연관 가능성이 확인됐습니다. 표시된 행동은 참고 정보이며 결과는 확정되지 않았습니다.", "expression": "focus"}
+			{"text": "추정됨: 전조와 조사 기록이 연관될 가능성이 있습니다. 표시된 행동의 결과는 아직 미확인입니다.", "expression": "focus"}
 		],
-		"repeat_hint": "예상 행동과 확보 기록을 함께 대조하세요."
+		"repeat_hint": "예상 행동은 확보 기록과 함께 대조하세요."
 	},
 	"recovery_first_learning": {
 		"expression": "focus",

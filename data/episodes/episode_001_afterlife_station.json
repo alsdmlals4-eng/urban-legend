@@ -329,9 +329,9 @@
       "title": "존재하지 않는 저승역",
       "opening_dialogue": [
 		{"speaker": "로그", "text": "관찰됨: 안내방송과 전광판의 종착지 표기가 서로 다릅니다. 어느 쪽이 실제 경로인지는 미확인입니다.", "expression": "focus"},
-        {"speaker": "권나래", "text": "안내방송과 전광판의 종착지가 서로 맞지 않아요."},
-        {"speaker": "강이준", "text": "먼저 피해자의 기록과 현장 반복을 나눠 확인하죠."},
-        {"speaker": "오현", "text": "괴이를 쫓기보다 돌아오는 규칙부터 찾겠습니다."}
+        {"speaker": "권나래", "text": "피해자 기록을 기준으로 표기 차이를 분리해 보겠습니다."},
+        {"speaker": "강이준", "text": "경로가 겹치는 지점이 확인되면 봉인선을 확보하겠습니다."},
+        {"speaker": "오현", "text": "방송과 전광판은 별도 채널로 기록하겠습니다."}
       ],
       "choices": [
         {
@@ -340,10 +340,10 @@
           "ability": "analysis",
           "point_id": "point_victim_phone",
           "after_dialogue": [
-            {"speaker": "권나래", "text": "마지막 문자는 장소가 아니라 자정을 가리키고 있어요."},
-            {"speaker": "강이준", "text": "시간이 종착지 역할을 한다면 방송도 같은 주기로 반복될 겁니다."},
-			{"speaker": "오현", "text": "그럼 발을 옮기기 전에 스피커와 승차권을 대조하죠."},
-			{"speaker": "로그", "text": "피해자 기록, 방송 주기와 종착지 표기를 대조 항목으로 등록했습니다.", "expression": "normal"}
+            {"speaker": "권나래", "text": "마지막 세 문자의 도착 예정 시각이 모두 00:00입니다."},
+            {"speaker": "강이준", "text": "시간 반복 여부는 방송 주기와 대조해야 확인할 수 있습니다."},
+			{"speaker": "오현", "text": "휴대폰 시각과 방송 기록을 같은 기준으로 맞추겠습니다."},
+			{"speaker": "로그", "text": "피해자 기록과 방송·전광판 표기를 비교 항목으로 등록했습니다.", "expression": "normal"}
           ],
           "next_field_node_id": "field_station_investigation"
         }
@@ -353,7 +353,7 @@
       "id": "field_station_investigation",
       "title": "저승역 현장 조사",
       "opening_dialogue": [
-		{"speaker": "로그", "text": "조사 지점을 선택하세요. 잠긴 지점은 조건을 충족하면 다시 표시됩니다.", "expression": "focus"}
+		{"speaker": "로그", "text": "조사 지점을 선택하세요. 잠긴 지점은 필요한 기록을 확보하면 다시 확인할 수 있습니다.", "expression": "focus"}
       ],
       "uses_investigation_points": true
     }
@@ -362,7 +362,7 @@
     {
       "id": "pattern_station_false_terminal", "order": 0, "name": "존재하지 않는 종착 안내",
       "telegraph": "스피커가 같은 승강장 이름을 세 번 반복한다. 반복될 때마다 전광판의 글자가 한 칸씩 사라진다.",
-      "description": "반복 안내와 전광판 표기가 서로 다른 경로를 가리키고 있다.",
+      "description": "반복 안내와 전광판 표기가 서로 다른 승강장을 가리킨다.",
       "related_clue_ids": ["clue_repeating_announcement", "clue_missing_terminal_sign"],
       "responses": [
         {"id": "cut_false_broadcast", "label": "방송 주기와 전광판 표기를 대조해 안내 신호를 차단한다", "ability": "analysis", "stability_gain": 18},
@@ -386,7 +386,7 @@
       "failure_reason": "역무원의 시선을 따라가면 피해자의 마지막 동선에서 멀어진다."
     },
     {
-      "id": "pattern_station_ticket_imprint", "order": 2, "name": "검은 승차권 각인",
+      "id": "pattern_station_ticket_imprint", "order": 2, "name": "검은 승차권의 승객 각인",
       "telegraph": "검은 승차권의 천공 자국이 번지며 가장 가까운 요원의 이름과 비슷한 획을 만든다.",
       "description": "승차권의 표식이 접촉한 대상을 새 승객으로 기록하려 한다.",
       "related_clue_ids": ["clue_black_ticket", "clue_last_message"],
@@ -561,14 +561,14 @@
       "agent_id": "agent_kwon_narae",
       "temperament": "empathetic",
       "conditions": {},
-      "text": "피해자의 기록과 현장 표기가 어긋나는 지점을 먼저 분리해 보겠습니다.",
+      "text": "탐지 결과와 피해자 기록을 분리해, 겹치는 구간만 보호하겠습니다.",
       "expression": "worried"
     },
     {
       "agent_id": "agent_oh_hyun",
       "temperament": "breakthrough",
       "conditions": {},
-      "text": "단말기에 방송, 전광판과 승차권 기록을 별도 채널로 저장하겠습니다.",
+      "text": "확보되는 방송·전광판·승차권 기록은 별도 채널로 저장하겠습니다.",
       "expression": "serious"
     }
   ],
@@ -629,7 +629,7 @@
           "minigame_frequency_failed"
         ]
       },
-      "locked_text": "플랫폼 스피커의 잡음 기록이 없거나, 이번 사건의 동기화 결과가 이미 저장되어 있습니다.",
+      "locked_text": "플랫폼 스피커의 잡음 기록을 확보해야 합니다. 이미 동기화 결과가 저장된 사건에서는 다시 실행할 수 없습니다.",
       "result_text": "단말기가 안내방송의 반복 구간과 잡음 파형을 분리하기 시작합니다.",
       "add_flags": [
         "started_frequency_sync"
@@ -656,7 +656,7 @@
       "label": "잠긴 역무원실 문",
       "conditions": {},
       "locked_text": "",
-      "result_text": "손잡이는 움직이지 않고 잠금장치가 안쪽에서 걸려 있습니다. 접근 방식을 선택해야 합니다.",
+      "result_text": "손잡이는 움직이지 않고 잠금장치가 안쪽에서 걸려 있습니다. 접근 방식을 선택하세요.",
       "method_options": [
         {
           "id": "method_staff_room_destruction",
@@ -813,8 +813,8 @@
             "evidence_sensitive"
           ],
           "summary": "시간과 정신력을 쓰지만 잠금 규칙과 동기화 보조 정보를 함께 확인합니다.",
-          "success_text": "잠금장치가 안내방송의 반복 주기마다 해제되는 순간을 확인합니다. 문이 열리고 동기화 보조값이 저장됩니다.",
-          "failure_text": "주기를 잘못 맞춰 잠금장치의 잡음이 커집니다. 문은 열리지 않습니다.",
+          "success_text": "잠금장치가 안내방송의 반복 주기마다 잠시 풀립니다. 그 순간 문을 열고 동기화 보조 기록을 저장합니다.",
+          "failure_text": "주기를 놓치자 잠금장치의 잡음이 커집니다. 문은 열리지 않습니다.",
           "success_effects": {
             "add_flags": [
               "unlocked_staff_room",
@@ -882,7 +882,7 @@
           "unlocked_staff_room"
         ]
       },
-      "locked_text": "역무원실 접근 권한이 없습니다. 먼저 문을 열 수 있는 근거를 확보해야 합니다.",
+      "locked_text": "역무원실 문이 잠겨 있어 기록을 확인할 수 없습니다. 먼저 접근 방법을 확보해야 합니다.",
       "result_text": "근무 기록에는 막차 이후의 출근 도장이 여러 날짜에 반복되어 있습니다. 필체와 시각도 모두 같습니다.",
       "add_flags": [
         "inspected_staff_room_log"
