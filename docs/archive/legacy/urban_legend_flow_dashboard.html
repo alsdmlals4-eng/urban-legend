@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>도시괴담 기록국 전체 흐름 대시보드</title>
+  <style>
+    :root {
+      --bg: #0d1017;
+      --panel: #151b25;
+      --panel-2: #1d2633;
+      --text: #eef3f8;
+      --muted: #aeb8c4;
+      --line: #2f3a4a;
+      --accent: #9bd3ff;
+      --danger: #ff9b9b;
+      --ok: #a7f3c1;
+      --warn: #ffd98a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #172033 0, var(--bg) 48%);
+      color: var(--text);
+      line-height: 1.55;
+    }
+    header { padding: 36px 20px 20px; border-bottom: 1px solid var(--line); }
+    main { max-width: 1180px; margin: 0 auto; padding: 20px; }
+    h1, h2, h3 { margin: 0 0 12px; line-height: 1.2; }
+    p { margin: 0 0 12px; }
+    code { color: var(--accent); }
+    .eyebrow { color: var(--accent); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; font-size: 12px; }
+    .hero { max-width: 1180px; margin: 0 auto; }
+    .hero h1 { font-size: clamp(28px, 5vw, 48px); }
+    .quote { margin-top: 16px; padding: 16px; background: rgba(155, 211, 255, .08); border: 1px solid rgba(155, 211, 255, .25); border-radius: 14px; color: var(--accent); font-weight: 700; }
+    .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 14px; }
+    .card { grid-column: span 4; background: linear-gradient(180deg, var(--panel), #101620); border: 1px solid var(--line); border-radius: 16px; padding: 16px; min-height: 120px; }
+    .wide { grid-column: span 8; }
+    .full { grid-column: 1 / -1; }
+    .small { grid-column: span 3; }
+    .status { display: inline-flex; align-items: center; gap: 6px; padding: 4px 9px; border-radius: 999px; font-size: 12px; border: 1px solid var(--line); color: var(--muted); }
+    .status.now { color: var(--accent); border-color: rgba(155, 211, 255, .45); }
+    .status.done { color: var(--ok); border-color: rgba(167, 243, 193, .35); }
+    .status.warn { color: var(--warn); border-color: rgba(255, 217, 138, .35); }
+    .roadmap { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+    .step { padding: 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel-2); }
+    .step.current { border-color: var(--accent); box-shadow: 0 0 0 1px rgba(155, 211, 255, .12); }
+    .loop { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .node { padding: 8px 10px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 999px; white-space: nowrap; }
+    .arrow { color: var(--muted); }
+    table { width: 100%; border-collapse: collapse; overflow: hidden; border-radius: 12px; }
+    th, td { padding: 10px; border-bottom: 1px solid var(--line); vertical-align: top; text-align: left; }
+    th { color: var(--accent); font-size: 13px; background: rgba(155, 211, 255, .06); }
+    td { color: var(--text); }
+    .muted { color: var(--muted); }
+    .ok { color: var(--ok); }
+    .warn { color: var(--warn); }
+    .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+    button { color: var(--text); background: var(--panel-2); border: 1px solid var(--line); border-radius: 999px; padding: 8px 12px; cursor: pointer; }
+    button.active { border-color: var(--accent); color: var(--accent); }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    ul { padding-left: 20px; margin-top: 6px; }
+    @media (max-width: 760px) { .card, .wide, .small { grid-column: 1 / -1; } .arrow { display: none; } }
+  </style>
+</head>
+<body>
+  <header data-testid="dashboard-header">
+    <div class="hero">
+      <div class="eyebrow">Urban Legend Bureau Flow Dashboard</div>
+      <h1>도시괴담 기록국 전체 흐름 대시보드</h1>
+      <p class="muted">현재 기준선: MVP-018 / 사건 보고서 기반 기록국 DB 탭 강화</p>
+      <div class="quote" data-testid="core-sentence">괴담은 죽이는 게 아니라, 규칙을 밝혀 봉인하는 것이다.</div>
+    </div>
+  </header>
+
+  <main>
+    <section class="grid" data-testid="current-status">
+      <article class="card">
+        <span class="status now">현재 MVP</span>
+        <h2>MVP-018</h2>
+        <p>결과 화면 사건 보고서를 기록국 DB에서 다시 확인 가능한 완료 사건 기록으로 연결한다.</p>
+      </article>
+      <article class="card">
+        <span class="status done">이전 MVP</span>
+        <h2>MVP-017</h2>
+        <p>사건 보고서와 요원 신뢰도 결산을 결과 화면에 표시한 단계.</p>
+      </article>
+      <article class="card">
+        <span class="status warn">주의</span>
+        <h2>저장 호환성</h2>
+        <p><code>completed_case_reports</code> 추가 시 기존 저장 파일 기본값 처리가 필요하다.</p>
+      </article>
+    </section>
+
+    <section class="card full" data-testid="core-loop">
+      <h2>핵심 루프</h2>
+      <div class="loop" aria-label="core loop">
+        <span class="node">사건 준비</span><span class="arrow">→</span>
+        <span class="node">요원 편성</span><span class="arrow">→</span>
+        <span class="node">대화 선택</span><span class="arrow">→</span>
+        <span class="node">현장 조사</span><span class="arrow">→</span>
+        <span class="node">미니게임/랜덤 이벤트</span><span class="arrow">→</span>
+        <span class="node">괴이 안정화·회수</span><span class="arrow">→</span>
+        <span class="node">결과·사건 보고서</span><span class="arrow">→</span>
+        <span class="node">기록국 DB 재확인</span>
+      </div>
+    </section>
+
+    <section class="card full" data-testid="mvp-roadmap">
+      <h2>MVP 로드맵</h2>
+      <div class="roadmap">
+        <div class="step"><strong>MVP-001~003</strong><br><span class="muted">기본 씬, 사건 데이터, 힌트/단서 획득</span></div>
+        <div class="step"><strong>MVP-004~006</strong><br><span class="muted">해결 페이즈, 회수, 결과/연구 보상</span></div>
+        <div class="step"><strong>MVP-007~009</strong><br><span class="muted">플래그, 저장, 데이터 분기, 미니게임 연결</span></div>
+        <div class="step"><strong>MVP-010~012</strong><br><span class="muted">요원 편성, 조사 방법, 괴이 상태, 랜덤 이벤트</span></div>
+        <div class="step"><strong>MVP-013~015</strong><br><span class="muted">장비, 기록물, 준비 화면, 두 번째 사건 준비</span></div>
+        <div class="step"><strong>MVP-016</strong><br><span class="muted">요원 신뢰도와 1회 요원 이벤트</span></div>
+        <div class="step"><strong>MVP-017</strong><br><span class="muted">사건 보고서와 요원 신뢰도 결산</span></div>
+        <div class="step current"><strong>MVP-018</strong><br><span class="muted">완료 사건 보고서 DB 재확인</span></div>
+      </div>
+    </section>
+
+    <section class="grid" data-testid="system-cards">
+      <article class="card small"><h3>사건 보고서</h3><p>단서, 미니게임, 회수 결과, 연구 보상, 요원 신뢰도 결산을 묶는 결과 기록.</p></article>
+      <article class="card small"><h3>기록국 DB</h3><p>완료 사건 보고서를 다시 확인하고 다음 사건 준비에서 참고하는 영역.</p></article>
+      <article class="card small"><h3>기록물/장비</h3><p>해금 기록물과 장비를 사건 보고서의 결과와 연결한다.</p></article>
+      <article class="card small"><h3>다음 사건</h3><p>비 오는 골목의 빨간 우산 본격 조사 루프는 MVP-019 후보.</p></article>
+    </section>
+
+    <section class="card full" data-testid="mvp18-detail">
+      <h2>MVP-018 상세</h2>
+      <div class="tabs" role="tablist">
+        <button class="active" data-tab="storage" data-testid="tab-storage">저장 스냅샷</button>
+        <button data-tab="db" data-testid="tab-db">DB 표시</button>
+        <button data-tab="goal" data-testid="tab-goal">Codex Goal</button>
+      </div>
+
+      <div id="storage" class="tab-panel active" data-testid="panel-storage">
+        <h3>완료 사건 보고서 저장</h3>
+        <table>
+          <thead><tr><th>항목</th><th>목적</th></tr></thead>
+          <tbody>
+            <tr><td><code>completed_case_reports</code></td><td>완료 사건 보고서 스냅샷 저장</td></tr>
+            <tr><td>episode_id / episode_title</td><td>어떤 사건의 기록인지 식별</td></tr>
+            <tr><td>단서 / 미니게임 / 회수 결과</td><td>플레이 결과를 기록국 보고서로 보존</td></tr>
+            <tr><td>요원 신뢰도 / 이벤트</td><td>선택 요원과의 수사 파트너 결산 저장</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div id="db" class="tab-panel" data-testid="panel-db">
+        <h3>기록국 DB 재확인</h3>
+        <ul>
+          <li>완료 사건 목록을 표시한다.</li>
+          <li>사건 선택 시 보고서 상세를 표시한다.</li>
+          <li>해금 기록물/장비와 보고서 연결 문구를 표시한다.</li>
+          <li>검색/필터/편집은 MVP-018에서 제외한다.</li>
+        </ul>
+      </div>
+
+      <div id="goal" class="tab-panel" data-testid="panel-goal">
+        <h3>Codex 구현 방향</h3>
+        <p>Codex는 HTML을 수정하지 않는다. 구현은 Issue #18과 <code>docs/CODEX_GOAL_MVP_018.md</code> 기준으로 진행한다.</p>
+        <ul>
+          <li>완료 사건 보고서 저장 상태 추가</li>
+          <li>기존 저장 파일 기본값 처리</li>
+          <li>기록국 DB 또는 기록 표시 UI에 목록/상세 표시</li>
+          <li>기존 결과 화면과 두 번째 사건 준비 흐름 보존</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const buttons = document.querySelectorAll('[data-tab]');
+    const panels = document.querySelectorAll('.tab-panel');
+    buttons.forEach((button) => {
+      button.addEventListener('click', () => {
+        buttons.forEach((item) => item.classList.remove('active'));
+        panels.forEach((panel) => panel.classList.remove('active'));
+        button.classList.add('active');
+        document.getElementById(button.dataset.tab).classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>

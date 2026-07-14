@@ -483,3 +483,13 @@ Base 승격 후보 예시:
 - 프로젝트 전용 UI 구조
 
 플러그인 설치 실패는 작업 실패가 아니다. 규칙 문서와 Goal이 명확하면 GPT + Codex + GitHub만으로도 작업을 계속 진행한다.
+
+---
+
+## 15. GDD 동기화와 사용자 공개
+
+- 게임 설계 변경은 `docs/GAME_DESIGN_DOCUMENT.md`에 반영하고 `tools/docs/build_game_design_doc.py --build`로 DOCX를 갱신한다.
+- `--check`가 실패하면 문서 작업을 완료로 보고하지 않는다.
+- GDD 업데이트가 포함된 최종 보고에는 Markdown 원본과 DOCX 배포본 링크를 반드시 함께 넣는다.
+- 완료 보고에 벤치마킹 필요성·적용 결론, 개선점, 실제 사용한 스킬·도구, 중복·실패·토큰 낭비, 다음 최적화 후보를 포함한다.
+- 과거 근거는 `docs/archive/README.md`를 통해 필요한 파일만 읽고 기본 컨텍스트에 일괄 포함하지 않는다.

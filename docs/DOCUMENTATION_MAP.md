@@ -23,12 +23,16 @@
 | 순차 반일 일정·세력 의뢰·조사 중단/재개 | `MVP038_SEQUENTIAL_CAMPAIGN.md` |
 | 공용 규칙 동기화·Base 승격 | `AI_SHARED_WORK_RULES.md`, `BASE_RULES_VERSION.md` |
 | 과거 Codex 운영 방식 조사 | `CODEX_SHARED_WORK_RULES.md` |
+| 게임 설계·콘텐츠 범위·로드맵 판단 | `GAME_DESIGN_DOCUMENT.md` |
+| 과거 구현·감사·HTML 근거 확인 | `archive/README.md`에서 필요한 자료만 선택 |
 
 분기 조건이 없으면 해당 문서를 읽지 않는다. 복합 작업은 실제로 영향을 받는 갈래만 추가한다.
 
 ## 책임 원본
 
 - 우선순위·보호 경로·완료 보고: `AGENTS.md`
+- 상세 게임 설계·콘텐츠 상태·설계 로드맵: `GAME_DESIGN_DOCUMENT.md`
+- 사용자 열람용 기획서: `URBAN_LEGEND_GAME_DESIGN.docx` (Markdown에서 생성)
 - 프로젝트 용어·플레이어 경험·모델 역할: `PROJECT_CONTEXT.md`
 - Base 기준 커밋과 승격 후보: `BASE_RULES_VERSION.md`
 - 실행·수동 검증 목록: `TEST_CHECKLIST.md`
@@ -40,6 +44,14 @@
 
 ## 문서 보존
 
-`docs/CODEX_GOAL_*`, `docs/superpowers/`, `docs/benchmarks/`는 과거 결정과 구현 증거다. 현재 작업의 직접 기준일 때만 읽는다. `docs/urban_legend_flow_dashboard.html`은 과거 기록이며 사용자가 새 HTML 산출물을 요청한 경우에만 갱신한다.
+`docs/CODEX_GOAL_*`, `docs/superpowers/`, `docs/benchmarks/`는 과거 결정과 구현 증거다. 현재 작업의 직접 기준일 때만 읽는다. 과거 README·로드맵·감사·보고·HTML은 `docs/archive/`에 보관하며 기본 읽기에서 제외한다. 보관 위치와 대체 현행 문서는 `docs/archive/README.md`를 따른다.
+
+## 상시 동기화
+
+- 플레이어 노출 설계가 바뀌면 GDD·로드맵·README·테스트 기준의 갱신 필요를 함께 확인한다.
+- GDD 수정 후 DOCX를 재생성하고 `--check`로 동기화를 검증한다.
+- GDD 업데이트 완료 보고는 Markdown과 DOCX 링크를 모두 포함한다.
+- 큰 단계·MVP 종료 시 현행 문서의 날짜·버전·다음 작업을 갱신한다.
+- 5개 MVP마다 구문서·중복·깨진 참조·스킬·도구 효율을 감사한다.
 
 Base 원격 `alsdmlals4-eng/Base`는 공용 규칙의 원본이다. 일상 작업에서는 로컬 사본을 우선하고 Base 동기화·비교·승격 작업에서만 원격을 확인한다.
