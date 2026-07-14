@@ -38,6 +38,11 @@ const BACKGROUNDS := {
 		"investigation": "red_crossroads",
 		"recovery": "red_recovery",
 	},
+	"episode_003_dead_frequency_station": {
+		"dialogue": "afterlife_entrance",
+		"investigation": "afterlife_platform",
+		"recovery": "afterlife_recovery",
+	},
 }
 
 const AGENT_ASSETS := {

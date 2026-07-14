@@ -131,7 +131,7 @@ def configure_document(doc: Document, build_hash: str, version: str) -> None:
 			style.paragraph_format.keep_with_next = True
 
 	doc.core_properties.title = "괴담기록국 게임기획서"
-	doc.core_properties.subject = "MVP-038 기준 살아 있는 게임 설계"
+	doc.core_properties.subject = "MVP-040 기준 살아 있는 게임 설계"
 	doc.core_properties.author = "괴담기록국 프로젝트"
 	doc.core_properties.keywords = f"{HASH_PREFIX}{build_hash}"
 	doc.core_properties.comments = "편집 원본: docs/GAME_DESIGN_DOCUMENT.md"
@@ -149,7 +149,7 @@ def configure_document(doc: Document, build_hash: str, version: str) -> None:
 	fp = footer.paragraphs[0]
 	fp.clear()
 	fp.alignment = WD_ALIGN_PARAGRAPH.CENTER
-	fr = fp.add_run("MVP-038  |  Ver 3.8  |  ")
+	fr = fp.add_run("MVP-040  |  Ver 4.0  |  ")
 	set_run_font(fr, size=7.5, color=MUTED)
 	field = OxmlElement("w:fldSimple")
 	field.set(qn("w:instr"), "PAGE")

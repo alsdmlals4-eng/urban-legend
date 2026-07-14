@@ -130,7 +130,7 @@ func _check_scene_claims_tutorial(scene_path: String, tutorial_id: String) -> vo
 			guide.advance()
 	_check(GameState.has_seen_log_tutorial(tutorial_id), "%s claims %s after close" % [scene_path.get_file(), tutorial_id])
 	if scene_path.ends_with("main_menu.tscn"):
-		_check(_node_has_text(scene, "Ver 3.8"), "main menu displays current Ver 3.8")
+		_check(_node_has_text(scene, "Ver 4.0"), "main menu displays current Ver 4.0")
 		_check(not GameState.has_save_file(), "main tutorial does not create a fake continue save")
 	if scene_path.ends_with("database_view.tscn"):
 		_check(not GameState.has_save_file(), "database tutorial does not create a fake continue save")

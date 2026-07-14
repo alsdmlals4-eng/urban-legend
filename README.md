@@ -8,16 +8,16 @@
 
 | 항목 | 값 |
 |---|---|
-| 현재 MVP | MVP-038 |
-| 화면 버전 | Ver 3.8 |
+| 현재 MVP | MVP-040 |
+| 화면 버전 | Ver 4.0 |
 | 저장 스키마 | mvp-038 |
 | 플랫폼 | PC / Steam, 16:9, 마우스·키보드 |
-| 구현 사건 | 저승역, 비 오는 골목의 빨간 우산 |
-| 계획 사건 | 폐주파수 방송국 |
+| 구현 사건 | 저승역, 비 오는 골목의 빨간 우산, 폐주파수 방송국 |
+| 다음 검증 | 세 사건 전체 캠페인 수동 QA |
 
 현재 구현에는 최대 10일 캠페인, 오전·오후 순차 반일 운영, 조사 중 HQ 중단·재개, 요원 5능력, 괴이 안정화·회수, 사건 보고서·DB, 소문시장·마도회·퇴마사 계보와 3칸 의뢰 게시판이 포함된다.
 
-MVP-039과 두 구현 사건 전체 캠페인 QA는 완료했다. 오현의 `balanced` 성향은 임시 3인 편성을 위해 허용했으며, 저장·사건 데이터는 바꾸지 않았다. 현재 다음 작업은 **MVP-040 폐주파수 방송국 vertical slice**의 사건 카드·근거·실패·회수·보고서 설계다. 상세 근거는 [`MVP039_MANUAL_UX_VALIDATION.md`](docs/qa/MVP039_MANUAL_UX_VALIDATION.md)와 [`TWO_CASE_CAMPAIGN_MANUAL_QA.md`](docs/qa/TWO_CASE_CAMPAIGN_MANUAL_QA.md)를 따른다.
+MVP-040 폐주파수 방송국 vertical slice를 구현했다. 방송이 이름을 부른 뒤 응답한 목소리를 다음 사연으로 복사한다는 규칙을 3단서·3회수 패턴·기존 타이밍 판정·보고서·DB에 연결했다. 저장 스키마는 `mvp-038`을 유지한다. 신규 방송국 전용 배경·괴이 아트는 만들지 않고 기존 역 에셋을 임시 재사용한다. 상세 계약은 [`MVP040_DEAD_FREQUENCY_SLICE.md`](docs/qa/MVP040_DEAD_FREQUENCY_SLICE.md)를 따른다. 다음 P0은 **세 사건 전체 캠페인 수동 QA**다.
 
 ## 기획서
 
@@ -47,7 +47,7 @@ MVP-039과 두 구현 사건 전체 캠페인 QA는 완료했다. 오현의 `bal
 
 ```text
 assets/                 배경·요원·괴이·로그 이미지
-data/episodes/          구현 사건 JSON 2개
+data/episodes/          구현 사건 JSON 3개
 data/faction_requests.json
 scenes/                 메인·준비·현장·판정·회수·결과·DB·시장
 scripts/core/           저장 파사드와 캠페인 상태
@@ -70,7 +70,7 @@ tools/docs/             기획서 DOCX 생성기
 
 ## 현재 남은 작업
 
-- 폐주파수 방송국 vertical slice
+- 세 사건 전체 캠페인 수동 QA
 - 선택형 일상 에피소드 최소 세트
 - 연구·장비·세력 콘텐츠 확장과 밸런스
 - 로그·요원 문구 외부 GPT 패스 검토

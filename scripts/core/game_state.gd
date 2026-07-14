@@ -3,6 +3,7 @@ extends Node
 
 const DEFAULT_EPISODE_PATH := "res://data/episodes/episode_001_afterlife_station.json"
 const RED_UMBRELLA_ALLEY_EPISODE_PATH := "res://data/episodes/episode_002_red_umbrella_alley.json"
+const DEAD_FREQUENCY_STATION_EPISODE_PATH := "res://data/episodes/episode_003_dead_frequency_station.json"
 const SAVE_FILE_PATH := "user://urban_legend_save.json"
 const SAVE_VERSION := "mvp-038"
 const DEFAULT_DIALOGUE_NODE_ID := "dialogue_intro"
@@ -2227,7 +2228,11 @@ func get_next_investigation_modifier_text() -> String:
 ## Returns the episode choices exposed by the MVP preparation screen.
 func get_preparation_episode_entries() -> Array:
 	var entries: Array = []
-	for episode_path in [DEFAULT_EPISODE_PATH, RED_UMBRELLA_ALLEY_EPISODE_PATH]:
+	var episode_paths := [DEFAULT_EPISODE_PATH, RED_UMBRELLA_ALLEY_EPISODE_PATH]
+	var dead_frequency_state: Dictionary = get_campaign_snapshot().get("cases", {}).get("episode_003_dead_frequency_station", {})
+	if String(dead_frequency_state.get("discovery_state", "unknown")) != "unknown":
+		episode_paths.append(DEAD_FREQUENCY_STATION_EPISODE_PATH)
+	for episode_path in episode_paths:
 		var loader = EpisodeLoaderScript.new()
 		var data: Dictionary = loader.load_episode(episode_path)
 		var episode: Dictionary = data.get("episode", {})
