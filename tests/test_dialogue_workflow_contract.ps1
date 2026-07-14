@@ -20,9 +20,12 @@ Assert-Contains -Text $workflow -Expected 'DeepSeek' -Message 'The DeepSeek audi
 Assert-Contains -Text $workflow -Expected 'Codex' -Message 'The Codex integration role is not defined.'
 Assert-Contains -Text $workflow -Expected 'no-new-systems' -Message 'The no-new-systems boundary is not defined.'
 
-foreach ($relativePath in @('AGENTS.md', 'docs\DOCUMENTATION_MAP.md', 'docs\AI_WORKFLOW_RULES.md', 'docs\MVP_WORKFLOW_CHECKLIST.md')) {
+foreach ($relativePath in @('docs\DOCUMENTATION_MAP.md', 'docs\AI_WORKFLOW_RULES.md', 'docs\MVP_WORKFLOW_CHECKLIST.md')) {
 	$text = [IO.File]::ReadAllText((Join-Path $repo $relativePath), [Text.Encoding]::UTF8)
 	Assert-Contains -Text $text -Expected 'DIALOGUE_AUTHORING_WORKFLOW.md' -Message "$relativePath does not route dialogue work to the workflow document."
 }
+
+$agents = [IO.File]::ReadAllText((Join-Path $repo 'AGENTS.md'), [Text.Encoding]::UTF8)
+Assert-Contains -Text $agents -Expected 'docs/DOCUMENTATION_MAP.md' -Message 'AGENTS.md does not route conditional project documents through DOCUMENTATION_MAP.'
 
 'PASS: dialogue authoring workflow contract'

@@ -11,6 +11,15 @@
 - `scripts/core/game_state.gd`, `data/episodes/*`, `project.godot`, `knowledge/base-pack/*`는 보호 경로다. 외부 산출물을 자동 적용하지 않는다.
 - 생성·삭제·이동·대규모 수정은 이유, 참조 영향과 후속 동기화를 보고한다.
 
+## 계정 교대와 저사용량 인수인계
+
+- 작업 시작·큰 단계 전환·커밋 직후에 `/status` 또는 CLI `/usage`로 노출된 최신 사용량을 확인한다. 수치가 에이전트에 보이지 않으면 임의로 추정하지 않는다.
+- 잔여량이 5% 이하이면 범위 확장을 멈추고 현재 원자 작업, 테스트 상태와 남은 일을 `docs/CURRENT_HANDOFF.md`에 정리한다.
+- 잔여량이 2% 이하이면 신규 코드·장시간 조사·대규모 테스트를 중단하고 checkpoint·handoff·push만 수행한다.
+- 미완성 변경이 `main`에 있으면 `codex/handoff-<task>` 브랜치로 옮겨 `checkpoint: <task>` 커밋을 push한다. checkpoint는 완료가 아니며 실패·미검증 항목을 그대로 남긴다.
+- 정상 완료도 `CURRENT_HANDOFF.md`를 `COMPLETE`로 갱신하고 실제 실행 `main` 통합·재검증·`origin/main` push까지 끝낸다.
+- 한도 종료로 checkpoint를 못 남긴 경우 다음 계정은 dirty worktree를 사용자 변경으로 보존하고 diff를 감사한 뒤 작업 브랜치에서 이어간다.
+
 ## 프로젝트 불변 조건
 
 - Godot 4.7 stable, GDScript, PC 16:9, 마우스/키보드가 기본이다. `.godot/`은 수정하지 않는다.
