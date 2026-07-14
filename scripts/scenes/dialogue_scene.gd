@@ -39,13 +39,8 @@ var _runtime_editor: RuntimeUiEditor
 func _ready() -> void:
 	if GameState.get_current_episode().is_empty():
 		GameState.load_episode()
-	# Ver 3.3 keeps this scene only as a compatibility entry for old saves and tools.
-	var field_id := GameState.map_legacy_dialogue_node_to_field_node(GameState.get_current_dialogue_node_id())
-	GameState.set_current_field_node_id(field_id)
-	GameState.set_current_scene_path("res://scenes/investigation_scene.tscn")
-	GameState.save_game()
-	call_deferred("_redirect_to_unified_field")
-	return
+	# 저승역의 신규 캠페인 오프닝은 기존 JSON 대화 노드를 직접 사용한다.
+	_legacy_ready()
 
 
 func _redirect_to_unified_field() -> void:

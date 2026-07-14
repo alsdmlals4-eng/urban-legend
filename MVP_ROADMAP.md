@@ -24,6 +24,7 @@
 | MVP-040 | 완료 기준 | 폐주파수 방송국의 발견 후 노출, 3단서·3회수 패턴, 기존 타이밍 판정, 보고서·DB·저장 연결 |
 | MVP-041 | 완료 기준 | 텍스트 노벨 1차 기준 재정립, Day 8 자연 발견, 세 사건 저장·보고서·DB·오대응·10일 QA. 상세: `docs/qa/MVP041_THREE_CASE_CAMPAIGN_MANUAL_QA.md` |
 | MVP-042 | 완료 기준 | HQ 준비 화면의 일정 비소모 일상 카드 3장, 2선택 즉시 결과·DB 기록, +2 이해도 상한, 저장 왕복과 `mvp-038 → mvp-039` 이관. 상세: `docs/qa/MVP042_DAILY_EPISODE_VALIDATION.md` |
+| MVP-043 | 구현 검증 | 저승역 오프닝·3인 고정 투입·3×3 학습/4×4 최종 노선 검증·안전 노선 기록·회수 직행·매뉴얼 표시. 수동 1280×720 검수와 전체 문서 QA는 후속 확인. |
 
 MVP-036은 별도 저장 기준선으로 사용하지 않는다. 과거 상세 이력은 `docs/archive/history/MVP_ROADMAP_PRE_LIVING_GDD.md`와 완료 Goal을 참고한다.
 

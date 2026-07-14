@@ -287,10 +287,9 @@ func _open_database() -> void:
 
 func _start_afterlife_station() -> void:
 	GameState.clear_save_file()
-	GameState.reset_run_state()
-	GameState.set_current_scene_path(GameState.SCENE_PREPARATION)
+	GameState.restart_afterlife_station_flow(["agent_oh_hyun", "agent_kwon_narae", "agent_kang_ijun"])
 	GameState.save_game()
-	get_tree().change_scene_to_file(GameState.SCENE_PREPARATION)
+	get_tree().change_scene_to_file(GameState.SCENE_DIALOGUE)
 
 
 func _continue_saved_game() -> void:

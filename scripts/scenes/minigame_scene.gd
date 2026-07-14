@@ -40,11 +40,13 @@ func _apply_runtime_minigame_overrides() -> void:
 	_minigame = _minigame.duplicate(true)
 	_minigame["type"] = "route_restore"
 	_minigame["title"] = "저승역 노선 복원"
-	_minigame["description"] = "오현의 공식 운행 기록과 권나래의 현장 보고를 대조해, 강이준이 유지하는 현실 출구까지 피해자 호송 노선을 복원합니다."
-	_minigame["rules_text"] = "타일을 회전하고 분기 스위치를 바꿔 안전 목적지까지 연결하세요. 조작 4회가 기본 최적이며 6회 이내 완료하면 정밀 복원으로 기록됩니다. 횟수 초과는 실패가 아닙니다."
-	_minigame["optimal_move_count"] = 4
-	_minigame["precision_move_limit"] = 6
-	_minigame["success_result_text"] = "공식 운행 기록과 일치하는 첫 안전 구간을 복원했습니다. 개인이 인식한 목적지는 실제 방송 원본의 목적지가 아님을 현장에서 확인했습니다."
+	_minigame["description"] = "오현의 공식 운행 기록과 권나래의 현장 보고를 대조해, 강이준이 유지하는 현실 출구까지 피해자 호송 노선을 복원합니다. 3×3은 조작 학습이고 4×4가 마지막 현장 검증입니다."
+	_minigame["rules_text"] = "타일을 회전하고 분기 스위치를 바꿔 안전 목적지까지 연결하세요. 4×4의 최적은 8회, 정밀 기준은 10회입니다. 횟수 초과는 실패가 아닙니다."
+	_minigame["optimal_move_count"] = 8
+	_minigame["precision_move_limit"] = 10
+	_minigame["route_risk"] = GameState.get_anomaly_risk()
+	_minigame["route_entrenchment"] = 100 - GameState.get_anomaly_stability()
+	_minigame["success_result_text"] = "안전 노선 검증 기록을 확보했습니다. 개인이 인식한 목적지는 실제 방송 원본에 없었고, 공식 식별 번호와 일치한 경로만 현실 승강장으로 연결됐습니다."
 	_minigame["failure_result_text"] = "노선 검증을 계속할 수 있습니다. 끊긴 구간과 공식 식별 기록을 다시 대조하세요."
 	_minigame["success_agent_reaction"] = "오현이 공식 기록과 실제 이동 경로의 일치를 확인합니다. 권나래는 피해자 호송을 재개하고, 강이준은 복원된 현실 경계를 고정합니다."
 	_minigame["failure_agent_reaction"] = "세 요원이 현재 노선 상태를 유지한 채 잘못된 경로를 위험 사례로 분리합니다."
@@ -195,6 +197,8 @@ func _on_game_completed(successful: bool, details: Dictionary) -> void:
 	saved_details["equipment_assisted"] = not _equipment_hint.is_empty()
 	saved_details["display_title"] = String(_minigame.get("title", "현장 검증"))
 	GameState.save_minigame_result(String(_minigame.get("id", GameState.get_current_minigame_id())), successful, saved_details)
+	if _is_route_restore_minigame() and successful:
+		GameState.collect_clue("clue_black_ticket")
 	_result_label.text = _make_result_text(successful, saved_details)
 	_return_button.visible = true
 	_return_button.grab_focus()
@@ -294,6 +298,11 @@ func _make_panel_style(background: Color, border: Color) -> StyleBoxFlat:
 
 
 func _return_to_flow() -> void:
+	if _is_route_restore_minigame() and _last_successful:
+		GameState.set_current_scene_path("res://scenes/battle_scene.tscn")
+		GameState.save_game()
+		get_tree().change_scene_to_file("res://scenes/battle_scene.tscn")
+		return
 	var key := "success_next_scene_path" if _last_successful else "failure_next_scene_path"
 	var scene_path := String(_minigame.get(key, ""))
 	if scene_path.is_empty():

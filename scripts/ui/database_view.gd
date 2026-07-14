@@ -286,7 +286,7 @@ func _add_minigame_entries(results: Dictionary, parent: VBoxContainer) -> void:
 		if typeof(result) == TYPE_DICTIONARY:
 			var minigame := GameState.get_minigame(String(minigame_id))
 			lines.append(MinigameResultFormatter.make_report_line(
-				String(minigame.get("title", minigame_id)),
+				String(result.get("display_title", minigame.get("title", minigame_id))),
 				result
 			))
 	_add_text_entries("미니게임 기록", lines, parent)

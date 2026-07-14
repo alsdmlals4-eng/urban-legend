@@ -171,7 +171,8 @@ func get_current_episode() -> Dictionary:
 ## Restarts the afterlife station MVP from the beginning.
 func restart_afterlife_station_flow(agent_ids: Array = []) -> bool:
 	reset_run_state()
-	set_selected_agent_ids(agent_ids)
+	var tutorial_team := agent_ids if not agent_ids.is_empty() else ["agent_oh_hyun", "agent_kwon_narae", "agent_kang_ijun"]
+	set_selected_agent_ids(tutorial_team)
 	current_scene_path = SCENE_DIALOGUE
 	return not current_episode_data.is_empty()
 

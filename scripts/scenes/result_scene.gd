@@ -43,7 +43,7 @@ func _build_ui() -> void:
 	scroll.add_child(root)
 
 	var title := Label.new()
-	title.text = "사건 보고서 / 회수 결과"
+	title.text = "괴이 매뉴얼 초안 / 안정화 결과" if GameState.get_current_episode_id() == "episode_001_afterlife_station" else "사건 보고서 / 회수 결과"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	root.add_child(title)
 	var log_guide: LogGuide = LogGuideScript.new()
@@ -63,13 +63,16 @@ func _build_ui() -> void:
 
 
 func _add_result_panel(parent: Control) -> void:
-	var content := _add_section(parent, "회수 결과", "괴이 핵 회수 뒤 현재 사건의 결말과 보상을 확인합니다.")
+	var afterlife := GameState.get_current_episode_id() == "episode_001_afterlife_station"
+	var content := _add_section(parent, "안정화 결과" if afterlife else "회수 결과", "현재 출현을 안정화하고 대응 절차를 기록합니다." if afterlife else "괴이 핵 회수 뒤 현재 사건의 결말과 보상을 확인합니다.")
 
 	content.add_child(_make_label("에피소드명: %s" % GameState.get_current_episode_title()))
 	content.add_child(_make_label("회수/안정화 등급: %s" % GameState.get_result_resolution_label()))
 	content.add_child(_make_label("피해자 구조 결과: %s" % GameState.get_current_victim_rescue_result()))
 	content.add_child(_make_label("피해자 후일담: %s" % GameState.get_current_victim_after_story()))
-	content.add_child(_make_label("괴이 핵 회수 상태: %s" % _make_recovery_status_text()))
+	content.add_child(_make_label("저승역 반복 안내 잔향 회수 상태: %s" % _make_recovery_status_text()) if afterlife else _make_label("괴이 핵 회수 상태: %s" % _make_recovery_status_text()))
+	if afterlife:
+		_add_text_list(content, "괴이 매뉴얼 초안", ["발생 감정: 마지막 기회를 놓친 후회와 귀환 강박", "검증된 대응: 목적지 공백 확인 · 공식 식별음 대조 · 안전 노선 복원", "안정화 상태: 현재 공간 반복 중단"])
 	content.add_child(_make_label("현재 잔향 파편: %d · 사건 준비의 외부 접점에서 사용할 수 있습니다." % GameState.get_echo_fragments()))
 	_add_text_list(content, "연구 결과", [GameState.get_current_research_result()])
 	_add_unlock_list(content, "기록물 획득", GameState.get_current_result_unlocked_records(), "title", "description")
@@ -187,7 +190,7 @@ func _make_minigame_lines(results: Dictionary) -> Array:
 		if typeof(result) != TYPE_DICTIONARY:
 			continue
 		var minigame := GameState.get_minigame(String(minigame_id))
-		var title := String(minigame.get("title", minigame_id))
+		var title := String(result.get("display_title", minigame.get("title", minigame_id)))
 		lines.append(MinigameResultFormatter.make_report_line(title, result))
 	return lines
 

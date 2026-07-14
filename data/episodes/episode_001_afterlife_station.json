@@ -326,12 +326,12 @@
     {
       "id": "dialogue_intro",
       "legacy_dialogue_node_ids": ["dialogue_intro", "dialogue_after_photo"],
-      "title": "존재하지 않는 저승역",
+      "title": "목적지 공백이 있는 안내",
       "opening_dialogue": [
-		{"speaker": "로그", "text": "관찰됨: 안내방송과 전광판의 종착지 표기가 서로 다릅니다. 어느 쪽이 실제 경로인지는 미확인입니다.", "expression": "focus"},
-        {"speaker": "권나래", "text": "피해자 기록을 기준으로 표기 차이를 분리해 보겠습니다."},
-        {"speaker": "강이준", "text": "경로가 겹치는 지점이 확인되면 봉인선을 확보하겠습니다."},
-        {"speaker": "오현", "text": "방송과 전광판은 별도 채널로 기록하겠습니다."}
+		{"speaker": "로그", "text": "미확인: 같은 방송을 들은 승객들이 서로 다른 목적지를 기억합니다. 방송 원본에는 목적지 구간이 비어 있습니다.", "expression": "focus"},
+		{"speaker": "권나래", "text": "피해자 기록과 방송 원본을 비교해, 누가 공백을 채웠는지 보겠습니다."},
+		{"speaker": "강이준", "text": "안내가 끝나기 전에 움직이면 공간이 초기화됩니다. 먼저 관찰합니다."},
+		{"speaker": "오현", "text": "공식 운행 기록의 식별 번호를 안전 노선 기준으로 잡겠습니다."}
       ],
       "choices": [
         {
@@ -344,6 +344,17 @@
             {"speaker": "강이준", "text": "시간 반복 여부는 방송 주기와 대조해야 확인할 수 있습니다."},
 			{"speaker": "오현", "text": "휴대폰 시각과 방송 기록을 같은 기준으로 맞추겠습니다."},
 			{"speaker": "로그", "text": "피해자 기록과 방송·전광판 표기를 비교 항목으로 등록했습니다.", "expression": "normal"}
+          ],
+          "next_field_node_id": "field_station_investigation"
+        },
+        {
+          "id": "field_begin_broadcast_comparison",
+          "label": "방송 원본과 공식 운행 기록을 먼저 대조한다",
+          "ability": "observation",
+          "point_id": "point_platform_speaker",
+          "after_dialogue": [
+            {"speaker": "오현", "text": "원본에는 목적지명이 없습니다. 청자가 각자 돌아가고 싶은 곳을 채워 듣고 있습니다."},
+            {"speaker": "로그", "text": "추정: 개인 목적지를 따르는 이동은 안전 노선이 아니다.", "expression": "normal"}
           ],
           "next_field_node_id": "field_station_investigation"
         }
@@ -919,7 +930,7 @@
         "battle_route_distorted"
       ],
       "success_collect_clues": [
-        "clue_repeating_announcement"
+        "clue_black_ticket"
       ],
       "success_show_hint_ids": [
         "hint_afterlife_station_003"
@@ -939,10 +950,10 @@
           "failure_mental_stamina_delta": -10,
           "failure_recovery_threshold_delta": -8,
           "failure_recovery_stability_delta": 10,
-      "success_result_text": "반복 안내방송의 규칙을 파악했습니다. 피해자의 이름이 끼어드는 순간을 단서로 기록합니다.",
-      "failure_result_text": "잡음이 커져 저승역의 경계가 강화되었습니다. 회수 페이즈에서 괴이 안정도가 조금 높아집니다.",
+      "success_result_text": "안전 노선 검증 기록을 확보했습니다. 개인 목적지는 방송 원본에 없었고, 공식 식별 번호와 일치한 경로만 현실 승강장으로 연결됐습니다.",
+      "failure_result_text": "노선 검증은 계속할 수 있습니다. 기록을 다시 대조해 안전 경로를 복원하세요.",
       "return_scene_path": "res://scenes/investigation_scene.tscn",
-      "success_next_scene_path": "res://scenes/investigation_scene.tscn",
+      "success_next_scene_path": "res://scenes/battle_scene.tscn",
       "failure_next_scene_path": "res://scenes/investigation_scene.tscn"
     }
   ],
@@ -963,8 +974,8 @@
     {
       "id": "clue_black_ticket",
       "episode_id": "episode_001_afterlife_station",
-      "title": "검은 승차권",
-      "description": "존재하지 않는 종착지가 인쇄된 검은 승차권입니다. 괴이의 핵과 직접 연결된 필수 단서입니다.",
+      "title": "안전 노선 검증 기록",
+      "description": "공식 운행 기록과 일치한 노선이 현실 승강장으로 연결됐다는 현장 검증 기록입니다. 검은 승차권에는 목적지 대신 공식 식별 번호의 천공 자국만 남았습니다.",
       "location_id": "location_ticket_gate",
       "related_victim_id": "victim_afterlife_station_001",
       "related_legend_id": "legend_afterlife_station",
