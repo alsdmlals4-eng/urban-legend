@@ -29,6 +29,12 @@ func _capture() -> void:
 	var ui_state := String(args[5]) if args.size() > 5 else ""
 	if ui_state == "risk_d":
 		game_state.investigation_risk = 85
+	if ui_state.begins_with("mvp039_"):
+		_prepare_mvp039_evidence(game_state)
+		if ui_state == "mvp039_result":
+			game_state.start_resolution_phase()
+			game_state.save_recovery_result(true, "core_recovered", 100)
+			game_state.record_current_case_report()
 	var error := change_scene_to_file(scene_path)
 	if error != OK:
 		push_error("failed to load scene: %s" % scene_path)
@@ -46,6 +52,26 @@ func _capture() -> void:
 					await process_frame
 				break
 	if ui_state == "recovery_evidence" and current_scene.has_method("_toggle_clue_drawer"):
+		current_scene.call("_toggle_clue_drawer")
+		for _frame in range(3):
+			await process_frame
+	if ui_state == "mvp039_investigation" and current_scene.has_method("_get_investigation_points"):
+		var points: Array = current_scene.call("_get_investigation_points")
+		for point in points:
+			if typeof(point) == TYPE_DICTIONARY and not Array(point.get("method_options", [])).is_empty():
+				var methods: Array = point.get("method_options", [])
+				current_scene.call("_show_method_options", point)
+				current_scene.call("_run_method_option", point, methods[0])
+				for _frame in range(3):
+					await process_frame
+				break
+	if ui_state == "mvp039_recovery" and current_scene.has_method("_select_pattern_response"):
+		var pattern: Dictionary = current_scene.get("_current_pattern")
+		var wrong_response := _find_wrong_response(pattern)
+		if not wrong_response.is_empty():
+			current_scene.call("_select_pattern_response", wrong_response)
+			for _frame in range(3):
+				await process_frame
 		current_scene.call("_toggle_clue_drawer")
 		for _frame in range(3):
 			await process_frame
@@ -91,3 +117,20 @@ func _find_scroll_container(control: Control) -> ScrollContainer:
 			return current as ScrollContainer
 		current = current.get_parent()
 	return null
+
+
+func _prepare_mvp039_evidence(game_state: Node) -> void:
+	for clue in game_state.get_clues():
+		if typeof(clue) == TYPE_DICTIONARY:
+			game_state.collect_clue(String(clue.get("id", "")))
+	for hint in game_state.get_hints():
+		if typeof(hint) == TYPE_DICTIONARY:
+			game_state.mark_hint_seen(String(hint.get("id", "")))
+
+
+func _find_wrong_response(pattern: Dictionary) -> Dictionary:
+	var correct_id := String(pattern.get("correct_response_id", ""))
+	for response in pattern.get("responses", []):
+		if typeof(response) == TYPE_DICTIONARY and String(response.get("id", "")) != correct_id:
+			return response.duplicate(true)
+	return {}
