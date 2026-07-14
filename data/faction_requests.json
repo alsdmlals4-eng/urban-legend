@@ -1,0 +1,13 @@
+{
+  "requests": [
+    {"id":"rumor_trace_dispatch","faction_id":"rumor_market","title":"소문 경로 대조","description":"서로 다른 제보의 출처를 대조합니다.","kind":"dispatch","ability_key":"analysis","difficulty":5},
+    {"id":"rumor_contact_dispatch","faction_id":"rumor_market","title":"제보자 접점 조율","description":"외부 제보자와의 접촉을 안정적으로 마무리합니다.","kind":"dispatch","ability_key":"rapport","difficulty":5},
+    {"id":"rumor_field_record","faction_id":"rumor_market","title":"현장 반응 기록","description":"회수 현장에서 분석 대응을 기록해 전달합니다.","kind":"recovery_action","ability_key":"analysis","difficulty":6},
+    {"id":"mage_residue_dispatch","faction_id":"mage_society","title":"잔향 표본 분석","description":"회수 표본의 잔향 구조를 분석합니다.","kind":"dispatch","ability_key":"analysis","difficulty":6},
+    {"id":"mage_ward_dispatch","faction_id":"mage_society","title":"보호식 검증","description":"외부 보호식의 안정성을 점검합니다.","kind":"dispatch","ability_key":"protection","difficulty":5},
+    {"id":"mage_stabilization_record","faction_id":"mage_society","title":"안정화 반응 채록","description":"회수 중 보호 대응의 결과를 채록합니다.","kind":"recovery_action","ability_key":"protection","difficulty":6},
+    {"id":"exorcist_seal_dispatch","faction_id":"exorcist_lineage","title":"봉인선 보강","description":"현장 투입 전 봉인선을 보강합니다.","kind":"dispatch","ability_key":"suppression","difficulty":5},
+    {"id":"exorcist_care_dispatch","faction_id":"exorcist_lineage","title":"현장 후유증 처치","description":"외부 인원의 현장 후유증을 처치합니다.","kind":"dispatch","ability_key":"treatment","difficulty":5},
+    {"id":"exorcist_guard_record","faction_id":"exorcist_lineage","title":"방호 대응 증명","description":"회수 중 방호 행동을 수행해 효과를 증명합니다.","kind":"recovery_action","ability_key":"protection","difficulty":5}
+  ]
+}

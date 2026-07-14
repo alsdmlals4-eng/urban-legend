@@ -4,7 +4,7 @@ extends Node
 const DEFAULT_EPISODE_PATH := "res://data/episodes/episode_001_afterlife_station.json"
 const RED_UMBRELLA_ALLEY_EPISODE_PATH := "res://data/episodes/episode_002_red_umbrella_alley.json"
 const SAVE_FILE_PATH := "user://urban_legend_save.json"
-const SAVE_VERSION := "mvp-037"
+const SAVE_VERSION := "mvp-038"
 const DEFAULT_DIALOGUE_NODE_ID := "dialogue_intro"
 const DEFAULT_FIELD_NODE_ID := "dialogue_intro"
 const STABILITY_SCHEMA_VERSION := 2
@@ -265,14 +265,70 @@ func is_campaign_schedule_complete(agent_ids: Array) -> bool:
 	return campaign_state.is_schedule_complete(agent_ids)
 
 
+func get_campaign_slot_phase() -> String:
+	return campaign_state.get_slot_phase()
+
+
+func get_campaign_slot_result() -> Dictionary:
+	return campaign_state.get_slot_result()
+
+
+func set_campaign_planned_case(case_id: String) -> bool:
+	return campaign_state.set_planned_case(case_id)
+
+
+func get_campaign_planned_case() -> String:
+	return campaign_state.get_planned_case()
+
+
 ## Marks the current case as the operation that may consume this campaign day.
 func begin_campaign_operation(case_id: String) -> bool:
 	return campaign_state.begin_operation(case_id)
 
 
+func suspend_campaign_operation() -> bool:
+	return campaign_state.suspend_operation()
+
+
+func resume_campaign_operation() -> bool:
+	return campaign_state.resume_operation()
+
+
+func get_active_campaign_operation() -> Dictionary:
+	return campaign_state.get_active_operation()
+
+
 ## Completes the active operation and advances at most one campaign day.
 func finish_campaign_operation_day() -> Dictionary:
 	return campaign_state.finish_operation_day()
+
+
+func complete_campaign_slot(result: Dictionary = {}) -> bool:
+	return campaign_state.complete_current_slot(result)
+
+
+func acknowledge_campaign_slot_result() -> Dictionary:
+	return campaign_state.acknowledge_slot_result(campaign_state.has_high_spread())
+
+
+func get_faction_request_board() -> Array:
+	return campaign_state.get_request_board()
+
+
+func accept_faction_request(instance_id: String) -> bool:
+	return campaign_state.accept_request(instance_id)
+
+
+func decline_faction_request(instance_id: String) -> bool:
+	return campaign_state.decline_request(instance_id)
+
+
+func cancel_faction_request(instance_id: String) -> bool:
+	var request := campaign_state.cancel_request(instance_id)
+	if request.is_empty():
+		return false
+	change_faction_relation(String(request.get("faction_id", "")), -1, "request_cancel:%s" % instance_id)
+	return true
 
 
 ## Removes a successfully resolved case from future daily-risk rotation.
@@ -1286,7 +1342,7 @@ func get_investigation_point_by_id(point_id: String) -> Dictionary:
 	return CaseDataScript.get_investigation_point_by_id(current_episode_data, point_id)
 
 
-## Resolves one investigation method with player stat, selected helper stat, and 1d6.
+## Resolves one investigation method with the shared 1d100 ability check.
 func resolve_investigation_method(point_id: String, method: Dictionary) -> Dictionary:
 	var stat_key := String(method.get("stat_key", method.get("method_type", ""))).strip_edges()
 	if not INVESTIGATION_METHOD_KEYS.has(stat_key):
@@ -1305,10 +1361,11 @@ func resolve_investigation_method(point_id: String, method: Dictionary) -> Dicti
 	var helper_stat := get_agent_ability(helper_agent_id, approach_type) if not helper_agent_id.is_empty() else 0
 	var aspect_modifier := get_aspect_modifier(helper_agent_id, approach_type, _to_string_array(method.get("situation_tags", [])))
 	var aspect_value := int(aspect_modifier.get("value", 0))
-	var dice := randi_range(1, 6)
-	var total := player_stat + helper_stat + aspect_value + dice
+	var score := player_stat + helper_stat + aspect_value
 	var difficulty := int(method.get("difficulty", 0))
-	var successful := total >= difficulty
+	var check := resolve_percentile_check(score, difficulty)
+	var dice := int(check.get("roll", 100))
+	var successful := bool(check.get("successful", false))
 	var effects := _to_dictionary(method.get("success_effects", {})) if successful else _to_dictionary(method.get("failure_effects", {}))
 	var before_clue_ids := get_collected_clue_ids()
 
@@ -1332,7 +1389,9 @@ func resolve_investigation_method(point_id: String, method: Dictionary) -> Dicti
 		"helper_stat": helper_stat,
 		"aspect_modifier": aspect_modifier,
 		"dice": dice,
-		"total": total,
+		"total": score,
+		"chance": int(check.get("chance", 0)),
+		"result_grade": String(check.get("grade", "failure")),
 		"successful": successful,
 		"result_text": String(method.get("success_text", "")) if successful else String(method.get("failure_text", "")),
 		"effect_data": effects,
@@ -1349,6 +1408,26 @@ func resolve_investigation_method(point_id: String, method: Dictionary) -> Dicti
 	method_results[point_id] = method_result
 	save_game()
 	return method_result
+
+
+func resolve_percentile_check(score: int, difficulty: int, roll_override: int = 0) -> Dictionary:
+	var chance := clampi(50 + (score - difficulty) * 10, 5, 95)
+	var roll := clampi(roll_override, 1, 100) if roll_override > 0 else randi_range(1, 100)
+	var grade := "failure"
+	if roll <= chance and roll <= 5:
+		grade = "critical"
+	elif roll <= chance:
+		grade = "success"
+	elif roll <= mini(100, chance + 15):
+		grade = "partial"
+	return {
+		"score": score,
+		"difficulty": difficulty,
+		"chance": chance,
+		"roll": roll,
+		"grade": grade,
+		"successful": grade in ["critical", "success"]
+	}
 
 
 func _legacy_method_to_ability(stat_key: String) -> String:
@@ -1726,6 +1805,75 @@ func complete_faction_request(request_id: String, faction_id: String) -> bool:
 	change_faction_relation(faction_id, 10, "request_relation:%s" % clean_id)
 	grant_echo_reward("request_reward:%s" % clean_id, 20)
 	return true
+
+
+func resolve_faction_request(instance_id: String, agent_id: String, roll_override: int = 0) -> Dictionary:
+	var request := campaign_state.get_request(instance_id)
+	if request.is_empty() or String(request.get("status", "")) != "accepted":
+		return {"error": "진행 중인 의뢰가 아닙니다."}
+	var ability_key := String(request.get("ability_key", ""))
+	var agent := get_agent_by_id(agent_id)
+	if agent.is_empty() or not ABILITY_KEYS.has(ability_key):
+		return {"error": "담당 요원 또는 요구 능력을 확인할 수 없습니다."}
+	var score := get_agent_ability(agent_id, ability_key)
+	score += _get_agent_loadout_bonus(agent, "equipment", ability_key)
+	score += _get_agent_loadout_bonus(agent, "skills", ability_key)
+	var check := resolve_percentile_check(score, int(request.get("difficulty", 0)), roll_override)
+	var grade := String(check.get("grade", "failure"))
+	var reward: Dictionary = {
+		"critical": {"fragments": 12, "relation": 4},
+		"success": {"fragments": 8, "relation": 3},
+		"partial": {"fragments": 4, "relation": 1},
+		"failure": {"fragments": 0, "relation": 0}
+	}.get(grade, {"fragments": 0, "relation": 0})
+	var completed: Dictionary = campaign_state.complete_request(instance_id, grade, check)
+	if completed.is_empty():
+		return {"error": "의뢰 결과를 저장하지 못했습니다."}
+	if not completed_faction_request_ids.has(instance_id):
+		completed_faction_request_ids.append(instance_id)
+	var relation_delta := int(reward.get("relation", 0))
+	var fragments := int(reward.get("fragments", 0))
+	if relation_delta > 0:
+		change_faction_relation(String(request.get("faction_id", "")), relation_delta, "request_relation:%s" % instance_id)
+	if fragments > 0:
+		grant_echo_reward("request_reward:%s" % instance_id, fragments)
+	return {"request": completed, "check": check, "fragments": fragments, "relation": relation_delta}
+
+
+func try_resolve_recovery_faction_requests(ability_key: String, agent_id: String) -> Array:
+	var results: Array = []
+	for request in get_faction_request_board():
+		if typeof(request) != TYPE_DICTIONARY:
+			continue
+		if String(request.get("status", "")) != "accepted" or String(request.get("kind", "")) != "recovery_action":
+			continue
+		if String(request.get("ability_key", "")) != ability_key:
+			continue
+		results.append(resolve_faction_request(String(request.get("instance_id", "")), agent_id))
+	return results
+
+
+func resolve_non_investigation_campaign_slot(agent_ids: Array) -> Dictionary:
+	if not is_campaign_schedule_complete(agent_ids):
+		return {"error": "현재 반일의 전 요원 일정을 먼저 정하세요."}
+	var slot := String(get_campaign_snapshot().get("time_slot", "morning"))
+	var results: Array = []
+	for agent_id_value in agent_ids:
+		var agent_id := String(agent_id_value)
+		var activity := String(get_campaign_agent_schedule(agent_id).get(slot, ""))
+		if activity == "investigation":
+			return {"error": "조사 일정은 사건을 선택해 현장에서 완료해야 합니다."}
+		if activity.begins_with("request:"):
+			var instance_id := activity.trim_prefix("request:")
+			if not campaign_state.assign_request(instance_id, agent_id):
+				return {"error": "의뢰 담당 요원을 배정하지 못했습니다."}
+			results.append(resolve_faction_request(instance_id, agent_id))
+		else:
+			results.append({"agent_id": agent_id, "activity": "rest", "message": "대기·회복 일정을 마쳤습니다."})
+	if not complete_campaign_slot({"kind": "schedule", "results": results}):
+		return {"error": "현재 반일 결과를 저장하지 못했습니다."}
+	save_game()
+	return {"successful": true, "results": results}
 
 
 func get_completed_faction_requests() -> Array:
@@ -2311,7 +2459,8 @@ func load_game() -> bool:
 		return false
 
 	var save_data: Dictionary = parsed_data
-	campaign_state.load_save_data(save_data.get("campaign_state", {}))
+	var loaded_save_version := String(save_data.get("save_version", ""))
+	campaign_state.load_save_data(save_data.get("campaign_state", {}), loaded_save_version == "mvp-037")
 	var episode_path := String(save_data.get("episode_path", DEFAULT_EPISODE_PATH))
 	if episode_path.is_empty():
 		episode_path = DEFAULT_EPISODE_PATH
