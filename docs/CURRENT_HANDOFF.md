@@ -3,15 +3,15 @@
 이 문서는 계정·채팅 교대 시 가장 먼저 읽는 짧은 작업 상태다. 실제 완료 여부는 Git과 테스트로 다시 확인한다.
 
 ```yaml
-status: IN_PROGRESS
+status: READY_FOR_INTEGRATION
 goal: Codex 이중 계정 및 저사용량 인수인계 구조 구현
 branch: codex/account-handoff
-completed_work_commit: ea8825c
-tests: baseline workflow context PASS; multimodel contract PASS; dialogue routing contract repaired
+completed_work_commit: b0f493f
+tests: account handoff PASS; PowerShell parse PASS; dialogue/workflow/multimodel contracts PASS; profile isolation review fixes PASS
 changed_files: account handoff policy, documentation, profile tools, contract tests
 external_artifacts: none
-remaining_work: implement profile tools; install A/B profiles; verify; merge main; push origin/main
-next_action: run tests/test_account_handoff_contract.ps1 and complete the GREEN phase
+remaining_work: merge main; install A/B profiles from main; validate isolation; update COMPLETE handoff; push origin/main
+next_action: merge codex/account-handoff into main and run the profile installer from the actual execution path
 main_integrated: false
 origin_pushed: false
 ```
