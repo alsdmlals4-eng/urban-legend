@@ -39,5 +39,372 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-color = Color(0.02, 0.035, 0.045, 0.3)
+color = Color(0.02, 0.035, 0.045, 0.16)
 
+[node name="CinematicStage" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 0.64
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="AgentStage" type="HBoxContainer" parent="CinematicStage"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchor_right = 0.72
+anchor_top = 0.16
+anchor_bottom = 1.0
+offset_left = 120.0
+offset_right = -40.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+theme_override_constants/separation = -28
+
+[node name="TopHud" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 14.0
+offset_top = 12.0
+offset_right = -14.0
+offset_bottom = 76.0
+grow_horizontal = 2
+theme_override_constants/separation = 10
+
+[node name="TeamHudPanel" type="PanelContainer" parent="TopHud"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"HudStrip"
+
+[node name="TeamHud" type="HBoxContainer" parent="TopHud/TeamHudPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="CaseSummaryPanel" type="PanelContainer" parent="TopHud"]
+layout_mode = 2
+theme_type_variation = &"HudStrip"
+
+[node name="CaseSummaryRow" type="HBoxContainer" parent="TopHud/CaseSummaryPanel"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="CaseSummaryLabel" type="Label" parent="TopHud/CaseSummaryPanel/CaseSummaryRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(210, 0)
+layout_mode = 2
+text = "단서 0/0 · 조사 중"
+vertical_alignment = 1
+
+[node name="RecordButton" type="Button" parent="TopHud/CaseSummaryPanel/CaseSummaryRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "기록"
+
+[node name="ResolutionAttemptButton" type="Button" parent="TopHud/CaseSummaryPanel/CaseSummaryRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "회수/안정화"
+
+[node name="ResultToast" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 10
+anchor_left = 0.2
+anchor_top = 0.52
+anchor_right = 0.8
+anchor_bottom = 0.62
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"HudStrip"
+
+[node name="ResultLabel" type="Label" parent="ResultToast"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "조사 결과"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="DialogueDock" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 0.62
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 14.0
+offset_top = 0.0
+offset_right = -14.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_type_variation = &"DialogueDock"
+
+[node name="Content" type="VBoxContainer" parent="DialogueDock"]
+layout_mode = 2
+theme_override_constants/separation = 7
+
+[node name="HeaderRow" type="HBoxContainer" parent="DialogueDock/Content"]
+layout_mode = 2
+
+[node name="FieldSpeakerLabel" type="Label" parent="DialogueDock/Content/HeaderRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "현장 기록"
+theme_override_colors/font_color = Color(0.839, 0.678, 0.384, 1)
+
+[node name="ModeLabel" type="Label" parent="DialogueDock/Content/HeaderRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "FIELD_DIALOGUE"
+theme_override_font_sizes/font_size = 12
+modulate = Color(0.65, 0.74, 0.78, 1)
+
+[node name="LogHost" type="VBoxContainer" parent="DialogueDock/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="AgentReactionBox" type="VBoxContainer" parent="DialogueDock/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="FieldDialogueLabel" type="Label" parent="DialogueDock/Content"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_vertical = 3
+text = "현장의 상황을 확인합니다."
+autowrap_mode = 3
+vertical_alignment = 1
+
+[node name="FieldChoiceScroll" type="ScrollContainer" parent="DialogueDock/Content"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 94)
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="FieldChoiceBox" type="VBoxContainer" parent="DialogueDock/Content/FieldChoiceScroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+
+[node name="FooterRow" type="HBoxContainer" parent="DialogueDock/Content"]
+layout_mode = 2
+
+[node name="FieldNextButton" type="Button" parent="DialogueDock/Content/FooterRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "계속"
+
+[node name="UtilityLabel" type="Label" parent="DialogueDock/Content/FooterRow"]
+layout_mode = 2
+text = "LOG  ·  AUTO  ·  SKIP  ·  설정"
+vertical_alignment = 1
+theme_override_font_sizes/font_size = 12
+modulate = Color(0.65, 0.74, 0.78, 1)
+
+[node name="PointMethodDock" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 0.38
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 14.0
+offset_right = -14.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_type_variation = &"DialogueDock"
+
+[node name="Columns" type="HBoxContainer" parent="PointMethodDock"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="PointColumn" type="VBoxContainer" parent="PointMethodDock/Columns"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.34
+theme_override_constants/separation = 6
+
+[node name="PointTitle" type="Label" parent="PointMethodDock/Columns/PointColumn"]
+layout_mode = 2
+text = "조사 지점"
+horizontal_alignment = 1
+
+[node name="PointScroll" type="ScrollContainer" parent="PointMethodDock/Columns/PointColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="PointsBox" type="VBoxContainer" parent="PointMethodDock/Columns/PointColumn/PointScroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="MethodColumn" type="VBoxContainer" parent="PointMethodDock/Columns"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.66
+theme_override_constants/separation = 6
+
+[node name="MethodTitleLabel" type="Label" parent="PointMethodDock/Columns/MethodColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "조사 방식을 선택하세요"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="MethodScroll" type="ScrollContainer" parent="PointMethodDock/Columns/MethodColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="MethodButtonBox" type="VBoxContainer" parent="PointMethodDock/Columns/MethodColumn/MethodScroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="MethodResultLabel" type="Label" parent="PointMethodDock/Columns/MethodColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "왼쪽에서 조사 지점을 선택하세요."
+autowrap_mode = 3
+
+[node name="RecordDrawer" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 0.68
+anchor_right = 1.0
+anchor_bottom = 0.62
+offset_left = 0.0
+offset_top = 84.0
+offset_right = -14.0
+offset_bottom = -8.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_type_variation = &"OverlayDrawer"
+
+[node name="Scroll" type="ScrollContainer" parent="RecordDrawer"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="Content" type="VBoxContainer" parent="RecordDrawer/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="RecordDrawer/Scroll/Content"]
+layout_mode = 2
+text = "현장 기록"
+horizontal_alignment = 1
+
+[node name="ProgressLabel" type="Label" parent="RecordDrawer/Scroll/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "단서 수집률"
+autowrap_mode = 3
+
+[node name="ProgressBar" type="ProgressBar" parent="RecordDrawer/Scroll/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="ResolutionLabel" type="Label" parent="RecordDrawer/Scroll/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "해결 단계"
+autowrap_mode = 3
+
+[node name="CaseStateLabel" type="Label" parent="RecordDrawer/Scroll/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "사건 상태"
+autowrap_mode = 3
+
+[node name="PreparationModifierLabel" type="Label" parent="RecordDrawer/Scroll/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "준비 효과"
+autowrap_mode = 3
+
+[node name="ClueList" type="VBoxContainer" parent="RecordDrawer/Scroll/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="HintList" type="VBoxContainer" parent="RecordDrawer/Scroll/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="LearningList" type="VBoxContainer" parent="RecordDrawer/Scroll/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="ResolutionConfirmPanel" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -260.0
+offset_top = -120.0
+offset_right = 260.0
+offset_bottom = 120.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"OverlayDrawer"
+
+[node name="Content" type="VBoxContainer" parent="ResolutionConfirmPanel"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="ResolutionConfirmPanel/Content"]
+layout_mode = 2
+text = "회수 / 안정화 페이즈 진입"
+horizontal_alignment = 1
+
+[node name="ResolutionConfirmLabel" type="Label" parent="ResolutionConfirmPanel/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+autowrap_mode = 3
+
+[node name="ResolutionWarningLabel" type="Label" parent="ResolutionConfirmPanel/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+autowrap_mode = 3
+
+[node name="Buttons" type="HBoxContainer" parent="ResolutionConfirmPanel/Content"]
+layout_mode = 2
+
+[node name="ContinueInvestigationButton" type="Button" parent="ResolutionConfirmPanel/Content/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "조사 계속"
+
+[node name="EnterRecoveryButton" type="Button" parent="ResolutionConfirmPanel/Content/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "회수/안정화 진입"

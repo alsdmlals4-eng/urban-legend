@@ -1,5 +1,13 @@
 # AI Workflow Rules
 
+## 멀티모델 위임
+
+토큰 효율형 작업 분류, 최소 입력 묶음, 공급자별 산출물, 실패 인수와 20건 측정은 `docs/AI_DELEGATION_WORKFLOW.md`를 따른다. 대사는 `docs/DIALOGUE_AUTHORING_WORKFLOW.md`, 이미지는 `docs/IMAGE_ASSET_WORKFLOW.md`를 추가 적용한다. 보호 경로와 실제 적용·검증은 항상 Codex가 소유한다.
+
+## 대사 작업 전용 경로
+
+대화문, 튜토리얼 안내문, 상황별 반응문 수정은 `docs/DIALOGUE_AUTHORING_WORKFLOW.md`를 따른다. 외부 GPT가 `dialogue_rewrite.patch`와 `dialogue_review.md`를 만들고, DeepSeek가 읽기 전용으로 구조·설정·미확보 정보 누설을 검수한 뒤, Codex가 실제 diff 확인과 최소 검증을 담당한다. Codex와 내부 하위 에이전트는 대량 대사 초안 작성의 기본 경로가 아니다.
+
 > **Base 기반 로컬 사본 + 도시괴담 기록국 확장**: 공용 흐름의 원본은 [`alsdmlals4-eng/Base`](https://github.com/alsdmlals4-eng/Base)이며, 이 문서는 현재 프로젝트의 ChatGPT, HTML, Goal 작업 규칙을 덧붙인다. 기준 커밋은 `docs/BASE_RULES_VERSION.md`에 기록한다.
 
 `AGENTS.md`의 기본 규칙이 항상 우선한다.

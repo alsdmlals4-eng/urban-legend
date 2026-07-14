@@ -241,23 +241,14 @@ func _add_navigation_buttons(parent: Control) -> void:
 	row.add_child(restart_button)
 
 	var prepare_button := Button.new()
-	prepare_button.text = "사건 준비로"
+	prepare_button.text = "하루 마감 후 사건 준비로"
 	prepare_button.pressed.connect(func() -> void:
+		GameState.finish_campaign_operation_day()
 		GameState.set_current_scene_path(GameState.SCENE_PREPARATION)
 		GameState.save_game()
 		get_tree().change_scene_to_file(GameState.SCENE_PREPARATION)
 	)
 	row.add_child(prepare_button)
-
-	var investigate_button := Button.new()
-	investigate_button.text = "조사로"
-	investigate_button.pressed.connect(func() -> void:
-		GameState.set_current_scene_path("res://scenes/investigation_scene.tscn")
-		GameState.save_game()
-		get_tree().change_scene_to_file("res://scenes/investigation_scene.tscn")
-	)
-	row.add_child(investigate_button)
-
 
 func _make_recovery_status_text() -> String:
 	if GameState.is_recovery_successful():

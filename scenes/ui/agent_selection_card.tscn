@@ -1,0 +1,91 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/agent_selection_card.gd" id="1_script"]
+
+[node name="AgentSelectionCard" type="PanelContainer"]
+theme_type_variation = &"AgentCard"
+script = ExtResource("1_script")
+
+[node name="Content" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="NameRow" type="HBoxContainer" parent="Content"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="SelectionButton" type="Button" parent="Content/NameRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(72, 0)
+layout_mode = 2
+text = "선택"
+
+[node name="NameLabel" type="Label" parent="Content/NameRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "요원 이름"
+autowrap_mode = 3
+
+[node name="HpRow" type="HBoxContainer" parent="Content"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Label" type="Label" parent="Content/HpRow"]
+custom_minimum_size = Vector2(48, 0)
+layout_mode = 2
+text = "체력"
+
+[node name="HpBar" type="ProgressBar" parent="Content/HpRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(120, 14)
+layout_mode = 2
+size_flags_horizontal = 3
+show_percentage = false
+
+[node name="HpValue" type="Label" parent="Content/HpRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(70, 0)
+layout_mode = 2
+text = "0/0"
+horizontal_alignment = 2
+
+[node name="MentalRow" type="HBoxContainer" parent="Content"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Label" type="Label" parent="Content/MentalRow"]
+custom_minimum_size = Vector2(48, 0)
+layout_mode = 2
+text = "정신력"
+
+[node name="MentalBar" type="ProgressBar" parent="Content/MentalRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(120, 14)
+layout_mode = 2
+size_flags_horizontal = 3
+show_percentage = false
+
+[node name="MentalValue" type="Label" parent="Content/MentalRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(70, 0)
+layout_mode = 2
+text = "0/0"
+horizontal_alignment = 2
+
+[node name="AbilityRow" type="HFlowContainer" parent="Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 2
+
+[node name="DescriptionLabel" type="Label" parent="Content"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "요원 설명"
+autowrap_mode = 3
+
+[node name="DetailButton" type="Button" parent="Content"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "상세 정보"

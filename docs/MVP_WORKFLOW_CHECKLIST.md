@@ -1,5 +1,16 @@
 # MVP Workflow Checklist
 
+## 멀티모델 위임 추가 확인
+
+- [ ] `route` 결과의 provider, 권한, 산출물 계약, Codex 보호 여부를 확인했다.
+- [ ] `prepare` 묶음의 입력 경로·크기·SHA-256이 실제 파일과 일치한다.
+- [ ] 외부 patch/review 또는 이미지 manifest가 모두 도착했고 경로 이탈·보호 경로·정보 누설이 없다.
+- [ ] DeepSeek 중단/일시 오류 재개는 동일 세션 한 차례뿐이며 결과 회수 여부가 기록되었다.
+- [ ] 실제 diff와 실행 테스트는 Codex가 독립 확인했다.
+- [ ] 20건 누적 시 직접 작성 비율·첫 통과율·회수율·재작업률을 재평가한다.
+
+대사·튜토리얼·상황별 반응문이 포함된 작업은 `docs/DIALOGUE_AUTHORING_WORKFLOW.md`를 추가로 적용한다. 외부 GPT의 `dialogue_rewrite.patch`와 `dialogue_review.md`, DeepSeek 읽기 전용 검수, Codex의 실제 diff·JSON·Godot 검증이 모두 있어야 적용 완료로 판단한다.
+
 > **Base 기반 로컬 사본 + 도시괴담 기록국 확장**: 공용 MVP 체크리스트의 원본과 기준 커밋은 `docs/BASE_RULES_VERSION.md`를 따른다. 이 문서는 현재 프로젝트의 역할과 Godot 검수 흐름을 추가로 기록한다.
 
 이 문서는 `도시괴담 기록국`의 실제 MVP 작업 순서와 시작/완료 체크리스트다. 엔진과 장르에 종속되지 않는 원칙은 `docs/AI_SHARED_WORK_RULES.md`, Godot와 기록국의 구현 규칙은 `AGENTS.md`와 `docs/CODEX_SHARED_WORK_RULES.md`에서 확인한다.
