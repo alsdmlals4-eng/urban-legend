@@ -56,6 +56,7 @@ func _build_ui() -> void:
 		log_guide.show_compact_hint(LogTutorialCatalog.get_repeat_hint("result_first_case"))
 
 	_add_result_panel(root)
+	_add_reasoning_summary_panel(root)
 	_add_case_report_panel(root)
 	_add_save_state_panel(root)
 	_add_navigation_buttons(root)
@@ -90,6 +91,7 @@ func _add_result_panel(parent: Control) -> void:
 func _add_case_report_panel(parent: Control) -> void:
 	var report := GameState.get_case_report_summary()
 	var content := _add_section(parent, "사건 보고서", "기록국 DB에 저장될 완료 사건 요약입니다.")
+	content.add_child(_make_label("기록 상태: 이번 회수 정보는 사건 보고서와 기록국 DB에 저장되었습니다."))
 	content.add_child(_make_label("사건명: %s" % String(report.get("episode_title", ""))))
 	content.add_child(_make_label("회수/안정화 등급: %s / 단서 수집률: %.0f%%" % [
 		String(report.get("resolution_label", "회수 불가")),
@@ -106,6 +108,20 @@ func _add_case_report_panel(parent: Control) -> void:
 	_add_text_list(content, "발생한 요원 이벤트", _make_entry_lines(report.get("triggered_agent_events", []), "title", "text"))
 	_add_text_list(content, "요원 보조 안내", report.get("agent_support_texts", []))
 	_add_text_list(content, "다음 사건 참고", report.get("next_case_notes", []))
+
+
+func _add_reasoning_summary_panel(parent: Control) -> void:
+	var report := GameState.get_case_report_summary()
+	var content := _add_section(parent, "이번 판단의 근거", "결과만 나열하지 않고, 무엇을 근거로 회수했고 무엇을 다음 조사에 남겼는지 확인합니다.")
+	content.name = "ReasoningSummary"
+	var clue_titles: Array = []
+	for clue in report.get("collected_clues", []):
+		if typeof(clue) == TYPE_DICTIONARY:
+			clue_titles.append(String(clue.get("title", "이름 없는 단서")))
+	_add_text_list(content, "확보 근거", clue_titles)
+	content.add_child(_make_label("회수 판단 결과: %s" % _make_report_recovery_text(report.get("recovery_result", {}))))
+	_add_text_list(content, "요원 기여", _make_agent_contribution_lines(report.get("selected_agents", [])))
+	_add_text_list(content, "다음 판단", report.get("next_case_notes", []))
 
 
 func _add_save_state_panel(parent: Control) -> void:
@@ -185,6 +201,18 @@ func _make_agent_trust_lines(agents: Array) -> Array:
 				String(agent.get("temperament_label", "")),
 				int(agent.get("trust", 0)),
 				String(agent.get("role", "현장 보조"))
+			])
+	return lines
+
+
+func _make_agent_contribution_lines(agents: Array) -> Array:
+	var lines: Array = []
+	for agent in agents:
+		if typeof(agent) == TYPE_DICTIONARY:
+			lines.append("%s: %s / 수사 파트너 신뢰 %+d" % [
+				String(agent.get("name", "요원")),
+				String(agent.get("role", "현장 보조")),
+				int(agent.get("trust", 0))
 			])
 	return lines
 

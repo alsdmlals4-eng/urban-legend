@@ -61,10 +61,14 @@ func _run() -> void:
 		return
 	if not await _test_method_picker():
 		return
+	if not _test_investigation_decision_context():
+		return
 	if not await _test_scene_contract("res://scenes/battle_scene.tscn", [
 		"CinematicStage", "RecoveryHud", "RepresentativeVisual", "AnomalyVisual",
 		"ClueDrawer", "ActionDock", "ResponseGrid", "RepresentativeSwitchButton"
 	]):
+		return
+	if not _test_recovery_decision_context():
 		return
 
 	var restore_error := _guard.restore()
@@ -146,6 +150,37 @@ func _test_scene_contract(scene_path: String, required_nodes: Array[String]) -> 
 			return false
 	if current_scene is ScrollContainer:
 		_fail("scene root must not be a ScrollContainer: %s" % scene_path)
+		return false
+	return true
+
+
+func _test_investigation_decision_context() -> bool:
+	var context_text := String(current_scene.call("_make_method_result_text", {
+		"result_text": "현장 기록이 시간을 가리킵니다.",
+		"method_label": "시간표를 대조한다",
+		"successful": true,
+		"result_grade": "success",
+		"player_stat": 3,
+		"helper_agent_name": "강이준",
+		"helper_stat": 4,
+		"total": 7,
+		"difficulty": 5,
+		"chance": 70,
+		"dice": 42,
+		"new_clue_ids": [],
+		"hint_texts": [],
+		"case_status": {}
+	}))
+	if not (context_text.contains("현재 상황") and context_text.contains("확보 근거") and context_text.contains("추론 방향") and context_text.contains("다음 판단")):
+		_fail("investigation result must separate situation, evidence, inference direction, and next decision")
+		return false
+	return true
+
+
+func _test_recovery_decision_context() -> bool:
+	var evidence_text := String(current_scene.call("_make_recovery_evidence_text"))
+	if not (evidence_text.contains("전조") and evidence_text.contains("연결 단서") and evidence_text.contains("오대응 학습") and evidence_text.contains("다음 판단")):
+		_fail("recovery evidence must separate telegraph, linked clues, learning, and next decision")
 		return false
 	return true
 

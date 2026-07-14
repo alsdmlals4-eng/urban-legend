@@ -727,6 +727,7 @@ func _make_method_button_text(method: Dictionary) -> String:
 func _make_method_result_text(result: Dictionary) -> String:
 	var success_text := "성공" if bool(result.get("successful", false)) else "실패"
 	var lines: Array = [
+		"현재 상황: %s" % String(result.get("result_text", "현장 판정 결과를 기록합니다.")),
 		"수사 방식: %s" % String(result.get("method_label", "")),
 		"판정 결과: %s · %s" % [success_text, String(result.get("result_grade", "failure"))],
 		"판정식: 플레이어 %d + 도우미 %s %d = 점수 %d / 난이도 %d · 성공률 %d%% · 1d100 %d" % [
@@ -743,16 +744,16 @@ func _make_method_result_text(result: Dictionary) -> String:
 	var new_clue_ids_value: Variant = result.get("new_clue_ids", [])
 	var new_clue_ids: Array = new_clue_ids_value if typeof(new_clue_ids_value) == TYPE_ARRAY else []
 	if new_clue_ids.is_empty():
-		lines.append("새 정보: 새 단서 없음")
+		lines.append("확보 근거: 이번 판정에서 새 단서는 확보하지 못했습니다.")
 	else:
-		lines.append("새 정보: 새 단서 %s" % ", ".join(_clue_titles(new_clue_ids)))
+		lines.append("확보 근거: 새 단서 %s" % ", ".join(_clue_titles(new_clue_ids)))
 
 	var hint_texts_value: Variant = result.get("hint_texts", [])
 	var hint_texts: Array = hint_texts_value if typeof(hint_texts_value) == TYPE_ARRAY else []
 	if hint_texts.is_empty():
-		lines.append("새 힌트: 없음")
+		lines.append("추론 방향: 새 힌트 없음 — 확보한 단서와 현장 상태를 다시 대조합니다.")
 	else:
-		lines.append("새 힌트\n- %s" % "\n- ".join(hint_texts))
+		lines.append("추론 방향 (힌트는 단서가 아님)\n- %s" % "\n- ".join(hint_texts))
 
 	var case_status: Dictionary = result.get("case_status", {})
 	lines.append("상태 변화: 괴이 위험도 %d / 괴이 이해도 %d / 피해자 이해도 %d / 정신력 %d / 괴이 안정도 %d / 예측률 %.1f%%" % [
@@ -806,9 +807,9 @@ func _make_method_result_text(result: Dictionary) -> String:
 		lines.append("요원 이벤트\n%s" % "\n".join(event_lines))
 
 	if GameState.can_enter_resolution_phase():
-		lines.append("다음 행동: 남은 단서를 더 확인하거나 회수/안정화 시도를 준비")
+		lines.append("다음 판단: 기록에서 확보 근거를 다시 확인한 뒤, 회수/안정화 시도를 준비합니다.")
 	else:
-		lines.append("다음 행동: 조사 포인트를 더 확인해 단서 수집률을 올림")
+		lines.append("다음 판단: 조사 포인트를 더 확인해 단서 수집률을 올립니다.")
 
 	return "\n".join(lines)
 
@@ -988,7 +989,7 @@ func _show_resolution_confirm_panel() -> void:
 		collection_rate,
 		grade_text
 	]
-	_resolution_warning_label.text = "위험 안내: %s" % GameState.get_resolution_phase_warning()
+	_resolution_warning_label.text = "회수 전 확인: 기록의 ‘확보’는 회수 근거이고, ‘추론’은 다시 볼 방향입니다.\n위험 안내: %s" % GameState.get_resolution_phase_warning()
 	_resolution_confirm_panel.visible = true
 
 

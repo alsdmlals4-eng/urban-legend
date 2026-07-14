@@ -45,6 +45,10 @@ func _capture() -> void:
 				for _frame in range(3):
 					await process_frame
 				break
+	if ui_state == "recovery_evidence" and current_scene.has_method("_toggle_clue_drawer"):
+		current_scene.call("_toggle_clue_drawer")
+		for _frame in range(3):
+			await process_frame
 	if args.size() > 3 and String(args[3]) == "editor":
 		var f2 := InputEventKey.new()
 		f2.keycode = KEY_F2

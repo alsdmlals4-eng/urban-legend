@@ -44,6 +44,7 @@ var _runtime_editor: RuntimeUiEditor
 var _current_pattern: Dictionary = {}
 var _telegraph_label: Label
 var _prediction_summary_label: Label
+var _evidence_label: Label
 var _response_box: GridContainer
 var _turn_auto_success_agents: Dictionary = {}
 var _turn_locked := false
@@ -98,6 +99,8 @@ func _build_scene_ui() -> void:
 
 	var clue_content: VBoxContainer = %ClueDrawerContent
 	clue_content.add_child(_make_label(_make_auto_effect_text()))
+	_evidence_label = _make_label("")
+	clue_content.add_child(_evidence_label)
 	_add_agent_recovery_support_actions(clue_content)
 	_add_navigation(clue_content)
 
@@ -275,6 +278,45 @@ func _make_auto_effect_text() -> String:
 	return text.strip_edges()
 
 
+func _make_recovery_evidence_text() -> String:
+	if _current_pattern.is_empty():
+		return "이번 판단 근거\n전조: 다음 전조를 관측하면 근거가 갱신됩니다.\n연결 단서: 없음\n오대응 학습: 없음\n다음 판단: 전조를 먼저 관측합니다."
+
+	var lines: Array[String] = [
+		"이번 판단 근거",
+		"전조: %s" % String(_current_pattern.get("telegraph", "현상이 불규칙하게 반복됩니다."))
+	]
+	var related_titles: Array[String] = []
+	for clue_id in _current_pattern.get("related_clue_ids", []):
+		var clue := _find_clue(String(clue_id))
+		if not clue.is_empty() and GameState.has_collected_clue(String(clue_id)):
+			related_titles.append(String(clue.get("title", clue_id)))
+	if related_titles.is_empty():
+		lines.append("연결 단서: 이 전조와 직접 연결된 확보 단서가 없습니다.")
+	else:
+		lines.append("연결 단서: %s" % ", ".join(related_titles))
+
+	var learning: Dictionary = GameState.get_recovery_pattern_learning().get(String(_current_pattern.get("id", "")), {})
+	if learning.is_empty() or bool(learning.get("correct", false)):
+		lines.append("오대응 학습: 아직 없음")
+	else:
+		lines.append("오대응 학습: %s" % String(learning.get("reason", "오대응 이유를 기록했습니다.")))
+	lines.append("다음 판단: 전조와 연결 단서를 대조해 대응을 고릅니다. 힌트는 방향만 제시하며 회수 근거를 대신하지 않습니다.")
+	return "\n".join(lines)
+
+
+func _find_clue(clue_id: String) -> Dictionary:
+	for clue in GameState.get_clues():
+		if typeof(clue) == TYPE_DICTIONARY and String(clue.get("id", "")) == clue_id:
+			return clue
+	return {}
+
+
+func _refresh_recovery_evidence() -> void:
+	if _evidence_label != null:
+		_evidence_label.text = _make_recovery_evidence_text()
+
+
 func _make_minigame_recovery_text() -> String:
 	if _minigame_recovery_messages.is_empty():
 		return ""
@@ -350,9 +392,11 @@ func _begin_recovery_turn() -> void:
 	_clear_children(_response_box)
 	if _current_pattern.is_empty():
 		_telegraph_label.text = "전조 데이터를 찾지 못했습니다."
+		_refresh_recovery_evidence()
 		_log_guide.show_compact_hint("전조 기록을 찾지 못했습니다. 현장 기록을 다시 확인해 주세요.")
 		return
 	var first_telegraph := not GameState.has_seen_log_tutorial("recovery_first_telegraph")
+	_refresh_recovery_evidence()
 	if first_telegraph:
 		_present_log_tutorial("recovery_first_telegraph")
 	elif not _log_guide.is_sequence_active():
@@ -447,6 +491,10 @@ func _select_pattern_response(response: Dictionary) -> void:
 			_present_log_tutorial("recovery_first_learning")
 		elif not _log_guide.is_sequence_active():
 			_log_guide.show_compact_hint("오대응 이유를 기록 서랍에 보존했습니다. 같은 전조가 돌아오면 판단 근거로 사용하세요.")
+		lines.append("다음 판단 근거: 기록 서랍에서 ‘오대응 학습’과 이 전조를 다시 대조하세요.")
+	else:
+		lines.append("판단 근거 기록: 전조와 연결 단서에 맞는 대응을 확인했습니다.")
+	_refresh_recovery_evidence()
 	lines.append_array(_run_auto_window("treatment"))
 	lines.append_array(_run_auto_window("rapport"))
 	GameState.save_game()

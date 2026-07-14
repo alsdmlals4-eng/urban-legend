@@ -67,6 +67,11 @@ def source_hash(markdown: str) -> str:
 	return digest.hexdigest()
 
 
+def document_version(markdown: str) -> str:
+	match = re.search(r"^\|\s*문서 버전\s*\|\s*([^|]+?)\s*\|", markdown, re.MULTILINE)
+	return match.group(1).strip() if match else "v0.1"
+
+
 def clean_inline(text: str) -> str:
 	text = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", text)
 	text = text.replace("**", "").replace("__", "").replace("`", "")
@@ -93,7 +98,7 @@ def set_run_font(run, name: str = FONT_BODY, size: float | None = None, color: s
 		run.bold = bold
 
 
-def configure_document(doc: Document, build_hash: str) -> None:
+def configure_document(doc: Document, build_hash: str, version: str) -> None:
 	section = doc.sections[0]
 	section.page_width = Inches(8.5)
 	section.page_height = Inches(11)
@@ -136,7 +141,7 @@ def configure_document(doc: Document, build_hash: str) -> None:
 	hp = header.paragraphs[0]
 	hp.clear()
 	hp.alignment = WD_ALIGN_PARAGRAPH.RIGHT
-	hr = hp.add_run("괴담기록국  ·  GAME DESIGN DOCUMENT  ·  v0.1")
+	hr = hp.add_run("괴담기록국  ·  GAME DESIGN DOCUMENT  ·  %s" % version)
 	set_run_font(hr, size=7.5, color=MUTED, bold=True)
 
 	footer = section.footer
@@ -417,7 +422,7 @@ def build(template: Path | None) -> None:
 		remove_body_content(doc)
 	else:
 		doc = Document()
-	configure_document(doc, build_hash)
+	configure_document(doc, build_hash, document_version(markdown))
 	render_markdown(doc, markdown)
 	OUTPUT.parent.mkdir(parents=True, exist_ok=True)
 	doc.save(OUTPUT)
