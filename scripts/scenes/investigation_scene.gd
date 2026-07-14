@@ -6,6 +6,8 @@ const RuntimeEditor = preload("res://scripts/ui/runtime_ui_editor.gd")
 const AssetCatalog = preload("res://scripts/ui/ui_asset_catalog.gd")
 const LogGuideScript = preload("res://scripts/ui/log_guide.gd")
 const LogTutorialCatalog = preload("res://scripts/ui/log_tutorial_catalog.gd")
+const ActionChoiceCardScene = preload("res://scenes/ui/action_choice_card.tscn")
+const TeamStatusChipScene = preload("res://scenes/ui/team_status_chip.tscn")
 
 const FALLBACK_INVESTIGATION_POINTS: Array[Dictionary] = [
 	{
@@ -43,15 +45,23 @@ var _record_button: Button
 var _learning_list: VBoxContainer
 var _field_node: Dictionary = {}
 var _field_lines: Array = []
-var _field_line_index := 0
 var _field_speaker_label: Label
 var _field_dialogue_label: Label
 var _field_next_button: Button
 var _field_choice_box: VBoxContainer
+var _agent_reaction_box: VBoxContainer
 var _log_guide: LogGuide
-var _points_box: GridContainer
+var _points_box: Container
 var _pending_next_field_node_id := ""
 var _field_log_intro_played := false
+var _cinematic_stage: Control
+var _agent_stage: HBoxContainer
+var _team_hud: HBoxContainer
+var _dialogue_dock: PanelContainer
+var _point_method_dock: PanelContainer
+var _result_toast: PanelContainer
+var _case_summary_label: Label
+var _mode_label: Label
 
 
 func _ready() -> void:
@@ -67,134 +77,62 @@ func _ready() -> void:
 
 
 func _build_ui() -> void:
-	var background := ColorRect.new()
-	background.color = Color(0.025, 0.04, 0.05, 0.24)
-	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	add_child(background)
-
-	var margin := MarginContainer.new()
-	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	margin.add_theme_constant_override("margin_left", 20)
-	margin.add_theme_constant_override("margin_top", 20)
-	margin.add_theme_constant_override("margin_right", 20)
-	margin.add_theme_constant_override("margin_bottom", 20)
-	add_child(margin)
-
-	var root := VBoxContainer.new()
-	root.custom_minimum_size = Vector2(960, 0)
-	root.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	root.add_theme_constant_override("separation", 10)
-	margin.add_child(root)
-
-	_add_title(root)
-
-	var scene_panel := PanelContainer.new()
-	scene_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	root.add_child(scene_panel)
-
-	var scene_scroll := ScrollContainer.new()
-	scene_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	scene_panel.add_child(scene_scroll)
-
-	var scene_layout := VBoxContainer.new()
-	scene_layout.add_theme_constant_override("separation", 10)
-	scene_layout.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scene_scroll.add_child(scene_layout)
-
-	var location := Label.new()
-	location.text = "현장 상황: %s\n괴담기록국 요원 팀이 현장을 읽고 수사 방식을 선택합니다." % GameState.get_current_episode_title()
-	location.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	location.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	scene_layout.add_child(location)
-
-	var columns := HBoxContainer.new()
-	columns.add_theme_constant_override("separation", 12)
-	columns.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	columns.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	scene_layout.add_child(columns)
-
-	var left_column := VBoxContainer.new()
-	left_column.add_theme_constant_override("separation", 10)
-	left_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	left_column.size_flags_stretch_ratio = 0.65
-	columns.add_child(left_column)
-
-	var center_column := VBoxContainer.new()
-	center_column.add_theme_constant_override("separation", 10)
-	center_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	center_column.size_flags_stretch_ratio = 1.7
-	columns.add_child(center_column)
-
-	var team_content := _add_section(left_column, "현장 요원 팀", "별도 주인공이 아닌 편성 요원 팀이 현장을 분담합니다.")
-	_team_label = Label.new()
-	_team_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	team_content.add_child(_team_label)
-	_add_team_portraits(team_content)
-
-	var progress_content := _add_section(left_column, "사건 상태", "단서 수집률과 현장 변화를 먼저 확인합니다.")
-
-	_progress_label = Label.new()
-	_progress_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	progress_content.add_child(_progress_label)
-
-	_progress_bar = ProgressBar.new()
+	_cinematic_stage = %CinematicStage
+	_agent_stage = %AgentStage
+	_team_hud = %TeamHud
+	_dialogue_dock = %DialogueDock
+	_point_method_dock = %PointMethodDock
+	_result_toast = %ResultToast
+	_case_summary_label = %CaseSummaryLabel
+	_mode_label = %ModeLabel
+	_record_button = %RecordButton
+	_resolution_attempt_button = %ResolutionAttemptButton
+	_record_drawer = %RecordDrawer
+	_progress_label = %ProgressLabel
+	_progress_bar = %ProgressBar
 	_progress_bar.min_value = 0
 	_progress_bar.max_value = 100
-	progress_content.add_child(_progress_bar)
+	_resolution_label = %ResolutionLabel
+	_case_state_label = %CaseStateLabel
+	_preparation_modifier_label = %PreparationModifierLabel
+	_clue_list = %ClueList
+	_hint_list = %HintList
+	_learning_list = %LearningList
+	_resolution_confirm_panel = %ResolutionConfirmPanel
+	_resolution_confirm_label = %ResolutionConfirmLabel
+	_resolution_warning_label = %ResolutionWarningLabel
+	_field_speaker_label = %FieldSpeakerLabel
+	_field_dialogue_label = %FieldDialogueLabel
+	_field_next_button = %FieldNextButton
+	_field_choice_box = %FieldChoiceBox
+	_agent_reaction_box = %AgentReactionBox
+	_points_box = %PointsBox
+	_method_panel = _point_method_dock
+	_method_title_label = %MethodTitleLabel
+	_method_button_box = %MethodButtonBox
+	_method_result_label = %MethodResultLabel
+	_result_label = %ResultLabel
+	_hint_label = Label.new()
+	_team_label = Label.new()
+	_narrative_label = _field_dialogue_label
+	_result_panel = _result_toast
 
-	_resolution_label = Label.new()
-	_resolution_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	progress_content.add_child(_resolution_label)
-
-	_case_state_label = Label.new()
-	_case_state_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	progress_content.add_child(_case_state_label)
-
-	_preparation_modifier_label = Label.new()
-	_preparation_modifier_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	progress_content.add_child(_preparation_modifier_label)
-
-	_record_button = Button.new()
-	_record_button.text = "기록 열기"
 	_record_button.pressed.connect(_toggle_record_drawer)
-	left_column.add_child(_record_button)
-	_add_record_drawer(left_column)
-
-	var recovery_content := _add_section(left_column, "회수 / 안정화", "단서가 충분하면 괴이의 전조에 대응하는 회수 페이즈로 넘어갑니다.")
-	_resolution_attempt_button = Button.new()
-	_resolution_attempt_button.text = "회수/안정화 시도"
 	_resolution_attempt_button.pressed.connect(_show_resolution_confirm_panel)
-	recovery_content.add_child(_resolution_attempt_button)
-	_add_resolution_confirm_panel(recovery_content)
+	_field_next_button.pressed.connect(_advance_field_dialogue)
+	%ContinueInvestigationButton.pressed.connect(func() -> void: _resolution_confirm_panel.visible = false)
+	%EnterRecoveryButton.pressed.connect(_start_resolution_attempt)
 
-	var narrative_content := _add_section(center_column, "상황 묘사", "현장에 남은 반복과 위화감을 읽고, 팀의 다음 수사 방식을 선택합니다.")
-	var illustration := TextureRect.new()
-	illustration.texture = (get_node_or_null("ArtLayer/Background") as TextureRect).texture
-	illustration.custom_minimum_size = Vector2(0, 300)
-	illustration.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	illustration.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-	narrative_content.add_child(illustration)
-	_narrative_label = Label.new()
-	_narrative_label.text = "%s의 현장 기록이 불완전하게 겹칩니다. 확보한 단서와 요원 판단을 근거로 다음 행동을 정하세요." % GameState.get_current_episode_title()
-	_narrative_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	narrative_content.add_child(_narrative_label)
-	_add_field_dialogue(center_column)
-
-	var points_content := _add_section(center_column, "수사 선택", "조사 포인트를 고른 뒤 관찰·분석·강행 진입 같은 수사 방식을 선택합니다.")
-	_points_box = GridContainer.new()
-	_points_box.columns = 1
-	_points_box.add_theme_constant_override("v_separation", 8)
-	points_content.add_child(_points_box)
+	_log_guide = LogGuideScript.new()
+	_log_guide.set_compact(true)
+	_log_guide.visible = false
+	%LogHost.add_child(_log_guide)
+	_add_team_status_chips(_team_hud)
+	_agent_stage.visible = false
 
 	for point in _get_investigation_points():
 		if typeof(point) == TYPE_DICTIONARY:
 			_add_investigation_point(_points_box, point)
-
-	_add_method_panel(center_column)
-
-	_result_label = Label.new()
-	_hint_label = Label.new()
-	_result_panel = _record_drawer
 	_show_current_field_node()
 
 
@@ -224,13 +162,33 @@ func _add_team_portraits(parent: Control) -> void:
 		parent.add_child(card)
 
 
+func _add_team_status_chips(parent: Control) -> void:
+	var catalog := AssetCatalog.new()
+	for agent in GameState.get_selected_agents():
+		if typeof(agent) != TYPE_DICTIONARY:
+			continue
+		var agent_id := String(agent.get("id", ""))
+		var chip := TeamStatusChipScene.instantiate()
+		parent.add_child(chip)
+		chip.configure(agent, {
+			"hp": GameState.get_agent_current_hp(agent_id),
+			"max_hp": GameState.get_agent_max_hp(agent_id),
+			"mental": GameState.get_agent_current_mental(agent_id),
+			"max_mental": GameState.get_agent_max_mental(agent_id),
+			"active": GameState.is_agent_active(agent_id),
+			"representative": false,
+			"texture": catalog.get_agent_expression(agent_id, 1)
+		})
+
+
 func _setup_runtime_editor() -> void:
 	_runtime_editor = RuntimeEditor.new()
 	add_child(_runtime_editor)
 	_runtime_editor.setup("investigation", self)
-	_runtime_editor.register_element("record_drawer", _record_drawer, {"minimum_size": Vector2(260, 180), "free_layout": false})
-	_runtime_editor.register_element("narrative", _narrative_label, {
-		"minimum_size": Vector2(320, 80),
+	_runtime_editor.register_element("cinematic_record_drawer", _record_drawer, {"minimum_size": Vector2(300, 220), "free_layout": false})
+	_runtime_editor.register_element("cinematic_dialogue_dock", _dialogue_dock, {
+		"minimum_size": Vector2(720, 220),
+		"free_layout": true,
 		"text_control": _narrative_label,
 		"content_key": "%s/investigation/narrative" % GameState.get_current_episode_id(),
 		"source_text": _narrative_label.text
@@ -296,67 +254,105 @@ func _show_current_field_node() -> void:
 		_field_dialogue_label.text = "현장 기록을 불러오지 못했습니다. 기존 조사 포인트를 확인하세요."
 		_field_next_button.visible = false
 		_points_box.visible = true
+		_set_ui_mode("POINT_PICKER")
 		return
 	_narrative_label.text = String(_field_node.get("title", GameState.get_current_episode_title()))
 	_field_lines = _field_node.get("opening_dialogue", []).duplicate(true)
 	if not GameState.has_seen_log_tutorial("field_first_choice"):
 		var tutorial := LogTutorialCatalog.get_entry("field_first_choice")
-		_field_lines = tutorial.get("lines", []).duplicate(true) + _field_lines
-		for line in _field_lines:
-			if typeof(line) == TYPE_DICTIONARY and not line.has("speaker"):
+		var tutorial_lines: Array = tutorial.get("lines", []).duplicate(true)
+		for line in tutorial_lines:
+			if typeof(line) == TYPE_DICTIONARY:
 				line["speaker"] = "로그"
 				line["tutorial_id"] = "field_first_choice"
-	_field_line_index = 0
+		_field_lines = tutorial_lines + _field_lines
 	_pending_next_field_node_id = ""
 	_clear_children(_field_choice_box)
 	_points_box.visible = false
-	_show_field_line_or_choices()
+	_present_situation_and_choices()
 
 
-func _show_field_line_or_choices() -> void:
-	if _field_line_index < _field_lines.size():
-		var line: Dictionary = _field_lines[_field_line_index]
-		var speaker := String(line.get("speaker", "현장 기록"))
-		var is_log := speaker == "로그"
-		_log_guide.visible = is_log
-		_field_speaker_label.visible = not is_log
-		_field_dialogue_label.visible = not is_log
-		if is_log:
-			_log_guide.set_internal_advance_enabled(false)
-			_log_guide.present_lines([line], String(line.get("expression", "normal")), not _field_log_intro_played)
-			_field_log_intro_played = true
-		else:
-			_log_guide.set_internal_advance_enabled(true)
-			_field_speaker_label.text = speaker
-			_field_dialogue_label.text = String(line.get("text", ""))
-		_field_next_button.visible = true
-		return
-	_log_guide.visible = false
+func _present_situation_and_choices() -> void:
+	_field_speaker_label.text = "상황"
 	_field_speaker_label.visible = true
 	_field_dialogue_label.visible = true
+	_field_dialogue_label.text = String(_field_node.get("title", GameState.get_current_episode_title()))
 	_field_next_button.visible = false
-	if not _pending_next_field_node_id.is_empty():
-		GameState.set_current_field_node_id(_pending_next_field_node_id)
-		GameState.save_game()
-		_show_current_field_node()
-		return
+	_present_support_lines(_field_lines)
 	_show_field_choices()
 
 
-func _advance_field_dialogue() -> void:
-	if _field_line_index < _field_lines.size():
-		var current_line: Dictionary = _field_lines[_field_line_index]
-		var tutorial_id := String(current_line.get("tutorial_id", ""))
+func _present_support_lines(lines: Array) -> void:
+	for child in _agent_reaction_box.get_children():
+		_agent_reaction_box.remove_child(child)
+		child.queue_free()
+	var log_texts: Array[String] = []
+	var log_expression := "normal"
+	var selected_by_name := {}
+	for agent in GameState.get_selected_agents():
+		if typeof(agent) == TYPE_DICTIONARY:
+			selected_by_name[String(agent.get("name", ""))] = agent
+	for value in lines:
+		if typeof(value) != TYPE_DICTIONARY:
+			continue
+		var line: Dictionary = value
+		var tutorial_id := String(line.get("tutorial_id", ""))
 		if not tutorial_id.is_empty():
 			GameState.claim_log_tutorial(tutorial_id)
-	_field_line_index += 1
-	_show_field_line_or_choices()
+		var speaker := String(line.get("speaker", ""))
+		if speaker == "로그":
+			if log_texts.size() < 2:
+				log_texts.append(String(line.get("text", "")))
+				log_expression = String(line.get("expression", log_expression))
+			continue
+		if selected_by_name.has(speaker) and _agent_reaction_box.get_child_count() < 2:
+			_agent_reaction_box.add_child(_make_agent_reaction_row(selected_by_name[speaker], String(line.get("text", ""))))
+	_agent_reaction_box.visible = _agent_reaction_box.get_child_count() > 0
+	if log_texts.is_empty():
+		_log_guide.visible = false
+		return
+	_log_guide.set_internal_advance_enabled(false)
+	_log_guide.present_lines([{
+		"text": "\n".join(log_texts),
+		"expression": log_expression
+	}], log_expression, not _field_log_intro_played)
+	_log_guide.visible = true
+	_field_log_intro_played = true
+
+
+func _make_agent_reaction_row(agent: Dictionary, text: String) -> HBoxContainer:
+	var agent_id := String(agent.get("id", ""))
+	var row := HBoxContainer.new()
+	row.name = "AgentReaction"
+	row.set_meta("agent_id", agent_id)
+	row.add_theme_constant_override("separation", 10)
+	var portrait := TextureRect.new()
+	portrait.name = "Portrait"
+	portrait.custom_minimum_size = Vector2(54, 54)
+	portrait.texture = AssetCatalog.new().get_agent_face_portrait(agent_id, 1)
+	portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	row.add_child(portrait)
+	var reaction := Label.new()
+	reaction.name = "ReactionText"
+	reaction.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	reaction.text = "%s  %s" % [String(agent.get("name", "요원")), text]
+	reaction.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	reaction.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	row.add_child(reaction)
+	return row
+
+
+func _advance_field_dialogue() -> void:
+	if _pending_next_field_node_id.is_empty():
+		return
+	GameState.set_current_field_node_id(_pending_next_field_node_id)
+	GameState.save_game()
+	_show_current_field_node()
 
 
 func _show_field_choices() -> void:
-	_log_guide.visible = false
-	_field_speaker_label.visible = true
-	_field_dialogue_label.visible = true
+	_set_ui_mode("FIELD_CHOICES")
 	_clear_children(_field_choice_box)
 	var choices: Array = _field_node.get("choices", [])
 	for choice in choices:
@@ -365,19 +361,18 @@ func _show_field_choices() -> void:
 		var choice_copy: Dictionary = choice.duplicate(true)
 		var ability := String(choice_copy.get("ability", "analysis"))
 		var helper := GameState.find_best_agent_for_ability(ability)
-		var button := Button.new()
-		button.text = "%s — %s / %s %d" % [
-			String(choice_copy.get("label", "현장을 확인한다")),
-			String(helper.get("name", "팀")),
-			GameState.ABILITY_LABELS.get(ability, ability),
-			GameState.get_agent_ability(String(helper.get("id", "")), ability)
-		]
-		button.pressed.connect(func() -> void: _select_field_choice(choice_copy))
-		_field_choice_box.add_child(button)
+		var card := ActionChoiceCardScene.instantiate()
+		_field_choice_box.add_child(card)
+		card.configure({
+			"id": String(choice_copy.get("id", "field_choice")),
+			"title": String(choice_copy.get("label", "현장을 확인한다")),
+			"description": String(choice_copy.get("summary", "")),
+			"meta": "%s · %s %d" % [String(helper.get("name", "팀")), GameState.ABILITY_LABELS.get(ability, ability), GameState.get_agent_ability(String(helper.get("id", "")), ability)]
+		})
+		card.action_requested.connect(func(_action_id: String) -> void: _select_field_choice(choice_copy))
 	if choices.is_empty() or bool(_field_node.get("uses_investigation_points", false)):
 		_points_box.visible = true
-		_field_speaker_label.text = "현장 선택"
-		_field_dialogue_label.text = "확보한 단서와 팀의 판단을 근거로 조사할 대상을 고르세요."
+		_set_ui_mode("POINT_PICKER")
 
 
 func _select_field_choice(choice: Dictionary) -> void:
@@ -387,9 +382,13 @@ func _select_field_choice(choice: Dictionary) -> void:
 		return
 	_clear_children(_field_choice_box)
 	_field_lines = result.get("after_dialogue", []).duplicate(true)
-	_field_line_index = 0
 	_pending_next_field_node_id = String(result.get("next_field_node_id", ""))
-	_show_field_line_or_choices()
+	_field_speaker_label.text = "선택 결과"
+	_field_dialogue_label.text = "‘%s’를 선택했습니다. 현장 기록과 팀 반응을 확인합니다." % String(choice.get("label", "행동"))
+	_present_support_lines(_field_lines)
+	_set_ui_mode("FIELD_DIALOGUE")
+	_field_next_button.text = "다음 조사"
+	_field_next_button.visible = not _pending_next_field_node_id.is_empty()
 	_refresh_case_status()
 
 
@@ -443,20 +442,25 @@ func _add_section(parent: Control, title_text: String, description_text: String 
 
 
 func _add_investigation_point(parent: Control, point: Dictionary) -> void:
-	var button := Button.new()
+	var point_copy := point.duplicate(true)
+	var card := ActionChoiceCardScene.instantiate()
 	var is_unlocked := _is_point_unlocked(point)
 	var label := String(point.get("label", "조사 포인트"))
-	button.text = label if is_unlocked else "[잠김] %s" % label
-	button.pressed.connect(func() -> void:
-		_inspect_point(point)
-	)
-	parent.add_child(button)
+	parent.add_child(card)
+	card.configure({
+		"id": String(point.get("id", label)),
+		"title": label if is_unlocked else "[잠김] %s" % label,
+		"description": String(point.get("summary", point.get("locked_text", "조사할 지점을 선택합니다."))),
+		"meta": "조사 가능" if is_unlocked else "조건 부족"
+	})
+	card.action_requested.connect(func(_action_id: String) -> void: _inspect_point(point_copy))
 
 
 func _inspect_point(point: Dictionary) -> void:
 	if not _is_point_unlocked(point):
 		_result_label.text = "선택 결과: 이 수사 방식은 아직 실행할 수 없습니다.\n잠김 이유: %s\n다음 선택지: 확보한 단서를 대조하거나 다른 현장을 관찰합니다." % String(point.get("locked_text", "아직 확인할 근거가 부족합니다."))
 		_hint_label.text = "이번 조사 힌트: 조건을 만족하면 이 조사 포인트를 다시 확인할 수 있습니다."
+		_result_toast.visible = true
 		return
 
 	if _has_method_options(point):
@@ -550,6 +554,8 @@ func _show_method_options(point: Dictionary) -> void:
 		return
 
 	_method_panel.visible = true
+	_set_ui_mode("METHOD_PICKER")
+	_points_box.visible = true
 	_clear_children(_method_button_box)
 	_method_title_label.text = "%s 수사 방식 선택" % String(point.get("label", "조사 포인트"))
 	_method_result_label.text = String(point.get("result_text", "어떤 방식으로 조사할지 선택하세요."))
@@ -566,22 +572,24 @@ func _show_method_options(point: Dictionary) -> void:
 
 		var point_copy := point.duplicate(true)
 		var method_copy: Dictionary = method.duplicate(true)
-		var button := Button.new()
-		button.text = _make_method_button_text(method_copy)
-		button.pressed.connect(func() -> void:
-			_run_method_option(point_copy, method_copy)
-		)
-		_method_button_box.add_child(button)
-
-		# Show responsible agent and ability info for this approach
 		var approach_type := String(method.get("approach_type", method.get("method_type", "")))
 		var best_agent := GameState.find_best_agent_for_ability(approach_type)
+		var agent_id := String(best_agent.get("id", ""))
+		var card := ActionChoiceCardScene.instantiate()
+		_method_button_box.add_child(card)
+		card.configure({
+			"id": String(method_copy.get("id", method_copy.get("method_type", "method"))),
+			"title": _make_method_button_text(method_copy).get_slice("\n", 0),
+			"description": String(method_copy.get("summary", "")),
+			"meta": "담당 %s · %s %d · 난이도 %d" % [String(best_agent.get("name", "팀")), GameState.ABILITY_LABELS.get(approach_type, approach_type), GameState.get_agent_ability(agent_id, approach_type), int(method_copy.get("difficulty", 0))]
+		})
+		card.action_requested.connect(func(_action_id: String) -> void: _run_method_option(point_copy, method_copy))
+
+		# Show responsible agent and ability info for this approach
 		if not best_agent.is_empty():
-			var agent_id := String(best_agent.get("id", ""))
 			var ability_val := GameState.get_agent_ability(agent_id, approach_type)
 			var tags := _to_string_array(method.get("situation_tags", []))
 			var aspect := GameState.get_aspect_modifier(agent_id, approach_type, tags)
-			var info_label := Label.new()
 			var info_lines: Array = ["  → 담당: %s / %s 능력치 %d" % [
 				String(best_agent.get("name", "")),
 				GameState.ABILITY_LABELS.get(approach_type, approach_type),
@@ -589,9 +597,7 @@ func _show_method_options(point: Dictionary) -> void:
 			]]
 			if aspect.value > 0:
 				info_lines.append("  → 특성 보정: +%d (%s: %s)" % [aspect.value, aspect.aspect_name, aspect.reason])
-			info_label.text = "\n".join(info_lines)
-			info_label.add_theme_font_size_override("font_size", 10)
-			_method_button_box.add_child(info_label)
+			card.tooltip_text = "\n".join(info_lines)
 
 
 func _run_method_option(point: Dictionary, method: Dictionary) -> void:
@@ -602,6 +608,8 @@ func _run_method_option(point: Dictionary, method: Dictionary) -> void:
 
 	_method_result_label.text = _make_method_result_text(result)
 	_result_label.text = _make_method_result_text(result)
+	_result_toast.visible = true
+	_set_ui_mode("RESULT")
 
 	var hint_texts_value: Variant = result.get("hint_texts", [])
 	var hint_texts: Array = hint_texts_value if typeof(hint_texts_value) == TYPE_ARRAY else []
@@ -737,6 +745,22 @@ func _make_method_result_text(result: Dictionary) -> String:
 func _hide_method_panel() -> void:
 	if _method_panel != null:
 		_method_panel.visible = false
+		_dialogue_dock.visible = true
+
+
+func _set_ui_mode(mode: String) -> void:
+	if _mode_label != null:
+		_mode_label.text = mode
+	var choice_scroll := get_node_or_null("%FieldChoiceScroll") as ScrollContainer
+	if choice_scroll != null:
+		choice_scroll.visible = mode == "FIELD_CHOICES"
+	var uses_picker := mode in ["POINT_PICKER", "METHOD_PICKER"]
+	if _point_method_dock != null:
+		_point_method_dock.visible = uses_picker
+	if _dialogue_dock != null:
+		_dialogue_dock.visible = not uses_picker
+	if _result_toast != null and mode != "RESULT":
+		_result_toast.visible = false
 
 
 func _format_delta(value: int) -> String:
@@ -755,6 +779,8 @@ func _refresh_case_status() -> void:
 	var total_count: int = GameState.get_total_clue_count()
 	var collection_rate: float = GameState.get_clue_collection_rate()
 	_progress_label.text = "단서 수집률: %.0f%% (%d/%d)" % [collection_rate, collected_count, total_count]
+	if _case_summary_label != null:
+		_case_summary_label.text = "단서 %d/%d · %s" % [collected_count, total_count, GameState.get_resolution_label()]
 	_progress_bar.value = collection_rate
 	_resolution_label.text = "현재 해결 단계: %s" % GameState.get_resolution_label()
 	var status := GameState.get_anomaly_status_summary()

@@ -7,6 +7,8 @@ const ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")
 const RuntimeEditor = preload("res://scripts/ui/runtime_ui_editor.gd")
 const LogGuideScript = preload("res://scripts/ui/log_guide.gd")
 const LogTutorialCatalog = preload("res://scripts/ui/log_tutorial_catalog.gd")
+const ActionChoiceCardScene = preload("res://scenes/ui/action_choice_card.tscn")
+const TeamStatusChipScene = preload("res://scenes/ui/team_status_chip.tscn")
 
 const BASE_ANOMALY_STABILITY := 0
 const BASE_RECOVERY_THRESHOLD := 70
@@ -64,160 +66,46 @@ func _ready() -> void:
 func _build_scene_ui() -> void:
 	var shade := get_node_or_null("ArtLayer/Shade") as ColorRect
 	if shade != null:
-		shade.color = Color(0.08, 0.015, 0.025, 0.18)
+		shade.color = Color(0.08, 0.015, 0.025, 0.14)
+	_representative_agent_label = %RepresentativeAgentLabel
+	_stability_bar = %StabilityBar
+	_stability_bar.max_value = 100
+	_fear_bar = %FearBar
+	_fear_bar.max_value = 100
+	_representative_agent_image = %RepresentativeVisual
+	_anomaly_panel = %AnomalyPanel
+	_anomaly_panel.add_theme_stylebox_override("panel", ThemeFactory.panel_style(Color("8a606c"), 0.12))
+	_anomaly_image = %AnomalyVisual
+	_anomaly_stage_label = %AnomalyStageLabel
+	_action_panel = %ActionDock
+	_telegraph_label = %TelegraphLabel
+	_prediction_summary_label = %PredictionSummaryLabel
+	_response_box = %ResponseGrid
+	_response_box.columns = 3 if get_viewport_rect().size.x >= 1600.0 else 2
+	_result_label = %ResultLabel
+	_recover_button = %RecoverButton
+	_threshold_label = %ThresholdLabel
+	_prediction_label = %PredictionLabel
+	_auto_effect_label = %ClueSummaryLabel
 
-	var top_panel := PanelContainer.new()
-	top_panel.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
-	top_panel.offset_left = 12
-	top_panel.offset_top = 10
-	top_panel.offset_right = -12
-	top_panel.offset_bottom = 64
-	top_panel.add_theme_stylebox_override("panel", ThemeFactory.panel_style(Color("293943"), 0.76))
-	add_child(top_panel)
-	var status_row := HBoxContainer.new()
-	status_row.add_theme_constant_override("separation", 10)
-	top_panel.add_child(status_row)
-	_representative_agent_label = _make_label("")
-	_representative_agent_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	status_row.add_child(_representative_agent_label)
-	var stability_title := _make_label("안정")
-	stability_title.custom_minimum_size.x = 42
-	status_row.add_child(stability_title)
-	_stability_bar = _make_bar(100)
-	_stability_bar.custom_minimum_size = Vector2(180, 22)
-	status_row.add_child(_stability_bar)
-	var risk_title := _make_label("위험")
-	risk_title.custom_minimum_size.x = 42
-	status_row.add_child(risk_title)
-	_fear_bar = _make_bar(100)
-	_fear_bar.custom_minimum_size = Vector2(140, 22)
-	status_row.add_child(_fear_bar)
-
-	_representative_agent_image = TextureRect.new()
-	_representative_agent_image.set_anchors_and_offsets_preset(Control.PRESET_LEFT_WIDE)
-	_representative_agent_image.anchor_right = 0.28
-	_representative_agent_image.offset_left = 12
-	_representative_agent_image.offset_top = 72
-	_representative_agent_image.offset_right = -4
-	_representative_agent_image.offset_bottom = -214
-	_representative_agent_image.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	_representative_agent_image.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	_representative_agent_image.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(_representative_agent_image)
-
-	_anomaly_panel = PanelContainer.new()
-	_anomaly_panel.anchor_left = 0.24
-	_anomaly_panel.anchor_top = 0.1
-	_anomaly_panel.anchor_right = 0.78
-	_anomaly_panel.anchor_bottom = 0.72
-	_anomaly_panel.offset_left = 4
-	_anomaly_panel.offset_top = 8
-	_anomaly_panel.offset_right = -4
-	_anomaly_panel.offset_bottom = -4
-	_anomaly_panel.add_theme_stylebox_override("panel", ThemeFactory.panel_style(Color("3d2632"), 0.24))
-	add_child(_anomaly_panel)
-	var anomaly_box := VBoxContainer.new()
-	anomaly_box.alignment = BoxContainer.ALIGNMENT_CENTER
-	_anomaly_panel.add_child(anomaly_box)
-	_anomaly_image = TextureRect.new()
-	_anomaly_image.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_anomaly_image.custom_minimum_size = Vector2(0, 260)
 	var initial_stage := SceneVisuals.apply_anomaly(_anomaly_image, GameState.get_anomaly_risk())
-	anomaly_box.add_child(_anomaly_image)
-	_anomaly_stage_label = _make_label("관측 위험 단계 %s" % initial_stage)
-	_anomaly_stage_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	anomaly_box.add_child(_anomaly_stage_label)
-	var phase_label := _make_label(_make_resolution_phase_text())
-	phase_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	anomaly_box.add_child(phase_label)
-
-	var clue_panel := PanelContainer.new()
-	clue_panel.anchor_left = 0.78
-	clue_panel.anchor_top = 0.1
-	clue_panel.anchor_right = 1.0
-	clue_panel.anchor_bottom = 0.72
-	clue_panel.offset_left = 4
-	clue_panel.offset_top = 8
-	clue_panel.offset_right = -12
-	clue_panel.offset_bottom = -4
-	clue_panel.add_theme_stylebox_override("panel", ThemeFactory.panel_style(Color("293943"), 0.78))
-	add_child(clue_panel)
-	var clue_box := VBoxContainer.new()
-	clue_box.add_theme_constant_override("separation", 8)
-	clue_panel.add_child(clue_box)
-	var clue_title := _make_label("확보 단서 / 회수 근거")
-	clue_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	clue_box.add_child(clue_title)
-	_auto_effect_label = _make_label(_make_clue_summary())
+	_anomaly_stage_label.text = "관측 위험 단계 %s · %s" % [initial_stage, _make_resolution_phase_text()]
+	_auto_effect_label.text = _make_clue_summary()
 	_auto_effect_label.tooltip_text = _make_auto_effect_text()
-	clue_box.add_child(_auto_effect_label)
-	var detail_button := Button.new()
-	detail_button.text = "상세 보기 ▼"
-	clue_box.add_child(detail_button)
-	var detail_scroll := ScrollContainer.new()
-	detail_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	detail_scroll.visible = false
-	clue_box.add_child(detail_scroll)
-	var detail_box := VBoxContainer.new()
-	detail_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	detail_scroll.add_child(detail_box)
-	detail_box.add_child(_make_label(_make_auto_effect_text()))
-	_add_agent_recovery_support_actions(detail_box)
-	_add_navigation(detail_box)
-	detail_button.pressed.connect(func() -> void:
-		detail_scroll.visible = not detail_scroll.visible
-		_auto_effect_label.visible = not detail_scroll.visible
-		detail_button.text = "상세 닫기 ▲" if detail_scroll.visible else "상세 보기 ▼"
-	)
+	_recover_button.pressed.connect(_recover_anomaly_core)
+	%RepresentativeSwitchButton.pressed.connect(_switch_representative)
+	%ClueDrawerButton.pressed.connect(_toggle_clue_drawer)
 
-	_action_panel = PanelContainer.new()
-	_action_panel.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
-	_action_panel.offset_left = 12
-	_action_panel.offset_top = -310
-	_action_panel.offset_right = -12
-	_action_panel.offset_bottom = -10
-	_action_panel.add_theme_stylebox_override("panel", ThemeFactory.panel_style(Color("17242c"), 0.84))
-	add_child(_action_panel)
-	var action_box := VBoxContainer.new()
-	action_box.add_theme_constant_override("separation", 8)
-	_action_panel.add_child(action_box)
-	var briefing_row := HBoxContainer.new()
-	briefing_row.add_theme_constant_override("separation", 10)
-	action_box.add_child(briefing_row)
+	var clue_content: VBoxContainer = %ClueDrawerContent
+	clue_content.add_child(_make_label(_make_auto_effect_text()))
+	_add_agent_recovery_support_actions(clue_content)
+	_add_navigation(clue_content)
+
 	_log_guide = LogGuideScript.new()
 	_log_guide.set_compact(true)
 	_log_guide.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_log_guide.size_flags_stretch_ratio = 0.9
-	briefing_row.add_child(_log_guide)
-	var briefing_text := VBoxContainer.new()
-	briefing_text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	briefing_text.size_flags_stretch_ratio = 1.1
-	briefing_row.add_child(briefing_text)
-	_telegraph_label = _make_label("")
-	briefing_text.add_child(_telegraph_label)
-	_prediction_summary_label = _make_label("")
-	briefing_text.add_child(_prediction_summary_label)
-	_response_box = GridContainer.new()
-	_response_box.columns = 2
-	_response_box.add_theme_constant_override("h_separation", 8)
-	_response_box.add_theme_constant_override("v_separation", 6)
-	action_box.add_child(_response_box)
-	var result_row := HBoxContainer.new()
-	result_row.add_theme_constant_override("separation", 10)
-	action_box.add_child(result_row)
-	_result_label = _make_label("")
-	_result_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	result_row.add_child(_result_label)
-	_recover_button = Button.new()
-	_recover_button.text = "강제 회수 실행"
-	_recover_button.pressed.connect(_recover_anomaly_core)
-	result_row.add_child(_recover_button)
-	_threshold_label = _make_label("")
-	_threshold_label.visible = false
-	_action_panel.add_child(_threshold_label)
-	_prediction_label = _make_label("")
-	_prediction_label.visible = false
-	_action_panel.add_child(_prediction_label)
+	%RecoveryLogHost.add_child(_log_guide)
+	_populate_team_strip()
 	_refresh_representative_agent()
 
 
@@ -235,128 +123,55 @@ func _make_clue_summary() -> String:
 	]
 
 
-func _build_ui() -> void:
-	var background := ColorRect.new()
-	background.color = Color(0.06, 0.02, 0.035, 0.2)
-	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	add_child(background)
+func _toggle_clue_drawer() -> void:
+	var drawer := %ClueDrawer as PanelContainer
+	drawer.visible = not drawer.visible
+	%ClueDrawerButton.text = "근거 ▲" if drawer.visible else "근거 ▼"
 
-	var margin := MarginContainer.new()
-	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	margin.add_theme_constant_override("margin_left", 20)
-	margin.add_theme_constant_override("margin_top", 20)
-	margin.add_theme_constant_override("margin_right", 20)
-	margin.add_theme_constant_override("margin_bottom", 20)
-	add_child(margin)
 
-	var scroll := ScrollContainer.new()
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	margin.add_child(scroll)
-
-	var root := VBoxContainer.new()
-	root.custom_minimum_size = Vector2(960, 0)
-	root.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	root.add_theme_constant_override("separation", 10)
-	scroll.add_child(root)
-
-	var title := Label.new()
-	title.text = "괴이 안정화 / 회수 페이즈: %s" % GameState.get_current_episode_title()
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	root.add_child(title)
-
-	var resolution_phase_label := Label.new()
-	resolution_phase_label.text = _make_resolution_phase_text()
-	resolution_phase_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	resolution_phase_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	root.add_child(resolution_phase_label)
-
-	var top_row := HBoxContainer.new()
-	top_row.add_theme_constant_override("separation", 12)
-	top_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	root.add_child(top_row)
-
-	var agent_content := _add_section(top_row, "아군 요원", "현장 지휘와 회수 담당을 정하고, 팀 지원을 확인합니다.")
-	var agent_panel := agent_content.get_parent() as Control
-	agent_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	agent_panel.size_flags_stretch_ratio = 1.0
-	_representative_agent_label = _make_label("")
-	agent_content.add_child(_representative_agent_label)
-	_add_agent_recovery_support_actions(agent_content)
-
-	var effect_content := _add_section(top_row, "해결 단서 / 회수 근거", "수집한 단서와 미니게임 결과가 회수 조건에 어떻게 반영되는지 확인합니다.")
-	var effect_panel := effect_content.get_parent() as Control
-	effect_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	effect_panel.size_flags_stretch_ratio = 1.0
-
-	_auto_effect_label = Label.new()
-	_auto_effect_label.text = _make_auto_effect_text()
-	_auto_effect_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	effect_content.add_child(_auto_effect_label)
-
-	var anomaly_content := _add_section(root, "중앙 관측: 인간형 괴이", "마법이 아닌 반복, 반사 오류와 공간 왜곡으로 나타나는 현상입니다.")
-	_anomaly_panel = anomaly_content.get_parent() as PanelContainer
-	_anomaly_image = TextureRect.new()
-	_anomaly_image.custom_minimum_size = Vector2(0, 300)
-	var initial_stage := SceneVisuals.apply_anomaly(_anomaly_image, GameState.get_anomaly_risk())
-	anomaly_content.add_child(_anomaly_image)
-	_anomaly_stage_label = _make_label("관측 위험 단계 %s · 인간형 유지" % initial_stage)
-	_anomaly_stage_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	anomaly_content.add_child(_anomaly_stage_label)
-
-	var status := _add_section(root, "안정화 상태", "괴이 안정도와 현장 위험을 보며 회수 가능선을 맞춥니다.")
-
-	status.add_child(_make_label("괴이 안정도"))
-	_stability_bar = _make_bar(100)
-	status.add_child(_stability_bar)
-
-	_threshold_label = _make_label("")
-	status.add_child(_threshold_label)
-
-	_prediction_label = _make_label("")
-	status.add_child(_prediction_label)
-
-	status.add_child(_make_label("현장 위험/공포도"))
-	_fear_bar = _make_bar(100)
-	status.add_child(_fear_bar)
-
-	var action_content := _add_section(root, "회수 행동 선택", "대표 요원과 팀이 현장 지휘에 따라 안정화 절차를 선택합니다.")
-	_action_panel = action_content.get_parent() as PanelContainer
-	var actions := GridContainer.new()
-	actions.columns = 2
-	actions.add_theme_constant_override("v_separation", 6)
-	action_content.add_child(actions)
-
-	_add_prediction_action(actions)
-	_add_stability_action(actions, "안정화 시도: 기록 스캔", 18, 6, "단말기로 괴이의 반복 규칙을 스캔했습니다.")
-	_add_stability_action(actions, "안정화 시도: 임시 봉인지", 24, 9, "봉인지가 괴이의 핵 주변을 짧게 고정했습니다.")
-	_add_defense_action(actions)
-	_add_representative_switch_action(actions)
-	_add_support_action(actions)
-
-	var recovery_content := _add_section(root, "강제 회수", "조건을 만족하면 괴이 핵을 회수하고 사건 보고서로 이동합니다.")
-	_recover_button = Button.new()
-	_recover_button.text = "강제 회수 실행"
-	_recover_button.pressed.connect(_recover_anomaly_core)
-	recovery_content.add_child(_recover_button)
-
-	_result_label = Label.new()
-	_result_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	recovery_content.add_child(_result_label)
+func _switch_representative() -> void:
+	var agents := GameState.get_selected_agents()
+	if agents.size() <= 1:
+		_result_label.text = "교체할 지원 요원이 없습니다."
+		return
+	_representative_agent_index = (_representative_agent_index + 1) % agents.size()
 	_refresh_representative_agent()
+	_populate_team_strip()
+	_result_label.text = "%s이(가) 대표 대응을 맡습니다." % String(_get_representative_agent().get("name", "요원"))
+
+
+func _populate_team_strip() -> void:
+	var strip := %TeamStrip as VBoxContainer
+	_clear_children(strip)
+	var catalog := AssetCatalog.new()
+	var agents := GameState.get_selected_agents()
+	for index in range(agents.size()):
+		var agent: Dictionary = agents[index]
+		var agent_id := String(agent.get("id", ""))
+		var chip := TeamStatusChipScene.instantiate()
+		strip.add_child(chip)
+		chip.configure(agent, {
+			"hp": GameState.get_agent_current_hp(agent_id),
+			"max_hp": GameState.get_agent_max_hp(agent_id),
+			"mental": GameState.get_agent_current_mental(agent_id),
+			"max_mental": GameState.get_agent_max_mental(agent_id),
+			"active": GameState.is_agent_active(agent_id),
+			"representative": index == _representative_agent_index,
+			"texture": catalog.get_agent_expression(agent_id, 1)
+		})
 
 
 func _setup_runtime_editor() -> void:
 	_runtime_editor = RuntimeEditor.new()
 	add_child(_runtime_editor)
 	_runtime_editor.setup("recovery", self)
-	_runtime_editor.register_element("anomaly", _anomaly_panel, {
+	_runtime_editor.register_element("cinematic_anomaly_stage", _anomaly_panel, {
 		"minimum_size": Vector2(420, 260),
 		"free_layout": true,
 		"image_target": _anomaly_image,
 		"style_target": _anomaly_panel
 	})
-	_runtime_editor.register_element("actions", _action_panel, {"minimum_size": Vector2(480, 180), "free_layout": true})
+	_runtime_editor.register_element("cinematic_action_dock", _action_panel, {"minimum_size": Vector2(720, 220), "free_layout": true})
 	_runtime_editor.risk_preview_changed.connect(_preview_risk_stage)
 
 
@@ -571,15 +386,16 @@ func _begin_recovery_turn() -> void:
 		var response_copy: Dictionary = response.duplicate(true)
 		var ability := String(response_copy.get("ability", "analysis"))
 		var agent := GameState.find_best_agent_for_ability(ability)
-		var button := Button.new()
-		button.text = "%s\n%s / %s %d" % [
-			String(response_copy.get("label", "상황에 대응한다")),
-			String(agent.get("name", "팀")),
-			GameState.ABILITY_LABELS.get(ability, ability),
-			GameState.get_agent_ability(String(agent.get("id", "")), ability)
-		]
-		button.pressed.connect(func() -> void: _select_pattern_response(response_copy))
-		_response_box.add_child(button)
+		var card := ActionChoiceCardScene.instantiate()
+		_response_box.add_child(card)
+		card.configure({
+			"id": String(response_copy.get("id", "response")),
+			"title": String(response_copy.get("label", "상황에 대응한다")),
+			"description": "",
+			"meta": "%s · %s %d" % [String(agent.get("name", "팀")), GameState.ABILITY_LABELS.get(ability, ability), GameState.get_agent_ability(String(agent.get("id", "")), ability)]
+		})
+		card.tooltip_text = String(response_copy.get("summary", "전조와 확보 단서를 근거로 대응합니다."))
+		card.action_requested.connect(func(_action_id: String) -> void: _select_pattern_response(response_copy))
 	_update_battle_view(_make_start_message())
 
 
@@ -590,6 +406,9 @@ func _select_pattern_response(response: Dictionary) -> void:
 	for child in _response_box.get_children():
 		if child is Button:
 			child.disabled = true
+		elif child is PanelContainer and child.has_node("%ActionButton"):
+			var action_button := child.get_node("%ActionButton") as Button
+			action_button.disabled = true
 	var lines: Array[String] = []
 	lines.append_array(_run_auto_window("suppression"))
 	var response_id := String(response.get("id", ""))
@@ -963,6 +782,9 @@ func _use_agent_recovery_support(support: Dictionary, button: Button) -> void:
 
 func _update_battle_view(message: String) -> void:
 	_refresh_representative_agent()
+	_populate_team_strip()
+	if _auto_effect_label != null:
+		_auto_effect_label.text = _make_clue_summary()
 	if _stability_bar != null:
 		_stability_bar.value = _anomaly_stability
 	if _fear_bar != null:

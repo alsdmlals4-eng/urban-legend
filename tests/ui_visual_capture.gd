@@ -11,7 +11,7 @@ func _init() -> void:
 func _capture() -> void:
 	var args := OS.get_cmdline_user_args()
 	if args.size() < 2:
-		push_error("usage: -- <scene_path> <output_path> [episode_id] [editor] [focus_node_name]")
+		push_error("usage: -- <scene_path> <output_path> [episode_id] [editor] [focus_node_name] [ui_state]")
 		quit(2)
 		return
 	var scene_path := String(args[0])
@@ -26,6 +26,9 @@ func _capture() -> void:
 		return
 	game_state.load_episode(episode_path)
 	game_state.set_selected_agent_ids(["agent_kang_ijun", "agent_kwon_narae", "agent_oh_hyun"])
+	var ui_state := String(args[5]) if args.size() > 5 else ""
+	if ui_state == "risk_d":
+		game_state.investigation_risk = 85
 	var error := change_scene_to_file(scene_path)
 	if error != OK:
 		push_error("failed to load scene: %s" % scene_path)
@@ -34,6 +37,14 @@ func _capture() -> void:
 		return
 	for _frame in range(5):
 		await process_frame
+	if ui_state == "method_picker" and current_scene.has_method("_get_investigation_points"):
+		var points: Array = current_scene.call("_get_investigation_points")
+		for point in points:
+			if typeof(point) == TYPE_DICTIONARY and not Array(point.get("method_options", [])).is_empty():
+				current_scene.call("_show_method_options", point)
+				for _frame in range(3):
+					await process_frame
+				break
 	if args.size() > 3 and String(args[3]) == "editor":
 		var f2 := InputEventKey.new()
 		f2.keycode = KEY_F2

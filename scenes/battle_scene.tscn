@@ -39,5 +39,241 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-color = Color(0.08, 0.015, 0.025, 0.35)
+color = Color(0.08, 0.015, 0.025, 0.14)
 
+[node name="CinematicStage" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_top = 0.08
+anchor_right = 1.0
+anchor_bottom = 0.68
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="RepresentativeVisual" type="TextureRect" parent="CinematicStage"]
+unique_name_in_owner = true
+layout_mode = 1
+anchor_left = 0.02
+anchor_top = 0.08
+anchor_right = 0.36
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="AnomalyPanel" type="PanelContainer" parent="CinematicStage"]
+unique_name_in_owner = true
+layout_mode = 1
+anchor_left = 0.43
+anchor_top = 0.04
+anchor_right = 0.96
+anchor_bottom = 0.96
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"HudStrip"
+modulate = Color(1, 1, 1, 0.9)
+
+[node name="Content" type="VBoxContainer" parent="CinematicStage/AnomalyPanel"]
+layout_mode = 2
+
+[node name="AnomalyVisual" type="TextureRect" parent="CinematicStage/AnomalyPanel/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+expand_mode = 1
+stretch_mode = 6
+
+[node name="AnomalyStageLabel" type="Label" parent="CinematicStage/AnomalyPanel/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "관측 위험 단계 B"
+horizontal_alignment = 1
+
+[node name="TeamStrip" type="VBoxContainer" parent="CinematicStage"]
+unique_name_in_owner = true
+layout_mode = 1
+anchor_left = 0.02
+anchor_top = 0.64
+anchor_right = 0.31
+anchor_bottom = 0.98
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 4
+
+[node name="RecoveryHud" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 12.0
+offset_top = 10.0
+offset_right = -12.0
+offset_bottom = 66.0
+grow_horizontal = 2
+theme_type_variation = &"HudStrip"
+
+[node name="StatusRow" type="HBoxContainer" parent="RecoveryHud"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="RepresentativeAgentLabel" type="Label" parent="RecoveryHud/StatusRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "대표 요원"
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="StabilityTitle" type="Label" parent="RecoveryHud/StatusRow"]
+layout_mode = 2
+text = "안정"
+vertical_alignment = 1
+
+[node name="StabilityBar" type="ProgressBar" parent="RecoveryHud/StatusRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(170, 22)
+layout_mode = 2
+vertical_alignment = 1
+
+[node name="RiskTitle" type="Label" parent="RecoveryHud/StatusRow"]
+layout_mode = 2
+text = "위험"
+vertical_alignment = 1
+
+[node name="FearBar" type="ProgressBar" parent="RecoveryHud/StatusRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(130, 22)
+layout_mode = 2
+
+[node name="ClueSummaryLabel" type="Label" parent="RecoveryHud/StatusRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "핵심 단서"
+autowrap_mode = 3
+
+[node name="ClueDrawerButton" type="Button" parent="RecoveryHud/StatusRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "근거 ▼"
+
+[node name="ClueDrawer" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 0.7
+anchor_right = 1.0
+anchor_bottom = 0.67
+offset_left = 0.0
+offset_top = 76.0
+offset_right = -12.0
+offset_bottom = -8.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_type_variation = &"OverlayDrawer"
+
+[node name="Scroll" type="ScrollContainer" parent="ClueDrawer"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="ClueDrawerContent" type="VBoxContainer" parent="ClueDrawer/Scroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="ActionDock" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 0.62
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_right = -12.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_type_variation = &"DialogueDock"
+
+[node name="Content" type="VBoxContainer" parent="ActionDock"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="BriefingRow" type="HBoxContainer" parent="ActionDock/Content"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="RecoveryLogHost" type="VBoxContainer" parent="ActionDock/Content/BriefingRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="BriefingText" type="VBoxContainer" parent="ActionDock/Content/BriefingRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TelegraphLabel" type="Label" parent="ActionDock/Content/BriefingRow/BriefingText"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "괴이의 전조"
+autowrap_mode = 3
+
+[node name="PredictionSummaryLabel" type="Label" parent="ActionDock/Content/BriefingRow/BriefingText"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "예측 기록"
+autowrap_mode = 3
+theme_override_font_sizes/font_size = 13
+
+[node name="ResponseScroll" type="ScrollContainer" parent="ActionDock/Content"]
+custom_minimum_size = Vector2(0, 96)
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="ResponseGrid" type="GridContainer" parent="ActionDock/Content/ResponseScroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+columns = 2
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 6
+
+[node name="Footer" type="HBoxContainer" parent="ActionDock/Content"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="ResultLabel" type="Label" parent="ActionDock/Content/Footer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "팀이 전조를 관측하고 있습니다."
+autowrap_mode = 3
+
+[node name="RepresentativeSwitchButton" type="Button" parent="ActionDock/Content/Footer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "대표 교체"
+
+[node name="RecoverButton" type="Button" parent="ActionDock/Content/Footer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "회수 실행"
+
+[node name="ThresholdLabel" type="Label" parent="ActionDock/Content"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="PredictionLabel" type="Label" parent="ActionDock/Content"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2

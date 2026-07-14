@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "selected_concept": "existing-asset-preservation",
+  "generation_mode": "built-in imagegen edit with chroma-key removal",
+  "replacement_approved": false,
+  "assets": [
+    {
+      "stage": "final",
+      "purpose": "three-expression transparent standing sheet for Kang Ijun",
+      "filename": "agents/cutouts/kang_ijun_cutout_sheet.png",
+      "width": 1672,
+      "height": 941,
+      "alpha_intent": true,
+      "alpha_result": true,
+      "reference_image": "agents/kang_ijun_expressions.png",
+      "prompt": "Replace only the dark background with flat green; preserve all three poses, identity, clothing, talismans, effects and spacing.",
+      "qa": "transparent corners, three poses present, original preserved"
+    },
+    {
+      "stage": "final",
+      "purpose": "three-expression transparent standing sheet for Kwon Narae",
+      "filename": "agents/cutouts/kwon_narae_cutout_sheet.png",
+      "width": 1672,
+      "height": 941,
+      "alpha_intent": true,
+      "alpha_result": true,
+      "reference_image": "agents/kwon_narae_expressions.png",
+      "prompt": "Replace only the dark background with flat green; preserve all three poses, identity, clothing, book, occult diagrams and spacing.",
+      "qa": "transparent corners, three poses present, original preserved"
+    },
+    {
+      "stage": "final",
+      "purpose": "three-expression transparent standing sheet for Oh Hyun",
+      "filename": "agents/cutouts/oh_hyun_cutout_sheet.png",
+      "width": 1672,
+      "height": 941,
+      "alpha_intent": true,
+      "alpha_result": true,
+      "reference_image": "agents/oh_hyun_expressions.png",
+      "prompt": "Replace only the dark background with flat green; preserve all three poses, identity, clothing, tools, waveforms and spacing.",
+      "qa": "transparent corners, three poses present, original preserved"
+    },
+    {
+      "stage": "final",
+      "purpose": "afterlife station anomaly B confrontation cutout",
+      "filename": "anomalies/cutouts/afterlife_b_cutout.png",
+      "width": 941,
+      "height": 1672,
+      "alpha_intent": true,
+      "alpha_result": true,
+      "reference_image": "anomalies/afterlife_b.png",
+      "prompt": "Extract the central long-coated shadow figure on flat green while preserving silhouette and lighting.",
+      "qa": "transparent corners, full body present, original preserved"
+    },
+    {
+      "stage": "final",
+      "purpose": "afterlife station anomaly D confrontation cutout",
+      "filename": "anomalies/cutouts/afterlife_d_cutout.png",
+      "width": 941,
+      "height": 1672,
+      "alpha_intent": true,
+      "alpha_result": true,
+      "reference_image": "anomalies/afterlife_d.png",
+      "prompt": "Extract one representative dark commuter anomaly on flat green while preserving the danger-stage lighting.",
+      "qa": "transparent corners, full body present, original preserved"
+    },
+    {
+      "stage": "final",
+      "purpose": "red umbrella anomaly B confrontation cutout",
+      "filename": "anomalies/cutouts/red_umbrella_b_cutout.png",
+      "width": 1672,
+      "height": 941,
+      "alpha_intent": true,
+      "alpha_result": true,
+      "reference_image": "anomalies/red_umbrella_b.png",
+      "prompt": "Extract the central girl and complete red umbrella on flat green while preserving identity and pose.",
+      "qa": "transparent corners, complete umbrella and body present, original preserved"
+    },
+    {
+      "stage": "final",
+      "purpose": "red umbrella anomaly D confrontation cutout",
+      "filename": "anomalies/cutouts/red_umbrella_d_cutout.png",
+      "width": 1672,
+      "height": 941,
+      "alpha_intent": true,
+      "alpha_result": true,
+      "reference_image": "anomalies/red_umbrella_d.png",
+      "prompt": "Extract the back-facing central girl and complete red umbrella on flat green while preserving the red danger-stage rim light.",
+      "qa": "transparent corners, complete umbrella and body present, original preserved"
+    }
+  ]
+}

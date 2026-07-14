@@ -11,10 +11,17 @@ const ASSET_PATHS := {
 	"kang_ijun_expressions": "res://assets/agents/kang_ijun_expressions.png",
 	"kwon_narae_expressions": "res://assets/agents/kwon_narae_expressions.png",
 	"oh_hyun_expressions": "res://assets/agents/oh_hyun_expressions.png",
+	"kang_ijun_cutout_sheet": "res://assets/agents/cutouts/kang_ijun_cutout_sheet.png",
+	"kwon_narae_cutout_sheet": "res://assets/agents/cutouts/kwon_narae_cutout_sheet.png",
+	"oh_hyun_cutout_sheet": "res://assets/agents/cutouts/oh_hyun_cutout_sheet.png",
 	"afterlife_b": "res://assets/anomalies/afterlife_b.png",
 	"afterlife_d": "res://assets/anomalies/afterlife_d.png",
 	"red_umbrella_b": "res://assets/anomalies/red_umbrella_b.png",
 	"red_umbrella_d": "res://assets/anomalies/red_umbrella_d.png",
+	"afterlife_b_cutout": "res://assets/anomalies/cutouts/afterlife_b_cutout.png",
+	"afterlife_d_cutout": "res://assets/anomalies/cutouts/afterlife_d_cutout.png",
+	"red_umbrella_b_cutout": "res://assets/anomalies/cutouts/red_umbrella_b_cutout.png",
+	"red_umbrella_d_cutout": "res://assets/anomalies/cutouts/red_umbrella_d_cutout.png",
 	"log_normal": "res://assets/log/log_normal.png",
 	"log_focus": "res://assets/log/log_focus.png",
 	"log_warning": "res://assets/log/log_warning.png",
@@ -42,6 +49,15 @@ const AGENT_ASSETS := {
 	"oh_hyun": "oh_hyun_expressions",
 }
 
+const AGENT_CUTOUT_ASSETS := {
+	"agent_kang_ijun": "kang_ijun_cutout_sheet",
+	"agent_kwon_narae": "kwon_narae_cutout_sheet",
+	"agent_oh_hyun": "oh_hyun_cutout_sheet",
+	"kang_ijun": "kang_ijun_cutout_sheet",
+	"kwon_narae": "kwon_narae_cutout_sheet",
+	"oh_hyun": "oh_hyun_cutout_sheet",
+}
+
 
 func get_risk_stage(risk: int) -> String:
 	if risk >= 70:
@@ -62,8 +78,16 @@ func get_anomaly_id(episode_id: String, risk: int) -> String:
 	return "%s_%s" % [prefix, suffix]
 
 
+func get_anomaly_cutout_id(episode_id: String, risk: int) -> String:
+	return "%s_cutout" % get_anomaly_id(episode_id, risk)
+
+
 func get_agent_asset_id(agent_id: String) -> String:
 	return String(AGENT_ASSETS.get(agent_id, ""))
+
+
+func get_agent_cutout_asset_id(agent_id: String) -> String:
+	return String(AGENT_CUTOUT_ASSETS.get(agent_id, ""))
 
 
 func get_asset_path(asset_id: String) -> String:
@@ -72,19 +96,47 @@ func get_asset_path(asset_id: String) -> String:
 
 func get_texture(asset_id: String) -> Texture2D:
 	var path := get_asset_path(asset_id)
-	if path.is_empty() or not ResourceLoader.exists(path):
+	if path.is_empty():
 		return null
-	return load(path) as Texture2D
+	if ResourceLoader.exists(path):
+		return load(path) as Texture2D
+	if not FileAccess.file_exists(path):
+		return null
+	var image := Image.load_from_file(path)
+	if image == null or image.is_empty():
+		return null
+	return ImageTexture.create_from_image(image)
 
 
 func get_agent_expression(agent_id: String, expression_index: int = 0) -> Texture2D:
-	var source := get_texture(get_agent_asset_id(agent_id))
+	var source := get_texture(get_agent_cutout_asset_id(agent_id))
+	if source == null:
+		source = get_texture(get_agent_asset_id(agent_id))
 	if source == null:
 		return null
 	var atlas := AtlasTexture.new()
 	atlas.atlas = source
 	var frame_width := source.get_width() / 3.0
 	atlas.region = Rect2(frame_width * clampi(expression_index, 0, 2), 0.0, frame_width, source.get_height())
+	return atlas
+
+
+func get_agent_face_portrait(agent_id: String, expression_index: int = 0) -> Texture2D:
+	var source := get_texture(get_agent_cutout_asset_id(agent_id))
+	if source == null:
+		source = get_texture(get_agent_asset_id(agent_id))
+	if source == null:
+		return null
+	var frame_width := source.get_width() / 3.0
+	var crop_size := minf(frame_width * 0.62, source.get_height() * 0.38)
+	var atlas := AtlasTexture.new()
+	atlas.atlas = source
+	atlas.region = Rect2(
+		frame_width * clampi(expression_index, 0, 2) + (frame_width - crop_size) * 0.5,
+		source.get_height() * 0.02,
+		crop_size,
+		crop_size
+	)
 	return atlas
 
 
