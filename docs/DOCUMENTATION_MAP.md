@@ -20,6 +20,7 @@
 | 저장·진행·일정·위험도·연구·장비 | `MVP037_CAMPAIGN_CORE.md`와 해당 Goal |
 | 실제 MVP 시작·종료 점검 | `MVP_WORKFLOW_CHECKLIST.md` |
 | Codex 계정 교대·저사용량 checkpoint·새 작업 인수 | `CURRENT_HANDOFF.md`, `CODEX_ACCOUNT_HANDOFF.md` |
+| 순차 반일 일정·세력 의뢰·조사 중단/재개 | `MVP038_SEQUENTIAL_CAMPAIGN.md` |
 | 공용 규칙 동기화·Base 승격 | `AI_SHARED_WORK_RULES.md`, `BASE_RULES_VERSION.md` |
 | 과거 Codex 운영 방식 조사 | `CODEX_SHARED_WORK_RULES.md` |
 

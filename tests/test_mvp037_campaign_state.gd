@@ -154,6 +154,28 @@ func _test_save_round_trip_and_mvp035_migration() -> void:
 	_expect(String(restored_schedule.get("morning", "")) == "rest" and not restored_schedule.has("afternoon"), "current-slot schedule survives save round trip")
 	_expect((restored.get("request_board", []) as Array).size() == 3, "request board survives save round trip")
 
+	var mvp037_file := FileAccess.open(GameState.SAVE_FILE_PATH, FileAccess.WRITE)
+	mvp037_file.store_string(JSON.stringify({
+		"save_version": "mvp-037",
+		"episode_path": GameState.DEFAULT_EPISODE_PATH,
+		"current_scene_path": GameState.SCENE_INVESTIGATION,
+		"selected_agent_ids": ["agent_kang_ijun"],
+		"campaign_state": {
+			"day": 4,
+			"time_slot": "morning",
+			"schedules": {"4": {"agent_kang_ijun": {"morning": "investigation", "afternoon": "rest"}}},
+			"active_operation": {"case_id": AFTERLIFE, "day": 4}
+		}
+	}))
+	mvp037_file.close()
+	_expect(GameState.load_game(), "mvp-037 campaign save migrates")
+	var migrated_037: Dictionary = GameState.call("get_campaign_snapshot")
+	var migrated_037_schedule: Dictionary = GameState.call("get_campaign_agent_schedule", "agent_kang_ijun")
+	_expect(int(migrated_037.get("day", 0)) == 4, "mvp-037 migration preserves campaign day")
+	_expect(String(migrated_037_schedule.get("morning", "")) == "investigation" and not migrated_037_schedule.has("afternoon"), "mvp-037 migration drops future afternoon assignment")
+	_expect(String(migrated_037.get("active_operation", {}).get("status", "")) == "suspended", "mvp-037 active operation migrates as suspended")
+	_expect(String(migrated_037.get("slot_phase", "")) == "in_progress", "mvp-037 active operation keeps current slot in progress")
+
 	var legacy_file := FileAccess.open(GameState.SAVE_FILE_PATH, FileAccess.WRITE)
 	legacy_file.store_string(JSON.stringify({
 		"save_version": "mvp-035",
