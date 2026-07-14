@@ -4,14 +4,14 @@
 
 ```yaml
 status: COMPLETE
-goal: MVP-038 순차 일정·세력 의뢰·조사 탈출 흐름 개선
+goal: MVP-038 기준 살아 있는 통합 게임기획서·상시 최적화 체계 구축
 branch: main
-completed_work_commit: 0ea2918dc51db14560d6e38c3f42d7f6e2483e8b
-tests: campaign 52/0; requests 51/0; agent 15/0; recovery 36/0; faction market 52/0; log 54/0; preparation/cinematic/runtime editor/HQ return PASS; full project parse/load PASS; 1280x720 and 1920x1080 visual QA PASS
-changed_files: campaign state and save migration, preparation/investigation/result/recovery UI flow, faction request data and tests, MVP-038 docs
-external_artifacts: C:\Users\user\Downloads\urban-legend-mvp038-faction-request-gpt-input-2026-07-14.zip
-remaining_work: external GPT copy pass is optional and not yet applied; third case, daily episodes, research/equipment content and final 180-220 minute playtime measurement remain later milestones
-next_action: run a new campaign through morning result confirmation, afternoon planning, HQ suspend/resume, and one dispatch/recovery request; then send the GPT input ZIP and return its result ZIP for review
+completed_work_commit: b7dad0ec1a3293a4c10f0f0aeb67cbfd03129db7
+tests: GDD source/hash CURRENT; DOCX 169 paragraphs/20 tables/5 images; section, heading, image, table geometry and accessibility audits PASS; Markdown links 0 missing; workflow, handoff and multi-model contracts PASS; JSON 3 files PASS; Godot 4.7 headless project load PASS; git diff check PASS
+changed_files: living Markdown GDD and decorated DOCX generator/output, MVP-038 current docs, documentation map/work rules, compatibility stubs and non-destructive archive
+external_artifacts: reference style only C:\Users\user\Downloads\룰렛바운드_게임기획서_v0.7.docx
+remaining_work: DOCX page PNG visual QA was unavailable because LibreOffice/Word renderer is not installed; third case, daily episodes, research/equipment content and final 180-220 minute playtime measurement remain later milestones
+next_action: open docs/GAME_DESIGN_DOCUMENT.md and docs/URBAN_LEGEND_GAME_DESIGN.docx together; after the next design change rebuild/check DOCX and show both files again
 main_integrated: true
 origin_pushed: true
 ```
