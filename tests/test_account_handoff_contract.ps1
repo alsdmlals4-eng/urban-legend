@@ -18,6 +18,7 @@ $requiredFiles = @(
 	'docs\CODEX_ACCOUNT_HANDOFF.md',
 	'docs\DOCUMENTATION_MAP.md',
 	'tools\codex_profiles\Get-CodexHandoffAction.ps1',
+	'tools\codex_profiles\Assert-CodexProfileIsolation.ps1',
 	'tools\codex_profiles\Install-CodexProfiles.ps1',
 	'tools\codex_profiles\Start-CodexProfile.ps1'
 )
@@ -47,6 +48,14 @@ Assert-True -Condition ((& $actionScript -RemainingPercent 6) -eq 'CONTINUE') -M
 Assert-True -Condition ((& $actionScript -RemainingPercent 5) -eq 'PREPARE') -Message '5% must prepare a handoff.'
 Assert-True -Condition ((& $actionScript -RemainingPercent 2) -eq 'HARD_STOP') -Message '2% must hard-stop implementation.'
 Assert-True -Condition ((& $actionScript) -eq 'UNKNOWN') -Message 'Unavailable usage must remain unknown.'
+$nanRejected = $false
+try {
+	& $actionScript -RemainingPercent ([double]::NaN) | Out-Null
+}
+catch {
+	$nanRejected = $true
+}
+Assert-True -Condition $nanRejected -Message 'NaN usage must be rejected instead of continuing.'
 
 $tempRoot = Join-Path ([IO.Path]::GetTempPath()) ("codex-profile-contract-" + [Guid]::NewGuid().ToString('N'))
 $profileRoot = Join-Path $tempRoot 'profiles'
@@ -73,8 +82,71 @@ try {
 	Assert-True -Condition (Test-Path -LiteralPath (Join-Path $profileRoot 'Start-Codex-A.ps1') -PathType Leaf) -Message 'Account A launcher is missing.'
 	Assert-True -Condition (Test-Path -LiteralPath (Join-Path $profileRoot 'Start-Codex-B.ps1') -PathType Leaf) -Message 'Account B launcher is missing.'
 
-	$validation = & (Join-Path $repo 'tools\codex_profiles\Start-CodexProfile.ps1') -ProfileName account-a -ProfileRoot $profileRoot -ProjectPath $repo -ValidateOnly
+	$startScript = Join-Path $repo 'tools\codex_profiles\Start-CodexProfile.ps1'
+	$validation = & $startScript -ProfileName account-a -ProfileRoot $profileRoot -ProjectPath $repo -ValidateOnly
 	Assert-Contains -Text ($validation | Out-String) -Expected 'PROFILE_READY' -Message 'Profile validation did not succeed.'
+
+	$profileA = Join-Path $profileRoot 'account-a'
+	$systemTarget = Join-Path $tempRoot 'system-target'
+	New-Item -ItemType Directory -Path $systemTarget -Force | Out-Null
+	New-Item -ItemType Junction -Path (Join-Path $profileA 'skills\.system') -Target $systemTarget | Out-Null
+	$contaminationRejected = $false
+	try {
+		& (Join-Path $repo 'tools\codex_profiles\Install-CodexProfiles.ps1') -ProfileRoot $profileRoot -SharedSkillsRoot $skillsRoot -RepositoryRoot $repo | Out-Null
+	}
+	catch {
+		$contaminationRejected = $true
+	}
+	Assert-True -Condition $contaminationRejected -Message 'Installer must reject a shared .system junction.'
+	Remove-Item -LiteralPath (Join-Path $profileA 'skills\.system') -Force
+
+	$pluginTarget = Join-Path $tempRoot 'plugin-target'
+	New-Item -ItemType Directory -Path $pluginTarget -Force | Out-Null
+	New-Item -ItemType Junction -Path (Join-Path $profileA 'plugins') -Target $pluginTarget | Out-Null
+	$pluginRejected = $false
+	try {
+		& $startScript -ProfileName account-a -ProfileRoot $profileRoot -ProjectPath $repo -ValidateOnly | Out-Null
+	}
+	catch {
+		$pluginRejected = $true
+	}
+	Assert-True -Condition $pluginRejected -Message 'Profile validation must reject shared plugin state.'
+	Remove-Item -LiteralPath (Join-Path $profileA 'plugins') -Force
+
+	$authSource = Join-Path $tempRoot 'shared-auth.json'
+	[IO.File]::WriteAllText($authSource, '{}', [Text.UTF8Encoding]::new($false))
+	New-Item -ItemType HardLink -Path (Join-Path $profileA 'auth.json') -Target $authSource | Out-Null
+	$authRejected = $false
+	try {
+		& $startScript -ProfileName account-a -ProfileRoot $profileRoot -ProjectPath $repo -ValidateOnly | Out-Null
+	}
+	catch {
+		$authRejected = $true
+	}
+	Assert-True -Condition $authRejected -Message 'Profile validation must reject linked auth.json.'
+	Remove-Item -LiteralPath (Join-Path $profileA 'auth.json') -Force
+
+	$previousHome = $env:CODEX_HOME
+	$global:observedChildHome = $null
+	function global:Get-Process { @() }
+	function global:Get-Command { [PSCustomObject]@{ Source = 'codex-test.exe' } }
+	function global:Start-Process {
+		param([string]$FilePath, [string]$WorkingDirectory)
+		$global:observedChildHome = $env:CODEX_HOME
+	}
+	try {
+		$env:CODEX_HOME = 'parent-sentinel'
+		& $startScript -ProfileName account-a -ProfileRoot $profileRoot -ProjectPath $repo -Surface Cli
+		Assert-True -Condition ($global:observedChildHome -eq $profileA) -Message 'Child process did not receive the selected CODEX_HOME.'
+		Assert-True -Condition ($env:CODEX_HOME -eq 'parent-sentinel') -Message 'Launcher did not restore the parent CODEX_HOME.'
+	}
+	finally {
+		Remove-Item Function:\Get-Process -ErrorAction SilentlyContinue
+		Remove-Item Function:\Get-Command -ErrorAction SilentlyContinue
+		Remove-Item Function:\Start-Process -ErrorAction SilentlyContinue
+		Remove-Variable observedChildHome -Scope Global -ErrorAction SilentlyContinue
+		if ($null -eq $previousHome) { Remove-Item Env:\CODEX_HOME -ErrorAction SilentlyContinue } else { $env:CODEX_HOME = $previousHome }
+	}
 }
 finally {
 	if (Test-Path -LiteralPath $tempRoot) {

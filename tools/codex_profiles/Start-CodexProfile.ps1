@@ -11,6 +11,8 @@ param(
 
 $ErrorActionPreference = 'Stop'
 $profilePath = Join-Path $ProfileRoot $ProfileName
+$repositoryRoot = (Resolve-Path $ProjectPath).Path
+$isolationScript = Join-Path $repositoryRoot 'tools\codex_profiles\Assert-CodexProfileIsolation.ps1'
 
 if (-not (Test-Path -LiteralPath $profilePath -PathType Container)) {
 	throw "Codex profile is not installed: $profilePath"
@@ -21,10 +23,15 @@ if (-not (Test-Path -LiteralPath (Join-Path $profilePath 'config.toml') -PathTyp
 if (-not (Test-Path -LiteralPath $ProjectPath -PathType Container)) {
 	throw "Project path does not exist: $ProjectPath"
 }
+if (-not (Test-Path -LiteralPath $isolationScript -PathType Leaf)) {
+	throw "Profile isolation check does not exist: $isolationScript"
+}
+
+& $isolationScript -ProfilePath $profilePath | Out-Null
 
 if ($ValidateOnly) {
 	"PROFILE_READY profile=$ProfileName home=$profilePath project=$ProjectPath"
-	exit 0
+	return
 }
 
 $running = Get-Process -ErrorAction SilentlyContinue | Where-Object {
@@ -34,22 +41,34 @@ if ($running) {
 	throw 'Close every running ChatGPT/Codex process before switching CODEX_HOME profiles.'
 }
 
-$env:CODEX_HOME = $profilePath
+$hadCodexHome = Test-Path Env:\CODEX_HOME
+$previousCodexHome = $env:CODEX_HOME
+try {
+	$env:CODEX_HOME = $profilePath
 
-if ($Surface -eq 'Cli') {
-	$codex = Get-Command codex -ErrorAction Stop
-	Start-Process -FilePath $codex.Source -WorkingDirectory $ProjectPath
-	exit 0
+	if ($Surface -eq 'Cli') {
+		$codex = Get-Command codex -ErrorAction Stop
+		Start-Process -FilePath $codex.Source -WorkingDirectory $ProjectPath
+		return
+	}
+
+	$package = Get-AppxPackage -Name 'OpenAI.Codex' -ErrorAction SilentlyContinue | Select-Object -First 1
+	if ($null -eq $package) {
+		throw 'OpenAI Codex desktop app package was not found.'
+	}
+
+	$appPath = Join-Path $package.InstallLocation 'app\ChatGPT.exe'
+	if (-not (Test-Path -LiteralPath $appPath -PathType Leaf)) {
+		throw "Codex desktop executable was not found: $appPath"
+	}
+
+	Start-Process -FilePath $appPath -WorkingDirectory $ProjectPath
 }
-
-$package = Get-AppxPackage -Name 'OpenAI.Codex' -ErrorAction SilentlyContinue | Select-Object -First 1
-if ($null -eq $package) {
-	throw 'OpenAI Codex desktop app package was not found.'
+finally {
+	if ($hadCodexHome) {
+		$env:CODEX_HOME = $previousCodexHome
+	}
+	else {
+		Remove-Item Env:\CODEX_HOME -ErrorAction SilentlyContinue
+	}
 }
-
-$appPath = Join-Path $package.InstallLocation 'app\ChatGPT.exe'
-if (-not (Test-Path -LiteralPath $appPath -PathType Leaf)) {
-	throw "Codex desktop executable was not found: $appPath"
-}
-
-Start-Process -FilePath $appPath -WorkingDirectory $ProjectPath

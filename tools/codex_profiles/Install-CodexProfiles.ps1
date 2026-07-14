@@ -7,12 +7,16 @@ param(
 $ErrorActionPreference = 'Stop'
 $utf8 = [Text.UTF8Encoding]::new($false)
 $launcherScript = Join-Path $RepositoryRoot 'tools\codex_profiles\Start-CodexProfile.ps1'
+$isolationScript = Join-Path $RepositoryRoot 'tools\codex_profiles\Assert-CodexProfileIsolation.ps1'
 
 if (-not (Test-Path -LiteralPath $SharedSkillsRoot -PathType Container)) {
 	throw "Shared skills root does not exist: $SharedSkillsRoot"
 }
 if (-not (Test-Path -LiteralPath $launcherScript -PathType Leaf)) {
 	throw "Profile launcher does not exist: $launcherScript"
+}
+if (-not (Test-Path -LiteralPath $isolationScript -PathType Leaf)) {
+	throw "Profile isolation check does not exist: $isolationScript"
 }
 
 New-Item -ItemType Directory -Path $ProfileRoot -Force | Out-Null
@@ -25,6 +29,7 @@ foreach ($profileName in @('account-a', 'account-b')) {
 	$profilePath = Join-Path $ProfileRoot $profileName
 	$profileSkills = Join-Path $profilePath 'skills'
 	New-Item -ItemType Directory -Path $profileSkills -Force | Out-Null
+	& $isolationScript -ProfilePath $profilePath | Out-Null
 
 	$configPath = Join-Path $profilePath 'config.toml'
 	if (-not (Test-Path -LiteralPath $configPath)) {
@@ -43,6 +48,7 @@ foreach ($profileName in @('account-a', 'account-b')) {
 		}
 		New-Item -ItemType Junction -Path $linkPath -Target $skill.FullName | Out-Null
 	}
+	& $isolationScript -ProfilePath $profilePath | Out-Null
 }
 
 $escapedLauncher = $launcherScript.Replace("'", "''")

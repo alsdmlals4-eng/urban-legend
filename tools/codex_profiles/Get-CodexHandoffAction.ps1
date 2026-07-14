@@ -9,14 +9,15 @@ if ($null -eq $RemainingPercent) {
 	exit 0
 }
 
-if ($RemainingPercent -lt 0 -or $RemainingPercent -gt 100) {
+$numericPercent = [double]$RemainingPercent
+if ([double]::IsNaN($numericPercent) -or [double]::IsInfinity($numericPercent) -or $numericPercent -lt 0 -or $numericPercent -gt 100) {
 	throw 'RemainingPercent must be between 0 and 100.'
 }
 
-if ($RemainingPercent -le 2) {
+if ($numericPercent -le 2) {
 	'HARD_STOP'
 }
-elseif ($RemainingPercent -le 5) {
+elseif ($numericPercent -le 5) {
 	'PREPARE'
 }
 else {
