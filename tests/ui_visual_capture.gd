@@ -17,7 +17,12 @@ func _capture() -> void:
 	var scene_path := String(args[0])
 	var output_path := String(args[1])
 	var episode_id := String(args[2]) if args.size() > 2 else "episode_001_afterlife_station"
-	var episode_path := "res://data/episodes/episode_002_red_umbrella_alley.json" if episode_id == "episode_002_red_umbrella_alley" else "res://data/episodes/episode_001_afterlife_station.json"
+	var episode_paths := {
+		"episode_001_afterlife_station": "res://data/episodes/episode_001_afterlife_station.json",
+		"episode_002_red_umbrella_alley": "res://data/episodes/episode_002_red_umbrella_alley.json",
+		"episode_003_dead_frequency_station": "res://data/episodes/episode_003_dead_frequency_station.json"
+	}
+	var episode_path := String(episode_paths.get(episode_id, episode_paths["episode_001_afterlife_station"]))
 	var game_state := root.get_node("GameState")
 	var guard_error := _guard.prepare(game_state.SAVE_FILE_PATH)
 	if not guard_error.is_empty():
