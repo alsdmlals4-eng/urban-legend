@@ -42,6 +42,7 @@
 | 프로젝트 전용 | `docs/IMAGE_ASSET_WORKFLOW.md` | 이미지 콘셉트 승인, 변형, manifest, 덮어쓰기·기술 QA 규칙 |
 | 프로젝트 전용 | `docs/GODOT_NATIVE_UI_ARCHITECTURE.md` | 기존 테마·런타임 편집기를 유지하는 Godot 네이티브 UI 컴포넌트 원칙과 파일럿 기록 |
 | 프로젝트 전용 | `docs/CINEMATIC_FIELD_RECOVERY_UI.md` | 장면 중심 현장 대화·조사 2열 선택·회수 대치 UI 구조와 저장 호환 원칙 |
+| 프로젝트 전용 | `docs/MVP037_CAMPAIGN_CORE.md` | 10일 비선형 데모의 일정·위험 순환·일상 이해도·저장 이관 코어 |
 | 프로젝트 전용 | `docs/MULTIMODEL_20_TASK_EVALUATION.md` | 실제 DeepSeek 20건의 회수율·첫 통과율·토큰·비용 평가 |
 | 프로젝트 전용 | `docs/CODEX_SHARED_WORK_RULES.md` | 도시괴담 기록국 Codex 구현 규칙 |
 | 프로젝트 전용 | `README.md` | 프로젝트 소개, 실행 방법, 현재 MVP 상태 |

@@ -4,7 +4,7 @@ extends Node
 const DEFAULT_EPISODE_PATH := "res://data/episodes/episode_001_afterlife_station.json"
 const RED_UMBRELLA_ALLEY_EPISODE_PATH := "res://data/episodes/episode_002_red_umbrella_alley.json"
 const SAVE_FILE_PATH := "user://urban_legend_save.json"
-const SAVE_VERSION := "mvp-035"
+const SAVE_VERSION := "mvp-037"
 const DEFAULT_DIALOGUE_NODE_ID := "dialogue_intro"
 const DEFAULT_FIELD_NODE_ID := "dialogue_intro"
 const STABILITY_SCHEMA_VERSION := 2
@@ -79,6 +79,7 @@ const AGENT_TRUST_EVENTS: Array[Dictionary] = [
 ]
 const EpisodeLoaderScript := preload("res://scripts/data/episode_loader.gd")
 const CaseDataScript := preload("res://scripts/data/case_data.gd")
+const CampaignStateScript := preload("res://scripts/core/campaign_state.gd")
 
 var current_episode_path := DEFAULT_EPISODE_PATH
 var current_episode_data: Dictionary = {}
@@ -135,6 +136,7 @@ var consumable_inventory: Dictionary = {}
 var consumable_loadout: Dictionary = {}
 var active_consumable_effects: Dictionary = {}
 var rewarded_resolution_grades: Dictionary = {}
+var campaign_state = CampaignStateScript.new()
 
 
 func _ready() -> void:
@@ -216,6 +218,7 @@ func reset_run_state() -> void:
 	consumable_loadout.clear()
 	active_consumable_effects.clear()
 	rewarded_resolution_grades.clear()
+	reset_campaign_state()
 	current_scene_path = SCENE_DIALOGUE
 	current_dialogue_node_id = DEFAULT_DIALOGUE_NODE_ID
 	current_field_node_id = DEFAULT_FIELD_NODE_ID
@@ -235,6 +238,61 @@ func get_current_episode_title() -> String:
 func get_current_episode_id() -> String:
 	var episode: Dictionary = current_episode_data.get("episode", {})
 	return String(episode.get("id", ""))
+
+
+## Resets the 10-day demo campaign without changing episode content.
+func reset_campaign_state() -> void:
+	campaign_state.reset()
+
+
+## Returns a defensive copy of the 10-day campaign state.
+func get_campaign_snapshot() -> Dictionary:
+	return campaign_state.get_snapshot()
+
+
+## Assigns one agent activity to the current day's morning or afternoon slot.
+func set_campaign_schedule(agent_id: String, time_slot: String, activity_id: String) -> bool:
+	return campaign_state.set_schedule(agent_id, time_slot, activity_id)
+
+
+## Returns one agent's assignments for the current campaign day.
+func get_campaign_agent_schedule(agent_id: String) -> Dictionary:
+	return campaign_state.get_agent_schedule(agent_id)
+
+
+## Returns whether every supplied agent has both daily slots assigned.
+func is_campaign_schedule_complete(agent_ids: Array) -> bool:
+	return campaign_state.is_schedule_complete(agent_ids)
+
+
+## Marks the current case as the operation that may consume this campaign day.
+func begin_campaign_operation(case_id: String) -> bool:
+	return campaign_state.begin_operation(case_id)
+
+
+## Completes the active operation and advances at most one campaign day.
+func finish_campaign_operation_day() -> Dictionary:
+	return campaign_state.finish_operation_day()
+
+
+## Removes a successfully resolved case from future daily-risk rotation.
+func resolve_campaign_case(case_id: String, resolution_grade: String) -> bool:
+	return campaign_state.resolve_case(case_id, resolution_grade)
+
+
+## Advances one campaign day and rotates risk across unresolved anomalies.
+func advance_campaign_day(high_spread: bool = false) -> Dictionary:
+	return campaign_state.advance_day(high_spread)
+
+
+## Applies campaign-level anomaly risk and discovery/outbreak thresholds.
+func apply_campaign_case_risk(case_id: String, delta: int) -> int:
+	return campaign_state.apply_case_risk(case_id, delta)
+
+
+## Grants the optional once-per-day case-understanding bonus.
+func grant_daily_case_understanding(case_id: String, reward_type: String, content_id: String = "") -> int:
+	return campaign_state.grant_daily_understanding(case_id, reward_type, content_id)
 
 
 ## Stores the scene path that should be used by Continue.
@@ -1083,6 +1141,7 @@ func record_current_case_report() -> bool:
 		completed_case_reports[existing_index] = report
 	else:
 		completed_case_reports.append(report)
+	resolve_campaign_case(episode_id, selected_resolution_grade)
 	save_game()
 	return true
 
@@ -2252,6 +2311,7 @@ func load_game() -> bool:
 		return false
 
 	var save_data: Dictionary = parsed_data
+	campaign_state.load_save_data(save_data.get("campaign_state", {}))
 	var episode_path := String(save_data.get("episode_path", DEFAULT_EPISODE_PATH))
 	if episode_path.is_empty():
 		episode_path = DEFAULT_EPISODE_PATH
@@ -2381,6 +2441,7 @@ func get_save_file_path() -> String:
 func _make_save_data() -> Dictionary:
 	return {
 		"save_version": SAVE_VERSION,
+		"campaign_state": campaign_state.to_save_data(),
 		"last_updated_at": Time.get_datetime_string_from_system(false, true),
 		"episode_id": get_current_episode_id(),
 		"episode_path": current_episode_path,

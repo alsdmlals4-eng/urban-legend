@@ -5,6 +5,13 @@ const ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")
 const LogGuideScript = preload("res://scripts/ui/log_guide.gd")
 const LogTutorialCatalog = preload("res://scripts/ui/log_tutorial_catalog.gd")
 const AgentSelectionCardScene = preload("res://scenes/ui/agent_selection_card.tscn")
+const SCHEDULE_ACTIVITIES: Array[Dictionary] = [
+	{"id": "investigation", "label": "현장 조사"},
+	{"id": "daily", "label": "일상 교류"},
+	{"id": "research", "label": "괴이 연구"},
+	{"id": "maintenance", "label": "장비 정비"},
+	{"id": "rest", "label": "회복·대기"}
+]
 
 var _equipment_list: VBoxContainer
 var _episode_list: VBoxContainer
@@ -20,6 +27,8 @@ var _agent_detail_label: Label
 var _selected_detail_agent_id := ""
 var _contact_list: VBoxContainer
 var _consumable_list: VBoxContainer
+var _campaign_day_label: Label
+var _schedule_list: VBoxContainer
 
 
 func _ready() -> void:
@@ -58,6 +67,7 @@ func _build_ui() -> void:
 
 	_add_navigation(root)
 	_add_header(root)
+	_add_schedule_panel(root)
 	_add_current_case_panel(root)
 	_add_episode_panel(root)
 	_add_external_contact_panel(root)
@@ -83,6 +93,19 @@ func _add_header(parent: Control) -> void:
 	title.text = "사건 준비"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	parent.add_child(title)
+
+
+func _add_schedule_panel(parent: Control) -> void:
+	var content := _add_section(parent, "오늘의 일정", "전 요원의 오전·오후 업무를 먼저 정합니다. 일상 교류는 선택 보너스이며 사건 해결의 필수 조건이 아닙니다.")
+	_campaign_day_label = Label.new()
+	_campaign_day_label.name = "CampaignDayLabel"
+	_campaign_day_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	content.add_child(_campaign_day_label)
+
+	_schedule_list = VBoxContainer.new()
+	_schedule_list.name = "ScheduleList"
+	_schedule_list.add_theme_constant_override("separation", 8)
+	content.add_child(_schedule_list)
 
 
 func _add_current_case_panel(parent: Control) -> void:
@@ -154,12 +177,16 @@ func _refresh_agents() -> void:
 		_add_agent_card(_agent_list, agent)
 
 	var selected_count := GameState.get_selected_agent_ids().size()
+	var all_agent_ids := _get_all_agent_ids()
+	var schedule_ready := GameState.is_campaign_schedule_complete(all_agent_ids)
 	if _start_button != null:
-		_start_button.disabled = not GameState.can_start_mission_with_agents()
+		_start_button.disabled = not GameState.can_start_mission_with_agents() or not schedule_ready
 
 	if _status_label != null:
-		if GameState.can_start_mission_with_agents():
+		if GameState.can_start_mission_with_agents() and schedule_ready:
 			_status_label.text = "시작 가능: 요원 %d명 편성됨. 장비와 기록물을 확인한 뒤 조사를 시작하세요." % selected_count
+		elif GameState.can_start_mission_with_agents():
+			_status_label.text = "전 요원의 오전·오후 일정을 정해야 오늘 조사를 시작할 수 있습니다."
 		else:
 			_status_label.text = GameState.get_agent_selection_status_text()
 
@@ -331,12 +358,78 @@ func _add_section(parent: Control, title_text: String, description_text: String 
 
 
 func _refresh() -> void:
+	_refresh_schedule()
 	_refresh_episode_selection()
 	_refresh_external_contacts()
 	_refresh_agents()
 	_refresh_equipment()
 	_refresh_records()
 	_refresh_log()
+
+
+func _refresh_schedule() -> void:
+	if _campaign_day_label == null or _schedule_list == null:
+		return
+	var campaign := GameState.get_campaign_snapshot()
+	_campaign_day_label.text = "운영 %d일차 / 최대 %d일 · 폭주 사건이 생겨도 게임 오버 대신 긴급 조사 대상으로 전환됩니다." % [
+		int(campaign.get("day", 1)),
+		int(campaign.get("max_days", 10))
+	]
+	_clear_children(_schedule_list)
+	for agent in GameState.get_agents():
+		if typeof(agent) != TYPE_DICTIONARY:
+			continue
+		var agent_id := String(agent.get("id", ""))
+		if agent_id.is_empty():
+			continue
+		var row := HBoxContainer.new()
+		row.add_theme_constant_override("separation", 8)
+		_schedule_list.add_child(row)
+
+		var name_label := Label.new()
+		name_label.text = String(agent.get("name", agent_id))
+		name_label.custom_minimum_size.x = 140
+		row.add_child(name_label)
+
+		var schedule := GameState.get_campaign_agent_schedule(agent_id)
+		for time_slot in ["morning", "afternoon"]:
+			var picker := OptionButton.new()
+			picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			picker.add_item("%s 미정" % ("오전" if time_slot == "morning" else "오후"))
+			picker.set_item_metadata(0, "")
+			var selected_index := 0
+			for activity in SCHEDULE_ACTIVITIES:
+				var item_index := picker.item_count
+				picker.add_item("%s · %s" % ["오전" if time_slot == "morning" else "오후", String(activity.get("label", ""))])
+				picker.set_item_metadata(item_index, String(activity.get("id", "")))
+				if String(schedule.get(time_slot, "")) == String(activity.get("id", "")):
+					selected_index = item_index
+			picker.select(selected_index)
+			picker.item_selected.connect(func(index: int) -> void:
+				var activity_id := String(picker.get_item_metadata(index))
+				if not activity_id.is_empty():
+					_set_schedule_activity(agent_id, time_slot, activity_id)
+			)
+			row.add_child(picker)
+
+
+func _set_schedule_activity(agent_id: String, time_slot: String, activity_id: String) -> void:
+	if not GameState.set_campaign_schedule(agent_id, time_slot, activity_id):
+		if _status_label != null:
+			_status_label.text = "일정 항목을 저장하지 못했습니다."
+		return
+	GameState.save_game()
+	_refresh_agents()
+
+
+func _get_all_agent_ids() -> Array:
+	var result: Array = []
+	for agent in GameState.get_agents():
+		if typeof(agent) == TYPE_DICTIONARY:
+			var agent_id := String(agent.get("id", ""))
+			if not agent_id.is_empty():
+				result.append(agent_id)
+	return result
 
 
 func _refresh_external_contacts() -> void:
@@ -525,6 +618,12 @@ func _toggle_equipment(equipment_id: String) -> void:
 func _start_investigation() -> void:
 	if not GameState.can_start_mission_with_agents():
 		_status_label.text = GameState.get_agent_selection_status_text()
+		return
+	if not GameState.is_campaign_schedule_complete(_get_all_agent_ids()):
+		_status_label.text = "전 요원의 오전·오후 일정을 먼저 정하세요."
+		return
+	if not GameState.begin_campaign_operation(GameState.get_current_episode_id()):
+		_status_label.text = "현재 사건을 오늘의 조사 일정으로 등록하지 못했습니다."
 		return
 
 	GameState.set_current_scene_path(GameState.SCENE_INVESTIGATION)
