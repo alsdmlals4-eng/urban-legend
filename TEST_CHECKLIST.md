@@ -2,7 +2,7 @@
 
 ## 목적
 
-현재 `MVP-041`, `Ver 4.0`, 저장 스키마 `mvp-038`의 핵심 플레이와 문서 동기화를 검증한다. 과거 누적 체크리스트는 `docs/archive/history/TEST_CHECKLIST_PRE_LIVING_GDD.md`에 보관한다.
+현재 `MVP-042`, `Ver 4.1`, 저장 스키마 `mvp-039`의 핵심 플레이와 문서 동기화를 검증한다. `mvp-038` 저장은 일상 상태를 빈값으로 이관한다. 과거 누적 체크리스트는 `docs/archive/history/TEST_CHECKLIST_PRE_LIVING_GDD.md`에 보관한다.
 
 ## 작업 전 확인
 
@@ -87,7 +87,7 @@ git diff --check
 
 ## MVP-041 세 사건 텍스트 노벨 캠페인 QA
 
-완료 기록: [`MVP041_THREE_CASE_CAMPAIGN_MANUAL_QA.md`](docs/qa/MVP041_THREE_CASE_CAMPAIGN_MANUAL_QA.md) — 135 passed, 0 failed.
+완료 기록: [`MVP041_THREE_CASE_CAMPAIGN_MANUAL_QA.md`](docs/qa/MVP041_THREE_CASE_CAMPAIGN_MANUAL_QA.md) — 현행 회귀 136 passed, 0 failed.
 
 - [x] 1차 텍스트 노벨 참고작을 활협전·화산의 딸·서울 2033·The Winter Tower로 확인하고 채택·조건부 채택·제외를 기록했다.
 - [x] DeepSeek R0 읽기 전용 반대검토를 Codex 출처 확인과 분리했고, 외부 산출물로 게임 파일을 바꾸지 않았다.
@@ -97,6 +97,18 @@ git diff --check
 - [x] 폐주파수에서 조사 판단 블록, 첫 오대응 이유, 올바른 회수 패턴, 결과 `ReasoningSummary`, 보고서·DB·저장 왕복을 확인했다.
 - [x] 1280×720과 1920×1080 OpenGL 캡처에서 조사·오대응 회수 근거·결과 판단 근거의 줄바꿈·가림·스크롤을 확인했다.
 - [x] Day 10 데모 종료까지 세 사건의 해결 상태가 유지된다.
+
+## MVP-042 일정 비소모 일상 에피소드
+
+완료 기록: [`MVP042_DAILY_EPISODE_VALIDATION.md`](docs/qa/MVP042_DAILY_EPISODE_VALIDATION.md) — 28 passed, 0 failed 및 UI 흐름 테스트 통과.
+
+- [x] 저승역·빨간 우산 카드는 관련 사건이 `lead`·미해결인 HQ 준비 화면에서만 표시된다.
+- [x] 폐주파수 카드는 Day 8 자연 발견 전 숨겨지고, 자연 발견 후에만 표시된다.
+- [x] 카드마다 도입문, 2개 선택, 즉시 결과, 요원 반응, DB 기록이 있다. 두 선택은 같은 진행 상태로 합류한다.
+- [x] 카드 시작·완료 전후 반일·일정·위험도·현장 편성·세력 의뢰가 변하지 않는다.
+- [x] 최초 완료 +2는 기존 하루 1회·사건별 최대 +10 이해도 상한을 따른다.
+- [x] 진행 중 카드와 완료 기록이 저장·재개되고, `mvp-038 → mvp-039`은 빈 일상 상태로 이관된다.
+- [x] 1280×720·1920×1080에서 HQ 카드, 선택 직후 결과, DB 기록의 줄바꿈·가림·포커스·HQ 복귀 흐름을 확인했다.
 
 ## 추리 UX 검증 패스
 

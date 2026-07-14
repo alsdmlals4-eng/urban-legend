@@ -26,7 +26,7 @@ func _ready() -> void:
 
 func _run_state_tests() -> void:
 	GameState.reset_run_state()
-	_check(GameState.SAVE_VERSION == "mvp-038", "save version is mvp038 after sequential campaign migration")
+	_check(GameState.SAVE_VERSION == "mvp-039", "save version is mvp039 after daily episode migration")
 	_check(not GameState.has_seen_log_tutorial("main_welcome"), "tutorial starts unseen")
 	_check(GameState.claim_log_tutorial("main_welcome", false), "first claim succeeds")
 	_check(not GameState.claim_log_tutorial("main_welcome", false), "duplicate claim is rejected")
@@ -130,7 +130,7 @@ func _check_scene_claims_tutorial(scene_path: String, tutorial_id: String) -> vo
 			guide.advance()
 	_check(GameState.has_seen_log_tutorial(tutorial_id), "%s claims %s after close" % [scene_path.get_file(), tutorial_id])
 	if scene_path.ends_with("main_menu.tscn"):
-		_check(_node_has_text(scene, "Ver 4.0"), "main menu displays current Ver 4.0")
+		_check(_node_has_text(scene, "Ver 4.1"), "main menu displays current Ver 4.1")
 		_check(not GameState.has_save_file(), "main tutorial does not create a fake continue save")
 	if scene_path.ends_with("database_view.tscn"):
 		_check(not GameState.has_save_file(), "database tutorial does not create a fake continue save")

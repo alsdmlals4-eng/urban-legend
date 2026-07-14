@@ -27,6 +27,7 @@ var _consumable_list: VBoxContainer
 var _campaign_day_label: Label
 var _schedule_list: VBoxContainer
 var _current_case_label: Label
+var _daily_episode_list: VBoxContainer
 
 
 func _ready() -> void:
@@ -67,6 +68,7 @@ func _build_ui() -> void:
 	_add_header(root)
 	_add_schedule_panel(root)
 	_add_current_case_panel(root)
+	_add_daily_episode_panel(root)
 	_add_episode_panel(root)
 	_add_external_contact_panel(root)
 	_add_agent_panel(root)
@@ -120,6 +122,14 @@ func _add_episode_panel(parent: Control) -> void:
 	_episode_list = VBoxContainer.new()
 	_episode_list.add_theme_constant_override("separation", 6)
 	content.add_child(_episode_list)
+
+
+func _add_daily_episode_panel(parent: Control) -> void:
+	var content := _add_section(parent, "일상 에피소드", "HQ에서만 확인하는 선택형 요원 대화입니다. 반일 일정·조사·위험도·의뢰는 소모하지 않습니다.")
+	_daily_episode_list = VBoxContainer.new()
+	_daily_episode_list.name = "DailyEpisodeList"
+	_daily_episode_list.add_theme_constant_override("separation", 8)
+	content.add_child(_daily_episode_list)
 
 
 func _add_agent_panel(parent: Control) -> void:
@@ -366,11 +376,58 @@ func _add_section(parent: Control, title_text: String, description_text: String 
 func _refresh() -> void:
 	_refresh_schedule()
 	_refresh_episode_selection()
+	_refresh_daily_episodes()
 	_refresh_external_contacts()
 	_refresh_agents()
 	_refresh_equipment()
 	_refresh_records()
 	_refresh_log()
+
+
+func _refresh_daily_episodes() -> void:
+	if _daily_episode_list == null:
+		return
+	_clear_children(_daily_episode_list)
+	var episodes := GameState.get_available_daily_episodes()
+	if episodes.is_empty():
+		_daily_episode_list.add_child(_make_label("현재 HQ에서 열 수 있는 일상 기록이 없습니다. 발견된 미해결 사건의 요원 기록만 표시됩니다."))
+		return
+	for episode_value in episodes:
+		if typeof(episode_value) != TYPE_DICTIONARY:
+			continue
+		var episode: Dictionary = episode_value
+		var panel := PanelContainer.new()
+		panel.name = "DailyEpisode_%s" % String(episode.get("id", "episode"))
+		_daily_episode_list.add_child(panel)
+		var content := VBoxContainer.new()
+		content.add_theme_constant_override("separation", 6)
+		panel.add_child(content)
+		var title := Label.new()
+		title.text = "%s · %s / %s" % [
+			String(episode.get("title", "일상 에피소드")),
+			String(episode.get("agent_name", "요원")),
+			String(episode.get("case_title", "관련 사건"))
+		]
+		title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		content.add_child(title)
+		var description := Label.new()
+		description.text = "일정 소모 없음 · 완료 시 최초 1회 이해도 +2(사건별 최대 +10) · 선택은 DB에 기록됩니다."
+		description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		content.add_child(description)
+		var button := Button.new()
+		button.name = "DailyEpisodeButton_%s" % String(episode.get("id", "episode"))
+		button.text = "기록 대화 열기"
+		button.pressed.connect(func() -> void: _open_daily_episode(String(episode.get("id", ""))))
+		content.add_child(button)
+
+
+func _open_daily_episode(episode_id: String) -> void:
+	var result := GameState.begin_daily_episode(episode_id)
+	if not bool(result.get("successful", false)):
+		_status_label.text = String(result.get("error", "일상 에피소드를 열지 못했습니다."))
+		_refresh_daily_episodes()
+		return
+	get_tree().change_scene_to_file(GameState.SCENE_DAILY_EPISODE)
 
 
 func _refresh_schedule() -> void:
@@ -439,7 +496,7 @@ func _refresh_schedule() -> void:
 				_set_schedule_activity(agent_id, time_slot, activity_id)
 		)
 		row.add_child(picker)
-	_schedule_list.add_child(_make_label("일상 교류·괴이 연구·장비 정비는 실제 콘텐츠 연결 후 사용할 수 있습니다."))
+	_schedule_list.add_child(_make_label("일상 에피소드는 아래 카드에서 일정과 별개로 확인할 수 있습니다. 괴이 연구·장비 정비는 실제 콘텐츠 연결 후 사용할 수 있습니다."))
 
 
 func _set_schedule_activity(agent_id: String, time_slot: String, activity_id: String) -> void:

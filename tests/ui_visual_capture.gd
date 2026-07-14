@@ -40,6 +40,13 @@ func _capture() -> void:
 			game_state.start_resolution_phase()
 			game_state.save_recovery_result(true, "core_recovered", 100)
 			game_state.record_current_case_report()
+	if ui_state.begins_with("mvp042_"):
+		game_state.reset_run_state()
+		if ui_state == "mvp042_daily" or ui_state == "mvp042_daily_result":
+			game_state.begin_daily_episode("daily_afterlife_sign_blanks")
+		elif ui_state == "mvp042_database":
+			game_state.begin_daily_episode("daily_afterlife_sign_blanks")
+			game_state.resolve_daily_episode_choice("preserve_order")
 	var error := change_scene_to_file(scene_path)
 	if error != OK:
 		push_error("failed to load scene: %s" % scene_path)
@@ -48,6 +55,15 @@ func _capture() -> void:
 		return
 	for _frame in range(5):
 		await process_frame
+	if (ui_state == "mvp042_daily" or ui_state == "mvp042_daily_result") and current_scene.find_child("DailyEpisodeChoices", true, false) == null:
+		push_error("MVP-042 daily capture did not build daily episode choices")
+		_guard.restore()
+		quit(6)
+		return
+	if ui_state == "mvp042_daily_result" and current_scene.has_method("_resolve_choice"):
+		current_scene.call("_resolve_choice", "preserve_order")
+		for _frame in range(3):
+			await process_frame
 	if ui_state == "method_picker" and current_scene.has_method("_get_investigation_points"):
 		var points: Array = current_scene.call("_get_investigation_points")
 		for point in points:
@@ -80,6 +96,10 @@ func _capture() -> void:
 		current_scene.call("_toggle_clue_drawer")
 		for _frame in range(3):
 			await process_frame
+	if ui_state == "mvp042_database" and current_scene.has_method("_show_section"):
+		current_scene.call("_show_section", "daily_episode_records")
+		for _frame in range(3):
+			await process_frame
 	if args.size() > 3 and String(args[3]) == "editor":
 		var f2 := InputEventKey.new()
 		f2.keycode = KEY_F2
@@ -94,6 +114,7 @@ func _capture() -> void:
 			scroll.ensure_control_visible(focus_control)
 			for _frame in range(3):
 				await process_frame
+	await RenderingServer.frame_post_draw
 	var image := root.get_viewport().get_texture().get_image()
 	if image == null or image.is_empty():
 		push_error("captured image is empty")

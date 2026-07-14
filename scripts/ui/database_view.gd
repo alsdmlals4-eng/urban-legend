@@ -128,6 +128,14 @@ func _build_section_buttons() -> void:
 	)
 	_section_list.add_child(completed_reports_button)
 
+	var daily_records_button := Button.new()
+	daily_records_button.name = "DailyEpisodeRecordsButton"
+	daily_records_button.text = "일상 에피소드 기록"
+	daily_records_button.pressed.connect(func() -> void:
+		_show_section("daily_episode_records")
+	)
+	_section_list.add_child(daily_records_button)
+
 
 func _show_section(section_id: String) -> void:
 	if section_id == "mvp13_rewards":
@@ -135,6 +143,9 @@ func _show_section(section_id: String) -> void:
 		return
 	if section_id == "completed_case_reports":
 		_show_completed_case_reports()
+		return
+	if section_id == "daily_episode_records":
+		_show_daily_episode_records()
 		return
 
 	var section := UrbanLegendState.get_section(section_id)
@@ -197,6 +208,39 @@ func _show_completed_case_reports() -> void:
 		_detail_items.add_child(report_button)
 
 	_show_completed_case_report(reports[0], report_detail)
+
+
+func _show_daily_episode_records() -> void:
+	_detail_title.text = "일상 에피소드 기록"
+	_detail_summary.text = "HQ에서 확인한 요원 대화의 선택과 즉시 결과입니다. 이 기록은 반일 일정이나 사건 진행을 소비하지 않습니다."
+	_clear_detail_items()
+	var records := GameState.get_completed_daily_episode_records()
+	if records.is_empty():
+		_add_detail_text("아직 기록된 일상 에피소드가 없습니다. 발견된 미해결 사건이 있으면 HQ 준비 화면에서 선택할 수 있습니다.")
+		return
+	for value in records:
+		if typeof(value) != TYPE_DICTIONARY:
+			continue
+		var record: Dictionary = value
+		var panel := PanelContainer.new()
+		_detail_items.add_child(panel)
+		var content := VBoxContainer.new()
+		content.add_theme_constant_override("separation", 5)
+		panel.add_child(content)
+		_add_text_entries(String(record.get("title", "일상 에피소드")), [
+			"담당 요원: %s / 관련 사건: %s" % [String(record.get("agent_name", "요원")), String(record.get("case_title", "관련 사건"))],
+			"선택: %s" % String(record.get("choice_label", "기록")),
+			String(record.get("record_summary", "")),
+			"보상: 사건 이해도 %+d / %d일차 %s" % [int(record.get("understanding_reward", 0)), int(record.get("day", 1)), "오전" if String(record.get("time_slot", "morning")) == "morning" else "오후"]
+		], content)
+		var result_label := Label.new()
+		result_label.text = String(record.get("result_text", ""))
+		result_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		content.add_child(result_label)
+		var reaction_label := Label.new()
+		reaction_label.text = String(record.get("agent_reaction", ""))
+		reaction_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		content.add_child(reaction_label)
 
 
 func _show_completed_case_report(report: Dictionary, parent: VBoxContainer) -> void:
