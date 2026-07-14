@@ -4,14 +4,14 @@
 
 ```yaml
 status: COMPLETE
-goal: MVP-038 기준 살아 있는 통합 게임기획서·상시 최적화 체계 구축
+goal: GDD v0.2 상세화·추리 UX 벤치마킹과 문서 전용 백로그 갱신
 branch: main
-completed_work_commit: b7dad0ec1a3293a4c10f0f0aeb67cbfd03129db7
-tests: GDD source/hash CURRENT; DOCX 169 paragraphs/20 tables/5 images; section, heading, image, table geometry and accessibility audits PASS; Markdown links 0 missing; workflow, handoff and multi-model contracts PASS; JSON 3 files PASS; Godot 4.7 headless project load PASS; git diff check PASS
-changed_files: living Markdown GDD and decorated DOCX generator/output, MVP-038 current docs, documentation map/work rules, compatibility stubs and non-destructive archive
-external_artifacts: reference style only C:\Users\user\Downloads\룰렛바운드_게임기획서_v0.7.docx
-remaining_work: DOCX page PNG visual QA was unavailable because LibreOffice/Word renderer is not installed; third case, daily episodes, research/equipment content and final 180-220 minute playtime measurement remain later milestones
-next_action: open docs/GAME_DESIGN_DOCUMENT.md and docs/URBAN_LEGEND_GAME_DESIGN.docx together; after the next design change rebuild/check DOCX and show both files again
+completed_work_commit: 6e37a0e5828245ee7b716cbb43455d4c31f3584e
+tests: GDD source/hash CURRENT; DOCX 194 paragraphs/30 tables/5 images; section, heading, image, table geometry and accessibility audits PASS; Markdown links 0 missing; workflow and multi-model contracts PASS; git diff check PASS
+changed_files: GDD v0.2 detailed UX/case/acceptance specifications, benchmark evidence review, roadmap and manual UX verification checklist, regenerated DOCX
+external_artifacts: DeepSeek R0 research report captured at C:\Users\user\AppData\Local\Codex\agent-workflow\runs\gdd-mystery-ux-benchmark-20260714\WORKER_REPORT.txt; its worktree changes are unapproved and not integrated because three contract-external temporary reports were created
+remaining_work: DOCX page PNG visual QA remains unavailable because LibreOffice/Word renderer is not installed; worker verification command timed out and its dirty worktree is preserved; third case, daily episodes, research/equipment content and final 180-220 minute playtime measurement remain later milestones
+next_action: manually run the two implemented cases with the new 추리 UX 검증 패스, then decide any high-risk UI, JSON, DB, or save change in a separate MVP
 main_integrated: true
 origin_pushed: true
 ```
