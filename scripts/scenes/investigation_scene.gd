@@ -1019,11 +1019,11 @@ func _select_reasoning_choice(choice: Dictionary) -> void:
 
 
 func _try_analysis_support(point_id: String, roll_override: float = -1.0) -> void:
-	if point_id.is_empty() or GameState.get_protagonist_agent_id() == "agent_kwon_narae":
+	if point_id.is_empty() or GameState.get_protagonist_agent_id() == "agent_oh_hyun":
 		return
-	if not GameState.get_support_agent_ids().has("agent_kwon_narae"):
+	if not GameState.get_support_agent_ids().has("agent_oh_hyun"):
 		return
-	var attempt_id := "mvp043_analysis:%s" % point_id
+	var attempt_id := "mvp043_official_comparison:%s" % point_id
 	var success_id := "%s:success:record_personal_destination" % attempt_id
 	if GameState.has_used_agent_support(success_id):
 		_support_eliminated_choices[point_id] = "record_personal_destination"
@@ -1031,7 +1031,7 @@ func _try_analysis_support(point_id: String, roll_override: float = -1.0) -> voi
 	if GameState.has_used_agent_support(attempt_id):
 		return
 	GameState.mark_agent_support_used(attempt_id)
-	var result := GameState.roll_agent_auto_action("agent_kwon_narae", "analysis", roll_override, 20.0, 90.0)
+	var result := GameState.roll_agent_auto_action("agent_oh_hyun", "analysis", roll_override, 20.0, 90.0)
 	if bool(result.get("triggered", false)):
 		GameState.mark_agent_support_used(success_id)
 		_support_eliminated_choices[point_id] = "record_personal_destination"
@@ -1040,7 +1040,7 @@ func _try_analysis_support(point_id: String, roll_override: float = -1.0) -> voi
 func _try_protection_support(roll_override: float = -1.0) -> bool:
 	if GameState.get_protagonist_agent_id() == "agent_kang_ijun" or not GameState.get_support_agent_ids().has("agent_kang_ijun"):
 		return false
-	var attempt_id := "mvp043_protection:first_risk"
+	var attempt_id := "mvp043_safety_line:first_risk"
 	var success_id := "%s:success" % attempt_id
 	if GameState.has_used_agent_support(success_id):
 		return true
@@ -1055,18 +1055,18 @@ func _try_protection_support(roll_override: float = -1.0) -> bool:
 
 
 func _try_observation_support(point_id: String, roll_override: float = -1.0) -> String:
-	if point_id.is_empty() or GameState.get_protagonist_agent_id() == "agent_oh_hyun":
+	if point_id.is_empty() or GameState.get_protagonist_agent_id() == "agent_kwon_narae":
 		return ""
-	if not GameState.get_support_agent_ids().has("agent_oh_hyun"):
+	if not GameState.get_support_agent_ids().has("agent_kwon_narae"):
 		return ""
-	var attempt_id := "mvp043_observation:%s" % point_id
+	var attempt_id := "mvp043_field_reconstruction:%s" % point_id
 	var success_id := "%s:success" % attempt_id
 	if GameState.has_used_agent_support(success_id):
 		return "공백 직후의 식별음만 세 사람에게 동일하게 들립니다."
 	if GameState.has_used_agent_support(attempt_id):
 		return ""
 	GameState.mark_agent_support_used(attempt_id)
-	var result := GameState.roll_agent_auto_action("agent_oh_hyun", "analysis", roll_override, 20.0, 90.0)
+	var result := GameState.roll_agent_auto_action("agent_kwon_narae", "analysis", roll_override, 20.0, 90.0)
 	if not bool(result.get("triggered", false)):
 		return ""
 	GameState.mark_agent_support_used(success_id)

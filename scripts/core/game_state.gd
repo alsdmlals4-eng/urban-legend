@@ -82,6 +82,7 @@ const AGENT_TRUST_EVENTS: Array[Dictionary] = [
 const EpisodeLoaderScript := preload("res://scripts/data/episode_loader.gd")
 const CaseDataScript := preload("res://scripts/data/case_data.gd")
 const CampaignStateScript := preload("res://scripts/core/campaign_state.gd")
+const AgentCatalogScript := preload("res://scripts/data/agent_catalog.gd")
 const DailyEpisodeCatalogScript := preload("res://scripts/data/daily_episode_catalog.gd")
 
 var current_episode_path := DEFAULT_EPISODE_PATH
@@ -143,6 +144,7 @@ var active_consumable_effects: Dictionary = {}
 var rewarded_resolution_grades: Dictionary = {}
 var campaign_state = CampaignStateScript.new()
 var daily_episode_catalog = DailyEpisodeCatalogScript.new()
+var agent_catalog = AgentCatalogScript.new()
 
 
 func _ready() -> void:
@@ -171,8 +173,9 @@ func get_current_episode() -> Dictionary:
 ## Restarts the afterlife station MVP from the beginning.
 func restart_afterlife_station_flow(agent_ids: Array = []) -> bool:
 	reset_run_state()
-	var tutorial_team := agent_ids if not agent_ids.is_empty() else ["agent_oh_hyun", "agent_kwon_narae", "agent_kang_ijun"]
+	var tutorial_team := agent_ids if not agent_ids.is_empty() else ["agent_kwon_narae", "agent_oh_hyun", "agent_kang_ijun"]
 	set_selected_agent_ids(tutorial_team)
+	_ensure_kwon_protagonist()
 	current_scene_path = SCENE_DIALOGUE
 	return not current_episode_data.is_empty()
 
@@ -233,6 +236,7 @@ func reset_run_state() -> void:
 	current_field_node_id = DEFAULT_FIELD_NODE_ID
 	current_minigame_id = DEFAULT_MINIGAME_ID
 	load_episode(DEFAULT_EPISODE_PATH)
+	set_selected_agent_ids(["agent_kwon_narae", "agent_oh_hyun", "agent_kang_ijun"])
 	_clear_investigation_method_state()
 	reset_recovery_pattern_state(false)
 
@@ -832,12 +836,12 @@ func get_victims() -> Array:
 
 ## Returns recruitable agent records.
 func get_agents() -> Array:
-	return CaseDataScript.get_agents(current_episode_data)
+	return agent_catalog.merge_agents(CaseDataScript.get_agents(current_episode_data))
 
 
 ## Returns one recruitable agent by id.
 func get_agent_by_id(agent_id: String) -> Dictionary:
-	return CaseDataScript.get_agent_by_id(current_episode_data, agent_id)
+	return agent_catalog.get_agent(CaseDataScript.get_agents(current_episode_data), agent_id)
 
 
 ## Returns the player's base investigation stats.
@@ -885,13 +889,19 @@ func select_agent(agent_id: String) -> bool:
 
 ## Removes one agent from the current mission formation.
 func deselect_agent(agent_id: String) -> void:
+	if agent_id == "agent_kwon_narae":
+		return
 	selected_agent_ids.erase(agent_id)
 
 
 ## Replaces the current formation with valid agent ids.
 func set_selected_agent_ids(agent_ids: Array) -> void:
 	selected_agent_ids.clear()
+	var ordered: Array[String] = ["agent_kwon_narae"]
 	for agent_id in _to_string_array(agent_ids):
+		if agent_id != "agent_kwon_narae" and not ordered.has(agent_id):
+			ordered.append(agent_id)
+	for agent_id in ordered:
 		if selected_agent_ids.size() >= MAX_SELECTED_AGENTS:
 			break
 		select_agent(agent_id)
@@ -924,6 +934,8 @@ func get_protagonist_agent_id() -> String:
 ## Moves one valid selected agent to the first position while preserving the saved array format.
 func set_protagonist_agent_id(agent_id: String) -> bool:
 	var clean_id := agent_id.strip_edges()
+	if clean_id != "agent_kwon_narae":
+		return false
 	if get_agent_by_id(clean_id).is_empty():
 		return false
 	if not selected_agent_ids.has(clean_id) and not select_agent(clean_id):
@@ -931,6 +943,19 @@ func set_protagonist_agent_id(agent_id: String) -> bool:
 	selected_agent_ids.erase(clean_id)
 	selected_agent_ids.push_front(clean_id)
 	return true
+
+
+func _ensure_kwon_protagonist() -> void:
+	const KWON_ID := "agent_kwon_narae"
+	var reordered: Array = [KWON_ID]
+	for value in selected_agent_ids:
+		var agent_id := String(value)
+		if agent_id == KWON_ID or reordered.has(agent_id) or get_agent_by_id(agent_id).is_empty():
+			continue
+		reordered.append(agent_id)
+		if reordered.size() >= MAX_SELECTED_AGENTS:
+			break
+	set_selected_agent_ids(reordered)
 
 
 ## Returns up to two selected agents after the protagonist.
@@ -965,9 +990,11 @@ func set_support_agent_ids(agent_ids: Array) -> bool:
 ## Returns the fixed MVP-043 support behavior for one agent id.
 func get_agent_support_role(agent_id: String) -> String:
 	return {
-		"agent_kwon_narae": "analysis",
-		"agent_oh_hyun": "observation",
-		"agent_kang_ijun": "protection"
+		"agent_kwon_narae": "field_reconstruction",
+		"agent_yoon_seoha": "forced_reaction",
+		"agent_oh_hyun": "official_comparison",
+		"agent_kang_ijun": "safety_line",
+		"agent_han_yuri": "memory_echo"
 	}.get(agent_id, "")
 
 
@@ -1075,6 +1102,21 @@ func mark_agent_support_used(support_id: String) -> void:
 ## Returns used recovery support ids for save data.
 func get_used_agent_supports() -> Array:
 	return used_agent_supports.duplicate()
+
+
+func _migrate_mvp043_support_aliases() -> void:
+	var aliases: Array[String] = []
+	for value in used_agent_supports:
+		var support_id := String(value)
+		if support_id.begins_with("mvp043_analysis:"):
+			aliases.append(support_id.replace("mvp043_analysis:", "mvp043_official_comparison:"))
+		elif support_id.begins_with("mvp043_observation:"):
+			aliases.append(support_id.replace("mvp043_observation:", "mvp043_field_reconstruction:"))
+		elif support_id.begins_with("mvp043_protection:"):
+			aliases.append(support_id.replace("mvp043_protection:", "mvp043_safety_line:"))
+	for alias in aliases:
+		if not used_agent_supports.has(alias):
+			used_agent_supports.append(alias)
 
 
 ## Returns the current investigation partner trust delta for one agent.
@@ -2662,13 +2704,18 @@ func load_game() -> bool:
 	var save_data: Dictionary = parsed_data
 	var loaded_save_version := String(save_data.get("save_version", ""))
 	campaign_state.load_save_data(save_data.get("campaign_state", {}), loaded_save_version == "mvp-037")
+	var saved_team := _to_string_array(save_data.get("selected_agent_ids", []))
+	var previous_protagonist := String(saved_team[0]) if not saved_team.is_empty() else ""
+	if not previous_protagonist.is_empty() and previous_protagonist != "agent_kwon_narae":
+		campaign_state.copy_current_slot_schedule(previous_protagonist, "agent_kwon_narae")
 	var episode_path := String(save_data.get("episode_path", DEFAULT_EPISODE_PATH))
 	if episode_path.is_empty():
 		episode_path = DEFAULT_EPISODE_PATH
 	if not load_episode(episode_path):
 		return false
 
-	set_selected_agent_ids(_to_string_array(save_data.get("selected_agent_ids", [])))
+	set_selected_agent_ids(saved_team if not saved_team.is_empty() else ["agent_kwon_narae", "agent_oh_hyun", "agent_kang_ijun"])
+	_ensure_kwon_protagonist()
 	flags = _to_unique_string_array(save_data.get("flags", []))
 	seen_hint_ids = _to_unique_string_array(save_data.get("seen_hint_ids", []))
 	seen_log_tutorial_ids = _to_unique_string_array(save_data.get("seen_log_tutorial_ids", []))
@@ -2680,6 +2727,7 @@ func load_game() -> bool:
 	agent_trust_changes = agent_trust.duplicate(true)
 	triggered_agent_event_ids = _to_unique_string_array(save_data.get("triggered_agent_event_ids", []))
 	used_agent_supports = _to_unique_string_array(save_data.get("used_agent_supports", []))
+	_migrate_mvp043_support_aliases()
 	unlocked_records = _to_unique_string_array(save_data.get("unlocked_records", []))
 	unlocked_equipment = _to_unique_string_array(save_data.get("unlocked_equipment", []))
 	unlocked_research_rewards = _to_unique_string_array(save_data.get("unlocked_research_rewards", []))

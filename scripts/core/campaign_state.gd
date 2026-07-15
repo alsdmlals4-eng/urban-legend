@@ -102,6 +102,29 @@ func get_agent_schedule(agent_id: String) -> Dictionary:
 	return value.duplicate(true) if typeof(value) == TYPE_DICTIONARY else {}
 
 
+# 현재 반일의 일정만 다른 요원에게 복사한다. 원본 일정은 유지한다.
+func copy_current_slot_schedule(source_agent_id: String, target_agent_id: String) -> bool:
+	var source_id := source_agent_id.strip_edges()
+	var target_id := target_agent_id.strip_edges()
+	if source_id.is_empty() or target_id.is_empty() or source_id == target_id:
+		return false
+	var slot := get_current_slot()
+	var source_activity := String(get_agent_schedule(source_id).get(slot, ""))
+	if not _is_valid_activity(source_activity):
+		return false
+	var schedules: Dictionary = _state.get("schedules", {})
+	var day_key := str(int(_state.get("day", 1)))
+	var day_schedule: Dictionary = schedules.get(day_key, {}).duplicate(true)
+	var target_schedule: Dictionary = day_schedule.get(target_id, {}).duplicate(true)
+	if _is_valid_activity(String(target_schedule.get(slot, ""))):
+		return false
+	target_schedule[slot] = source_activity
+	day_schedule[target_id] = target_schedule
+	schedules[day_key] = day_schedule
+	_state["schedules"] = schedules
+	return true
+
+
 func is_schedule_complete(agent_ids: Array) -> bool:
 	if agent_ids.is_empty() or get_slot_phase() != "planning":
 		return false

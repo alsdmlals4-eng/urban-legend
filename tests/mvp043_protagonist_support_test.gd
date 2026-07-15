@@ -23,21 +23,32 @@ func _run() -> void:
 	_prepared = true
 	game_state.reset_run_state()
 	game_state.set_selected_agent_ids(["agent_oh_hyun", "agent_kwon_narae", "agent_kang_ijun"])
-	_expect(game_state.get_protagonist_agent_id() == "agent_oh_hyun", "first valid saved agent should be the protagonist")
-	_expect(game_state.get_support_agent_ids() == ["agent_kwon_narae", "agent_kang_ijun"], "remaining two agents should be supports")
+	_expect(game_state.get_protagonist_agent_id() == "agent_kwon_narae", "Kwon Narae should be the fixed protagonist")
+	_expect(game_state.get_support_agent_ids() == ["agent_oh_hyun", "agent_kang_ijun"], "the remaining two agents should be supports")
 	_expect(game_state.can_start_mission_with_agents(), "one protagonist should satisfy the formation minimum")
-	game_state.set_protagonist_agent_id("agent_kwon_narae")
-	_expect(game_state.get_selected_agent_ids() == ["agent_kwon_narae", "agent_oh_hyun", "agent_kang_ijun"], "changing protagonist should only reorder the existing save array")
-	game_state.set_protagonist_agent_id("agent_oh_hyun")
+	_expect(not game_state.set_protagonist_agent_id("agent_oh_hyun"), "another agent cannot replace the fixed protagonist")
+	_expect(game_state.get_agents().size() == 5, "the shared catalog should expose five initial agents")
+	_expect(not game_state.get_agent_by_id("agent_yoon_seoha").is_empty() and not game_state.get_agent_by_id("agent_han_yuri").is_empty(), "Yoon Seoha and Han Yuri should be formation candidates")
 
 	var forced_success: Dictionary = game_state.roll_agent_auto_action("agent_kwon_narae", "analysis", 0.0, 20.0, 90.0)
 	_expect(bool(forced_success.get("triggered", false)), "optional zero roll should make support tests deterministic")
 	_expect(float(forced_success.get("chance", 100.0)) < 100.0, "tutorial support chance should remain below 100 percent")
 
-	game_state.save_game()
-	game_state.set_selected_agent_ids(["agent_kang_ijun"])
+	var legacy_save: Dictionary = game_state.call("_make_save_data")
+	legacy_save["selected_agent_ids"] = ["agent_oh_hyun", "agent_kwon_narae", "agent_kang_ijun"]
+	legacy_save["used_agent_supports"] = ["mvp043_analysis:point_platform_speaker", "mvp043_analysis:point_platform_speaker:success:record_personal_destination", "mvp043_protection:first_risk"]
+	var campaign: Dictionary = legacy_save.get("campaign_state", {})
+	campaign["schedules"] = {"1": {"agent_oh_hyun": {"morning": "investigation"}}}
+	legacy_save["campaign_state"] = campaign
+	var save_file := FileAccess.open(game_state.get_save_file_path(), FileAccess.WRITE)
+	save_file.store_string(JSON.stringify(legacy_save, "\t"))
+	save_file.close()
 	game_state.load_game()
-	_expect(game_state.get_selected_agent_ids() == ["agent_oh_hyun", "agent_kwon_narae", "agent_kang_ijun"], "save round-trip should preserve protagonist-first order")
+	_expect(game_state.get_selected_agent_ids() == ["agent_kwon_narae", "agent_oh_hyun", "agent_kang_ijun"], "legacy saves should promote Kwon without resetting the operation team")
+	_expect(String(game_state.get_campaign_agent_schedule("agent_kwon_narae").get("morning", "")) == "investigation", "the previous protagonist current-slot schedule should be copied to Kwon")
+	_expect(String(game_state.get_campaign_agent_schedule("agent_oh_hyun").get("morning", "")) == "investigation", "the previous protagonist schedule should remain intact")
+	_expect(game_state.has_used_agent_support("mvp043_official_comparison:point_platform_speaker"), "legacy analysis attempts should alias to official comparison")
+	_expect(game_state.has_used_agent_support("mvp043_safety_line:first_risk"), "legacy protection attempts should alias to safety line")
 
 	game_state.set_current_field_node_id("field_station_investigation")
 	change_scene_to_file(game_state.SCENE_INVESTIGATION)
@@ -48,8 +59,8 @@ func _run() -> void:
 	var definition := Catalog.judgment_for_point("point_platform_speaker")
 	scene.call("_show_reasoning_options", point, definition, 0.0)
 	await process_frame
-	_expect(game_state.has_used_agent_support("mvp043_analysis:point_platform_speaker"), "analysis support should record the attempted judgment id")
-	_expect(game_state.has_used_agent_support("mvp043_analysis:point_platform_speaker:success:record_personal_destination"), "successful support should persist its deterministic eliminated candidate")
+	_expect(game_state.has_used_agent_support("mvp043_official_comparison:point_platform_speaker"), "official comparison should record the attempted judgment id")
+	_expect(game_state.has_used_agent_support("mvp043_official_comparison:point_platform_speaker:success:record_personal_destination"), "successful support should persist its deterministic eliminated candidate")
 	var disabled_before := _disabled_choice_count(scene)
 	scene.call("_show_reasoning_options", point, definition, 100.0)
 	await process_frame
