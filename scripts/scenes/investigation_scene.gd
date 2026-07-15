@@ -7,7 +7,6 @@ const AssetCatalog = preload("res://scripts/ui/ui_asset_catalog.gd")
 const LogGuideScript = preload("res://scripts/ui/log_guide.gd")
 const LogTutorialCatalog = preload("res://scripts/ui/log_tutorial_catalog.gd")
 const ActionChoiceCardScene = preload("res://scenes/ui/action_choice_card.tscn")
-const TeamStatusChipScene = preload("res://scenes/ui/team_status_chip.tscn")
 const AccessibilitySettingsScript = preload("res://scripts/ui/accessibility_settings.gd")
 const AnomalyManualDrawerScript = preload("res://scripts/ui/anomaly_manual_drawer.gd")
 
@@ -73,6 +72,9 @@ var _return_dialog: ConfirmationDialog
 var _settings_dialog: AcceptDialog
 var _return_field_button: Button
 var _accessibility := AccessibilitySettingsScript.new()
+var _safe_frame: MarginContainer
+var _location_preview: TextureRect
+var _is_afterlife_layout := false
 
 
 func _ready() -> void:
@@ -83,11 +85,19 @@ func _ready() -> void:
 	_field_node = GameState.get_current_field_node()
 	SceneVisuals.apply_background(self, "investigation")
 	_build_ui()
+	get_viewport().size_changed.connect(_apply_safe_frame)
+	_apply_safe_frame()
 	_setup_runtime_editor()
 	_refresh_case_status()
 
 
 func _build_ui() -> void:
+	_safe_frame = %SafeFrame
+	_location_preview = %LocationPreview
+	_is_afterlife_layout = GameState.get_current_episode_id() == "episode_001_afterlife_station"
+	var background := get_node_or_null("ArtLayer/Background") as TextureRect
+	if background != null:
+		_location_preview.texture = background.texture
 	_cinematic_stage = %CinematicStage
 	_agent_stage = %AgentStage
 	_team_hud = %TeamHud
@@ -132,26 +142,27 @@ func _build_ui() -> void:
 	_narrative_label = _field_dialogue_label
 	_result_panel = _result_toast
 
-	_record_button.text = "괴이 매뉴얼"
+	_record_button.text = "기록"
 	_resolution_attempt_button.pressed.connect(_show_resolution_confirm_panel)
 	_field_next_button.pressed.connect(_advance_field_dialogue)
 	%ContinueInvestigationButton.pressed.connect(func() -> void: _resolution_confirm_panel.visible = false)
 	%EnterRecoveryButton.pressed.connect(_start_resolution_attempt)
-	%LogUtilityButton.visible = false
+	%LogUtilityButton.visible = true
 	_manual_toggle_button.visible = false
 	%SettingsButton.pressed.connect(_show_settings)
 	%ReturnHqButton.pressed.connect(_show_return_confirmation)
 	_return_field_button.pressed.connect(_return_to_field_choice)
-	_manual_panel.visible = false
-	_manual_drawer = AnomalyManualDrawerScript.new()
-	add_child(_manual_drawer)
-	_manual_drawer.anchor_left = 0.70
-	_manual_drawer.anchor_top = 0.20
-	_manual_drawer.anchor_right = 0.986
-	_manual_drawer.anchor_bottom = 0.64
-	_manual_drawer.bind_toggle_button(_record_button)
-	_manual_drawer.drawer_opened.connect(_refresh_manual_layout)
-	_manual_drawer.drawer_closed.connect(_refresh_manual_layout)
+	_manual_panel.visible = _is_afterlife_layout
+	if _is_afterlife_layout:
+		_record_button.pressed.connect(_toggle_record_drawer)
+	else:
+		_manual_drawer = AnomalyManualDrawerScript.new()
+		add_child(_manual_drawer)
+		_manual_drawer.anchor_left = 0.70
+		_manual_drawer.anchor_top = 0.12
+		_manual_drawer.anchor_right = 0.986
+		_manual_drawer.anchor_bottom = 0.92
+		_manual_drawer.bind_toggle_button(_record_button)
 
 	_log_guide = LogGuideScript.new()
 	_log_guide.set_compact(true)
@@ -166,6 +177,20 @@ func _build_ui() -> void:
 	_render_investigation_points()
 	_refresh_manual_drawer(false)
 	_show_current_field_node()
+
+
+func _apply_safe_frame() -> void:
+	if _safe_frame == null:
+		return
+	var viewport_size := get_viewport_rect().size
+	var safe_width := minf(1600.0, viewport_size.x)
+	if viewport_size.y > 0.0 and viewport_size.x / viewport_size.y > 16.0 / 9.0:
+		safe_width = minf(safe_width, viewport_size.y * 16.0 / 9.0)
+	var side := maxf(16.0, (viewport_size.x - safe_width) * 0.5 + 16.0)
+	_safe_frame.offset_left = side
+	_safe_frame.offset_right = -side
+	_safe_frame.offset_top = 12.0
+	_safe_frame.offset_bottom = -12.0
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -255,22 +280,18 @@ func _add_team_portraits(parent: Control) -> void:
 
 
 func _add_team_status_chips(parent: Control) -> void:
-	var catalog := AssetCatalog.new()
+	_clear_children(parent)
+	var names: Array[String] = []
 	for agent in GameState.get_selected_agents():
-		if typeof(agent) != TYPE_DICTIONARY:
-			continue
-		var agent_id := String(agent.get("id", ""))
-		var chip := TeamStatusChipScene.instantiate()
-		parent.add_child(chip)
-		chip.configure(agent, {
-			"hp": GameState.get_agent_current_hp(agent_id),
-			"max_hp": GameState.get_agent_max_hp(agent_id),
-			"mental": GameState.get_agent_current_mental(agent_id),
-			"max_mental": GameState.get_agent_max_mental(agent_id),
-			"active": GameState.is_agent_active(agent_id),
-			"representative": false,
-			"texture": catalog.get_agent_expression(agent_id, 1)
-		})
+		if typeof(agent) == TYPE_DICTIONARY:
+			names.append(String(agent.get("name", "")))
+	var summary := Label.new()
+	summary.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	summary.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	summary.text = "팀 상태 · %d명 · %s" % [names.size(), ", ".join(names)]
+	summary.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	summary.tooltip_text = GameState.get_selected_agent_summary()
+	parent.add_child(summary)
 
 
 func _setup_runtime_editor() -> void:
@@ -278,13 +299,6 @@ func _setup_runtime_editor() -> void:
 	add_child(_runtime_editor)
 	_runtime_editor.setup("investigation", self)
 	_runtime_editor.register_element("cinematic_record_drawer", _record_drawer, {"minimum_size": Vector2(300, 220), "free_layout": false})
-	_runtime_editor.register_element("cinematic_dialogue_dock", _dialogue_dock, {
-		"minimum_size": Vector2(720, 220),
-		"free_layout": true,
-		"text_control": _narrative_label,
-		"content_key": "%s/investigation/narrative" % GameState.get_current_episode_id(),
-		"source_text": _narrative_label.text
-	})
 
 
 func _add_record_drawer(parent: Control) -> void:
@@ -469,10 +483,7 @@ func _configure_point_picker_escape() -> void:
 	if _return_field_button == null:
 		return
 	var return_field_node_id := String(_field_node.get("return_field_node_id", "")).strip_edges()
-	var has_visible_point := _points_box != null and _points_box.get_child_count() > 0
-	_return_field_button.visible = not return_field_node_id.is_empty() or not has_visible_point
-	if not _return_field_button.visible:
-		return
+	_return_field_button.visible = true
 	_return_field_button.text = "조사 선택으로 돌아가기" if not return_field_node_id.is_empty() else "HQ로 복귀"
 	_return_field_button.tooltip_text = "확보한 단서와 위험 사례는 유지됩니다." if not return_field_node_id.is_empty() else "현재 진행을 저장하고 HQ로 돌아갑니다."
 
@@ -859,7 +870,13 @@ func _make_method_result_text(result: Dictionary) -> String:
 
 func _hide_method_panel() -> void:
 	if _method_panel != null:
-		_method_panel.visible = false
+		_method_panel.visible = true
+	if _method_column != null:
+		_method_column.visible = false
+		var point_column := _method_column.get_parent().get_node_or_null("PointColumn") as Control
+		if point_column != null:
+			point_column.visible = true
+	if _dialogue_dock != null:
 		_dialogue_dock.visible = true
 
 
@@ -872,20 +889,13 @@ func _set_ui_mode(mode: String) -> void:
 	var uses_method_picker := mode == "METHOD_PICKER"
 	if _point_method_dock != null:
 		_point_method_dock.visible = true
-		if uses_method_picker:
-			_point_method_dock.anchor_left = 0.014
-			_point_method_dock.anchor_top = 0.42
-			_point_method_dock.anchor_right = 0.986
-			_point_method_dock.anchor_bottom = 0.96
-		else:
-			_point_method_dock.anchor_left = 0.014
-			_point_method_dock.anchor_top = 0.2
-			_point_method_dock.anchor_right = 0.27
-			_point_method_dock.anchor_bottom = 0.96
 	if _method_column != null:
 		_method_column.visible = uses_method_picker
+		var point_column := _method_column.get_parent().get_node_or_null("PointColumn") as Control
+		if point_column != null:
+			point_column.visible = not uses_method_picker
 	if _dialogue_dock != null:
-		_dialogue_dock.visible = not uses_method_picker
+		_dialogue_dock.visible = true
 	if uses_method_picker and _manual_drawer != null and _manual_drawer.is_open():
 		_manual_drawer.close_drawer()
 	_refresh_manual_layout()
@@ -899,10 +909,7 @@ func _toggle_manual_panel() -> void:
 
 
 func _refresh_manual_layout() -> void:
-	if _dialogue_dock == null:
-		return
-	var uses_method_picker := _mode_label != null and _mode_label.text == "METHOD_PICKER"
-	_dialogue_dock.anchor_right = 0.69 if _manual_drawer != null and _manual_drawer.is_open() and not uses_method_picker else 0.986
+	pass
 
 
 func _refresh_manual_drawer(mark_new: bool) -> void:
@@ -963,7 +970,7 @@ func _refresh_case_status() -> void:
 	var collection_rate: float = GameState.get_clue_collection_rate()
 	_progress_label.text = "단서 수집률: %.0f%% (%d/%d)" % [collection_rate, collected_count, total_count]
 	if _case_summary_label != null:
-		_case_summary_label.text = "단서 %d/%d · %s" % [collected_count, total_count, GameState.get_resolution_label()]
+		_case_summary_label.text = "%s · 단서 %d/%d" % [GameState.get_current_episode_title(), collected_count, total_count]
 	_progress_bar.value = collection_rate
 	_resolution_label.text = "현재 해결 단계: %s" % GameState.get_resolution_label()
 	var status := GameState.get_anomaly_status_summary()

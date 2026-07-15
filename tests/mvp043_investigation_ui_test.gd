@@ -1,4 +1,4 @@
-# MVP-043 저승역 조사 지점 선택 UI가 빈 화면으로 교착되지 않는지 검증한다.
+# MVP-043 저승역 조사 UI가 지원 해상도에서 화면 안에 남고 교착되지 않는지 검증한다.
 extends SceneTree
 
 const TestSaveGuard = preload("res://tests/test_save_guard.gd")
@@ -26,38 +26,52 @@ func _run() -> void:
 		_failures.append("investigation scene failed to load")
 		_finish()
 		return
-	for _frame in range(4):
+	for _frame in range(5):
 		await process_frame
 
-	var scene := current_scene
-	var point_dock := scene.find_child("PointMethodDock", true, false) as Control
-	var dialogue_dock := scene.find_child("DialogueDock", true, false) as Control
-	var manual_panel := scene.find_child("AnomalyManualDrawer", true, false) as Control
-	var manual_toggle_button := scene.find_child("RecordButton", true, false) as Button
-	var points_box := scene.find_child("PointsBox", true, false) as Container
-	var return_field_button := scene.find_child("ReturnFieldButton", true, false) as Button
-	_expect(point_dock != null and point_dock.visible, "POINT_PICKER should show the point method dock")
-	_expect(dialogue_dock != null and dialogue_dock.visible, "POINT_PICKER should keep the investigation text visible beside the point list")
-	_expect(manual_panel != null and not manual_panel.visible, "manual should stay hidden until the player opens it")
-	_expect(manual_toggle_button != null and manual_toggle_button.visible, "manual should have a player-facing toggle")
-	if manual_toggle_button != null:
-		manual_toggle_button.emit_signal("pressed")
-		_expect(manual_panel != null and manual_panel.visible, "manual toggle should open the panel")
-		manual_toggle_button.emit_signal("pressed")
-		_expect(manual_panel != null and not manual_panel.visible, "manual toggle should close the panel")
-	_expect(points_box != null and points_box.get_child_count() > 0, "POINT_PICKER should render available investigation cards")
-	if points_box != null and points_box.get_child_count() > 0:
-		var first_card := points_box.get_child(0)
-		var action_button := first_card.find_child("ActionButton", true, false) as Button
-		_expect(action_button != null and not action_button.disabled, "the first investigation card should be selectable")
-		_expect(action_button != null and action_button.focus_mode != Control.FOCUS_NONE, "investigation cards should support keyboard focus")
-		_expect(action_button != null and action_button.is_visible_in_tree() and action_button.get_global_rect().size.y > 0.0, "the first investigation card should be visible on screen")
-	_expect(return_field_button != null and return_field_button.visible, "afterlife point picker should offer a return path")
+	for viewport_size in [Vector2i(1280, 720), Vector2i(1920, 1080), Vector2i(1918, 943)]:
+		root.size = viewport_size
+		for _frame in range(3):
+			await process_frame
+		_verify_layout(current_scene, viewport_size)
+
+	var return_field_button := current_scene.find_child("ReturnFieldButton", true, false) as Button
+	_expect(return_field_button != null and return_field_button.visible, "afterlife point picker should always offer a return path")
 	if return_field_button != null:
 		return_field_button.emit_signal("pressed")
+		await process_frame
 		_expect(game_state.get_current_field_node_id() == "dialogue_intro", "returning should reopen the first investigation choice")
 		_expect(game_state.get_collected_clue_count() == 0, "returning should not invent or discard investigation evidence")
 	_finish()
+
+
+func _verify_layout(scene: Node, viewport_size: Vector2i) -> void:
+	var viewport_rect := Rect2(Vector2.ZERO, Vector2(viewport_size))
+	var top_hud := scene.find_child("TopHud", true, false) as Control
+	var point_dock := scene.find_child("PointMethodDock", true, false) as Control
+	var dialogue_dock := scene.find_child("DialogueDock", true, false) as Control
+	var manual_panel := scene.find_child("ManualPanel", true, false) as Control
+	var points_box := scene.find_child("PointsBox", true, false) as Container
+	_expect(_inside_viewport(top_hud, viewport_rect), "%s top HUD should fit the viewport" % viewport_size)
+	_expect(_inside_viewport(point_dock, viewport_rect), "%s location panel should fit the viewport" % viewport_size)
+	_expect(_inside_viewport(dialogue_dock, viewport_rect), "%s narrative panel should fit the viewport" % viewport_size)
+	_expect(_inside_viewport(manual_panel, viewport_rect), "%s manual panel should fit the viewport" % viewport_size)
+	_expect(point_dock != null and point_dock.visible, "POINT_PICKER should show the location panel")
+	_expect(dialogue_dock != null and dialogue_dock.visible, "POINT_PICKER should keep the investigation text visible")
+	_expect(manual_panel != null and manual_panel.visible, "afterlife investigation should keep the page manual visible")
+	_expect(points_box != null and points_box.get_child_count() > 0, "POINT_PICKER should render investigation cards")
+	if points_box != null and points_box.get_child_count() > 0:
+		var action_button := points_box.get_child(0).find_child("ActionButton", true, false) as Button
+		_expect(action_button != null and not action_button.disabled, "the first investigation card should be selectable")
+		_expect(action_button != null and action_button.focus_mode != Control.FOCUS_NONE, "investigation cards should support keyboard focus")
+		_expect(_inside_viewport(action_button, viewport_rect), "%s first investigation card should be on screen" % viewport_size)
+
+
+func _inside_viewport(control: Control, viewport_rect: Rect2) -> bool:
+	if control == null or not control.is_visible_in_tree():
+		return false
+	var rect := control.get_global_rect()
+	return rect.size.x > 0.0 and rect.size.y > 0.0 and viewport_rect.encloses(rect)
 
 
 func _expect(condition: bool, message: String) -> void:
