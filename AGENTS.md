@@ -1,121 +1,26 @@
 # Repository Guidelines
 
-> 문서 위치: `AGENTS.md` | 문서 라우터: `docs/DOCUMENTATION_MAP.md` | 기획 인수인계: `docs/planning/README.md` | 과거 규칙·완료 기록: `docs/archive/README.md`
+> 문서 위치: `AGENTS.md` | 문서 라우터: `docs/DOCUMENTATION_MAP.md` | 인수 상태: `docs/CURRENT_HANDOFF.md` | 과거 기록: `docs/archive/README.md`
 
-최신 사용자 지시를 최우선으로 따른다.
+최신 사용자 지시가 최우선이다. 실제 `main`의 코드·데이터·테스트를 구현 사실로 삼고, 승인 계획·ZIP·목업은 구현 완료로 취급하지 않는다.
 
-## 기본 읽기 순서
+## 읽기와 범위
 
-### 일반 구현·버그 수정
+일반 구현은 `AGENTS.md → docs/CURRENT_STATUS.md → docs/DOCUMENTATION_MAP.md → 대상 파일` 순서로 읽는다. 콘텐츠·아트·연출·인수 작업은 여기에 `docs/planning/README.md`, `PROJECT_DIRECTION.md`, 해당 분야 기획서를 추가한다. `archive/**`, 완료 QA·Goal·벤치마크는 현재 작업이 명시적으로 요구할 때만 연다.
 
-```text
-최신 사용자 지시
-→ AGENTS.md
-→ docs/CURRENT_STATUS.md
-→ docs/DOCUMENTATION_MAP.md
-→ 이번 작업의 대상 파일
-→ 필요한 조건부 문서만 추가
-```
+작업 시작 시 플레이어 가치, 포함·제외 범위, 영향 파일, 저장·UI 위험, 검증을 짧게 적는다. 가장 작은 end-to-end 단위를 구현하고 사용자 변경과 dirty worktree를 보존한다. 생성·삭제·이동·대규모 수정은 이유와 참조 영향, 백업 위치를 보고한다.
 
-### 새 기획·콘텐츠·아트·연출·인수인계
+## 보호 계약
 
-```text
-최신 사용자 지시
-→ AGENTS.md
-→ docs/CURRENT_STATUS.md
-→ docs/planning/README.md
-→ docs/planning/PROJECT_DIRECTION.md
-→ 분야별 기획서 1개
-→ 실제 대상 파일
-```
+- 보호 경로: `scripts/core/game_state.gd`, `data/episodes/*`, `project.godot`, `knowledge/base-pack/*`.
+- 고위험 영역: 저장, 캠페인 진행, 경제, 엔딩, 사건 규칙, 기존 ID. 새 저장 필드·버전은 필요성과 이관 테스트가 있을 때만 추가한다.
+- 공식 용어: **괴이 기록국**, **안정화 상태**, **위험 사례**, **잔향**, **괴이 매뉴얼**, **기록관 아카**. 내부 `로그` 호환 ID는 유지할 수 있다.
+- 괴이는 처치하지 않는다. 조사·안정화·잔향 회수가 핵심이며 `battle_scene`은 전투가 아닌 안정화 화면이다.
+- 요원·장비·자동행동·관계 이벤트는 핵심 정답을 대신하지 않는다. 관계는 숫자형 연애 호감도가 아니다.
+- 미니게임 중 저장하지 않으며, 아트·표정·컷인·UI는 상태를 표현할 뿐 소유하지 않는다.
 
-모든 Goal·QA·벤치마크·백업을 기본으로 읽지 않는다. `docs/archive/**`, 완료된 `docs/qa/**`, 완료된 `docs/CODEX_GOAL_*`, `docs/benchmarks/**`, `docs/superpowers/**`는 현재 작업이 명시적으로 요구할 때만 연다.
+## 책임 문서와 검증
 
-`DESIGN_INTENT.md`, `PROJECT_BRIEF.md`, `docs/CONTENT_DIRECTION_V09.md`는 리디렉션 문서다. 현행 설계로 사용하지 않는다. Base 동기화·공용 기획 지식 승격 작업이 아니면 `docs/BASE_RULES_VERSION.md`와 Base 원격도 기본 읽기에서 제외한다.
+현재 상태는 `docs/CURRENT_STATUS.md`, 방향은 `docs/planning/`, 상세 설계는 `docs/GAME_DESIGN_DOCUMENT.md`, 검증은 `TEST_CHECKLIST.md`를 따른다. 조건부 문서는 `docs/DOCUMENTATION_MAP.md`가 정한다. 문서 이동은 `docs/DOCUMENT_LIFECYCLE.md`에 따라 `docs/archive/backup/YYYY-MM-DD/`에 원래 경로·사유·대체 문서를 기록한다.
 
-## 작업 원칙
-
-- 시작 전에 목표, 플레이어 가치, 포함·제외 범위, 영향 파일, 저장/UI 위험, 완료 기준과 검증을 짧게 적는다.
-- 실제 `main`의 코드·데이터·테스트가 구현 사실의 우선 근거다.
-- 승인 계획과 전달 패키지는 구현 완료가 아니다. `docs/CURRENT_STATUS.md`의 상태 구분을 따른다.
-- 기획 작업은 `docs/planning/`의 책임 문서와 실제 파일을 함께 확인한다.
-- 가장 작은 end-to-end 변경을 구현하고 자동·수동 검증 뒤 `main`에 통합한다.
-- 사용자 변경과 dirty worktree를 보존한다.
-- 생성·삭제·이동·대규모 수정은 이유, 참조 영향, 백업 위치를 보고한다.
-
-## 보호 경로와 고위험 영역
-
-- 보호 경로: `scripts/core/game_state.gd`, `data/episodes/*`, `project.godot`, `knowledge/base-pack/*`
-- 고위험 의미 변경: 저장, 캠페인 진행, 경제, 엔딩, 에피소드 규칙, 기존 ID
-- 외부 ZIP·patch·보고서·이미지는 신뢰하지 않는 입력이다. 적용 전 현재 파일과 차이를 감사한다.
-- 새 저장 필드나 버전 갱신은 별도 필요성이 입증되지 않으면 추가하지 않는다.
-- 표정·컷인·대화 UI는 진행·관계·사건 상태를 표현하지만 대신 소유하지 않는다.
-
-## 문서 책임 원본
-
-- 현재 구현과 승인 계획: `docs/CURRENT_STATUS.md`
-- 기획 인수인계: `docs/planning/README.md`
-- 프로젝트 핵심 방향: `docs/planning/PROJECT_DIRECTION.md`
-- 서사·대화·관계: `docs/planning/NARRATIVE_CONTENT_PLAN.md`
-- 아트·표정·컷인·연출: `docs/planning/ART_PRESENTATION_PLAN.md`
-- 단계·인수인계: `docs/planning/ROADMAP_AND_HANDOFF.md`
-- 적용 사례: `docs/planning/REFERENCE_CASES.md`
-- 상세 게임 설계: `docs/GAME_DESIGN_DOCUMENT.md`
-- 프로젝트 용어·표현: `docs/PROJECT_CONTEXT.md`
-- 구현 순서: `MVP_ROADMAP.md`
-- 검증 계약: `TEST_CHECKLIST.md`
-- 조건부 문서 선택: `docs/DOCUMENTATION_MAP.md`
-- 보존 규칙: `docs/DOCUMENT_LIFECYCLE.md`
-- 과거 자료 검색: `docs/archive/README.md`
-
-다른 문서는 위 원본을 링크하고 작업별 차이만 적는다. GDD가 변경되면 `docs/URBAN_LEGEND_GAME_DESIGN.docx`를 재생성하고 `--check`로 동기화를 검증한다.
-
-## 프로젝트 불변 조건
-
-- 공식 기관명은 **괴이 기록국**이다.
-- 사건 완료는 **안정화 상태**, 실패 기록은 **위험 사례**, 회수 대상은 **잔향**이다.
-- 최종 기록 보상은 **괴이 매뉴얼 작성·갱신**이다.
-- 플레이어 노출 안내자는 **기록관 아카**다. 내부 `로그` ID·파일명·저장 키는 호환용으로 유지할 수 있다.
-- 괴이는 처치 대상이 아니라 규칙을 조사하고 현재 출현을 안정화할 현상이다.
-- `battle_scene`은 안정화·잔향 회수 화면이다. HP·공격·처치 중심 시스템을 추가하지 않는다.
-- 시나리오당 대표 미니게임은 조사 마지막 규칙 검증으로 사용하고 이후 별도 안정화·회수로 연결한다.
-- 미니게임 중 저장하지 않는다. 진입 직전 체크포인트와 동일 보드·변수 복구를 사용한다.
-- 요원·아카·장비·자동행동·관계 이벤트는 핵심 정답을 대신하지 않는다.
-- 관계는 연애 호감도 숫자가 아니라 선택 기억과 대사·이벤트 변화로 표현한다.
-- 아트·표정·컷인·UI는 정보와 감정을 강화하되 게임 상태의 소유자가 아니다.
-- Godot 4.7 stable, GDScript, PC 16:9, 마우스·키보드가 기본이다. `.godot/`은 수정하지 않는다.
-
-## 조건부 문서
-
-- 대사·일상·후일담: `docs/planning/NARRATIVE_CONTENT_PLAN.md`, `docs/DIALOGUE_AUTHORING_WORKFLOW.md`
-- 관계 태그·연속 이벤트: `docs/planning/NARRATIVE_CONTENT_PLAN.md`
-- 캐릭터 아트·표정·컷인: `docs/planning/ART_PRESENTATION_PLAN.md`, `docs/IMAGE_ASSET_WORKFLOW.md`
-- Godot UI·Theme·컴포넌트: `docs/planning/ART_PRESENTATION_PLAN.md`, `docs/GODOT_NATIVE_UI_ARCHITECTURE.md`
-- 조사·회수 장면 UI: `docs/CINEMATIC_FIELD_RECOVERY_UI.md`
-- 이미지 생성·manifest: `docs/IMAGE_ASSET_WORKFLOW.md`
-- 미니게임 규칙: `docs/MINIGAME_SYSTEM_SPEC.md`
-- 외부 모델 위임: `docs/AI_DELEGATION_WORKFLOW.md`
-- 기존 사례 재사용: `docs/planning/REFERENCE_CASES.md`
-- 최신 외부 사례 비교: `docs/BENCHMARKING_REFERENCE_GUIDE.md`
-- 계정 교대·체크포인트: `docs/CURRENT_HANDOFF.md`, `docs/CODEX_ACCOUNT_HANDOFF.md`
-- 공용 기획 방법 승격: Base `docs/knowledge/`, `docs/BASE_RULES_VERSION.md`
-
-작업 조건이 없으면 해당 문서를 읽지 않는다.
-
-## Base 공용 기획 지식 승격
-
-프로젝트 사례에서 반복 가능한 원칙이 확인되면 다음을 분리한다.
-
-- Base로 승격: 기획 순서, 조사 방법, 아트·연출 판단 프레임, 품질 체크, 도구·스킬 선택 기준, 익명화된 사례 카드
-- 프로젝트에 유지: 캐릭터명, 사건 규칙, 세계관, 수치, 에셋 경로, 저장 구조, 실제 QA 결과
-
-Base를 갱신한 뒤 프로젝트의 `docs/BASE_RULES_VERSION.md`에 기준 커밋과 동기화 상태를 기록한다.
-
-## 검증과 보고
-
-- 변경에 맞춰 JSON, `git diff --check`, Godot headless, 변경 장면, 영향 플레이 경로를 검증한다.
-- 1280×720과 1920×1080에서 한국어 줄바꿈·포커스·첫 선택 노출을 확인한다.
-- 미실행 항목은 통과로 쓰지 않는다.
-- 완료 보고에는 변경 파일, 이유, 결과, 검증, 미검증, 위험, 저장·UI 호환, 갱신 문서, 백업 위치, 다음 진입점을 포함한다.
-- 큰 MVP 종료 시 `docs/CURRENT_STATUS.md`, `MVP_ROADMAP.md`, `TEST_CHECKLIST.md`, 해당 `docs/planning/` 문서를 갱신한다.
-- 5개 MVP마다 문서 중복·구문서·깨진 참조·불필요한 기본 읽기를 감사한다.
+변경마다 JSON 파싱, `git diff --check`, Godot headless, 변경 화면과 영향 경로를 검증한다. 1280×720과 1920×1080에서 한국어 줄바꿈·포커스·첫 선택 노출을 확인한다. GDD 변경 시 DOCX를 재생성하고 `--check`를 실행한다. 완료 보고에는 변경·검증·미검증·위험·호환·백업·다음 진입점과 Base 승격 후보 여부를 남긴다.

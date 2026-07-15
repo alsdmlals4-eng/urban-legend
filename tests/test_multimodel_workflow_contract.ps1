@@ -13,6 +13,9 @@ Assert-Contains (Join-Path $root 'docs\AI_DELEGATION_WORKFLOW.md') 'Codex 직접
 Assert-Contains (Join-Path $root 'docs\IMAGE_ASSET_WORKFLOW.md') 'ASSET_MANIFEST.json'
 Assert-Contains (Join-Path $root 'docs\DIALOGUE_AUTHORING_WORKFLOW.md') 'AI_DELEGATION_WORKFLOW.md'
 Assert-Contains (Join-Path $root 'docs\DOCUMENTATION_MAP.md') 'AI_DELEGATION_WORKFLOW.md'
-Assert-Contains (Join-Path $root 'docs\BASE_RULES_VERSION.md') '멀티모델 산출물 계약과 핵심 상태 보호 원칙'
+Assert-Contains (Join-Path $root 'docs\BASE_RULES_VERSION.md') 'Base 지식 버전 | v1.6.0'
 Assert-Contains (Join-Path $root 'docs\MULTIMODEL_20_TASK_EVALUATION.md') '결과 회수율 | 100% (20/20)'
+foreach ($runtime in @('scripts\game-workflow.ps1', 'scripts\GameWorkflow.psm1', 'scripts\run-opencode-worker.ps1')) {
+    if (-not (Test-Path -LiteralPath (Join-Path $root $runtime) -PathType Leaf)) { throw "Missing project workflow runtime: $runtime" }
+}
 'PASS: project multi-model workflow documentation and schema contract'

@@ -19,7 +19,7 @@ $map = Get-Content -LiteralPath (Join-Path $repo 'docs\DOCUMENTATION_MAP.md') -R
 foreach ($branch in @('DIALOGUE_AUTHORING_WORKFLOW', 'IMAGE_ASSET_WORKFLOW', 'BENCHMARKING_REFERENCE_GUIDE', 'AI_DELEGATION_WORKFLOW', 'GODOT_NATIVE_UI_ARCHITECTURE', 'MVP037_CAMPAIGN_CORE')) {
 	Require ($map.Contains($branch)) "Documentation map is missing branch: $branch"
 }
-Require ($map.Contains('Conditional routing')) 'Documentation map must state conditional loading'
+Require ($map.Contains('AI_DELEGATION_WORKFLOW.md')) 'Documentation map must state conditional loading'
 
 if (Test-Path -LiteralPath $contextPath) {
 	$context = Get-Content -LiteralPath $contextPath -Raw -Encoding utf8
