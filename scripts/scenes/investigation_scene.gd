@@ -60,6 +60,8 @@ var _agent_stage: HBoxContainer
 var _team_hud: HBoxContainer
 var _dialogue_dock: PanelContainer
 var _point_method_dock: PanelContainer
+var _method_column: VBoxContainer
+var _manual_panel: PanelContainer
 var _result_toast: PanelContainer
 var _case_summary_label: Label
 var _mode_label: Label
@@ -87,6 +89,8 @@ func _build_ui() -> void:
 	_team_hud = %TeamHud
 	_dialogue_dock = %DialogueDock
 	_point_method_dock = %PointMethodDock
+	_method_column = %MethodColumn
+	_manual_panel = %ManualPanel
 	_result_toast = %ResultToast
 	_case_summary_label = %CaseSummaryLabel
 	_mode_label = %ModeLabel
@@ -853,11 +857,25 @@ func _set_ui_mode(mode: String) -> void:
 	var choice_scroll := get_node_or_null("%FieldChoiceScroll") as ScrollContainer
 	if choice_scroll != null:
 		choice_scroll.visible = mode == "FIELD_CHOICES"
-	var uses_picker := mode in ["POINT_PICKER", "METHOD_PICKER"]
+	var uses_method_picker := mode == "METHOD_PICKER"
 	if _point_method_dock != null:
-		_point_method_dock.visible = uses_picker
+		_point_method_dock.visible = true
+		if uses_method_picker:
+			_point_method_dock.anchor_left = 0.014
+			_point_method_dock.anchor_top = 0.42
+			_point_method_dock.anchor_right = 0.986
+			_point_method_dock.anchor_bottom = 0.96
+		else:
+			_point_method_dock.anchor_left = 0.014
+			_point_method_dock.anchor_top = 0.2
+			_point_method_dock.anchor_right = 0.27
+			_point_method_dock.anchor_bottom = 0.96
+	if _method_column != null:
+		_method_column.visible = uses_method_picker
 	if _dialogue_dock != null:
-		_dialogue_dock.visible = not uses_picker
+		_dialogue_dock.visible = not uses_method_picker
+	if _manual_panel != null:
+		_manual_panel.visible = not uses_method_picker
 	if _result_toast != null and mode != "RESULT":
 		_result_toast.visible = false
 

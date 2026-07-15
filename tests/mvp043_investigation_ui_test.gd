@@ -32,10 +32,12 @@ func _run() -> void:
 	var scene := current_scene
 	var point_dock := scene.find_child("PointMethodDock", true, false) as Control
 	var dialogue_dock := scene.find_child("DialogueDock", true, false) as Control
+	var manual_panel := scene.find_child("ManualPanel", true, false) as Control
 	var points_box := scene.find_child("PointsBox", true, false) as Container
 	var return_field_button := scene.find_child("ReturnFieldButton", true, false) as Button
 	_expect(point_dock != null and point_dock.visible, "POINT_PICKER should show the point method dock")
-	_expect(dialogue_dock != null and not dialogue_dock.visible, "POINT_PICKER should hide the dialogue dock")
+	_expect(dialogue_dock != null and dialogue_dock.visible, "POINT_PICKER should keep the investigation text visible beside the point list")
+	_expect(manual_panel != null and manual_panel.visible, "the first UI slice should reserve a visible manual column")
 	_expect(points_box != null and points_box.get_child_count() > 0, "POINT_PICKER should render available investigation cards")
 	if points_box != null and points_box.get_child_count() > 0:
 		var first_card := points_box.get_child(0)
