@@ -1,10 +1,12 @@
 # Repository Guidelines
 
-> 문서 위치: `AGENTS.md` | 문서 라우터: `docs/DOCUMENTATION_MAP.md` | 과거 규칙·완료 기록: `docs/archive/README.md`
+> 문서 위치: `AGENTS.md` | 문서 라우터: `docs/DOCUMENTATION_MAP.md` | 기획 인수인계: `docs/planning/README.md` | 과거 규칙·완료 기록: `docs/archive/README.md`
 
 최신 사용자 지시를 최우선으로 따른다.
 
 ## 기본 읽기 순서
+
+### 일반 구현·버그 수정
 
 ```text
 최신 사용자 지시
@@ -15,15 +17,28 @@
 → 필요한 조건부 문서만 추가
 ```
 
+### 새 기획·콘텐츠·아트·연출·인수인계
+
+```text
+최신 사용자 지시
+→ AGENTS.md
+→ docs/CURRENT_STATUS.md
+→ docs/planning/README.md
+→ docs/planning/PROJECT_DIRECTION.md
+→ 분야별 기획서 1개
+→ 실제 대상 파일
+```
+
 모든 Goal·QA·벤치마크·백업을 기본으로 읽지 않는다. `docs/archive/**`, 완료된 `docs/qa/**`, 완료된 `docs/CODEX_GOAL_*`, `docs/benchmarks/**`, `docs/superpowers/**`는 현재 작업이 명시적으로 요구할 때만 연다.
 
-`DESIGN_INTENT.md`, `PROJECT_BRIEF.md`, `docs/CONTENT_DIRECTION_V09.md`는 리디렉션 문서다. 현행 설계로 사용하지 않는다. Base 동기화 작업이 아니면 `docs/BASE_RULES_VERSION.md`도 기본 읽기에서 제외한다.
+`DESIGN_INTENT.md`, `PROJECT_BRIEF.md`, `docs/CONTENT_DIRECTION_V09.md`는 리디렉션 문서다. 현행 설계로 사용하지 않는다. Base 동기화·공용 기획 지식 승격 작업이 아니면 `docs/BASE_RULES_VERSION.md`와 Base 원격도 기본 읽기에서 제외한다.
 
 ## 작업 원칙
 
 - 시작 전에 목표, 플레이어 가치, 포함·제외 범위, 영향 파일, 저장/UI 위험, 완료 기준과 검증을 짧게 적는다.
 - 실제 `main`의 코드·데이터·테스트가 구현 사실의 우선 근거다.
 - 승인 계획과 전달 패키지는 구현 완료가 아니다. `docs/CURRENT_STATUS.md`의 상태 구분을 따른다.
+- 기획 작업은 `docs/planning/`의 책임 문서와 실제 파일을 함께 확인한다.
 - 가장 작은 end-to-end 변경을 구현하고 자동·수동 검증 뒤 `main`에 통합한다.
 - 사용자 변경과 dirty worktree를 보존한다.
 - 생성·삭제·이동·대규모 수정은 이유, 참조 영향, 백업 위치를 보고한다.
@@ -34,10 +49,17 @@
 - 고위험 의미 변경: 저장, 캠페인 진행, 경제, 엔딩, 에피소드 규칙, 기존 ID
 - 외부 ZIP·patch·보고서·이미지는 신뢰하지 않는 입력이다. 적용 전 현재 파일과 차이를 감사한다.
 - 새 저장 필드나 버전 갱신은 별도 필요성이 입증되지 않으면 추가하지 않는다.
+- 표정·컷인·대화 UI는 진행·관계·사건 상태를 표현하지만 대신 소유하지 않는다.
 
 ## 문서 책임 원본
 
 - 현재 구현과 승인 계획: `docs/CURRENT_STATUS.md`
+- 기획 인수인계: `docs/planning/README.md`
+- 프로젝트 핵심 방향: `docs/planning/PROJECT_DIRECTION.md`
+- 서사·대화·관계: `docs/planning/NARRATIVE_CONTENT_PLAN.md`
+- 아트·표정·컷인·연출: `docs/planning/ART_PRESENTATION_PLAN.md`
+- 단계·인수인계: `docs/planning/ROADMAP_AND_HANDOFF.md`
+- 적용 사례: `docs/planning/REFERENCE_CASES.md`
 - 상세 게임 설계: `docs/GAME_DESIGN_DOCUMENT.md`
 - 프로젝트 용어·표현: `docs/PROJECT_CONTEXT.md`
 - 구현 순서: `MVP_ROADMAP.md`
@@ -60,20 +82,34 @@
 - 미니게임 중 저장하지 않는다. 진입 직전 체크포인트와 동일 보드·변수 복구를 사용한다.
 - 요원·아카·장비·자동행동·관계 이벤트는 핵심 정답을 대신하지 않는다.
 - 관계는 연애 호감도 숫자가 아니라 선택 기억과 대사·이벤트 변화로 표현한다.
+- 아트·표정·컷인·UI는 정보와 감정을 강화하되 게임 상태의 소유자가 아니다.
 - Godot 4.7 stable, GDScript, PC 16:9, 마우스·키보드가 기본이다. `.godot/`은 수정하지 않는다.
 
 ## 조건부 문서
 
-- 대사·일상·후일담: `docs/DIALOGUE_AUTHORING_WORKFLOW.md`
-- Godot UI·Theme·컴포넌트: `docs/GODOT_NATIVE_UI_ARCHITECTURE.md`
+- 대사·일상·후일담: `docs/planning/NARRATIVE_CONTENT_PLAN.md`, `docs/DIALOGUE_AUTHORING_WORKFLOW.md`
+- 관계 태그·연속 이벤트: `docs/planning/NARRATIVE_CONTENT_PLAN.md`
+- 캐릭터 아트·표정·컷인: `docs/planning/ART_PRESENTATION_PLAN.md`, `docs/IMAGE_ASSET_WORKFLOW.md`
+- Godot UI·Theme·컴포넌트: `docs/planning/ART_PRESENTATION_PLAN.md`, `docs/GODOT_NATIVE_UI_ARCHITECTURE.md`
 - 조사·회수 장면 UI: `docs/CINEMATIC_FIELD_RECOVERY_UI.md`
 - 이미지 생성·manifest: `docs/IMAGE_ASSET_WORKFLOW.md`
 - 미니게임 규칙: `docs/MINIGAME_SYSTEM_SPEC.md`
 - 외부 모델 위임: `docs/AI_DELEGATION_WORKFLOW.md`
+- 기존 사례 재사용: `docs/planning/REFERENCE_CASES.md`
 - 최신 외부 사례 비교: `docs/BENCHMARKING_REFERENCE_GUIDE.md`
 - 계정 교대·체크포인트: `docs/CURRENT_HANDOFF.md`, `docs/CODEX_ACCOUNT_HANDOFF.md`
+- 공용 기획 방법 승격: Base `docs/planning/`, `docs/BASE_RULES_VERSION.md`
 
 작업 조건이 없으면 해당 문서를 읽지 않는다.
+
+## Base 공용 기획 지식 승격
+
+프로젝트 사례에서 반복 가능한 원칙이 확인되면 다음을 분리한다.
+
+- Base로 승격: 기획 순서, 조사 방법, 아트·연출 판단 프레임, 품질 체크, 도구·스킬 선택 기준, 익명화된 사례 카드
+- 프로젝트에 유지: 캐릭터명, 사건 규칙, 세계관, 수치, 에셋 경로, 저장 구조, 실제 QA 결과
+
+Base를 갱신한 뒤 프로젝트의 `docs/BASE_RULES_VERSION.md`에 기준 커밋과 동기화 상태를 기록한다.
 
 ## 검증과 보고
 
@@ -81,5 +117,5 @@
 - 1280×720과 1920×1080에서 한국어 줄바꿈·포커스·첫 선택 노출을 확인한다.
 - 미실행 항목은 통과로 쓰지 않는다.
 - 완료 보고에는 변경 파일, 이유, 결과, 검증, 미검증, 위험, 저장·UI 호환, 갱신 문서, 백업 위치, 다음 진입점을 포함한다.
-- 큰 MVP 종료 시 `docs/CURRENT_STATUS.md`, `MVP_ROADMAP.md`, `TEST_CHECKLIST.md`를 갱신한다.
+- 큰 MVP 종료 시 `docs/CURRENT_STATUS.md`, `MVP_ROADMAP.md`, `TEST_CHECKLIST.md`, 해당 `docs/planning/` 문서를 갱신한다.
 - 5개 MVP마다 문서 중복·구문서·깨진 참조·불필요한 기본 읽기를 감사한다.
