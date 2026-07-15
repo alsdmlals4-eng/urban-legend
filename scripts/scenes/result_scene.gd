@@ -72,6 +72,13 @@ func _add_result_panel(parent: Control) -> void:
 	content.add_child(_make_label("피해자 후일담: %s" % GameState.get_current_victim_after_story()))
 	content.add_child(_make_label("저승역 반복 안내 잔향 회수 상태: %s" % _make_recovery_status_text()) if afterlife else _make_label("괴이 핵 회수 상태: %s" % _make_recovery_status_text()))
 	if afterlife:
+		var route_result := GameState.get_minigame_result("minigame_frequency_sync")
+		if not route_result.is_empty():
+			_add_text_list(content, "안전 노선 검증 기록", [
+				String(route_result.get("final_clue_title", "안전 노선 검증 기록")),
+				String(route_result.get("final_clue_text", "공식 운행 기록과 현장 경로가 일치했습니다.")),
+				"검증 등급: %s" % String(route_result.get("clear_grade_label", "일반 복원"))
+			])
 		_add_text_list(content, "괴이 매뉴얼 초안", ["발생 감정: 마지막 기회를 놓친 후회와 귀환 강박", "검증된 대응: 목적지 공백 확인 · 공식 식별음 대조 · 안전 노선 복원", "안정화 상태: 현재 공간 반복 중단"])
 	content.add_child(_make_label("현재 잔향 파편: %d · 사건 준비의 외부 접점에서 사용할 수 있습니다." % GameState.get_echo_fragments()))
 	_add_text_list(content, "연구 결과", [GameState.get_current_research_result()])

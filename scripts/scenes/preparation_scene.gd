@@ -180,8 +180,7 @@ func _refresh_agents() -> void:
 		_add_agent_card(_agent_list, agent)
 
 	var selected_count := GameState.get_selected_agent_ids().size()
-	var all_agent_ids := _get_all_agent_ids()
-	var schedule_ready := GameState.is_campaign_schedule_complete(all_agent_ids)
+	var schedule_ready := GameState.is_campaign_schedule_complete(_get_schedule_agent_ids())
 	var phase := GameState.get_campaign_slot_phase()
 	var operation := GameState.get_active_campaign_operation()
 	if _start_button != null:
@@ -200,9 +199,9 @@ func _refresh_agents() -> void:
 		elif String(operation.get("status", "")) == "suspended":
 			_status_label.text = "현장 진행이 보존되어 있습니다. 완료 전에는 일정과 사건을 변경할 수 없습니다."
 		elif GameState.can_start_mission_with_agents() and schedule_ready:
-			_status_label.text = "실행 가능: 요원 %d명의 현재 반일 일정이 정해졌습니다." % selected_count
+			_status_label.text = "실행 가능: 주인공 일정과 서포트 %d명 편성이 정해졌습니다." % maxi(0, selected_count - 1)
 		elif GameState.can_start_mission_with_agents():
-			_status_label.text = "전 요원의 현재 반일 일정을 정하세요."
+			_status_label.text = "주인공의 현재 반일 일정을 정하세요. 서포트는 별도 일정을 소비하지 않습니다."
 		else:
 			_status_label.text = GameState.get_agent_selection_status_text()
 
@@ -223,6 +222,8 @@ func _add_agent_card(parent: Control, agent: Dictionary) -> void:
 	parent.add_child(card)
 	card.configure(agent, {
 		"selected": selected,
+		"protagonist": agent_id == GameState.get_protagonist_agent_id(),
+		"has_protagonist": not GameState.get_protagonist_agent_id().is_empty(),
 		"selection_disabled": not selected and GameState.get_selected_agent_ids().size() >= GameState.MAX_SELECTED_AGENTS,
 		"current_hp": GameState.get_agent_current_hp(agent_id),
 		"max_hp": GameState.get_agent_max_hp(agent_id),
@@ -237,6 +238,13 @@ func _add_agent_card(parent: Control, agent: Dictionary) -> void:
 		else:
 			GameState.select_agent(requested_agent_id)
 		_refresh_agents()
+		_refresh_schedule()
+	)
+	card.protagonist_requested.connect(func(requested_agent_id: String) -> void:
+		if GameState.set_protagonist_agent_id(requested_agent_id):
+			GameState.save_game()
+		_refresh_agents()
+		_refresh_schedule()
 	)
 	card.detail_requested.connect(_show_agent_detail)
 
@@ -458,8 +466,9 @@ func _refresh_schedule() -> void:
 		var operation := GameState.get_active_campaign_operation()
 		_schedule_list.add_child(_make_label("%s 현장 조사가 %s 상태입니다.\n사건: %s" % [slot_label, "일시 중단" if String(operation.get("status", "")) == "suspended" else "진행 중", String(operation.get("case_id", ""))]))
 		return
-	for agent in GameState.get_agents():
-		if typeof(agent) != TYPE_DICTIONARY:
+	var protagonist := GameState.get_agent_by_id(GameState.get_protagonist_agent_id())
+	for agent in [protagonist]:
+		if typeof(agent) != TYPE_DICTIONARY or (agent as Dictionary).is_empty():
 			continue
 		var agent_id := String(agent.get("id", ""))
 		if agent_id.is_empty():
@@ -480,8 +489,6 @@ func _refresh_schedule() -> void:
 		picker.set_item_metadata(0, "")
 		var selected_index := 0
 		for activity in SCHEDULE_ACTIVITIES:
-			if String(activity.get("id", "")) == "investigation" and not GameState.is_agent_selected(agent_id):
-				continue
 			var item_index := picker.item_count
 			picker.add_item("%s · %s" % [slot_label, String(activity.get("label", ""))])
 			picker.set_item_metadata(item_index, String(activity.get("id", "")))
@@ -503,7 +510,7 @@ func _refresh_schedule() -> void:
 				_set_schedule_activity(agent_id, time_slot, activity_id)
 		)
 		row.add_child(picker)
-	_schedule_list.add_child(_make_label("일상 에피소드는 아래 카드에서 일정과 별개로 확인할 수 있습니다. 괴이 연구·장비 정비는 실제 콘텐츠 연결 후 사용할 수 있습니다."))
+	_schedule_list.add_child(_make_label("반일 일정은 주인공 한 명에게만 배정·소비됩니다. 서포트는 현장 자동 지원만 제공합니다."))
 
 
 func _set_schedule_activity(agent_id: String, time_slot: String, activity_id: String) -> void:
@@ -523,6 +530,11 @@ func _get_all_agent_ids() -> Array:
 			if not agent_id.is_empty():
 				result.append(agent_id)
 	return result
+
+
+func _get_schedule_agent_ids() -> Array:
+	var protagonist_id := GameState.get_protagonist_agent_id()
+	return [] if protagonist_id.is_empty() else [protagonist_id]
 
 
 func _refresh_external_contacts() -> void:
@@ -729,21 +741,16 @@ func _start_investigation() -> void:
 	if not GameState.can_start_mission_with_agents():
 		_status_label.text = GameState.get_agent_selection_status_text()
 		return
-	if not GameState.is_campaign_schedule_complete(_get_all_agent_ids()):
-		_status_label.text = "전 요원의 현재 반일 일정을 먼저 정하세요."
+	if not GameState.is_campaign_schedule_complete(_get_schedule_agent_ids()):
+		_status_label.text = "주인공의 현재 반일 일정을 먼저 정하세요."
 		return
 	if not _selected_team_has_investigation():
-		var schedule_result := GameState.resolve_non_investigation_campaign_slot(_get_all_agent_ids())
+		var schedule_result := GameState.resolve_non_investigation_campaign_slot(_get_schedule_agent_ids())
 		if schedule_result.has("error"):
 			_status_label.text = String(schedule_result.get("error", "일정 처리에 실패했습니다."))
 		else:
 			get_tree().reload_current_scene()
 		return
-	var slot := String(GameState.get_campaign_snapshot().get("time_slot", "morning"))
-	for agent_id in GameState.get_selected_agent_ids():
-		if String(GameState.get_campaign_agent_schedule(String(agent_id)).get(slot, "")) != "investigation":
-			_status_label.text = "현장 편성 요원은 모두 조사 일정에 배치해야 합니다."
-			return
 	var planned_case_id := GameState.get_campaign_planned_case()
 	if planned_case_id.is_empty() or not GameState.begin_campaign_operation(planned_case_id):
 		_status_label.text = "조사할 사건을 선택하세요."
@@ -756,10 +763,8 @@ func _start_investigation() -> void:
 
 func _selected_team_has_investigation() -> bool:
 	var slot := String(GameState.get_campaign_snapshot().get("time_slot", "morning"))
-	for agent_id in GameState.get_selected_agent_ids():
-		if String(GameState.get_campaign_agent_schedule(String(agent_id)).get(slot, "")) == "investigation":
-			return true
-	return false
+	var protagonist_id := GameState.get_protagonist_agent_id()
+	return not protagonist_id.is_empty() and String(GameState.get_campaign_agent_schedule(protagonist_id).get(slot, "")) == "investigation"
 
 
 func _add_request_card(parent: Control, request: Dictionary) -> void:

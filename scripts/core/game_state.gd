@@ -20,7 +20,7 @@ const SCENE_RESULT := "res://scenes/result_scene.tscn"
 const SCENE_MARKET := "res://scenes/market_scene.tscn"
 const SCENE_DAILY_EPISODE := "res://scenes/daily_episode_scene.tscn"
 const FLAG_CAPTURE_SUCCESS := "capture_success"
-const MIN_SELECTED_AGENTS := 2
+const MIN_SELECTED_AGENTS := 1
 const MAX_SELECTED_AGENTS := 3
 const AGENT_TRUST_MIN := -3
 const AGENT_TRUST_MAX := 3
@@ -912,6 +912,65 @@ func get_selected_agent_ids() -> Array:
 	return selected_agent_ids.duplicate()
 
 
+## Interprets the first valid selected id as the protagonist without adding a save field.
+func get_protagonist_agent_id() -> String:
+	for agent_id in selected_agent_ids:
+		var clean_id := String(agent_id)
+		if not get_agent_by_id(clean_id).is_empty():
+			return clean_id
+	return ""
+
+
+## Moves one valid selected agent to the first position while preserving the saved array format.
+func set_protagonist_agent_id(agent_id: String) -> bool:
+	var clean_id := agent_id.strip_edges()
+	if get_agent_by_id(clean_id).is_empty():
+		return false
+	if not selected_agent_ids.has(clean_id) and not select_agent(clean_id):
+		return false
+	selected_agent_ids.erase(clean_id)
+	selected_agent_ids.push_front(clean_id)
+	return true
+
+
+## Returns up to two selected agents after the protagonist.
+func get_support_agent_ids() -> Array:
+	var result: Array = []
+	var protagonist_id := get_protagonist_agent_id()
+	for agent_id in selected_agent_ids:
+		var clean_id := String(agent_id)
+		if clean_id != protagonist_id and not get_agent_by_id(clean_id).is_empty():
+			result.append(clean_id)
+			if result.size() >= 2:
+				break
+	return result
+
+
+## Rebuilds the formation as protagonist followed by zero to two supports.
+func set_support_agent_ids(agent_ids: Array) -> bool:
+	var protagonist_id := get_protagonist_agent_id()
+	if protagonist_id.is_empty():
+		return false
+	var reordered: Array = [protagonist_id]
+	for agent_id in _to_string_array(agent_ids):
+		if agent_id == protagonist_id or reordered.has(agent_id) or get_agent_by_id(agent_id).is_empty():
+			continue
+		reordered.append(agent_id)
+		if reordered.size() >= MAX_SELECTED_AGENTS:
+			break
+	set_selected_agent_ids(reordered)
+	return true
+
+
+## Returns the fixed MVP-043 support behavior for one agent id.
+func get_agent_support_role(agent_id: String) -> String:
+	return {
+		"agent_kwon_narae": "analysis",
+		"agent_oh_hyun": "observation",
+		"agent_kang_ijun": "protection"
+	}.get(agent_id, "")
+
+
 ## Returns selected agent records only.
 func get_selected_agents() -> Array:
 	var selected_agents: Array = []
@@ -1758,25 +1817,28 @@ func get_recovery_pattern_learning() -> Dictionary:
 	return recovery_pattern_learning.duplicate(true)
 
 
-func get_agent_auto_action_chance(agent_id: String, ability_key: String) -> float:
+func get_agent_auto_action_chance(agent_id: String, ability_key: String, bonus_chance: float = 0.0, maximum_chance: float = 70.0) -> float:
 	if not is_agent_active(agent_id):
 		return 0.0
-	var chance := clampf(float(15 + get_agent_ability(agent_id, ability_key) * 8 + get_agent_trust(agent_id) * 3), 15.0, 70.0)
+	var cap := clampf(maximum_chance, 1.0, 99.0)
+	var chance := clampf(float(15 + get_agent_ability(agent_id, ability_key) * 8 + get_agent_trust(agent_id) * 3) + bonus_chance, 15.0, cap)
 	if ability_key == "rapport" and has_equipped_item("gear_resonance_buffer"):
-		chance = minf(70.0, chance + 10.0)
+		chance = minf(cap, chance + 10.0)
 	if get_agent_current_mental(agent_id) * 4 <= get_agent_max_mental(agent_id):
 		chance *= 0.5
 	return chance
 
 
-func roll_agent_auto_action(agent_id: String, ability_key: String) -> Dictionary:
-	var chance := get_agent_auto_action_chance(agent_id, ability_key)
+func roll_agent_auto_action(agent_id: String, ability_key: String, roll_override: float = -1.0, bonus_chance: float = 0.0, maximum_chance: float = 70.0) -> Dictionary:
+	var chance := get_agent_auto_action_chance(agent_id, ability_key, bonus_chance, maximum_chance)
+	var roll := randf() * 100.0 if roll_override < 0.0 else clampf(roll_override, 0.0, 100.0)
 	return {
 		"agent_id": agent_id,
 		"agent_name": String(get_agent_by_id(agent_id).get("name", "요원")),
 		"ability": ability_key,
 		"chance": chance,
-		"triggered": chance > 0.0 and randf() * 100.0 <= chance
+		"roll": roll,
+		"triggered": chance > 0.0 and roll <= chance
 	}
 
 

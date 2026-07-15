@@ -27,6 +27,8 @@ func _run() -> void:
 	}
 	var state := {
 		"selected": true,
+		"protagonist": true,
+		"has_protagonist": true,
 		"selection_disabled": false,
 		"current_hp": 75,
 		"max_hp": 100,
@@ -43,7 +45,7 @@ func _run() -> void:
 	var detail_button := card.get_node("%DetailButton") as Button
 	var name_label := card.get_node("%NameLabel") as Label
 	var description_label := card.get_node("%DescriptionLabel") as Label
-	if selection_button.text != "해제" or selection_button.disabled:
+	if selection_button.text != "주인공 해제" or selection_button.disabled:
 		_fail("selected state was not rendered")
 		return
 	if selection_button.focus_mode != Control.FOCUS_ALL or detail_button.focus_mode != Control.FOCUS_ALL:
@@ -67,9 +69,10 @@ func _run() -> void:
 		return
 
 	state.selected = false
+	state.protagonist = false
 	state.selection_disabled = true
 	card.configure(agent, state)
-	if selection_button.text != "선택" or not selection_button.disabled:
+	if selection_button.text != "서포트 선택" or not selection_button.disabled:
 		_fail("selection-disabled state was not rendered")
 		return
 	if card.theme_type_variation != "AgentCard":

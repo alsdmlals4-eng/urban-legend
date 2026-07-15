@@ -42,7 +42,7 @@ func _run() -> void:
 	for card in cards:
 		var button := card.get_node("%SelectionButton") as Button
 		var name_label := card.get_node("%NameLabel") as Label
-		if button.text == "해제" and name_label.text.contains("강이준"):
+		if button.text.contains("해제") and name_label.text.contains("강이준"):
 			selected_card = card
 			break
 	if selected_card == null:

@@ -94,6 +94,10 @@ func _test_route_clear_grades() -> void:
 
 func _test_route_mouse_and_keyboard_inputs() -> void:
 	var keyboard_game := _new_route_game()
+	keyboard_game.call("set_input_locked", true)
+	keyboard_game.call("_unhandled_key_input", _key_event(KEY_ENTER))
+	_expect(int(keyboard_game.get("_move_count")) == 0, "manual overlay should block route keyboard input")
+	keyboard_game.call("set_input_locked", false)
 	keyboard_game.call("_unhandled_key_input", _key_event(KEY_ENTER))
 	_expect(int(keyboard_game.get("_move_count")) == 1, "Enter should rotate the selected route tile")
 	keyboard_game.call("_unhandled_key_input", _key_event(KEY_C))
@@ -134,12 +138,15 @@ func _new_route_game(config: Dictionary = {}) -> Control:
 func _complete_route(extra_turns: int) -> Array:
 	var game := _new_route_game()
 	var captured: Array = []
+	var stages: Array[String] = []
 	game.completed.connect(func(successful: bool, details: Dictionary) -> void: captured.assign([successful, details]))
+	game.stage_changed.connect(func(stage_id: String, _title: String, _details: Dictionary) -> void: stages.append(stage_id))
 	_rotate_route_tile(game, Vector2i(1, 2), 1)
 	_rotate_route_tile(game, Vector2i(1, 1), 1)
 	_rotate_route_tile(game, Vector2i(2, 1), 2)
 	game.call("_confirm_route")
 	_expect(not bool(game.get("_finished")) and bool(game.get("_tutorial_complete")), "3x3 should advance to 4x4 without completing")
+	_expect(stages == ["final"], "3x3 should emit only a final-stage display transition and no completion result")
 	_rotate_route_tile(game, Vector2i(1, 3), 1)
 	_rotate_route_tile(game, Vector2i(1, 2), 1)
 	_rotate_route_tile(game, Vector2i(1, 1), 1)

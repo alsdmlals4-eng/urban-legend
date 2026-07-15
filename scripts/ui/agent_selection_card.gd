@@ -4,10 +4,12 @@ extends PanelContainer
 
 signal selection_requested(agent_id: String)
 signal detail_requested(agent_id: String)
+signal protagonist_requested(agent_id: String)
 
 const ABILITY_KEYS := ["suppression", "analysis", "protection", "treatment", "rapport"]
 
 @onready var _selection_button: Button = %SelectionButton
+@onready var _role_button: Button = %RoleButton
 @onready var _name_label: Label = %NameLabel
 @onready var _hp_bar: ProgressBar = %HpBar
 @onready var _hp_value: Label = %HpValue
@@ -22,6 +24,7 @@ var _agent_id := ""
 
 func _ready() -> void:
 	_selection_button.pressed.connect(_on_selection_pressed)
+	_role_button.pressed.connect(func() -> void: protagonist_requested.emit(_agent_id))
 	_detail_button.pressed.connect(_on_detail_pressed)
 
 
@@ -32,11 +35,15 @@ func configure(agent: Dictionary, view_state: Dictionary) -> bool:
 
 	_agent_id = next_agent_id
 	var selected := bool(view_state.get("selected", false))
+	var is_protagonist := bool(view_state.get("protagonist", false))
 	theme_type_variation = &"AgentCardSelected" if selected else &"AgentCard"
-	_selection_button.text = "해제" if selected else "선택"
+	_selection_button.text = ("주인공 해제" if is_protagonist else "서포트 해제") if selected else ("서포트 선택" if bool(view_state.get("has_protagonist", false)) else "주인공 선택")
 	_selection_button.disabled = bool(view_state.get("selection_disabled", false))
-	_name_label.text = "%s [%s] · %s / %s" % [
+	_role_button.visible = selected and not is_protagonist
+	_role_button.disabled = not selected
+	_name_label.text = "%s%s [%s] · %s / %s" % [
 		String(agent.get("name", "")),
+		" · 주인공" if is_protagonist else (" · 서포트" if selected else ""),
 		String(agent.get("temperament_label", "")),
 		String(agent.get("class", "")),
 		String(agent.get("role", ""))

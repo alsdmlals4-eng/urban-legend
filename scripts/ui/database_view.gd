@@ -1,6 +1,8 @@
 # 데이터베이스 화면의 섹션 선택과 완료 사건 기록 표시를 관리한다.
 extends Control
 
+const AfterlifeManualCatalog = preload("res://scripts/ui/afterlife_manual_catalog.gd")
+
 const ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")
 
 const MinigameResultFormatter = preload("res://scripts/minigames/minigame_result_formatter.gd")
@@ -264,6 +266,13 @@ func _show_completed_case_report(report: Dictionary, parent: VBoxContainer) -> v
 	], parent)
 	_add_report_entries("수집 단서", report.get("collected_clues", []), "title", "description", parent)
 	_add_minigame_entries(report.get("minigame_results", {}), parent)
+	if String(report.get("episode_id", "")) == "episode_001_afterlife_station":
+		var route_result: Dictionary = report.get("minigame_results", {}).get("minigame_frequency_sync", {})
+		if bool(route_result.get("successful", false)):
+			var manual_lines: Array = []
+			for page in AfterlifeManualCatalog.pages():
+				manual_lines.append("%s\n%s\n대응: %s" % [String(page.get("title", "기록")), String(page.get("observation", "")), String(page.get("procedure", ""))])
+			_add_text_entries("검증된 저승역 괴이 매뉴얼 4페이지", manual_lines, parent)
 	_add_report_entries("연구 보상", report.get("unlocked_research_rewards", []), "ability_name", "ability_description", parent)
 	_add_report_entries("해금 기록물", report.get("unlocked_records", []), "title", "description", parent)
 	_add_report_entries("해금 장비", report.get("unlocked_equipment", []), "name", "description", parent)

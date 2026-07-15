@@ -100,8 +100,11 @@ func _build_ui() -> void:
 	columns.add_theme_constant_override("separation", 14)
 	root.add_child(columns)
 
-	var briefing := _add_section(columns, "검증 규칙", 0.78)
-	var description := _make_body_label(String(_minigame.get("description", "현장 검증을 준비합니다.")))
+	var briefing := _add_section(columns, "비교 근거" if _is_route_restore_minigame() else "검증 규칙", 0.78)
+	var description_text := String(_minigame.get("description", "현장 검증을 준비합니다."))
+	if _is_route_restore_minigame():
+		description_text = "공식 운행 기록\n· 2번 승강장에서 출발\n· 3번 환승 후 1번 도착\n· 직선 구간 최소 1회 포함\n\n방송 원본\n· 다음은 3번 환승역입니다\n· 종료 식별음 뒤 이동\n\n현장 표기\n· 개인별 목적지 표기는 배제"
+	var description := _make_body_label(description_text)
 	briefing.add_child(description)
 	var rule := _make_body_label(String(_minigame.get("rules_text", "화면 안내에 따라 입력하세요.")))
 	rule.add_theme_color_override("font_color", Color(0.82, 0.88, 0.9))
@@ -140,8 +143,8 @@ func _build_ui() -> void:
 	playfield_frame.add_theme_stylebox_override("panel", _make_panel_style(Color(0.012, 0.025, 0.034), Color(0.18, 0.42, 0.46)))
 	play.add_child(playfield_frame)
 
-	var outcome := _add_section(columns, "현장 기록", 0.9)
-	_result_label = _make_body_label("검증이 끝나면 마지막 단서와 요원 반응을 이곳에 기록합니다.")
+	var outcome := _add_section(columns, "현장 반응" if _is_route_restore_minigame() else "현장 기록", 0.9)
+	_result_label = _make_body_label("목적지 혼선 · 정상\n노선 고착 · 확인 전\n관측 위험 · 경로 확인 전" if _is_route_restore_minigame() else "검증이 끝나면 마지막 단서와 요원 반응을 이곳에 기록합니다.")
 	outcome.add_child(_result_label)
 	var spacer := Control.new()
 	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -158,6 +161,8 @@ func _build_ui() -> void:
 		playfield_frame.add_child(_game_control)
 		_game_control.status_changed.connect(_on_status_changed)
 		_game_control.completed.connect(_on_game_completed)
+		if _game_control.has_signal("stage_changed"):
+			_game_control.connect("stage_changed", _on_route_stage_changed)
 		_game_control.configure(_minigame, not _equipment_hint.is_empty())
 	else:
 		_show_saved_result(playfield_frame)
@@ -189,6 +194,15 @@ func _make_game_control() -> Control:
 func _on_status_changed(text: String, progress: float) -> void:
 	_status_label.text = text
 	_progress_bar.value = clampf(progress, 0.0, 1.0) * 100.0
+
+
+func _on_route_stage_changed(stage_id: String, title: String, details: Dictionary) -> void:
+	if _result_label == null:
+		return
+	if stage_id == "tutorial":
+		_result_label.text = "%s\n\n목적지 혼선 · 관찰 중\n노선 고착 · 적용 안 함\n관측 위험 · 기록만 유지" % title
+	else:
+		_result_label.text = "%s\n\n목적지 혼선 · 개인 표기 배제\n노선 고착 · 공식 기록으로 해제\n관측 위험 · 직전 반응을 여기 기록" % title
 
 
 func _on_game_completed(successful: bool, details: Dictionary) -> void:
@@ -356,3 +370,6 @@ func _build_manual_drawer() -> void:
 func _set_manual_input_lock(locked: bool) -> void:
 	if _game_control != null:
 		_game_control.set_process_unhandled_input(not locked)
+		_game_control.set_process_unhandled_key_input(not locked)
+		if _game_control.has_method("set_input_locked"):
+			_game_control.call("set_input_locked", locked)

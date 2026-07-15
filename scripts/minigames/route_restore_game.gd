@@ -3,6 +3,7 @@ extends Control
 
 signal completed(successful: bool, details: Dictionary)
 signal status_changed(text: String, progress: float)
+signal stage_changed(stage_id: String, title: String, details: Dictionary)
 
 const NORTH := Vector2i(0, -1)
 const EAST := Vector2i(1, 0)
@@ -24,6 +25,7 @@ var _route_lock := false
 var _route_wobble := false
 var _wobble_used := false
 var _finished := false
+var _input_locked := false
 var _feedback := "오현: 공식 기록의 안전 출구는 북쪽 노선입니다."
 var _feedback_color := Color(0.72, 0.84, 0.88)
 
@@ -34,11 +36,12 @@ func configure(config: Dictionary, _equipment_assisted: bool) -> void:
 	var entrenchment := int(config.get("route_entrenchment", 0))
 	_route_lock = entrenchment >= 5
 	_route_wobble = int(config.get("route_risk", 0)) >= 5 and _route_lock
-	custom_minimum_size = Vector2(620, 460)
+	custom_minimum_size = Vector2(520, 360)
 	focus_mode = Control.FOCUS_ALL
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	set_process_unhandled_key_input(true)
 	call_deferred("grab_focus")
+	stage_changed.emit("tutorial", "조작 학습 1/2 · 결과 미저장", {"grid_size": 3, "result_saved": false})
 	_emit_status()
 	queue_redraw()
 
@@ -81,7 +84,7 @@ func _build_final_board() -> void:
 
 
 func _gui_input(event: InputEvent) -> void:
-	if _finished:
+	if _finished or _input_locked:
 		return
 	if event is InputEventMouseButton:
 		var mouse := event as InputEventMouseButton
@@ -112,6 +115,12 @@ func _gui_input(event: InputEvent) -> void:
 
 func _unhandled_key_input(event: InputEvent) -> void:
 	_gui_input(event)
+
+
+func set_input_locked(locked: bool) -> void:
+	_input_locked = locked
+	if not locked:
+		call_deferred("grab_focus")
 
 
 func _move_selection(direction: Vector2i) -> void:
@@ -148,7 +157,8 @@ func _confirm_route() -> void:
 		if not _tutorial_complete:
 			_tutorial_complete = true
 			_build_final_board()
-			_feedback = "3×3 조작 학습 완료. 권나래: 이제 실제 피해자 경로를 검증합니다."
+			stage_changed.emit("final", "현장 검증 2/2 · 결과 저장", {"grid_size": 4, "result_saved": true})
+			_feedback = "3×3 조작 학습 완료. " + _feedback
 			_emit_status(); queue_redraw(); return
 		if _route_wobble and not _wobble_used:
 			_wobble_used = true
@@ -223,7 +233,7 @@ func _connections_for(coord: Vector2i) -> Array[Vector2i]:
 
 func _emit_status(progress_override: float = -1.0) -> void:
 	var limit := 6 if not _tutorial_complete else 10
-	var stage := "3×3 조작 학습" if not _tutorial_complete else "4×4 최종 검증"
+	var stage := "조작 학습 1/2 · 결과 미저장" if not _tutorial_complete else "현장 검증 2/2 · 결과 저장"
 	status_changed.emit("%s · 조작 %d회 / 정밀 기준 %d회\n%s" % [stage, _move_count, limit, _feedback], progress_override if progress_override >= 0 else clampf(float(_move_count) / limit, 0.0, 0.95))
 
 
@@ -236,7 +246,7 @@ func _draw() -> void:
 			_draw_tile(coord,rect); draw_rect(rect,Color(0.22,0.34,0.38),false,1.0)
 			if coord == _selected: draw_rect(rect.grow(-4),Color(0.35,0.9,0.74),false,3.0)
 	_draw_button(_reset_rect(),"R  처음부터",Color(0.28,0.38,0.42)); _draw_button(_confirm_rect(),"C  경로 확인",Color(0.16,0.58,0.48))
-	draw_string(ThemeDB.fallback_font,Vector2(24,28),"오현: 기록 대조 / 권나래: 피해자 호송 / 강이준: 현실 경계",HORIZONTAL_ALIGNMENT_LEFT,-1,16,Color(0.64,0.78,0.82))
+	draw_string(ThemeDB.fallback_font,Vector2(24,28),"공식 기록과 현장 표기를 대조해 안전 노선을 복원하십시오.",HORIZONTAL_ALIGNMENT_LEFT,-1,16,Color(0.64,0.78,0.82))
 
 
 func _draw_tile(coord: Vector2i, rect: Rect2) -> void:

@@ -82,6 +82,7 @@ var _manual_status_label: Label
 var _manual_page_index := 0
 var _read_manual_cases: Dictionary = {}
 var _attempted_reasoning_choices: Dictionary = {}
+var _support_eliminated_choices: Dictionary = {}
 var _reasoning_point: Dictionary = {}
 var _reasoning_definition: Dictionary = {}
 var _case_dialog: AcceptDialog
@@ -273,6 +274,7 @@ func _open_manual_case(case_id: String) -> void:
 	if _case_dialog == null:
 		_case_dialog = AcceptDialog.new()
 		_case_dialog.ok_button_text = "기록 닫기"
+		_style_case_dialog(_case_dialog)
 		add_child(_case_dialog)
 	var data: Dictionary = AfterlifeManualCatalog.cases().get(case_id, {})
 	_case_dialog.title = String(data.get("title", "사례 기록"))
@@ -281,6 +283,40 @@ func _open_manual_case(case_id: String) -> void:
 	_build_afterlife_manual()
 	if not _reasoning_point.is_empty():
 		_render_reasoning_choices()
+
+
+func _style_case_dialog(dialog: AcceptDialog) -> void:
+	var theme := Theme.new()
+	var window_style := StyleBoxFlat.new()
+	window_style.bg_color = Color(0.025, 0.035, 0.045, 0.98)
+	window_style.border_color = Color(0.34, 0.24, 0.46)
+	window_style.set_border_width_all(2)
+	window_style.corner_radius_top_left = 6
+	window_style.corner_radius_top_right = 6
+	window_style.corner_radius_bottom_left = 6
+	window_style.corner_radius_bottom_right = 6
+	window_style.content_margin_left = 18
+	window_style.content_margin_right = 18
+	window_style.content_margin_top = 16
+	window_style.content_margin_bottom = 16
+	theme.set_stylebox("embedded_border", "Window", window_style)
+	theme.set_stylebox("embedded_unfocused_border", "Window", window_style)
+	theme.set_stylebox("panel", "AcceptDialog", window_style)
+	theme.set_color("title_color", "Window", Color(0.82, 0.68, 0.9))
+	theme.set_color("font_color", "Label", Color(0.88, 0.9, 0.92))
+	theme.set_font_size("font_size", "Label", 17)
+	var button_style := StyleBoxFlat.new()
+	button_style.bg_color = Color(0.06, 0.09, 0.12)
+	button_style.border_color = Color(0.25, 0.38, 0.44)
+	button_style.set_border_width_all(1)
+	button_style.corner_radius_top_left = 4
+	button_style.corner_radius_top_right = 4
+	button_style.corner_radius_bottom_left = 4
+	button_style.corner_radius_bottom_right = 4
+	theme.set_stylebox("normal", "Button", button_style)
+	theme.set_stylebox("hover", "Button", button_style)
+	theme.set_color("font_color", "Button", Color(0.88, 0.9, 0.92))
+	dialog.theme = theme
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -821,13 +857,18 @@ func _show_method_options(point: Dictionary) -> void:
 			card.tooltip_text = "\n".join(info_lines)
 
 
-func _show_reasoning_options(point: Dictionary, definition: Dictionary) -> void:
+func _show_reasoning_options(point: Dictionary, definition: Dictionary, support_roll_override: float = -1.0) -> void:
 	_reasoning_point = point.duplicate(true)
 	_reasoning_definition = definition.duplicate(true)
+	_try_analysis_support(String(point.get("id", "")), support_roll_override)
 	_manual_page_index = int(definition.get("manual_page", 0))
 	_build_afterlife_manual()
 	_field_speaker_label.text = String(definition.get("title", "현장 판단"))
-	_field_dialogue_label.text = "%s\n\n실패 사례로 명백한 오답을 줄이고, 성공 사례의 공통 원칙과 현재 관찰을 비교하십시오." % String(definition.get("observation", ""))
+	var observation := String(definition.get("observation", ""))
+	var support_observation := _try_observation_support(String(point.get("id", "")), support_roll_override)
+	if not support_observation.is_empty():
+		observation += "\n\n추가 관찰 · %s" % support_observation
+	_field_dialogue_label.text = "%s\n\n실패 사례로 명백한 오답을 줄이고, 성공 사례의 공통 원칙과 현재 관찰을 비교하십시오." % observation
 	_field_next_button.visible = false
 	_points_box.visible = true
 	_set_ui_mode("FIELD_CHOICES")
@@ -845,12 +886,15 @@ func _render_reasoning_choices() -> void:
 		var choice: Dictionary = (value as Dictionary).duplicate(true)
 		var choice_id := String(choice.get("id", ""))
 		var failure_case_id := String(choice.get("failure_case_id", ""))
-		var eliminated := not failure_case_id.is_empty() and _read_manual_cases.has(failure_case_id)
+		var support_eliminated := String(_support_eliminated_choices.get(String(_reasoning_point.get("id", "")), "")) == choice_id
+		var eliminated := (not failure_case_id.is_empty() and _read_manual_cases.has(failure_case_id)) or support_eliminated
 		var attempted := _attempted_reasoning_choices.has("%s:%s" % [String(_reasoning_point.get("id", "")), choice_id])
 		var card := ActionChoiceCardScene.instantiate()
 		_field_choice_box.add_child(card)
 		var reason := ""
-		if eliminated:
+		if support_eliminated:
+			reason = "분석 지원으로 제외됨: 과거 실패사례와 직접 충돌"
+		elif eliminated:
 			var case_data: Dictionary = AfterlifeManualCatalog.cases().get(failure_case_id, {})
 			reason = "제외 근거: %s와 동일한 조건" % String(case_data.get("title", "실패 사례"))
 		elif attempted:
@@ -883,14 +927,72 @@ func _select_reasoning_choice(choice: Dictionary) -> void:
 	var is_risk := String(choice.get("kind", "")) == "risk"
 	var reason := "현재 관찰을 설명하지 못했습니다. 기록을 다시 비교하십시오."
 	if is_risk:
+		var protected := _try_protection_support()
 		reason = "미검증 방송이 증폭되어 목적지 혼선이 확대됐습니다. 위험 사례를 남기고 같은 판단으로 복귀합니다."
-		GameState.apply_story_effects({"anomaly_risk_delta": 5, "mental_stamina_delta": -4})
+		if protected:
+			reason += " 강이준이 첫 충격을 완화했지만 실패 기록은 유지됩니다."
+		GameState.apply_story_effects({"anomaly_risk_delta": 2 if protected else 5, "mental_stamina_delta": -1 if protected else -4})
 	GameState.record_recovery_pattern_outcome("afterlife_reasoning:%s" % point_id, choice_id, false, reason)
 	GameState.save_game()
 	_field_dialogue_label.text = "%s\n\n%s" % [String(_reasoning_definition.get("observation", "")), reason]
 	_render_reasoning_choices()
 	_refresh_case_status()
 	_refresh_manual_drawer(true)
+
+
+func _try_analysis_support(point_id: String, roll_override: float = -1.0) -> void:
+	if point_id.is_empty() or GameState.get_protagonist_agent_id() == "agent_kwon_narae":
+		return
+	if not GameState.get_support_agent_ids().has("agent_kwon_narae"):
+		return
+	var attempt_id := "mvp043_analysis:%s" % point_id
+	var success_id := "%s:success:record_personal_destination" % attempt_id
+	if GameState.has_used_agent_support(success_id):
+		_support_eliminated_choices[point_id] = "record_personal_destination"
+		return
+	if GameState.has_used_agent_support(attempt_id):
+		return
+	GameState.mark_agent_support_used(attempt_id)
+	var result := GameState.roll_agent_auto_action("agent_kwon_narae", "analysis", roll_override, 20.0, 90.0)
+	if bool(result.get("triggered", false)):
+		GameState.mark_agent_support_used(success_id)
+		_support_eliminated_choices[point_id] = "record_personal_destination"
+
+
+func _try_protection_support(roll_override: float = -1.0) -> bool:
+	if GameState.get_protagonist_agent_id() == "agent_kang_ijun" or not GameState.get_support_agent_ids().has("agent_kang_ijun"):
+		return false
+	var attempt_id := "mvp043_protection:first_risk"
+	var success_id := "%s:success" % attempt_id
+	if GameState.has_used_agent_support(success_id):
+		return true
+	if GameState.has_used_agent_support(attempt_id):
+		return false
+	GameState.mark_agent_support_used(attempt_id)
+	var result := GameState.roll_agent_auto_action("agent_kang_ijun", "protection", roll_override, 20.0, 90.0)
+	if not bool(result.get("triggered", false)):
+		return false
+	GameState.mark_agent_support_used(success_id)
+	return true
+
+
+func _try_observation_support(point_id: String, roll_override: float = -1.0) -> String:
+	if point_id.is_empty() or GameState.get_protagonist_agent_id() == "agent_oh_hyun":
+		return ""
+	if not GameState.get_support_agent_ids().has("agent_oh_hyun"):
+		return ""
+	var attempt_id := "mvp043_observation:%s" % point_id
+	var success_id := "%s:success" % attempt_id
+	if GameState.has_used_agent_support(success_id):
+		return "공백 직후의 식별음만 세 사람에게 동일하게 들립니다."
+	if GameState.has_used_agent_support(attempt_id):
+		return ""
+	GameState.mark_agent_support_used(attempt_id)
+	var result := GameState.roll_agent_auto_action("agent_oh_hyun", "analysis", roll_override, 20.0, 90.0)
+	if not bool(result.get("triggered", false)):
+		return ""
+	GameState.mark_agent_support_used(success_id)
+	return "공백 직후의 식별음만 세 사람에게 동일하게 들립니다."
 
 
 func _run_method_option(point: Dictionary, method: Dictionary) -> void:

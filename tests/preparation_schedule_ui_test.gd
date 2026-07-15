@@ -19,6 +19,7 @@ func _run() -> void:
 		return
 	_guard_prepared = true
 	game_state.reset_run_state()
+	game_state.set_selected_agent_ids(["agent_oh_hyun", "agent_kwon_narae", "agent_kang_ijun"])
 	if change_scene_to_file("res://scenes/preparation_scene.tscn") != OK:
 		_fail("preparation scene failed to load")
 		return
@@ -35,12 +36,11 @@ func _run() -> void:
 		return
 
 	var options := schedule_list.find_children("*", "OptionButton", true, false)
-	if options.size() != game_state.get_agents().size():
-		_fail("each agent must expose only the current half-day assignment control")
+	if options.size() != 1:
+		_fail("only the protagonist should expose the current half-day assignment control")
 		return
 
-	var first_agent: Dictionary = game_state.get_agents()[0]
-	var agent_id := String(first_agent.get("id", ""))
+	var agent_id: String = game_state.get_protagonist_agent_id()
 	(options[0] as OptionButton).item_selected.emit(_find_metadata_index(options[0], "rest"))
 	await process_frame
 	var schedule: Dictionary = game_state.get_campaign_agent_schedule(agent_id)

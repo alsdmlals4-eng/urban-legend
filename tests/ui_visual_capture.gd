@@ -92,10 +92,36 @@ func _capture() -> void:
 				case_dialog.hide()
 			for _frame in range(3):
 				await process_frame
+		if ui_state == "mvp043_reasoning_popup":
+			current_scene.call("_open_manual_case", "failure_c")
+			for _frame in range(3):
+				await process_frame
+		if ui_state == "mvp043_reasoning_risk":
+			var reasoning: Dictionary = current_scene.get("_reasoning_definition")
+			for choice in reasoning.get("choices", []):
+				if typeof(choice) == TYPE_DICTIONARY and String(choice.get("kind", "")) == "risk":
+					current_scene.call("_select_reasoning_choice", choice)
+					break
+			for _frame in range(3):
+				await process_frame
 	if ui_state == "recovery_evidence" and current_scene.has_method("_toggle_clue_drawer"):
 		current_scene.call("_toggle_clue_drawer")
 		for _frame in range(3):
 			await process_frame
+	if ui_state == "mvp043_route_final":
+		var route_control := _find_script_control(current_scene, "route_restore_game.gd")
+		if route_control != null:
+			route_control.set("_tutorial_complete", true)
+			route_control.call("_build_final_board")
+			route_control.call("_emit_status")
+			route_control.emit_signal(
+				"stage_changed",
+				"final",
+				"현장 검증 2/2 · 결과 저장",
+				{"grid_size": 4, "result_saved": true}
+			)
+			for _frame in range(3):
+				await process_frame
 	if ui_state == "mvp039_investigation" and current_scene.has_method("_get_investigation_points"):
 		var points: Array = current_scene.call("_get_investigation_points")
 		for point in points:
@@ -162,6 +188,19 @@ func _find_scroll_container(control: Control) -> ScrollContainer:
 		if current is ScrollContainer:
 			return current as ScrollContainer
 		current = current.get_parent()
+	return null
+
+
+func _find_script_control(node: Node, script_name: String) -> Control:
+	if node == null:
+		return null
+	var node_script: Variant = node.get_script()
+	if node is Control and node_script != null and String(node_script.resource_path).ends_with(script_name):
+		return node as Control
+	for child in node.get_children():
+		var found := _find_script_control(child, script_name)
+		if found != null:
+			return found
 	return null
 
 
