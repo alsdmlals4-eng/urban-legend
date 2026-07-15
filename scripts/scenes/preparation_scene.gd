@@ -5,6 +5,7 @@ const ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")
 const LogGuideScript = preload("res://scripts/ui/log_guide.gd")
 const LogTutorialCatalog = preload("res://scripts/ui/log_tutorial_catalog.gd")
 const AgentSelectionCardScene = preload("res://scenes/ui/agent_selection_card.tscn")
+const AssetCatalog = preload("res://scripts/ui/ui_asset_catalog.gd")
 const SCHEDULE_ACTIVITIES: Array[Dictionary] = [
 	{"id": "investigation", "label": "현장 조사"},
 	{"id": "rest", "label": "대기·회복"}
@@ -28,6 +29,8 @@ var _campaign_day_label: Label
 var _schedule_list: VBoxContainer
 var _current_case_label: Label
 var _daily_episode_list: VBoxContainer
+var _dashboard_tabs: TabContainer
+var _dashboard_support_label: Label
 
 
 func _ready() -> void:
@@ -55,27 +58,111 @@ func _build_ui() -> void:
 	margin.add_theme_constant_override("margin_bottom", 20)
 	add_child(margin)
 
-	var scroll := ScrollContainer.new()
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	margin.add_child(scroll)
-
 	var root := VBoxContainer.new()
 	root.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	root.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	root.add_theme_constant_override("separation", 10)
-	scroll.add_child(root)
+	margin.add_child(root)
 
 	_add_navigation(root)
 	_add_header(root)
-	_add_schedule_panel(root)
-	_add_current_case_panel(root)
-	_add_daily_episode_panel(root)
-	_add_episode_panel(root)
-	_add_external_contact_panel(root)
-	_add_agent_panel(root)
-	_add_equipment_panel(root)
-	_add_record_panel(root)
-	_add_log_panel(root)
-	_add_start_panel(root)
+	var dashboard := HBoxContainer.new()
+	dashboard.name = "ProtagonistDashboard"
+	dashboard.custom_minimum_size.y = 310
+	dashboard.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	dashboard.add_theme_constant_override("separation", 10)
+	root.add_child(dashboard)
+
+	var left := VBoxContainer.new()
+	left.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	left.size_flags_stretch_ratio = 0.30
+	dashboard.add_child(left)
+	_add_schedule_panel(left)
+	_add_current_case_panel(left)
+
+	var protagonist_panel := PanelContainer.new()
+	protagonist_panel.name = "ProtagonistPanel"
+	protagonist_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	protagonist_panel.size_flags_stretch_ratio = 0.36
+	dashboard.add_child(protagonist_panel)
+	var protagonist_box := VBoxContainer.new()
+	protagonist_box.add_theme_constant_override("separation", 6)
+	protagonist_panel.add_child(protagonist_box)
+	var protagonist_title := Label.new()
+	protagonist_title.text = "주인공 · 권나래"
+	protagonist_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	protagonist_box.add_child(protagonist_title)
+	var protagonist_art := TextureRect.new()
+	protagonist_art.name = "ProtagonistArt"
+	protagonist_art.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	protagonist_art.texture = AssetCatalog.new().get_agent_expression("agent_kwon_narae", 1)
+	protagonist_art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	protagonist_art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	protagonist_box.add_child(protagonist_art)
+	_dashboard_support_label = Label.new()
+	_dashboard_support_label.name = "DashboardSupportLabel"
+	_dashboard_support_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_dashboard_support_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	protagonist_box.add_child(_dashboard_support_label)
+
+	var actions := VBoxContainer.new()
+	actions.name = "DashboardActions"
+	actions.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	actions.size_flags_stretch_ratio = 0.34
+	actions.add_theme_constant_override("separation", 8)
+	dashboard.add_child(actions)
+	_add_dashboard_action(actions, "현장 조사", "현재 사건 조사 일정을 배정합니다.", func() -> void: _assign_dashboard_activity("investigation"))
+	_add_dashboard_action(actions, "대기·회복", "현재 반일을 회복 일정으로 배정합니다.", func() -> void: _assign_dashboard_activity("rest"))
+	_add_dashboard_action(actions, "일상 기록", "HQ의 요원 기록을 확인합니다.", func() -> void: _dashboard_tabs.current_tab = 0)
+	_add_dashboard_action(actions, "외부 의뢰", "세력 접점과 의뢰 게시판을 확인합니다.", func() -> void: _dashboard_tabs.current_tab = 3)
+	_add_start_panel(actions)
+
+	_dashboard_tabs = TabContainer.new()
+	_dashboard_tabs.name = "PreparationTabs"
+	_dashboard_tabs.custom_minimum_size.y = 250
+	_dashboard_tabs.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	root.add_child(_dashboard_tabs)
+	var case_tab := _add_tab_scroll("사건")
+	_add_daily_episode_panel(case_tab)
+	_add_episode_panel(case_tab)
+	var formation_tab := _add_tab_scroll("편성")
+	_add_agent_panel(formation_tab)
+	var equipment_tab := _add_tab_scroll("장비")
+	_add_equipment_panel(equipment_tab)
+	var contact_tab := _add_tab_scroll("외부 접점")
+	_add_external_contact_panel(contact_tab)
+	var record_tab := _add_tab_scroll("기록")
+	_add_record_panel(record_tab)
+	_add_log_panel(record_tab)
+
+
+func _add_tab_scroll(tab_name: String) -> VBoxContainer:
+	var scroll := ScrollContainer.new()
+	scroll.name = tab_name
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	_dashboard_tabs.add_child(scroll)
+	var content := VBoxContainer.new()
+	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	content.add_theme_constant_override("separation", 8)
+	scroll.add_child(content)
+	return content
+
+
+func _add_dashboard_action(parent: Control, title: String, description: String, callback: Callable) -> void:
+	var button := Button.new()
+	button.text = "%s\n%s" % [title, description]
+	button.custom_minimum_size.y = 48
+	button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	button.pressed.connect(callback)
+	parent.add_child(button)
+
+
+func _assign_dashboard_activity(activity_id: String) -> void:
+	var campaign := GameState.get_campaign_snapshot()
+	var protagonist_id := GameState.get_protagonist_agent_id()
+	if protagonist_id.is_empty() or String(campaign.get("slot_phase", "planning")) != "planning":
+		return
+	_set_schedule_activity(protagonist_id, String(campaign.get("time_slot", "morning")), activity_id)
 
 
 func _add_navigation(parent: Control) -> void:
@@ -397,6 +484,18 @@ func _refresh() -> void:
 	_refresh_equipment()
 	_refresh_records()
 	_refresh_log()
+	_refresh_dashboard_summary()
+
+
+func _refresh_dashboard_summary() -> void:
+	if _dashboard_support_label == null:
+		return
+	var supports: Array[String] = []
+	for agent_id in GameState.get_support_agent_ids():
+		var agent := GameState.get_agent_by_id(String(agent_id))
+		if not agent.is_empty():
+			supports.append(String(agent.get("name", agent_id)))
+	_dashboard_support_label.text = "현장 기록관 · 고정 주인공\n현재 서포트: %s" % (", ".join(supports) if not supports.is_empty() else "미지정")
 
 
 func _refresh_daily_episodes() -> void:

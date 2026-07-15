@@ -47,6 +47,7 @@ var _telegraph_label: Label
 var _prediction_summary_label: Label
 var _evidence_label: Label
 var _response_box: GridContainer
+var _consumable_row: HBoxContainer
 var _turn_auto_success_agents: Dictionary = {}
 var _turn_locked := false
 var _log_guide: LogGuide
@@ -85,7 +86,8 @@ func _build_scene_ui() -> void:
 	_telegraph_label = %TelegraphLabel
 	_prediction_summary_label = %PredictionSummaryLabel
 	_response_box = %ResponseGrid
-	_response_box.columns = 3 if get_viewport_rect().size.x >= 1600.0 else 2
+	_response_box.columns = 3
+	_consumable_row = %ConsumableRow
 	_result_label = %ResultLabel
 	_recover_button = %RecoverButton
 	_threshold_label = %ThresholdLabel
@@ -402,11 +404,12 @@ func _make_resolution_phase_text() -> String:
 	]
 
 
-func _begin_recovery_turn() -> void:
+func _begin_recovery_turn(last_result: String = "") -> void:
 	_turn_locked = false
 	_turn_auto_success_agents.clear()
 	_current_pattern = GameState.select_next_recovery_pattern()
 	_clear_children(_response_box)
+	_clear_children(_consumable_row)
 	if _current_pattern.is_empty():
 		_telegraph_label.text = "전조 데이터를 찾지 못했습니다."
 		_refresh_recovery_evidence()
@@ -440,7 +443,7 @@ func _begin_recovery_turn() -> void:
 			var use_button := Button.new()
 			use_button.text = "사용: %s" % String(GameState.get_market_item(consumable_id).get("name", consumable_id))
 			use_button.pressed.connect(_use_recovery_consumable.bind(consumable_id, use_button))
-			_response_box.add_child(use_button)
+			_consumable_row.add_child(use_button)
 	for response in _current_pattern.get("responses", []):
 		if typeof(response) != TYPE_DICTIONARY:
 			continue
@@ -458,7 +461,7 @@ func _begin_recovery_turn() -> void:
 		card.tooltip_text = String(response_copy.get("summary", "전조와 확보 단서를 근거로 대응합니다."))
 		card.action_requested.connect(func(_action_id: String) -> void: _select_pattern_response(response_copy))
 	_refresh_manual_prediction()
-	_update_battle_view(_make_start_message())
+	_update_battle_view(_make_start_message() if last_result.is_empty() else "직전 결과\n%s" % last_result)
 
 
 func _select_pattern_response(response: Dictionary) -> void:
@@ -516,11 +519,14 @@ func _select_pattern_response(response: Dictionary) -> void:
 	lines.append_array(_run_auto_window("treatment"))
 	lines.append_array(_run_auto_window("rapport"))
 	GameState.save_game()
-	var next_button := Button.new()
-	next_button.text = "다음 전조 관측"
-	next_button.pressed.connect(_begin_recovery_turn)
-	_response_box.add_child(next_button)
-	_update_battle_view("\n".join(lines))
+	var result_text := "\n".join(lines)
+	_update_battle_view(result_text)
+	if _can_recover():
+		_clear_children(_response_box)
+		_telegraph_label.text = "회수 실행 가능\n안정화 기준을 충족했습니다. 현재 규칙을 고정하고 잔향 회수를 실행하십시오."
+		_turn_locked = true
+	else:
+		_begin_recovery_turn(result_text)
 
 
 func _use_recovery_consumable(item_id: String, button: Button) -> void:
