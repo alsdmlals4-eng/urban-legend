@@ -523,7 +523,8 @@ func _refresh_daily_episodes() -> void:
 		return
 	_clear_children(_daily_episode_list)
 	var episodes := GameState.get_available_daily_episodes()
-	if episodes.is_empty():
+	var relationship_scenes := GameState.get_available_relationship_scenes()
+	if episodes.is_empty() and relationship_scenes.is_empty():
 		_daily_episode_list.add_child(_make_label("현재 HQ에서 열 수 있는 일상 기록이 없습니다. 발견된 미해결 사건의 요원 기록만 표시됩니다."))
 		return
 	for episode_value in episodes:
@@ -553,12 +554,30 @@ func _refresh_daily_episodes() -> void:
 		button.text = "기록 대화 열기"
 		button.pressed.connect(func() -> void: _open_daily_episode(String(episode.get("id", ""))))
 		content.add_child(button)
+	for scene_value in relationship_scenes:
+		if typeof(scene_value) != TYPE_DICTIONARY:
+			continue
+		var relation_scene: Dictionary = scene_value
+		var relation_button := Button.new()
+		relation_button.name = "RelationshipSceneButton_%s" % String(relation_scene.get("id", "scene"))
+		relation_button.text = "관계 기록 · %s" % String(relation_scene.get("title", "관계 장면"))
+		relation_button.pressed.connect(func() -> void: _open_relationship_scene(String(relation_scene.get("id", ""))))
+		_daily_episode_list.add_child(relation_button)
 
 
 func _open_daily_episode(episode_id: String) -> void:
 	var result := GameState.begin_daily_episode(episode_id)
 	if not bool(result.get("successful", false)):
 		_status_label.text = String(result.get("error", "일상 에피소드를 열지 못했습니다."))
+		_refresh_daily_episodes()
+		return
+	get_tree().change_scene_to_file(GameState.SCENE_DAILY_EPISODE)
+
+
+func _open_relationship_scene(scene_id: String) -> void:
+	var result := GameState.begin_relationship_scene(scene_id)
+	if not bool(result.get("successful", false)):
+		_status_label.text = String(result.get("error", "관계 기록을 열지 못했습니다."))
 		_refresh_daily_episodes()
 		return
 	get_tree().change_scene_to_file(GameState.SCENE_DAILY_EPISODE)

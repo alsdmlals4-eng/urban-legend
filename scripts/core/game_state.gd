@@ -5,7 +5,7 @@ const DEFAULT_EPISODE_PATH := "res://data/episodes/episode_001_afterlife_station
 const RED_UMBRELLA_ALLEY_EPISODE_PATH := "res://data/episodes/episode_002_red_umbrella_alley.json"
 const DEAD_FREQUENCY_STATION_EPISODE_PATH := "res://data/episodes/episode_003_dead_frequency_station.json"
 const SAVE_FILE_PATH := "user://urban_legend_save.json"
-const SAVE_VERSION := "mvp-039"
+const SAVE_VERSION := "mvp-045"
 const DEFAULT_DIALOGUE_NODE_ID := "dialogue_intro"
 const DEFAULT_FIELD_NODE_ID := "dialogue_intro"
 const STABILITY_SCHEMA_VERSION := 2
@@ -84,6 +84,7 @@ const CaseDataScript := preload("res://scripts/data/case_data.gd")
 const CampaignStateScript := preload("res://scripts/core/campaign_state.gd")
 const AgentCatalogScript := preload("res://scripts/data/agent_catalog.gd")
 const DailyEpisodeCatalogScript := preload("res://scripts/data/daily_episode_catalog.gd")
+const RelationshipEventCatalogScript := preload("res://scripts/data/relationship_event_catalog.gd")
 
 var current_episode_path := DEFAULT_EPISODE_PATH
 var current_episode_data: Dictionary = {}
@@ -130,6 +131,8 @@ var used_equipment_effects: Array = []
 var completed_case_reports: Array = []
 var completed_daily_episode_records: Array = []
 var active_daily_episode: Dictionary = {}
+var relationship_event_records: Array = []
+var active_relationship_scene: Dictionary = {}
 var agent_case_states: Dictionary = {}
 var victim_state: Dictionary = {}
 var echo_fragments := 30
@@ -144,6 +147,7 @@ var active_consumable_effects: Dictionary = {}
 var rewarded_resolution_grades: Dictionary = {}
 var campaign_state = CampaignStateScript.new()
 var daily_episode_catalog = DailyEpisodeCatalogScript.new()
+var relationship_event_catalog = RelationshipEventCatalogScript.new()
 var agent_catalog = AgentCatalogScript.new()
 
 
@@ -218,6 +222,8 @@ func reset_run_state() -> void:
 	completed_case_reports.clear()
 	completed_daily_episode_records.clear()
 	active_daily_episode.clear()
+	relationship_event_records.clear()
+	active_relationship_scene.clear()
 	agent_case_states.clear()
 	victim_state.clear()
 	echo_fragments = 30
@@ -364,7 +370,7 @@ func grant_daily_case_understanding(case_id: String, reward_type: String, conten
 	return campaign_state.grant_daily_understanding(case_id, reward_type, content_id)
 
 
-## Returns optional HQ-only daily episodes that are unlocked by a discovered unresolved case.
+## Returns optional HQ-only narrative entries without advancing the campaign schedule.
 func get_available_daily_episodes() -> Array:
 	if not active_daily_episode.is_empty() or get_campaign_slot_phase() != "planning":
 		return []
@@ -378,16 +384,42 @@ func get_available_daily_episodes() -> Array:
 			continue
 		var episode: Dictionary = episode_value
 		var episode_id := String(episode.get("id", ""))
-		var case_id := String(episode.get("case_id", ""))
-		var case_state: Dictionary = case_states.get(case_id, {})
 		if episode_id.is_empty() or _has_completed_daily_episode(episode_id):
 			continue
-		if String(case_state.get("discovery_state", "unknown")) != "lead":
-			continue
-		if String(case_state.get("resolution_state", "unresolved")) != "unresolved":
+		if not _is_optional_narrative_unlocked(episode, case_states):
 			continue
 		available.append(episode)
 	return available
+
+
+func _is_optional_narrative_unlocked(episode: Dictionary, case_states: Dictionary) -> bool:
+	var conditions: Variant = episode.get("unlock_conditions", {})
+	if typeof(conditions) != TYPE_DICTIONARY or (conditions as Dictionary).is_empty():
+		var legacy_case_id := String(episode.get("case_id", ""))
+		var legacy_case_state: Dictionary = case_states.get(legacy_case_id, {})
+		return String(legacy_case_state.get("discovery_state", "unknown")) == "lead" \
+			and String(legacy_case_state.get("resolution_state", "unresolved")) == "unresolved"
+	var unlock: Dictionary = conditions
+	for case_id_value in unlock.get("case_resolved", []):
+		var resolved_state: Dictionary = case_states.get(String(case_id_value), {})
+		if String(resolved_state.get("resolution_state", "unresolved")) == "unresolved":
+			return false
+	for prerequisite_id_value in unlock.get("requires_events", []):
+		if not _has_completed_daily_episode(String(prerequisite_id_value)):
+			return false
+	var minimum_resolved := maxi(0, int(unlock.get("min_resolved_cases", 0)))
+	if minimum_resolved > 0:
+		var resolved_count := 0
+		for state_value in case_states.values():
+			if typeof(state_value) == TYPE_DICTIONARY and String((state_value as Dictionary).get("resolution_state", "unresolved")) != "unresolved":
+				resolved_count += 1
+		if resolved_count < minimum_resolved:
+			return false
+	for faction_id_value in unlock.get("faction_relation_at_least", {}).keys():
+		var minimum_relation := int((unlock.get("faction_relation_at_least", {}) as Dictionary).get(faction_id_value, 0))
+		if get_faction_relation(String(faction_id_value)) < minimum_relation:
+			return false
+	return true
 
 
 func get_daily_episode(episode_id: String) -> Dictionary:
@@ -448,9 +480,12 @@ func resolve_daily_episode_choice(choice_id: String) -> Dictionary:
 		set_current_scene_path(SCENE_PREPARATION)
 		save_game()
 		return {"successful": false, "error": "이미 기록된 일상 에피소드입니다."}
-	var reward := grant_daily_case_understanding(String(episode.get("case_id", "")), "first_view", episode_id)
+	var reward := 0
+	if bool(episode.get("grants_understanding", false)):
+		reward = grant_daily_case_understanding(String(episode.get("case_id", "")), "first_view", episode_id)
 	var record := {
 		"episode_id": episode_id,
+		"category": String(episode.get("category", "daily")),
 		"title": String(episode.get("title", "일상 에피소드")),
 		"agent_id": String(episode.get("agent_id", "")),
 		"agent_name": String(episode.get("agent_name", "요원")),
@@ -476,6 +511,114 @@ func _has_completed_daily_episode(episode_id: String) -> bool:
 	for value in completed_daily_episode_records:
 		if typeof(value) == TYPE_DICTIONARY and String((value as Dictionary).get("episode_id", "")) == episode_id:
 			return true
+	return false
+
+
+## Relationship scenes store a selected memory only; they never alter stats, risk, or schedule.
+func get_relationship_chains() -> Array:
+	return relationship_event_catalog.get_chains()
+
+
+func get_relationship_scene_count() -> int:
+	var count := 0
+	for chain_value in get_relationship_chains():
+		if typeof(chain_value) == TYPE_DICTIONARY:
+			count += ((chain_value as Dictionary).get("scenes", []) as Array).size()
+	return count
+
+
+func get_relationship_records() -> Array:
+	return relationship_event_records.duplicate(true)
+
+
+func get_available_relationship_scenes() -> Array:
+	if not active_relationship_scene.is_empty() or get_campaign_slot_phase() != "planning":
+		return []
+	var available: Array = []
+	for chain_value in get_relationship_chains():
+		if typeof(chain_value) != TYPE_DICTIONARY:
+			continue
+		var chain: Dictionary = chain_value
+		var scenes: Array = chain.get("scenes", [])
+		for index in range(scenes.size()):
+			if typeof(scenes[index]) != TYPE_DICTIONARY:
+				continue
+			var scene: Dictionary = scenes[index]
+			var scene_id := String(scene.get("id", ""))
+			if scene_id.is_empty() or _has_relationship_record(scene_id):
+				continue
+			if index == 0:
+				if not _relationship_start_unlocked(chain):
+					continue
+			elif not _has_relationship_record(String((scenes[index - 1] as Dictionary).get("id", ""))):
+				continue
+			var entry := scene.duplicate(true)
+			entry["chain_id"] = String(chain.get("id", ""))
+			entry["chain_title"] = String(chain.get("title", ""))
+			available.append(entry)
+			break
+	return available
+
+
+func begin_relationship_scene(scene_id: String) -> Dictionary:
+	var clean_id := scene_id.strip_edges()
+	for value in get_available_relationship_scenes():
+		if typeof(value) == TYPE_DICTIONARY and String((value as Dictionary).get("id", "")) == clean_id:
+			active_relationship_scene = (value as Dictionary).duplicate(true)
+			save_game()
+			return {"successful": true, "scene": active_relationship_scene.duplicate(true)}
+	return {"successful": false, "error": "현재 열 수 없는 관계 기록입니다."}
+
+
+func resolve_relationship_choice(choice_id: String) -> Dictionary:
+	if active_relationship_scene.is_empty():
+		return {"successful": false, "error": "진행 중인 관계 기록이 없습니다."}
+	var selected: Dictionary = {}
+	for value in active_relationship_scene.get("choices", []):
+		if typeof(value) == TYPE_DICTIONARY and String((value as Dictionary).get("id", "")) == choice_id:
+			selected = (value as Dictionary).duplicate(true)
+			break
+	if selected.is_empty():
+		return {"successful": false, "error": "관계 기록의 선택지를 찾지 못했습니다."}
+	var scene_id := String(active_relationship_scene.get("id", ""))
+	if _has_relationship_record(scene_id):
+		active_relationship_scene.clear()
+		return {"successful": false, "error": "이미 기록된 관계 장면입니다."}
+	var record := {
+		"scene_id": scene_id,
+		"chain_id": String(active_relationship_scene.get("chain_id", "")),
+		"title": String(active_relationship_scene.get("title", "관계 기록")),
+		"choice_id": String(selected.get("id", "")),
+		"choice_label": String(selected.get("label", "")),
+		"result_text": String(selected.get("result", "")),
+		"memory_effect": String(selected.get("memory_effect", "")),
+		"day": int(get_campaign_snapshot().get("day", 1))
+	}
+	relationship_event_records.append(record)
+	active_relationship_scene.clear()
+	save_game()
+	return {"successful": true, "record": record.duplicate(true)}
+
+
+func _has_relationship_record(scene_id: String) -> bool:
+	for value in relationship_event_records:
+		if typeof(value) == TYPE_DICTIONARY and String((value as Dictionary).get("scene_id", "")) == scene_id:
+			return true
+	return false
+
+
+func _relationship_start_unlocked(chain: Dictionary) -> bool:
+	var prerequisites: Array = chain.get("start", [])
+	if prerequisites.is_empty():
+		return true
+	for value in prerequisites:
+		var text := String(value)
+		for record_value in completed_daily_episode_records:
+			if typeof(record_value) == TYPE_DICTIONARY and text.contains(String((record_value as Dictionary).get("episode_id", ""))):
+				return true
+		for record_value in relationship_event_records:
+			if typeof(record_value) == TYPE_DICTIONARY and text.contains(String((record_value as Dictionary).get("scene_id", ""))):
+				return true
 	return false
 
 
@@ -2739,6 +2882,8 @@ func load_game() -> bool:
 	completed_case_reports = _to_dictionary_array(save_data.get("completed_case_reports", []))
 	completed_daily_episode_records = _to_dictionary_array(save_data.get("completed_daily_episode_records", []))
 	active_daily_episode = _to_dictionary(save_data.get("active_daily_episode", {}))
+	relationship_event_records = _to_dictionary_array(save_data.get("relationship_event_records", []))
+	active_relationship_scene = _to_dictionary(save_data.get("active_relationship_scene", {}))
 	echo_fragments = maxi(0, int(save_data.get("echo_fragments", 30)))
 	granted_reward_ids = _to_unique_string_array(save_data.get("granted_reward_ids", []))
 	faction_relations = _to_dictionary(save_data.get("faction_relations", {}))
@@ -2784,6 +2929,8 @@ func load_game() -> bool:
 		current_scene_path = SCENE_DIALOGUE
 	if current_scene_path == SCENE_DAILY_EPISODE and get_active_daily_episode_data().is_empty():
 		current_scene_path = SCENE_PREPARATION
+	if not active_relationship_scene.is_empty():
+		active_relationship_scene.clear()
 
 	current_dialogue_node_id = String(save_data.get("current_dialogue_node_id", DEFAULT_DIALOGUE_NODE_ID))
 	if current_dialogue_node_id.is_empty():
@@ -2867,6 +3014,8 @@ func _make_save_data() -> Dictionary:
 		"completed_case_reports": get_completed_case_reports(),
 		"completed_daily_episode_records": get_completed_daily_episode_records(),
 		"active_daily_episode": get_active_daily_episode(),
+		"relationship_event_records": get_relationship_records(),
+		"active_relationship_scene": active_relationship_scene.duplicate(true),
 		"echo_fragments": echo_fragments,
 		"granted_reward_ids": granted_reward_ids.duplicate(),
 		"faction_relations": faction_relations.duplicate(true),

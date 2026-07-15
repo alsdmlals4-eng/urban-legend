@@ -42,7 +42,7 @@ func _run() -> void:
 
 func _test_catalog_and_hq_availability(game_state: Node) -> void:
 	game_state.reset_run_state()
-	_expect(game_state.SAVE_VERSION == "mvp-039", "daily episodes promote the save version to mvp-039")
+	_expect(game_state.SAVE_VERSION == "mvp-045", "daily episode state migrates through the mvp-045 relationship-record version")
 	var afterlife: Dictionary = game_state.get_daily_episode("daily_afterlife_sign_blanks")
 	var umbrella: Dictionary = game_state.get_daily_episode("daily_red_umbrella_locker")
 	var frequency: Dictionary = game_state.get_daily_episode("daily_dead_frequency_edit_room")

@@ -2,6 +2,7 @@
   "episodes": [
     {
       "id": "daily_afterlife_sign_blanks",
+      "grants_understanding": true,
       "title": "막차 안내판의 빈칸",
       "agent_id": "agent_kang_ijun",
       "agent_name": "강이준",
@@ -27,6 +28,7 @@
     },
     {
       "id": "daily_red_umbrella_locker",
+      "grants_understanding": true,
       "title": "젖은 우산 보관함",
       "agent_id": "agent_kwon_narae",
       "agent_name": "권나래",
@@ -52,6 +54,7 @@
     },
     {
       "id": "daily_dead_frequency_edit_room",
+      "grants_understanding": true,
       "title": "무음이 남은 편집실",
       "agent_id": "agent_oh_hyun",
       "agent_name": "오현",

@@ -1,0 +1,17 @@
+{
+  "expressions": {
+    "agent_kwon_narae": {"normal": "normal", "focus": "focus", "serious": "serious", "relief": "relief"},
+    "agent_oh_hyun": {"normal": "normal", "focus": "focus", "serious": "serious", "relief": "relief"},
+    "agent_kang_ijun": {"normal": "normal", "focus": "focus", "serious": "serious", "relief": "relief"},
+    "agent_yoon_seoha": {"normal": "normal", "focus": "focus", "serious": "serious", "relief": "relief"},
+    "agent_han_yuri": {"normal": "normal", "focus": "focus", "serious": "serious", "relief": "relief"}
+  },
+  "cutins": [
+    {"id":"analysis","label":"기록 대조","effect":"analysis"},
+    {"id":"observation","label":"현장 관찰","effect":"observation"},
+    {"id":"protection","label":"안전선 확보","effect":"protection"},
+    {"id":"restraint","label":"격리·구속","effect":"restraint"},
+    {"id":"resonance","label":"잔향 감응","effect":"resonance"},
+    {"id":"recovery","label":"안정화 확인","effect":"recovery"}
+  ]
+}

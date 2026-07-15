@@ -3,7 +3,7 @@ extends RefCounted
 
 const PATH := "user://accessibility.cfg"
 const SECTION := "effects"
-const DEFAULTS := {"screen_shake": 1.0, "flash": 1.0, "horror_distortion": 1.0}
+const DEFAULTS := {"screen_shake": 1.0, "flash": 1.0, "horror_distortion": 1.0, "cutin_motion": 1.0, "text_speed": 1.0}
 
 var _config := ConfigFile.new()
 

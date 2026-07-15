@@ -1,5 +1,15 @@
 # MVP-044~046 Execution Plan
 
+## Implementation status (2026-07-16)
+
+| Package | Status | Verified scope |
+|---|---|---|
+| WF-00 | complete | Local delegated runner and workflow contracts restored. |
+| MVP-044 | complete | 7 AFTER, 9 DAILY, 9 FACTION entries use the existing optional-event completion records. |
+| MVP-045 | complete | 12 chains / 30 scenes, textual memory records, and mvp-039 to mvp-045 empty-record migration. |
+| MVP-046 | complete | Presentation registry, expression fallback, six cut-in definitions, and presentation accessibility controls. |
+| Final visual capture | pending | Needs interactive 1280×720 and 1920×1080 review; no completion claim is made here. |
+
 > 문서 위치: `docs/planning/MVP044_046_EXECUTION_PLAN.md` | 감사 기준: `docs/audits/MVP044_046_REPOSITORY_AUDIT.md` | [백업]: `docs/archive/backup/YYYY-MM-DD/`
 
 이 문서는 승인된 전달 패키지를 실제 코드·데이터·테스트에 연결하는 작업 순서다. 완료 여부는 이 문서가 아니라 현재 브랜치의 코드와 검증 결과로 판단한다.

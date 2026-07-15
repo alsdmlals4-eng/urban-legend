@@ -1,5 +1,11 @@
 # MVP-044~046 Repository Audit
 
+## Post-implementation update (2026-07-16)
+
+- Save version is now `mvp-045`; absent relationship fields load as empty arrays/dictionaries, preserving every mvp-039 field.
+- Automated checks passed: MVP-042 daily episodes (28/28), MVP-044 narrative events (11/11), MVP-045 relationships (11/11), and MVP-046 presentation (5/5).
+- Visual capture and full interactive Day 8/10 verification remain pending and are not represented as complete.
+
 > 문서 위치: `docs/audits/MVP044_046_REPOSITORY_AUDIT.md` | 실행 계획: `docs/planning/MVP044_046_EXECUTION_PLAN.md` | [백업]: `docs/archive/backup/YYYY-MM-DD/`
 >
 > 외부 참조 위치: `C:\Users\user\Downloads\보낼거\MVP-044-046_Codex_PlanMode_Handoff_Package_v1.0.zip` | 원본 ZIP은 이동·삭제하지 않음

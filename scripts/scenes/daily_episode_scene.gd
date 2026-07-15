@@ -5,11 +5,13 @@ const ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")
 var _content: VBoxContainer
 var _result_box: VBoxContainer
 var _choice_box: VBoxContainer
+var _relationship_mode := false
 
 
 func _ready() -> void:
 	theme = ThemeFactory.create_theme()
-	if GameState.get_active_daily_episode().is_empty():
+	_relationship_mode = not GameState.active_relationship_scene.is_empty()
+	if GameState.get_active_daily_episode().is_empty() and not _relationship_mode:
 		_return_to_preparation()
 		return
 	GameState.set_current_scene_path(GameState.SCENE_DAILY_EPISODE)
@@ -38,6 +40,8 @@ func _build_ui() -> void:
 	panel.add_child(_content)
 
 	var episode := GameState.get_active_daily_episode_data()
+	if _relationship_mode:
+		episode = GameState.active_relationship_scene.duplicate(true)
 	var title := Label.new()
 	title.text = "일상 에피소드 · %s" % String(episode.get("title", "기록 확인"))
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -87,7 +91,7 @@ func _build_ui() -> void:
 
 
 func _resolve_choice(choice_id: String) -> void:
-	var result := GameState.resolve_daily_episode_choice(choice_id)
+	var result := GameState.resolve_relationship_choice(choice_id) if _relationship_mode else GameState.resolve_daily_episode_choice(choice_id)
 	if not bool(result.get("successful", false)):
 		_show_result("기록을 확정하지 못했습니다. HQ 준비 화면으로 돌아가 다시 확인하세요.", "")
 		return
@@ -95,7 +99,7 @@ func _resolve_choice(choice_id: String) -> void:
 		if child is Button:
 			(child as Button).disabled = true
 	var record: Dictionary = result.get("record", {})
-	_show_result(String(record.get("result_text", "기록을 남겼습니다.")), String(record.get("agent_reaction", "")))
+	_show_result(String(record.get("result_text", record.get("result", "기록을 남겼습니다."))), String(record.get("agent_reaction", "")))
 
 
 func _show_result(result_text: String, reaction: String) -> void:
