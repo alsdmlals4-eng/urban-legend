@@ -16,6 +16,7 @@
 | `TEST_CHECKLIST.md` | 완료 체크 제거·현재 회귀 계약으로 축약 | 활성 검증 체크리스트 | 완료 QA: `COMPLETED_QA_RULES_HANDOFF_BACKUP.md`, `docs/qa/` |
 | `AGENTS.md` | 기본 읽기 순서 축소 | 저장소 작업 불변 규칙 | 과거 규칙: Git history·백업 인덱스 |
 | `docs/DOCUMENTATION_MAP.md` | 현행 원본·조건부 라우팅 재정의 | 최소 문서 라우터 | 보존 정책: `docs/DOCUMENT_LIFECYCLE.md` |
+| `docs/MVP_WORKFLOW_CHECKLIST.md` | 과거 멀티모델·MVP-038 반복 항목 제거 | 현재 MVP 시작·종료 절차 | 정리 전 원문: 기준 커밋의 Git history |
 | `docs/BASE_RULES_VERSION.md` | 과거 승격 후보 제거·현재 동기화 정보만 유지 | Base 동기화 전용 | `COMPLETED_QA_RULES_HANDOFF_BACKUP.md` |
 | `docs/CURRENT_HANDOFF.md` | MVP-043 이후 상태로 갱신 | 현재 계정 인수 | `COMPLETED_QA_RULES_HANDOFF_BACKUP.md` |
 | `DESIGN_INTENT.md` | 리디렉션으로 전환 | 기존 링크 보존 | 현행 GDD / 과거 상태 백업 |
