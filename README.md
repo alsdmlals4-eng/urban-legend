@@ -1,6 +1,6 @@
 # urban-legend
 
-> 문서 위치: `README.md` | 현재 상태 원본: `docs/CURRENT_STATUS.md` | 과거 소개·로드맵 백업: `docs/archive/backup/2026-07-16/PROJECT_STATUS_AND_ROADMAP_BACKUP.md`
+> 문서 위치: `README.md` | 현재 상태 원본: `docs/CURRENT_STATUS.md` | 기획 인수인계: `docs/planning/README.md` | 과거 소개·로드맵 백업: `docs/archive/backup/2026-07-16/PROJECT_STATUS_AND_ROADMAP_BACKUP.md`
 
 `괴이 기록국`은 Godot 4.7 stable과 GDScript로 제작하는 PC용 현대 오컬트 수사 어드벤처다. 플레이어는 권나래를 주인공으로 운용하고 최대 두 명의 서포트와 함께 괴이의 규칙을 조사해 현재 출현을 안정화한 뒤, 다음 피해를 막을 괴이 매뉴얼을 남긴다.
 
@@ -18,11 +18,29 @@
 | 주인공·요원 | 권나래 고정 주인공 / 초기 요원 5인 / 서포트 최대 2인 |
 | 현재 계획 | MVP-044 서사 확장 → MVP-045 관계 연속 이벤트 → MVP-046 대화·표정·컷인 연출 |
 
-MVP-044~046은 Codex 전달 패키지가 작성된 **승인 계획**이며 GitHub `main` 구현 완료를 뜻하지 않는다. 현재 구현 사실과 계획의 구분은 [`docs/CURRENT_STATUS.md`](docs/CURRENT_STATUS.md)를 따른다.
+MVP-044~046은 Codex 전달 패키지와 기획 문서가 작성된 **승인 계획**이며 GitHub `main` 구현 완료를 뜻하지 않는다. 현재 구현 사실과 계획의 구분은 [`docs/CURRENT_STATUS.md`](docs/CURRENT_STATUS.md)를 따른다.
 
-## 먼저 읽을 문서
+## 새 담당자·새 AI 읽기 순서
 
-- 현재 구현과 다음 계획: [`docs/CURRENT_STATUS.md`](docs/CURRENT_STATUS.md)
+```text
+AGENTS.md
+→ docs/CURRENT_STATUS.md
+→ docs/planning/README.md
+→ docs/planning/PROJECT_DIRECTION.md
+→ 이번 작업의 분야별 기획서
+→ 실제 대상 파일
+```
+
+### 기획 문서
+
+- 프로젝트 방향: [`docs/planning/PROJECT_DIRECTION.md`](docs/planning/PROJECT_DIRECTION.md)
+- 서사·대화·관계: [`docs/planning/NARRATIVE_CONTENT_PLAN.md`](docs/planning/NARRATIVE_CONTENT_PLAN.md)
+- 아트·표정·컷인·연출: [`docs/planning/ART_PRESENTATION_PLAN.md`](docs/planning/ART_PRESENTATION_PLAN.md)
+- 통합 로드맵·인수인계: [`docs/planning/ROADMAP_AND_HANDOFF.md`](docs/planning/ROADMAP_AND_HANDOFF.md)
+- 적용 사례 라이브러리: [`docs/planning/REFERENCE_CASES.md`](docs/planning/REFERENCE_CASES.md)
+
+## 다른 핵심 문서
+
 - 작업별 문서 선택: [`docs/DOCUMENTATION_MAP.md`](docs/DOCUMENTATION_MAP.md)
 - 상세 게임 설계: [`docs/GAME_DESIGN_DOCUMENT.md`](docs/GAME_DESIGN_DOCUMENT.md)
 - 검증 계약: [`TEST_CHECKLIST.md`](TEST_CHECKLIST.md)
@@ -70,6 +88,7 @@ scripts/core/           저장 파사드와 캠페인 상태
 scripts/data/           에피소드·일상 데이터 로딩
 scripts/scenes/         화면별 진행 연결
 scripts/ui/             공용 UI·프레젠테이션·접근성
+docs/planning/          프로젝트 방향·서사·아트·연출·로드맵·사례
 docs/                   현행 설계·상태·검증·백업 라우터
 tests/                  Godot·계약·회귀 테스트
 tools/docs/             GDD DOCX 생성기
@@ -88,6 +107,7 @@ git diff --check
 ## 현재 남은 작업
 
 1. 선택한 Codex ZIP의 `IMP-00` 사전 감사를 현재 `main`에서 실행한다.
-2. MVP-044~046 중 한 범위만 작은 end-to-end 단위로 구현한다.
-3. 구현 완료 후 상태·로드맵·테스트 문서를 갱신한다.
-4. 이후 Steam 데모 패키징과 180~220분 플레이타임 실측을 진행한다.
+2. 분야별 기획서와 실제 대상 파일의 차이를 확인한다.
+3. MVP-044~046 중 한 범위만 작은 end-to-end 단위로 구현한다.
+4. 구현 완료 후 상태·로드맵·테스트·해당 기획서를 갱신한다.
+5. 이후 Steam 데모 패키징과 180~220분 플레이타임 실측을 진행한다.
