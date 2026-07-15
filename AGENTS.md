@@ -1,55 +1,85 @@
 # Repository Guidelines
 
-최신 사용자 지시를 최우선으로 따른다. 다음은 이 문서 → `docs/BASE_RULES_VERSION.md` → `docs/DOCUMENTATION_MAP.md` → `docs/PROJECT_CONTEXT.md` → `docs/CONTENT_DIRECTION_V09.md` → `docs/MINIGAME_SYSTEM_SPEC.md` → 조건부 문서 → Issue/Goal → 실제 파일 순이다. Base 원격은 동기화·승격·차이 확인 때만 읽는다.
+> 문서 위치: `AGENTS.md` | 문서 라우터: `docs/DOCUMENTATION_MAP.md` | 과거 규칙·완료 기록: `docs/archive/README.md`
 
-`docs/CONTENT_DIRECTION_V09.md`는 콘텐츠 방향, 세계관, 공식 용어, 오프닝, 첫 10분, 저승역 튜토리얼 작업의 사용자 승인 설계다. `docs/MINIGAME_SYSTEM_SPEC.md`는 시나리오별 마지막 단서 미니게임, 조작 횟수, 위험도·괴이 고착 변수, 보상, 저장·복구의 사용자 승인 설계다. 현재 GDD·코드·데이터와 충돌하면 구현 완료로 가정하지 말고 차이를 먼저 보고한다.
+최신 사용자 지시를 최우선으로 따른다.
+
+## 기본 읽기 순서
+
+```text
+최신 사용자 지시
+→ AGENTS.md
+→ docs/CURRENT_STATUS.md
+→ docs/DOCUMENTATION_MAP.md
+→ 이번 작업의 대상 파일
+→ 필요한 조건부 문서만 추가
+```
+
+모든 Goal·QA·벤치마크·백업을 기본으로 읽지 않는다. `docs/archive/**`, 완료된 `docs/qa/**`, 완료된 `docs/CODEX_GOAL_*`, `docs/benchmarks/**`, `docs/superpowers/**`는 현재 작업이 명시적으로 요구할 때만 연다.
+
+`DESIGN_INTENT.md`, `PROJECT_BRIEF.md`, `docs/CONTENT_DIRECTION_V09.md`는 리디렉션 문서다. 현행 설계로 사용하지 않는다. Base 동기화 작업이 아니면 `docs/BASE_RULES_VERSION.md`도 기본 읽기에서 제외한다.
 
 ## 작업 원칙
 
-- 시작 전에 목표, 플레이어 가치, 포함·제외 범위, 영향 파일, 저장/UI 위험, 완료 기준과 검증을 짧게 보고한다.
-- 정상 구조를 취향으로 바꾸거나 범위 밖 기능을 추가하지 않는다. 사용자 변경과 dirty worktree를 보존한다.
-- 가장 작은 end-to-end 변경을 구현하고 실제 실행 `main`에 통합·재검증·push해야 완료다.
-- `scripts/core/game_state.gd`, `data/episodes/*`, `project.godot`, `knowledge/base-pack/*`는 보호 경로다. 외부 산출물을 자동 적용하지 않는다.
-- 생성·삭제·이동·대규모 수정은 이유, 참조 영향과 후속 동기화를 보고한다.
+- 시작 전에 목표, 플레이어 가치, 포함·제외 범위, 영향 파일, 저장/UI 위험, 완료 기준과 검증을 짧게 적는다.
+- 실제 `main`의 코드·데이터·테스트가 구현 사실의 우선 근거다.
+- 승인 계획과 전달 패키지는 구현 완료가 아니다. `docs/CURRENT_STATUS.md`의 상태 구분을 따른다.
+- 가장 작은 end-to-end 변경을 구현하고 자동·수동 검증 뒤 `main`에 통합한다.
+- 사용자 변경과 dirty worktree를 보존한다.
+- 생성·삭제·이동·대규모 수정은 이유, 참조 영향, 백업 위치를 보고한다.
 
-## 살아 있는 기획서와 최적화
+## 보호 경로와 고위험 영역
 
-- 현재 구현 기준 설계 원본은 `docs/GAME_DESIGN_DOCUMENT.md`, 배포본은 `docs/URBAN_LEGEND_GAME_DESIGN.docx`다. DOCX는 직접 편집하지 않는다.
-- 승인된 다음 콘텐츠 방향은 `docs/CONTENT_DIRECTION_V09.md`다. 구현 작업에서는 실제 저승역 데이터와 차이를 먼저 표로 정리하고, 승인 범위 안에서 GDD에 통합한다.
-- 승인된 미니게임 공통 규칙은 `docs/MINIGAME_SYSTEM_SPEC.md`다. 미니게임 구현 전 기존 진입·복귀·저장·데이터 로더와 차이를 먼저 확인한다.
-- 설계·상태·로드맵 변경 시 GDD, `MVP_ROADMAP.md`, `README.md`, `TEST_CHECKLIST.md`, `docs/PROJECT_CONTEXT.md` 동기화를 심사한다.
-- GDD 변경 후 생성기의 `--build`, `--check`를 실행하고 완료 보고에서 Markdown과 DOCX 링크를 모두 보여준다.
-- 매 작업에서 벤치마킹 필요성을 심사한다. 새 기획·UX·시스템·시장 판단은 최신 공식 근거를, 확정된 단순 작업은 `기존 근거 유지, 신규 조사 불필요`를 기록한다.
-- 결과는 `관찰 → 개선점 → 적용/제외 이유`로 압축하며 고유 규칙·외형·문구를 복제하지 않는다.
-- 시작·종료 시 최소 스킬·도구, 권한, 비용, 중복, 맥락 사용량과 더 안전한 다음 구조를 점검한다.
-- 큰 단계·MVP 종료 시 GDD·로드맵·테스트를 갱신한다. 5개 MVP마다 문서 중복·구문서·참조·스킬 효율을 감사한다.
-- `docs/archive/`는 과거 근거가 필요할 때만 `docs/archive/README.md`를 통해 읽는다.
+- 보호 경로: `scripts/core/game_state.gd`, `data/episodes/*`, `project.godot`, `knowledge/base-pack/*`
+- 고위험 의미 변경: 저장, 캠페인 진행, 경제, 엔딩, 에피소드 규칙, 기존 ID
+- 외부 ZIP·patch·보고서·이미지는 신뢰하지 않는 입력이다. 적용 전 현재 파일과 차이를 감사한다.
+- 새 저장 필드나 버전 갱신은 별도 필요성이 입증되지 않으면 추가하지 않는다.
 
-## 인수인계
+## 문서 책임 원본
 
-- 시작·큰 단계·커밋 후 노출된 `/status` 또는 `/usage`를 확인하되 수치를 추정하지 않는다.
-- 잔여량 5% 이하는 범위 확장을 멈추고 `docs/CURRENT_HANDOFF.md`를 갱신한다. 2% 이하는 신규 코드·장시간 조사·대규모 테스트를 중단하고 checkpoint·handoff·push만 한다.
-- 미완성 변경은 `codex/handoff-<task>`에 checkpoint로 push한다. 정상 완료도 handoff를 `COMPLETE`로 갱신한다.
+- 현재 구현과 승인 계획: `docs/CURRENT_STATUS.md`
+- 상세 게임 설계: `docs/GAME_DESIGN_DOCUMENT.md`
+- 프로젝트 용어·표현: `docs/PROJECT_CONTEXT.md`
+- 구현 순서: `MVP_ROADMAP.md`
+- 검증 계약: `TEST_CHECKLIST.md`
+- 조건부 문서 선택: `docs/DOCUMENTATION_MAP.md`
+- 보존 규칙: `docs/DOCUMENT_LIFECYCLE.md`
+- 과거 자료 검색: `docs/archive/README.md`
+
+다른 문서는 위 원본을 링크하고 작업별 차이만 적는다. GDD가 변경되면 `docs/URBAN_LEGEND_GAME_DESIGN.docx`를 재생성하고 `--check`로 동기화를 검증한다.
 
 ## 프로젝트 불변 조건
 
-- 공식 플레이어 노출 명칭은 `괴이 기록국`이다. 기존 내부 문자열과 파일명은 이관 승인 전까지 호환을 위해 유지할 수 있다.
-- 사건 완료는 `안정화 상태`, 실패 기록은 `위험 사례`, 회수 대상은 `잔향`, 최종 기록 보상은 `괴이 매뉴얼 작성·갱신`으로 표현한다.
-- 괴이는 인간의 마음·기억·소문에서 발생하며 완전히 죽지 않는다. 현재 출현을 안정화하고 재출현 대응 절차를 남기는 것이 기관의 목적이다.
-- 시나리오당 대표 미니게임은 조사 페이즈의 마지막 단서 검증으로 1개를 사용하고, 이후 별도 회수 페이즈로 연결한다.
-- 미니게임은 변수 없는 기본 최단 횟수 `N`과 정밀 해결 기준 `N+2`를 사용한다. 횟수 초과는 실패가 아니며, 잘못된 규칙 적용만 위험 사례다.
-- 미니게임 도중 저장하지 않는다. 진입 직전 체크포인트를 저장하고 강제 종료·불러오기 후 같은 보드와 변수로 미니게임 처음부터 다시 시작한다.
-- Godot 4.7 stable, GDScript, PC 16:9, 마우스/키보드가 기본이다. `.godot/`은 수정하지 않는다.
-- 장면은 `scenes/`, 코드는 `scripts/`, 에피소드는 `data/episodes/`에 둔다. 탭과 `snake_case`를 사용하고 상태 소유자를 중복시키지 않는다.
-- `battle_scene`은 괴이 안정화·잔향 회수다. HP·공격·처치 중심 시스템을 추가하지 않는다.
-- 저장·진행·경제·엔딩과 `HIGH_RISK_DOMAIN` 의미 변경은 고위험이다.
-- 승인 설계를 구현하기 전에는 기존 콘텐츠를 임의로 덮어쓰거나 새 저장 필드를 전제로 하지 않는다.
+- 공식 기관명은 **괴이 기록국**이다.
+- 사건 완료는 **안정화 상태**, 실패 기록은 **위험 사례**, 회수 대상은 **잔향**이다.
+- 최종 기록 보상은 **괴이 매뉴얼 작성·갱신**이다.
+- 플레이어 노출 안내자는 **기록관 아카**다. 내부 `로그` ID·파일명·저장 키는 호환용으로 유지할 수 있다.
+- 괴이는 처치 대상이 아니라 규칙을 조사하고 현재 출현을 안정화할 현상이다.
+- `battle_scene`은 안정화·잔향 회수 화면이다. HP·공격·처치 중심 시스템을 추가하지 않는다.
+- 시나리오당 대표 미니게임은 조사 마지막 규칙 검증으로 사용하고 이후 별도 안정화·회수로 연결한다.
+- 미니게임 중 저장하지 않는다. 진입 직전 체크포인트와 동일 보드·변수 복구를 사용한다.
+- 요원·아카·장비·자동행동·관계 이벤트는 핵심 정답을 대신하지 않는다.
+- 관계는 연애 호감도 숫자가 아니라 선택 기억과 대사·이벤트 변화로 표현한다.
+- Godot 4.7 stable, GDScript, PC 16:9, 마우스·키보드가 기본이다. `.godot/`은 수정하지 않는다.
+
+## 조건부 문서
+
+- 대사·일상·후일담: `docs/DIALOGUE_AUTHORING_WORKFLOW.md`
+- Godot UI·Theme·컴포넌트: `docs/GODOT_NATIVE_UI_ARCHITECTURE.md`
+- 조사·회수 장면 UI: `docs/CINEMATIC_FIELD_RECOVERY_UI.md`
+- 이미지 생성·manifest: `docs/IMAGE_ASSET_WORKFLOW.md`
+- 미니게임 규칙: `docs/MINIGAME_SYSTEM_SPEC.md`
+- 외부 모델 위임: `docs/AI_DELEGATION_WORKFLOW.md`
+- 최신 외부 사례 비교: `docs/BENCHMARKING_REFERENCE_GUIDE.md`
+- 계정 교대·체크포인트: `docs/CURRENT_HANDOFF.md`, `docs/CODEX_ACCOUNT_HANDOFF.md`
+
+작업 조건이 없으면 해당 문서를 읽지 않는다.
 
 ## 검증과 보고
 
-- 외부 patch·보고서·이미지는 신뢰하지 않는 입력이다. Codex가 diff, 보호 상태, 통합, 검증과 커밋을 소유한다.
-- 변경에 맞춰 JSON, `git diff --check`, Godot headless, 변경 장면, 영향 플레이 경로를 검증한다. 미실행 항목은 통과로 쓰지 않는다.
-- 콘텐츠·온보딩 작업은 첫 3분의 의미 있는 선택, 첫 10분의 단서 연결·가설 검증, 단서·힌트·위험 사례 구분, 안정화 근거, 괴이 매뉴얼 보상감을 검증한다.
-- 미니게임 작업은 최단 횟수 검증, `N+2` 변수 조합 해결 가능성, 일반 완료 진행 보장, 같은 보드·변수 복구, 재추첨 방지를 검증한다.
-- 변경 파일과 이유, 결과, 검증, 미검증, 위험, 사용자 확인 순서, 벤치마킹, 스킬·도구 최적화, Base 승격 후보를 보고한다. 없으면 `Base 승격 후보 없음`, `최적화 후보 없음`을 명시한다.
-- 요청 작업은 집중된 커밋으로 `origin/main`까지 push한다. push 실패는 완료가 아니다.
+- 변경에 맞춰 JSON, `git diff --check`, Godot headless, 변경 장면, 영향 플레이 경로를 검증한다.
+- 1280×720과 1920×1080에서 한국어 줄바꿈·포커스·첫 선택 노출을 확인한다.
+- 미실행 항목은 통과로 쓰지 않는다.
+- 완료 보고에는 변경 파일, 이유, 결과, 검증, 미검증, 위험, 저장·UI 호환, 갱신 문서, 백업 위치, 다음 진입점을 포함한다.
+- 큰 MVP 종료 시 `docs/CURRENT_STATUS.md`, `MVP_ROADMAP.md`, `TEST_CHECKLIST.md`를 갱신한다.
+- 5개 MVP마다 문서 중복·구문서·깨진 참조·불필요한 기본 읽기를 감사한다.
