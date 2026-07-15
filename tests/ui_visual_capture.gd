@@ -36,6 +36,8 @@ func _capture() -> void:
 		game_state.investigation_risk = 85
 	if ui_state == "mvp043_point_picker":
 		game_state.set_current_field_node_id("field_station_investigation")
+	if ui_state.begins_with("mvp043_reasoning"):
+		game_state.set_current_field_node_id("field_station_investigation")
 	if ui_state.begins_with("mvp039_"):
 		_prepare_mvp039_evidence(game_state)
 		if ui_state == "mvp039_result":
@@ -74,6 +76,22 @@ func _capture() -> void:
 				for _frame in range(3):
 					await process_frame
 				break
+	if ui_state.begins_with("mvp043_reasoning") and current_scene.has_method("_get_investigation_points"):
+		var points: Array = current_scene.call("_get_investigation_points")
+		for point in points:
+			if typeof(point) == TYPE_DICTIONARY and String(point.get("id", "")) == "point_platform_speaker":
+				current_scene.call("_show_method_options", point)
+				for _frame in range(3):
+					await process_frame
+				break
+		if ui_state == "mvp043_reasoning_cases":
+			current_scene.call("_open_manual_case", "failure_c")
+			current_scene.call("_open_manual_case", "failure_b")
+			var case_dialog := current_scene.get("_case_dialog") as AcceptDialog
+			if case_dialog != null:
+				case_dialog.hide()
+			for _frame in range(3):
+				await process_frame
 	if ui_state == "recovery_evidence" and current_scene.has_method("_toggle_clue_drawer"):
 		current_scene.call("_toggle_clue_drawer")
 		for _frame in range(3):

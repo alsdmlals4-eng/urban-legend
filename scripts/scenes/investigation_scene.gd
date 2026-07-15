@@ -9,6 +9,7 @@ const LogTutorialCatalog = preload("res://scripts/ui/log_tutorial_catalog.gd")
 const ActionChoiceCardScene = preload("res://scenes/ui/action_choice_card.tscn")
 const AccessibilitySettingsScript = preload("res://scripts/ui/accessibility_settings.gd")
 const AnomalyManualDrawerScript = preload("res://scripts/ui/anomaly_manual_drawer.gd")
+const AfterlifeManualCatalog = preload("res://scripts/ui/afterlife_manual_catalog.gd")
 
 const FALLBACK_INVESTIGATION_POINTS: Array[Dictionary] = [
 	{
@@ -75,6 +76,15 @@ var _accessibility := AccessibilitySettingsScript.new()
 var _safe_frame: MarginContainer
 var _location_preview: TextureRect
 var _is_afterlife_layout := false
+var _manual_body: VBoxContainer
+var _manual_page_label: Label
+var _manual_status_label: Label
+var _manual_page_index := 0
+var _read_manual_cases: Dictionary = {}
+var _attempted_reasoning_choices: Dictionary = {}
+var _reasoning_point: Dictionary = {}
+var _reasoning_definition: Dictionary = {}
+var _case_dialog: AcceptDialog
 
 
 func _ready() -> void:
@@ -105,6 +115,9 @@ func _build_ui() -> void:
 	_point_method_dock = %PointMethodDock
 	_method_column = %MethodColumn
 	_manual_panel = %ManualPanel
+	_manual_body = %Body
+	_manual_page_label = %PageLabel
+	_manual_status_label = %Status
 	_manual_toggle_button = %ManualToggleButton
 	_result_toast = %ResultToast
 	_case_summary_label = %CaseSummaryLabel
@@ -155,6 +168,7 @@ func _build_ui() -> void:
 	_manual_panel.visible = _is_afterlife_layout
 	if _is_afterlife_layout:
 		_record_button.pressed.connect(_toggle_record_drawer)
+		_build_afterlife_manual()
 	else:
 		_manual_drawer = AnomalyManualDrawerScript.new()
 		add_child(_manual_drawer)
@@ -170,6 +184,7 @@ func _build_ui() -> void:
 	_log_guide.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	_log_guide.visible = false
 	%LogHost.add_child(_log_guide)
+	%LogHost.visible = false
 	_build_utility_dialogs()
 	_add_team_status_chips(_team_hud)
 	_agent_stage.visible = false
@@ -191,6 +206,81 @@ func _apply_safe_frame() -> void:
 	_safe_frame.offset_right = -side
 	_safe_frame.offset_top = 12.0
 	_safe_frame.offset_bottom = -12.0
+
+
+func _build_afterlife_manual() -> void:
+	if _manual_body == null:
+		return
+	var pages := AfterlifeManualCatalog.pages()
+	if pages.is_empty():
+		return
+	_manual_page_index = clampi(_manual_page_index, 0, pages.size() - 1)
+	_clear_children(_manual_body)
+	var page: Dictionary = pages[_manual_page_index]
+	_manual_page_label.text = "저승역 / %s" % String(page.get("title", "조사 기록"))
+	_add_manual_section("관찰 포인트", String(page.get("observation", "")))
+	_add_manual_case_button(String(page.get("success_case_id", "")), "성공 사례")
+	_add_manual_case_button(String(page.get("failure_case_id", "")), "실패 사례")
+	_add_manual_section("대응 절차", String(page.get("procedure", "")))
+	var nav := HBoxContainer.new()
+	nav.add_theme_constant_override("separation", 6)
+	_manual_body.add_child(nav)
+	var previous := Button.new()
+	previous.text = "이전 페이지"
+	previous.disabled = _manual_page_index == 0
+	previous.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	previous.pressed.connect(func() -> void:
+		_manual_page_index = maxi(0, _manual_page_index - 1)
+		_build_afterlife_manual()
+	)
+	nav.add_child(previous)
+	var next := Button.new()
+	next.text = "다음 페이지"
+	next.disabled = _manual_page_index >= pages.size() - 1
+	next.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	next.pressed.connect(func() -> void:
+		_manual_page_index = mini(pages.size() - 1, _manual_page_index + 1)
+		_build_afterlife_manual()
+	)
+	nav.add_child(next)
+	_manual_status_label.text = "%d / %d · 읽은 사례 %d" % [_manual_page_index + 1, pages.size(), _read_manual_cases.size()]
+
+
+func _add_manual_section(title_text: String, body_text: String) -> void:
+	var title := Label.new()
+	title.text = title_text
+	title.add_theme_color_override("font_color", Color(0.78, 0.65, 0.88))
+	_manual_body.add_child(title)
+	var body := Label.new()
+	body.text = body_text
+	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_manual_body.add_child(body)
+
+
+func _add_manual_case_button(case_id: String, prefix: String) -> void:
+	if case_id.is_empty():
+		return
+	var data: Dictionary = AfterlifeManualCatalog.cases().get(case_id, {})
+	var button := Button.new()
+	button.text = "%s · %s%s" % [prefix, String(data.get("title", case_id)), " · 확인됨" if _read_manual_cases.has(case_id) else ""]
+	button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	button.pressed.connect(func() -> void: _open_manual_case(case_id))
+	_manual_body.add_child(button)
+
+
+func _open_manual_case(case_id: String) -> void:
+	_read_manual_cases[case_id] = true
+	if _case_dialog == null:
+		_case_dialog = AcceptDialog.new()
+		_case_dialog.ok_button_text = "기록 닫기"
+		add_child(_case_dialog)
+	var data: Dictionary = AfterlifeManualCatalog.cases().get(case_id, {})
+	_case_dialog.title = String(data.get("title", "사례 기록"))
+	_case_dialog.dialog_text = AfterlifeManualCatalog.case_text(case_id)
+	_case_dialog.popup_centered(Vector2i(620, 520))
+	_build_afterlife_manual()
+	if not _reasoning_point.is_empty():
+		_render_reasoning_choices()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -355,6 +445,8 @@ func _add_field_dialogue(parent: Control) -> void:
 
 
 func _show_current_field_node() -> void:
+	_reasoning_point = {}
+	_reasoning_definition = {}
 	_field_node = GameState.get_current_field_node()
 	_refresh_manual_drawer(false)
 	if _field_node.is_empty():
@@ -674,6 +766,11 @@ func _add_method_panel(parent: Control) -> void:
 
 
 func _show_method_options(point: Dictionary) -> void:
+	if _is_afterlife_layout:
+		var reasoning := AfterlifeManualCatalog.judgment_for_point(String(point.get("id", "")))
+		if not reasoning.is_empty():
+			_show_reasoning_options(point, reasoning)
+			return
 	if _method_panel == null:
 		return
 
@@ -722,6 +819,78 @@ func _show_method_options(point: Dictionary) -> void:
 			if aspect.value > 0:
 				info_lines.append("  → 특성 보정: +%d (%s: %s)" % [aspect.value, aspect.aspect_name, aspect.reason])
 			card.tooltip_text = "\n".join(info_lines)
+
+
+func _show_reasoning_options(point: Dictionary, definition: Dictionary) -> void:
+	_reasoning_point = point.duplicate(true)
+	_reasoning_definition = definition.duplicate(true)
+	_manual_page_index = int(definition.get("manual_page", 0))
+	_build_afterlife_manual()
+	_field_speaker_label.text = String(definition.get("title", "현장 판단"))
+	_field_dialogue_label.text = "%s\n\n실패 사례로 명백한 오답을 줄이고, 성공 사례의 공통 원칙과 현재 관찰을 비교하십시오." % String(definition.get("observation", ""))
+	_field_next_button.visible = false
+	_points_box.visible = true
+	_set_ui_mode("FIELD_CHOICES")
+	_render_reasoning_choices()
+
+
+func _render_reasoning_choices() -> void:
+	if _reasoning_definition.is_empty():
+		return
+	_clear_children(_field_choice_box)
+	var choices: Array = _reasoning_definition.get("choices", [])
+	for value in choices:
+		if typeof(value) != TYPE_DICTIONARY:
+			continue
+		var choice: Dictionary = (value as Dictionary).duplicate(true)
+		var choice_id := String(choice.get("id", ""))
+		var failure_case_id := String(choice.get("failure_case_id", ""))
+		var eliminated := not failure_case_id.is_empty() and _read_manual_cases.has(failure_case_id)
+		var attempted := _attempted_reasoning_choices.has("%s:%s" % [String(_reasoning_point.get("id", "")), choice_id])
+		var card := ActionChoiceCardScene.instantiate()
+		_field_choice_box.add_child(card)
+		var reason := ""
+		if eliminated:
+			var case_data: Dictionary = AfterlifeManualCatalog.cases().get(failure_case_id, {})
+			reason = "제외 근거: %s와 동일한 조건" % String(case_data.get("title", "실패 사례"))
+		elif attempted:
+			reason = "현장 반응으로 부적합이 확인됨"
+		card.configure({
+			"id": choice_id,
+			"title": String(choice.get("title", "판단 후보")),
+			"enabled": not eliminated and not attempted,
+			"danger": String(choice.get("kind", "")) == "risk" and not eliminated,
+			"state_label": "위험 가능" if String(choice.get("kind", "")) == "risk" and not eliminated else ("사례로 제외됨" if eliminated else ""),
+			"elimination_reason": reason,
+			"meta": "현재 관찰과 기록을 비교해 판단"
+		})
+		card.action_requested.connect(func(_action_id: String) -> void: _select_reasoning_choice(choice))
+
+
+func _select_reasoning_choice(choice: Dictionary) -> void:
+	var point_id := String(_reasoning_point.get("id", ""))
+	var choice_id := String(choice.get("id", ""))
+	if choice_id == String(_reasoning_definition.get("correct_id", "")):
+		GameState.record_recovery_pattern_outcome("afterlife_reasoning:%s" % point_id, choice_id, true, "현재 관찰과 공식 기록의 공통 조건을 확인했습니다.")
+		var completed_point := _reasoning_point.duplicate(true)
+		completed_point["method_options"] = []
+		_reasoning_point = {}
+		_reasoning_definition = {}
+		_inspect_point(completed_point)
+		return
+	var attempt_key := "%s:%s" % [point_id, choice_id]
+	_attempted_reasoning_choices[attempt_key] = true
+	var is_risk := String(choice.get("kind", "")) == "risk"
+	var reason := "현재 관찰을 설명하지 못했습니다. 기록을 다시 비교하십시오."
+	if is_risk:
+		reason = "미검증 방송이 증폭되어 목적지 혼선이 확대됐습니다. 위험 사례를 남기고 같은 판단으로 복귀합니다."
+		GameState.apply_story_effects({"anomaly_risk_delta": 5, "mental_stamina_delta": -4})
+	GameState.record_recovery_pattern_outcome("afterlife_reasoning:%s" % point_id, choice_id, false, reason)
+	GameState.save_game()
+	_field_dialogue_label.text = "%s\n\n%s" % [String(_reasoning_definition.get("observation", "")), reason]
+	_render_reasoning_choices()
+	_refresh_case_status()
+	_refresh_manual_drawer(true)
 
 
 func _run_method_option(point: Dictionary, method: Dictionary) -> void:

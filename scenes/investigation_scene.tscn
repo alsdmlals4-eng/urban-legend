@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/scenes/investigation_scene.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/ui/afterlife/manual_book_frame.png" id="2_book"]
 
 [node name="InvestigationScene" type="Control"]
 layout_mode = 3
@@ -146,8 +147,16 @@ text = "LOG"
 
 [node name="LogHost" type="VBoxContainer" parent="SafeFrame/MainColumn/LogBar/LogRow"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
+
+[node name="LogSummaryLabel" type="Label" parent="SafeFrame/MainColumn/LogBar/LogRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "현재 관찰과 확보 기록을 비교하십시오. LOG AI는 관련 기록의 위치만 안내합니다."
+vertical_alignment = 1
+text_overrun_behavior = 3
 
 [node name="ModeLabel" type="Label" parent="SafeFrame/MainColumn/LogBar/LogRow"]
 unique_name_in_owner = true
@@ -301,6 +310,14 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.33
 theme_type_variation = &"DialogueDock"
+
+[node name="ManualSurface" type="TextureRect" parent="SafeFrame/MainColumn/Workspace/ManualPanel"]
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("2_book")
+expand_mode = 1
+stretch_mode = 6
+self_modulate = Color(0.34, 0.31, 0.32, 0.72)
 
 [node name="ManualContent" type="VBoxContainer" parent="SafeFrame/MainColumn/Workspace/ManualPanel"]
 layout_mode = 2

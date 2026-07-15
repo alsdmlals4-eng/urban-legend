@@ -87,6 +87,18 @@
       "reference_image": "anomalies/red_umbrella_d.png",
       "prompt": "Extract the back-facing central girl and complete red umbrella on flat green while preserving the red danger-stage rim light.",
       "qa": "transparent corners, complete umbrella and body present, original preserved"
+    },
+    {
+      "stage": "final",
+      "purpose": "textless afterlife investigation manual book and occult metal frame surface",
+      "filename": "ui/afterlife/manual_book_frame.png",
+      "width": 1672,
+      "height": 941,
+      "alpha_intent": false,
+      "alpha_result": false,
+      "reference_image": "MVP-043 approved UI proposal screenshots 2, 3 and 4",
+      "prompt": "Create a front-on symmetrical open antique field-record book inside a slim dark oxidized metal occult frame, with warm blank parchment, muted violet edge glow and no text, logo, character or baked UI copy.",
+      "qa": "no baked text, clear writing area, source output preserved, used behind live Godot controls"
     }
   ]
 }
