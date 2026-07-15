@@ -180,6 +180,7 @@ layout_mode = 2
 
 [node name="AgentReactionBox" type="VBoxContainer" parent="DialogueDock/Content"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 theme_override_constants/separation = 4
 
@@ -218,6 +219,11 @@ text = "계속"
 unique_name_in_owner = true
 layout_mode = 2
 text = "LOG"
+
+[node name="ManualToggleButton" type="Button" parent="DialogueDock/Content/FooterRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "매뉴얼 열기"
 
 [node name="SettingsButton" type="Button" parent="DialogueDock/Content/FooterRow"]
 unique_name_in_owner = true
@@ -307,6 +313,7 @@ autowrap_mode = 3
 
 [node name="ManualPanel" type="PanelContainer" parent="."]
 unique_name_in_owner = true
+visible = false
 layout_mode = 1
 anchors_preset = 12
 anchor_left = 0.7

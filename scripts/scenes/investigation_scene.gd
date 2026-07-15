@@ -62,6 +62,8 @@ var _dialogue_dock: PanelContainer
 var _point_method_dock: PanelContainer
 var _method_column: VBoxContainer
 var _manual_panel: PanelContainer
+var _manual_toggle_button: Button
+var _manual_visible_by_user := false
 var _result_toast: PanelContainer
 var _case_summary_label: Label
 var _mode_label: Label
@@ -91,6 +93,7 @@ func _build_ui() -> void:
 	_point_method_dock = %PointMethodDock
 	_method_column = %MethodColumn
 	_manual_panel = %ManualPanel
+	_manual_toggle_button = %ManualToggleButton
 	_result_toast = %ResultToast
 	_case_summary_label = %CaseSummaryLabel
 	_mode_label = %ModeLabel
@@ -133,6 +136,7 @@ func _build_ui() -> void:
 	%ContinueInvestigationButton.pressed.connect(func() -> void: _resolution_confirm_panel.visible = false)
 	%EnterRecoveryButton.pressed.connect(_start_resolution_attempt)
 	%LogUtilityButton.pressed.connect(_toggle_record_drawer)
+	_manual_toggle_button.pressed.connect(_toggle_manual_panel)
 	%SettingsButton.pressed.connect(_show_settings)
 	%ReturnHqButton.pressed.connect(_show_return_confirmation)
 	_return_field_button.pressed.connect(_return_to_field_choice)
@@ -147,9 +151,7 @@ func _build_ui() -> void:
 	_add_team_status_chips(_team_hud)
 	_agent_stage.visible = false
 
-	for point in _get_investigation_points():
-		if typeof(point) == TYPE_DICTIONARY:
-			_add_investigation_point(_points_box, point)
+	_render_investigation_points()
 	_show_current_field_node()
 
 
@@ -366,10 +368,6 @@ func _present_support_lines(lines: Array) -> void:
 		child.queue_free()
 	var log_texts: Array[String] = []
 	var log_expression := "normal"
-	var selected_by_name := {}
-	for agent in GameState.get_selected_agents():
-		if typeof(agent) == TYPE_DICTIONARY:
-			selected_by_name[String(agent.get("name", ""))] = agent
 	for value in lines:
 		if typeof(value) != TYPE_DICTIONARY:
 			continue
@@ -383,9 +381,7 @@ func _present_support_lines(lines: Array) -> void:
 				log_texts.append(String(line.get("text", "")))
 				log_expression = String(line.get("expression", log_expression))
 			continue
-		if selected_by_name.has(speaker) and _agent_reaction_box.get_child_count() < 2:
-			_agent_reaction_box.add_child(_make_agent_reaction_row(selected_by_name[speaker], String(line.get("text", ""))))
-	_agent_reaction_box.visible = _agent_reaction_box.get_child_count() > 0
+	_agent_reaction_box.visible = false
 	if log_texts.is_empty():
 		_log_guide.visible = false
 		return
@@ -449,6 +445,7 @@ func _show_field_choices() -> void:
 		})
 		card.action_requested.connect(func(_action_id: String) -> void: _select_field_choice(choice_copy))
 	if choices.is_empty() or bool(_field_node.get("uses_investigation_points", false)):
+		_render_investigation_points()
 		_points_box.visible = true
 		_configure_point_picker_escape()
 		_set_ui_mode("POINT_PICKER")
@@ -485,7 +482,7 @@ func _select_field_choice(choice: Dictionary) -> void:
 	_field_lines = result.get("after_dialogue", []).duplicate(true)
 	_pending_next_field_node_id = String(result.get("next_field_node_id", ""))
 	_field_speaker_label.text = "선택 결과"
-	_field_dialogue_label.text = "‘%s’를 선택했습니다. 현장 기록과 팀 반응을 확인합니다." % String(choice.get("label", "행동"))
+	_field_dialogue_label.text = "‘%s’를 선택했습니다. 현장 기록을 확인합니다." % String(choice.get("label", "행동"))
 	_present_support_lines(_field_lines)
 	_set_ui_mode("FIELD_DIALOGUE")
 	_field_next_button.text = "다음 조사"
@@ -874,10 +871,36 @@ func _set_ui_mode(mode: String) -> void:
 		_method_column.visible = uses_method_picker
 	if _dialogue_dock != null:
 		_dialogue_dock.visible = not uses_method_picker
+		_dialogue_dock.anchor_right = 0.69 if _manual_visible_by_user and not uses_method_picker else 0.986
 	if _manual_panel != null:
-		_manual_panel.visible = not uses_method_picker
+		_manual_panel.visible = _manual_visible_by_user and not uses_method_picker
+	if _manual_toggle_button != null:
+		_manual_toggle_button.visible = not uses_method_picker
+		_manual_toggle_button.text = "매뉴얼 닫기" if _manual_visible_by_user else "매뉴얼 열기"
 	if _result_toast != null and mode != "RESULT":
 		_result_toast.visible = false
+
+
+func _toggle_manual_panel() -> void:
+	_manual_visible_by_user = not _manual_visible_by_user
+	var current_mode := _mode_label.text if _mode_label != null else "FIELD_CHOICES"
+	_set_ui_mode(current_mode)
+
+
+func _render_investigation_points() -> void:
+	if _points_box == null:
+		return
+	for child in _points_box.get_children():
+		_points_box.remove_child(child)
+		child.queue_free()
+	for point in _get_investigation_points():
+		if typeof(point) == TYPE_DICTIONARY:
+			_add_investigation_point(_points_box, point)
+	if _points_box.get_child_count() == 0:
+		var empty_label := Label.new()
+		empty_label.text = "표시할 조사 지점을 불러오지 못했습니다. 조사 선택으로 돌아가거나 HQ로 복귀할 수 있습니다."
+		empty_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		_points_box.add_child(empty_label)
 
 
 func _format_delta(value: int) -> String:

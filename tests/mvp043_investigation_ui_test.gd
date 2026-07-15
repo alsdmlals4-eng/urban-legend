@@ -33,17 +33,25 @@ func _run() -> void:
 	var point_dock := scene.find_child("PointMethodDock", true, false) as Control
 	var dialogue_dock := scene.find_child("DialogueDock", true, false) as Control
 	var manual_panel := scene.find_child("ManualPanel", true, false) as Control
+	var manual_toggle_button := scene.find_child("ManualToggleButton", true, false) as Button
 	var points_box := scene.find_child("PointsBox", true, false) as Container
 	var return_field_button := scene.find_child("ReturnFieldButton", true, false) as Button
 	_expect(point_dock != null and point_dock.visible, "POINT_PICKER should show the point method dock")
 	_expect(dialogue_dock != null and dialogue_dock.visible, "POINT_PICKER should keep the investigation text visible beside the point list")
-	_expect(manual_panel != null and manual_panel.visible, "the first UI slice should reserve a visible manual column")
+	_expect(manual_panel != null and not manual_panel.visible, "manual should stay hidden until the player opens it")
+	_expect(manual_toggle_button != null and manual_toggle_button.visible, "manual should have a player-facing toggle")
+	if manual_toggle_button != null:
+		manual_toggle_button.emit_signal("pressed")
+		_expect(manual_panel != null and manual_panel.visible, "manual toggle should open the panel")
+		manual_toggle_button.emit_signal("pressed")
+		_expect(manual_panel != null and not manual_panel.visible, "manual toggle should close the panel")
 	_expect(points_box != null and points_box.get_child_count() > 0, "POINT_PICKER should render available investigation cards")
 	if points_box != null and points_box.get_child_count() > 0:
 		var first_card := points_box.get_child(0)
 		var action_button := first_card.find_child("ActionButton", true, false) as Button
 		_expect(action_button != null and not action_button.disabled, "the first investigation card should be selectable")
 		_expect(action_button != null and action_button.focus_mode != Control.FOCUS_NONE, "investigation cards should support keyboard focus")
+		_expect(action_button != null and action_button.is_visible_in_tree() and action_button.get_global_rect().size.y > 0.0, "the first investigation card should be visible on screen")
 	_expect(return_field_button != null and return_field_button.visible, "afterlife point picker should offer a return path")
 	if return_field_button != null:
 		return_field_button.emit_signal("pressed")
