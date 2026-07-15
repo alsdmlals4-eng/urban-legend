@@ -108,6 +108,34 @@ func _capture() -> void:
 		current_scene.call("_toggle_clue_drawer")
 		for _frame in range(3):
 			await process_frame
+	if ui_state == "mvp043_team_status":
+		var team_button := current_scene.find_child("TeamStatusButton", true, false) as Button
+		if team_button != null:
+			team_button.emit_signal("pressed")
+			for _frame in range(3):
+				await process_frame
+	if ui_state == "mvp043_recovery_repeat" and current_scene.has_method("_select_pattern_response"):
+		var pattern: Dictionary = current_scene.get("_current_pattern")
+		var response := _find_wrong_response(pattern)
+		if not response.is_empty():
+			current_scene.call("_select_pattern_response", response)
+			for _frame in range(3):
+				await process_frame
+	if ui_state == "mvp043_external_contacts":
+		var tabs := current_scene.find_child("PreparationTabs", true, false) as TabContainer
+		if tabs != null:
+			tabs.current_tab = 3
+			for _frame in range(3):
+				await process_frame
+			var contact_grid := current_scene.find_child("ExternalContactGrid", true, false) as Control
+			var contact_scroll := _find_scroll_container(contact_grid)
+			if contact_grid != null and contact_scroll != null:
+				contact_scroll.ensure_control_visible(contact_grid)
+				for _frame in range(3):
+					await process_frame
+				contact_scroll.scroll_vertical = maxi(0, contact_scroll.scroll_vertical - 60)
+				for _frame in range(2):
+					await process_frame
 	if ui_state == "mvp043_route_final":
 		var route_control := _find_script_control(current_scene, "route_restore_game.gd")
 		if route_control != null:

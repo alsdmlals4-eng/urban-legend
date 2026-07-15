@@ -152,10 +152,9 @@ func _run_dead_frequency_with_wrong_response() -> void:
 		await process_frame
 		var learning: Dictionary = _game_state.get_recovery_pattern_learning().get(String(first_pattern.get("id", "")), {})
 		_check(not learning.is_empty() and not bool(learning.get("correct", true)), "wrong response records its reason")
-		var learned_evidence := String(battle.call("_make_recovery_evidence_text"))
-		_check(learned_evidence.contains(String(first_pattern.get("failure_reason", ""))), "wrong response explains the next evidence to review")
-		battle.call("_begin_recovery_turn")
-		await process_frame
+		var result_label := battle.get("_result_label") as Label
+		_check(result_label != null and result_label.text.contains(String(first_pattern.get("failure_reason", ""))), "wrong response remains visible beside the automatically exposed next telegraph")
+		_check(not Dictionary(battle.get("_current_pattern")).is_empty(), "the next recovery telegraph appears without another input")
 
 	for turn in range(8):
 		if bool(battle.call("_can_recover")):

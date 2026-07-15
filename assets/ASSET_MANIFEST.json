@@ -123,6 +123,18 @@
       "reference_image": "MVP-043 approved UI screenshot 3",
       "prompt": "Create a square textless front-facing occult railway puzzle tile made of near-black aged iron, inset beveled brass frame, faint railway engraving and violet enamel corner pins, ready for live route overlays.",
       "qa": "no baked text, visible metal and brass before vector overlays, source output preserved"
+    },
+    {
+      "stage": "final",
+      "purpose": "MVP-043 five-agent and four-contact production character collection",
+      "filename": "characters/mvp043/ASSET_MANIFEST.json",
+      "width": 1536,
+      "height": 1536,
+      "alpha_intent": true,
+      "alpha_result": true,
+      "reference_image": "source/mvp043_character_v1/lineup.png",
+      "prompt": "See the collection manifest for all 28 per-asset prompts, reference cards, dimensions, alpha intent and QA results.",
+      "qa": "28 textless assets checked for exact dimensions, alpha mode, transparent corners and Godot runtime paths"
     }
   ]
 }

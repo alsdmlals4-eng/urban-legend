@@ -23,6 +23,14 @@ func _init() -> void:
 	var face_portrait = catalog.get_agent_face_portrait("agent_kang_ijun", 0)
 	assert(face_portrait != null)
 	assert(face_portrait.get_width() > 0 and face_portrait.get_height() > 0)
+	for agent_id in ["agent_kwon_narae", "agent_yoon_seoha", "agent_oh_hyun", "agent_kang_ijun", "agent_han_yuri"]:
+		assert(catalog.get_agent_production_texture(agent_id, "full_body") != null)
+		assert(catalog.get_agent_production_texture(agent_id, "portrait") != null)
+		assert(catalog.get_agent_production_texture(agent_id, "investigation_support") != null)
+		assert(catalog.get_agent_production_texture(agent_id, "recovery_support") != null)
+	for contact_id in ["park_doyoon", "lee_serin", "raymond_kane", "camila_vargas"]:
+		assert(catalog.get_contact_texture(contact_id, "portrait") != null)
+		assert(catalog.get_contact_texture(contact_id, "hq_contact") != null)
 	assert(catalog.get_asset_path("missing") == "")
 
 	print("ui_asset_catalog_test: PASS")

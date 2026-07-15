@@ -852,12 +852,18 @@ func _use_agent_recovery_support(support: Dictionary, button: Button) -> void:
 		MAX_RECOVERY_THRESHOLD
 	)
 	button.disabled = true
-
 	_update_battle_view("%s의 %s 지원 발동\n%s" % [
 		String(support.get("agent_name", "")),
 		String(support.get("role", "회수")),
 		String(support.get("description", ""))
 	])
+	if _representative_agent_image != null:
+		var support_texture := AssetCatalog.new().get_agent_production_texture(
+			String(support.get("agent_id", "")),
+			"recovery_support"
+		)
+		if support_texture != null:
+			_representative_agent_image.texture = support_texture
 
 
 func _update_battle_view(message: String) -> void:

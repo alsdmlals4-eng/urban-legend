@@ -21,7 +21,7 @@ func _run() -> void:
 		return
 	_prepared = true
 	_expect(game_state.restart_afterlife_station_flow(), "afterlife opening fixture should start")
-	_expect(game_state.get_selected_agent_ids() == ["agent_oh_hyun", "agent_kwon_narae", "agent_kang_ijun"], "afterlife opening should force the approved three-person team")
+	_expect(game_state.get_selected_agent_ids() == ["agent_kwon_narae", "agent_oh_hyun", "agent_kang_ijun"], "afterlife opening should force Kwon Narae as protagonist with the approved supports")
 	if change_scene_to_file(game_state.SCENE_DIALOGUE) != OK:
 		_failures.append("dialogue scene failed to load")
 		_finish()

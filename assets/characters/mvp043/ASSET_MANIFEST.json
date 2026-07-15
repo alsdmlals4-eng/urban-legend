@@ -1,0 +1,261 @@
+{
+  "version": "1.0",
+  "feature": "MVP-043 initial agents and external contacts",
+  "generator": "OpenAI built-in image generation",
+  "source_policy": "Attached cards are preserved as references and are not used directly in gameplay.",
+  "postprocess": "Chroma-key outputs were processed with remove_chroma_key.py, then aspect-fitted/cropped with Pillow.",
+  "assets": [
+    {
+      "id": "kwon_narae_full_body",
+      "file": "agents/kwon_narae/full_body.png",
+      "size": "1024x1536",
+      "alpha": true,
+      "reference": "assets/source/mvp043_character_v1/kwon_narae.png",
+      "prompt": "첨부 카드의 권나래 얼굴·의상·색상·실루엣을 유지한 텍스트 없는 현대 오컬트 기록국 요원 전신. 평면 녹색 배경 후 RGBA 키 제거.",
+      "qa": "RGBA; transparent corners; full silhouette; no baked text"
+    },
+    {
+      "id": "kwon_narae_portrait",
+      "file": "agents/kwon_narae/portrait.png",
+      "size": "1024x1024",
+      "alpha": true,
+      "reference": "assets/source/mvp043_character_v1/kwon_narae.png",
+      "prompt": "첨부 카드의 권나래 정체성을 유지한 텍스트 없는 반신 초상. 평면 녹색 배경 후 RGBA 키 제거.",
+      "qa": "RGBA; transparent corners; face and costume match; no baked text"
+    },
+    {
+      "id": "kwon_narae_investigation_support",
+      "file": "agents/kwon_narae/investigation_support.png",
+      "size": "1536x864",
+      "alpha": false,
+      "reference": "assets/source/mvp043_character_v1/kwon_narae.png",
+      "prompt": "권나래이 괴이 기록국 현장에서 단서를 비교·관찰·차폐하는 텍스트 없는 조사 지원 장면. 처치 대신 조사와 안정화 중심.",
+      "qa": "RGB; 16:9; no baked text; investigation action readable"
+    },
+    {
+      "id": "kwon_narae_recovery_support",
+      "file": "agents/kwon_narae/recovery_support.png",
+      "size": "1536x864",
+      "alpha": false,
+      "reference": "assets/source/mvp043_character_v1/kwon_narae.png",
+      "prompt": "권나래이 괴이 잔향을 안정화·차폐·구속하는 텍스트 없는 회수 지원 장면. 전투·처치 표현 제외.",
+      "qa": "RGB; 16:9; no baked text; recovery action readable"
+    },
+    {
+      "id": "yoon_seoha_full_body",
+      "file": "agents/yoon_seoha/full_body.png",
+      "size": "1024x1536",
+      "alpha": true,
+      "reference": "assets/source/mvp043_character_v1/yoon_seoha.png",
+      "prompt": "첨부 카드의 윤서하 얼굴·의상·색상·실루엣을 유지한 텍스트 없는 현대 오컬트 기록국 요원 전신. 평면 녹색 배경 후 RGBA 키 제거.",
+      "qa": "RGBA; transparent corners; full silhouette; no baked text"
+    },
+    {
+      "id": "yoon_seoha_portrait",
+      "file": "agents/yoon_seoha/portrait.png",
+      "size": "1024x1024",
+      "alpha": true,
+      "reference": "assets/source/mvp043_character_v1/yoon_seoha.png",
+      "prompt": "첨부 카드의 윤서하 정체성을 유지한 텍스트 없는 반신 초상. 평면 녹색 배경 후 RGBA 키 제거.",
+      "qa": "RGBA; transparent corners; face and costume match; no baked text"
+    },
+    {
+      "id": "yoon_seoha_investigation_support",
+      "file": "agents/yoon_seoha/investigation_support.png",
+      "size": "1536x864",
+      "alpha": false,
+      "reference": "assets/source/mvp043_character_v1/yoon_seoha.png",
+      "prompt": "윤서하이 괴이 기록국 현장에서 단서를 비교·관찰·차폐하는 텍스트 없는 조사 지원 장면. 처치 대신 조사와 안정화 중심.",
+      "qa": "RGB; 16:9; no baked text; investigation action readable"
+    },
+    {
+      "id": "yoon_seoha_recovery_support",
+      "file": "agents/yoon_seoha/recovery_support.png",
+      "size": "1536x864",
+      "alpha": false,
+      "reference": "assets/source/mvp043_character_v1/yoon_seoha.png",
+      "prompt": "윤서하이 괴이 잔향을 안정화·차폐·구속하는 텍스트 없는 회수 지원 장면. 전투·처치 표현 제외.",
+      "qa": "RGB; 16:9; no baked text; recovery action readable"
+    },
+    {
+      "id": "oh_hyun_full_body",
+      "file": "agents/oh_hyun/full_body.png",
+      "size": "1024x1536",
+      "alpha": true,
+      "reference": "assets/source/mvp043_character_v1/oh_hyun.png",
+      "prompt": "첨부 카드의 오현 얼굴·의상·색상·실루엣을 유지한 텍스트 없는 현대 오컬트 기록국 요원 전신. 평면 녹색 배경 후 RGBA 키 제거.",
+      "qa": "RGBA; transparent corners; full silhouette; no baked text"
+    },
+    {
+      "id": "oh_hyun_portrait",
+      "file": "agents/oh_hyun/portrait.png",
+      "size": "1024x1024",
+      "alpha": true,
+      "reference": "assets/source/mvp043_character_v1/oh_hyun.png",
+      "prompt": "첨부 카드의 오현 정체성을 유지한 텍스트 없는 반신 초상. 평면 녹색 배경 후 RGBA 키 제거.",
+      "qa": "RGBA; transparent corners; face and costume match; no baked text"
+    },
+    {
+      "id": "oh_hyun_investigation_support",
+      "file": "agents/oh_hyun/investigation_support.png",
+      "size": "1536x864",
+      "alpha": false,
+      "reference": "assets/source/mvp043_character_v1/oh_hyun.png",
+      "prompt": "오현이 괴이 기록국 현장에서 단서를 비교·관찰·차폐하는 텍스트 없는 조사 지원 장면. 처치 대신 조사와 안정화 중심.",
+      "qa": "RGB; 16:9; no baked text; investigation action readable"
+    },
+    {
+      "id": "oh_hyun_recovery_support",
+      "file": "agents/oh_hyun/recovery_support.png",
+      "size": "1536x864",
+      "alpha": false,
+      "reference": "assets/source/mvp043_character_v1/oh_hyun.png",
+      "prompt": "오현이 괴이 잔향을 안정화·차폐·구속하는 텍스트 없는 회수 지원 장면. 전투·처치 표현 제외.",
+      "qa": "RGB; 16:9; no baked text; recovery action readable"
+    },
+    {
+      "id": "kang_ijun_full_body",
+      "file": "agents/kang_ijun/full_body.png",
+      "size": "1024x1536",
+      "alpha": true,
+      "reference": "assets/source/mvp043_character_v1/kang_ijun.png",
+      "prompt": "첨부 카드의 강이준 얼굴·의상·색상·실루엣을 유지한 텍스트 없는 현대 오컬트 기록국 요원 전신. 평면 녹색 배경 후 RGBA 키 제거.",
+      "qa": "RGBA; transparent corners; full silhouette; no baked text"
+    },
+    {
+      "id": "kang_ijun_portrait",
+      "file": "agents/kang_ijun/portrait.png",
+      "size": "1024x1024",
+      "alpha": true,
+      "reference": "assets/source/mvp043_character_v1/kang_ijun.png",
+      "prompt": "첨부 카드의 강이준 정체성을 유지한 텍스트 없는 반신 초상. 평면 녹색 배경 후 RGBA 키 제거.",
+      "qa": "RGBA; transparent corners; face and costume match; no baked text"
+    },
+    {
+      "id": "kang_ijun_investigation_support",
+      "file": "agents/kang_ijun/investigation_support.png",
+      "size": "1536x864",
+      "alpha": false,
+      "reference": "assets/source/mvp043_character_v1/kang_ijun.png",
+      "prompt": "강이준이 괴이 기록국 현장에서 단서를 비교·관찰·차폐하는 텍스트 없는 조사 지원 장면. 처치 대신 조사와 안정화 중심.",
+      "qa": "RGB; 16:9; no baked text; investigation action readable"
+    },
+    {
+      "id": "kang_ijun_recovery_support",
+      "file": "agents/kang_ijun/recovery_support.png",
+      "size": "1536x864",
+      "alpha": false,
+      "reference": "assets/source/mvp043_character_v1/kang_ijun.png",
+      "prompt": "강이준이 괴이 잔향을 안정화·차폐·구속하는 텍스트 없는 회수 지원 장면. 전투·처치 표현 제외.",
+      "qa": "RGB; 16:9; no baked text; recovery action readable"
+    },
+    {
+      "id": "han_yuri_full_body",
+      "file": "agents/han_yuri/full_body.png",
+      "size": "1024x1536",
+      "alpha": true,
+      "reference": "assets/source/mvp043_character_v1/han_yuri.png",
+      "prompt": "첨부 카드의 한유리 얼굴·의상·색상·실루엣을 유지한 텍스트 없는 현대 오컬트 기록국 요원 전신. 평면 녹색 배경 후 RGBA 키 제거.",
+      "qa": "RGBA; transparent corners; full silhouette; no baked text"
+    },
+    {
+      "id": "han_yuri_portrait",
+      "file": "agents/han_yuri/portrait.png",
+      "size": "1024x1024",
+      "alpha": true,
+      "reference": "assets/source/mvp043_character_v1/han_yuri.png",
+      "prompt": "첨부 카드의 한유리 정체성을 유지한 텍스트 없는 반신 초상. 평면 녹색 배경 후 RGBA 키 제거.",
+      "qa": "RGBA; transparent corners; face and costume match; no baked text"
+    },
+    {
+      "id": "han_yuri_investigation_support",
+      "file": "agents/han_yuri/investigation_support.png",
+      "size": "1536x864",
+      "alpha": false,
+      "reference": "assets/source/mvp043_character_v1/han_yuri.png",
+      "prompt": "한유리이 괴이 기록국 현장에서 단서를 비교·관찰·차폐하는 텍스트 없는 조사 지원 장면. 처치 대신 조사와 안정화 중심.",
+      "qa": "RGB; 16:9; no baked text; investigation action readable"
+    },
+    {
+      "id": "han_yuri_recovery_support",
+      "file": "agents/han_yuri/recovery_support.png",
+      "size": "1536x864",
+      "alpha": false,
+      "reference": "assets/source/mvp043_character_v1/han_yuri.png",
+      "prompt": "한유리이 괴이 잔향을 안정화·차폐·구속하는 텍스트 없는 회수 지원 장면. 전투·처치 표현 제외.",
+      "qa": "RGB; 16:9; no baked text; recovery action readable"
+    },
+    {
+      "id": "park_doyoon_portrait",
+      "file": "contacts/park_doyoon/portrait.png",
+      "size": "1024x1024",
+      "alpha": true,
+      "reference": "assets/source/mvp043_character_v1/park_doyoon.png",
+      "prompt": "첨부 카드의 박도윤 얼굴·의상·색상·실루엣을 유지한 텍스트 없는 외부 접점 반신 초상. 평면 녹색 배경 후 RGBA 키 제거.",
+      "qa": "RGBA; transparent corners; identity match; no baked text"
+    },
+    {
+      "id": "park_doyoon_hq_contact",
+      "file": "contacts/park_doyoon/hq_contact.png",
+      "size": "1536x864",
+      "alpha": false,
+      "reference": "assets/source/mvp043_character_v1/park_doyoon.png",
+      "prompt": "박도윤이 괴이 기록국 HQ에서 정보·안전·잔향 자문을 제공하는 텍스트 없는 외부 접점 장면. 고용 UI나 처치 표현 제외.",
+      "qa": "RGB; 16:9; no baked text; contact role readable"
+    },
+    {
+      "id": "lee_serin_portrait",
+      "file": "contacts/lee_serin/portrait.png",
+      "size": "1024x1024",
+      "alpha": true,
+      "reference": "assets/source/mvp043_character_v1/lee_serin.png",
+      "prompt": "첨부 카드의 이세린 얼굴·의상·색상·실루엣을 유지한 텍스트 없는 외부 접점 반신 초상. 평면 녹색 배경 후 RGBA 키 제거.",
+      "qa": "RGBA; transparent corners; identity match; no baked text"
+    },
+    {
+      "id": "lee_serin_hq_contact",
+      "file": "contacts/lee_serin/hq_contact.png",
+      "size": "1536x864",
+      "alpha": false,
+      "reference": "assets/source/mvp043_character_v1/lee_serin.png",
+      "prompt": "이세린이 괴이 기록국 HQ에서 정보·안전·잔향 자문을 제공하는 텍스트 없는 외부 접점 장면. 고용 UI나 처치 표현 제외.",
+      "qa": "RGB; 16:9; no baked text; contact role readable"
+    },
+    {
+      "id": "raymond_kane_portrait",
+      "file": "contacts/raymond_kane/portrait.png",
+      "size": "1024x1024",
+      "alpha": true,
+      "reference": "assets/source/mvp043_character_v1/raymond_kane.png",
+      "prompt": "첨부 카드의 레이먼드 케인 얼굴·의상·색상·실루엣을 유지한 텍스트 없는 외부 접점 반신 초상. 평면 녹색 배경 후 RGBA 키 제거.",
+      "qa": "RGBA; transparent corners; identity match; no baked text"
+    },
+    {
+      "id": "raymond_kane_hq_contact",
+      "file": "contacts/raymond_kane/hq_contact.png",
+      "size": "1536x864",
+      "alpha": false,
+      "reference": "assets/source/mvp043_character_v1/raymond_kane.png",
+      "prompt": "레이먼드 케인이 괴이 기록국 HQ에서 정보·안전·잔향 자문을 제공하는 텍스트 없는 외부 접점 장면. 고용 UI나 처치 표현 제외.",
+      "qa": "RGB; 16:9; no baked text; contact role readable"
+    },
+    {
+      "id": "camila_vargas_portrait",
+      "file": "contacts/camila_vargas/portrait.png",
+      "size": "1024x1024",
+      "alpha": true,
+      "reference": "assets/source/mvp043_character_v1/camila_vargas.png",
+      "prompt": "첨부 카드의 카밀라 바르가스 얼굴·의상·색상·실루엣을 유지한 텍스트 없는 외부 접점 반신 초상. 평면 녹색 배경 후 RGBA 키 제거.",
+      "qa": "RGBA; transparent corners; identity match; no baked text"
+    },
+    {
+      "id": "camila_vargas_hq_contact",
+      "file": "contacts/camila_vargas/hq_contact.png",
+      "size": "1536x864",
+      "alpha": false,
+      "reference": "assets/source/mvp043_character_v1/camila_vargas.png",
+      "prompt": "카밀라 바르가스이 괴이 기록국 HQ에서 정보·안전·잔향 자문을 제공하는 텍스트 없는 외부 접점 장면. 고용 UI나 처치 표현 제외.",
+      "qa": "RGB; 16:9; no baked text; contact role readable"
+    }
+  ]
+}

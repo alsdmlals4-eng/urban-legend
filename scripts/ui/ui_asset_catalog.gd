@@ -25,6 +25,49 @@ const ASSET_PATHS := {
 	"log_normal": "res://assets/log/log_normal.png",
 	"log_focus": "res://assets/log/log_focus.png",
 	"log_warning": "res://assets/log/log_warning.png",
+	"kwon_narae_full_body": "res://assets/characters/mvp043/agents/kwon_narae/full_body.png",
+	"kwon_narae_portrait": "res://assets/characters/mvp043/agents/kwon_narae/portrait.png",
+	"kwon_narae_investigation_support": "res://assets/characters/mvp043/agents/kwon_narae/investigation_support.png",
+	"kwon_narae_recovery_support": "res://assets/characters/mvp043/agents/kwon_narae/recovery_support.png",
+	"yoon_seoha_full_body": "res://assets/characters/mvp043/agents/yoon_seoha/full_body.png",
+	"yoon_seoha_portrait": "res://assets/characters/mvp043/agents/yoon_seoha/portrait.png",
+	"yoon_seoha_investigation_support": "res://assets/characters/mvp043/agents/yoon_seoha/investigation_support.png",
+	"yoon_seoha_recovery_support": "res://assets/characters/mvp043/agents/yoon_seoha/recovery_support.png",
+	"oh_hyun_full_body": "res://assets/characters/mvp043/agents/oh_hyun/full_body.png",
+	"oh_hyun_portrait": "res://assets/characters/mvp043/agents/oh_hyun/portrait.png",
+	"oh_hyun_investigation_support": "res://assets/characters/mvp043/agents/oh_hyun/investigation_support.png",
+	"oh_hyun_recovery_support": "res://assets/characters/mvp043/agents/oh_hyun/recovery_support.png",
+	"kang_ijun_full_body": "res://assets/characters/mvp043/agents/kang_ijun/full_body.png",
+	"kang_ijun_portrait": "res://assets/characters/mvp043/agents/kang_ijun/portrait.png",
+	"kang_ijun_investigation_support": "res://assets/characters/mvp043/agents/kang_ijun/investigation_support.png",
+	"kang_ijun_recovery_support": "res://assets/characters/mvp043/agents/kang_ijun/recovery_support.png",
+	"han_yuri_full_body": "res://assets/characters/mvp043/agents/han_yuri/full_body.png",
+	"han_yuri_portrait": "res://assets/characters/mvp043/agents/han_yuri/portrait.png",
+	"han_yuri_investigation_support": "res://assets/characters/mvp043/agents/han_yuri/investigation_support.png",
+	"han_yuri_recovery_support": "res://assets/characters/mvp043/agents/han_yuri/recovery_support.png",
+	"park_doyoon_portrait": "res://assets/characters/mvp043/contacts/park_doyoon/portrait.png",
+	"park_doyoon_hq_contact": "res://assets/characters/mvp043/contacts/park_doyoon/hq_contact.png",
+	"lee_serin_portrait": "res://assets/characters/mvp043/contacts/lee_serin/portrait.png",
+	"lee_serin_hq_contact": "res://assets/characters/mvp043/contacts/lee_serin/hq_contact.png",
+	"raymond_kane_portrait": "res://assets/characters/mvp043/contacts/raymond_kane/portrait.png",
+	"raymond_kane_hq_contact": "res://assets/characters/mvp043/contacts/raymond_kane/hq_contact.png",
+	"camila_vargas_portrait": "res://assets/characters/mvp043/contacts/camila_vargas/portrait.png",
+	"camila_vargas_hq_contact": "res://assets/characters/mvp043/contacts/camila_vargas/hq_contact.png",
+}
+
+const MVP043_AGENT_SLUGS := {
+	"agent_kwon_narae": "kwon_narae",
+	"agent_yoon_seoha": "yoon_seoha",
+	"agent_oh_hyun": "oh_hyun",
+	"agent_kang_ijun": "kang_ijun",
+	"agent_han_yuri": "han_yuri",
+}
+
+const MVP043_CONTACT_SLUGS := {
+	"park_doyoon": "park_doyoon",
+	"lee_serin": "lee_serin",
+	"raymond_kane": "raymond_kane",
+	"camila_vargas": "camila_vargas",
 }
 
 const BACKGROUNDS := {
@@ -127,6 +170,9 @@ func get_agent_expression(agent_id: String, expression_index: int = 0) -> Textur
 
 
 func get_agent_face_portrait(agent_id: String, expression_index: int = 0) -> Texture2D:
+	var production_portrait := get_agent_production_texture(agent_id, "portrait")
+	if production_portrait != null:
+		return production_portrait
 	var source := get_texture(get_agent_cutout_asset_id(agent_id))
 	if source == null:
 		source = get_texture(get_agent_asset_id(agent_id))
@@ -143,6 +189,20 @@ func get_agent_face_portrait(agent_id: String, expression_index: int = 0) -> Tex
 		crop_size
 	)
 	return atlas
+
+
+func get_agent_production_texture(agent_id: String, role: String) -> Texture2D:
+	var slug := String(MVP043_AGENT_SLUGS.get(agent_id, ""))
+	if slug.is_empty() or role not in ["full_body", "portrait", "investigation_support", "recovery_support"]:
+		return null
+	return get_texture("%s_%s" % [slug, role])
+
+
+func get_contact_texture(contact_id: String, role: String) -> Texture2D:
+	var slug := String(MVP043_CONTACT_SLUGS.get(contact_id, ""))
+	if slug.is_empty() or role not in ["portrait", "hq_contact"]:
+		return null
+	return get_texture("%s_%s" % [slug, role])
 
 
 func get_log_expression(expression: String = "normal") -> Texture2D:

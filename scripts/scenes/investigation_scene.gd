@@ -1035,6 +1035,7 @@ func _try_analysis_support(point_id: String, roll_override: float = -1.0) -> voi
 	if bool(result.get("triggered", false)):
 		GameState.mark_agent_support_used(success_id)
 		_support_eliminated_choices[point_id] = "record_personal_destination"
+		_show_agent_support_art("agent_oh_hyun")
 
 
 func _try_protection_support(roll_override: float = -1.0) -> bool:
@@ -1051,6 +1052,7 @@ func _try_protection_support(roll_override: float = -1.0) -> bool:
 	if not bool(result.get("triggered", false)):
 		return false
 	GameState.mark_agent_support_used(success_id)
+	_show_agent_support_art("agent_kang_ijun")
 	return true
 
 
@@ -1070,7 +1072,16 @@ func _try_observation_support(point_id: String, roll_override: float = -1.0) -> 
 	if not bool(result.get("triggered", false)):
 		return ""
 	GameState.mark_agent_support_used(success_id)
+	_show_agent_support_art("agent_kwon_narae")
 	return "공백 직후의 식별음만 세 사람에게 동일하게 들립니다."
+
+
+func _show_agent_support_art(agent_id: String) -> void:
+	if _location_preview == null:
+		return
+	var texture := AssetCatalog.new().get_agent_production_texture(agent_id, "investigation_support")
+	if texture != null:
+		_location_preview.texture = texture
 
 
 func _run_method_option(point: Dictionary, method: Dictionary) -> void:

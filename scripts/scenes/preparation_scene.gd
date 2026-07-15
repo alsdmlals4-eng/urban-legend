@@ -10,6 +10,12 @@ const SCHEDULE_ACTIVITIES: Array[Dictionary] = [
 	{"id": "investigation", "label": "현장 조사"},
 	{"id": "rest", "label": "대기·회복"}
 ]
+const EXTERNAL_CONTACTS: Array[Dictionary] = [
+	{"id": "park_doyoon", "name": "박도윤", "role": "소문시장 정보 중개", "status": "접점 확인"},
+	{"id": "lee_serin", "name": "이세린", "role": "기록·현장 협력", "status": "접점 확인"},
+	{"id": "raymond_kane", "name": "레이먼드 케인", "role": "외부 안전 자문", "status": "접점 확인"},
+	{"id": "camila_vargas", "name": "카밀라 바르가스", "role": "잔향·봉쇄 자문", "status": "접점 확인"},
+]
 
 var _equipment_list: VBoxContainer
 var _episode_list: VBoxContainer
@@ -68,8 +74,8 @@ func _build_ui() -> void:
 	_add_header(root)
 	var dashboard := HBoxContainer.new()
 	dashboard.name = "ProtagonistDashboard"
-	dashboard.custom_minimum_size.y = 310
-	dashboard.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	dashboard.custom_minimum_size.y = 330
+	dashboard.size_flags_vertical = Control.SIZE_FILL
 	dashboard.add_theme_constant_override("separation", 10)
 	root.add_child(dashboard)
 
@@ -95,7 +101,7 @@ func _build_ui() -> void:
 	var protagonist_art := TextureRect.new()
 	protagonist_art.name = "ProtagonistArt"
 	protagonist_art.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	protagonist_art.texture = AssetCatalog.new().get_agent_expression("agent_kwon_narae", 1)
+	protagonist_art.texture = AssetCatalog.new().get_agent_production_texture("agent_kwon_narae", "full_body")
 	protagonist_art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	protagonist_art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	protagonist_box.add_child(protagonist_art)
@@ -111,10 +117,17 @@ func _build_ui() -> void:
 	actions.size_flags_stretch_ratio = 0.34
 	actions.add_theme_constant_override("separation", 8)
 	dashboard.add_child(actions)
-	_add_dashboard_action(actions, "현장 조사", "현재 사건 조사 일정을 배정합니다.", func() -> void: _assign_dashboard_activity("investigation"))
-	_add_dashboard_action(actions, "대기·회복", "현재 반일을 회복 일정으로 배정합니다.", func() -> void: _assign_dashboard_activity("rest"))
-	_add_dashboard_action(actions, "일상 기록", "HQ의 요원 기록을 확인합니다.", func() -> void: _dashboard_tabs.current_tab = 0)
-	_add_dashboard_action(actions, "외부 의뢰", "세력 접점과 의뢰 게시판을 확인합니다.", func() -> void: _dashboard_tabs.current_tab = 3)
+	var action_grid := GridContainer.new()
+	action_grid.name = "DashboardActionGrid"
+	action_grid.columns = 2
+	action_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	action_grid.add_theme_constant_override("h_separation", 8)
+	action_grid.add_theme_constant_override("v_separation", 8)
+	actions.add_child(action_grid)
+	_add_dashboard_action(action_grid, "현장 조사", "현재 사건 조사 일정을 배정합니다.", func() -> void: _assign_dashboard_activity("investigation"))
+	_add_dashboard_action(action_grid, "대기·회복", "현재 반일을 회복 일정으로 배정합니다.", func() -> void: _assign_dashboard_activity("rest"))
+	_add_dashboard_action(action_grid, "일상 기록", "HQ의 요원 기록을 확인합니다.", func() -> void: _dashboard_tabs.current_tab = 0)
+	_add_dashboard_action(action_grid, "외부 의뢰", "세력 접점과 의뢰 게시판을 확인합니다.", func() -> void: _dashboard_tabs.current_tab = 3)
 	_add_start_panel(actions)
 
 	_dashboard_tabs = TabContainer.new()
@@ -150,9 +163,10 @@ func _add_tab_scroll(tab_name: String) -> VBoxContainer:
 
 func _add_dashboard_action(parent: Control, title: String, description: String, callback: Callable) -> void:
 	var button := Button.new()
-	button.text = "%s\n%s" % [title, description]
-	button.custom_minimum_size.y = 48
-	button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	button.text = title
+	button.tooltip_text = description
+	button.custom_minimum_size.y = 50
+	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	button.pressed.connect(callback)
 	parent.add_child(button)
 
@@ -182,7 +196,7 @@ func _add_header(parent: Control) -> void:
 
 
 func _add_schedule_panel(parent: Control) -> void:
-	var content := _add_section(parent, "오늘의 일정", "현재 반일의 업무만 정합니다. 결과를 확인한 뒤 다음 반일 일정이 열립니다.")
+	var content := _add_section(parent, "오늘의 일정", "권나래의 현재 반일 일정만 정합니다.")
 	_campaign_day_label = Label.new()
 	_campaign_day_label.name = "CampaignDayLabel"
 	_campaign_day_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -195,11 +209,14 @@ func _add_schedule_panel(parent: Control) -> void:
 
 
 func _add_current_case_panel(parent: Control) -> void:
-	var content := _add_section(parent, "현재 사건", "지금 조사 준비를 적용할 사건입니다.")
+	var content := _add_section(parent, "현재 사건")
 
 	_current_case_label = Label.new()
 	_current_case_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_current_case_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_current_case_label.max_lines_visible = 3
+	_current_case_label.clip_text = true
+	_current_case_label.custom_minimum_size.y = 62
 	content.add_child(_current_case_label)
 
 
@@ -422,10 +439,13 @@ func _add_log_panel(parent: Control) -> void:
 
 
 func _add_start_panel(parent: Control) -> void:
-	var content := _add_section(parent, "조사 시작", "조건을 만족하면 현재 사건의 조사 화면으로 이동합니다.")
+	var content := _add_section(parent, "조사 시작")
 
 	_status_label = Label.new()
 	_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_status_label.max_lines_visible = 2
+	_status_label.clip_text = true
+	_status_label.custom_minimum_size.y = 40
 	content.add_child(_status_label)
 
 	var row := HBoxContainer.new()
@@ -453,7 +473,7 @@ func _add_section(parent: Control, title_text: String, description_text: String 
 	var frame := VBoxContainer.new()
 	frame.add_theme_constant_override("separation", 8)
 	panel.add_child(frame)
-	var should_collapse := title_text in ["일상 에피소드", "요원 편성", "외부 접점", "장비", "기록물", "기록관 아카 · 준비 지원"]
+	var should_collapse := title_text in ["일상 에피소드", "요원 편성", "장비", "기록물", "기록관 아카 · 준비 지원"]
 	var toggle := Button.new()
 	toggle.text = title_text
 	toggle.alignment = HORIZONTAL_ALIGNMENT_LEFT
@@ -638,6 +658,17 @@ func _get_schedule_agent_ids() -> Array:
 
 func _refresh_external_contacts() -> void:
 	_clear_children(_contact_list)
+	var contact_title := Label.new()
+	contact_title.text = "외부 접점 · 고용/편성 기능 없음"
+	_contact_list.add_child(contact_title)
+	var contact_grid := GridContainer.new()
+	contact_grid.name = "ExternalContactGrid"
+	contact_grid.columns = 2
+	contact_grid.add_theme_constant_override("h_separation", 8)
+	contact_grid.add_theme_constant_override("v_separation", 8)
+	_contact_list.add_child(contact_grid)
+	for contact in EXTERNAL_CONTACTS:
+		_add_external_contact_card(contact_grid, contact)
 	var currency := Label.new()
 	currency.text = "잔향 파편: %d" % GameState.get_echo_fragments()
 	_contact_list.add_child(currency)
@@ -680,6 +711,34 @@ func _refresh_external_contacts() -> void:
 		button.text = "%s · 보유 %d / 반입 %d" % [String(item.get("name", item_id)), owned, int(loadout.get(item_id, 0))]
 		button.pressed.connect(_cycle_consumable_loadout.bind(item_id, owned))
 		_consumable_list.add_child(button)
+
+
+func _add_external_contact_card(parent: Control, contact: Dictionary) -> void:
+	var panel := PanelContainer.new()
+	panel.custom_minimum_size = Vector2(280, 116)
+	parent.add_child(panel)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 8)
+	panel.add_child(row)
+	var portrait := TextureRect.new()
+	portrait.custom_minimum_size = Vector2(88, 104)
+	portrait.texture = AssetCatalog.new().get_contact_texture(String(contact.get("id", "")), "portrait")
+	portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	row.add_child(portrait)
+	var copy := VBoxContainer.new()
+	copy.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(copy)
+	var name_label := Label.new()
+	name_label.text = String(contact.get("name", ""))
+	copy.add_child(name_label)
+	var role_label := Label.new()
+	role_label.text = String(contact.get("role", ""))
+	role_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	copy.add_child(role_label)
+	var status_label := Label.new()
+	status_label.text = String(contact.get("status", ""))
+	copy.add_child(status_label)
 
 
 func _cycle_consumable_loadout(item_id: String, owned: int) -> void:

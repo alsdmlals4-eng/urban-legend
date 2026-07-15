@@ -30,11 +30,23 @@ func configure(entries: Array) -> void:
 func open(entries: Array) -> void:
 	show()
 	configure(entries)
+	z_index = 100
+	call_deferred("_center_in_viewport")
 
 
 func close() -> void:
 	hide()
 	closed.emit()
+
+
+func _center_in_viewport() -> void:
+	reset_size()
+	var viewport_size := get_viewport_rect().size
+	size.x = maxf(size.x, custom_minimum_size.x)
+	global_position = Vector2(
+		maxf(16.0, (viewport_size.x - size.x) * 0.5),
+		maxf(16.0, (viewport_size.y - size.y) * 0.5)
+	)
 
 
 func _unhandled_input(event: InputEvent) -> void:
