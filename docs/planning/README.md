@@ -80,4 +80,4 @@ AGENTS.md
 - 대사·관계 규칙이 바뀌면 `NARRATIVE_CONTENT_PLAN.md`를 갱신한다.
 - 아트·표정·컷인·화면 위계가 바뀌면 `ART_PRESENTATION_PLAN.md`를 갱신한다.
 - 완료된 상세 계획과 과거 버전은 `docs/archive/backup/YYYY-MM-DD/`로 보낸다.
-- 사례에서 얻은 재사용 가능한 원칙은 프로젝트 전용 사실을 제거한 뒤 Base의 `docs/planning/` 승격 후보로 정리한다.
+- 사례에서 얻은 재사용 가능한 원칙은 프로젝트 전용 사실을 제거한 뒤 Base의 `docs/knowledge/` 승격 후보로 정리한다.
