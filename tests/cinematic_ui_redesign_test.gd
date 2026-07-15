@@ -56,8 +56,10 @@ func _run() -> void:
 	if not _test_situation_choice_presentation():
 		return
 	var dialogue_dock := current_scene.get_node("%DialogueDock") as Control
-	if dialogue_dock.position.y < current_scene.get_viewport_rect().size.y * 0.58:
-		_fail("field dialogue must reserve at least 58 percent of the screen for the stage")
+	var workspace_width := (current_scene.find_child("Workspace", true, false) as Control).size.x
+	var dialogue_ratio := dialogue_dock.size.x / maxf(1.0, workspace_width)
+	if dialogue_ratio < 0.38 or dialogue_ratio > 0.48:
+		_fail("afterlife field record column must keep the approved compact middle-column ratio")
 		return
 	if not await _test_method_picker():
 		return
@@ -217,16 +219,9 @@ func _test_situation_choice_presentation() -> bool:
 	if not choice_scroll.visible or next_button.visible:
 		_fail("situation and choices must be visible without a dialogue advance step")
 		return false
-	if reaction_box.get_child_count() != 2:
-		_fail("selected-agent reactions must be limited to two portrait rows")
+	if reaction_box.visible or reaction_box.get_child_count() != 0:
+		_fail("the lightweight investigation layout must not render agent dialogue rows")
 		return false
-	for row in reaction_box.get_children():
-		if not row.has_meta("agent_id") or row.find_child("Portrait", true, false) == null or row.find_child("ReactionText", true, false) == null:
-			_fail("each agent reaction must contain an agent id, portrait, and text")
-			return false
-		if String(row.get_meta("agent_id")) not in ["agent_kang_ijun", "agent_kwon_narae"]:
-			_fail("unselected agents must not appear in investigation reactions")
-			return false
 	return true
 
 

@@ -7,6 +7,8 @@ const AssetCatalog = preload("res://scripts/ui/ui_asset_catalog.gd")
 const LogGuideScript = preload("res://scripts/ui/log_guide.gd")
 const LogTutorialCatalog = preload("res://scripts/ui/log_tutorial_catalog.gd")
 const ActionChoiceCardScene = preload("res://scenes/ui/action_choice_card.tscn")
+const AfterlifeChoiceScene = preload("res://scenes/ui/afterlife_choice.tscn")
+const AfterlifeTheme = preload("res://scripts/ui/afterlife_station_theme.gd")
 const AccessibilitySettingsScript = preload("res://scripts/ui/accessibility_settings.gd")
 const AnomalyManualDrawerScript = preload("res://scripts/ui/anomaly_manual_drawer.gd")
 const AfterlifeManualCatalog = preload("res://scripts/ui/afterlife_manual_catalog.gd")
@@ -106,6 +108,8 @@ func _build_ui() -> void:
 	_safe_frame = %SafeFrame
 	_location_preview = %LocationPreview
 	_is_afterlife_layout = GameState.get_current_episode_id() == "episode_001_afterlife_station"
+	if _is_afterlife_layout:
+		theme = AfterlifeTheme.create_theme()
 	var background := get_node_or_null("ArtLayer/Background") as TextureRect
 	if background != null:
 		_location_preview.texture = background.texture
@@ -162,6 +166,7 @@ func _build_ui() -> void:
 	%ContinueInvestigationButton.pressed.connect(func() -> void: _resolution_confirm_panel.visible = false)
 	%EnterRecoveryButton.pressed.connect(_start_resolution_attempt)
 	%LogUtilityButton.visible = true
+	%LogUtilityButton.pressed.connect(_toggle_record_drawer)
 	_manual_toggle_button.visible = false
 	%SettingsButton.pressed.connect(_show_settings)
 	%ReturnHqButton.pressed.connect(_show_return_confirmation)
@@ -219,10 +224,43 @@ func _build_afterlife_manual() -> void:
 	_clear_children(_manual_body)
 	var page: Dictionary = pages[_manual_page_index]
 	_manual_page_label.text = "저승역 / %s" % String(page.get("title", "조사 기록"))
-	_add_manual_section("관찰 포인트", String(page.get("observation", "")))
-	_add_manual_case_button(String(page.get("success_case_id", "")), "성공 사례")
-	_add_manual_case_button(String(page.get("failure_case_id", "")), "실패 사례")
-	_add_manual_section("대응 절차", String(page.get("procedure", "")))
+
+	var observation_title := _book_label("관찰 포인트", 14, Color("654d70"))
+	_manual_body.add_child(observation_title)
+	_manual_body.add_child(_book_label(String(page.get("observation", "")), 12, Color("302822")))
+
+	var spread := HBoxContainer.new()
+	spread.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	spread.add_theme_constant_override("separation", 20)
+	_manual_body.add_child(spread)
+	var success_page := VBoxContainer.new()
+	success_page.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	success_page.size_flags_stretch_ratio = 1.0
+	spread.add_child(success_page)
+	var failure_page := VBoxContainer.new()
+	failure_page.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	failure_page.size_flags_stretch_ratio = 1.0
+	spread.add_child(failure_page)
+	_add_manual_case_button_to(success_page, String(page.get("success_case_id", "")), "성공 기록")
+	_add_manual_case_button_to(failure_page, String(page.get("failure_case_id", "")), "실패 기록")
+
+	var procedure := _book_label("대응 절차  ·  %s" % String(page.get("procedure", "")), 12, Color("3b3028"))
+	_manual_body.add_child(procedure)
+	var tabs := HBoxContainer.new()
+	tabs.alignment = BoxContainer.ALIGNMENT_CENTER
+	tabs.add_theme_constant_override("separation", 3)
+	_manual_body.add_child(tabs)
+	for index in range(pages.size()):
+		var tab := Button.new()
+		tab.text = str(index + 1)
+		tab.custom_minimum_size = Vector2(30, 24)
+		tab.disabled = index == _manual_page_index
+		tab.pressed.connect(func() -> void:
+			_manual_page_index = index
+			_build_afterlife_manual()
+		)
+		_style_book_button(tab)
+		tabs.add_child(tab)
 	var nav := HBoxContainer.new()
 	nav.add_theme_constant_override("separation", 6)
 	_manual_body.add_child(nav)
@@ -234,6 +272,7 @@ func _build_afterlife_manual() -> void:
 		_manual_page_index = maxi(0, _manual_page_index - 1)
 		_build_afterlife_manual()
 	)
+	_style_book_button(previous)
 	nav.add_child(previous)
 	var next := Button.new()
 	next.text = "다음 페이지"
@@ -243,30 +282,48 @@ func _build_afterlife_manual() -> void:
 		_manual_page_index = mini(pages.size() - 1, _manual_page_index + 1)
 		_build_afterlife_manual()
 	)
+	_style_book_button(next)
 	nav.add_child(next)
 	_manual_status_label.text = "%d / %d · 읽은 사례 %d" % [_manual_page_index + 1, pages.size(), _read_manual_cases.size()]
 
 
-func _add_manual_section(title_text: String, body_text: String) -> void:
-	var title := Label.new()
-	title.text = title_text
-	title.add_theme_color_override("font_color", Color(0.78, 0.65, 0.88))
-	_manual_body.add_child(title)
-	var body := Label.new()
-	body.text = body_text
-	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_manual_body.add_child(body)
+func _book_label(text: String, font_size: int, color: Color) -> Label:
+	var label := Label.new()
+	label.text = text
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	label.add_theme_font_size_override("font_size", font_size)
+	label.add_theme_color_override("font_color", color)
+	return label
 
 
-func _add_manual_case_button(case_id: String, prefix: String) -> void:
+func _add_manual_case_button_to(parent: VBoxContainer, case_id: String, prefix: String) -> void:
 	if case_id.is_empty():
 		return
 	var data: Dictionary = AfterlifeManualCatalog.cases().get(case_id, {})
+	parent.add_child(_book_label(prefix, 14, Color("6b4d72") if prefix.begins_with("성공") else Color("823f3f")))
 	var button := Button.new()
-	button.text = "%s · %s%s" % [prefix, String(data.get("title", case_id)), " · 확인됨" if _read_manual_cases.has(case_id) else ""]
+	button.text = "%s%s" % [String(data.get("title", case_id)), "  ✓" if _read_manual_cases.has(case_id) else ""]
 	button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	button.pressed.connect(func() -> void: _open_manual_case(case_id))
-	_manual_body.add_child(button)
+	_style_book_button(button)
+	parent.add_child(button)
+	var summary := String(data.get("result", data.get("observation", "사례를 열어 비교 근거를 확인합니다.")))
+	parent.add_child(_book_label(summary, 11, Color("443830")))
+
+
+func _style_book_button(button: Button) -> void:
+	var normal := StyleBoxFlat.new()
+	normal.bg_color = Color(0.76, 0.69, 0.56, 0.34)
+	normal.border_color = Color("806f58")
+	normal.set_border_width_all(1)
+	normal.set_content_margin_all(5)
+	button.add_theme_stylebox_override("normal", normal)
+	button.add_theme_stylebox_override("hover", normal)
+	button.add_theme_stylebox_override("pressed", normal)
+	button.add_theme_color_override("font_color", Color("2e251f"))
+	button.add_theme_color_override("font_hover_color", Color("130f0c"))
+	button.add_theme_color_override("font_disabled_color", Color("655b51"))
+	button.add_theme_font_size_override("font_size", 11)
 
 
 func _open_manual_case(case_id: String) -> void:
@@ -288,13 +345,9 @@ func _open_manual_case(case_id: String) -> void:
 func _style_case_dialog(dialog: AcceptDialog) -> void:
 	var theme := Theme.new()
 	var window_style := StyleBoxFlat.new()
-	window_style.bg_color = Color(0.025, 0.035, 0.045, 0.98)
-	window_style.border_color = Color(0.34, 0.24, 0.46)
+	window_style.bg_color = Color("141116")
+	window_style.border_color = Color("8a7554")
 	window_style.set_border_width_all(2)
-	window_style.corner_radius_top_left = 6
-	window_style.corner_radius_top_right = 6
-	window_style.corner_radius_bottom_left = 6
-	window_style.corner_radius_bottom_right = 6
 	window_style.content_margin_left = 18
 	window_style.content_margin_right = 18
 	window_style.content_margin_top = 16
@@ -302,17 +355,15 @@ func _style_case_dialog(dialog: AcceptDialog) -> void:
 	theme.set_stylebox("embedded_border", "Window", window_style)
 	theme.set_stylebox("embedded_unfocused_border", "Window", window_style)
 	theme.set_stylebox("panel", "AcceptDialog", window_style)
-	theme.set_color("title_color", "Window", Color(0.82, 0.68, 0.9))
-	theme.set_color("font_color", "Label", Color(0.88, 0.9, 0.92))
-	theme.set_font_size("font_size", "Label", 17)
+	theme.default_font = load("res://assets/fonts/noto/NotoSansKR-VF.ttf")
+	theme.set_font("font", "Window", load("res://assets/fonts/noto/NotoSerifKR-VF.ttf"))
+	theme.set_color("title_color", "Window", Color("c5aa7d"))
+	theme.set_color("font_color", "Label", Color("ddd7cb"))
+	theme.set_font_size("font_size", "Label", 14)
 	var button_style := StyleBoxFlat.new()
 	button_style.bg_color = Color(0.06, 0.09, 0.12)
 	button_style.border_color = Color(0.25, 0.38, 0.44)
 	button_style.set_border_width_all(1)
-	button_style.corner_radius_top_left = 4
-	button_style.corner_radius_top_right = 4
-	button_style.corner_radius_bottom_left = 4
-	button_style.corner_radius_bottom_right = 4
 	theme.set_stylebox("normal", "Button", button_style)
 	theme.set_stylebox("hover", "Button", button_style)
 	theme.set_color("font_color", "Button", Color(0.88, 0.9, 0.92))
@@ -695,9 +746,15 @@ func _add_section(parent: Control, title_text: String, description_text: String 
 
 func _add_investigation_point(parent: Control, point: Dictionary) -> void:
 	var point_copy := point.duplicate(true)
-	var card := ActionChoiceCardScene.instantiate()
 	var is_unlocked := _is_point_unlocked(point)
 	var label := String(point.get("label", "조사 포인트"))
+	if _is_afterlife_layout:
+		var compact := AfterlifeChoiceScene.instantiate()
+		parent.add_child(compact)
+		compact.configure(String(point.get("id", label)), parent.get_child_count(), label, is_unlocked, false, "" if is_unlocked else String(point.get("locked_text", "조건 부족")))
+		compact.choice_requested.connect(func(_action_id: String) -> void: _inspect_point(point_copy))
+		return
+	var card := ActionChoiceCardScene.instantiate()
 	parent.add_child(card)
 	card.configure({
 		"id": String(point.get("id", label)),
@@ -880,16 +937,18 @@ func _render_reasoning_choices() -> void:
 		return
 	_clear_children(_field_choice_box)
 	var choices: Array = _reasoning_definition.get("choices", [])
+	var ordinal := 0
 	for value in choices:
 		if typeof(value) != TYPE_DICTIONARY:
 			continue
 		var choice: Dictionary = (value as Dictionary).duplicate(true)
+		ordinal += 1
 		var choice_id := String(choice.get("id", ""))
 		var failure_case_id := String(choice.get("failure_case_id", ""))
 		var support_eliminated := String(_support_eliminated_choices.get(String(_reasoning_point.get("id", "")), "")) == choice_id
 		var eliminated := (not failure_case_id.is_empty() and _read_manual_cases.has(failure_case_id)) or support_eliminated
 		var attempted := _attempted_reasoning_choices.has("%s:%s" % [String(_reasoning_point.get("id", "")), choice_id])
-		var card := ActionChoiceCardScene.instantiate()
+		var card := AfterlifeChoiceScene.instantiate()
 		_field_choice_box.add_child(card)
 		var reason := ""
 		if support_eliminated:
@@ -899,16 +958,15 @@ func _render_reasoning_choices() -> void:
 			reason = "제외 근거: %s와 동일한 조건" % String(case_data.get("title", "실패 사례"))
 		elif attempted:
 			reason = "현장 반응으로 부적합이 확인됨"
-		card.configure({
-			"id": choice_id,
-			"title": String(choice.get("title", "판단 후보")),
-			"enabled": not eliminated and not attempted,
-			"danger": String(choice.get("kind", "")) == "risk" and not eliminated,
-			"state_label": "위험 가능" if String(choice.get("kind", "")) == "risk" and not eliminated else ("사례로 제외됨" if eliminated else ""),
-			"elimination_reason": reason,
-			"meta": "현재 관찰과 기록을 비교해 판단"
-		})
-		card.action_requested.connect(func(_action_id: String) -> void: _select_reasoning_choice(choice))
+		card.configure(
+			choice_id,
+			ordinal,
+			String(choice.get("title", "판단 후보")),
+			not eliminated and not attempted,
+			String(choice.get("kind", "")) == "risk" and not eliminated,
+			reason
+		)
+		card.choice_requested.connect(func(_action_id: String) -> void: _select_reasoning_choice(choice))
 
 
 func _select_reasoning_choice(choice: Dictionary) -> void:
@@ -932,6 +990,8 @@ func _select_reasoning_choice(choice: Dictionary) -> void:
 		if protected:
 			reason += " 강이준이 첫 충격을 완화했지만 실패 기록은 유지됩니다."
 		GameState.apply_story_effects({"anomaly_risk_delta": 2 if protected else 5, "mental_stamina_delta": -1 if protected else -4})
+		_result_label.text = "위험 사례 기록\n%s" % reason
+		_result_toast.visible = true
 	GameState.record_recovery_pattern_outcome("afterlife_reasoning:%s" % point_id, choice_id, false, reason)
 	GameState.save_game()
 	_field_dialogue_label.text = "%s\n\n%s" % [String(_reasoning_definition.get("observation", "")), reason]
@@ -1156,7 +1216,7 @@ func _set_ui_mode(mode: String) -> void:
 		_mode_label.text = mode
 	var choice_scroll := get_node_or_null("%FieldChoiceScroll") as ScrollContainer
 	if choice_scroll != null:
-		choice_scroll.visible = mode == "FIELD_CHOICES"
+		choice_scroll.visible = mode == "FIELD_CHOICES" or (_is_afterlife_layout and mode == "POINT_PICKER")
 	var uses_method_picker := mode == "METHOD_PICKER"
 	if _point_method_dock != null:
 		_point_method_dock.visible = true
@@ -1222,6 +1282,33 @@ func _render_investigation_points() -> void:
 		empty_label.text = "표시할 조사 지점을 불러오지 못했습니다. 조사 선택으로 돌아가거나 HQ로 복귀할 수 있습니다."
 		empty_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		_points_box.add_child(empty_label)
+	if _is_afterlife_layout:
+		_render_afterlife_field_index()
+
+
+func _render_afterlife_field_index() -> void:
+	_field_speaker_label.text = "현장 기록"
+	_field_dialogue_label.text = "조사 지점을 선택하십시오. 잠긴 기록은 선행 관찰을 확보하면 다시 확인할 수 있습니다."
+	_field_next_button.visible = false
+	_clear_children(_field_choice_box)
+	var ordinal := 0
+	for point in _get_investigation_points():
+		if typeof(point) != TYPE_DICTIONARY:
+			continue
+		ordinal += 1
+		var point_copy: Dictionary = point.duplicate(true)
+		var unlocked := _is_point_unlocked(point)
+		var card := AfterlifeChoiceScene.instantiate()
+		_field_choice_box.add_child(card)
+		card.configure(
+			String(point.get("id", "point_%d" % ordinal)),
+			ordinal,
+			String(point.get("label", "조사 지점")),
+			unlocked,
+			false,
+			"" if unlocked else String(point.get("locked_text", "선행 기록 필요"))
+		)
+		card.choice_requested.connect(func(_action_id: String) -> void: _inspect_point(point_copy))
 
 
 func _format_delta(value: int) -> String:
