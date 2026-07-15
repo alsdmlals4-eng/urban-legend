@@ -122,7 +122,7 @@ theme_override_constants/separation = 8
 
 [node name="RepresentativeAgentLabel" type="Label" parent="RecoveryHud/StatusRow"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(280, 0)
+custom_minimum_size = Vector2(210, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "대표 요원"
@@ -152,7 +152,8 @@ layout_mode = 2
 
 [node name="ClueSummaryLabel" type="Label" parent="RecoveryHud/StatusRow"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(200, 0)
+visible = false
+custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 text = "핵심 단서"
 autowrap_mode = 3
@@ -212,7 +213,7 @@ theme_override_constants/separation = 10
 
 [node name="RecoveryLogHost" type="VBoxContainer" parent="ActionDock/Content/BriefingRow"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(300, 0)
+custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -232,6 +233,7 @@ layout_mode = 2
 text = "예측 기록"
 autowrap_mode = 3
 theme_override_font_sizes/font_size = 13
+visible = false
 
 [node name="ResponseScroll" type="ScrollContainer" parent="ActionDock/Content"]
 custom_minimum_size = Vector2(0, 96)

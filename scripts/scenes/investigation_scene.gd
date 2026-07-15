@@ -9,6 +9,7 @@ const LogTutorialCatalog = preload("res://scripts/ui/log_tutorial_catalog.gd")
 const ActionChoiceCardScene = preload("res://scenes/ui/action_choice_card.tscn")
 const TeamStatusChipScene = preload("res://scenes/ui/team_status_chip.tscn")
 const AccessibilitySettingsScript = preload("res://scripts/ui/accessibility_settings.gd")
+const AnomalyManualDrawerScript = preload("res://scripts/ui/anomaly_manual_drawer.gd")
 
 const FALLBACK_INVESTIGATION_POINTS: Array[Dictionary] = [
 	{
@@ -64,6 +65,7 @@ var _method_column: VBoxContainer
 var _manual_panel: PanelContainer
 var _manual_toggle_button: Button
 var _manual_visible_by_user := false
+var _manual_drawer: AnomalyManualDrawer
 var _result_toast: PanelContainer
 var _case_summary_label: Label
 var _mode_label: Label
@@ -130,16 +132,26 @@ func _build_ui() -> void:
 	_narrative_label = _field_dialogue_label
 	_result_panel = _result_toast
 
-	_record_button.pressed.connect(_toggle_record_drawer)
+	_record_button.text = "괴이 매뉴얼"
 	_resolution_attempt_button.pressed.connect(_show_resolution_confirm_panel)
 	_field_next_button.pressed.connect(_advance_field_dialogue)
 	%ContinueInvestigationButton.pressed.connect(func() -> void: _resolution_confirm_panel.visible = false)
 	%EnterRecoveryButton.pressed.connect(_start_resolution_attempt)
-	%LogUtilityButton.pressed.connect(_toggle_record_drawer)
-	_manual_toggle_button.pressed.connect(_toggle_manual_panel)
+	%LogUtilityButton.visible = false
+	_manual_toggle_button.visible = false
 	%SettingsButton.pressed.connect(_show_settings)
 	%ReturnHqButton.pressed.connect(_show_return_confirmation)
 	_return_field_button.pressed.connect(_return_to_field_choice)
+	_manual_panel.visible = false
+	_manual_drawer = AnomalyManualDrawerScript.new()
+	add_child(_manual_drawer)
+	_manual_drawer.anchor_left = 0.70
+	_manual_drawer.anchor_top = 0.20
+	_manual_drawer.anchor_right = 0.986
+	_manual_drawer.anchor_bottom = 0.64
+	_manual_drawer.bind_toggle_button(_record_button)
+	_manual_drawer.drawer_opened.connect(_refresh_manual_layout)
+	_manual_drawer.drawer_closed.connect(_refresh_manual_layout)
 
 	_log_guide = LogGuideScript.new()
 	_log_guide.set_compact(true)
@@ -152,6 +164,7 @@ func _build_ui() -> void:
 	_agent_stage.visible = false
 
 	_render_investigation_points()
+	_refresh_manual_drawer(false)
 	_show_current_field_node()
 
 
@@ -329,6 +342,7 @@ func _add_field_dialogue(parent: Control) -> void:
 
 func _show_current_field_node() -> void:
 	_field_node = GameState.get_current_field_node()
+	_refresh_manual_drawer(false)
 	if _field_node.is_empty():
 		_field_dialogue_label.text = "현장 기록을 불러오지 못했습니다. 기존 조사 포인트를 확인하세요."
 		_field_next_button.visible = false
@@ -488,6 +502,7 @@ func _select_field_choice(choice: Dictionary) -> void:
 	_field_next_button.text = "다음 조사"
 	_field_next_button.visible = not _pending_next_field_node_id.is_empty()
 	_refresh_case_status()
+	_refresh_manual_drawer(true)
 
 
 func _refresh_record_learning() -> void:
@@ -871,20 +886,48 @@ func _set_ui_mode(mode: String) -> void:
 		_method_column.visible = uses_method_picker
 	if _dialogue_dock != null:
 		_dialogue_dock.visible = not uses_method_picker
-		_dialogue_dock.anchor_right = 0.69 if _manual_visible_by_user and not uses_method_picker else 0.986
-	if _manual_panel != null:
-		_manual_panel.visible = _manual_visible_by_user and not uses_method_picker
-	if _manual_toggle_button != null:
-		_manual_toggle_button.visible = not uses_method_picker
-		_manual_toggle_button.text = "매뉴얼 닫기" if _manual_visible_by_user else "매뉴얼 열기"
+	if uses_method_picker and _manual_drawer != null and _manual_drawer.is_open():
+		_manual_drawer.close_drawer()
+	_refresh_manual_layout()
 	if _result_toast != null and mode != "RESULT":
 		_result_toast.visible = false
 
 
 func _toggle_manual_panel() -> void:
-	_manual_visible_by_user = not _manual_visible_by_user
-	var current_mode := _mode_label.text if _mode_label != null else "FIELD_CHOICES"
-	_set_ui_mode(current_mode)
+	if _manual_drawer != null:
+		_manual_drawer.toggle()
+
+
+func _refresh_manual_layout() -> void:
+	if _dialogue_dock == null:
+		return
+	var uses_method_picker := _mode_label != null and _mode_label.text == "METHOD_PICKER"
+	_dialogue_dock.anchor_right = 0.69 if _manual_drawer != null and _manual_drawer.is_open() and not uses_method_picker else 0.986
+
+
+func _refresh_manual_drawer(mark_new: bool) -> void:
+	if _manual_drawer == null:
+		return
+	var clue_lines: Array[String] = []
+	for clue in GameState.get_clues():
+		if typeof(clue) == TYPE_DICTIONARY and bool(clue.get("collected", false)):
+			clue_lines.append("- %s" % String(clue.get("title", "확보 단서")))
+	if clue_lines.is_empty():
+		clue_lines.append("- 아직 확보한 단서가 없습니다.")
+	var learning_lines: Array[String] = []
+	for learning in GameState.get_recovery_pattern_learning().values():
+		if typeof(learning) == TYPE_DICTIONARY and not bool(learning.get("correct", false)):
+			learning_lines.append("- %s" % String(learning.get("reason", "위험 사례가 기록되었습니다.")))
+	if learning_lines.is_empty():
+		learning_lines.append("- 아직 기록된 위험 사례가 없습니다.")
+	_manual_drawer.set_sections([
+		{"title": "현재 규칙", "text": String(_field_node.get("title", GameState.get_current_episode_title()))},
+		{"title": "확보 단서", "text": "\n".join(clue_lines)},
+		{"title": "위험 사례·오대응 학습", "text": "\n".join(learning_lines)},
+		{"title": "요원 지원", "text": GameState.get_selected_agent_summary()}
+	])
+	if mark_new:
+		_manual_drawer.mark_new_entries()
 
 
 func _render_investigation_points() -> void:

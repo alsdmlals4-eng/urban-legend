@@ -151,15 +151,23 @@ func _add_section(parent: Control, title_text: String, description_text: String 
 	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	parent.add_child(panel)
 
+	var frame := VBoxContainer.new()
+	frame.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	frame.add_theme_constant_override("separation", 8)
+	panel.add_child(frame)
+	var should_collapse := title_text in ["사건 보고서", "이번 판단의 근거", "저장 / 이어하기 상태"]
+	var toggle := Button.new()
+	toggle.text = title_text
+	toggle.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	frame.add_child(toggle)
 	var content := VBoxContainer.new()
 	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	content.add_theme_constant_override("separation", 8)
-	panel.add_child(content)
-
-	var title := Label.new()
-	title.text = title_text
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	content.add_child(title)
+	content.visible = not should_collapse
+	frame.add_child(content)
+	toggle.pressed.connect(func() -> void:
+		content.visible = not content.visible
+	)
 
 	if not description_text.is_empty():
 		content.add_child(_make_label(description_text))

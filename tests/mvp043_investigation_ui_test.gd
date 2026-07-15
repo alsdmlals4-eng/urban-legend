@@ -32,8 +32,8 @@ func _run() -> void:
 	var scene := current_scene
 	var point_dock := scene.find_child("PointMethodDock", true, false) as Control
 	var dialogue_dock := scene.find_child("DialogueDock", true, false) as Control
-	var manual_panel := scene.find_child("ManualPanel", true, false) as Control
-	var manual_toggle_button := scene.find_child("ManualToggleButton", true, false) as Button
+	var manual_panel := scene.find_child("AnomalyManualDrawer", true, false) as Control
+	var manual_toggle_button := scene.find_child("RecordButton", true, false) as Button
 	var points_box := scene.find_child("PointsBox", true, false) as Container
 	var return_field_button := scene.find_child("ReturnFieldButton", true, false) as Button
 	_expect(point_dock != null and point_dock.visible, "POINT_PICKER should show the point method dock")

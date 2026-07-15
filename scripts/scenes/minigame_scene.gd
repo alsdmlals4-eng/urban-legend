@@ -5,6 +5,7 @@ const ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")
 const RhythmGame = preload("res://scripts/minigames/rhythm_timing_game.gd")
 const RainDodgeGame = preload("res://scripts/minigames/rain_dodge_game.gd")
 const RouteRestoreGame = preload("res://scripts/minigames/route_restore_game.gd")
+const AnomalyManualDrawerScript = preload("res://scripts/ui/anomaly_manual_drawer.gd")
 
 var _minigame: Dictionary = {}
 var _equipment_hint: Dictionary = {}
@@ -17,6 +18,8 @@ var _result_label: Label
 var _progress_bar: ProgressBar
 var _return_button: Button
 var _game_control: Control
+var _manual_drawer: AnomalyManualDrawer
+var _manual_toggle_button: Button
 
 
 func _ready() -> void:
@@ -76,6 +79,7 @@ func _build_ui() -> void:
 	root.add_theme_constant_override("separation", 12)
 	margin.add_child(root)
 	_add_navigation(root)
+	_build_manual_drawer()
 
 	var eyebrow := Label.new()
 	eyebrow.text = "FIELD VERIFICATION  /  %s" % GameState.get_current_episode_title()
@@ -202,6 +206,8 @@ func _on_game_completed(successful: bool, details: Dictionary) -> void:
 	_result_label.text = _make_result_text(successful, saved_details)
 	_return_button.visible = true
 	_return_button.grab_focus()
+	if _manual_drawer != null:
+		_manual_drawer.mark_new_entries()
 
 
 func _make_result_text(successful: bool, details: Dictionary) -> String:
@@ -313,10 +319,40 @@ func _return_to_flow() -> void:
 
 
 func _add_navigation(parent: Control) -> void:
+	var row := HBoxContainer.new()
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", 8)
+	parent.add_child(row)
 	var notice := Label.new()
 	notice.text = "현장 검증 중에는 저장할 수 없습니다. 종료하거나 불러오면 이 미니게임의 처음부터 다시 시작합니다."
 	notice.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	notice.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	notice.add_theme_font_size_override("font_size", 13)
 	notice.add_theme_color_override("font_color", Color(0.82, 0.68, 0.42))
-	parent.add_child(notice)
+	notice.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(notice)
+	_manual_toggle_button = Button.new()
+	_manual_toggle_button.text = "괴이 매뉴얼"
+	row.add_child(_manual_toggle_button)
+
+
+func _build_manual_drawer() -> void:
+	_manual_drawer = AnomalyManualDrawerScript.new()
+	add_child(_manual_drawer)
+	_manual_drawer.anchor_left = 0.67
+	_manual_drawer.anchor_top = 0.14
+	_manual_drawer.anchor_right = 0.985
+	_manual_drawer.anchor_bottom = 0.86
+	_manual_drawer.set_sections([
+		{"title": "검증 규칙", "text": String(_minigame.get("rules_text", "공식 기록과 현재 경로를 대조합니다."))},
+		{"title": "현재 기록", "text": String(_minigame.get("description", "현장 검증을 진행합니다."))},
+		{"title": "요원 지원", "text": "요원 지원과 결과 상세는 검증이 끝난 뒤 기록에 반영됩니다."}
+	])
+	_manual_drawer.bind_toggle_button(_manual_toggle_button)
+	_manual_drawer.drawer_opened.connect(_set_manual_input_lock.bind(true))
+	_manual_drawer.drawer_closed.connect(_set_manual_input_lock.bind(false))
+
+
+func _set_manual_input_lock(locked: bool) -> void:
+	if _game_control != null:
+		_game_control.set_process_unhandled_input(not locked)

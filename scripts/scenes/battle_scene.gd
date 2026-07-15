@@ -9,6 +9,7 @@ const LogGuideScript = preload("res://scripts/ui/log_guide.gd")
 const LogTutorialCatalog = preload("res://scripts/ui/log_tutorial_catalog.gd")
 const ActionChoiceCardScene = preload("res://scenes/ui/action_choice_card.tscn")
 const TeamStatusChipScene = preload("res://scenes/ui/team_status_chip.tscn")
+const AnomalyManualDrawerScript = preload("res://scripts/ui/anomaly_manual_drawer.gd")
 
 const BASE_ANOMALY_STABILITY := 0
 const BASE_RECOVERY_THRESHOLD := 70
@@ -49,6 +50,8 @@ var _response_box: GridContainer
 var _turn_auto_success_agents: Dictionary = {}
 var _turn_locked := false
 var _log_guide: LogGuide
+var _manual_drawer: AnomalyManualDrawer
+var _manual_prediction_label: Label
 
 
 func _ready() -> void:
@@ -92,17 +95,32 @@ func _build_scene_ui() -> void:
 	var initial_stage := SceneVisuals.apply_anomaly(_anomaly_image, GameState.get_anomaly_risk())
 	_anomaly_stage_label.text = "관측 위험 단계 %s · %s" % [initial_stage, _make_resolution_phase_text()]
 	_auto_effect_label.text = _make_clue_summary()
-	_auto_effect_label.tooltip_text = _make_auto_effect_text()
+	_auto_effect_label.tooltip_text = "괴이 매뉴얼에서 확보 단서와 회수 효과를 확인합니다."
 	_recover_button.pressed.connect(_recover_anomaly_core)
 	%RepresentativeSwitchButton.pressed.connect(_switch_representative)
-	%ClueDrawerButton.pressed.connect(_toggle_clue_drawer)
-
-	var clue_content: VBoxContainer = %ClueDrawerContent
-	clue_content.add_child(_make_label(_make_auto_effect_text()))
+	(%ClueDrawer as PanelContainer).visible = false
+	_manual_drawer = AnomalyManualDrawerScript.new()
+	add_child(_manual_drawer)
+	_manual_drawer.anchor_left = 0.66
+	_manual_drawer.anchor_top = 0.12
+	_manual_drawer.anchor_right = 0.985
+	_manual_drawer.anchor_bottom = 0.60
+	_manual_drawer.set_sections([
+		{"title": "회수 자동 반영 단서", "text": _make_auto_effect_text()},
+		{"title": "요원 지원", "text": "대표 교체와 지원 행동은 현재 전조를 확인한 뒤 선택할 수 있습니다."}
+	])
+	_manual_drawer.bind_toggle_button(%ClueDrawerButton)
+	_manual_prediction_label = _make_label("")
+	_manual_drawer.add_detail_control(_manual_prediction_label)
 	_evidence_label = _make_label("")
-	clue_content.add_child(_evidence_label)
-	_add_agent_recovery_support_actions(clue_content)
-	_add_navigation(clue_content)
+	_manual_drawer.add_detail_control(_evidence_label)
+	# 기존 회수 지원과 이동 조작은 화면 기본 정보에서는 숨기되, 기능을 제거하지 않고
+	# 상세 매뉴얼 안에서 계속 제공한다.
+	var manual_actions := VBoxContainer.new()
+	manual_actions.add_theme_constant_override("separation", 6)
+	_manual_drawer.add_detail_control(manual_actions)
+	_add_agent_recovery_support_actions(manual_actions)
+	_add_navigation(manual_actions)
 
 	_log_guide = LogGuideScript.new()
 	_log_guide.set_compact(true)
@@ -114,16 +132,8 @@ func _build_scene_ui() -> void:
 
 func _make_clue_summary() -> String:
 	if _active_effects.is_empty():
-		return "핵심 단서 없음\n부족 조건: 현장 규칙을 더 분석해야 합니다."
-	var names: Array[String] = []
-	for effect in _active_effects:
-		if typeof(effect) == TYPE_DICTIONARY:
-			names.append(String(effect.get("clue_title", "이름 없는 단서")))
-	return "핵심 단서 %d개\n%s\n회수 기준: 안정도 %d 이상" % [
-		_active_effects.size(),
-		", ".join(names),
-		_recovery_threshold
-	]
+		return "핵심 단서 없음 · 매뉴얼 확인"
+	return "핵심 단서 %d개 · 매뉴얼 확인" % _active_effects.size()
 
 
 func _toggle_clue_drawer() -> void:
@@ -315,6 +325,13 @@ func _find_clue(clue_id: String) -> Dictionary:
 func _refresh_recovery_evidence() -> void:
 	if _evidence_label != null:
 		_evidence_label.text = _make_recovery_evidence_text()
+	if _manual_drawer != null:
+		_manual_drawer.mark_new_entries()
+
+
+func _refresh_manual_prediction() -> void:
+	if _manual_prediction_label != null:
+		_manual_prediction_label.text = "예측·지원 상세\n%s" % _prediction_summary_label.text
 
 
 func _make_minigame_recovery_text() -> String:
@@ -440,6 +457,7 @@ func _begin_recovery_turn() -> void:
 		})
 		card.tooltip_text = String(response_copy.get("summary", "전조와 확보 단서를 근거로 대응합니다."))
 		card.action_requested.connect(func(_action_id: String) -> void: _select_pattern_response(response_copy))
+	_refresh_manual_prediction()
 	_update_battle_view(_make_start_message())
 
 
@@ -902,11 +920,9 @@ func _refresh_representative_agent() -> void:
 			GameState.get_agent_max_mental(rep_id),
 			" [방호]" if GameState.has_protection(rep_id) else ""
 		]
-	_representative_agent_label.text = "대표 요원: %s [%s]%s\n팀: %s" % [
+	_representative_agent_label.text = "대표: %s%s" % [
 		String(representative.get("name", representative.get("id", "요원"))),
-		String(representative.get("temperament_label", representative.get("temperament", ""))),
 		hp_info,
-		GameState.get_selected_agent_summary()
 	]
 
 

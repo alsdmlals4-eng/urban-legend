@@ -5,6 +5,7 @@ const SceneVisuals = preload("res://scripts/ui/scene_presentation.gd")
 const AssetCatalog = preload("res://scripts/ui/ui_asset_catalog.gd")
 const ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")
 const RuntimeEditor = preload("res://scripts/ui/runtime_ui_editor.gd")
+const AnomalyManualDrawerScript = preload("res://scripts/ui/anomaly_manual_drawer.gd")
 
 const FALLBACK_LINES: Array[Dictionary] = [
 	{"speaker": "기록국 관제", "text": "이 역은 지도에도, 기록국 데이터에도 남아 있지 않아요.", "expression": "default"},
@@ -34,6 +35,7 @@ var _agent_strip: HBoxContainer
 var _dialogue_panel: PanelContainer
 var _support_panel: PanelContainer
 var _runtime_editor: RuntimeUiEditor
+var _manual_drawer: AnomalyManualDrawer
 
 
 func _ready() -> void:
@@ -130,9 +132,6 @@ func _build_vn_ui() -> void:
 	command_row.add_child(investigation_button)
 	var support_button := Button.new()
 	support_button.text = "기록국 지원"
-	support_button.pressed.connect(func() -> void:
-		_support_panel.visible = not _support_panel.visible
-	)
 	command_row.add_child(support_button)
 
 	_support_panel = PanelContainer.new()
@@ -166,6 +165,15 @@ func _build_vn_ui() -> void:
 	_agent_reaction_label = Label.new()
 	_agent_reaction_label.visible = false
 	add_child(_agent_reaction_label)
+	_support_panel.visible = false
+	_manual_drawer = AnomalyManualDrawerScript.new()
+	add_child(_manual_drawer)
+	_manual_drawer.anchor_left = 0.66
+	_manual_drawer.anchor_top = 0.10
+	_manual_drawer.anchor_right = 0.97
+	_manual_drawer.anchor_bottom = 0.64
+	_manual_drawer.bind_toggle_button(support_button)
+	_refresh_manual_drawer(false)
 
 
 func _make_vn_label(text: String) -> Label:
@@ -366,6 +374,7 @@ func _show_line() -> void:
 	_next_button.disabled = false
 	_next_button.text = "다음 대사"
 	_refresh_agent_reactions()
+	_refresh_manual_drawer(false)
 
 
 func _get_line_text(line: Dictionary) -> String:
@@ -457,6 +466,7 @@ func _select_choice(choice: Dictionary) -> void:
 	_refresh_clue_status()
 	_refresh_condition_label()
 	_refresh_agent_reactions()
+	_refresh_manual_drawer(true)
 	GameState.save_game()
 
 
@@ -508,6 +518,7 @@ func _show_next_hint() -> void:
 	else:
 		_hint_label.text += "\n힌트 상태: 새로 확인함"
 	_refresh_clue_status()
+	_refresh_manual_drawer(true)
 
 
 func _refresh_clue_status() -> void:
@@ -565,6 +576,31 @@ func _refresh_agent_reactions() -> void:
 		])
 
 	_agent_reaction_label.text = "\n\n".join(lines)
+
+
+func _refresh_manual_drawer(mark_new: bool) -> void:
+	if _manual_drawer == null:
+		return
+	var clues: Array[String] = []
+	for clue in GameState.get_clues():
+		if typeof(clue) == TYPE_DICTIONARY and bool(clue.get("collected", false)):
+			clues.append("- %s" % String(clue.get("title", "확보 단서")))
+	if clues.is_empty():
+		clues.append("- 아직 확보한 단서가 없습니다.")
+	var hints: Array[String] = []
+	for hint in GameState.get_available_hints():
+		if typeof(hint) == TYPE_DICTIONARY:
+			hints.append("- %s" % String(hint.get("text", "")))
+	if hints.is_empty():
+		hints.append("- 현재 확인 가능한 보조 기록이 없습니다.")
+	_manual_drawer.set_sections([
+		{"title": "현재 규칙", "text": String(_dialogue_node.get("title", GameState.get_current_episode_title()))},
+		{"title": "확보 단서", "text": "\n".join(clues)},
+		{"title": "기록국 지원", "text": "\n".join(hints)},
+		{"title": "투입 요원", "text": GameState.get_selected_agent_summary()}
+	])
+	if mark_new:
+		_manual_drawer.mark_new_entries()
 
 
 func _make_choice_result_text(choice: Dictionary) -> String:
