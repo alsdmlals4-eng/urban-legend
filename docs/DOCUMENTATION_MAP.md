@@ -66,7 +66,7 @@
 | 최신 외부 사례 비교가 필요한 새 판단 | `BENCHMARKING_REFERENCE_GUIDE.md`와 필요한 최신 1차 근거 |
 | 저장·진행·일정·위험·경제 | 관련 코드, `MVP037_CAMPAIGN_CORE.md`, `MVP038_SEQUENTIAL_CAMPAIGN.md` |
 | 실제 MVP 시작·종료 절차 | `planning/ROADMAP_AND_HANDOFF.md`, `MVP_WORKFLOW_CHECKLIST.md` |
-| Base 공용 규칙·기획 지식 승격 | `AI_SHARED_WORK_RULES.md`, `BASE_RULES_VERSION.md`, Base `docs/planning/` |
+| Base 공용 규칙·기획 지식 승격 | `AI_SHARED_WORK_RULES.md`, `BASE_RULES_VERSION.md`, Base `docs/knowledge/` |
 | 계정 교대·저사용량 checkpoint | `CURRENT_HANDOFF.md`, `CODEX_ACCOUNT_HANDOFF.md` |
 | 과거 결정·완료 근거 | `archive/README.md`에서 필요한 파일 하나만 선택 |
 
@@ -114,7 +114,7 @@ ZIP/00_README_코덱스_전달사항.md
 - Base로 보낼 것: 반복 가능한 기획 방법, 조사 방식, 아트·연출 판단 프레임, 품질 체크, 도구·스킬 선택 기준, 익명화된 사례 카드
 - 프로젝트에 남길 것: 괴이 기록국의 세계관, 캐릭터명, 사건 규칙, 수치, 에셋 경로, 저장 구조, 실제 QA 결과
 
-Base에 반영한 뒤 `docs/BASE_RULES_VERSION.md`에 기준 커밋과 동기화 상태를 기록한다.
+Base의 canonical 공용 지식 위치는 `docs/knowledge/`다. Base에 반영한 뒤 `docs/BASE_RULES_VERSION.md`에 기준 커밋과 동기화 상태를 기록한다.
 
 ## 상시 동기화
 
