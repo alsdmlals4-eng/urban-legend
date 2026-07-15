@@ -98,7 +98,7 @@
 - 기존 사례 재사용: `docs/planning/REFERENCE_CASES.md`
 - 최신 외부 사례 비교: `docs/BENCHMARKING_REFERENCE_GUIDE.md`
 - 계정 교대·체크포인트: `docs/CURRENT_HANDOFF.md`, `docs/CODEX_ACCOUNT_HANDOFF.md`
-- 공용 기획 방법 승격: Base `docs/planning/`, `docs/BASE_RULES_VERSION.md`
+- 공용 기획 방법 승격: Base `docs/knowledge/`, `docs/BASE_RULES_VERSION.md`
 
 작업 조건이 없으면 해당 문서를 읽지 않는다.
 
