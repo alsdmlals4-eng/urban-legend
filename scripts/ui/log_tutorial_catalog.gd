@@ -6,7 +6,7 @@ const TUTORIALS := {
 	"main_welcome": {
 		"expression": "normal",
 		"lines": [
-			{"text": "괴담기록국 현장 지원 AI, 로그입니다. 새 수사는 사건과 투입 요원을 준비하는 단계부터 시작합니다.", "expression": "normal"},
+			{"text": "괴이 기록국 관제 AI, 기록관 아카입니다. 새 수사는 사건과 투입 요원을 준비하는 단계부터 시작합니다.", "expression": "normal"},
 			{"text": "목표는 괴이를 처치하는 것이 아니라, 확인한 규칙을 기록하고 안전하게 회수하는 것입니다.", "expression": "focus"}
 		],
 		"repeat_hint": "새 수사는 준비 화면에서 시작하며, 저장 기록은 이어하기로 불러옵니다."

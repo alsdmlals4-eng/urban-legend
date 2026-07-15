@@ -35,6 +35,21 @@ func _run() -> void:
 			await process_frame
 		_verify_layout(current_scene, viewport_size)
 
+	var field_choice_box := current_scene.find_child("FieldChoiceBox", true, false) as Container
+	_expect(field_choice_box != null and field_choice_box.get_child_count() == 0, "POINT_PICKER must not duplicate the left location list in the center")
+	var team_button := current_scene.find_child("TeamStatusButton", true, false) as Button
+	_expect(team_button != null, "afterlife investigation should expose the shared team status button")
+	if team_button != null:
+		team_button.emit_signal("pressed")
+		await process_frame
+		var popover := current_scene.find_child("TeamStatusPopover", true, false) as Control
+		_expect(popover != null and popover.visible, "team status should open a popover")
+		if popover != null:
+			var member_list := popover.find_child("MemberList", true, false) as Container
+			_expect(member_list != null and member_list.get_child_count() == maxi(1, game_state.get_selected_agents().size()), "team status should list every deployed protagonist/support or an explicit empty state")
+			popover.call("close")
+	_expect(not _visible_text_contains(current_scene, "LOG") and not _visible_text_contains(current_scene, "로그"), "player-facing investigation UI should use Aka instead of LOG/log")
+
 	var return_field_button := current_scene.find_child("ReturnFieldButton", true, false) as Button
 	_expect(return_field_button != null and return_field_button.visible, "afterlife point picker should always offer a return path")
 	if return_field_button != null:
@@ -72,6 +87,13 @@ func _inside_viewport(control: Control, viewport_rect: Rect2) -> bool:
 		return false
 	var rect := control.get_global_rect()
 	return rect.size.x > 0.0 and rect.size.y > 0.0 and viewport_rect.encloses(rect)
+
+
+func _visible_text_contains(node: Node, needle: String) -> bool:
+	for child in node.find_children("*", "Label", true, false) + node.find_children("*", "Button", true, false):
+		if child is Control and (child as Control).is_visible_in_tree() and String(child.get("text")).contains(needle):
+			return true
+	return false
 
 
 func _expect(condition: bool, message: String) -> void:

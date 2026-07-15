@@ -4,6 +4,7 @@ extends Control
 const ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")
 const AfterlifeTheme = preload("res://scripts/ui/afterlife_station_theme.gd")
 const AfterlifeHeaderScene = preload("res://scenes/ui/afterlife_header.tscn")
+const TeamStatusPopoverScene = preload("res://scenes/ui/team_status_popover.tscn")
 const RhythmGame = preload("res://scripts/minigames/rhythm_timing_game.gd")
 const RainDodgeGame = preload("res://scripts/minigames/rain_dodge_game.gd")
 const RouteRestoreGame = preload("res://scripts/minigames/route_restore_game.gd")
@@ -202,6 +203,11 @@ func _build_route_restore_ui() -> void:
 	var header := AfterlifeHeaderScene.instantiate() as AfterlifeHeader
 	header.configure("저승역 · 최종 검증", "팀 상태")
 	root.add_child(header)
+	var team_popover := TeamStatusPopoverScene.instantiate() as TeamStatusPopover
+	add_child(team_popover)
+	team_popover.set_anchors_preset(Control.PRESET_CENTER)
+	team_popover.position = Vector2(-180, -110)
+	header.team_requested.connect(func() -> void: team_popover.open(_make_team_status_entries()))
 
 	var stage_bar := PanelContainer.new()
 	stage_bar.custom_minimum_size.y = 36
@@ -300,6 +306,16 @@ func _add_route_panel(parent: Control, title_text: String, ratio: float) -> VBox
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	content.add_child(title)
 	return content
+
+
+func _make_team_status_entries() -> Array:
+	var entries: Array = []
+	for agent in GameState.get_selected_agents():
+		if typeof(agent) != TYPE_DICTIONARY:
+			continue
+		var agent_id := String(agent.get("id", ""))
+		entries.append({"name": String(agent.get("name", agent_id)), "hp": GameState.get_agent_current_hp(agent_id), "max_hp": GameState.get_agent_max_hp(agent_id), "mental": GameState.get_agent_current_mental(agent_id), "max_mental": GameState.get_agent_max_mental(agent_id), "active": GameState.is_agent_active(agent_id)})
+	return entries
 
 
 func _add_route_evidence_card(parent: VBoxContainer, title_text: String, body_text: String, icon_text: String) -> void:

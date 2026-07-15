@@ -12,6 +12,7 @@ const AfterlifeTheme = preload("res://scripts/ui/afterlife_station_theme.gd")
 const AccessibilitySettingsScript = preload("res://scripts/ui/accessibility_settings.gd")
 const AnomalyManualDrawerScript = preload("res://scripts/ui/anomaly_manual_drawer.gd")
 const AfterlifeManualCatalog = preload("res://scripts/ui/afterlife_manual_catalog.gd")
+const TeamStatusPopoverScene = preload("res://scenes/ui/team_status_popover.tscn")
 
 const FALLBACK_INVESTIGATION_POINTS: Array[Dictionary] = [
 	{
@@ -88,6 +89,8 @@ var _support_eliminated_choices: Dictionary = {}
 var _reasoning_point: Dictionary = {}
 var _reasoning_definition: Dictionary = {}
 var _case_dialog: AcceptDialog
+var _team_status_popover: TeamStatusPopover
+var _inline_result_returns_to_points := false
 
 
 func _ready() -> void:
@@ -167,6 +170,8 @@ func _build_ui() -> void:
 	%EnterRecoveryButton.pressed.connect(_start_resolution_attempt)
 	%LogUtilityButton.visible = true
 	%LogUtilityButton.pressed.connect(_toggle_record_drawer)
+	%ResultCloseButton.pressed.connect(_close_inline_result)
+	%ResultNextButton.pressed.connect(_return_to_point_picker)
 	_manual_toggle_button.visible = false
 	%SettingsButton.pressed.connect(_show_settings)
 	%ReturnHqButton.pressed.connect(_show_return_confirmation)
@@ -193,6 +198,10 @@ func _build_ui() -> void:
 	%LogHost.visible = false
 	_build_utility_dialogs()
 	_add_team_status_chips(_team_hud)
+	_team_status_popover = TeamStatusPopoverScene.instantiate()
+	add_child(_team_status_popover)
+	_team_status_popover.set_anchors_preset(Control.PRESET_CENTER)
+	_team_status_popover.position = Vector2(-180, -110)
 	_agent_stage.visible = false
 
 	_render_investigation_points()
@@ -457,18 +466,24 @@ func _add_team_portraits(parent: Control) -> void:
 
 
 func _add_team_status_chips(parent: Control) -> void:
-	_clear_children(parent)
+	var summary := parent.get_node_or_null("TeamStatusButton") as Button
+	for child in parent.get_children():
+		if child != summary:
+			child.queue_free()
 	var names: Array[String] = []
 	for agent in GameState.get_selected_agents():
 		if typeof(agent) == TYPE_DICTIONARY:
 			names.append(String(agent.get("name", "")))
-	var summary := Label.new()
+	if summary == null:
+		summary = Button.new()
+		summary.name = "TeamStatusButton"
+		parent.add_child(summary)
 	summary.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	summary.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	summary.text = "팀 상태 · %d명 · %s" % [names.size(), ", ".join(names)]
 	summary.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	summary.tooltip_text = GameState.get_selected_agent_summary()
-	parent.add_child(summary)
+	if not summary.pressed.is_connected(_show_team_status):
+		summary.pressed.connect(_show_team_status)
 
 
 func _setup_runtime_editor() -> void:
@@ -766,10 +781,12 @@ func _add_investigation_point(parent: Control, point: Dictionary) -> void:
 
 
 func _inspect_point(point: Dictionary) -> void:
+	_field_speaker_label.text = String(point.get("label", "현장 관찰"))
+	_field_dialogue_label.text = String(point.get("summary", point.get("result_text", "현장 기록을 확인합니다.")))
 	if not _is_point_unlocked(point):
 		_result_label.text = "선택 결과: 이 수사 방식은 아직 실행할 수 없습니다.\n잠김 이유: %s\n다음 선택지: 확보한 단서를 대조하거나 다른 현장을 관찰합니다." % String(point.get("locked_text", "아직 확인할 근거가 부족합니다."))
 		_hint_label.text = "이번 조사 힌트: 조건을 만족하면 이 조사 포인트를 다시 확인할 수 있습니다."
-		_result_toast.visible = true
+		_show_inline_result(false)
 		return
 
 	if _has_method_options(point):
@@ -785,6 +802,7 @@ func _inspect_point(point: Dictionary) -> void:
 		collected_now = GameState.has_collected_clue(clue_id) and not was_collected
 
 	_result_label.text = _make_point_result_text(point, clue_id, was_collected, collected_now)
+	_show_inline_result(true)
 	_hint_label.text = _make_point_hint_text(point)
 	if collected_now:
 		_present_log_tutorial("field_first_clue")
@@ -991,7 +1009,7 @@ func _select_reasoning_choice(choice: Dictionary) -> void:
 			reason += " 강이준이 첫 충격을 완화했지만 실패 기록은 유지됩니다."
 		GameState.apply_story_effects({"anomaly_risk_delta": 2 if protected else 5, "mental_stamina_delta": -1 if protected else -4})
 		_result_label.text = "위험 사례 기록\n%s" % reason
-		_result_toast.visible = true
+		_show_inline_result(false)
 	GameState.record_recovery_pattern_outcome("afterlife_reasoning:%s" % point_id, choice_id, false, reason)
 	GameState.save_game()
 	_field_dialogue_label.text = "%s\n\n%s" % [String(_reasoning_definition.get("observation", "")), reason]
@@ -1283,32 +1301,51 @@ func _render_investigation_points() -> void:
 		empty_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		_points_box.add_child(empty_label)
 	if _is_afterlife_layout:
-		_render_afterlife_field_index()
+		_field_speaker_label.text = "현장 기록"
+		_field_dialogue_label.text = "왼쪽 조사 지점에서 확인할 장소를 선택하십시오. 잠긴 기록은 선행 관찰을 확보하면 다시 확인할 수 있습니다."
+		_field_next_button.visible = false
+		_clear_children(_field_choice_box)
 
 
-func _render_afterlife_field_index() -> void:
-	_field_speaker_label.text = "현장 기록"
-	_field_dialogue_label.text = "조사 지점을 선택하십시오. 잠긴 기록은 선행 관찰을 확보하면 다시 확인할 수 있습니다."
-	_field_next_button.visible = false
-	_clear_children(_field_choice_box)
-	var ordinal := 0
-	for point in _get_investigation_points():
-		if typeof(point) != TYPE_DICTIONARY:
+func _show_inline_result(return_to_points: bool) -> void:
+	_inline_result_returns_to_points = return_to_points
+	_result_toast.visible = true
+	%ResultNextButton.visible = return_to_points
+	%ResultCloseButton.visible = not return_to_points
+
+
+func _close_inline_result() -> void:
+	_result_toast.visible = false
+	if _inline_result_returns_to_points:
+		_return_to_point_picker()
+
+
+func _return_to_point_picker() -> void:
+	_result_toast.visible = false
+	_reasoning_point = {}
+	_reasoning_definition = {}
+	_render_investigation_points()
+	_points_box.visible = true
+	_set_ui_mode("POINT_PICKER")
+
+
+func _show_team_status() -> void:
+	if _team_status_popover == null:
+		return
+	var entries: Array = []
+	for agent in GameState.get_selected_agents():
+		if typeof(agent) != TYPE_DICTIONARY:
 			continue
-		ordinal += 1
-		var point_copy: Dictionary = point.duplicate(true)
-		var unlocked := _is_point_unlocked(point)
-		var card := AfterlifeChoiceScene.instantiate()
-		_field_choice_box.add_child(card)
-		card.configure(
-			String(point.get("id", "point_%d" % ordinal)),
-			ordinal,
-			String(point.get("label", "조사 지점")),
-			unlocked,
-			false,
-			"" if unlocked else String(point.get("locked_text", "선행 기록 필요"))
-		)
-		card.choice_requested.connect(func(_action_id: String) -> void: _inspect_point(point_copy))
+		var agent_id := String(agent.get("id", ""))
+		entries.append({
+			"name": String(agent.get("name", agent_id)),
+			"hp": GameState.get_agent_current_hp(agent_id),
+			"max_hp": GameState.get_agent_max_hp(agent_id),
+			"mental": GameState.get_agent_current_mental(agent_id),
+			"max_mental": GameState.get_agent_max_mental(agent_id),
+			"active": GameState.is_agent_active(agent_id)
+		})
+	_team_status_popover.open(entries)
 
 
 func _format_delta(value: int) -> String:
@@ -1348,7 +1385,7 @@ func _refresh_case_status() -> void:
 			_team_label.text += "\n팀 반응: 아직 별도 보조 기록이 없습니다."
 		else:
 			_team_label.text += "\n팀 보조: %s" % " / ".join(support_texts)
-	_preparation_modifier_label.text = "로그 준비 안내: %s" % GameState.get_next_investigation_modifier_text()
+	_preparation_modifier_label.text = "아카 준비 안내: %s" % GameState.get_next_investigation_modifier_text()
 	if not support_texts.is_empty():
 		_preparation_modifier_label.text += "\n수사 파트너 보조: %s" % " / ".join(support_texts)
 	_refresh_resolution_attempt_button()

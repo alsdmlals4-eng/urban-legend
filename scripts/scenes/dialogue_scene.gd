@@ -6,6 +6,7 @@ const AssetCatalog = preload("res://scripts/ui/ui_asset_catalog.gd")
 const ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")
 const AfterlifeTheme = preload("res://scripts/ui/afterlife_station_theme.gd")
 const AfterlifeHeaderScene = preload("res://scenes/ui/afterlife_header.tscn")
+const TeamStatusPopoverScene = preload("res://scenes/ui/team_status_popover.tscn")
 const RuntimeEditor = preload("res://scripts/ui/runtime_ui_editor.gd")
 const AnomalyManualDrawerScript = preload("res://scripts/ui/anomaly_manual_drawer.gd")
 
@@ -87,6 +88,11 @@ func _build_afterlife_briefing_ui() -> void:
 	var header := AfterlifeHeaderScene.instantiate() as AfterlifeHeader
 	header.configure("저승역 · 긴급 보고", "팀 상태 · 3명")
 	root.add_child(header)
+	var team_popover := TeamStatusPopoverScene.instantiate() as TeamStatusPopover
+	add_child(team_popover)
+	team_popover.set_anchors_preset(Control.PRESET_CENTER)
+	team_popover.position = Vector2(-180, -110)
+	header.team_requested.connect(func() -> void: team_popover.open(_make_team_status_entries()))
 
 	var status := PanelContainer.new()
 	status.theme_type_variation = &"AfterlifeHeader"
@@ -538,7 +544,7 @@ func _show_line() -> void:
 	var line: Dictionary = lines[_line_index]
 	_stage_label.text = GameState.get_current_episode_title()
 	_standing_label.text = "현장 상황 / 통신 대상: %s" % String(_dialogue_node.get("standing_id", "bureau_control"))
-	_name_label.text = String(line.get("speaker", line.get("name", "")))
+	_name_label.text = _display_speaker_name(String(line.get("speaker", line.get("name", ""))))
 	_dialogue_label.text = _get_line_text(line)
 	_populate_vn_agents(_name_label.text)
 	_choice_box.visible = false
@@ -558,6 +564,20 @@ func _get_line_text(line: Dictionary) -> String:
 	var node_id := String(_dialogue_node.get("id", "dialogue"))
 	var key := "%s/dialogue/%s/%d/text" % [GameState.get_current_episode_id(), node_id, _line_index]
 	return _runtime_editor.update_text_binding("dialogue_text", key, source)
+
+
+func _display_speaker_name(source: String) -> String:
+	return "기록관 아카 · 괴이 기록국 관제 AI" if source == "로그" else source
+
+
+func _make_team_status_entries() -> Array:
+	var entries: Array = []
+	for agent in GameState.get_selected_agents():
+		if typeof(agent) != TYPE_DICTIONARY:
+			continue
+		var agent_id := String(agent.get("id", ""))
+		entries.append({"name": String(agent.get("name", agent_id)), "hp": GameState.get_agent_current_hp(agent_id), "max_hp": GameState.get_agent_max_hp(agent_id), "mental": GameState.get_agent_current_mental(agent_id), "max_mental": GameState.get_agent_max_mental(agent_id), "active": GameState.is_agent_active(agent_id)})
+	return entries
 
 
 func _setup_runtime_editor() -> void:

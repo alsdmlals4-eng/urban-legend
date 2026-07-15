@@ -89,11 +89,10 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(118, 0)
 layout_mode = 2
 
-[node name="TeamText" type="Label" parent="SafeFrame/MainColumn/TopHud/TopRow/TeamHud"]
+[node name="TeamStatusButton" type="Button" parent="SafeFrame/MainColumn/TopHud/TopRow/TeamHud"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "팀 상태  ●"
-vertical_alignment = 1
-theme_type_variation = &"AfterlifeMeta"
 
 [node name="CaseSummaryLabel" type="Label" parent="SafeFrame/MainColumn/TopHud/TopRow"]
 unique_name_in_owner = true
@@ -142,7 +141,7 @@ theme_override_constants/separation = 8
 unique_name_in_owner = true
 custom_minimum_size = Vector2(54, 0)
 layout_mode = 2
-text = "LOG"
+text = "아카 안내"
 
 [node name="LogHost" type="VBoxContainer" parent="SafeFrame/MainColumn/LogBar/LogRow"]
 unique_name_in_owner = true
@@ -153,7 +152,7 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"AfterlifeMeta"
-text = "현재 관찰과 확보 기록을 비교하십시오. LOG AI는 관련 기록의 위치만 안내합니다."
+text = "현재 관찰과 확보 기록을 비교하십시오. 기록관 아카는 관련 사례의 위치만 안내합니다."
 vertical_alignment = 1
 text_overrun_behavior = 3
 
@@ -281,6 +280,39 @@ unique_name_in_owner = true
 visible = false
 layout_mode = 2
 
+[node name="ResultToast" type="PanelContainer" parent="SafeFrame/MainColumn/Workspace/DialogueDock/Content"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_type_variation = &"AfterlifeRisk"
+
+[node name="ResultContent" type="VBoxContainer" parent="SafeFrame/MainColumn/Workspace/DialogueDock/Content/ResultToast"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="ResultLabel" type="Label" parent="SafeFrame/MainColumn/Workspace/DialogueDock/Content/ResultToast/ResultContent"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "위험 사례 기록"
+autowrap_mode = 3
+
+[node name="ResultActions" type="HBoxContainer" parent="SafeFrame/MainColumn/Workspace/DialogueDock/Content/ResultToast/ResultContent"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="ResultCloseButton" type="Button" parent="SafeFrame/MainColumn/Workspace/DialogueDock/Content/ResultToast/ResultContent/ResultActions"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "닫기"
+
+[node name="ResultNextButton" type="Button" parent="SafeFrame/MainColumn/Workspace/DialogueDock/Content/ResultToast/ResultContent/ResultActions"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+text = "다음 조사"
+
 [node name="FieldChoiceScroll" type="ScrollContainer" parent="SafeFrame/MainColumn/Workspace/DialogueDock/Content"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -360,24 +392,6 @@ layout_mode = 2
 theme_type_variation = &"AfterlifeMeta"
 text = "1 / 4"
 horizontal_alignment = 1
-
-[node name="ResultToast" type="PanelContainer" parent="."]
-unique_name_in_owner = true
-visible = false
-layout_mode = 1
-anchor_left = 0.22
-anchor_top = 0.12
-anchor_right = 0.78
-anchor_bottom = 0.22
-theme_type_variation = &"AfterlifeRisk"
-
-[node name="ResultLabel" type="Label" parent="ResultToast"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "위험 사례 기록"
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 3
 
 [node name="RecordDrawer" type="PanelContainer" parent="."]
 unique_name_in_owner = true

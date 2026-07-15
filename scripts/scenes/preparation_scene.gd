@@ -328,7 +328,7 @@ func _add_record_panel(parent: Control) -> void:
 
 
 func _add_log_panel(parent: Control) -> void:
-	var content := _add_section(parent, "로그 · 준비 지원", "괴담기록국 AI가 전자기기 데스크에서 편성과 외부 접점을 함께 점검합니다.")
+	var content := _add_section(parent, "기록관 아카 · 준비 지원", "괴이 기록국 관제 AI가 편성과 외부 접점을 함께 점검합니다.")
 	_log_guide = LogGuideScript.new()
 	_log_guide.set_compact(true)
 	content.add_child(_log_guide)
@@ -366,7 +366,7 @@ func _add_section(parent: Control, title_text: String, description_text: String 
 	var frame := VBoxContainer.new()
 	frame.add_theme_constant_override("separation", 8)
 	panel.add_child(frame)
-	var should_collapse := title_text in ["일상 에피소드", "요원 편성", "외부 접점", "장비", "기록물", "로그 · 준비 지원"]
+	var should_collapse := title_text in ["일상 에피소드", "요원 편성", "외부 접점", "장비", "기록물", "기록관 아카 · 준비 지원"]
 	var toggle := Button.new()
 	toggle.text = title_text
 	toggle.alignment = HORIZONTAL_ALIGNMENT_LEFT

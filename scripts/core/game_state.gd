@@ -2464,12 +2464,12 @@ func get_investigation_point_support_text(point: Dictionary) -> Array:
 	var lines: Array = []
 	var tags := _to_string_array(point.get("tags", []))
 	if tags.has("frequency_related") and has_equipped_item(EQUIP_FREQUENCY_FILTER):
-		lines.append("로그 장비 안내: 폐주파수 필터가 잡음을 분리할 준비를 마쳤습니다. 이 조사 포인트의 주파수 패턴에서 힌트 1회를 사용할 수 있습니다.")
+		lines.append("아카 장비 안내: 폐주파수 필터가 잡음을 분리할 준비를 마쳤습니다. 이 조사 포인트의 주파수 패턴에서 힌트 1회를 사용할 수 있습니다.")
 
 	if has_unlocked_record("record_repeating_announcement"):
-		lines.append("로그 기록물 참고: 저승역의 반복 안내방송 기록과 유사한 잡음 패턴입니다.")
+		lines.append("아카 기록물 참고: 저승역의 반복 안내방송 기록과 유사한 잡음 패턴입니다.")
 	elif has_unlocked_record("record_black_ticket_core"):
-		lines.append("로그 기록물 참고: 검은 승차권의 핵 기록에서 확인한 반복 경로 규칙을 대조하세요.")
+		lines.append("아카 기록물 참고: 검은 승차권의 핵 기록에서 확인한 반복 경로 규칙을 대조하세요.")
 	return lines
 
 
@@ -2481,7 +2481,7 @@ func get_project_core_sentence() -> String:
 ## Returns mascot guide lines for the case preparation screen.
 func get_preparation_log_lines() -> Array:
 	var lines: Array = [
-		"로그: 기관 지급 단말기 속 안내 AI입니다. 장비, 기록물, 위험 안내를 조사 시작 전에 정리합니다.",
+		"기록관 아카: 괴이 기록국 관제 AI입니다. 장비, 기록물, 위험 안내를 조사 시작 전에 정리합니다.",
 		"핵심 원칙: %s" % get_project_core_sentence()
 	]
 	if has_equipped_item(EQUIP_FREQUENCY_FILTER):
