@@ -9,6 +9,9 @@ const NORTH := Vector2i(0, -1)
 const EAST := Vector2i(1, 0)
 const SOUTH := Vector2i(0, 1)
 const WEST := Vector2i(-1, 0)
+const ROUTE_TILE_TEXTURE := preload("res://assets/ui/afterlife/generated/route_tile_base_v1.png")
+const GOLD_RAIL := Color("c5a66d")
+const DIM_RAIL := Color("70695d")
 
 var _grid_size := 3
 var _start := Vector2i(0, 2)
@@ -238,32 +241,53 @@ func _emit_status(progress_override: float = -1.0) -> void:
 
 
 func _draw() -> void:
-	draw_rect(Rect2(Vector2.ZERO, size), Color(0.02,0.035,0.045), true)
+	draw_rect(Rect2(Vector2.ZERO, size), Color("09080b"), true)
 	var board := _board_rect(); var cell := board.size.x / float(_grid_size)
+	var reachable := _reachable_indices()
 	for row in range(_grid_size):
 		for column in range(_grid_size):
 			var coord := Vector2i(column,row); var rect := Rect2(board.position + Vector2(column,row)*cell, Vector2.ONE*cell)
-			_draw_tile(coord,rect); draw_rect(rect,Color(0.22,0.34,0.38),false,1.0)
-			if coord == _selected: draw_rect(rect.grow(-4),Color(0.35,0.9,0.74),false,3.0)
-	_draw_button(_reset_rect(),"R  처음부터",Color(0.28,0.38,0.42)); _draw_button(_confirm_rect(),"C  경로 확인",Color(0.16,0.58,0.48))
-	draw_string(ThemeDB.fallback_font,Vector2(24,28),"공식 기록과 현장 표기를 대조해 안전 노선을 복원하십시오.",HORIZONTAL_ALIGNMENT_LEFT,-1,16,Color(0.64,0.78,0.82))
+			_draw_tile(coord,rect, reachable.has(_coord_to_index(coord)))
+			if coord == _selected:
+				draw_rect(rect.grow(-3),Color(0.48,0.31,0.62,0.42),true)
+				draw_rect(rect.grow(-4),Color("9a72b3"),false,2.0)
+	_draw_button(_reset_rect(),"R  처음부터",Color("28242a")); _draw_button(_confirm_rect(),"C  경로 확인",Color("5d4b31"))
+	draw_string(ThemeDB.fallback_font,Vector2(24,28),"공식 기록과 현장 표기를 대조해 안전 노선을 복원하십시오.",HORIZONTAL_ALIGNMENT_LEFT,-1,14,Color("b8aa94"))
 
 
-func _draw_tile(coord: Vector2i, rect: Rect2) -> void:
+func _draw_tile(coord: Vector2i, rect: Rect2, connected: bool) -> void:
 	var tile: Dictionary = _tiles[_coord_to_index(coord)]; var kind := String(tile.get("kind","block")); var center := rect.get_center(); var radius := rect.size.x*0.34
-	var color := Color(0.055,0.08,0.095) if kind != "block" else Color(0.025,0.04,0.05)
-	if kind == "safe": color=Color(0.08,0.28,0.22)
-	elif kind == "false": color=Color(0.28,0.08,0.1)
-	draw_rect(rect.grow(-3),color,true)
-	for direction in _connections_for(coord): draw_line(center,center+Vector2(direction)*radius,Color(0.76,0.88,0.88),8,true)
+	draw_texture_rect(ROUTE_TILE_TEXTURE, rect.grow(-2), false, Color(0.48,0.45,0.45) if kind != "block" else Color(0.26,0.25,0.26))
+	var rail_color := GOLD_RAIL if connected else DIM_RAIL
+	for direction in _connections_for(coord):
+		draw_line(center,center+Vector2(direction)*radius,Color(0,0,0,0.8),10,true)
+		draw_line(center,center+Vector2(direction)*radius,rail_color,5,true)
+	if kind == "safe": draw_rect(rect.grow(-6),Color("8a7650"),false,2)
+	elif kind == "false": draw_rect(rect.grow(-6),Color("9f3c3f"),false,2)
+	draw_rect(rect,Color("4f4438"),false,1.0)
 	var font:=ThemeDB.fallback_font
-	var labels={"start":"S","safe":"D✓","false":"D?","switch":"SW","straight":"┃","block":"■"}
-	if labels.has(kind): draw_string(font,center+Vector2(-18,6),String(labels[kind]),HORIZONTAL_ALIGNMENT_LEFT,-1,16,Color(0.9,0.95,0.95))
-	if bool(tile.get("locked",false)): draw_string(font,center+Vector2(8,-8),"🔒",HORIZONTAL_ALIGNMENT_LEFT,-1,14,Color(1,0.72,0.32))
+	var labels={"start":"출발","safe":"도착","false":"?","switch":"분기","straight":"","block":""}
+	if labels.has(kind) and not String(labels[kind]).is_empty(): draw_string(font,rect.position+Vector2(8,18),String(labels[kind]),HORIZONTAL_ALIGNMENT_LEFT,-1,11,Color("d8c7aa"))
+	if bool(tile.get("locked",false)): draw_string(font,center+Vector2(-12,5),"고착",HORIZONTAL_ALIGNMENT_LEFT,-1,11,Color("c34d4f"))
+	if _route_wobble and _tutorial_complete and coord == Vector2i(1,2): draw_circle(center,4,Color("c98b38"))
 
 
 func _draw_button(rect: Rect2,text: String,color: Color) -> void:
-	draw_rect(rect,color,true); draw_rect(rect,Color(0.55,0.72,0.74),false,1); draw_string(ThemeDB.fallback_font,rect.position+Vector2(16,rect.size.y*0.65),text,HORIZONTAL_ALIGNMENT_LEFT,-1,16,Color(0.92,0.96,0.96))
+	draw_rect(rect,color,true); draw_rect(rect,Color("8b7655"),false,1); draw_string(ThemeDB.fallback_font,rect.position+Vector2(14,rect.size.y*0.64),text,HORIZONTAL_ALIGNMENT_LEFT,-1,14,Color("ddd4c6"))
+
+
+func _reachable_indices() -> Dictionary:
+	var queue: Array[Vector2i] = [_start]
+	var visited: Dictionary = {_coord_to_index(_start): true}
+	while not queue.is_empty():
+		var current: Vector2i = queue.pop_front()
+		for direction in _connections_for(current):
+			var next := current + direction
+			var index := _coord_to_index(next) if _is_in_bounds(next) else -1
+			if index >= 0 and _connections_for(next).has(-direction) and not visited.has(index):
+				visited[index] = true
+				queue.append(next)
+	return visited
 
 func _board_rect() -> Rect2:
 	var board_size:=maxf(210,minf(340,minf(size.x-48,size.y-116))); return Rect2(Vector2((size.x-board_size)*0.5,46),Vector2.ONE*board_size)

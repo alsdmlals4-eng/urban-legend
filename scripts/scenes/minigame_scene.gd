@@ -2,6 +2,8 @@
 extends Control
 
 const ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")
+const AfterlifeTheme = preload("res://scripts/ui/afterlife_station_theme.gd")
+const AfterlifeHeaderScene = preload("res://scenes/ui/afterlife_header.tscn")
 const RhythmGame = preload("res://scripts/minigames/rhythm_timing_game.gd")
 const RainDodgeGame = preload("res://scripts/minigames/rain_dodge_game.gd")
 const RouteRestoreGame = preload("res://scripts/minigames/route_restore_game.gd")
@@ -30,6 +32,8 @@ func _ready() -> void:
 	GameState.set_current_scene_path("res://scenes/minigame_scene.tscn")
 	_minigame = GameState.get_current_minigame()
 	_apply_runtime_minigame_overrides()
+	if _is_route_restore_minigame():
+		theme = AfterlifeTheme.create_theme()
 	var minigame_id := String(_minigame.get("id", GameState.get_current_minigame_id()))
 	_existing_result = GameState.get_minigame_result(minigame_id)
 	if _existing_result.is_empty() and not _is_route_restore_minigame():
@@ -60,6 +64,9 @@ func _is_route_restore_minigame() -> bool:
 
 
 func _build_ui() -> void:
+	if _is_route_restore_minigame():
+		_build_route_restore_ui()
+		return
 	var background := ColorRect.new()
 	background.color = Color(0.018, 0.028, 0.038)
 	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -166,6 +173,192 @@ func _build_ui() -> void:
 		_game_control.configure(_minigame, not _equipment_hint.is_empty())
 	else:
 		_show_saved_result(playfield_frame)
+
+
+func _build_route_restore_ui() -> void:
+	var surface := TextureRect.new()
+	surface.texture = load("res://assets/ui/afterlife/generated/afterlife_metal_panel_v1.png")
+	surface.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	surface.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	surface.stretch_mode = TextureRect.STRETCH_SCALE
+	surface.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(surface)
+	var shade := ColorRect.new()
+	shade.color = Color(0.01, 0.008, 0.012, 0.32)
+	shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(shade)
+
+	var margin := MarginContainer.new()
+	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	margin.add_theme_constant_override("margin_left", 16)
+	margin.add_theme_constant_override("margin_top", 12)
+	margin.add_theme_constant_override("margin_right", 16)
+	margin.add_theme_constant_override("margin_bottom", 12)
+	add_child(margin)
+	var root := VBoxContainer.new()
+	root.add_theme_constant_override("separation", 6)
+	margin.add_child(root)
+	var header := AfterlifeHeaderScene.instantiate() as AfterlifeHeader
+	header.configure("저승역 · 최종 검증", "팀 상태")
+	root.add_child(header)
+
+	var stage_bar := PanelContainer.new()
+	stage_bar.custom_minimum_size.y = 36
+	stage_bar.theme_type_variation = &"AfterlifeHeader"
+	root.add_child(stage_bar)
+	var stage_row := HBoxContainer.new()
+	stage_bar.add_child(stage_row)
+	var stage_label := Label.new()
+	stage_label.text = "현장 검증 2/2"
+	stage_label.theme_type_variation = &"AfterlifeMeta"
+	stage_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	stage_row.add_child(stage_label)
+	var objective := Label.new()
+	objective.text = "현재 목표  ·  안전 노선 복원"
+	objective.theme_type_variation = &"AfterlifeMeta"
+	stage_row.add_child(objective)
+
+	var columns := HBoxContainer.new()
+	columns.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	columns.add_theme_constant_override("separation", 6)
+	root.add_child(columns)
+	var evidence := _add_route_panel(columns, "비교 근거", 0.28)
+	_add_route_evidence_card(evidence, "공식 운행 기록", "2번 승강장에서 출발\n3번 환승 후 1번 도착\n직선 구간 최소 1회 포함", "▤")
+	_add_route_evidence_card(evidence, "방송 원본", "종료 식별음 뒤 이동\n정적 뒤 같은 안내 반복", "◉")
+	_add_route_evidence_card(evidence, "현장 표기", "개인 목적지 표기 배제\n공식 식별 번호만 대조", "◇")
+
+	var play := _add_route_panel(columns, "노선 복원", 0.44)
+	_status_label = Label.new()
+	_status_label.text = "현장 정보를 불러오는 중"
+	_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_status_label.theme_type_variation = &"AfterlifeMeta"
+	play.add_child(_status_label)
+	_progress_bar = ProgressBar.new()
+	_progress_bar.min_value = 0
+	_progress_bar.max_value = 100
+	_progress_bar.show_percentage = false
+	_progress_bar.custom_minimum_size.y = 5
+	play.add_child(_progress_bar)
+	var playfield_frame := PanelContainer.new()
+	playfield_frame.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	playfield_frame.theme_type_variation = &"AfterlifePanel"
+	play.add_child(playfield_frame)
+
+	var outcome := _add_route_panel(columns, "현장 반응", 0.28)
+	_result_label = Label.new()
+	_result_label.visible = false
+	outcome.add_child(_result_label)
+	_add_route_status_card(outcome, "목적지 혼선", "경로가 불일치하면 목적지 표기가 왜곡됩니다.", "현재 · 정상", "?")
+	_add_route_status_card(outcome, "노선 고착", "고착된 구간은 공식 기록과 맞지 않으면 움직이지 않습니다.", "고착 구간 · 확인 전", "▣")
+	_add_route_status_card(outcome, "관측 위험", "노선이 왜곡되면 현장 반응이 불안정해질 수 있습니다.", "관측 기록 · 대기", "◉")
+	var outcome_spacer := Control.new()
+	outcome_spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	outcome.add_child(outcome_spacer)
+	_return_button = Button.new()
+	_return_button.text = "현장 기록으로 복귀"
+	_return_button.visible = false
+	_return_button.pressed.connect(_return_to_flow)
+	outcome.add_child(_return_button)
+
+	_manual_toggle_button = Button.new()
+	_manual_toggle_button.visible = false
+	add_child(_manual_toggle_button)
+	_build_manual_drawer()
+	header.record_requested.connect(func() -> void: _manual_drawer.toggle())
+	header.hq_requested.connect(func() -> void:
+		if _completed:
+			_return_to_flow()
+	)
+
+	if _existing_result.is_empty():
+		_game_control = _make_game_control()
+		playfield_frame.add_child(_game_control)
+		_game_control.status_changed.connect(_on_status_changed)
+		_game_control.completed.connect(_on_game_completed)
+		if _game_control.has_signal("stage_changed"):
+			_game_control.connect("stage_changed", _on_route_stage_changed)
+		_game_control.configure(_minigame, false)
+	else:
+		_show_saved_result(playfield_frame)
+
+
+func _add_route_panel(parent: Control, title_text: String, ratio: float) -> VBoxContainer:
+	var panel := PanelContainer.new()
+	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	panel.size_flags_stretch_ratio = ratio
+	panel.theme_type_variation = &"AfterlifePanel"
+	parent.add_child(panel)
+	var content := VBoxContainer.new()
+	content.add_theme_constant_override("separation", 8)
+	panel.add_child(content)
+	var title := Label.new()
+	title.text = title_text
+	title.theme_type_variation = &"AfterlifeSection"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	content.add_child(title)
+	return content
+
+
+func _add_route_evidence_card(parent: VBoxContainer, title_text: String, body_text: String, icon_text: String) -> void:
+	var card := PanelContainer.new()
+	card.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	card.theme_type_variation = &"AfterlifePanel"
+	parent.add_child(card)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 9)
+	card.add_child(row)
+	var icon := Label.new()
+	icon.text = icon_text
+	icon.custom_minimum_size.x = 30
+	icon.add_theme_font_size_override("font_size", 20)
+	icon.add_theme_color_override("font_color", AfterlifeTheme.GOLD)
+	row.add_child(icon)
+	var stack := VBoxContainer.new()
+	stack.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(stack)
+	var title := Label.new()
+	title.text = title_text
+	title.add_theme_color_override("font_color", Color("c3ad87"))
+	stack.add_child(title)
+	var body := Label.new()
+	body.text = body_text
+	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	body.theme_type_variation = &"AfterlifeMeta"
+	stack.add_child(body)
+
+
+func _add_route_status_card(parent: VBoxContainer, title_text: String, body_text: String, state_text: String, icon_text: String) -> void:
+	var card := PanelContainer.new()
+	card.theme_type_variation = &"AfterlifePanel"
+	parent.add_child(card)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 9)
+	card.add_child(row)
+	var icon := Label.new()
+	icon.text = icon_text
+	icon.custom_minimum_size.x = 30
+	icon.add_theme_font_size_override("font_size", 20)
+	icon.add_theme_color_override("font_color", AfterlifeTheme.GOLD)
+	row.add_child(icon)
+	var stack := VBoxContainer.new()
+	stack.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(stack)
+	var title := Label.new()
+	title.text = title_text
+	stack.add_child(title)
+	var body := Label.new()
+	body.text = body_text
+	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	body.theme_type_variation = &"AfterlifeMeta"
+	stack.add_child(body)
+	var state := Label.new()
+	state.text = state_text
+	state.add_theme_color_override("font_color", Color("ba8d4b"))
+	state.theme_type_variation = &"AfterlifeMeta"
+	stack.add_child(state)
 
 
 func _show_saved_result(playfield_frame: PanelContainer) -> void:

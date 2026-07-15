@@ -99,6 +99,30 @@
       "reference_image": "MVP-043 approved UI proposal screenshots 2, 3 and 4",
       "prompt": "Create a front-on symmetrical open antique field-record book inside a slim dark oxidized metal occult frame, with warm blank parchment, muted violet edge glow and no text, logo, character or baked UI copy.",
       "qa": "no baked text, clear writing area, source output preserved, used behind live Godot controls"
+    },
+    {
+      "stage": "final",
+      "purpose": "textless afterlife station metal panel surface for compact briefing and route validation UI",
+      "filename": "ui/afterlife/generated/afterlife_metal_panel_v1.png",
+      "width": 1536,
+      "height": 1024,
+      "alpha_intent": false,
+      "alpha_result": false,
+      "reference_image": "MVP-043 approved UI screenshots 1, 2 and 3",
+      "prompt": "Create a production-ready textless near-black oxidized railway-control panel with a thin antique brass double frame, restrained violet enamel corners and faint occult etching, front-facing and quiet in the center for live Godot text.",
+      "qa": "no baked text, no rounded cyan card language, high-contrast frame, live text remains separate"
+    },
+    {
+      "stage": "final",
+      "purpose": "textured base surface for every 3x3 and 4x4 afterlife route tile",
+      "filename": "ui/afterlife/generated/route_tile_base_v1.png",
+      "width": 1024,
+      "height": 1024,
+      "alpha_intent": false,
+      "alpha_result": false,
+      "reference_image": "MVP-043 approved UI screenshot 3",
+      "prompt": "Create a square textless front-facing occult railway puzzle tile made of near-black aged iron, inset beveled brass frame, faint railway engraving and violet enamel corner pins, ready for live route overlays.",
+      "qa": "no baked text, visible metal and brass before vector overlays, source output preserved"
     }
   ]
 }
