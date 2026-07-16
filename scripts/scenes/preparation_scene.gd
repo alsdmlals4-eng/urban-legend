@@ -76,7 +76,8 @@ func _build_ui() -> void:
 	_add_header(root)
 	var dashboard := HBoxContainer.new()
 	dashboard.name = "ProtagonistDashboard"
-	dashboard.custom_minimum_size.y = 330
+	# Keep the first tab action reachable at the 1280x720 PC baseline.
+	dashboard.custom_minimum_size.y = 260
 	dashboard.size_flags_vertical = Control.SIZE_FILL
 	dashboard.add_theme_constant_override("separation", 10)
 	root.add_child(dashboard)
@@ -121,7 +122,7 @@ func _build_ui() -> void:
 	dashboard.add_child(actions)
 	var action_grid := GridContainer.new()
 	action_grid.name = "DashboardActionGrid"
-	action_grid.columns = 2
+	action_grid.columns = 3
 	action_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	action_grid.add_theme_constant_override("h_separation", 8)
 	action_grid.add_theme_constant_override("v_separation", 8)
@@ -168,7 +169,7 @@ func _add_dashboard_action(parent: Control, title: String, description: String, 
 	var button := Button.new()
 	button.text = title
 	button.tooltip_text = description
-	button.custom_minimum_size.y = 50
+	button.custom_minimum_size.y = 42
 	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	button.pressed.connect(callback)
 	parent.add_child(button)
@@ -199,7 +200,7 @@ func _add_header(parent: Control) -> void:
 
 
 func _add_schedule_panel(parent: Control) -> void:
-	var content := _add_section(parent, "오늘의 일정", "권나래의 현재 반일 일정만 정합니다.")
+	var content := _add_section(parent, "오늘의 일정")
 	_campaign_day_label = Label.new()
 	_campaign_day_label.name = "CampaignDayLabel"
 	_campaign_day_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -212,15 +213,14 @@ func _add_schedule_panel(parent: Control) -> void:
 
 
 func _add_current_case_panel(parent: Control) -> void:
-	var content := _add_section(parent, "현재 사건")
-
 	_current_case_label = Label.new()
+	_current_case_label.name = "CurrentCaseSummary"
 	_current_case_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_current_case_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_current_case_label.max_lines_visible = 3
+	_current_case_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	_current_case_label.max_lines_visible = 1
 	_current_case_label.clip_text = true
-	_current_case_label.custom_minimum_size.y = 62
-	content.add_child(_current_case_label)
+	_current_case_label.custom_minimum_size.y = 26
+	parent.add_child(_current_case_label)
 
 
 func _add_episode_panel(parent: Control) -> void:
@@ -412,6 +412,10 @@ func _format_agent_feature(value: Variant) -> String:
 
 func _add_equipment_panel(parent: Control) -> void:
 	var content := _add_section(parent, "장비", "해금된 도구를 장착해 다음 조사 보정을 확인합니다.")
+	_research_project_list = VBoxContainer.new()
+	_research_project_list.name = "ResearchProjectList"
+	_research_project_list.add_theme_constant_override("separation", 6)
+	content.add_child(_research_project_list)
 
 	_equipped_label = Label.new()
 	_equipped_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -424,11 +428,6 @@ func _add_equipment_panel(parent: Control) -> void:
 	_equipment_list = VBoxContainer.new()
 	_equipment_list.add_theme_constant_override("separation", 6)
 	content.add_child(_equipment_list)
-
-	_research_project_list = VBoxContainer.new()
-	_research_project_list.name = "ResearchProjectList"
-	_research_project_list.add_theme_constant_override("separation", 6)
-	content.add_child(_research_project_list)
 
 
 func _add_record_panel(parent: Control) -> void:
@@ -451,9 +450,9 @@ func _add_start_panel(parent: Control) -> void:
 
 	_status_label = Label.new()
 	_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_status_label.max_lines_visible = 2
+	_status_label.max_lines_visible = 1
 	_status_label.clip_text = true
-	_status_label.custom_minimum_size.y = 40
+	_status_label.custom_minimum_size.y = 24
 	content.add_child(_status_label)
 
 	var row := HBoxContainer.new()
@@ -481,7 +480,7 @@ func _add_section(parent: Control, title_text: String, description_text: String 
 	var frame := VBoxContainer.new()
 	frame.add_theme_constant_override("separation", 8)
 	panel.add_child(frame)
-	var should_collapse := title_text in ["일상 에피소드", "요원 편성", "장비", "기록물", "기록관 아카 · 준비 지원"]
+	var should_collapse := title_text in ["일상 에피소드", "요원 편성", "기록물", "기록관 아카 · 준비 지원"]
 	var toggle := Button.new()
 	toggle.text = title_text
 	toggle.alignment = HORIZONTAL_ALIGNMENT_LEFT
@@ -658,15 +657,16 @@ func _refresh_schedule() -> void:
 		row.add_child(picker)
 	var protagonist_id := GameState.get_protagonist_agent_id()
 	var research_preview := GameState.get_research_activity_preview(protagonist_id)
-	var research_label := _make_label("연구 예상: 기본 1 + 분석 %d + 협력 %d = 연구 포인트 %d점" % [
+	var research_label := _make_label("연구 예상 %d점 · 기본1/분석%d/협력%d" % [
+		int(research_preview.get("total", 1)),
 		int(research_preview.get("performance_bonus", 0)),
-		int(research_preview.get("condition_bonus", 0)),
-		int(research_preview.get("total", 1))
+		int(research_preview.get("condition_bonus", 0))
 	])
 	research_label.name = "ResearchPreviewLabel"
 	research_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	research_label.max_lines_visible = 1
+	research_label.clip_text = true
 	_schedule_list.add_child(research_label)
-	_schedule_list.add_child(_make_label("반일 일정은 주인공 한 명에게만 배정·소비됩니다. 서포트는 현장 자동 지원만 제공합니다."))
 
 
 func _set_schedule_activity(agent_id: String, time_slot: String, activity_id: String) -> void:
@@ -822,7 +822,8 @@ func _refresh_episode_selection() -> void:
 	var cases: Dictionary = campaign.get("cases", {})
 	var emergency_case_id := String(campaign.get("emergency_case_id", ""))
 	if _current_case_label != null:
-		_current_case_label.text = "계획 사건: %s\n%s" % [GameState.get_current_episode_title() if not planned_case_id.is_empty() else "선택되지 않음", GameState.get_project_core_sentence()]
+		_current_case_label.text = "계획 사건: %s" % (GameState.get_current_episode_title() if not planned_case_id.is_empty() else "선택되지 않음")
+		_current_case_label.tooltip_text = GameState.get_project_core_sentence()
 	for entry in GameState.get_preparation_episode_entries():
 		if typeof(entry) != TYPE_DICTIONARY:
 			continue

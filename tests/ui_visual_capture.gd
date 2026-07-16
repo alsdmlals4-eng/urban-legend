@@ -51,6 +51,8 @@ func _capture() -> void:
 		elif ui_state == "mvp042_database":
 			game_state.begin_daily_episode("daily_afterlife_sign_blanks")
 			game_state.resolve_daily_episode_choice("preserve_order")
+	if ui_state.begins_with("mvp047_"):
+		_prepare_mvp047_state(game_state, episode_path, ui_state)
 	var error := change_scene_to_file(scene_path)
 	if error != OK:
 		push_error("failed to load scene: %s" % scene_path)
@@ -136,6 +138,31 @@ func _capture() -> void:
 				contact_scroll.scroll_vertical = maxi(0, contact_scroll.scroll_vertical - 60)
 				for _frame in range(2):
 					await process_frame
+	if ui_state == "mvp047_research" or ui_state == "mvp047_craft":
+		var research_tabs := current_scene.find_child("PreparationTabs", true, false) as TabContainer
+		if research_tabs != null:
+			research_tabs.current_tab = 2
+			for _frame in range(3):
+				await process_frame
+	if ui_state == "mvp047_raymond":
+		var contact_tabs := current_scene.find_child("PreparationTabs", true, false) as TabContainer
+		if contact_tabs != null:
+			contact_tabs.current_tab = 3
+			for _frame in range(3):
+				await process_frame
+		var raymond_button := current_scene.find_child("RaymondContractButton", true, false) as Control
+		var raymond_scroll := _find_scroll_container(raymond_button)
+		if raymond_button != null and raymond_scroll != null:
+			raymond_scroll.ensure_control_visible(raymond_button)
+			for _frame in range(3):
+				await process_frame
+	if ui_state == "mvp047_recovery" and current_scene.has_method("_select_pattern_response"):
+		var recovery_pattern: Dictionary = current_scene.get("_current_pattern")
+		var recovery_response := _find_wrong_response(recovery_pattern)
+		if not recovery_response.is_empty():
+			current_scene.call("_select_pattern_response", recovery_response)
+			for _frame in range(3):
+				await process_frame
 	if ui_state == "mvp043_route_final":
 		var route_control := _find_script_control(current_scene, "route_restore_game.gd")
 		if route_control != null:
@@ -239,6 +266,41 @@ func _prepare_mvp039_evidence(game_state: Node) -> void:
 	for hint in game_state.get_hints():
 		if typeof(hint) == TYPE_DICTIONARY:
 			game_state.mark_hint_seen(String(hint.get("id", "")))
+
+
+func _prepare_mvp047_state(game_state: Node, episode_path: String, ui_state: String) -> void:
+	game_state.reset_run_state()
+	game_state.load_episode(episode_path)
+	game_state.set_selected_agent_ids(["agent_kwon_narae", "agent_oh_hyun", "agent_kang_ijun"])
+	game_state.research_points = 5
+	if ui_state == "mvp047_research":
+		game_state.grant_echo_reward("capture:mvp047-research", 5)
+		return
+	if ui_state == "mvp047_craft":
+		game_state.grant_echo_reward("capture:mvp047-craft", 5)
+		if not bool(game_state.complete_research_project("research_resonance_prism").get("successful", false)):
+			push_error("MVP-047 capture setup could not complete the resonance prism")
+		return
+	if not bool(game_state.complete_research_project("research_contract_protocol").get("successful", false)):
+		push_error("MVP-047 capture setup could not complete the Raymond protocol")
+		return
+	if ui_state == "mvp047_raymond":
+		return
+	if not game_state.grant_echo_reward("capture:mvp047-raymond", 5):
+		push_error("MVP-047 capture setup could not grant Raymond contract fragments")
+		return
+	var contract_selection: Dictionary = game_state.select_mercenary_contract("contract_raymond_kane")
+	if not bool(contract_selection.get("successful", false)):
+		push_error("MVP-047 capture setup could not reserve Raymond contract")
+		return
+	if ui_state == "mvp047_recovery":
+		game_state.set_campaign_planned_case("episode_001_afterlife_station")
+		if not game_state.begin_campaign_operation("episode_001_afterlife_station"):
+			push_error("MVP-047 capture setup could not begin the Raymond operation")
+	elif ui_state == "mvp047_result":
+		game_state.start_resolution_phase()
+		game_state.save_recovery_result(true, "core_recovered", 100)
+		game_state.record_current_case_report()
 
 
 func _find_wrong_response(pattern: Dictionary) -> Dictionary:
