@@ -26,6 +26,7 @@ if (-not $ConfigPath) { $ConfigPath = Join-Path $RepoPath '.agent-workflow.json'
 if (-not (Test-Path -LiteralPath $ConfigPath -PathType Leaf)) { throw "Workflow config missing: $ConfigPath" }
 $config = [IO.File]::ReadAllText($ConfigPath, [Text.Encoding]::UTF8) | ConvertFrom-Json
 $policy = Get-WorkflowPolicy -Config $config
+$preservedDirtyPaths = if ($config.PSObject.Properties.Name -contains 'delegation_preserved_dirty_paths') { @($config.delegation_preserved_dirty_paths) } else { @() }
 
 function Write-JsonResult { param($Value) $Value | ConvertTo-Json -Depth 10 }
 function Get-RunRoot { param([string]$Id) Join-Path $env:LOCALAPPDATA "Codex\agent-workflow\runs\$Id" }
@@ -274,7 +275,7 @@ $(@($route.artifact_contract | ForEach-Object { "- $_" }) -join "`n")
 				throw "Run already exists and is not a prepared DeepSeek task: $runRoot"
 			}
 		}
-		$created = New-GameTaskWorktree -RepoPath $RepoPath -TaskId $TaskId -GitPath $GitPath
+		$created = New-GameTaskWorktree -RepoPath $RepoPath -TaskId $TaskId -GitPath $GitPath -PreservedDirtyPaths $preservedDirtyPaths
         New-Item -ItemType Directory -Path $runRoot -Force | Out-Null
         [IO.File]::WriteAllText((Join-Path $runRoot 'TASK_CONTRACT.md'), $contract, [Text.UTF8Encoding]::new($false))
         $prompt = $contract + "`n`nObey any stricter report limit stated in the contract; otherwise cap WORKER_REPORT at 800 words. Include exact changed paths, commands, numeric exit codes, evidence, remaining risks, and git diff. Do not commit or merge."

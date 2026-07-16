@@ -259,12 +259,20 @@ function New-GameTaskWorktree {
     param(
         [Parameter(Mandatory)][string]$RepoPath,
         [Parameter(Mandatory)][ValidatePattern('^[a-z0-9][a-z0-9-]{0,62}$')][string]$TaskId,
-        [Parameter(Mandatory)][string]$GitPath
+        [Parameter(Mandatory)][string]$GitPath,
+        [string[]]$PreservedDirtyPaths = @()
     )
 
     $repo = (Resolve-Path -LiteralPath $RepoPath).Path
     $status = Invoke-Git $GitPath $repo @('status','--porcelain=v1')
-    if ($status.output.Count -gt 0) { throw 'Main worktree must be clean before delegation.' }
+    $blocking = @($status.output | ForEach-Object {
+        $line = [string]$_
+        if ($line.Length -lt 4) { return }
+        $path = $line.Substring(3).Trim('"').Replace('\','/')
+        if ($path -match ' -> ') { $path = ($path -split ' -> ')[-1].Trim('"') }
+        if (-not (Test-PathPattern $path $PreservedDirtyPaths)) { $path }
+    })
+    if ($blocking.Count -gt 0) { throw "Main worktree has non-preserved changes before delegation: $($blocking -join ', ')" }
 
     $probe = Invoke-Git $GitPath $repo @('check-ignore','-q','.worktrees/probe') -AllowFailure
     if ($probe.exit_code -ne 0) { throw '.worktrees/ must be ignored before creating task worktrees.' }
