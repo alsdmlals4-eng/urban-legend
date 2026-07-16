@@ -197,6 +197,39 @@ func _run() -> void:
 		],
 		"FACTION-06"
 	)
+	_expect_seed(
+		game_state.get_daily_episode("AFTER-07"),
+		"agent_kwon_narae",
+		"episode_003_dead_frequency_station",
+		[
+			"수신자 위치 기록을 복원한다.",
+			"01시 13분 반응을 차폐해 기록 증가를 막는다.",
+			"수신기를 폐기하지 않고 청취 전용 상태로 보존한다."
+		],
+		"AFTER-07"
+	)
+	_expect_seed(
+		game_state.get_daily_episode("DAILY-07"),
+		"agent_kwon_narae",
+		"",
+		[
+			"0번 메시지를 무음 구간으로 취급해 격리한다.",
+			"내일 01시 13분까지 재생하지 않고 생성 과정을 관찰한다.",
+			"아카의 삭제 요청 로그부터 역추적한다."
+		],
+		"DAILY-07"
+	)
+	_expect_seed(
+		game_state.get_daily_episode("FACTION-07"),
+		"agent_kwon_narae",
+		"",
+		[
+			"피해자 음성 없이 무음 구조만 재현 가능한지 제한 실험한다.",
+			"현상 구조의 통신 활용을 전면 금지하고 기록만 보존한다.",
+			"피해자와 청취자 기록의 사용 동의를 먼저 요구한다."
+		],
+		"FACTION-07"
+	)
 	_finish()
 
 
