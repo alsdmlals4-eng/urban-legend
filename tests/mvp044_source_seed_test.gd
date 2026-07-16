@@ -131,6 +131,39 @@ func _run() -> void:
 		],
 		"FACTION-04"
 	)
+	_expect_seed(
+		game_state.get_daily_episode("AFTER-05"),
+		"agent_kwon_narae",
+		"episode_002_red_umbrella_alley",
+		[
+			"윤서하의 돌파 실험을 제한 조건 아래 허용한다.",
+			"강이준의 안전 기준이 완성될 때까지 중단한다.",
+			"둘에게 실제 목적이 속도인지 대응 훈련인지 묻는다."
+		],
+		"AFTER-05"
+	)
+	_expect_seed(
+		game_state.get_daily_episode("DAILY-05"),
+		"agent_kwon_narae",
+		"",
+		[
+			"문장을 오염 기록으로 표시하고 사본을 비교한다.",
+			"“맞아요. 더 일찍 움직였어야 했어요.”라고 답한다.",
+			"한유리에게 더 읽지 말고 연결만 확인해 달라고 한다."
+		],
+		"DAILY-05"
+	)
+	_expect_seed(
+		game_state.get_daily_episode("FACTION-05"),
+		"agent_kwon_narae",
+		"",
+		[
+			"소문이 기억을 만든 시점을 추적하죠.",
+			"정정된 소문을 시장에 유통하면 지울 수 있을까요?",
+			"한유리에게서 우산을 먼저 떨어뜨려요."
+		],
+		"FACTION-05"
+	)
 	_finish()
 
 
