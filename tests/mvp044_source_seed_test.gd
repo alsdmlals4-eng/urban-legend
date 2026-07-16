@@ -65,6 +65,39 @@ func _run() -> void:
 		],
 		"FACTION-02"
 	)
+	_expect_seed(
+		game_state.get_daily_episode("AFTER-03"),
+		"agent_kwon_narae",
+		"episode_001_afterlife_station",
+		[
+			"저승역에 이전 대응팀이 있었다는 뜻인가요?",
+			"이 장비를 다시 사용할 수 있어요?",
+			"말없이 작업대의 새 나사를 건넨다."
+		],
+		"AFTER-03"
+	)
+	_expect_seed(
+		game_state.get_daily_episode("DAILY-03"),
+		"agent_kwon_narae",
+		"",
+		[
+			"커피 하나에도 승인 절차가 필요한 이유가 있어요?",
+			"공식이 완벽하면 문제없는 것 아닌가요?",
+			"컵받침을 치우고 식은 커피를 새로 따른다."
+		],
+		"DAILY-03"
+	)
+	_expect_seed(
+		game_state.get_daily_episode("FACTION-03"),
+		"agent_kwon_narae",
+		"",
+		[
+			"민간인 보호 완료 전에는 철수하지 않는 조건을 추가하죠.",
+			"퇴로 상실 시 계약 종료를 명시하죠.",
+			"당신이 원하는 세 번째 줄을 직접 써보세요."
+		],
+		"FACTION-03"
+	)
 	_finish()
 
 
