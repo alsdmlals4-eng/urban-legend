@@ -27,6 +27,38 @@ func get_scene(scene_id: String) -> Dictionary:
 	return {}
 
 
+func get_tags_for(pair_key: String, memories: Array) -> Array:
+	_ensure_loaded()
+	var rules: Array = []
+	for chain_value in _chains:
+		if typeof(chain_value) != TYPE_DICTIONARY:
+			continue
+		var chain: Dictionary = chain_value
+		if String(chain.get("pair_key", "")) == pair_key:
+			rules = chain.get("tag_rules", []) as Array
+			break
+	var tags: Array = []
+	for rule_value in rules:
+		if typeof(rule_value) != TYPE_DICTIONARY:
+			continue
+		var rule: Dictionary = rule_value
+		var required: Array = rule.get("memories_all", []) as Array
+		var matched := true
+		for memory in required:
+			if not memories.has(String(memory)):
+				matched = false
+				break
+		if not matched:
+			continue
+		for tag in rule.get("tags", []) as Array:
+			var clean_tag := String(tag).strip_edges()
+			if not clean_tag.is_empty() and not tags.has(clean_tag):
+				tags.append(clean_tag)
+				if tags.size() >= 2:
+					return tags
+	return tags
+
+
 func _ensure_loaded() -> void:
 	if _loaded:
 		return

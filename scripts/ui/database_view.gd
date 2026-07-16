@@ -138,6 +138,14 @@ func _build_section_buttons() -> void:
 	)
 	_section_list.add_child(daily_records_button)
 
+	var relationship_records_button := Button.new()
+	relationship_records_button.name = "RelationshipRecordsButton"
+	relationship_records_button.text = "관계 기록"
+	relationship_records_button.pressed.connect(func() -> void:
+		_show_section("relationship_records")
+	)
+	_section_list.add_child(relationship_records_button)
+
 
 func _show_section(section_id: String) -> void:
 	if section_id == "mvp13_rewards":
@@ -148,6 +156,9 @@ func _show_section(section_id: String) -> void:
 		return
 	if section_id == "daily_episode_records":
 		_show_daily_episode_records()
+		return
+	if section_id == "relationship_records":
+		_show_relationship_records()
 		return
 
 	var section := UrbanLegendState.get_section(section_id)
@@ -243,6 +254,35 @@ func _show_daily_episode_records() -> void:
 		reaction_label.text = String(record.get("agent_reaction", ""))
 		reaction_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		content.add_child(reaction_label)
+
+
+func _show_relationship_records() -> void:
+	_detail_title.text = "관계 기록"
+	_detail_summary.text = "선택으로 남은 기억을 다시 확인합니다. 관계는 숫자 보너스가 아니며, 사건 진행과 일정은 바꾸지 않습니다."
+	_clear_detail_items()
+	var records := GameState.get_relationship_records()
+	if records.is_empty():
+		_add_detail_text("아직 완료한 관계 기록이 없습니다. 본부 준비 화면의 선택형 기록을 확인하세요.")
+		return
+	for value in records:
+		if typeof(value) != TYPE_DICTIONARY:
+			continue
+		var record: Dictionary = value
+		var panel := PanelContainer.new()
+		_detail_items.add_child(panel)
+		var content := VBoxContainer.new()
+		content.add_theme_constant_override("separation", 5)
+		panel.add_child(content)
+		var pair_key := String(record.get("pair_key", ""))
+		var tags := GameState.get_relationship_tags(pair_key)
+		var lines := [
+			"선택: %s" % String(record.get("choice_label", "기록")),
+			String(record.get("result_text", "")),
+			"남은 기억: %s" % String(record.get("memory_effect", ""))
+		]
+		if not tags.is_empty():
+			lines.append("관계 태그: %s" % ", ".join(tags))
+		_add_text_entries(String(record.get("title", "관계 기록")), lines, content)
 
 
 func _show_completed_case_report(report: Dictionary, parent: VBoxContainer) -> void:

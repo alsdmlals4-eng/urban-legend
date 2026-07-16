@@ -34,6 +34,15 @@ func _run() -> void:
 	_expect(bool(resolved.get("successful", false)), "relationship choice resolves once")
 	_expect(String((resolved.get("record", {}) as Dictionary).get("memory_effect", "")) == "기록을_믿음", "choice memory is persisted as text, not a stat")
 	_expect(game_state.get_relationship_records().size() == 1, "relationship record is stored once")
+	_expect(game_state.has_method("get_relationship_memories"), "relationship memories are available by pair for DB and later scenes")
+	_expect(game_state.has_method("get_relationship_chain_progress"), "relationship chain exposes completed progress without a hidden affinity score")
+	_expect(game_state.has_method("get_relationship_tags"), "relationship tags are derived without a hidden affinity score")
+	if game_state.has_method("get_relationship_memories"):
+		_expect(game_state.get_relationship_memories("agent_kwon_narae::agent_yoon_seoha").has("기록을_믿음"), "selected relationship memory is retrievable by pair")
+	if game_state.has_method("get_relationship_chain_progress"):
+		_expect(game_state.get_relationship_chain_progress("REL-P01").get("completed", 0) == 1, "relationship chain reports completed progress")
+	if game_state.has_method("get_relationship_tags"):
+		_expect(game_state.get_relationship_tags("agent_kwon_narae::agent_yoon_seoha").is_empty(), "one memory alone does not fabricate a relationship tag")
 	_finish()
 
 

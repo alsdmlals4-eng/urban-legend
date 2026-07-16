@@ -555,6 +555,7 @@ func get_available_relationship_scenes() -> Array:
 			var entry := scene.duplicate(true)
 			entry["chain_id"] = String(chain.get("id", ""))
 			entry["chain_title"] = String(chain.get("title", ""))
+			entry["pair_key"] = String(chain.get("pair_key", ""))
 			available.append(entry)
 			break
 	return available
@@ -587,6 +588,7 @@ func resolve_relationship_choice(choice_id: String) -> Dictionary:
 	var record := {
 		"scene_id": scene_id,
 		"chain_id": String(active_relationship_scene.get("chain_id", "")),
+		"pair_key": String(active_relationship_scene.get("pair_key", "")),
 		"title": String(active_relationship_scene.get("title", "관계 기록")),
 		"choice_id": String(selected.get("id", "")),
 		"choice_label": String(selected.get("label", "")),
@@ -605,6 +607,51 @@ func _has_relationship_record(scene_id: String) -> bool:
 		if typeof(value) == TYPE_DICTIONARY and String((value as Dictionary).get("scene_id", "")) == scene_id:
 			return true
 	return false
+
+
+## Returns the selected relationship memories for one pair without exposing a numeric affinity value.
+func get_relationship_memories(pair_key: String) -> Array:
+	var clean_pair_key := pair_key.strip_edges()
+	if clean_pair_key.is_empty():
+		return []
+	var memories: Array = []
+	for value in relationship_event_records:
+		if typeof(value) != TYPE_DICTIONARY:
+			continue
+		var record: Dictionary = value
+		if String(record.get("pair_key", "")) != clean_pair_key:
+			continue
+		var memory := String(record.get("memory_effect", "")).strip_edges()
+		if not memory.is_empty() and not memories.has(memory):
+			memories.append(memory)
+	return memories
+
+
+## Returns completion progress for one chain for UI and DB presentation.
+func get_relationship_chain_progress(chain_id: String) -> Dictionary:
+	var clean_chain_id := chain_id.strip_edges()
+	for chain_value in get_relationship_chains():
+		if typeof(chain_value) != TYPE_DICTIONARY:
+			continue
+		var chain: Dictionary = chain_value
+		if String(chain.get("id", "")) != clean_chain_id:
+			continue
+		var completed := 0
+		for scene_value in chain.get("scenes", []):
+			if typeof(scene_value) == TYPE_DICTIONARY and _has_relationship_record(String((scene_value as Dictionary).get("id", ""))):
+				completed += 1
+		return {
+			"chain_id": clean_chain_id,
+			"title": String(chain.get("title", "관계 기록")),
+			"completed": completed,
+			"total": (chain.get("scenes", []) as Array).size()
+		}
+	return {}
+
+
+## Relationship tags are optional data-driven labels, never a stat or gameplay modifier.
+func get_relationship_tags(pair_key: String) -> Array:
+	return relationship_event_catalog.get_tags_for(pair_key, get_relationship_memories(pair_key))
 
 
 func _relationship_start_unlocked(chain: Dictionary) -> bool:
