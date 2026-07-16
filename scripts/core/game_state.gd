@@ -5,7 +5,7 @@ const DEFAULT_EPISODE_PATH := "res://data/episodes/episode_001_afterlife_station
 const RED_UMBRELLA_ALLEY_EPISODE_PATH := "res://data/episodes/episode_002_red_umbrella_alley.json"
 const DEAD_FREQUENCY_STATION_EPISODE_PATH := "res://data/episodes/episode_003_dead_frequency_station.json"
 const SAVE_FILE_PATH := "user://urban_legend_save.json"
-const SAVE_VERSION := "mvp-045"
+const SAVE_VERSION := "mvp-046"
 const DEFAULT_DIALOGUE_NODE_ID := "dialogue_intro"
 const DEFAULT_FIELD_NODE_ID := "dialogue_intro"
 const STABILITY_SCHEMA_VERSION := 2
@@ -136,6 +136,7 @@ var active_relationship_scene: Dictionary = {}
 var agent_case_states: Dictionary = {}
 var victim_state: Dictionary = {}
 var echo_fragments := 30
+var research_points := 0
 var granted_reward_ids: Array = []
 var faction_relations: Dictionary = {}
 var triggered_faction_event_ids: Array = []
@@ -227,6 +228,7 @@ func reset_run_state() -> void:
 	agent_case_states.clear()
 	victim_state.clear()
 	echo_fragments = 30
+	research_points = 0
 	granted_reward_ids.clear()
 	faction_relations.clear()
 	triggered_faction_event_ids.clear()
@@ -277,6 +279,38 @@ func set_campaign_schedule(agent_id: String, time_slot: String, activity_id: Str
 ## Returns one agent's assignments for the current campaign day.
 func get_campaign_agent_schedule(agent_id: String) -> Dictionary:
 	return campaign_state.get_agent_schedule(agent_id)
+
+
+## Returns the accumulated points used to unlock verified research projects.
+func get_research_points() -> int:
+	return maxi(0, research_points)
+
+
+## Shows the fixed result for the current half-day before the player confirms research.
+## The same day, slot and protagonist always produce the same value after reload.
+func get_research_activity_preview(agent_id: String) -> Dictionary:
+	var clean_agent_id := agent_id.strip_edges()
+	if clean_agent_id.is_empty():
+		return {"minimum": 1, "maximum": 3, "total": 1, "error": "연구 담당 요원이 없습니다."}
+	var analysis := get_agent_ability(clean_agent_id, "analysis")
+	var performance_chance := clampi(25 + analysis * 14, 25, 95)
+	var performance_roll := _get_deterministic_research_roll(clean_agent_id)
+	var performance_bonus := 1 if performance_roll <= performance_chance else 0
+	var mage_tier := get_faction_tier("mage_society")
+	var condition_bonus := 1 if mage_tier in ["favorable", "trusted"] else 0
+	var total := clampi(1 + performance_bonus + condition_bonus, 1, 3)
+	return {
+		"minimum": 1,
+		"maximum": 3,
+		"base": 1,
+		"analysis": analysis,
+		"performance_chance": performance_chance,
+		"performance_roll": performance_roll,
+		"performance_bonus": performance_bonus,
+		"condition_bonus": condition_bonus,
+		"condition_text": "마도회 협력: +1" if condition_bonus > 0 else "마도회 협력: +0",
+		"total": total
+	}
 
 
 ## Returns whether every supplied agent has both daily slots assigned.
@@ -2297,12 +2331,39 @@ func resolve_non_investigation_campaign_slot(agent_ids: Array) -> Dictionary:
 			if not campaign_state.assign_request(instance_id, agent_id):
 				return {"error": "의뢰 담당 요원을 배정하지 못했습니다."}
 			results.append(resolve_faction_request(instance_id, agent_id))
+		elif activity == "research":
+			results.append(_resolve_research_activity(agent_id))
 		else:
 			results.append({"agent_id": agent_id, "activity": "rest", "message": "대기·회복 일정을 마쳤습니다."})
 	if not complete_campaign_slot({"kind": "schedule", "results": results}):
 		return {"error": "현재 반일 결과를 저장하지 못했습니다."}
 	save_game()
 	return {"successful": true, "results": results}
+
+
+func _resolve_research_activity(agent_id: String) -> Dictionary:
+	var preview := get_research_activity_preview(agent_id)
+	if preview.has("error"):
+		return {"agent_id": agent_id, "activity": "research", "error": String(preview.get("error", ""))}
+	var awarded := int(preview.get("total", 1))
+	research_points += awarded
+	return {
+		"agent_id": agent_id,
+		"activity": "research",
+		"research_points": awarded,
+		"total_research_points": research_points,
+		"message": "기록과 잔향을 분석해 연구 포인트 %d점을 확보했습니다." % awarded,
+		"preview": preview
+	}
+
+
+func _get_deterministic_research_roll(agent_id: String) -> int:
+	var snapshot := get_campaign_snapshot()
+	var source := "%d:%s:%s" % [int(snapshot.get("day", 1)), String(snapshot.get("time_slot", "morning")), agent_id]
+	var checksum := 17
+	for byte_value in source.to_utf8_buffer():
+		checksum = (checksum * 31 + int(byte_value)) % 100
+	return checksum + 1
 
 
 func get_completed_faction_requests() -> Array:
@@ -2932,6 +2993,7 @@ func load_game() -> bool:
 	relationship_event_records = _to_dictionary_array(save_data.get("relationship_event_records", []))
 	active_relationship_scene = _to_dictionary(save_data.get("active_relationship_scene", {}))
 	echo_fragments = maxi(0, int(save_data.get("echo_fragments", 30)))
+	research_points = maxi(0, int(save_data.get("research_points", 0)))
 	granted_reward_ids = _to_unique_string_array(save_data.get("granted_reward_ids", []))
 	faction_relations = _to_dictionary(save_data.get("faction_relations", {}))
 	for faction_id in faction_relations:
@@ -3064,6 +3126,7 @@ func _make_save_data() -> Dictionary:
 		"relationship_event_records": get_relationship_records(),
 		"active_relationship_scene": active_relationship_scene.duplicate(true),
 		"echo_fragments": echo_fragments,
+		"research_points": get_research_points(),
 		"granted_reward_ids": granted_reward_ids.duplicate(),
 		"faction_relations": faction_relations.duplicate(true),
 		"triggered_faction_event_ids": triggered_faction_event_ids.duplicate(),

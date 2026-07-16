@@ -8,7 +8,8 @@ const AgentSelectionCardScene = preload("res://scenes/ui/agent_selection_card.ts
 const AssetCatalog = preload("res://scripts/ui/ui_asset_catalog.gd")
 const SCHEDULE_ACTIVITIES: Array[Dictionary] = [
 	{"id": "investigation", "label": "현장 조사"},
-	{"id": "rest", "label": "대기·회복"}
+	{"id": "rest", "label": "대기·회복"},
+	{"id": "research", "label": "연구"}
 ]
 const EXTERNAL_CONTACTS: Array[Dictionary] = [
 	{"id": "park_doyoon", "name": "박도윤", "role": "소문시장 정보 중개", "status": "접점 확인"},
@@ -126,6 +127,7 @@ func _build_ui() -> void:
 	actions.add_child(action_grid)
 	_add_dashboard_action(action_grid, "현장 조사", "현재 사건 조사 일정을 배정합니다.", func() -> void: _assign_dashboard_activity("investigation"))
 	_add_dashboard_action(action_grid, "대기·회복", "현재 반일을 회복 일정으로 배정합니다.", func() -> void: _assign_dashboard_activity("rest"))
+	_add_dashboard_action(action_grid, "연구", "기록과 잔향을 분석해 연구 포인트를 확보합니다.", func() -> void: _assign_dashboard_activity("research"))
 	_add_dashboard_action(action_grid, "일상 기록", "HQ의 요원 기록을 확인합니다.", func() -> void: _dashboard_tabs.current_tab = 0)
 	_add_dashboard_action(action_grid, "외부 의뢰", "세력 접점과 의뢰 게시판을 확인합니다.", func() -> void: _dashboard_tabs.current_tab = 3)
 	_add_start_panel(actions)
@@ -648,6 +650,16 @@ func _refresh_schedule() -> void:
 				_set_schedule_activity(agent_id, time_slot, activity_id)
 		)
 		row.add_child(picker)
+	var protagonist_id := GameState.get_protagonist_agent_id()
+	var research_preview := GameState.get_research_activity_preview(protagonist_id)
+	var research_label := _make_label("연구 예상: 기본 1 + 분석 %d + 협력 %d = 연구 포인트 %d점" % [
+		int(research_preview.get("performance_bonus", 0)),
+		int(research_preview.get("condition_bonus", 0)),
+		int(research_preview.get("total", 1))
+	])
+	research_label.name = "ResearchPreviewLabel"
+	research_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_schedule_list.add_child(research_label)
 	_schedule_list.add_child(_make_label("반일 일정은 주인공 한 명에게만 배정·소비됩니다. 서포트는 현장 자동 지원만 제공합니다."))
 
 

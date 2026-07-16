@@ -1,9 +1,10 @@
 # MVP-044~046 Repository Audit
 
-## Post-implementation update (2026-07-16)
+## Current implementation update (2026-07-16)
 
-- Save version is now `mvp-045`; absent relationship fields load as empty arrays/dictionaries, preserving every mvp-039 field.
-- Automated checks passed: MVP-042 daily episodes (28/28), MVP-044 narrative events (11/11), MVP-045 relationships (11/11), and MVP-046 presentation (5/5).
+- Save version is now `mvp-046`. Existing `mvp-045` saves load with `research_points: 0`; completed case, daily, relationship, campaign and equipment records remain untouched.
+- The current MVP-044~046 code is a partial implementation: catalog counts, relationship records and presentation registries exist, but the approved source packages still require a full-content and real-scene fidelity pass.
+- MVP-047 has started with the actual HQ research half-day: a fixed 1–3 point result is shown before execution and cannot be rerolled by save/reload.
 - Visual capture and full interactive Day 8/10 verification remain pending and are not represented as complete.
 
 > 문서 위치: `docs/audits/MVP044_046_REPOSITORY_AUDIT.md` | 실행 계획: `docs/planning/MVP044_046_EXECUTION_PLAN.md` | [백업]: `docs/archive/backup/YYYY-MM-DD/`

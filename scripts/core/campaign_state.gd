@@ -16,7 +16,7 @@ const DEAD_FREQUENCY := "episode_003_dead_frequency_station"
 const CASE_ORDER := [AFTERLIFE, RED_UMBRELLA, DEAD_FREQUENCY]
 const TIME_SLOTS := ["morning", "afternoon"]
 const SLOT_PHASES := ["planning", "in_progress", "result"]
-const SCHEDULE_ACTIVITIES := ["investigation", "rest"]
+const SCHEDULE_ACTIVITIES := ["investigation", "rest", "research"]
 const REQUEST_STATUSES := ["offered", "accepted", "completed", "failed", "declined", "canceled"]
 
 var _state: Dictionary = {}

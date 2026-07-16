@@ -5,9 +5,10 @@
 | Package | Status | Verified scope |
 |---|---|---|
 | WF-00 | complete | Local delegated runner and workflow contracts restored. |
-| MVP-044 | complete | 7 AFTER, 9 DAILY, 9 FACTION entries use the existing optional-event completion records. |
-| MVP-045 | complete | 12 chains / 30 scenes, textual memory records, and mvp-039 to mvp-045 empty-record migration. |
-| MVP-046 | complete | Presentation registry, expression fallback, six cut-in definitions, and presentation accessibility controls. |
+| MVP-044 | partial | 7 AFTER, 9 DAILY, 9 FACTION entries use the existing optional-event completion records; full approved source text still needs integration. |
+| MVP-045 | partial | 12 chains / 30 scenes and textual records exist; source-condition fidelity still needs integration. |
+| MVP-046 | partial | Registry, fallback and six cut-in definitions exist; real-scene presentation integration still needs verification and completion. |
+| MVP-047 | in progress | HQ research half-day: deterministic 1–3 point result, mvp-045 save migration, and preparation UI preview. |
 | Final visual capture | pending | Needs interactive 1280×720 and 1920×1080 review; no completion claim is made here. |
 
 > 문서 위치: `docs/planning/MVP044_046_EXECUTION_PLAN.md` | 감사 기준: `docs/audits/MVP044_046_REPOSITORY_AUDIT.md` | [백업]: `docs/archive/backup/YYYY-MM-DD/`
