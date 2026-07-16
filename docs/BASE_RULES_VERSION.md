@@ -10,20 +10,25 @@
 |---|---|
 | 공용 원본 | `alsdmlals4-eng/Base` |
 | 기준 브랜치 | `main` |
-| 기준 커밋 | `e05e198d9c003623f1a117fa1d4505e97117990e` |
+| 기준 커밋 | `b05dcc079485b1ea43d735130d6f7cca209739a9` |
 | 확인일 | 2026-07-16 |
-| Base 지식 버전 | v1.6.0 — 기획·서사·캐릭터 아트·대화 연출·조사·인수인계 확장 |
+| Base 지식 버전 | v1.9.3 — 기획·서사·아트·프레젠테이션·DeepSeek 워크트리·인수인계 사례 확장 |
 | 현재 상태 | 프로젝트 전용 기획과 Base 공용 방법 분리 / 원격 자동 병합 금지 |
 
 ## 이번 Base 반영
 
 Base의 canonical 공용 기획 지식 위치는 `docs/knowledge/`다.
 
+2026-07-16 확인 시 로컬 `Base` 체크아웃은 `f8cf0a1`로 원격 기준보다 오래되어 있다. 이 문서는 원격 `origin/main`의 `b05dcc0`을 기준으로 기록하며, 로컬 Base 체크아웃을 강제 전환하거나 프로젝트 문서를 일괄 덮어쓰지 않는다.
+
 - `methods/PLANNING_SYSTEM_METHOD.md`
 - `methods/NARRATIVE_AND_RELATIONSHIP_METHOD.md`
 - `methods/CHARACTER_AND_NARRATIVE_ART_METHOD.md`
 - `methods/DIALOGUE_AND_EVENT_PRESENTATION_METHOD.md`
 - `skills/PLANNING_RESEARCH_HANDOFF_SKILL_MATRIX.md`
+- `skills/DESIGN_HANDOFF_AND_REVIEW_SKILL_MATRIX.md`
+- `skills/ART_DIRECTION_SKILL_MATRIX.md`
+- `skills/ANIMATION_PRESENTATION_SKILL_MATRIX.md`
 - urban-legend에서 일반화한 프로젝트 사례 7건
 - 미스터리 근거 재열람·캐릭터 반응·학습 가능한 실패 벤치마킹 사례 2건
 - 프로젝트 방향·서사·아트·연출·handoff 템플릿

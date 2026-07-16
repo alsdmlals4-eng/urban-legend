@@ -2,6 +2,9 @@
 
 ## Current implementation update (2026-07-16)
 
+- Current working baseline is `codex/mvp044-046-integration` at `8593e40`, which is also pushed as `origin/codex/mvp044-046-integration`. `origin/main` remains at `dd3c9a8` and is intentionally behind pending final regression.
+- `data/narrative_events.json` parses with the bundled Python and Node runtimes: 25 optional entries are registered (7 AFTER / 9 DAILY / 9 FACTION). The first 15 entries have all three approved choices; the final 10 still need source-fidelity restoration.
+- User-owned Godot import metadata and `tests/ui_visual_capture.gd` are dirty local capture artifacts. They are preserved by the workflow allowlist and excluded from integration commits.
 - Save version is now `mvp-047`. Existing `mvp-045` and `mvp-046` saves load missing research and contract fields with safe defaults; completed case, daily, relationship, campaign and equipment records remain untouched.
 - The current MVP-044~046 code is a partial implementation: catalog counts, relationship records and presentation registries exist, but the approved source packages still require a full-content and real-scene fidelity pass.
 - MVP-047 is partially implemented: the HQ research half-day yields a fixed 1–3 point result shown before execution; 3/3/5-point projects unlock existing equipment or consumable crafting for 35/25 fragments; and the researched Raymond Kane contract charges 35 fragments only when its one-event deployment begins. Save/reload cannot reroll research or recharge the contract.
@@ -15,9 +18,9 @@
 
 | 항목 | 확인 결과 |
 |---|---|
-| 기준 브랜치 | `main`에서 분기한 `codex/mvp044-046-integration` |
-| 기준 SHA | `dd3c9a8776eb938eeeeb2f1319af6bfc4a135202` |
-| 원격 기준 | `origin/main`도 같은 SHA |
+| 기준 브랜치 | `codex/mvp044-046-integration` |
+| 기준 SHA | `8593e40f46275b8c27b89435a229877450e79925` |
+| 원격 기준 | `origin/codex/mvp044-046-integration`도 같은 SHA; `origin/main`은 `dd3c9a8` |
 | 저장 | `mvp-039`, `mvp-038` 이관 지원 |
 | 구현 기준선 | MVP-043 / Ver 4.1 |
 | 현재 작업 상태 | MVP-044~046 진행 중 |
