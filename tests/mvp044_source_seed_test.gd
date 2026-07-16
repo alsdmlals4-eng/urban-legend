@@ -98,6 +98,39 @@ func _run() -> void:
 		],
 		"FACTION-03"
 	)
+	_expect_seed(
+		game_state.get_daily_episode("AFTER-04"),
+		"agent_kwon_narae",
+		"episode_002_red_umbrella_alley",
+		[
+			"우산을 피하는 행동도 후유증 기록에 남길게요.",
+			"오늘은 우산 없이 나갈 수 있는 출구로 안내할게요.",
+			"세 번째 박자를 셀 때 어떤 골목이 떠오르는지 말해줄 수 있나요?"
+		],
+		"AFTER-04"
+	)
+	_expect_seed(
+		game_state.get_daily_episode("DAILY-04"),
+		"agent_kwon_narae",
+		"",
+		[
+			"당직표의 마지막 이름을 소리 내지 않고 촬영한다.",
+			"모두에게 각자 보이는 글자를 적게 한다.",
+			"당직실의 여섯 번째 자리를 확인한다."
+		],
+		"DAILY-04"
+	)
+	_expect_seed(
+		game_state.get_daily_episode("FACTION-04"),
+		"agent_kwon_narae",
+		"",
+		[
+			"문양을 복사하고 한 층씩 분리 소각하죠.",
+			"봉인 상태로 보존하고 추가 분석하죠.",
+			"카밀라가 즉시 태우려는 이유를 먼저 듣죠."
+		],
+		"FACTION-04"
+	)
 	_finish()
 
 
