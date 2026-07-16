@@ -164,6 +164,39 @@ func _run() -> void:
 		],
 		"FACTION-05"
 	)
+	_expect_seed(
+		game_state.get_daily_episode("AFTER-06"),
+		"agent_kwon_narae",
+		"episode_003_dead_frequency_station",
+		[
+			"피해자가 직접 사용할 목소리를 고르게 한다.",
+			"발생 시점이 가장 이른 음성을 원본으로 지정한다.",
+			"세 음성을 모두 보존하되 사용 권한을 분리한다."
+		],
+		"AFTER-06"
+	)
+	_expect_seed(
+		game_state.get_daily_episode("DAILY-06"),
+		"agent_kwon_narae",
+		"",
+		[
+			"윤서하의 우산을 바로 꺼낸다.",
+			"17번 칸 내부 길이를 장비로 측정한다.",
+			"다른 우산을 넣지 말고 다음 비까지 관찰 표식을 붙인다."
+		],
+		"DAILY-06"
+	)
+	_expect_seed(
+		game_state.get_daily_episode("FACTION-06"),
+		"archivist_aka",
+		"",
+		[
+			"유출 경로를 추적하되 소문을 즉시 삭제하지 않는다.",
+			"사실과 다른 규칙을 공식 정정문으로 공개한다.",
+			"박도윤에게 소문 확산 속도를 늦출 거래를 제안한다."
+		],
+		"FACTION-06"
+	)
 	_finish()
 
 
