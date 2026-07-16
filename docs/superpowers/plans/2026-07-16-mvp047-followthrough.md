@@ -36,9 +36,9 @@
 - Modify only if a read-only query is absent: `scripts/core/game_state.gd`
 - Test: `tests/mvp047_*_test.gd` and new result/database UI tests
 
-- [ ] Write failing UI tests proving a completed project and the resolved Raymond contract appear in their intended read-only sections.
-- [ ] Implement presentation that derives from existing completed-project and contract state; do not alter completion, payment, or acknowledgement behaviour.
-- [ ] Verify result and DB screens at 1280×720 and 1920×1080.
+- [x] Write failing UI tests proving a completed project and the resolved Raymond contract appear in their intended read-only sections.
+- [x] Implement presentation that derives from existing completed-project and contract state; do not alter completion, payment, or acknowledgement behaviour.
+- [x] Verify result and DB screens at 1280×720 and 1920×1080.
 
 ### Task 3: Day 9 and fourth-case approved vertical slice
 

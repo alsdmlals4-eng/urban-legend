@@ -306,6 +306,15 @@ func _show_completed_case_report(report: Dictionary, parent: VBoxContainer) -> v
 	], parent)
 	_add_report_entries("수집 단서", report.get("collected_clues", []), "title", "description", parent)
 	_add_minigame_entries(report.get("minigame_results", {}), parent)
+	var completed_research: Array = report.get("completed_research_projects", [])
+	if not completed_research.is_empty():
+		_add_report_entries("완료 연구 과제", completed_research, "title", "description", parent, "CompletedResearchReport")
+	var contract_lines := _make_external_contract_lines(
+		report.get("external_contract", {}),
+		String(report.get("external_contract_status", ""))
+	)
+	if not contract_lines.is_empty():
+		_add_text_entries("외부 안전선 기록", contract_lines, parent, "ExternalContractReport")
 	if String(report.get("episode_id", "")) == "episode_001_afterlife_station":
 		var route_result: Dictionary = report.get("minigame_results", {}).get("minigame_frequency_sync", {})
 		if bool(route_result.get("successful", false)):
@@ -355,12 +364,12 @@ func _add_agent_entries(agents: Array, parent: VBoxContainer) -> void:
 	_add_text_entries("선택 요원", lines, parent)
 
 
-func _add_report_entries(title: String, entries: Array, name_key: String, description_key: String, parent: VBoxContainer) -> void:
+func _add_report_entries(title: String, entries: Array, name_key: String, description_key: String, parent: VBoxContainer, section_name: String = "") -> void:
 	var lines: Array = []
 	for entry in entries:
 		if typeof(entry) == TYPE_DICTIONARY:
 			lines.append(_make_entry_usage_line(entry, name_key, description_key))
-	_add_text_entries(title, lines, parent)
+	_add_text_entries(title, lines, parent, section_name)
 
 
 func _make_entry_usage_line(entry: Dictionary, name_key: String, description_key: String) -> String:
@@ -391,8 +400,26 @@ func _make_recovery_text(result: Dictionary) -> String:
 	]
 
 
-func _add_text_entries(title: String, lines: Array, parent: VBoxContainer) -> void:
+func _make_external_contract_lines(contract: Dictionary, status_message: String) -> Array:
+	if contract.is_empty():
+		return []
+	var contract_id := String(contract.get("id", ""))
+	var definition := GameState.get_mercenary_contract(contract_id)
+	var title := String(definition.get("title", contract_id))
+	var safety_reduction := int(contract.get("safety_reduction", definition.get("safety_reduction", 0)))
+	var state_label := "첫 위험 결과를 완화하지 않았습니다."
+	if bool(contract.get("safety_line_used", false)):
+		state_label = "첫 위험 결과를 %d 완화했습니다." % safety_reduction
+	var lines: Array = ["%s · %s" % [title, state_label]]
+	if not status_message.is_empty():
+		lines.append(status_message)
+	return lines
+
+
+func _add_text_entries(title: String, lines: Array, parent: VBoxContainer, section_name: String = "") -> void:
 	var panel := PanelContainer.new()
+	if not section_name.is_empty():
+		panel.name = section_name
 	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	parent.add_child(panel)
 

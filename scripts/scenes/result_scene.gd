@@ -64,6 +64,7 @@ func _build_ui() -> void:
 
 func _add_result_panel(parent: Control) -> void:
 	var afterlife := GameState.get_current_episode_id() == "episode_001_afterlife_station"
+	var outcome_report := GameState.get_case_report_summary()
 	var content := _add_section(parent, "안정화 결과" if afterlife else "회수 결과", "현재 출현을 안정화하고 대응 절차를 기록합니다." if afterlife else "괴이 핵 회수 뒤 현재 사건의 결말과 보상을 확인합니다.")
 
 	content.add_child(_make_label("에피소드명: %s" % GameState.get_current_episode_title()))
@@ -71,6 +72,15 @@ func _add_result_panel(parent: Control) -> void:
 	content.add_child(_make_label("피해자 구조 결과: %s" % GameState.get_current_victim_rescue_result()))
 	content.add_child(_make_label("피해자 후일담: %s" % GameState.get_current_victim_after_story()))
 	content.add_child(_make_label("저승역 반복 안내 잔향 회수 상태: %s" % _make_recovery_status_text()) if afterlife else _make_label("괴이 핵 회수 상태: %s" % _make_recovery_status_text()))
+	var completed_research_titles := _make_entry_titles(outcome_report.get("completed_research_projects", []), "title")
+	if not completed_research_titles.is_empty():
+		_add_text_list(content, "완료 연구 과제", completed_research_titles, "CompletedResearchOutcome")
+	var contract_lines := _make_external_contract_lines(
+		outcome_report.get("external_contract", {}),
+		String(outcome_report.get("external_contract_status", ""))
+	)
+	if not contract_lines.is_empty():
+		_add_text_list(content, "외부 안전선 기록", contract_lines, "ExternalContractOutcome")
 	if afterlife:
 		var route_result := GameState.get_minigame_result("minigame_frequency_sync")
 		if not route_result.is_empty():
@@ -245,8 +255,34 @@ func _make_report_recovery_text(result: Dictionary) -> String:
 	]
 
 
-func _add_text_list(parent: Control, title: String, lines: Array) -> void:
+func _make_external_contract_lines(contract: Dictionary, status_message: String) -> Array:
+	if contract.is_empty():
+		return []
+	var contract_id := String(contract.get("id", ""))
+	var definition := GameState.get_mercenary_contract(contract_id)
+	var title := String(definition.get("title", contract_id))
+	var safety_reduction := int(contract.get("safety_reduction", definition.get("safety_reduction", 0)))
+	var state_label := "첫 위험 결과를 완화하지 않았습니다."
+	if bool(contract.get("safety_line_used", false)):
+		state_label = "첫 위험 결과를 %d 완화했습니다." % safety_reduction
+	var lines: Array = ["%s · %s" % [title, state_label]]
+	if not status_message.is_empty():
+		lines.append(status_message)
+	return lines
+
+
+func _make_entry_titles(entries: Array, name_key: String) -> Array:
+	var titles: Array = []
+	for entry in entries:
+		if typeof(entry) == TYPE_DICTIONARY:
+			titles.append(String(entry.get(name_key, "")))
+	return titles
+
+
+func _add_text_list(parent: Control, title: String, lines: Array, content_name: String = "") -> void:
 	var content := VBoxContainer.new()
+	if not content_name.is_empty():
+		content.name = content_name
 	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	content.add_theme_constant_override("separation", 4)
 	parent.add_child(content)

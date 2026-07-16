@@ -1761,6 +1761,8 @@ func get_case_report_summary() -> Dictionary:
 	var record_entries := get_current_result_unlocked_records()
 	var reward_entries := get_current_result_unlocked_research_rewards()
 	var equipment_entries := get_current_result_unlocked_equipment()
+	var completed_projects := get_completed_research_projects()
+	var contract_snapshot := get_active_mercenary_contract()
 	return {
 		"episode_id": get_current_episode_id(),
 		"episode_title": get_current_episode_title(),
@@ -1773,6 +1775,9 @@ func get_case_report_summary() -> Dictionary:
 		"unlocked_records": record_entries,
 		"unlocked_research_rewards": reward_entries,
 		"unlocked_equipment": equipment_entries,
+		"completed_research_projects": completed_projects,
+		"external_contract": contract_snapshot,
+		"external_contract_status": get_mercenary_contract_status_message(),
 		"selected_agents": selected_agents,
 		"agent_trust": trust_values,
 		"triggered_agent_events": _get_triggered_agent_event_entries(),

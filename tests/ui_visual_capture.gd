@@ -201,6 +201,10 @@ func _capture() -> void:
 		current_scene.call("_show_section", "daily_episode_records")
 		for _frame in range(3):
 			await process_frame
+	if ui_state == "mvp047_result" and current_scene.has_method("_show_section"):
+		current_scene.call("_show_section", "completed_case_reports")
+		for _frame in range(3):
+			await process_frame
 	if args.size() > 3 and String(args[3]) == "editor":
 		var f2 := InputEventKey.new()
 		f2.keycode = KEY_F2
@@ -293,11 +297,13 @@ func _prepare_mvp047_state(game_state: Node, episode_path: String, ui_state: Str
 	if not bool(contract_selection.get("successful", false)):
 		push_error("MVP-047 capture setup could not reserve Raymond contract")
 		return
-	if ui_state == "mvp047_recovery":
+	if ui_state == "mvp047_recovery" or ui_state == "mvp047_result":
 		game_state.set_campaign_planned_case("episode_001_afterlife_station")
 		if not game_state.begin_campaign_operation("episode_001_afterlife_station"):
 			push_error("MVP-047 capture setup could not begin the Raymond operation")
-	elif ui_state == "mvp047_result":
+	if ui_state == "mvp047_result":
+		_prepare_mvp039_evidence(game_state)
+		game_state.consume_active_mercenary_safety_line(10)
 		game_state.start_resolution_phase()
 		game_state.save_recovery_result(true, "core_recovered", 100)
 		game_state.record_current_case_report()
