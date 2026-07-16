@@ -5,7 +5,7 @@ const DEFAULT_EPISODE_PATH := "res://data/episodes/episode_001_afterlife_station
 const RED_UMBRELLA_ALLEY_EPISODE_PATH := "res://data/episodes/episode_002_red_umbrella_alley.json"
 const DEAD_FREQUENCY_STATION_EPISODE_PATH := "res://data/episodes/episode_003_dead_frequency_station.json"
 const SAVE_FILE_PATH := "user://urban_legend_save.json"
-const SAVE_VERSION := "mvp-046"
+const SAVE_VERSION := "mvp-047"
 const DEFAULT_DIALOGUE_NODE_ID := "dialogue_intro"
 const DEFAULT_FIELD_NODE_ID := "dialogue_intro"
 const STABILITY_SCHEMA_VERSION := 2
@@ -85,6 +85,7 @@ const CampaignStateScript := preload("res://scripts/core/campaign_state.gd")
 const AgentCatalogScript := preload("res://scripts/data/agent_catalog.gd")
 const DailyEpisodeCatalogScript := preload("res://scripts/data/daily_episode_catalog.gd")
 const RelationshipEventCatalogScript := preload("res://scripts/data/relationship_event_catalog.gd")
+const ResearchProjectCatalogScript := preload("res://scripts/data/research_project_catalog.gd")
 
 var current_episode_path := DEFAULT_EPISODE_PATH
 var current_episode_data: Dictionary = {}
@@ -137,6 +138,7 @@ var agent_case_states: Dictionary = {}
 var victim_state: Dictionary = {}
 var echo_fragments := 30
 var research_points := 0
+var completed_research_project_ids: Array = []
 var granted_reward_ids: Array = []
 var faction_relations: Dictionary = {}
 var triggered_faction_event_ids: Array = []
@@ -150,6 +152,7 @@ var campaign_state = CampaignStateScript.new()
 var daily_episode_catalog = DailyEpisodeCatalogScript.new()
 var relationship_event_catalog = RelationshipEventCatalogScript.new()
 var agent_catalog = AgentCatalogScript.new()
+var research_project_catalog = ResearchProjectCatalogScript.new()
 
 
 func _ready() -> void:
@@ -229,6 +232,7 @@ func reset_run_state() -> void:
 	victim_state.clear()
 	echo_fragments = 30
 	research_points = 0
+	completed_research_project_ids.clear()
 	granted_reward_ids.clear()
 	faction_relations.clear()
 	triggered_faction_event_ids.clear()
@@ -284,6 +288,75 @@ func get_campaign_agent_schedule(agent_id: String) -> Dictionary:
 ## Returns the accumulated points used to unlock verified research projects.
 func get_research_points() -> int:
 	return maxi(0, research_points)
+
+
+## Returns the fixed project catalog used by the HQ research loop.
+func get_research_projects() -> Array:
+	return research_project_catalog.get_projects()
+
+
+func get_research_project(project_id: String) -> Dictionary:
+	return research_project_catalog.get_project(project_id)
+
+
+func is_research_project_completed(project_id: String) -> bool:
+	return completed_research_project_ids.has(project_id.strip_edges())
+
+
+## Returns completed project entries for UI and DB readers without exposing save ids.
+func get_completed_research_projects() -> Array:
+	var projects: Array = []
+	for project_id_value in completed_research_project_ids:
+		var project := get_research_project(String(project_id_value))
+		if not project.is_empty():
+			projects.append(project)
+	return projects
+
+
+## Spends research points once to validate a research project.
+func complete_research_project(project_id: String) -> Dictionary:
+	var project := get_research_project(project_id)
+	if project.is_empty():
+		return {"successful": false, "message": "연구 과제를 찾을 수 없습니다."}
+	var clean_id := String(project.get("id", ""))
+	if is_research_project_completed(clean_id):
+		return {"successful": false, "message": "이미 완료한 연구 과제입니다."}
+	var cost := maxi(0, int(project.get("research_cost", 0)))
+	if research_points < cost:
+		return {"successful": false, "message": "연구 포인트가 부족합니다.", "required_points": cost, "research_points": research_points}
+	research_points -= cost
+	completed_research_project_ids.append(clean_id)
+	save_game()
+	return {"successful": true, "project": project, "research_cost": cost, "research_points": research_points, "message": "%s 연구를 완료했습니다." % String(project.get("title", clean_id))}
+
+
+## Crafts a completed project's output without bypassing normal equipment or inventory caps.
+func craft_research_project(project_id: String) -> Dictionary:
+	var project := get_research_project(project_id)
+	if project.is_empty() or not is_research_project_completed(String(project.get("id", ""))):
+		return {"successful": false, "message": "완료한 연구 과제만 제작할 수 있습니다."}
+	var output: Dictionary = _to_dictionary(project.get("output", {}))
+	var output_kind := String(output.get("kind", ""))
+	var output_id := String(output.get("id", ""))
+	if output_kind == "contract_unlock":
+		return {"successful": false, "message": "이 연구는 외부 접점에서 계약 절차를 해금합니다."}
+	if output_id.is_empty() or output_kind not in ["equipment", "consumable"]:
+		return {"successful": false, "message": "제작 결과를 확인할 수 없습니다."}
+	if output_kind == "equipment" and has_unlocked_equipment(output_id):
+		return {"successful": false, "message": "이미 보유한 영구 장비입니다."}
+	if output_kind == "consumable" and int(consumable_inventory.get(output_id, 0)) >= 3:
+		return {"successful": false, "message": "소모품은 종류별로 최대 3개까지 보유할 수 있습니다."}
+	var fragment_cost := maxi(0, int(project.get("fragment_cost", 0)))
+	if echo_fragments < fragment_cost:
+		return {"successful": false, "message": "잔향 파편이 부족합니다.", "required_fragments": fragment_cost, "echo_fragments": echo_fragments}
+	echo_fragments -= fragment_cost
+	if output_kind == "equipment":
+		_unlock_unique(unlocked_equipment, output_id)
+	else:
+		var amount := clampi(int(output.get("amount", 1)), 1, 3)
+		consumable_inventory[output_id] = mini(3, int(consumable_inventory.get(output_id, 0)) + amount)
+	save_game()
+	return {"successful": true, "project": project, "fragment_cost": fragment_cost, "echo_fragments": echo_fragments, "output_id": output_id, "message": "%s 제작을 완료했습니다." % String(project.get("title", output_id))}
 
 
 ## Shows the fixed result for the current half-day before the player confirms research.
@@ -2994,6 +3067,7 @@ func load_game() -> bool:
 	active_relationship_scene = _to_dictionary(save_data.get("active_relationship_scene", {}))
 	echo_fragments = maxi(0, int(save_data.get("echo_fragments", 30)))
 	research_points = maxi(0, int(save_data.get("research_points", 0)))
+	completed_research_project_ids = _to_unique_string_array(save_data.get("completed_research_project_ids", []))
 	granted_reward_ids = _to_unique_string_array(save_data.get("granted_reward_ids", []))
 	faction_relations = _to_dictionary(save_data.get("faction_relations", {}))
 	for faction_id in faction_relations:
@@ -3127,6 +3201,7 @@ func _make_save_data() -> Dictionary:
 		"active_relationship_scene": active_relationship_scene.duplicate(true),
 		"echo_fragments": echo_fragments,
 		"research_points": get_research_points(),
+		"completed_research_project_ids": completed_research_project_ids.duplicate(),
 		"granted_reward_ids": granted_reward_ids.duplicate(),
 		"faction_relations": faction_relations.duplicate(true),
 		"triggered_faction_event_ids": triggered_faction_event_ids.duplicate(),

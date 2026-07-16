@@ -19,6 +19,7 @@ const EXTERNAL_CONTACTS: Array[Dictionary] = [
 ]
 
 var _equipment_list: VBoxContainer
+var _research_project_list: VBoxContainer
 var _episode_list: VBoxContainer
 var _equipped_label: Label
 var _modifier_label: Label
@@ -423,6 +424,11 @@ func _add_equipment_panel(parent: Control) -> void:
 	_equipment_list = VBoxContainer.new()
 	_equipment_list.add_theme_constant_override("separation", 6)
 	content.add_child(_equipment_list)
+
+	_research_project_list = VBoxContainer.new()
+	_research_project_list.name = "ResearchProjectList"
+	_research_project_list.add_theme_constant_override("separation", 6)
+	content.add_child(_research_project_list)
 
 
 func _add_record_panel(parent: Control) -> void:
@@ -838,6 +844,7 @@ func _refresh_equipment() -> void:
 
 	_modifier_label.text = "적용될 조사 보정: %s" % GameState.get_next_investigation_modifier_text()
 	_clear_children(_equipment_list)
+	_refresh_research_projects()
 
 	var equipment_entries := GameState.get_unlocked_equipment_entries()
 	if equipment_entries.is_empty():
@@ -862,6 +869,55 @@ func _refresh_equipment() -> void:
 		]
 		description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		_equipment_list.add_child(description)
+
+
+func _refresh_research_projects() -> void:
+	if _research_project_list == null:
+		return
+	_clear_children(_research_project_list)
+	_research_project_list.add_child(_make_label("연구 과제 · 보유 연구 포인트 %d / 잔향 파편 %d" % [GameState.get_research_points(), GameState.get_echo_fragments()]))
+	for project_value in GameState.get_research_projects():
+		if typeof(project_value) != TYPE_DICTIONARY:
+			continue
+		var project: Dictionary = project_value
+		var project_id := String(project.get("id", ""))
+		if project_id.is_empty():
+			continue
+		var completed := GameState.is_research_project_completed(project_id)
+		var output: Dictionary = project.get("output", {})
+		var output_kind := String(output.get("kind", ""))
+		var description := _make_label("%s\n%s" % [String(project.get("title", project_id)), String(project.get("description", ""))])
+		description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		_research_project_list.add_child(description)
+		if not completed:
+			var complete_button := Button.new()
+			complete_button.name = "ResearchProjectComplete_%s" % project_id
+			complete_button.text = "연구 완료 · %d 포인트" % int(project.get("research_cost", 0))
+			complete_button.disabled = GameState.get_research_points() < int(project.get("research_cost", 0))
+			complete_button.pressed.connect(_complete_research_project.bind(project_id))
+			_research_project_list.add_child(complete_button)
+			continue
+		if output_kind == "contract_unlock":
+			_research_project_list.add_child(_make_label("연구 완료 · 외부 접점에서 계약 절차를 사용할 수 있습니다."))
+			continue
+		var craft_button := Button.new()
+		craft_button.name = "ResearchProjectCraft_%s" % project_id
+		craft_button.text = "제작 · 잔향 파편 %d" % int(project.get("fragment_cost", 0))
+		craft_button.disabled = GameState.get_echo_fragments() < int(project.get("fragment_cost", 0))
+		craft_button.pressed.connect(_craft_research_project.bind(project_id))
+		_research_project_list.add_child(craft_button)
+
+
+func _complete_research_project(project_id: String) -> void:
+	var result := GameState.complete_research_project(project_id)
+	_status_label.text = String(result.get("message", "연구 과제를 처리하지 못했습니다."))
+	_refresh()
+
+
+func _craft_research_project(project_id: String) -> void:
+	var result := GameState.craft_research_project(project_id)
+	_status_label.text = String(result.get("message", "연구 제작을 처리하지 못했습니다."))
+	_refresh()
 
 
 func _refresh_records() -> void:

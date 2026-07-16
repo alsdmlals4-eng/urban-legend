@@ -1,0 +1,38 @@
+{
+  "projects": [
+    {
+      "id": "research_resonance_prism",
+      "title": "잔향 분광경 조립법",
+      "description": "회수 기록의 분광 패턴을 고정해 첫 전조 예측을 보조하는 장비 설계입니다.",
+      "research_cost": 3,
+      "fragment_cost": 35,
+      "output": {
+        "kind": "equipment",
+        "id": "gear_resonance_prism"
+      }
+    },
+    {
+      "id": "research_mental_incense",
+      "title": "정신 안정향 정제법",
+      "description": "기록국 표준 향료를 사건 반입용 안정향으로 정제하는 절차입니다.",
+      "research_cost": 3,
+      "fragment_cost": 25,
+      "output": {
+        "kind": "consumable",
+        "id": "consumable_mental_incense",
+        "amount": 1
+      }
+    },
+    {
+      "id": "research_contract_protocol",
+      "title": "현장 계약 안전 절차",
+      "description": "외부 전문가가 한 사건에만 안전선을 제공할 수 있도록 기록국 절차를 검증합니다.",
+      "research_cost": 5,
+      "fragment_cost": 0,
+      "output": {
+        "kind": "contract_unlock",
+        "id": "contract_raymond_kane"
+      }
+    }
+  ]
+}
