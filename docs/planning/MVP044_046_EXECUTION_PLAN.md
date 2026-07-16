@@ -5,7 +5,7 @@
 | Package | Status | Verified scope |
 |---|---|---|
 | WF-00 | complete | Local delegated runner and workflow contracts restored. |
-| MVP-044 | partial | 25 optional entries are registered. AFTER-01~05, DAILY-01~05, and FACTION-01~05 have all three approved choices; the remaining 10 entries need source-fidelity restoration and real-scene verification. |
+| MVP-044 | partial | All 25 optional entries (7 AFTER / 9 DAILY / 9 FACTION) now expose their three approved choices while preserving event IDs and unlock conditions. Real-scene verification is still required. |
 | MVP-045 | partial | 12 chains / 30 scenes and textual records exist; source-condition fidelity still needs integration. |
 | MVP-046 | partial | Registry, fallback and six cut-in definitions exist; real-scene presentation integration still needs verification and completion. |
 | MVP-047 | partial | HQ research half-day, 3/3/5-point project completion, 35/25-fragment crafting, and Raymond Kane's one-event 35-fragment safety-line contract are implemented. Fourth-case content and full economy QA remain pending. |

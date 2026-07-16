@@ -2,11 +2,11 @@
 
 ## Current implementation update (2026-07-16)
 
-- Current working baseline is `codex/mvp044-046-integration` at `8593e40`, which is also pushed as `origin/codex/mvp044-046-integration`. `origin/main` remains at `dd3c9a8` and is intentionally behind pending final regression.
-- `data/narrative_events.json` parses with the bundled Python and Node runtimes: 25 optional entries are registered (7 AFTER / 9 DAILY / 9 FACTION). The first 15 entries have all three approved choices; the final 10 still need source-fidelity restoration.
+- Current working baseline is `codex/mvp044-046-integration` at `bfc1146`, which is also pushed as `origin/codex/mvp044-046-integration`. `origin/main` remains intentionally behind pending final regression.
+- `data/narrative_events.json` parses with the bundled Python and Node runtimes: all 25 optional entries (7 AFTER / 9 DAILY / 9 FACTION) now expose the three approved choices and retain their existing event IDs and unlock conditions. This is source-contract verification, not a claim that every entry has completed an interactive real-scene playthrough.
 - User-owned Godot import metadata and `tests/ui_visual_capture.gd` are dirty local capture artifacts. They are preserved by the workflow allowlist and excluded from integration commits.
 - Save version is now `mvp-047`. Existing `mvp-045` and `mvp-046` saves load missing research and contract fields with safe defaults; completed case, daily, relationship, campaign and equipment records remain untouched.
-- The current MVP-044~046 code is a partial implementation: catalog counts, relationship records and presentation registries exist, but the approved source packages still require a full-content and real-scene fidelity pass.
+- The current MVP-044~046 code remains a partial implementation: MVP-044 source restoration is complete, while its real-scene fidelity pass plus the MVP-045 relationship and MVP-046 presentation integration audits remain pending.
 - MVP-047 is partially implemented: the HQ research half-day yields a fixed 1–3 point result shown before execution; 3/3/5-point projects unlock existing equipment or consumable crafting for 35/25 fragments; and the researched Raymond Kane contract charges 35 fragments only when its one-event deployment begins. Save/reload cannot reroll research or recharge the contract.
 - Visual capture and full interactive Day 8/10 verification remain pending and are not represented as complete.
 
@@ -19,7 +19,7 @@
 | 항목 | 확인 결과 |
 |---|---|
 | 기준 브랜치 | `codex/mvp044-046-integration` |
-| 기준 SHA | `8593e40f46275b8c27b89435a229877450e79925` |
+| 기준 SHA | `bfc1146` (MVP-044 approved-source restoration complete; full interactive regression remains pending) |
 | 원격 기준 | `origin/codex/mvp044-046-integration`도 같은 SHA; `origin/main`은 `dd3c9a8` |
 | 저장 | `mvp-039`, `mvp-038` 이관 지원 |
 | 구현 기준선 | MVP-043 / Ver 4.1 |
