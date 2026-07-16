@@ -230,6 +230,50 @@ func _run() -> void:
 		],
 		"FACTION-07"
 	)
+	_expect_seed(
+		game_state.get_daily_episode("DAILY-08"),
+		"agent_han_yuri",
+		"",
+		[
+			"사탕 분류를 공식 감응 후 안정 절차로 기록한다.",
+			"한유리가 직접 만든 분류는 개인 기록으로만 남긴다.",
+			"권나래도 사탕 하나를 골라 오늘의 기억 기준을 만든다."
+		],
+		"DAILY-08"
+	)
+	_expect_seed(
+		game_state.get_daily_episode("DAILY-09"),
+		"archivist_aka",
+		"",
+		[
+			"아카가 상황에 따라 문장 톤을 바꾸도록 한다.",
+			"정확한 본문 뒤에 인간적인 보조 문장 한 줄만 추가한다.",
+			"현장 요원이 교정 문장을 승인한 경우에만 사용한다."
+		],
+		"DAILY-09"
+	)
+	_expect_seed(
+		game_state.get_daily_episode("FACTION-08"),
+		"archivist_aka",
+		"",
+		[
+			"세 신호가 모두 일치할 때만 철수한다.",
+			"현장 대장이 두 신호를 확인하면 철수할 수 있게 한다.",
+			"시간 제한을 정하고 신호가 없어도 자동 철수한다."
+		],
+		"FACTION-08"
+	)
+	_expect_seed(
+		game_state.get_daily_episode("FACTION-09"),
+		"archivist_aka",
+		"",
+		[
+			"섬유 일부만 통제 소각하고 연기·소리·잔향을 기록한다.",
+			"소각을 보류하고 완전한 대응 절차가 만들어질 때까지 보존한다.",
+			"카밀라와 윤서하가 각각 한쪽 경계를 맡는 공동 시험을 제안한다."
+		],
+		"FACTION-09"
+	)
 	_finish()
 
 
