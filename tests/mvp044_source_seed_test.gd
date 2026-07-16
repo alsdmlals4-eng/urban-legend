@@ -32,6 +32,39 @@ func _run() -> void:
 		],
 		"FACTION-01"
 	)
+	_expect_seed(
+		game_state.get_daily_episode("AFTER-02"),
+		"agent_kwon_narae",
+		"episode_001_afterlife_station",
+		[
+			"두 해석에서 일치하는 부분부터 기록하죠.",
+			"누가 이걸 붙였는지 확인할 수 있어요?",
+			"이 부적은 성공사례인가요, 위험 사례인가요?"
+		],
+		"AFTER-02"
+	)
+	_expect_seed(
+		game_state.get_daily_episode("DAILY-02"),
+		"agent_kwon_narae",
+		"",
+		[
+			"말리는 방식도 술식에 영향을 줘요?",
+			"한 장 정도는 시험해 보면 안 돼요?",
+			"한유리가 묶은 은실을 조용히 푼다."
+		],
+		"DAILY-02"
+	)
+	_expect_seed(
+		game_state.get_daily_episode("FACTION-02"),
+		"agent_kwon_narae",
+		"",
+		[
+			"비활성 복제본을 만들고 원본은 봉인하죠.",
+			"현재 피해 가능성이 남아 있으면 보존할 수 없어요.",
+			"누가 보존 가치를 결정하죠?"
+		],
+		"FACTION-02"
+	)
 	_finish()
 
 
