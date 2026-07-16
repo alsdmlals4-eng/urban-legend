@@ -77,4 +77,39 @@ func _ensure_loaded() -> void:
 		var chain: Dictionary = (chain_value as Dictionary).duplicate(true)
 		if String(chain.get("id", "")).is_empty() or (chain.get("scenes", []) as Array).is_empty():
 			continue
+		_enrich_scene_context(chain)
 		_chains.append(chain)
+
+
+func _enrich_scene_context(chain: Dictionary) -> void:
+	var pair_key := String(chain.get("pair_key", ""))
+	var participant_names: Array[String] = []
+	for participant_id in pair_key.split("::", false):
+		participant_names.append(_get_participant_name(String(participant_id)))
+	var cast_text := "·".join(participant_names)
+	var scenes: Array = chain.get("scenes", [])
+	for scene_value in scenes:
+		if typeof(scene_value) != TYPE_DICTIONARY:
+			continue
+		var scene: Dictionary = scene_value
+		var title := String(scene.get("title", "관계 기록"))
+		var location := String(scene.get("location", "기록실"))
+		scene["agent_name"] = cast_text
+		scene["case_title"] = location
+		if String(scene.get("intro", "")).strip_edges().is_empty():
+			scene["intro"] = "%s에서 %s에 관한 기록을 함께 확인한다. 이번 선택은 관계의 기억으로만 남으며 능력치나 보상은 바꾸지 않는다." % [location, title]
+
+
+func _get_participant_name(participant_id: String) -> String:
+	var names := {
+		"agent_kwon_narae": "권나래",
+		"agent_yoon_seoha": "윤서하",
+		"agent_oh_hyun": "오현",
+		"agent_kang_ijun": "강이준",
+		"agent_han_yuri": "한유리",
+		"faction_rumor_market_park_doyoon": "박도윤",
+		"faction_mage_society_lee_serin": "이세린",
+		"mercenary_raymond_kane": "레이먼드 케인",
+		"exorcist_camila_vargas": "카밀라 바르가스"
+	}
+	return String(names.get(participant_id, participant_id))

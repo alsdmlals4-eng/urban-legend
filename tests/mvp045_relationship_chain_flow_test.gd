@@ -46,6 +46,9 @@ func _run_chain(game_state, chain: Dictionary) -> void:
 			continue
 		var scene: Dictionary = scene_value
 		var scene_id := String(scene.get("id", ""))
+		_expect(not String(scene.get("intro", "")).strip_edges().is_empty(), "%s has player-facing relationship context" % scene_id)
+		_expect(not String(scene.get("agent_name", "")).strip_edges().is_empty(), "%s identifies its participants" % scene_id)
+		_expect(not String(scene.get("case_title", "")).strip_edges().is_empty(), "%s identifies its location" % scene_id)
 		var started: Dictionary = game_state.begin_relationship_scene(scene_id)
 		_expect(bool(started.get("successful", false)), "%s starts through the actual unlock flow" % scene_id)
 		var choices: Array = scene.get("choices", [])
