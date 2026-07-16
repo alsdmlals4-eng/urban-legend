@@ -9,6 +9,8 @@ const AfterlifeHeaderScene = preload("res://scenes/ui/afterlife_header.tscn")
 const TeamStatusPopoverScene = preload("res://scenes/ui/team_status_popover.tscn")
 const RuntimeEditor = preload("res://scripts/ui/runtime_ui_editor.gd")
 const AnomalyManualDrawerScript = preload("res://scripts/ui/anomaly_manual_drawer.gd")
+const PresentationRegistryScript = preload("res://scripts/ui/presentation_registry.gd")
+const PresentationStageScript = preload("res://scripts/ui/presentation_stage.gd")
 
 const FALLBACK_LINES: Array[Dictionary] = [
 	{"speaker": "기록국 관제", "text": "이 역은 지도에도, 기록국 데이터에도 남아 있지 않아요.", "expression": "default"},
@@ -39,6 +41,8 @@ var _dialogue_panel: PanelContainer
 var _support_panel: PanelContainer
 var _runtime_editor: RuntimeUiEditor
 var _manual_drawer: AnomalyManualDrawer
+var _presentation_registry := PresentationRegistryScript.new()
+var _presentation_stage := PresentationStageScript.new()
 
 
 func _ready() -> void:
@@ -363,7 +367,7 @@ func _make_vn_label(text: String) -> Label:
 	return label
 
 
-func _populate_vn_agents(speaker_name: String) -> void:
+func _populate_vn_agents(speaker_name: String, expression_id: String = "normal") -> void:
 	for child in _agent_strip.get_children():
 		child.queue_free()
 	var catalog := AssetCatalog.new()
@@ -372,7 +376,8 @@ func _populate_vn_agents(speaker_name: String) -> void:
 			continue
 		var agent_name := String(agent.get("name", ""))
 		var portrait := TextureRect.new()
-		portrait.texture = catalog.get_agent_expression(String(agent.get("id", "")), 1 if agent_name == speaker_name else 0)
+		var expression_index := _presentation_registry.get_expression_index(String(agent.get("id", "")), expression_id) if agent_name == speaker_name else 0
+		portrait.texture = catalog.get_agent_expression(String(agent.get("id", "")), expression_index)
 		portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		portrait.custom_minimum_size = Vector2(220, 360)
@@ -542,11 +547,12 @@ func _show_line() -> void:
 
 	_line_index = clampi(_line_index, 0, lines.size() - 1)
 	var line: Dictionary = lines[_line_index]
+	_presentation_stage.present_line(line)
 	_stage_label.text = GameState.get_current_episode_title()
 	_standing_label.text = "현장 상황 / 통신 대상: %s" % String(_dialogue_node.get("standing_id", "bureau_control"))
-	_name_label.text = _display_speaker_name(String(line.get("speaker", line.get("name", ""))))
+	_name_label.text = _presentation_stage.get_display_speaker()
 	_dialogue_label.text = _get_line_text(line)
-	_populate_vn_agents(_name_label.text)
+	_populate_vn_agents(_name_label.text, _presentation_stage.get_expression_id())
 	_choice_box.visible = false
 	_waiting_for_result_continue = false
 	_pending_next_node_id = ""

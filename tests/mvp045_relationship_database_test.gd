@@ -24,7 +24,17 @@ func _run() -> void:
 	game_state.resolve_campaign_case("episode_001_afterlife_station", "standard")
 	game_state.begin_daily_episode("AFTER-02")
 	game_state.resolve_daily_episode_choice("after02_compare_structures")
-	game_state.begin_relationship_scene("REL-P01-01")
+	_expect(bool(game_state.begin_relationship_scene("REL-P01-01").get("successful", false)), "relationship scene opens for presentation")
+	var daily_script = load("res://scripts/scenes/daily_episode_scene.gd")
+	_expect(daily_script != null, "daily episode scene script loads for relationship presentation")
+	if daily_script != null:
+		var daily: Node = daily_script.new()
+		root.add_child(daily)
+		await process_frame
+		_expect(daily.find_child("RelationshipPresentationStrip", true, false) != null, "relationship scene renders its participant strip")
+		_expect(daily.find_child("RelationshipCutin", true, false) != null, "signature relationship scene renders its transient cut-in")
+		daily.queue_free()
+		await process_frame
 	game_state.resolve_relationship_choice("observe_then_burn")
 
 	var database_script = load("res://scripts/ui/database_view.gd")
