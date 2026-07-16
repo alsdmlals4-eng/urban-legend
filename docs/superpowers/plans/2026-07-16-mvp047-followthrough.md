@@ -42,6 +42,8 @@
 
 ### Task 3: Day 9 and fourth-case approved vertical slice
 
+> **Blocked (2026-07-16):** The approved MVP-044~046 packages define only the three existing cases and optional AFTER/DAILY/FACTION content. They do not provide a complete Day 9 or fourth-case ID, unlock condition, choice set, or result record. A separate Downloads draft mentions a fourth notification case, but it is outside the approved package and is not an implementation source.
+
 **Files:**
 - Inspect first: MVP-045/046 source package README and implementation prompt, existing episode catalogues, campaign unlock tests.
 - Modify only source-approved case data, catalogue/scene wiring, DB/report presentation, and associated tests.

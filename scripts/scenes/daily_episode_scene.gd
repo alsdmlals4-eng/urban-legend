@@ -43,7 +43,8 @@ func _build_ui() -> void:
 	if _relationship_mode:
 		episode = GameState.active_relationship_scene.duplicate(true)
 	var title := Label.new()
-	title.text = "일상 에피소드 · %s" % String(episode.get("title", "기록 확인"))
+	title.name = "EpisodeCategoryTitle"
+	title.text = "%s · %s" % [_get_category_label(String(episode.get("category", "daily"))), String(episode.get("title", "기록 확인"))]
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_content.add_child(title)
@@ -88,6 +89,16 @@ func _build_ui() -> void:
 	_result_box.name = "DailyEpisodeResult"
 	_result_box.add_theme_constant_override("separation", 8)
 	_content.add_child(_result_box)
+
+
+func _get_category_label(category: String) -> String:
+	match category:
+		"after":
+			return "후일담 기록"
+		"faction":
+			return "세력 교류"
+		_:
+			return "기록국 일상"
 
 
 func _resolve_choice(choice_id: String) -> void:
