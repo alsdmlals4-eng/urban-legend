@@ -5,9 +5,9 @@
 | Package | Status | Verified scope |
 |---|---|---|
 | WF-00 | complete | Local delegated runner and workflow contracts restored. |
-| MVP-044 | partial | All 25 optional entries (7 AFTER / 9 DAILY / 9 FACTION) now expose their three approved choices while preserving event IDs and unlock conditions. Real-scene verification is still required. |
-| MVP-045 | partial | 12 chains / 30 scenes and textual records exist; source-condition fidelity still needs integration. |
-| MVP-046 | partial | Registry, fallback and six cut-in definitions exist; real-scene presentation integration still needs verification and completion. |
+| MVP-044 | partial | All 25 optional entries (7 AFTER / 9 DAILY / 9 FACTION) expose their three approved choices while preserving event IDs and unlock conditions. Automated unlock→choice→record coverage passes; interactive visual capture remains pending. |
+| MVP-045 | partial | All 12 chains / 30 scenes pass ordered unlock and completion coverage. The playable relationship scene now renders participant, location, context, and transient cut-in UI; source-fidelity review and visual capture remain pending. |
+| MVP-046 | partial | Registry fallback and six cut-in definitions are connected to dialogue expressions and relationship presentation. Accessibility settings pass; event-wide visual staging and capture remain pending. |
 | MVP-047 | partial | HQ research half-day, 3/3/5-point project completion, 35/25-fragment crafting, and Raymond Kane's one-event 35-fragment safety-line contract are implemented. Fourth-case content and full economy QA remain pending. |
 | Final visual capture | pending | Needs interactive 1280×720 and 1920×1080 review; no completion claim is made here. |
 

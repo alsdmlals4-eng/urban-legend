@@ -2,13 +2,13 @@
 
 ## Current implementation update (2026-07-16)
 
-- Current working baseline is `codex/mvp044-046-integration` at `bfc1146`, which is also pushed as `origin/codex/mvp044-046-integration`. `origin/main` remains intentionally behind pending final regression.
+- Current working baseline is `codex/mvp044-046-integration` at `4e6b5c4`, which is also pushed as `origin/codex/mvp044-046-integration`. `origin/main` remains intentionally behind pending final regression.
 - `data/narrative_events.json` parses with the bundled Python and Node runtimes: all 25 optional entries (7 AFTER / 9 DAILY / 9 FACTION) now expose the three approved choices and retain their existing event IDs and unlock conditions. This is source-contract verification, not a claim that every entry has completed an interactive real-scene playthrough.
 - User-owned Godot import metadata and `tests/ui_visual_capture.gd` are dirty local capture artifacts. They are preserved by the workflow allowlist and excluded from integration commits.
 - Save version is now `mvp-047`. Existing `mvp-045` and `mvp-046` saves load missing research and contract fields with safe defaults; completed case, daily, relationship, campaign and equipment records remain untouched.
-- The current MVP-044~046 code remains a partial implementation: MVP-044 source restoration is complete, while its real-scene fidelity pass plus the MVP-045 relationship and MVP-046 presentation integration audits remain pending.
+- MVP-044 source restoration and its 25-entry unlock→choice→completed-record automated flow are verified. MVP-045 now verifies the actual ordered unlock and completion path for all 12 chains / 30 scenes, and the relationship scene supplies participant, location, and context text to the playable screen. MVP-046 now routes dialogue expression IDs through the registry and shows transient relationship cut-ins without owning progress or save state.
 - MVP-047 is partially implemented: the HQ research half-day yields a fixed 1–3 point result shown before execution; 3/3/5-point projects unlock existing equipment or consumable crafting for 35/25 fragments; and the researched Raymond Kane contract charges 35 fragments only when its one-event deployment begins. Save/reload cannot reroll research or recharge the contract.
-- Visual capture and full interactive Day 8/10 verification remain pending and are not represented as complete.
+- Visual capture and full interactive Day 8/10 verification remain pending and are not represented as complete. The headless relationship capture attempt did not return after scene rendering, so no capture result is claimed; user-owned capture files were not changed.
 
 > 문서 위치: `docs/audits/MVP044_046_REPOSITORY_AUDIT.md` | 실행 계획: `docs/planning/MVP044_046_EXECUTION_PLAN.md` | [백업]: `docs/archive/backup/YYYY-MM-DD/`
 >
