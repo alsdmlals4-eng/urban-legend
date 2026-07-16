@@ -2,9 +2,9 @@
 
 ## Current implementation update (2026-07-16)
 
-- Save version is now `mvp-046`. Existing `mvp-045` saves load with `research_points: 0`; completed case, daily, relationship, campaign and equipment records remain untouched.
+- Save version is now `mvp-047`. Existing `mvp-045` and `mvp-046` saves load missing research and contract fields with safe defaults; completed case, daily, relationship, campaign and equipment records remain untouched.
 - The current MVP-044~046 code is a partial implementation: catalog counts, relationship records and presentation registries exist, but the approved source packages still require a full-content and real-scene fidelity pass.
-- MVP-047 has started with the actual HQ research half-day: a fixed 1–3 point result is shown before execution and cannot be rerolled by save/reload.
+- MVP-047 is partially implemented: the HQ research half-day yields a fixed 1–3 point result shown before execution; 3/3/5-point projects unlock existing equipment or consumable crafting for 35/25 fragments; and the researched Raymond Kane contract charges 35 fragments only when its one-event deployment begins. Save/reload cannot reroll research or recharge the contract.
 - Visual capture and full interactive Day 8/10 verification remain pending and are not represented as complete.
 
 > 문서 위치: `docs/audits/MVP044_046_REPOSITORY_AUDIT.md` | 실행 계획: `docs/planning/MVP044_046_EXECUTION_PLAN.md` | [백업]: `docs/archive/backup/YYYY-MM-DD/`

@@ -776,6 +776,32 @@ func _add_external_contact_card(parent: Control, contact: Dictionary) -> void:
 	var status_label := Label.new()
 	status_label.text = String(contact.get("status", ""))
 	copy.add_child(status_label)
+	if String(contact.get("id", "")) == "raymond_kane":
+		var contract := GameState.get_mercenary_contract("contract_raymond_kane")
+		var contract_button := Button.new()
+		contract_button.name = "RaymondContractButton"
+		var required_project := String(contract.get("required_research_project_id", ""))
+		if not GameState.is_research_project_completed(required_project):
+			contract_button.text = "현장 안전선 · 연구 절차 필요"
+			contract_button.disabled = true
+		elif String(GameState.get_pending_mercenary_contract().get("id", "")) == "contract_raymond_kane":
+			contract_button.text = "현장 안전선 예약 취소"
+			contract_button.pressed.connect(_toggle_raymond_contract)
+		else:
+			contract_button.text = "현장 안전선 예약 · 잔향 %d" % int(contract.get("fragment_cost", 35))
+			contract_button.disabled = not GameState.get_active_mercenary_contract().is_empty()
+			contract_button.pressed.connect(_toggle_raymond_contract)
+		copy.add_child(contract_button)
+
+
+func _toggle_raymond_contract() -> void:
+	if String(GameState.get_pending_mercenary_contract().get("id", "")) == "contract_raymond_kane":
+		GameState.clear_pending_mercenary_contract()
+	else:
+		GameState.select_mercenary_contract("contract_raymond_kane")
+	if _status_label != null:
+		_status_label.text = GameState.get_mercenary_contract_status_message()
+	_refresh_external_contacts()
 
 
 func _cycle_consumable_loadout(item_id: String, owned: int) -> void:

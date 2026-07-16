@@ -500,6 +500,11 @@ func _select_pattern_response(response: Dictionary) -> void:
 			GameState.consume_active_consumable_effect("consumable_shielding_cloth")
 			damage = maxi(0, damage - 12)
 			lines.append("잔향 차폐포 자동 사용: 피해 12 흡수")
+		var contract_result := GameState.consume_active_mercenary_safety_line(damage)
+		var contract_reduction := int(contract_result.get("reduction", 0))
+		if contract_reduction > 0:
+			damage = maxi(0, damage - contract_reduction)
+			lines.append("레이먼드 케인 안전선: 첫 위험 결과 피해 %d 완화" % contract_reduction)
 		var remaining := GameState.consume_protection(target_id, damage)
 		if remaining > 0:
 			GameState.change_agent_mental(target_id, -remaining)

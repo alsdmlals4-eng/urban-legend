@@ -86,6 +86,7 @@ const AgentCatalogScript := preload("res://scripts/data/agent_catalog.gd")
 const DailyEpisodeCatalogScript := preload("res://scripts/data/daily_episode_catalog.gd")
 const RelationshipEventCatalogScript := preload("res://scripts/data/relationship_event_catalog.gd")
 const ResearchProjectCatalogScript := preload("res://scripts/data/research_project_catalog.gd")
+const MercenaryContractCatalogScript := preload("res://scripts/data/mercenary_contract_catalog.gd")
 
 var current_episode_path := DEFAULT_EPISODE_PATH
 var current_episode_data: Dictionary = {}
@@ -139,6 +140,9 @@ var victim_state: Dictionary = {}
 var echo_fragments := 30
 var research_points := 0
 var completed_research_project_ids: Array = []
+var pending_mercenary_contract_id := ""
+var active_mercenary_contract: Dictionary = {}
+var mercenary_contract_status_message := ""
 var granted_reward_ids: Array = []
 var faction_relations: Dictionary = {}
 var triggered_faction_event_ids: Array = []
@@ -153,6 +157,7 @@ var daily_episode_catalog = DailyEpisodeCatalogScript.new()
 var relationship_event_catalog = RelationshipEventCatalogScript.new()
 var agent_catalog = AgentCatalogScript.new()
 var research_project_catalog = ResearchProjectCatalogScript.new()
+var mercenary_contract_catalog = MercenaryContractCatalogScript.new()
 
 
 func _ready() -> void:
@@ -233,6 +238,9 @@ func reset_run_state() -> void:
 	echo_fragments = 30
 	research_points = 0
 	completed_research_project_ids.clear()
+	pending_mercenary_contract_id = ""
+	active_mercenary_contract.clear()
+	mercenary_contract_status_message = ""
 	granted_reward_ids.clear()
 	faction_relations.clear()
 	triggered_faction_event_ids.clear()
@@ -359,6 +367,62 @@ func craft_research_project(project_id: String) -> Dictionary:
 	return {"successful": true, "project": project, "fragment_cost": fragment_cost, "echo_fragments": echo_fragments, "output_id": output_id, "message": "%s 제작을 완료했습니다." % String(project.get("title", output_id))}
 
 
+func get_mercenary_contracts() -> Array:
+	return mercenary_contract_catalog.get_contracts()
+
+
+func get_mercenary_contract(contract_id: String) -> Dictionary:
+	return mercenary_contract_catalog.get_contract(contract_id)
+
+
+func get_pending_mercenary_contract() -> Dictionary:
+	return get_mercenary_contract(pending_mercenary_contract_id)
+
+
+func get_active_mercenary_contract() -> Dictionary:
+	return active_mercenary_contract.duplicate(true)
+
+
+func get_mercenary_contract_status_message() -> String:
+	return mercenary_contract_status_message
+
+
+## Reserves one temporary specialist for the next investigation without charging early.
+func select_mercenary_contract(contract_id: String) -> Dictionary:
+	var contract := get_mercenary_contract(contract_id)
+	if contract.is_empty():
+		return {"successful": false, "message": "외부 계약을 찾을 수 없습니다."}
+	var required_project := String(contract.get("required_research_project_id", ""))
+	if not is_research_project_completed(required_project):
+		return {"successful": false, "message": "계약 안전 절차 연구를 먼저 완료해야 합니다."}
+	if not active_mercenary_contract.is_empty():
+		return {"successful": false, "message": "현재 사건에 이미 외부 계약이 적용되어 있습니다."}
+	pending_mercenary_contract_id = String(contract.get("id", ""))
+	mercenary_contract_status_message = "%s 계약을 예약했습니다. 조사 시작 시 잔향 파편 %d를 사용합니다." % [String(contract.get("title", "외부 안전선")), int(contract.get("fragment_cost", 0))]
+	save_game()
+	return {"successful": true, "contract": contract, "message": mercenary_contract_status_message}
+
+
+func clear_pending_mercenary_contract() -> bool:
+	if pending_mercenary_contract_id.is_empty():
+		return false
+	pending_mercenary_contract_id = ""
+	mercenary_contract_status_message = "외부 계약 예약을 취소했습니다."
+	save_game()
+	return true
+
+
+## Returns a one-time safety reduction for a temporary specialist without changing a choice result.
+func consume_active_mercenary_safety_line(incoming_damage: int) -> Dictionary:
+	if active_mercenary_contract.is_empty() or bool(active_mercenary_contract.get("safety_line_used", false)):
+		return {"reduction": 0}
+	var reduction := mini(maxi(0, incoming_damage), maxi(0, int(active_mercenary_contract.get("safety_reduction", 0))))
+	active_mercenary_contract["safety_line_used"] = true
+	mercenary_contract_status_message = "외부 안전선이 첫 위험 결과를 %d 완화했습니다." % reduction
+	save_game()
+	return {"reduction": reduction, "message": mercenary_contract_status_message, "contract_id": String(active_mercenary_contract.get("id", ""))}
+
+
 ## Shows the fixed result for the current half-day before the player confirms research.
 ## The same day, slot and protagonist always produce the same value after reload.
 func get_research_activity_preview(agent_id: String) -> Dictionary:
@@ -409,7 +473,24 @@ func get_campaign_planned_case() -> String:
 
 ## Marks the current case as the operation that may consume this campaign day.
 func begin_campaign_operation(case_id: String) -> bool:
-	return campaign_state.begin_operation(case_id)
+	var pending_contract := get_pending_mercenary_contract()
+	if not pending_contract.is_empty() and echo_fragments < int(pending_contract.get("fragment_cost", 0)):
+		mercenary_contract_status_message = "외부 계약에 필요한 잔향 파편이 부족합니다."
+		return false
+	if not campaign_state.begin_operation(case_id):
+		return false
+	if not pending_contract.is_empty():
+		echo_fragments -= int(pending_contract.get("fragment_cost", 0))
+		active_mercenary_contract = {
+			"id": String(pending_contract.get("id", "")),
+			"case_id": case_id,
+			"safety_reduction": int(pending_contract.get("safety_reduction", 0)),
+			"safety_line_used": false
+		}
+		pending_mercenary_contract_id = ""
+		mercenary_contract_status_message = "%s 계약이 이번 사건에 적용되었습니다." % String(pending_contract.get("title", "외부 안전선"))
+		save_game()
+	return true
 
 
 func suspend_campaign_operation() -> bool:
@@ -434,7 +515,12 @@ func complete_campaign_slot(result: Dictionary = {}) -> bool:
 
 
 func acknowledge_campaign_slot_result() -> Dictionary:
-	return campaign_state.acknowledge_slot_result(campaign_state.has_high_spread())
+	var result := campaign_state.acknowledge_slot_result(campaign_state.has_high_spread())
+	if bool(result.get("advanced", false)) and not active_mercenary_contract.is_empty():
+		active_mercenary_contract.clear()
+		mercenary_contract_status_message = "외부 계약이 해당 사건과 함께 종료되었습니다."
+		save_game()
+	return result
 
 
 func get_faction_request_board() -> Array:
@@ -3068,6 +3154,13 @@ func load_game() -> bool:
 	echo_fragments = maxi(0, int(save_data.get("echo_fragments", 30)))
 	research_points = maxi(0, int(save_data.get("research_points", 0)))
 	completed_research_project_ids = _to_unique_string_array(save_data.get("completed_research_project_ids", []))
+	pending_mercenary_contract_id = String(save_data.get("pending_mercenary_contract_id", ""))
+	active_mercenary_contract = _to_dictionary(save_data.get("active_mercenary_contract", {}))
+	mercenary_contract_status_message = String(save_data.get("mercenary_contract_status_message", ""))
+	if not pending_mercenary_contract_id.is_empty() and get_mercenary_contract(pending_mercenary_contract_id).is_empty():
+		pending_mercenary_contract_id = ""
+	if not active_mercenary_contract.is_empty() and get_mercenary_contract(String(active_mercenary_contract.get("id", ""))).is_empty():
+		active_mercenary_contract.clear()
 	granted_reward_ids = _to_unique_string_array(save_data.get("granted_reward_ids", []))
 	faction_relations = _to_dictionary(save_data.get("faction_relations", {}))
 	for faction_id in faction_relations:
@@ -3202,6 +3295,9 @@ func _make_save_data() -> Dictionary:
 		"echo_fragments": echo_fragments,
 		"research_points": get_research_points(),
 		"completed_research_project_ids": completed_research_project_ids.duplicate(),
+		"pending_mercenary_contract_id": pending_mercenary_contract_id,
+		"active_mercenary_contract": active_mercenary_contract.duplicate(true),
+		"mercenary_contract_status_message": mercenary_contract_status_message,
 		"granted_reward_ids": granted_reward_ids.duplicate(),
 		"faction_relations": faction_relations.duplicate(true),
 		"triggered_faction_event_ids": triggered_faction_event_ids.duplicate(),

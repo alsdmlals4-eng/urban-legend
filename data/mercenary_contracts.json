@@ -1,0 +1,13 @@
+{
+  "contracts": [
+    {
+      "id": "contract_raymond_kane",
+      "contact_id": "raymond_kane",
+      "title": "레이먼드 케인 · 현장 안전선",
+      "description": "외부 안전 자문이 해당 사건 첫 위험 결과의 손실을 5만큼 완화합니다. 선택과 위험 사례는 그대로 기록됩니다.",
+      "required_research_project_id": "research_contract_protocol",
+      "fragment_cost": 35,
+      "safety_reduction": 5
+    }
+  ]
+}
