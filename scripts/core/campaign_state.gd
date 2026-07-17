@@ -13,7 +13,8 @@ const REQUEST_CATALOG_PATH := "res://data/faction_requests.json"
 const AFTERLIFE := "episode_001_afterlife_station"
 const RED_UMBRELLA := "episode_002_red_umbrella_alley"
 const DEAD_FREQUENCY := "episode_003_dead_frequency_station"
-const CASE_ORDER := [AFTERLIFE, RED_UMBRELLA, DEAD_FREQUENCY]
+const UNCONFIRMED_ARRIVAL := "episode_004_unconfirmed_arrival"
+const CASE_ORDER := [AFTERLIFE, RED_UMBRELLA, DEAD_FREQUENCY, UNCONFIRMED_ARRIVAL]
 const TIME_SLOTS := ["morning", "afternoon"]
 const SLOT_PHASES := ["planning", "in_progress", "result"]
 const SCHEDULE_ACTIVITIES := ["investigation", "rest", "research"]
@@ -55,7 +56,8 @@ func reset(seed: int = 0) -> void:
 		"cases": {
 			AFTERLIFE: _make_case_state("lead"),
 			RED_UMBRELLA: _make_case_state("lead"),
-			DEAD_FREQUENCY: _make_case_state("unknown")
+			DEAD_FREQUENCY: _make_case_state("unknown"),
+			UNCONFIRMED_ARRIVAL: _make_case_state("unknown")
 		}
 	}
 	_refresh_request_board(true)
@@ -269,6 +271,13 @@ func _advance_day_internal(high_spread: bool) -> Dictionary:
 			changed_case_ids.append(case_id)
 		_state["risk_rotation_cursor"] = (cursor + change_count) % candidates.size()
 	_state["day"] = current_day + 1
+	# The fourth case is a scheduled late-campaign lead, not a reward for solving
+	# another anomaly.  This keeps Day 8 discovery available on every save path.
+	if int(_state["day"]) >= 8:
+		var arrival_state := _get_case_state(UNCONFIRMED_ARRIVAL)
+		if String(arrival_state.get("discovery_state", "unknown")) == "unknown":
+			arrival_state["discovery_state"] = "lead"
+			_set_case_state(UNCONFIRMED_ARRIVAL, arrival_state)
 	_state["time_slot"] = "morning"
 	_state["slot_phase"] = "planning"
 	return {"advanced": true, "day": int(_state["day"]), "time_slot": "morning", "changed_case_ids": changed_case_ids, "demo_ended": false}

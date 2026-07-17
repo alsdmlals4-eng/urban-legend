@@ -5,6 +5,7 @@ const AssetCatalog = preload("res://scripts/ui/ui_asset_catalog.gd")
 const AccessibilitySettings = preload("res://scripts/ui/accessibility_settings.gd")
 const PresentationRegistry = preload("res://scripts/ui/presentation_registry.gd")
 const PresentationStage = preload("res://scripts/ui/presentation_stage.gd")
+const NarrativeStageShell = preload("res://scripts/ui/narrative_stage_shell.gd")
 
 var _content: VBoxContainer
 var _result_box: VBoxContainer
@@ -42,7 +43,8 @@ func _build_ui() -> void:
 	margin.add_theme_constant_override("margin_bottom", 54)
 	add_child(margin)
 
-	var panel := PanelContainer.new()
+	var panel := NarrativeStageShell.new()
+	panel.name = "NarrativeStageShell"
 	margin.add_child(panel)
 	_content = VBoxContainer.new()
 	_content.add_theme_constant_override("separation", 14)

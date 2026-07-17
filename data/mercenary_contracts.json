@@ -8,6 +8,33 @@
       "required_research_project_id": "research_contract_protocol",
       "fragment_cost": 35,
       "safety_reduction": 5
+    },
+    {
+      "id": "contract_camila_vargas",
+      "contact_id": "camila_vargas",
+      "title": "카밀라 바르가스 · 경계 안정화 계약",
+      "description": "첫 공간 왜곡 위험의 정신력 손실을 4만큼 완화합니다. 오대응 기록과 선택 결과는 그대로 남습니다.",
+      "required_research_project_id": "research_boundary_protocol",
+      "fragment_cost": 30,
+      "safety_reduction": 4
+    },
+    {
+      "id": "contract_park_doyoon",
+      "contact_id": "park_doyoon",
+      "title": "박도윤 · 기록 위치 안내 계약",
+      "description": "사건 시작 시 기록관 아카가 비교할 기록의 위치만 안내합니다. 단서와 정답은 공개하지 않습니다.",
+      "required_research_project_id": "research_contract_protocol",
+      "fragment_cost": 20,
+      "safety_reduction": 0
+    },
+    {
+      "id": "contract_lee_serin",
+      "contact_id": "lee_serin",
+      "title": "이세린 · 검증 보조 계약",
+      "description": "정식 해결 이상일 때만 결과 연구 보상을 1점 보정합니다.",
+      "required_research_project_id": "research_notification_forensics",
+      "fragment_cost": 25,
+      "safety_reduction": 0
     }
   ]
 }

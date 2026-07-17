@@ -33,6 +33,22 @@
         "kind": "contract_unlock",
         "id": "contract_raymond_kane"
       }
+    },
+    {
+      "id": "research_notification_forensics",
+      "title": "도착 알림 원본 대조",
+      "description": "전송 시각과 수신 경로를 분리해 비교하는 기록 절차입니다. 결론을 대신 제시하지 않습니다.",
+      "research_cost": 4,
+      "fragment_cost": 20,
+      "output": {"kind": "equipment", "id": "gear_notification_forensics"}
+    },
+    {
+      "id": "research_boundary_protocol",
+      "title": "경계 안정화 절차",
+      "description": "외부 봉인 전문가가 현장 안정화에 참여할 수 있도록 계약 절차를 검증합니다.",
+      "research_cost": 4,
+      "fragment_cost": 0,
+      "output": {"kind": "contract_unlock", "id": "contract_camila_vargas"}
     }
   ]
 }

@@ -24,7 +24,7 @@ var _episode_list: VBoxContainer
 var _equipped_label: Label
 var _modifier_label: Label
 var _record_list: VBoxContainer
-var _log_guide: LogGuide
+var _log_guide
 var _start_button: Button
 var _status_label: Label
 var _agent_list: VBoxContainer
@@ -792,6 +792,28 @@ func _add_external_contact_card(parent: Control, contact: Dictionary) -> void:
 			contract_button.disabled = not GameState.get_active_mercenary_contract().is_empty()
 			contract_button.pressed.connect(_toggle_raymond_contract)
 		copy.add_child(contract_button)
+	var extra_contracts := {"camila_vargas": "contract_camila_vargas", "park_doyoon": "contract_park_doyoon", "lee_serin": "contract_lee_serin"}
+	var extra_contract_id := String(extra_contracts.get(String(contact.get("id", "")), ""))
+	if not extra_contract_id.is_empty():
+		_add_external_contract_button(copy, extra_contract_id)
+
+
+func _add_external_contract_button(parent: Control, contract_id: String) -> void:
+	var contract := GameState.get_mercenary_contract(contract_id)
+	var button := Button.new()
+	button.name = "ExternalContractButton_%s" % contract_id
+	var required_project := String(contract.get("required_research_project_id", ""))
+	if not GameState.is_research_project_completed(required_project):
+		button.text = "외부 계약 · 선행 연구 필요"
+		button.disabled = true
+	elif String(GameState.get_pending_mercenary_contract().get("id", "")) == contract_id:
+		button.text = "외부 계약 예약 취소"
+		button.pressed.connect(_toggle_external_contract.bind(contract_id))
+	else:
+		button.text = "외부 계약 예약 · 잔향 %d" % int(contract.get("fragment_cost", 0))
+		button.disabled = not GameState.get_active_mercenary_contract().is_empty()
+		button.pressed.connect(_toggle_external_contract.bind(contract_id))
+	parent.add_child(button)
 
 
 func _toggle_raymond_contract() -> void:
@@ -799,6 +821,16 @@ func _toggle_raymond_contract() -> void:
 		GameState.clear_pending_mercenary_contract()
 	else:
 		GameState.select_mercenary_contract("contract_raymond_kane")
+	if _status_label != null:
+		_status_label.text = GameState.get_mercenary_contract_status_message()
+	_refresh_external_contacts()
+
+
+func _toggle_external_contract(contract_id: String) -> void:
+	if String(GameState.get_pending_mercenary_contract().get("id", "")) == contract_id:
+		GameState.clear_pending_mercenary_contract()
+	else:
+		GameState.select_mercenary_contract(contract_id)
 	if _status_label != null:
 		_status_label.text = GameState.get_mercenary_contract_status_message()
 	_refresh_external_contacts()

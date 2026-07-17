@@ -4,8 +4,9 @@ extends Node
 const DEFAULT_EPISODE_PATH := "res://data/episodes/episode_001_afterlife_station.json"
 const RED_UMBRELLA_ALLEY_EPISODE_PATH := "res://data/episodes/episode_002_red_umbrella_alley.json"
 const DEAD_FREQUENCY_STATION_EPISODE_PATH := "res://data/episodes/episode_003_dead_frequency_station.json"
+const UNCONFIRMED_ARRIVAL_EPISODE_PATH := "res://data/episodes/episode_004_unconfirmed_arrival.json"
 const SAVE_FILE_PATH := "user://urban_legend_save.json"
-const SAVE_VERSION := "mvp-047"
+const SAVE_VERSION := "mvp-048"
 const DEFAULT_DIALOGUE_NODE_ID := "dialogue_intro"
 const DEFAULT_FIELD_NODE_ID := "dialogue_intro"
 const STABILITY_SCHEMA_VERSION := 2
@@ -485,7 +486,8 @@ func begin_campaign_operation(case_id: String) -> bool:
 			"id": String(pending_contract.get("id", "")),
 			"case_id": case_id,
 			"safety_reduction": int(pending_contract.get("safety_reduction", 0)),
-			"safety_line_used": false
+			"safety_line_used": false,
+			"research_bonus_used": false
 		}
 		pending_mercenary_contract_id = ""
 		mercenary_contract_status_message = "%s 계약이 이번 사건에 적용되었습니다." % String(pending_contract.get("title", "외부 안전선"))
@@ -1793,6 +1795,10 @@ func get_case_report_summary() -> Dictionary:
 func record_current_case_report() -> bool:
 	if not is_recovery_successful():
 		return false
+	if String(active_mercenary_contract.get("id", "")) == "contract_lee_serin" and not bool(active_mercenary_contract.get("research_bonus_used", false)) and ["standard", "complete"].has(get_result_resolution_grade()):
+		research_points += 1
+		active_mercenary_contract["research_bonus_used"] = true
+		mercenary_contract_status_message = "이세린의 검증 보조로 연구 포인트 1점을 추가 기록했습니다."
 
 	var report := get_case_report_summary()
 	var episode_id := String(report.get("episode_id", ""))
@@ -2878,6 +2884,9 @@ func get_preparation_episode_entries() -> Array:
 	var dead_frequency_state: Dictionary = get_campaign_snapshot().get("cases", {}).get("episode_003_dead_frequency_station", {})
 	if String(dead_frequency_state.get("discovery_state", "unknown")) != "unknown":
 		episode_paths.append(DEAD_FREQUENCY_STATION_EPISODE_PATH)
+	var arrival_state: Dictionary = get_campaign_snapshot().get("cases", {}).get("episode_004_unconfirmed_arrival", {})
+	if String(arrival_state.get("discovery_state", "unknown")) != "unknown":
+		episode_paths.append(UNCONFIRMED_ARRIVAL_EPISODE_PATH)
 	for episode_path in episode_paths:
 		var loader = EpisodeLoaderScript.new()
 		var data: Dictionary = loader.load_episode(episode_path)
