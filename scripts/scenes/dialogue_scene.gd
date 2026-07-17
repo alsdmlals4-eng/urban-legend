@@ -11,6 +11,7 @@ const RuntimeEditor = preload("res://scripts/ui/runtime_ui_editor.gd")
 const AnomalyManualDrawerScript = preload("res://scripts/ui/anomaly_manual_drawer.gd")
 const PresentationRegistryScript = preload("res://scripts/ui/presentation_registry.gd")
 const PresentationStageScript = preload("res://scripts/ui/presentation_stage.gd")
+const GameSettingsDialogScript = preload("res://scripts/ui/game_settings_dialog.gd")
 
 const FALLBACK_LINES: Array[Dictionary] = [
 	{"speaker": "기록국 관제", "text": "이 역은 지도에도, 기록국 데이터에도 남아 있지 않아요.", "expression": "default"},
@@ -97,6 +98,7 @@ func _build_afterlife_briefing_ui() -> void:
 	team_popover.set_anchors_preset(Control.PRESET_CENTER)
 	team_popover.position = Vector2(-180, -110)
 	header.team_requested.connect(func() -> void: team_popover.open(_make_team_status_entries()))
+	header.settings_requested.connect(func() -> void: GameSettingsDialogScript.open_for(self))
 
 	var status := PanelContainer.new()
 	status.theme_type_variation = &"AfterlifeHeader"

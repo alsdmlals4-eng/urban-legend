@@ -1,11 +1,12 @@
 # 시작 화면에서 프로젝트 소개와 데이터베이스 진입을 관리한다.
 extends Control
 
-const ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")
-const Accessibility = preload("res://scripts/ui/accessibility_settings.gd")
+const AfterlifeTheme = preload("res://scripts/ui/afterlife_station_theme.gd")
 const AssetCatalog = preload("res://scripts/ui/ui_asset_catalog.gd")
 const LogGuideScript = preload("res://scripts/ui/log_guide.gd")
 const LogTutorialCatalog = preload("res://scripts/ui/log_tutorial_catalog.gd")
+const GameSettingsDialogScript = preload("res://scripts/ui/game_settings_dialog.gd")
+const DisplaySettingsScript = preload("res://scripts/ui/display_settings.gd")
 
 const GAME_VERSION := "Ver 4.1"
 
@@ -13,12 +14,12 @@ var _start_episode_button: Button
 var _continue_button: Button
 var _save_status_label: Label
 var _dev_panel: Control
-var _accessibility := Accessibility.new()
 var _log_guide: LogGuide
 
 
 func _ready() -> void:
-	theme = ThemeFactory.create_theme()
+	theme = AfterlifeTheme.create_theme()
+	DisplaySettingsScript.new().apply_saved_preferences()
 	if GameState.get_current_episode().is_empty():
 		GameState.load_episode()
 
@@ -37,100 +38,140 @@ func _build_ui() -> void:
 	backdrop.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(backdrop)
 	var background := ColorRect.new()
-	background.color = Color(0.025, 0.035, 0.05, 0.68)
+	background.color = Color(0.008, 0.007, 0.011, 0.72)
 	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(background)
 
 	var margin := MarginContainer.new()
 	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	margin.add_theme_constant_override("margin_left", 28)
-	margin.add_theme_constant_override("margin_top", 72)
-	margin.add_theme_constant_override("margin_right", 28)
-	margin.add_theme_constant_override("margin_bottom", 72)
+	margin.add_theme_constant_override("margin_left", 18)
+	margin.add_theme_constant_override("margin_top", 12)
+	margin.add_theme_constant_override("margin_right", 18)
+	margin.add_theme_constant_override("margin_bottom", 12)
 	add_child(margin)
 
-	var panel := PanelContainer.new()
-	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	margin.add_child(panel)
-
-	var scroll := ScrollContainer.new()
-	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	panel.add_child(scroll)
-
 	var content := VBoxContainer.new()
-	content.custom_minimum_size = Vector2(960, 0)
 	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	content.add_theme_constant_override("separation", 14)
-	scroll.add_child(content)
+	content.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	content.add_theme_constant_override("separation", 8)
+	margin.add_child(content)
 
+	var header := PanelContainer.new()
+	header.name = "MainMenuHeader"
+	header.custom_minimum_size.y = 48
+	header.theme_type_variation = &"AfterlifeHeader"
+	content.add_child(header)
 	var title_row := HBoxContainer.new()
-	title_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	title_row.add_theme_constant_override("separation", 14)
-	content.add_child(title_row)
-
+	title_row.add_theme_constant_override("separation", 8)
+	header.add_child(title_row)
 	var title := Label.new()
 	title.text = "괴이 기록국"
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.custom_minimum_size.x = 170
+	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	title.theme_type_variation = &"AfterlifeTitle"
 	title_row.add_child(title)
-
+	var team := Label.new()
+	team.text = "팀 상태 · 기록국 대기"
+	team.theme_type_variation = &"AfterlifeMeta"
+	team.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	title_row.add_child(team)
+	var stage := Label.new()
+	stage.text = "신규 캠페인 준비"
+	stage.theme_type_variation = &"AfterlifeTitle"
+	stage.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	stage.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title_row.add_child(stage)
 	var version_label := Label.new()
 	version_label.text = GAME_VERSION
+	version_label.theme_type_variation = &"AfterlifeMeta"
 	version_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	version_label.add_theme_font_size_override("font_size", 10)
 	title_row.add_child(version_label)
+	var settings_button := Button.new()
+	settings_button.name = "DisplaySettingsButton"
+	settings_button.text = "설정"
+	settings_button.pressed.connect(func() -> void: GameSettingsDialogScript.open_for(self))
+	title_row.add_child(settings_button)
 
-	var subtitle := Label.new()
-	subtitle.text = "현대 오컬트 미스터리"
-	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	subtitle.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	content.add_child(subtitle)
-
-	var body := Label.new()
-	body.text = "인간의 마음과 기억에서 되살아나는 괴이의 규칙을 조사하고, 현재 출현을 안정화한 뒤 다음 피해를 막을 괴이 매뉴얼을 기록합니다."
-	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	content.add_child(body)
-
-	_log_guide = LogGuideScript.new()
-	_log_guide.set_compact(true)
-	content.add_child(_log_guide)
-	_present_log_entry()
+	var status := PanelContainer.new()
+	status.custom_minimum_size.y = 32
+	status.theme_type_variation = &"AfterlifeHeader"
+	content.add_child(status)
+	var status_label := Label.new()
+	status_label.text = "기록국 관제  ·  마음과 기억에서 되살아나는 괴이의 규칙을 조사하고, 현재 출현을 안정화합니다."
+	status_label.theme_type_variation = &"AfterlifeMeta"
+	status.add_child(status_label)
 
 	var columns := HBoxContainer.new()
+	columns.name = "MainMenuColumns"
 	columns.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	columns.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	columns.add_theme_constant_override("separation", 16)
+	columns.add_theme_constant_override("separation", 8)
 	content.add_child(columns)
 
 	var overview_column := VBoxContainer.new()
-	overview_column.custom_minimum_size = Vector2(560, 0)
 	overview_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	overview_column.add_theme_constant_override("separation", 12)
+	overview_column.size_flags_stretch_ratio = 0.26
+	overview_column.add_theme_constant_override("separation", 8)
 	columns.add_child(overview_column)
 
 	var control_column := VBoxContainer.new()
-	control_column.custom_minimum_size = Vector2(360, 0)
 	control_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	control_column.add_theme_constant_override("separation", 12)
+	control_column.size_flags_stretch_ratio = 0.48
+	control_column.add_theme_constant_override("separation", 8)
 	columns.add_child(control_column)
+	var archive_column := VBoxContainer.new()
+	archive_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	archive_column.size_flags_stretch_ratio = 0.26
+	archive_column.add_theme_constant_override("separation", 8)
+	columns.add_child(archive_column)
 
+	var image_panel := PanelContainer.new()
+	image_panel.name = "FieldPreviewPanel"
+	image_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	image_panel.theme_type_variation = &"AfterlifePanel"
+	overview_column.add_child(image_panel)
+	var image_box := VBoxContainer.new()
+	image_panel.add_child(image_box)
+	var image_title := Label.new()
+	image_title.text = "현장 이미지"
+	image_title.theme_type_variation = &"AfterlifeSection"
+	image_box.add_child(image_title)
 	var case_image := TextureRect.new()
 	case_image.texture = AssetCatalog.new().get_texture("afterlife_platform")
-	case_image.custom_minimum_size = Vector2(0, 360)
+	case_image.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	case_image.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	case_image.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-	overview_column.add_child(case_image)
+	image_box.add_child(case_image)
 	var case_focus := Label.new()
-	case_focus.text = "첫 기록 · 저승역\n막차 이후 존재하지 않는 승강장에서 반복 규칙을 추적합니다."
+	case_focus.text = "첫 기록 · 저승역\n플랫폼 진입부 · 현장 연결 대기"
 	case_focus.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	overview_column.add_child(case_focus)
+	case_focus.theme_type_variation = &"AfterlifeMeta"
+	image_box.add_child(case_focus)
 
-	var action_content := _add_section(
-		control_column,
-		"주요 행동",
-		"새 수사를 시작하거나 저장된 진행을 이어가고, 기록국 DB에서 확보한 정보를 다시 확인합니다."
-	)
+	var action_panel := PanelContainer.new()
+	action_panel.name = "CampaignPanel"
+	action_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	action_panel.theme_type_variation = &"AfterlifePanel"
+	control_column.add_child(action_panel)
+	var action_content := VBoxContainer.new()
+	action_content.add_theme_constant_override("separation", 10)
+	action_panel.add_child(action_content)
+	var bureau_title := Label.new()
+	bureau_title.text = "기록국 관제"
+	bureau_title.theme_type_variation = &"AfterlifeSection"
+	action_content.add_child(bureau_title)
+	var briefing := Label.new()
+	briefing.text = "사람의 마음과 기억이 남아 있는 한, 괴이는 다른 장소와 모습으로 다시 나타날 수 있습니다. 기록국은 처치가 아니라 조사·안정화·잔향 회수로 다음 피해를 막습니다."
+	briefing.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	action_content.add_child(briefing)
+	_log_guide = LogGuideScript.new()
+	_log_guide.set_compact(true)
+	action_content.add_child(_log_guide)
+	_present_log_entry()
+	var action_title := Label.new()
+	action_title.text = "수사 선택"
+	action_title.theme_type_variation = &"AfterlifeTitle"
+	action_content.add_child(action_title)
 
 	_start_episode_button = Button.new()
 	_start_episode_button.text = "새 캠페인 시작"
@@ -147,18 +188,35 @@ func _build_ui() -> void:
 	open_button.pressed.connect(_open_database)
 	action_content.add_child(open_button)
 
-	var status_content := _add_section(
-		control_column,
-		"저장 상태",
-		"이어하기 가능 여부를 확인합니다."
-	)
-
 	_save_status_label = Label.new()
-	_save_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_save_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	status_content.add_child(_save_status_label)
+	_save_status_label.theme_type_variation = &"AfterlifeMeta"
+	action_content.add_child(_save_status_label)
 
-	_add_accessibility_panel(control_column)
+	var archive_panel := PanelContainer.new()
+	archive_panel.name = "ArchivePanel"
+	archive_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	archive_panel.theme_type_variation = &"AfterlifePanel"
+	archive_column.add_child(archive_panel)
+	var archive_content := VBoxContainer.new()
+	archive_content.add_theme_constant_override("separation", 12)
+	archive_panel.add_child(archive_content)
+	var archive_title := Label.new()
+	archive_title.text = "이상 정보"
+	archive_title.theme_type_variation = &"AfterlifeSection"
+	archive_content.add_child(archive_title)
+	var archive_glyph := Label.new()
+	archive_glyph.text = "◇\n기록 대기"
+	archive_glyph.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	archive_glyph.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	archive_glyph.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	archive_glyph.add_theme_color_override("font_color", AfterlifeTheme.VIOLET)
+	archive_content.add_child(archive_glyph)
+	var archive_text := Label.new()
+	archive_text.text = "확보한 규칙과 안정화 기록은 괴이 매뉴얼과 기록국 DB에 남습니다."
+	archive_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	archive_text.theme_type_variation = &"AfterlifeMeta"
+	archive_content.add_child(archive_text)
 
 	var dev_content := _add_section(
 		control_column,
@@ -206,30 +264,6 @@ func _input(event: InputEvent) -> void:
 	if key.pressed and not key.echo and key.keycode == KEY_F1 and _dev_panel != null:
 		_dev_panel.visible = not _dev_panel.visible
 		get_viewport().set_input_as_handled()
-
-
-func _add_accessibility_panel(parent: Control) -> void:
-	var content := _add_section(parent, "연출 강도", "화면 연출을 편한 수준으로 조절합니다.")
-	_add_effect_slider(content, "화면 흔들림", "screen_shake")
-	_add_effect_slider(content, "섬광", "flash")
-	_add_effect_slider(content, "공포 왜곡", "horror_distortion")
-
-
-func _add_effect_slider(parent: Control, label_text: String, effect_id: String) -> void:
-	var row := HBoxContainer.new()
-	parent.add_child(row)
-	var label := Label.new()
-	label.text = label_text
-	label.custom_minimum_size.x = 110
-	row.add_child(label)
-	var slider := HSlider.new()
-	slider.min_value = 0
-	slider.max_value = 100
-	slider.step = 10
-	slider.value = _accessibility.get_strength(effect_id) * 100.0
-	slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	slider.value_changed.connect(func(value: float) -> void: _accessibility.set_strength(effect_id, value / 100.0))
-	row.add_child(slider)
 
 
 func _add_section(parent: Control, title_text: String, description_text: String = "") -> VBoxContainer:

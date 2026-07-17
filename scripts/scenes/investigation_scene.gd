@@ -9,7 +9,7 @@ const LogTutorialCatalog = preload("res://scripts/ui/log_tutorial_catalog.gd")
 const ActionChoiceCardScene = preload("res://scenes/ui/action_choice_card.tscn")
 const AfterlifeChoiceScene = preload("res://scenes/ui/afterlife_choice.tscn")
 const AfterlifeTheme = preload("res://scripts/ui/afterlife_station_theme.gd")
-const AccessibilitySettingsScript = preload("res://scripts/ui/accessibility_settings.gd")
+const GameSettingsDialogScript = preload("res://scripts/ui/game_settings_dialog.gd")
 const AnomalyManualDrawerScript = preload("res://scripts/ui/anomaly_manual_drawer.gd")
 const AfterlifeManualCatalog = preload("res://scripts/ui/afterlife_manual_catalog.gd")
 const TeamStatusPopoverScene = preload("res://scenes/ui/team_status_popover.tscn")
@@ -73,9 +73,7 @@ var _result_toast: PanelContainer
 var _case_summary_label: Label
 var _mode_label: Label
 var _return_dialog: ConfirmationDialog
-var _settings_dialog: AcceptDialog
 var _return_field_button: Button
-var _accessibility := AccessibilitySettingsScript.new()
 var _safe_frame: MarginContainer
 var _location_preview: TextureRect
 var _is_afterlife_layout := false
@@ -394,42 +392,13 @@ func _build_utility_dialogs() -> void:
 	_return_dialog.confirmed.connect(_return_to_hq)
 	add_child(_return_dialog)
 
-	_settings_dialog = AcceptDialog.new()
-	_settings_dialog.title = "연출 설정"
-	_settings_dialog.ok_button_text = "닫기"
-	var content := VBoxContainer.new()
-	content.custom_minimum_size = Vector2(420, 0)
-	content.add_theme_constant_override("separation", 8)
-	_settings_dialog.add_child(content)
-	for entry in [
-		{"id": "screen_shake", "label": "화면 흔들림"},
-		{"id": "flash", "label": "섬광"},
-		{"id": "horror_distortion", "label": "공포 왜곡"}
-	]:
-		_add_settings_slider(content, String(entry.label), String(entry.id))
-	add_child(_settings_dialog)
-
-
-func _add_settings_slider(parent: Control, label_text: String, effect_id: String) -> void:
-	var label := Label.new()
-	label.text = label_text
-	parent.add_child(label)
-	var slider := HSlider.new()
-	slider.min_value = 0
-	slider.max_value = 100
-	slider.value = _accessibility.get_strength(effect_id) * 100.0
-	slider.value_changed.connect(func(value: float) -> void: _accessibility.set_strength(effect_id, value / 100.0))
-	parent.add_child(slider)
-
-
 func _show_return_confirmation() -> void:
 	if _return_dialog != null:
 		_return_dialog.popup_centered()
 
 
 func _show_settings() -> void:
-	if _settings_dialog != null:
-		_settings_dialog.popup_centered(Vector2i(480, 320))
+	GameSettingsDialogScript.open_for(self)
 
 
 func _return_to_hq() -> void:

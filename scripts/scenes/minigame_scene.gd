@@ -5,6 +5,7 @@ const ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")
 const AfterlifeTheme = preload("res://scripts/ui/afterlife_station_theme.gd")
 const AfterlifeHeaderScene = preload("res://scenes/ui/afterlife_header.tscn")
 const TeamStatusPopoverScene = preload("res://scenes/ui/team_status_popover.tscn")
+const GameSettingsDialogScript = preload("res://scripts/ui/game_settings_dialog.gd")
 const RhythmGame = preload("res://scripts/minigames/rhythm_timing_game.gd")
 const RainDodgeGame = preload("res://scripts/minigames/rain_dodge_game.gd")
 const RouteRestoreGame = preload("res://scripts/minigames/route_restore_game.gd")
@@ -208,6 +209,7 @@ func _build_route_restore_ui() -> void:
 	team_popover.set_anchors_preset(Control.PRESET_CENTER)
 	team_popover.position = Vector2(-180, -110)
 	header.team_requested.connect(func() -> void: team_popover.open(_make_team_status_entries()))
+	header.settings_requested.connect(func() -> void: GameSettingsDialogScript.open_for(self))
 
 	var stage_bar := PanelContainer.new()
 	stage_bar.custom_minimum_size.y = 36
