@@ -1,6 +1,6 @@
 # urban-legend
 
-> 문서 위치: `README.md` | 현재 상태 원본: `docs/CURRENT_STATUS.md` | 기획 인수인계: `docs/planning/README.md` | 과거 소개·로드맵 백업: `docs/archive/backup/2026-07-16/PROJECT_STATUS_AND_ROADMAP_BACKUP.md`
+> 문서 위치: `README.md` | 현재 상태 원본: `docs/CURRENT_STATUS.md` | 활성 기획서 진입점: `docs/DOCUMENTATION_MAP.md` | 과거 소개·로드맵 백업: `docs/archive/backup/2026-07-16/PROJECT_STATUS_AND_ROADMAP_BACKUP.md`
 
 `괴이 기록국`은 Godot 4.7 stable과 GDScript로 제작하는 PC용 현대 오컬트 수사 어드벤처다. 플레이어는 권나래를 주인공으로 운용하고 최대 두 명의 서포트와 함께 괴이의 규칙을 조사해 현재 출현을 안정화한 뒤, 다음 피해를 막을 괴이 매뉴얼을 남긴다.
 
@@ -10,40 +10,38 @@
 
 | 항목 | 값 |
 |---|---|
-| 구현 기준선 | MVP-043 |
+| 진행 브랜치 기준선 | `codex/mvp048-campaign-novel` / `4cf39a2` (`main` 승격 전) |
 | 화면 버전 | Ver 4.1 |
-| 저장 스키마 | `mvp-039` (`mvp-038` 이관 지원) |
+| 저장 스키마 | 기존 호환 유지 / 진행 브랜치 MVP-048 확장 이관 존재 |
 | 플랫폼 | PC / Steam, 16:9, 마우스·키보드 |
-| 구현 사건 | 저승역, 비 오는 골목의 빨간 우산, 폐주파수 방송국 |
+| 구현 사건 | 저승역, 비 오는 골목의 빨간 우산, 폐주파수 방송국 / 진행 브랜치: 새벽 2시 17분의 도착 알림 |
 | 주인공·요원 | 권나래 고정 주인공 / 초기 요원 5인 / 서포트 최대 2인 |
-| 현재 계획 | MVP-044 서사 확장 → MVP-045 관계 연속 이벤트 → MVP-046 대화·표정·컷인 연출 |
+| 현재 우선순위 | MVP-048 사건·외부 계약 완주 검증 → 해상도·입력 캡처 → 전체 회귀 후 `main` 승격 검토 |
 
-MVP-044~046은 Codex 전달 패키지와 기획 문서가 작성된 **승인 계획**이며 GitHub `main` 구현 완료를 뜻하지 않는다. 현재 구현 사실과 계획의 구분은 [`docs/CURRENT_STATUS.md`](docs/CURRENT_STATUS.md)를 따른다.
+MVP-044~048의 일부 구현은 진행 브랜치에 존재하지만, GitHub `main` 승격과 수동 회귀 완료를 뜻하지 않는다. 현재 구현 사실과 계획의 구분은 [`docs/CURRENT_STATUS.md`](docs/CURRENT_STATUS.md)를 따른다.
 
 ## 새 담당자·새 AI 읽기 순서
 
 ```text
 AGENTS.md
 → docs/CURRENT_STATUS.md
-→ docs/planning/README.md
-→ docs/planning/PROJECT_DIRECTION.md
-→ 이번 작업의 분야별 기획서
+→ docs/DOCUMENTATION_MAP.md
+→ 이번 작업의 활성 기획서 1~2개
 → 실제 대상 파일
 ```
 
-### 기획 문서
+### 활성 기획서 — 처음에는 이 다섯 개만 읽는다
 
-- 프로젝트 방향: [`docs/planning/PROJECT_DIRECTION.md`](docs/planning/PROJECT_DIRECTION.md)
-- 서사·대화·관계: [`docs/planning/NARRATIVE_CONTENT_PLAN.md`](docs/planning/NARRATIVE_CONTENT_PLAN.md)
-- 아트·표정·컷인·연출: [`docs/planning/ART_PRESENTATION_PLAN.md`](docs/planning/ART_PRESENTATION_PLAN.md)
-- 통합 로드맵·인수인계: [`docs/planning/ROADMAP_AND_HANDOFF.md`](docs/planning/ROADMAP_AND_HANDOFF.md)
-- 적용 사례 라이브러리: [`docs/planning/REFERENCE_CASES.md`](docs/planning/REFERENCE_CASES.md)
+- 게임 기획: [`docs/design/GAME_DESIGN_PLAN.md`](docs/design/GAME_DESIGN_PLAN.md)
+- 프로그래밍·로드맵/MVP: [`docs/programming/PROGRAMMING_ROADMAP_MVP.md`](docs/programming/PROGRAMMING_ROADMAP_MVP.md)
+- 아트·최신 이미지: [`docs/art/ART_DIRECTION_PLAN.md`](docs/art/ART_DIRECTION_PLAN.md) → [`IMAGE_INDEX.md`](docs/art/IMAGE_INDEX.md)
+- 사운드: [`docs/sound/SOUND_DIRECTION_PLAN.md`](docs/sound/SOUND_DIRECTION_PLAN.md)
+- QA: [`docs/qa/QA_MASTER_PLAN.md`](docs/qa/QA_MASTER_PLAN.md)
 
 ## 다른 핵심 문서
 
 - 작업별 문서 선택: [`docs/DOCUMENTATION_MAP.md`](docs/DOCUMENTATION_MAP.md)
-- 상세 게임 설계: [`docs/GAME_DESIGN_DOCUMENT.md`](docs/GAME_DESIGN_DOCUMENT.md)
-- 검증 계약: [`TEST_CHECKLIST.md`](TEST_CHECKLIST.md)
+- 상세 게임 설계·승인 계획·테스트는 각 활성 기획서의 **부록·근거** 링크에서 필요한 것만 연다.
 - 문서 보존 규칙: [`docs/DOCUMENT_LIFECYCLE.md`](docs/DOCUMENT_LIFECYCLE.md)
 
 모든 과거 Goal·QA·제안서를 기본으로 읽지 않는다. 필요한 근거만 [`docs/archive/README.md`](docs/archive/README.md)에서 선택한다.
@@ -70,7 +68,7 @@ AGENTS.md
 - 최대 10일, 오전·오후 순차 반일 운영
 - 권나래 주인공과 서포트 0~2명 저장 호환
 - 조사 중 HQ 중단·재개
-- 세 사건의 조사·판단·회수·보고서·DB
+- 세 사건의 조사·판단·회수·보고서·DB, 진행 브랜치의 네 번째 사건 데이터·계약 기반
 - 위험 사례를 다음 판단 근거로 남기는 페어플레이 추리
 - 저승역 3×3 학습·4×4 최종 검증과 페이지형 괴이 매뉴얼
 - 기록관 아카 관제 안내
@@ -106,8 +104,7 @@ git diff --check
 
 ## 현재 남은 작업
 
-1. 선택한 Codex ZIP의 `IMP-00` 사전 감사를 현재 `main`에서 실행한다.
-2. 분야별 기획서와 실제 대상 파일의 차이를 확인한다.
-3. MVP-044~046 중 한 범위만 작은 end-to-end 단위로 구현한다.
-4. 구현 완료 후 상태·로드맵·테스트·해당 기획서를 갱신한다.
-5. 이후 Steam 데모 패키징과 180~220분 플레이타임 실측을 진행한다.
+1. 네 번째 사건·계약의 실제 완주와 저장/DB 회귀를 검증한다.
+2. 다섯 활성 기획서와 실제 대상 파일의 차이를 확인한다.
+3. 해상도·입력·텍스트 노벨/저승역 전용 UI의 실제 캡처를 갱신한다.
+4. 전체 회귀와 문서 동기화 후에만 통합 브랜치의 `main` 승격을 검토한다.

@@ -18,7 +18,9 @@
 
 4. 다른 현행 문서는 같은 내용을 복사하지 않고 원본 링크와 작업별 차이만 적는다.
 5. 문서가 변경돼도 과거 버전 비교가 목적이 아니면 새 `v0.x` 파일을 늘리지 않고 같은 현행 파일을 갱신한다.
-6. 구현 완료 뒤 상태 원본은 `docs/CURRENT_STATUS.md`, 상세 설계는 `docs/GAME_DESIGN_DOCUMENT.md`, 검증은 `TEST_CHECKLIST.md`를 갱신한다.
+6. 처음 보는 사용자가 읽는 활성 기획서는 게임·프로그래밍·아트·사운드·QA의 다섯 개뿐이며, 경로는 `docs/DOCUMENTATION_MAP.md`가 정한다.
+7. 구현 완료 뒤에는 관련 활성 기획서와 `docs/CURRENT_STATUS.md`를 갱신한다. `GAME_DESIGN_DOCUMENT.md`, `MVP_ROADMAP.md`, `TEST_CHECKLIST.md`, 승인 계획, 완료 QA는 고유 계약을 증명하는 상세 부록으로 유지한다.
+8. 최신 이미지는 `docs/art/ART_DIRECTION_PLAN.md`와 `docs/art/IMAGE_INDEX.md`만 원본으로 삼고, 다른 문서는 사본 대신 링크한다.
 
 ## 백업 전환 조건
 

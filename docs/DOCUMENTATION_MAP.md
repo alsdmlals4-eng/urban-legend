@@ -1,125 +1,75 @@
 # Documentation Map
 
-> 문서 위치: `docs/DOCUMENTATION_MAP.md` | 기획 인수인계: `docs/planning/README.md` | 문서 보존 규칙: `docs/DOCUMENT_LIFECYCLE.md` | 백업 찾기: `docs/archive/README.md`
+> 문서 위치: `docs/DOCUMENTATION_MAP.md` | 현재 상태: [`CURRENT_STATUS.md`](CURRENT_STATUS.md) | 문서 보존 규칙: [`DOCUMENT_LIFECYCLE.md`](DOCUMENT_LIFECYCLE.md)
 
-이 문서는 작업에 필요한 문서만 선택하는 라우터다. 모든 문서를 매번 읽지 않는다.
+이 문서는 **활성 기획서 다섯 개**와 필요한 부록만 연결하는 라우터다. 처음 보는 사용자·새 채팅·새 작업자는 아래 다섯 문서만 읽어도 방향, 현재 상태, 품질 기준, 최신 이미지, 다음 작업을 이해할 수 있어야 한다.
+
+## 활성 기획서 — 처음에는 정확히 이 다섯 개만 읽는다
+
+| 분야 | 활성 원본 | 읽고 알 수 있는 것 |
+|---|---|---|
+| 게임 기획팀 | [게임 기획서](design/GAME_DESIGN_PLAN.md) | 세계관, 공식 용어, 플레이 루프, 사건, 추리, UI/UX, 밸런스 원칙 |
+| 프로그래밍 팀 | [프로그래밍 기획서 · 로드맵/MVP](programming/PROGRAMMING_ROADMAP_MVP.md) | 엔진 구조, 상태·저장 경계, MVP 순서, 커밋·문서 게이트 |
+| 아트 팀 | [아트 기획서](art/ART_DIRECTION_PLAN.md) | 시각 언어, 화면 위계, 자산 제작, 최신 이미지 책임 원본 |
+| 사운드 팀 | [사운드 기획서](sound/SOUND_DIRECTION_PLAN.md) | BGM/SFX/보이스 방향, 무음 접근성, 큐·제작·QA 기준 |
+| QA·PM 팀 | [QA 기획서](qa/QA_MASTER_PLAN.md) | 회귀 매트릭스, 테스트 환경, 증거, 결함·완료 판정 |
+
+최신 이미지의 단일 인덱스는 아트 기획서의 부록인 [IMAGE_INDEX.md](art/IMAGE_INDEX.md)다. 게임/UI/QA 문서에는 이미지 사본을 붙이지 않고 이 인덱스를 연결한다.
 
 ## 기본 읽기 순서
 
-### 일반 구현·버그 수정
+### 구현·버그 수정
 
 ```text
 최신 사용자 지시
 → AGENTS.md
 → CURRENT_STATUS.md
-→ DOCUMENTATION_MAP.md
-→ 대상 코드·데이터·문서
-```
-
-### 새 기획·콘텐츠·아트·연출·인수인계
-
-```text
-최신 사용자 지시
-→ AGENTS.md
-→ CURRENT_STATUS.md
-→ planning/README.md
-→ planning/PROJECT_DIRECTION.md
-→ 분야별 기획서 1개
+→ 이 문서
+→ 관련 활성 기획서 1~2개
 → 대상 코드·데이터·에셋
 ```
 
-추가 문서는 실제 작업 조건이 있을 때만 읽는다.
-
-## 현행 책임 원본
-
-| 주제 | 현행 원본 | 읽기 조건 |
-|---|---|---|
-| 현재 구현·승인 계획·미구현 구분 | `CURRENT_STATUS.md` | 항상 |
-| 기획 인수인계·분야별 라우팅 | `planning/README.md` | 기획·콘텐츠·아트·연출·새 담당자 인수 |
-| 프로젝트 약속·핵심 방향 | `planning/PROJECT_DIRECTION.md` | 방향·범위·캐릭터·미감 판단 |
-| 서사·대화·관계 | `planning/NARRATIVE_CONTENT_PLAN.md` | 사건 대사, 일상, 관계 이벤트 |
-| 아트·표정·컷인·연출 | `planning/ART_PRESENTATION_PLAN.md` | 캐릭터 아트, 대화 UI, 연출 |
-| 단계 의존성·인수인계 | `planning/ROADMAP_AND_HANDOFF.md` | MVP 시작·종료, 역할 교대 |
-| 적용 사례 | `planning/REFERENCE_CASES.md` | 기존 근거 재사용, 적용·제외 판단 |
-| 상세 게임 설계 | `GAME_DESIGN_DOCUMENT.md` | 시스템·콘텐츠 상세 변경 |
-| 프로젝트 용어·표현 원칙 | `PROJECT_CONTEXT.md` | 대사·세계관·캐릭터 작업 |
-| 구현 순서 | `../MVP_ROADMAP.md` | 범위·우선순위 결정 |
-| 검증 계약 | `../TEST_CHECKLIST.md` | 구현·문서 변경 |
-| 실행·프로젝트 소개 | `../README.md` | 실행·외부 안내 |
-| 현재 계정 인수 상태 | `CURRENT_HANDOFF.md` | 계정·채팅 교대 |
-| 문서 보존·백업 정책 | `DOCUMENT_LIFECYCLE.md` | 문서 이동·정리 |
-
-같은 사실을 다른 문서에 장문으로 복사하지 않고 책임 원본을 링크한다.
-
-## 조건부 라우팅
-
-| 작업 조건 | 추가로 읽을 문서 |
-|---|---|
-| 대사·상황지시문·일상·후일담 | `planning/NARRATIVE_CONTENT_PLAN.md`, `DIALOGUE_AUTHORING_WORKFLOW.md`, `PROJECT_CONTEXT.md` |
-| 관계 태그·선택 기억·연속 이벤트 | `planning/NARRATIVE_CONTENT_PLAN.md`, 실제 저장·이벤트 데이터 |
-| 캐릭터 아트·표정·컷인 | `planning/ART_PRESENTATION_PLAN.md`, `IMAGE_ASSET_WORKFLOW.md` |
-| Godot UI·Theme·컴포넌트 | `planning/ART_PRESENTATION_PLAN.md`, `GODOT_NATIVE_UI_ARCHITECTURE.md` |
-| 조사·회수 장면 UI | `CINEMATIC_FIELD_RECOVERY_UI.md`, GDD 관련 장 |
-| 미니게임 규칙·조작·복구 | `MINIGAME_SYSTEM_SPEC.md` |
-| 외부 GPT·DeepSeek·이미지 모델 위임 | `AI_DELEGATION_WORKFLOW.md` |
-| 기존 사례 재사용 | `planning/REFERENCE_CASES.md` |
-| 최신 외부 사례 비교가 필요한 새 판단 | `BENCHMARKING_REFERENCE_GUIDE.md`와 필요한 최신 1차 근거 |
-| 저장·진행·일정·위험·경제 | 관련 코드, `MVP037_CAMPAIGN_CORE.md`, `MVP038_SEQUENTIAL_CAMPAIGN.md` |
-| 실제 MVP 시작·종료 절차 | `planning/ROADMAP_AND_HANDOFF.md`, `MVP_WORKFLOW_CHECKLIST.md` |
-| Base 공용 규칙·기획 지식 승격 | `AI_SHARED_WORK_RULES.md`, `BASE_RULES_VERSION.md`, Base `docs/knowledge/` |
-| 계정 교대·저사용량 checkpoint | `CURRENT_HANDOFF.md`, `CODEX_ACCOUNT_HANDOFF.md` |
-| 과거 결정·완료 근거 | `archive/README.md`에서 필요한 파일 하나만 선택 |
-
-## 리디렉션 문서
-
-다음 파일은 기존 링크를 보존하기 위한 위치 안내용이며 현행 설계 원본이 아니다.
-
-- `../DESIGN_INTENT.md`
-- `../PROJECT_BRIEF.md`
-- `CONTENT_DIRECTION_V09.md`
-- `BASE_RULES_VERSION.md` — Base 동기화 작업 외에는 읽지 않음
-
-리디렉션 문서를 본 뒤 연결된 현행 원본 또는 백업 파일로 이동하며, 내용 동기화 작업을 만들지 않는다.
-
-## 기본 읽기 제외
-
-- `archive/**`
-- 완료된 `qa/**`
-- 완료된 `CODEX_GOAL_*`
-- `benchmarks/**`
-- `superpowers/**`
-- 과거 보고서·HTML·일회성 감사
-
-이 자료는 현재 작업의 직접 근거가 필요할 때만 연다. “혹시 필요할 수 있음”은 읽기 조건이 아니다.
-
-## 활성 계획 라우팅
-
-MVP-044~046 전달 패키지는 GitHub `main` 구현 완료 문서가 아니다. ZIP을 받은 작업에서 다음 순서로 읽는다.
+### 새 콘텐츠·화면·자산·사운드·MVP
 
 ```text
-ZIP/00_README_코덱스_전달사항.md
-→ ZIP의 구현 지시서
-→ 필요한 제안서·레지스트리
+최신 사용자 지시
+→ AGENTS.md
 → CURRENT_STATUS.md
-→ planning/README.md와 분야별 기획서
+→ 이 문서의 다섯 활성 기획서 중 관련 분야
+→ 필요한 상세 부록 하나
 → 실제 대상 파일
 ```
 
-패키지 전체를 저장소 현행 문서로 복사하지 않는다. 구현 완료 후 확정된 결과만 상태·GDD·검증·분야별 기획서에 통합한다.
+## 작업별 활성 문서 선택
 
-## Base 승격 라우팅
+| 작업 | 먼저 읽고 갱신할 활성 문서 | 필요할 때만 여는 부록 |
+|---|---|---|
+| 사건 규칙·대사·일상·관계·경제 | 게임, 프로그래밍, QA | `GAME_DESIGN_DOCUMENT.md`, `planning/NARRATIVE_CONTENT_PLAN.md`, 실제 JSON |
+| Godot UI·입력·설정·접근성 | 게임, 아트, QA, 프로그래밍 | `GODOT_NATIVE_UI_ARCHITECTURE.md`, 실제 씬/스크립트 |
+| 캐릭터·배경·표정·컷인·이펙트 | 아트, QA, 게임 | `IMAGE_INDEX.md`, asset manifest, `planning/ART_PRESENTATION_PLAN.md` |
+| BGM·SFX·아카 시그니처·보이스 | 사운드, QA, 아트 | `scripts/ui/log_guide.gd`, 자산 manifest |
+| 저장·진행·계약·보상·이관 | 프로그래밍, QA, 게임 | `game_state.gd`, `campaign_state.gd`, 기존 저장 계약 |
+| MVP 범위·순서·인수·승격 | 프로그래밍, QA, 게임 | `MVP_ROADMAP.md`, `planning/ROADMAP_AND_HANDOFF.md` |
+| 과거 승인안·Goal·벤치마크 확인 | 관련 활성 문서 하나 | `docs/planning/`, `CODEX_GOAL_*`, `docs/benchmarks/`, `docs/archive/`에서 필요한 파일 하나 |
 
-프로젝트 사례에서 공용 원칙을 추출할 때 다음을 분리한다.
+## 부록의 역할과 보존
 
-- Base로 보낼 것: 반복 가능한 기획 방법, 조사 방식, 아트·연출 판단 프레임, 품질 체크, 도구·스킬 선택 기준, 익명화된 사례 카드
-- 프로젝트에 남길 것: 괴이 기록국의 세계관, 캐릭터명, 사건 규칙, 수치, 에셋 경로, 저장 구조, 실제 QA 결과
+`GAME_DESIGN_DOCUMENT.md`, `MVP_ROADMAP.md`, `TEST_CHECKLIST.md`, `docs/planning/*`, `CODEX_GOAL_*`, 완료 QA, 감사, 벤치마크는 활성 기획서가 아니라 **수치·데이터·테스트·결정의 근거**다. 링크를 보존하므로 삭제하거나 일괄 이동하지 않는다.
 
-Base의 canonical 공용 지식 위치는 `docs/knowledge/`다. Base에 반영한 뒤 `docs/BASE_RULES_VERSION.md`에 기준 커밋과 동기화 상태를 기록한다.
+장기적으로 내용이 활성 기획서에 흡수되고 고유 계약·외부 참조가 사라진 부록만 참조 검사를 거쳐 `docs/archive/backup/YYYY-MM-DD/`에 보관한다. 백업에는 원래 경로, 보관일, 사유, 대체 활성 문서를 반드시 적는다.
 
-## 상시 동기화
+## 문서 최신화 강제 규칙
 
-- 플레이어 노출 설계가 바뀌면 `CURRENT_STATUS.md`, GDD, 로드맵, 테스트, 해당 분야별 기획서를 함께 심사한다.
-- GDD 수정 후 DOCX를 재생성하고 `--check`를 실행한다.
-- 큰 단계·MVP 종료 시 날짜·버전·다음 작업을 갱신한다.
-- 완료 상세는 현행 문서에 누적하지 않고 `qa/` 또는 날짜별 백업으로 이동한다.
-- 5개 MVP마다 구문서·중복·깨진 참조·기본 읽기 범위를 감사한다.
+- 모든 작업 시작 시 관련 다섯 기획서와 `변경 없음` 기획서를 정한다.
+- 모든 커밋 전 관련 기획서, 최신 이미지 인덱스, QA 상태를 갱신하거나 갱신하지 않은 이유를 PR/커밋 설명에 남긴다.
+- 구현 사실과 승인 계획은 같은 문장으로 섞지 않는다. 기준 SHA와 `구현 확인 / 진행 중 / 미검증 / 계획`을 구분한다.
+- GDD를 변경하면 DOCX를 재생성·검증한다. 실제 화면·자산을 바꾸면 1280×720·1920×1080 증거를 아트 인덱스와 QA에 연결한다.
+- 전체 체크리스트와 책임은 [프로그래밍 기획서의 문서 동기화 계약](programming/PROGRAMMING_ROADMAP_MVP.md#7-문서-동기화-계약)을 따른다.
+
+## 기본 읽기 제외
+
+`archive/**`, 완료 `qa/**`, 과거 Goal, 벤치마크, 일회성 감사·HTML·외부 ZIP은 현재 작업의 직접 근거가 있을 때만 연다. “혹시 필요할 수 있음”은 읽기 조건이 아니다.
+
+## Base 승격
+
+반복 가능한 방법·품질 체크·익명화한 사례는 Base 후보가 될 수 있다. 괴이 기록국의 세계관, 캐릭터명, 사건 수치, 자산 경로, 저장 구조, 실제 QA 결과는 프로젝트 전용이다. 현재 Base 승격 후보는 없다.

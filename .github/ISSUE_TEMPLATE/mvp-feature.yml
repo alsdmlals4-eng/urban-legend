@@ -30,6 +30,17 @@ body:
       description: 실제로 수정할 시스템, 데이터, 씬, 문서를 적습니다.
     validations:
       required: true
+  - type: checkboxes
+    id: active-docs
+    attributes:
+      label: 활성 기획서 영향
+      description: 다섯 활성 기획서 중 갱신할 분야를 선택합니다. 관련 없는 분야는 구현 PR에서 변경 없음 사유를 남깁니다.
+      options:
+        - label: 게임 기획서(규칙·서사·UI/UX·밸런스)
+        - label: 프로그래밍 기획서·로드맵/MVP(코드·저장·단계)
+        - label: 아트 기획서·이미지 인덱스(화면·자산·방향)
+        - label: 사운드 기획서(BGM·SFX·보이스·무음 대체)
+        - label: QA 기획서(검증 계약·증거·회귀)
   - type: textarea
     id: out-of-scope
     attributes:
