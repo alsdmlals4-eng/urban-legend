@@ -11,6 +11,7 @@ const RuntimeEditor = preload("res://scripts/ui/runtime_ui_editor.gd")
 const AnomalyManualDrawerScript = preload("res://scripts/ui/anomaly_manual_drawer.gd")
 const PresentationRegistryScript = preload("res://scripts/ui/presentation_registry.gd")
 const PresentationStageScript = preload("res://scripts/ui/presentation_stage.gd")
+const NarrativeStageShell = preload("res://scripts/ui/narrative_stage_shell.gd")
 const GameSettingsDialogScript = preload("res://scripts/ui/game_settings_dialog.gd")
 
 const FALLBACK_LINES: Array[Dictionary] = [
@@ -276,7 +277,7 @@ func _build_vn_ui() -> void:
 	_agent_strip.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_agent_strip)
 
-	_dialogue_panel = PanelContainer.new()
+	_dialogue_panel = NarrativeStageShell.new()
 	_dialogue_panel.anchor_left = 0.04
 	_dialogue_panel.anchor_top = 0.68
 	_dialogue_panel.anchor_right = 0.96
@@ -466,7 +467,7 @@ func _build_ui() -> void:
 	_agent_reaction_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	agent_content.add_child(_agent_reaction_label)
 
-	_dialogue_panel = PanelContainer.new()
+	_dialogue_panel = NarrativeStageShell.new()
 	root.add_child(_dialogue_panel)
 	var dialogue_content := VBoxContainer.new()
 	dialogue_content.add_theme_constant_override("separation", 8)
