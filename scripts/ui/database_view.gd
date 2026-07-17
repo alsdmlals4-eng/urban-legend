@@ -264,10 +264,20 @@ func _show_relationship_records() -> void:
 	if records.is_empty():
 		_add_detail_text("아직 완료한 관계 기록이 없습니다. 본부 준비 화면의 선택형 기록을 확인하세요.")
 		return
+	var rendered_chain_ids: Array[String] = []
 	for value in records:
 		if typeof(value) != TYPE_DICTIONARY:
 			continue
 		var record: Dictionary = value
+		var chain_id := String(record.get("chain_id", ""))
+		if not chain_id.is_empty() and not rendered_chain_ids.has(chain_id):
+			var progress: Dictionary = GameState.get_relationship_chain_progress(chain_id)
+			_add_detail_text("관계 기록 진행: %s %d/%d" % [
+				String(progress.get("title", chain_id)),
+				int(progress.get("completed", 0)),
+				int(progress.get("total", 0))
+			])
+			rendered_chain_ids.append(chain_id)
 		var panel := PanelContainer.new()
 		_detail_items.add_child(panel)
 		var content := VBoxContainer.new()

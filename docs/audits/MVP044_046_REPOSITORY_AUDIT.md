@@ -1,5 +1,13 @@
 # MVP-044~046 Repository Audit
 
+## Follow-up correction (2026-07-17)
+
+- The current branch was rechecked from `a56ceeb` with an isolated save directory. All 42 automated Godot contracts, project loading, and the target scene smoke checks completed with exit code 0.
+- Fixed a real relationship-record save loss: an unresolved relationship scene now keeps its existing saved payload and returns to the relationship route after reload. Completion still clears the active payload and cannot create a duplicate record.
+- Restored the missing player-visible relationship tags from final memory outcomes. They are display-only, use no score or gameplay modifier, and are shown alongside compact per-chain progress in the records DB.
+- Fixed the direct daily-episode scene smoke path so it defers its fallback scene change instead of changing parents while Godot is attaching the scene.
+- The remaining `ObjectDB` shutdown warning occurs only when directly opening an empty daily-episode scene in headless mode; no gameplay test fails, but interactive 1280×720 and 1920×1080 capture remains pending.
+
 ## Current implementation update (2026-07-16)
 
 - Current working baseline is `codex/mvp044-046-integration` at `4e6b5c4`, which is also pushed as `origin/codex/mvp044-046-integration`. `origin/main` remains intentionally behind pending final regression.

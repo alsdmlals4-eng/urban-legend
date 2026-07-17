@@ -60,6 +60,8 @@ func _run_chain(game_state, chain: Dictionary) -> void:
 		_expect(bool(resolved.get("successful", false)), "%s stores one selected memory" % scene_id)
 	var progress: Dictionary = game_state.get_relationship_chain_progress(String(chain.get("id", "")))
 	_expect(int(progress.get("completed", 0)) == scenes.size(), "%s completes every scene in order" % String(chain.get("id", "relationship chain")))
+	var tags: Array = game_state.get_relationship_tags(String(chain.get("pair_key", "")))
+	_expect(tags.size() == 2, "%s derives two display-only tags from its final memory" % String(chain.get("id", "relationship chain")))
 
 
 func _expect(condition: bool, message: String) -> void:

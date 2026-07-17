@@ -3,6 +3,24 @@ extends RefCounted
 
 const DATA_PATH := "res://data/relationship_events.json"
 
+# The approved registry defines relationship tags as final-scene memory outcomes.
+# Earlier saves only contain the selected memory text, so these rules deliberately
+# derive display-only tags at read time instead of adding a score or save field.
+const FINAL_MEMORY_TAGS := {
+	"REL-P01": {"공동절차": ["신뢰", "경쟁"], "현장약속": ["신뢰", "보호"]},
+	"REL-P02": {"세상태_승인": ["신뢰", "인정"], "논쟁중": ["경쟁", "신뢰"]},
+	"REL-P03": {"공동철수규칙": ["보호", "신뢰"], "철수거부권": ["신뢰", "부채"]},
+	"REL-P04": {"공동기준점": ["공감", "신뢰"], "열린약속": ["공감", "경계"]},
+	"REL-A01": {"결손보존": ["인정", "신뢰"], "후속질문": ["경쟁", "인정"]},
+	"REL-A02": {"표식회수": ["보호", "인정"], "안내전달": ["보호", "부채"]},
+	"REL-A03": {"변동범위_공개": ["인정", "신뢰"], "감응기록_제한": ["신뢰", "경계"]},
+	"REL-A04": {"금속기준점": ["신뢰", "보호"], "은실기준점": ["보호", "공감"]},
+	"REL-F01": {"공동감시": ["신뢰", "경계"], "상호감사": ["경계", "인정"]},
+	"REL-F02": {"반환기한": ["인정", "경계"], "최종관측": ["신뢰", "경계"]},
+	"REL-F03": {"전설없는구조": ["신뢰", "인정"], "비공개공적": ["부채", "신뢰"]},
+	"REL-F04": {"기록후정화": ["인정", "경쟁"], "사진기록": ["경계", "인정"]}
+}
+
 var _loaded := false
 var _chains: Array = []
 
@@ -30,13 +48,17 @@ func get_scene(scene_id: String) -> Dictionary:
 func get_tags_for(pair_key: String, memories: Array) -> Array:
 	_ensure_loaded()
 	var rules: Array = []
+	var matched_chain: Dictionary = {}
 	for chain_value in _chains:
 		if typeof(chain_value) != TYPE_DICTIONARY:
 			continue
 		var chain: Dictionary = chain_value
 		if String(chain.get("pair_key", "")) == pair_key:
+			matched_chain = chain
 			rules = chain.get("tag_rules", []) as Array
 			break
+	if rules.is_empty():
+		return _get_final_memory_tags(matched_chain, memories)
 	var tags: Array = []
 	for rule_value in rules:
 		if typeof(rule_value) != TYPE_DICTIONARY:
@@ -57,6 +79,17 @@ func get_tags_for(pair_key: String, memories: Array) -> Array:
 				if tags.size() >= 2:
 					return tags
 	return tags
+
+
+func _get_final_memory_tags(chain: Dictionary, memories: Array) -> Array:
+	if chain.is_empty():
+		return []
+	var tag_map: Dictionary = FINAL_MEMORY_TAGS.get(String(chain.get("id", "")), {})
+	for memory_value in memories:
+		var tags: Array = tag_map.get(String(memory_value), []) as Array
+		if not tags.is_empty():
+			return tags.duplicate()
+	return []
 
 
 func _ensure_loaded() -> void:

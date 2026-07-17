@@ -19,7 +19,9 @@ func _ready() -> void:
 	theme = ThemeFactory.create_theme()
 	_relationship_mode = not GameState.active_relationship_scene.is_empty()
 	if GameState.get_active_daily_episode().is_empty() and not _relationship_mode:
-		_return_to_preparation()
+		# This scene can also be opened directly by a smoke check.  Changing scenes
+		# while Godot is still attaching this Control produces a busy-parent error.
+		call_deferred("_return_to_preparation")
 		return
 	GameState.set_current_scene_path(GameState.SCENE_DAILY_EPISODE)
 	GameState.save_game()

@@ -759,6 +759,7 @@ func begin_relationship_scene(scene_id: String) -> Dictionary:
 	for value in get_available_relationship_scenes():
 		if typeof(value) == TYPE_DICTIONARY and String((value as Dictionary).get("id", "")) == clean_id:
 			active_relationship_scene = (value as Dictionary).duplicate(true)
+			set_current_scene_path(SCENE_DAILY_EPISODE)
 			save_game()
 			return {"successful": true, "scene": active_relationship_scene.duplicate(true)}
 	return {"successful": false, "error": "현재 열 수 없는 관계 기록입니다."}
@@ -777,6 +778,7 @@ func resolve_relationship_choice(choice_id: String) -> Dictionary:
 	var scene_id := String(active_relationship_scene.get("id", ""))
 	if _has_relationship_record(scene_id):
 		active_relationship_scene.clear()
+		set_current_scene_path(SCENE_PREPARATION)
 		return {"successful": false, "error": "이미 기록된 관계 장면입니다."}
 	var record := {
 		"scene_id": scene_id,
@@ -791,6 +793,7 @@ func resolve_relationship_choice(choice_id: String) -> Dictionary:
 	}
 	relationship_event_records.append(record)
 	active_relationship_scene.clear()
+	set_current_scene_path(SCENE_PREPARATION)
 	save_game()
 	return {"successful": true, "record": record.duplicate(true)}
 
@@ -3211,7 +3214,14 @@ func load_game() -> bool:
 	if current_scene_path == SCENE_DAILY_EPISODE and get_active_daily_episode_data().is_empty():
 		current_scene_path = SCENE_PREPARATION
 	if not active_relationship_scene.is_empty():
-		active_relationship_scene.clear()
+		# A relationship scene does not consume schedule, but an unresolved choice
+		# must survive a normal save/load cycle just like an active daily episode.
+		# Completed records remain the duplicate-resolution guard.
+		if _has_relationship_record(String(active_relationship_scene.get("id", ""))):
+			active_relationship_scene.clear()
+			current_scene_path = SCENE_PREPARATION
+		else:
+			current_scene_path = SCENE_DAILY_EPISODE
 
 	current_dialogue_node_id = String(save_data.get("current_dialogue_node_id", DEFAULT_DIALOGUE_NODE_ID))
 	if current_dialogue_node_id.is_empty():
