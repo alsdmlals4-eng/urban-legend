@@ -4,6 +4,28 @@
 
 이 인덱스는 최신 이미지의 **경로·용도·참조·QA 증거**를 한곳에서 관리한다. 활성 기획서는 아니며, 아트 기획서의 부록이다. 게임/UX/QA 문서는 이미지를 복제하지 말고 이 항목을 링크한다.
 
+## 빠른 시각 확인
+
+아래 이미지는 인덱스의 대표 항목을 바로 확인하기 위한 실제 자산·QA 캡처다. 각 이미지의 최신성, 제작 정보, 교체 여부는 아래 표의 ID를 기준으로 판단한다.
+
+### ART-QA-01 — 저승역 조사 화면
+
+![저승역 조사 QA 캡처](../../docs/qa/captures/mvp043/ui_replacement/investigation_initial_1280x720.png)
+
+### ART-QA-02 — 저승역 4×4 최종 검증
+
+![저승역 최종 검증 QA 캡처](../../docs/qa/captures/mvp043/ui_replacement/route_final_1280x720.png)
+
+### ART-CHAR-01 — 권나래 전신 게임 자산
+
+<p align="center">
+  <img src="../../assets/characters/mvp043/agents/kwon_narae/full_body.png" alt="권나래 전신 게임 자산" width="260">
+</p>
+
+### ART-UI-01 — 열린 책 매뉴얼 텍스처
+
+![텍스트 없는 저승역 매뉴얼 책 프레임](../../assets/ui/afterlife/manual_book_frame.png)
+
 | ID | 대상/용도 | 게임 자산 또는 증거 경로 | 상태 | 다음 확인 |
 |---|---|---|---|---|
 | ART-UI-01 | 저승역 열린 책·매뉴얼 배경 | `assets/ui/afterlife/manual_book_frame.png` | 구현 확인 | 실시간 텍스트 대비와 페이지 여백 |
