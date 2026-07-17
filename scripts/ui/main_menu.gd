@@ -166,6 +166,7 @@ func _build_ui() -> void:
 	action_content.add_child(briefing)
 	_log_guide = LogGuideScript.new()
 	_log_guide.set_compact(true)
+	_log_guide.set_afterlife_presentation(true)
 	action_content.add_child(_log_guide)
 	_present_log_entry()
 	var action_title := Label.new()

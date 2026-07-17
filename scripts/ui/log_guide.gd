@@ -6,6 +6,7 @@ signal sequence_finished
 
 const AssetCatalog = preload("res://scripts/ui/ui_asset_catalog.gd")
 const ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")
+const AfterlifeTheme = preload("res://scripts/ui/afterlife_station_theme.gd")
 const TutorialCatalog = preload("res://scripts/ui/log_tutorial_catalog.gd")
 
 const VALID_EXPRESSIONS := ["normal", "focus", "warning"]
@@ -23,6 +24,7 @@ var _line_index := 0
 var _current_expression := "normal"
 var _built := false
 var _compact := false
+var _afterlife_presentation := false
 var _signature_play_count := 0
 var _internal_advance_enabled := true
 
@@ -108,6 +110,12 @@ func set_compact(compact: bool) -> void:
 	_dialogue_label.custom_minimum_size.y = 44 if compact else 72
 
 
+func set_afterlife_presentation(enabled: bool) -> void:
+	_afterlife_presentation = enabled
+	if _built:
+		_apply_presentation_theme()
+
+
 func make_signature_stream(mode: String) -> AudioStreamWAV:
 	var clean_mode := mode if mode in VALID_EXPRESSIONS else "normal"
 	var base_frequency := 620.0
@@ -153,7 +161,6 @@ func _ensure_ui() -> void:
 	_built = true
 	theme = ThemeFactory.create_theme()
 	name = "LogGuide"
-	add_theme_stylebox_override("panel", ThemeFactory.panel_style(Color("3d7184"), 0.88))
 
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 12)
@@ -186,7 +193,6 @@ func _ensure_ui() -> void:
 
 	_speaker_label = Label.new()
 	_speaker_label.text = "기록관 아카 · 괴이 기록국 관제 AI"
-	_speaker_label.add_theme_color_override("font_color", ThemeFactory.COLOR_TEAL)
 	_speaker_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(_speaker_label)
 
@@ -203,7 +209,19 @@ func _ensure_ui() -> void:
 
 	_audio_player = AudioStreamPlayer.new()
 	add_child(_audio_player)
+	_apply_presentation_theme()
 	set_compact(_compact)
+
+
+func _apply_presentation_theme() -> void:
+	if _afterlife_presentation:
+		theme = AfterlifeTheme.create_theme()
+		add_theme_stylebox_override("panel", AfterlifeTheme.panel_style(AfterlifeTheme.GOLD, 0.98, 8))
+		_speaker_label.add_theme_color_override("font_color", AfterlifeTheme.GOLD)
+		return
+	theme = ThemeFactory.create_theme()
+	add_theme_stylebox_override("panel", ThemeFactory.panel_style(Color("3d7184"), 0.88))
+	_speaker_label.add_theme_color_override("font_color", ThemeFactory.COLOR_TEAL)
 
 
 func _apply_current_line() -> void:
@@ -232,6 +250,12 @@ func _play_signature(mode: String) -> void:
 
 
 func _expression_color(expression: String) -> Color:
+	if _afterlife_presentation:
+		if expression == "warning":
+			return AfterlifeTheme.DANGER
+		if expression == "focus":
+			return AfterlifeTheme.VIOLET
+		return AfterlifeTheme.GOLD
 	if expression == "warning":
 		return Color("e39b43")
 	if expression == "focus":

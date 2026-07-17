@@ -2,6 +2,7 @@
 extends SceneTree
 
 const DisplaySettingsScript = preload("res://scripts/ui/display_settings.gd")
+const AfterlifeTheme = preload("res://scripts/ui/afterlife_station_theme.gd")
 const TestSaveGuard = preload("res://tests/test_save_guard.gd")
 
 var _guard := TestSaveGuard.new()
@@ -32,6 +33,9 @@ func _run() -> void:
 		root.size = viewport_size
 		await process_frame
 		_verify_menu_layout(current_scene, viewport_size)
+	var log_guide := current_scene.find_child("LogGuide", true, false) as PanelContainer
+	var guide_panel := log_guide.get_theme_stylebox("panel") as StyleBoxFlat if log_guide != null else null
+	_expect(guide_panel != null and guide_panel.border_color.is_equal_approx(AfterlifeTheme.GOLD), "main menu guide should use the afterlife gold frame")
 	var settings_button := current_scene.find_child("DisplaySettingsButton", true, false) as Button
 	_expect(settings_button != null, "main menu should expose one display settings button")
 	if settings_button != null:
