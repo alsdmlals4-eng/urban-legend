@@ -26,6 +26,29 @@
 
 ![텍스트 없는 저승역 매뉴얼 책 프레임](../../assets/ui/afterlife/manual_book_frame.png)
 
+## MVP-043 캐릭터 패키지 원본 감사
+
+> 외부 원본 위치: `C:\Users\user\Desktop\비교샷\도시괴담\MVP-043_캐릭터_이미지_패키지_v1.0.zip` | 저장소 보존 경로: `assets/source/mvp043_character_v1/` | 확인일: 2026-07-17
+
+사용자 제공 ZIP은 이동·수정하지 않았다. 아래 10개 파일은 ZIP 스트림과 저장소 보존 사본의 SHA-256을 비교해 **10/10 바이트 동일**을 확인했다. 원본 카드에는 한글 이름·직책·UI가 구워져 있으므로 게임 화면에는 직접 사용하지 않고, manifest가 가리키는 텍스트 없는 파생 자산의 참고 원본으로만 사용한다.
+
+![MVP-043 캐릭터 패키지 전체 라인업 원본](../../assets/source/mvp043_character_v1/lineup.png)
+
+| 패키지 항목 | 저장소 원본 사본 | 게임용 파생 자산 | 감사 결과 |
+|---|---|---|---|
+| 00 전체 캐릭터 라인업 | `lineup.png` | 직접 사용 안 함 / 전체 방향 참조 | SHA-256 동일 |
+| 01 권나래 | `kwon_narae.png` | 전신·반신·조사 지원·회수 지원 | SHA-256 동일 |
+| 02 윤서하 | `yoon_seoha.png` | 전신·반신·조사 지원·회수 지원 | SHA-256 동일 |
+| 03 오현 | `oh_hyun.png` | 전신·반신·조사 지원·회수 지원 | SHA-256 동일 |
+| 04 강이준 | `kang_ijun.png` | 전신·반신·조사 지원·회수 지원 | SHA-256 동일 |
+| 05 한유리 | `han_yuri.png` | 전신·반신·조사 지원·회수 지원 | SHA-256 동일 |
+| 06 박도윤 | `park_doyoon.png` | 반신·HQ 외부 접점 장면 | SHA-256 동일 |
+| 07 이세린 | `lee_serin.png` | 반신·HQ 외부 접점 장면 | SHA-256 동일 |
+| 08 레이먼드 케인 | `raymond_kane.png` | 반신·HQ 외부 접점 장면 | SHA-256 동일 |
+| 09 카밀라 바르가스 | `camila_vargas.png` | 반신·HQ 외부 접점 장면 | SHA-256 동일 |
+
+파생 자산의 실제 경로·크기·알파·프롬프트·QA는 [`assets/characters/mvp043/ASSET_MANIFEST.json`](../../assets/characters/mvp043/ASSET_MANIFEST.json)을 정본으로 사용한다. 패키지가 교체되면 이 표, source 사본, manifest 참조, 실제 장면 캡처를 같은 작업에서 함께 심사한다.
+
 | ID | 대상/용도 | 게임 자산 또는 증거 경로 | 상태 | 다음 확인 |
 |---|---|---|---|---|
 | ART-UI-01 | 저승역 열린 책·매뉴얼 배경 | `assets/ui/afterlife/manual_book_frame.png` | 구현 확인 | 실시간 텍스트 대비와 페이지 여백 |
