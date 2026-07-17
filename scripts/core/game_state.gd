@@ -2922,6 +2922,8 @@ func get_episode_log_lines() -> Array:
 		if not record_text.is_empty():
 			lines.append("기록물 참고: %s" % record_text)
 
+	if String(active_mercenary_contract.get("id", "")) == "contract_park_doyoon":
+		lines.append("외부 계약 안내: 박도윤은 결론이 아니라 원본 수신 시각·발신 경로·종료 뒤 위치 기록을 비교하라고만 남겼습니다.")
 	var warning_text := String(briefing.get("risk_warning", ""))
 	if not warning_text.is_empty():
 		lines.append("위험 경고: %s" % warning_text)
