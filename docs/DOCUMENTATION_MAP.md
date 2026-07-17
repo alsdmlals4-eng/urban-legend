@@ -44,6 +44,7 @@
 
 | 작업 | 먼저 읽고 갱신할 활성 문서 | 필요할 때만 여는 부록 |
 |---|---|---|
+| 세계관·공식 용어·세력·초기 요원·외부 계약의 의미 | 게임, 아트, QA | [`[기획서]/세계관_및_설정.md`](../[기획서]/세계관_및_설정.md), asset manifest, 실제 카탈로그 |
 | 사건 규칙·대사·일상·관계·경제 | 게임, 프로그래밍, QA | `GAME_DESIGN_DOCUMENT.md`, `planning/NARRATIVE_CONTENT_PLAN.md`, 실제 JSON |
 | Godot UI·입력·설정·접근성 | 게임, 아트, QA, 프로그래밍 | `GODOT_NATIVE_UI_ARCHITECTURE.md`, 실제 씬/스크립트 |
 | 캐릭터·배경·표정·컷인·이펙트 | 아트, QA, 게임 | `IMAGE_INDEX.md`, asset manifest, `planning/ART_PRESENTATION_PLAN.md` |
