@@ -32,11 +32,11 @@ AGENTS.md
 
 ### 활성 기획서 — 처음에는 이 다섯 개만 읽는다
 
-- 게임 기획: [`docs/design/GAME_DESIGN_PLAN.md`](docs/design/GAME_DESIGN_PLAN.md)
-- 프로그래밍·로드맵/MVP: [`docs/programming/PROGRAMMING_ROADMAP_MVP.md`](docs/programming/PROGRAMMING_ROADMAP_MVP.md)
-- 아트·최신 이미지: [`docs/art/ART_DIRECTION_PLAN.md`](docs/art/ART_DIRECTION_PLAN.md) → [`IMAGE_INDEX.md`](docs/art/IMAGE_INDEX.md)
-- 사운드: [`docs/sound/SOUND_DIRECTION_PLAN.md`](docs/sound/SOUND_DIRECTION_PLAN.md)
-- QA: [`docs/qa/QA_MASTER_PLAN.md`](docs/qa/QA_MASTER_PLAN.md)
+- 게임 기획: [`[기획서]/01_게임기획서.md`]([기획서]/01_게임기획서.md)
+- 프로그래밍·로드맵/MVP: [`[기획서]/02_프로그래밍기획서_로드맵_MVP.md`]([기획서]/02_프로그래밍기획서_로드맵_MVP.md)
+- 아트·최신 이미지: [`[기획서]/03_아트기획서.md`]([기획서]/03_아트기획서.md) → [`이미지 인덱스`]([기획서]/이미지_인덱스.md)
+- 사운드: [`[기획서]/04_사운드기획서.md`]([기획서]/04_사운드기획서.md)
+- QA: [`[기획서]/05_QA기획서.md`]([기획서]/05_QA기획서.md)
 
 ## 다른 핵심 문서
 

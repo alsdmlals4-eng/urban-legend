@@ -1,6 +1,6 @@
 # MVP_ROADMAP
 
-> 문서 위치: `MVP_ROADMAP.md` | 활성 로드맵: `docs/programming/PROGRAMMING_ROADMAP_MVP.md` | 통합 인수인계 부록: `docs/planning/ROADMAP_AND_HANDOFF.md`
+> 문서 위치: `MVP_ROADMAP.md` | 활성 로드맵: `[기획서]/02_프로그래밍기획서_로드맵_MVP.md` | 통합 인수인계 부록: `docs/planning/ROADMAP_AND_HANDOFF.md`
 
 이 파일은 기존 MVP의 상세 이력·수용 기준을 보존하는 부록이다. 처음 읽는 사용자는 활성 프로그래밍 기획서를 먼저 읽으며, 이 파일을 현재 상태의 단일 원본으로 사용하지 않는다.
 
@@ -13,7 +13,7 @@
 | 저장 스키마 | 기존 호환 유지 / 진행 브랜치 MVP-048 확장 이관 존재 |
 | 상태 원본 | `docs/CURRENT_STATUS.md` |
 | 기획 진입점 | `docs/DOCUMENTATION_MAP.md`의 다섯 활성 기획서 |
-| 상세 설계 원본 | `docs/design/GAME_DESIGN_PLAN.md` |
+| 상세 설계 원본 | `[기획서]/01_게임기획서.md` |
 
 MVP-001~043의 세부 완료 이력은 기본 읽기에서 제외한다. 필요한 경우에만 백업 문서와 `docs/qa/`의 해당 검증 기록을 연다.
 
@@ -66,11 +66,11 @@ MVP-046의 상태 비소유 공용 대화 스테이지만 기존 대사·관계 
 
 ## 분야별 책임 문서
 
-- 게임: `docs/design/GAME_DESIGN_PLAN.md`
-- 프로그래밍·로드맵/MVP: `docs/programming/PROGRAMMING_ROADMAP_MVP.md`
-- 아트·최신 이미지: `docs/art/ART_DIRECTION_PLAN.md`, `docs/art/IMAGE_INDEX.md`
-- 사운드: `docs/sound/SOUND_DIRECTION_PLAN.md`
-- QA: `docs/qa/QA_MASTER_PLAN.md`
+- 게임: `[기획서]/01_게임기획서.md`
+- 프로그래밍·로드맵/MVP: `[기획서]/02_프로그래밍기획서_로드맵_MVP.md`
+- 아트·최신 이미지: `[기획서]/03_아트기획서.md`, `[기획서]/이미지_인덱스.md`
+- 사운드: `[기획서]/04_사운드기획서.md`
+- QA: `[기획서]/05_QA기획서.md`
 
 기존 `docs/planning/*` 문서는 위 다섯 문서가 링크하는 상세 부록이다.
 

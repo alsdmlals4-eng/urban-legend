@@ -236,7 +236,7 @@ Codex는 작업 시작 전 다음을 확인한다.
 
 ## 11. 살아 있는 기획서와 최적화 루프
 
-- 활성 게임 설계 원본은 `docs/design/GAME_DESIGN_PLAN.md`다. `docs/GAME_DESIGN_DOCUMENT.md`와 `docs/URBAN_LEGEND_GAME_DESIGN.docx`는 상세 계약·생성 배포 부록이며, GDD를 실제로 수정할 때만 DOCX를 재생성한다.
+- 활성 게임 설계 원본은 `[기획서]/01_게임기획서.md`다. `docs/GAME_DESIGN_DOCUMENT.md`와 `docs/URBAN_LEGEND_GAME_DESIGN.docx`는 상세 계약·생성 배포 부록이며, GDD를 실제로 수정할 때만 DOCX를 재생성한다.
 - 작업 시작 시 실제 구현, 최신 MVP, Issue/Goal, 다섯 활성 기획서·상세 부록의 불일치를 확인한다.
 - 작업 종료 시 최신화한 활성 기획서(게임·프로그래밍·아트·사운드·QA), 벤치마킹 결론, 반영한 개선점, 후속 후보, 사용 스킬·도구 효율을 기록한다. 최신 이미지는 아트 기획서와 이미지 인덱스만 원본으로 사용한다.
 - GDD를 수정하면 DOCX를 재생성하고 완료 보고에서 두 파일을 사용자에게 모두 보여준다.
