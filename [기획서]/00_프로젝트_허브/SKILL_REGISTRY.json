@@ -335,6 +335,86 @@
       "last_reviewed_at": "2026-07-20",
       "last_reviewed_commit": "dd3c9a8776eb938eeeeb2f1319af6bfc4a135202",
       "knowledge_state": "MIGRATED"
+    },
+    {
+      "skill_id": "routing-project-work-by-discipline",
+      "layer": "foundation",
+      "discipline": "프로젝트 전체",
+      "path": "skills/foundations/routing-project-work-by-discipline/SKILL.md",
+      "status": "ACTIVE",
+      "load_by_default": false,
+      "trigger_tags": ["routing"],
+      "use_when": ["새 L1 이상 작업의 책임 분야와 최소 스킬을 정할 때"],
+      "do_not_use_when": ["명확한 L0 오탈자"],
+      "learning_log": "skills/LEARNING_LOG.md",
+      "review_triggers": ["라우팅 누락"],
+      "last_reviewed_at": "2026-07-20",
+      "last_reviewed_commit": "42e1511",
+      "knowledge_state": "ADAPTED_FROM_BASE"
+    },
+    {
+      "skill_id": "conducting-deep-requirement-interviews",
+      "layer": "foundation",
+      "discipline": "프로젝트 전체",
+      "path": "skills/foundations/conducting-deep-requirement-interviews/SKILL.md",
+      "status": "ACTIVE", "load_by_default": false, "trigger_tags": ["interview"],
+      "use_when": ["구조·기능·경험 결정을 확인할 때"], "do_not_use_when": ["L0 수정"],
+      "learning_log": "skills/LEARNING_LOG.md", "review_triggers": ["미확정 요구"],
+      "last_reviewed_at": "2026-07-20", "last_reviewed_commit": "42e1511", "knowledge_state": "ADAPTED_FROM_BASE"
+    },
+    {
+      "skill_id": "migrating-existing-game-project-structure",
+      "layer": "foundation", "discipline": "프로젝트 전체",
+      "path": "skills/foundations/migrating-existing-game-project-structure/SKILL.md",
+      "status": "ACTIVE", "load_by_default": false, "trigger_tags": ["migration"],
+      "use_when": ["기존 구조를 보존 이주할 때"], "do_not_use_when": ["신규 기능 구현"],
+      "learning_log": "skills/LEARNING_LOG.md", "review_triggers": ["이동·삭제"],
+      "last_reviewed_at": "2026-07-20", "last_reviewed_commit": "42e1511", "knowledge_state": "ADAPTED_FROM_BASE"
+    },
+    {
+      "skill_id": "maintaining-project-context-and-handoff",
+      "layer": "foundation", "discipline": "프로젝트 전체",
+      "path": "skills/foundations/maintaining-project-context-and-handoff/SKILL.md",
+      "status": "ACTIVE", "load_by_default": false, "trigger_tags": ["handoff"],
+      "use_when": ["현재 상태·다음 작업을 갱신할 때"], "do_not_use_when": ["책임 본책 전문을 작성할 때"],
+      "learning_log": "skills/LEARNING_LOG.md", "review_triggers": ["단계 전환"],
+      "last_reviewed_at": "2026-07-20", "last_reviewed_commit": "42e1511", "knowledge_state": "ADAPTED_FROM_BASE"
+    },
+    {
+      "skill_id": "evolving-project-discipline-skills",
+      "layer": "foundation", "discipline": "프로젝트 전체",
+      "path": "skills/foundations/evolving-project-discipline-skills/SKILL.md",
+      "status": "ACTIVE", "load_by_default": false, "trigger_tags": ["skill-evolution"],
+      "use_when": ["검증된 반복 학습을 스킬에 반영할 때"], "do_not_use_when": ["일회성 추측"],
+      "learning_log": "skills/LEARNING_LOG.md", "review_triggers": ["반복 실패"],
+      "last_reviewed_at": "2026-07-20", "last_reviewed_commit": "42e1511", "knowledge_state": "ADAPTED_FROM_BASE"
+    },
+    {
+      "skill_id": "transforming-requests-into-prompts",
+      "layer": "foundation", "discipline": "프로젝트 전체",
+      "path": "skills/foundations/transforming-requests-into-prompts/SKILL.md",
+      "status": "ACTIVE", "load_by_default": false, "trigger_tags": ["prompt"],
+      "use_when": ["확정 인터뷰를 Goal로 변환할 때"], "do_not_use_when": ["미확정 요구"],
+      "learning_log": "skills/LEARNING_LOG.md", "review_triggers": ["Goal 생성"],
+      "last_reviewed_at": "2026-07-20", "last_reviewed_commit": "42e1511", "knowledge_state": "ADAPTED_FROM_BASE"
+    },
+    {
+      "skill_id": "publishing-discipline-bibles",
+      "layer": "foundation", "discipline": "프로젝트 전체",
+      "path": "skills/foundations/publishing-discipline-bibles/SKILL.md",
+      "status": "ACTIVE", "load_by_default": false, "trigger_tags": ["publication"],
+      "use_when": ["책임 원본·PDF·Manifest가 변경될 때"], "do_not_use_when": ["단순 조회"],
+      "learning_log": "skills/LEARNING_LOG.md", "review_triggers": ["발행 실패"],
+      "last_reviewed_at": "2026-07-20", "last_reviewed_commit": "42e1511", "knowledge_state": "ADAPTED_FROM_BASE"
+    },
+    {
+      "skill_id": "verifying-game-project-operating-system",
+      "layer": "foundation", "discipline": "프로젝트 전체",
+      "path": "skills/foundations/verifying-game-project-operating-system/SKILL.md",
+      "status": "ACTIVE", "load_by_default": false, "trigger_tags": ["health-review"],
+      "use_when": ["이주·대형 운영 변경 후 Health Review를 할 때"], "do_not_use_when": ["L0 수정"],
+      "learning_log": "skills/LEARNING_LOG.md", "review_triggers": ["콜드 스타트 실패"],
+      "last_reviewed_at": "2026-07-20", "last_reviewed_commit": "42e1511", "knowledge_state": "ADAPTED_FROM_BASE"
     }
   ]
 }

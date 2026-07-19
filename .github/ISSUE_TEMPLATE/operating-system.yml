@@ -1,0 +1,18 @@
+name: 운영체계 작업
+description: 문서·스킬·발행·거버넌스 변경을 추적합니다.
+title: "[OPS] "
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: 목표와 범위
+      description: 변경할 운영 경로와 제외 범위를 적습니다.
+    validations:
+      required: true
+  - type: textarea
+    id: protection
+    attributes:
+      label: 보호 대상과 검증
+      description: 변경하지 않을 게임 경로와 자동·수동 검증을 적습니다.
+    validations:
+      required: true

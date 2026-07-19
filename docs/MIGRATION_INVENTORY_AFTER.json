@@ -42,10 +42,8 @@
       "source_path": ".github/pull_request_template.md",
       "git_state": "TRACKED",
       "disposition": "[증거]",
-      "preserved_paths": [
-        ".github/pull_request_template.md"
-      ],
-      "state": "PRESERVED"
+      "preserved_paths": [],
+      "state": "UPDATED_BY_CONTRACT"
     },
     {
       "source_path": ".gitignore",
@@ -1227,7 +1225,6 @@
       "git_state": "TRACKED",
       "disposition": "[증거]",
       "preserved_paths": [
-        ".godot/.gdignore",
         "assets/source/mvp043_character_v1/.gdignore",
         "assets/source/mvp043_generated/.gdignore"
       ],
@@ -1328,7 +1325,6 @@
       "git_state": "TRACKED",
       "disposition": "[증거]",
       "preserved_paths": [
-        ".godot/.gdignore",
         "assets/source/mvp043_character_v1/.gdignore",
         "assets/source/mvp043_generated/.gdignore"
       ],

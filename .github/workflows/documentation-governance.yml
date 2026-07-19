@@ -1,0 +1,31 @@
+name: Urban Legend Documentation Governance
+
+on:
+  pull_request:
+    paths:
+      - "[기획서]/**"
+      - "skills/**"
+      - "tools/check_*governance.py"
+      - "tools/check_interview_contract.py"
+      - ".github/**"
+      - "schemas/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  governance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: python -m pip install jsonschema==4.26.0
+      - run: python tools/check_documentation_governance.py
+      - run: python tools/check_skill_routing_governance.py
+      - run: python tools/check_design_document_publications.py
+      - run: python tools/check_interview_contract.py

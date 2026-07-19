@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/alsdmlals4-eng/Base/schemas/interview-registry-v1.schema.json",
+  "type": "object",
+  "required": ["schema_version", "registry_role", "interviews"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "registry_role": {"const": "deep-requirement-interview-index"},
+    "interviews": {"type": "array"}
+  },
+  "additionalProperties": true
+}

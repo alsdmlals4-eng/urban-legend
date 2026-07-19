@@ -16,6 +16,8 @@ export_credentials.cfg
 .idea/
 .vs/
 .worktrees/
+node_modules/
+__pycache__/
 .DS_Store
 Thumbs.db
 desktop.ini

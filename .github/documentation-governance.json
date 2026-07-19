@@ -1,0 +1,35 @@
+{
+  "design_root": "[기획서]",
+  "required_paths": [
+    "[기획서]/00_프로젝트_허브/START_HERE.md",
+    "[기획서]/00_프로젝트_허브/ACTIVE_CONTEXT.md",
+    "[기획서]/00_프로젝트_허브/DOCUMENTATION_MAP.md",
+    "[기획서]/00_프로젝트_허브/INTERVIEW_REGISTRY.json",
+    "[기획서]/00_프로젝트_허브/DESIGN_DOCUMENT_REGISTRY.json",
+    "[기획서]/00_프로젝트_허브/SKILL_REGISTRY.json",
+    "[기획서]/00_프로젝트_허브/PROJECT_SKILL_MAP.pdf",
+    "[기획서]/00_프로젝트_허브/SKILL_MAP_PUBLICATION_MANIFEST.json",
+    "tools/check_documentation_governance.py",
+    "tools/check_skill_routing_governance.py",
+    "tools/check_design_document_publications.py",
+    "tools/check_interview_contract.py"
+  ],
+  "ignored_segments": ["[백업]", "[보류]", "archive", "hold"],
+  "required_foundation_skills": [
+    "routing-project-work-by-discipline",
+    "conducting-deep-requirement-interviews",
+    "migrating-existing-game-project-structure",
+    "maintaining-project-context-and-handoff",
+    "evolving-project-discipline-skills",
+    "transforming-requests-into-prompts",
+    "publishing-discipline-bibles",
+    "verifying-game-project-operating-system"
+  ],
+  "change_rules": [
+    {
+      "name": "operating-system-change",
+      "source_globs": ["[기획서]/**", "skills/**", "tools/check_*governance.py", ".github/**"],
+      "required_all": ["[기획서]/00_프로젝트_허브/ACTIVE_CONTEXT.md"]
+    }
+  ]
+}

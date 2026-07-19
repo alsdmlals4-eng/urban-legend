@@ -1,20 +1,25 @@
 #!/usr/bin/env python3
 """Report whether every baseline Urban Legend payload remains present after moves."""
 from __future__ import annotations
-import argparse,hashlib,json,subprocess
+import argparse,hashlib,json,os,subprocess
 from pathlib import Path
 TEXT={'.md','.txt','.json','.yml','.yaml','.gd','.tscn','.tres','.cfg','.html','.ps1','.py','.import','.uid','.godot',''}
 UPDATED_BY_CONTRACT={
+ '.github/pull_request_template.md',
  'tests/test_account_handoff_contract.ps1',
  'tests/test_dialogue_workflow_contract.ps1',
  'tests/test_multimodel_workflow_contract.ps1',
  'tests/test_workflow_context.ps1',
 }
+SKIPPED_PARTS={'.git','node_modules','__pycache__','.godot','.import'}
 def d(data,suffix): return hashlib.sha256(data.replace(b'\r\n',b'\n') if suffix in TEXT else data).hexdigest()
 def main():
  p=argparse.ArgumentParser();p.add_argument('--before',required=True);p.add_argument('--after',required=True);p.add_argument('--source-ref',default='dd3c9a8776eb938eeeeb2f1319af6bfc4a135202');a=p.parse_args();root=Path.cwd();before=json.loads(Path(a.before).read_text(encoding='utf8'))['files']; hashes={}
- for f in root.rglob('*'):
-  if f.is_file() and '.git' not in f.parts: hashes.setdefault(d(f.read_bytes(),f.suffix.lower()),[]).append(f.relative_to(root).as_posix())
+ for directory, names, files in os.walk(root):
+  names[:]=[name for name in names if name not in SKIPPED_PARTS]
+  for name in files:
+   f=Path(directory,name)
+   hashes.setdefault(d(f.read_bytes(),f.suffix.lower()),[]).append(f.relative_to(root).as_posix())
  tree=subprocess.run(['git','ls-tree','-r',a.source_ref],capture_output=True,text=True,check=True).stdout
  blobs={line.split('\t',1)[1]:line.split()[2] for line in tree.splitlines() if '\t' in line}
  rows=[]

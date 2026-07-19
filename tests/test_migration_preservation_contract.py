@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class MigrationPreservationContractTests(unittest.TestCase):
-    def test_approved_test_route_updates_do_not_break_preservation_audit(self) -> None:
+    def test_approved_operating_system_route_updates_do_not_break_preservation_audit(self) -> None:
         result = subprocess.run(
             [
                 sys.executable,
