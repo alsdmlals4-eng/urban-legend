@@ -6,7 +6,7 @@ import re
 from pathlib import Path
 
 ROOT = Path.cwd().resolve()
-EXCLUDED = {".git", "[백업]", "[보류]"}
+EXCLUDED = {".git", "[백업]", "[보류]", "node_modules", "__pycache__", ".godot", ".import"}
 LINK = re.compile(r"(?<!!)\[[^]]*\]\(([^)#]+)(?:#[^)]+)?\)")
 
 def main() -> int:

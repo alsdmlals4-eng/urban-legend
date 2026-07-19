@@ -1,7 +1,7 @@
 # 프로젝트 스킬 지도
 
 > 자동 생성 파생본입니다. 수동 편집하지 마세요.
-> SKILL_REGISTRY.json SHA-256: `fc052ef270359a56ad2190168a5102db5c4786b25fa27e9cb0d46e463b5191ee`
+> SKILL_REGISTRY.json SHA-256: `70d3cc8fd1e2f5dd9c35e25adf430388c3c251e47b21fc87a13626a01de98e26`
 
 ## 필수 분야
 
@@ -48,3 +48,11 @@
 | urban-legend-production-pm | discipline | 프로덕션·PM | production-pm |
 | urban-legend-analytics-user-research | discipline | 분석·유저리서치 | analytics-user-research |
 | urban-legend-integration-review | discipline | 통합검수 | integration-review |
+| routing-project-work-by-discipline | foundation | 프로젝트 전체 | routing |
+| conducting-deep-requirement-interviews | foundation | 프로젝트 전체 | interview |
+| migrating-existing-game-project-structure | foundation | 프로젝트 전체 | migration |
+| maintaining-project-context-and-handoff | foundation | 프로젝트 전체 | handoff |
+| evolving-project-discipline-skills | foundation | 프로젝트 전체 | skill-evolution |
+| transforming-requests-into-prompts | foundation | 프로젝트 전체 | prompt |
+| publishing-discipline-bibles | foundation | 프로젝트 전체 | publication |
+| verifying-game-project-operating-system | foundation | 프로젝트 전체 | health-review |
