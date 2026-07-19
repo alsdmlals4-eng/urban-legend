@@ -1,36 +1,10 @@
 $ErrorActionPreference = 'Stop'
-$repo = Split-Path -Parent $PSScriptRoot
-$failures = [System.Collections.Generic.List[string]]::new()
-
-function Words([string]$RelativePath) {
-	$text = Get-Content -LiteralPath (Join-Path $repo $RelativePath) -Raw -Encoding utf8
-	return @($text -split '\s+' | Where-Object { $_ }).Count
-}
-
-function Require([bool]$Condition, [string]$Message) {
-	if (-not $Condition) { $script:failures.Add($Message) }
-}
-
-$contextPath = Join-Path $repo 'docs\PROJECT_CONTEXT.md'
-Require (Test-Path -LiteralPath $contextPath -PathType Leaf) 'docs/PROJECT_CONTEXT.md must exist'
-Require ((Words 'AGENTS.md') -le 450) 'AGENTS.md must be 450 words or fewer'
-
-$map = Get-Content -LiteralPath (Join-Path $repo 'docs\DOCUMENTATION_MAP.md') -Raw -Encoding utf8
-foreach ($branch in @('DIALOGUE_AUTHORING_WORKFLOW', 'IMAGE_ASSET_WORKFLOW', 'BENCHMARKING_REFERENCE_GUIDE', 'AI_DELEGATION_WORKFLOW', 'GODOT_NATIVE_UI_ARCHITECTURE', 'MVP037_CAMPAIGN_CORE')) {
-	Require ($map.Contains($branch)) "Documentation map is missing branch: $branch"
-}
-Require ($map.Contains('Conditional routing')) 'Documentation map must state conditional loading'
-
-if (Test-Path -LiteralPath $contextPath) {
-	$context = Get-Content -LiteralPath $contextPath -Raw -Encoding utf8
-	Require ($context.Contains('HIGH_RISK_DOMAIN')) 'Project context must distinguish semantic risk from protected paths'
-	$activeWords = (Words 'AGENTS.md') + (Words 'docs/BASE_RULES_VERSION.md') + (Words 'docs/DOCUMENTATION_MAP.md') + (Words 'docs/PROJECT_CONTEXT.md')
-	Require ($activeWords -le 4056) "Active startup context is $activeWords words; target is 4056"
-}
-
-if ($failures.Count -gt 0) {
-	$failures | ForEach-Object { Write-Output "FAIL: $_" }
-	exit 1
-}
-
-Write-Output 'Workflow context contract passed.'
+$repo = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
+$hub = Join-Path $repo '[기획서]\00_프로젝트_허브'
+$design = Get-Content -Raw -LiteralPath (Join-Path $hub 'DESIGN_DOCUMENT_REGISTRY.json') | ConvertFrom-Json
+$skills = Get-Content -Raw -LiteralPath (Join-Path $hub 'SKILL_REGISTRY.json') | ConvertFrom-Json
+if ($design.documents.Count -ne 12) { throw "Expected hub plus 11 responsibility documents; got $($design.documents.Count)." }
+if ($skills.skills.Count -ne 11 -or $skills.discipline_entrypoints.PSObject.Properties.Count -ne 11) { throw 'Expected 11 one-to-one discipline skills and entrypoints.' }
+foreach ($entry in $skills.skills) { if (-not (Test-Path -LiteralPath (Join-Path $repo $entry.path) -PathType Leaf)) { throw "Missing registered skill: $($entry.path)" } }
+if (-not (Test-Path -LiteralPath (Join-Path $hub 'MIGRATION_PRESERVATION_LEDGER.md') -PathType Leaf)) { throw 'Migration preservation ledger is missing.' }
+'PASS: 11-discipline workflow context contract'

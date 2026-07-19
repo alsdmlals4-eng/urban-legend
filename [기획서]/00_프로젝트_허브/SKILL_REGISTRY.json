@@ -1,0 +1,340 @@
+{
+  "$schema": "../../schemas/skill-registry-v3.schema.json",
+  "schema_version": 3,
+  "registry_role": "project-skill-router-and-learning-index",
+  "routing_policy": {
+    "load_all_skills": false,
+    "default_selection": "none",
+    "require_trigger_match": true,
+    "max_primary_discipline_skills": 1,
+    "max_foundation_skills": 3,
+    "exclude_statuses": [
+      "HOLD",
+      "BACKUP",
+      "REMOVAL_CANDIDATE"
+    ]
+  },
+  "human_presentation": {
+    "primary_reading_format": "PROJECT_SKILL_MAP.pdf",
+    "editable_derivative": null,
+    "diagram_directory": "PROJECT_SKILL_MAP.assets",
+    "publication_manifest": "SKILL_MAP_PUBLICATION_MANIFEST.json",
+    "generator": "tools/build_project_skill_map.py",
+    "source_of_truth": "SKILL_REGISTRY.json",
+    "markdown_summary": "PROJECT_SKILL_MAP.md"
+  },
+  "required_disciplines": [
+    "설정·내러티브",
+    "게임 디자인",
+    "UX·UI·접근성",
+    "개발·엔지니어링",
+    "테크니컬 아트·콘텐츠 파이프라인",
+    "아트",
+    "사운드",
+    "QA",
+    "프로덕션·PM",
+    "분석·유저리서치",
+    "통합검수"
+  ],
+  "discipline_entrypoints": {
+    "설정·내러티브": [
+      "urban-legend-narrative"
+    ],
+    "게임 디자인": [
+      "urban-legend-game-design"
+    ],
+    "UX·UI·접근성": [
+      "urban-legend-ux-ui-accessibility"
+    ],
+    "개발·엔지니어링": [
+      "urban-legend-engineering"
+    ],
+    "테크니컬 아트·콘텐츠 파이프라인": [
+      "urban-legend-technical-art-pipeline"
+    ],
+    "아트": [
+      "urban-legend-art"
+    ],
+    "사운드": [
+      "urban-legend-audio"
+    ],
+    "QA": [
+      "urban-legend-qa"
+    ],
+    "프로덕션·PM": [
+      "urban-legend-production-pm"
+    ],
+    "분석·유저리서치": [
+      "urban-legend-analytics-user-research"
+    ],
+    "통합검수": [
+      "urban-legend-integration-review"
+    ]
+  },
+  "skills": [
+    {
+      "skill_id": "urban-legend-narrative",
+      "layer": "discipline",
+      "discipline": "설정·내러티브",
+      "path": "skills/disciplines/01-narrative/SKILL.md",
+      "status": "ACTIVE",
+      "load_by_default": false,
+      "trigger_tags": [
+        "narrative"
+      ],
+      "use_when": [
+        "세계관, 사건, 인물, 대화와 콘텐츠 의도를 책임진다."
+      ],
+      "do_not_use_when": [
+        "다른 분야의 단독 변경"
+      ],
+      "learning_log": "skills/LEARNING_LOG.md",
+      "review_triggers": [
+        "본책 또는 검증 경로 변경"
+      ],
+      "last_reviewed_at": "2026-07-20",
+      "last_reviewed_commit": "dd3c9a8776eb938eeeeb2f1319af6bfc4a135202",
+      "knowledge_state": "MIGRATED"
+    },
+    {
+      "skill_id": "urban-legend-game-design",
+      "layer": "discipline",
+      "discipline": "게임 디자인",
+      "path": "skills/disciplines/02-game-design/SKILL.md",
+      "status": "ACTIVE",
+      "load_by_default": false,
+      "trigger_tags": [
+        "game-design"
+      ],
+      "use_when": [
+        "조사·판단·선택·결과 루프, 미니게임, 캠페인 규칙과 수치를 책임진다."
+      ],
+      "do_not_use_when": [
+        "다른 분야의 단독 변경"
+      ],
+      "learning_log": "skills/LEARNING_LOG.md",
+      "review_triggers": [
+        "본책 또는 검증 경로 변경"
+      ],
+      "last_reviewed_at": "2026-07-20",
+      "last_reviewed_commit": "dd3c9a8776eb938eeeeb2f1319af6bfc4a135202",
+      "knowledge_state": "MIGRATED"
+    },
+    {
+      "skill_id": "urban-legend-ux-ui-accessibility",
+      "layer": "discipline",
+      "discipline": "UX·UI·접근성",
+      "path": "skills/disciplines/03-ux-ui-accessibility/SKILL.md",
+      "status": "ACTIVE",
+      "load_by_default": false,
+      "trigger_tags": [
+        "ux-ui-accessibility"
+      ],
+      "use_when": [
+        "화면 흐름, 입력, 정보 계층, 가독성과 접근성 검증을 책임진다."
+      ],
+      "do_not_use_when": [
+        "다른 분야의 단독 변경"
+      ],
+      "learning_log": "skills/LEARNING_LOG.md",
+      "review_triggers": [
+        "본책 또는 검증 경로 변경"
+      ],
+      "last_reviewed_at": "2026-07-20",
+      "last_reviewed_commit": "dd3c9a8776eb938eeeeb2f1319af6bfc4a135202",
+      "knowledge_state": "MIGRATED"
+    },
+    {
+      "skill_id": "urban-legend-engineering",
+      "layer": "discipline",
+      "discipline": "개발·엔지니어링",
+      "path": "skills/disciplines/04-engineering/SKILL.md",
+      "status": "ACTIVE",
+      "load_by_default": false,
+      "trigger_tags": [
+        "engineering"
+      ],
+      "use_when": [
+        "Godot 구조, 저장, 캠페인, Scene, 데이터 경계와 자동 검증을 책임진다."
+      ],
+      "do_not_use_when": [
+        "다른 분야의 단독 변경"
+      ],
+      "learning_log": "skills/LEARNING_LOG.md",
+      "review_triggers": [
+        "본책 또는 검증 경로 변경"
+      ],
+      "last_reviewed_at": "2026-07-20",
+      "last_reviewed_commit": "dd3c9a8776eb938eeeeb2f1319af6bfc4a135202",
+      "knowledge_state": "MIGRATED"
+    },
+    {
+      "skill_id": "urban-legend-technical-art-pipeline",
+      "layer": "discipline",
+      "discipline": "테크니컬 아트·콘텐츠 파이프라인",
+      "path": "skills/disciplines/05-technical-art-pipeline/SKILL.md",
+      "status": "ACTIVE",
+      "load_by_default": false,
+      "trigger_tags": [
+        "technical-art-pipeline"
+      ],
+      "use_when": [
+        "이미지 import, 자산 Manifest, 콘텐츠 제작·검수 경로를 책임진다."
+      ],
+      "do_not_use_when": [
+        "다른 분야의 단독 변경"
+      ],
+      "learning_log": "skills/LEARNING_LOG.md",
+      "review_triggers": [
+        "본책 또는 검증 경로 변경"
+      ],
+      "last_reviewed_at": "2026-07-20",
+      "last_reviewed_commit": "dd3c9a8776eb938eeeeb2f1319af6bfc4a135202",
+      "knowledge_state": "MIGRATED"
+    },
+    {
+      "skill_id": "urban-legend-art",
+      "layer": "discipline",
+      "discipline": "아트",
+      "path": "skills/disciplines/06-art/SKILL.md",
+      "status": "ACTIVE",
+      "load_by_default": false,
+      "trigger_tags": [
+        "art"
+      ],
+      "use_when": [
+        "캐릭터·배경·UI 시각 언어, 승인 자산과 제작 상태를 책임진다."
+      ],
+      "do_not_use_when": [
+        "다른 분야의 단독 변경"
+      ],
+      "learning_log": "skills/LEARNING_LOG.md",
+      "review_triggers": [
+        "본책 또는 검증 경로 변경"
+      ],
+      "last_reviewed_at": "2026-07-20",
+      "last_reviewed_commit": "dd3c9a8776eb938eeeeb2f1319af6bfc4a135202",
+      "knowledge_state": "MIGRATED"
+    },
+    {
+      "skill_id": "urban-legend-audio",
+      "layer": "discipline",
+      "discipline": "사운드",
+      "path": "skills/disciplines/07-audio/SKILL.md",
+      "status": "ACTIVE",
+      "load_by_default": false,
+      "trigger_tags": [
+        "audio"
+      ],
+      "use_when": [
+        "BGM·SFX·음성 이벤트 연결과 믹싱 상태를 책임진다."
+      ],
+      "do_not_use_when": [
+        "다른 분야의 단독 변경"
+      ],
+      "learning_log": "skills/LEARNING_LOG.md",
+      "review_triggers": [
+        "본책 또는 검증 경로 변경"
+      ],
+      "last_reviewed_at": "2026-07-20",
+      "last_reviewed_commit": "dd3c9a8776eb938eeeeb2f1319af6bfc4a135202",
+      "knowledge_state": "MIGRATED"
+    },
+    {
+      "skill_id": "urban-legend-qa",
+      "layer": "discipline",
+      "discipline": "QA",
+      "path": "skills/disciplines/08-qa/SKILL.md",
+      "status": "ACTIVE",
+      "load_by_default": false,
+      "trigger_tags": [
+        "qa"
+      ],
+      "use_when": [
+        "자동·수동 검증, 결함, 캡처 증거, 재현 절차와 릴리스 게이트를 책임진다."
+      ],
+      "do_not_use_when": [
+        "다른 분야의 단독 변경"
+      ],
+      "learning_log": "skills/LEARNING_LOG.md",
+      "review_triggers": [
+        "본책 또는 검증 경로 변경"
+      ],
+      "last_reviewed_at": "2026-07-20",
+      "last_reviewed_commit": "dd3c9a8776eb938eeeeb2f1319af6bfc4a135202",
+      "knowledge_state": "MIGRATED"
+    },
+    {
+      "skill_id": "urban-legend-production-pm",
+      "layer": "discipline",
+      "discipline": "프로덕션·PM",
+      "path": "skills/disciplines/09-production-pm/SKILL.md",
+      "status": "ACTIVE",
+      "load_by_default": false,
+      "trigger_tags": [
+        "production-pm"
+      ],
+      "use_when": [
+        "우선순위, Roadmap, Issue/PR, 위험, 인수와 완료 조건을 책임진다."
+      ],
+      "do_not_use_when": [
+        "다른 분야의 단독 변경"
+      ],
+      "learning_log": "skills/LEARNING_LOG.md",
+      "review_triggers": [
+        "본책 또는 검증 경로 변경"
+      ],
+      "last_reviewed_at": "2026-07-20",
+      "last_reviewed_commit": "dd3c9a8776eb938eeeeb2f1319af6bfc4a135202",
+      "knowledge_state": "MIGRATED"
+    },
+    {
+      "skill_id": "urban-legend-analytics-user-research",
+      "layer": "discipline",
+      "discipline": "분석·유저리서치",
+      "path": "skills/disciplines/10-analytics-user-research/SKILL.md",
+      "status": "ACTIVE",
+      "load_by_default": false,
+      "trigger_tags": [
+        "analytics-user-research"
+      ],
+      "use_when": [
+        "참고 사례, 플레이어 반응 가설, 측정·리서치 계획을 책임진다."
+      ],
+      "do_not_use_when": [
+        "다른 분야의 단독 변경"
+      ],
+      "learning_log": "skills/LEARNING_LOG.md",
+      "review_triggers": [
+        "본책 또는 검증 경로 변경"
+      ],
+      "last_reviewed_at": "2026-07-20",
+      "last_reviewed_commit": "dd3c9a8776eb938eeeeb2f1319af6bfc4a135202",
+      "knowledge_state": "MIGRATED"
+    },
+    {
+      "skill_id": "urban-legend-integration-review",
+      "layer": "discipline",
+      "discipline": "통합검수",
+      "path": "skills/disciplines/11-integration-review/SKILL.md",
+      "status": "ACTIVE",
+      "load_by_default": false,
+      "trigger_tags": [
+        "integration-review"
+      ],
+      "use_when": [
+        "분야 간 계약, 문서·코드·자산 연결, 발행과 최종 Ready 판정을 책임진다."
+      ],
+      "do_not_use_when": [
+        "다른 분야의 단독 변경"
+      ],
+      "learning_log": "skills/LEARNING_LOG.md",
+      "review_triggers": [
+        "본책 또는 검증 경로 변경"
+      ],
+      "last_reviewed_at": "2026-07-20",
+      "last_reviewed_commit": "dd3c9a8776eb938eeeeb2f1319af6bfc4a135202",
+      "knowledge_state": "MIGRATED"
+    }
+  ]
+}

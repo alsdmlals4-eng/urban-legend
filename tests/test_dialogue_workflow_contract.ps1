@@ -1,31 +1,10 @@
 $ErrorActionPreference = 'Stop'
-
 $repo = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
-$workflowPath = Join-Path $repo 'docs\DIALOGUE_AUTHORING_WORKFLOW.md'
-
-function Assert-Contains {
-	param([string]$Text, [string]$Expected, [string]$Message)
-	if (-not $Text.Contains($Expected)) { throw $Message }
-}
-
-if (-not (Test-Path -LiteralPath $workflowPath -PathType Leaf)) {
-	throw 'Dialogue authoring workflow document is missing.'
-}
-
-$workflow = [IO.File]::ReadAllText($workflowPath, [Text.Encoding]::UTF8)
-Assert-Contains -Text $workflow -Expected 'dialogue_rewrite.patch' -Message 'The external GPT patch artifact is not defined.'
-Assert-Contains -Text $workflow -Expected 'dialogue_review.md' -Message 'The external GPT review artifact is not defined.'
-Assert-Contains -Text $workflow -Expected 'unified diff' -Message 'The patch format is not defined.'
-Assert-Contains -Text $workflow -Expected 'DeepSeek' -Message 'The DeepSeek audit role is not defined.'
-Assert-Contains -Text $workflow -Expected 'Codex' -Message 'The Codex integration role is not defined.'
-Assert-Contains -Text $workflow -Expected 'no-new-systems' -Message 'The no-new-systems boundary is not defined.'
-
-foreach ($relativePath in @('docs\DOCUMENTATION_MAP.md', 'docs\AI_WORKFLOW_RULES.md', 'docs\MVP_WORKFLOW_CHECKLIST.md')) {
-	$text = [IO.File]::ReadAllText((Join-Path $repo $relativePath), [Text.Encoding]::UTF8)
-	Assert-Contains -Text $text -Expected 'DIALOGUE_AUTHORING_WORKFLOW.md' -Message "$relativePath does not route dialogue work to the workflow document."
-}
-
-$agents = [IO.File]::ReadAllText((Join-Path $repo 'AGENTS.md'), [Text.Encoding]::UTF8)
-Assert-Contains -Text $agents -Expected 'docs/DOCUMENTATION_MAP.md' -Message 'AGENTS.md does not route conditional project documents through DOCUMENTATION_MAP.'
-
-'PASS: dialogue authoring workflow contract'
+$narrative = Join-Path $repo '[기획서]\01_설정_내러티브\01_설정_내러티브_본책.md'
+$appendix = Join-Path $repo '[기획서]\01_설정_내러티브\등록_부록\NARRATIVE_CONTENT_PLAN.md'
+$map = Join-Path $repo '[기획서]\00_프로젝트_허브\DOCUMENTATION_MAP.md'
+foreach ($path in @($narrative, $appendix, $map)) { if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { throw "Missing narrative routing file: $path" } }
+$text = [IO.File]::ReadAllText($narrative, [Text.Encoding]::UTF8)
+foreach ($needle in @('책임 범위', '현재 상태', '다음 작업', '검증 경로')) { if (-not $text.Contains($needle)) { throw "Narrative bible is missing: $needle" } }
+if (-not ([IO.File]::ReadAllText($map, [Text.Encoding]::UTF8).Contains('01_설정_내러티브'))) { throw 'Documentation map does not route narrative work.' }
+'PASS: narrative routing contract'

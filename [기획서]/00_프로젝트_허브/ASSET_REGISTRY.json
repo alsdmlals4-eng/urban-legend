@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "registry_role": "asset-and-qa-evidence-index",
+  "project_name": "Urban Legend",
+  "protected_paths": [
+    "project.godot",
+    "scripts/core/game_state.gd",
+    "data/episodes/**"
+  ],
+  "qa_capture_library": {
+    "path": "docs/qa/captures",
+    "dirty_png_count": 47,
+    "log_policy": "docs/qa/captures/**/*.log is ignored; logs are not evidence assets."
+  },
+  "source_manifests": [
+    "assets/ASSET_MANIFEST.json",
+    "assets/characters/mvp043/ASSET_MANIFEST.json"
+  ]
+}

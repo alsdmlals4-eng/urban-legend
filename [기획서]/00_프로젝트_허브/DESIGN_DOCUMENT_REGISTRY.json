@@ -1,0 +1,348 @@
+{
+  "$schema": "../../schemas/design-document-registry-v3.schema.json",
+  "schema_version": 3,
+  "registry_role": "ai-design-document-router-and-publication-index",
+  "project_name": "Urban Legend",
+  "source_of_truth_policy": "프로젝트 허브와 11개 분야 본책은 Markdown 책임 원본이다. Registry·Manifest·상태·ID·경로·해시·게임 데이터는 JSON 또는 실제 파일이 원본이다.",
+  "required_responsibility_coverage": [
+    "설정·내러티브",
+    "게임 디자인",
+    "UX·UI·접근성",
+    "개발·엔지니어링",
+    "테크니컬 아트·콘텐츠 파이프라인",
+    "아트",
+    "사운드",
+    "QA",
+    "프로덕션·PM",
+    "분석·유저리서치",
+    "통합검수",
+    "프로젝트 전체"
+  ],
+  "available_responsibility_catalog": [
+    "설정·내러티브",
+    "게임 디자인",
+    "UX·UI·접근성",
+    "개발·엔지니어링",
+    "테크니컬 아트·콘텐츠 파이프라인",
+    "아트",
+    "사운드",
+    "QA",
+    "프로덕션·PM",
+    "분석·유저리서치",
+    "통합검수"
+  ],
+  "documents": [
+    {
+      "document_id": "urban-legend-project-hub",
+      "title": "Urban Legend 프로젝트 종합 책임 원본",
+      "discipline": "프로젝트 전체",
+      "responsibility_coverage": [
+        "프로젝트 전체"
+      ],
+      "status": "ACTIVE",
+      "source_path": "00_프로젝트_종합_책임_원본.md",
+      "source_format": "markdown",
+      "source_role": "narrative_spec",
+      "publication_policy": "always_sync",
+      "output_pdf": "00_프로젝트_종합_책임_원본.pdf",
+      "output_docx": null,
+      "asset_dir": null,
+      "diagram_policy": "none",
+      "publication_manifest": "00_프로젝트_종합_책임_원본_PUBLICATION_MANIFEST.json",
+      "generator": "tools/build_design_documents.py",
+      "required_sections": [
+        "목표",
+        "배경과 의도",
+        "범위",
+        "규칙과 제약",
+        "검증과 완료 기준"
+      ]
+    },
+    {
+      "document_id": "urban-legend-01",
+      "title": "Urban Legend 설정·내러티브 본책",
+      "discipline": "설정·내러티브",
+      "responsibility_coverage": [
+        "설정·내러티브"
+      ],
+      "status": "ACTIVE",
+      "source_path": "../01_설정_내러티브/01_설정_내러티브_본책.md",
+      "source_format": "markdown",
+      "source_role": "narrative_spec",
+      "publication_policy": "always_sync",
+      "output_pdf": "../01_설정_내러티브/01_설정_내러티브_본책.pdf",
+      "output_docx": null,
+      "asset_dir": null,
+      "diagram_policy": "none",
+      "publication_manifest": "../01_설정_내러티브/01_설정_내러티브_본책_PUBLICATION_MANIFEST.json",
+      "generator": "tools/build_design_documents.py",
+      "required_sections": [
+        "책임 범위",
+        "현재 상태",
+        "현재 결정과 제약",
+        "다음 작업",
+        "검증 경로"
+      ]
+    },
+    {
+      "document_id": "urban-legend-02",
+      "title": "Urban Legend 게임 디자인 본책",
+      "discipline": "게임 디자인",
+      "responsibility_coverage": [
+        "게임 디자인"
+      ],
+      "status": "ACTIVE",
+      "source_path": "../02_게임_디자인/02_게임_디자인_본책.md",
+      "source_format": "markdown",
+      "source_role": "narrative_spec",
+      "publication_policy": "always_sync",
+      "output_pdf": "../02_게임_디자인/02_게임_디자인_본책.pdf",
+      "output_docx": null,
+      "asset_dir": null,
+      "diagram_policy": "none",
+      "publication_manifest": "../02_게임_디자인/02_게임_디자인_본책_PUBLICATION_MANIFEST.json",
+      "generator": "tools/build_design_documents.py",
+      "required_sections": [
+        "책임 범위",
+        "현재 상태",
+        "현재 결정과 제약",
+        "다음 작업",
+        "검증 경로"
+      ]
+    },
+    {
+      "document_id": "urban-legend-03",
+      "title": "Urban Legend UX·UI·접근성 본책",
+      "discipline": "UX·UI·접근성",
+      "responsibility_coverage": [
+        "UX·UI·접근성"
+      ],
+      "status": "ACTIVE",
+      "source_path": "../03_UX_UI_접근성/03_UX_UI_접근성_본책.md",
+      "source_format": "markdown",
+      "source_role": "narrative_spec",
+      "publication_policy": "always_sync",
+      "output_pdf": "../03_UX_UI_접근성/03_UX_UI_접근성_본책.pdf",
+      "output_docx": null,
+      "asset_dir": null,
+      "diagram_policy": "none",
+      "publication_manifest": "../03_UX_UI_접근성/03_UX_UI_접근성_본책_PUBLICATION_MANIFEST.json",
+      "generator": "tools/build_design_documents.py",
+      "required_sections": [
+        "책임 범위",
+        "현재 상태",
+        "현재 결정과 제약",
+        "다음 작업",
+        "검증 경로"
+      ]
+    },
+    {
+      "document_id": "urban-legend-04",
+      "title": "Urban Legend 개발·엔지니어링 본책",
+      "discipline": "개발·엔지니어링",
+      "responsibility_coverage": [
+        "개발·엔지니어링"
+      ],
+      "status": "ACTIVE",
+      "source_path": "../04_개발_엔지니어링/04_개발_엔지니어링_본책.md",
+      "source_format": "markdown",
+      "source_role": "narrative_spec",
+      "publication_policy": "always_sync",
+      "output_pdf": "../04_개발_엔지니어링/04_개발_엔지니어링_본책.pdf",
+      "output_docx": null,
+      "asset_dir": null,
+      "diagram_policy": "none",
+      "publication_manifest": "../04_개발_엔지니어링/04_개발_엔지니어링_본책_PUBLICATION_MANIFEST.json",
+      "generator": "tools/build_design_documents.py",
+      "required_sections": [
+        "책임 범위",
+        "현재 상태",
+        "현재 결정과 제약",
+        "다음 작업",
+        "검증 경로"
+      ]
+    },
+    {
+      "document_id": "urban-legend-05",
+      "title": "Urban Legend 테크니컬 아트·콘텐츠 파이프라인 본책",
+      "discipline": "테크니컬 아트·콘텐츠 파이프라인",
+      "responsibility_coverage": [
+        "테크니컬 아트·콘텐츠 파이프라인"
+      ],
+      "status": "ACTIVE",
+      "source_path": "../05_테크니컬아트_콘텐츠_파이프라인/05_테크니컬아트_콘텐츠_파이프라인_본책.md",
+      "source_format": "markdown",
+      "source_role": "narrative_spec",
+      "publication_policy": "always_sync",
+      "output_pdf": "../05_테크니컬아트_콘텐츠_파이프라인/05_테크니컬아트_콘텐츠_파이프라인_본책.pdf",
+      "output_docx": null,
+      "asset_dir": null,
+      "diagram_policy": "none",
+      "publication_manifest": "../05_테크니컬아트_콘텐츠_파이프라인/05_테크니컬아트_콘텐츠_파이프라인_본책_PUBLICATION_MANIFEST.json",
+      "generator": "tools/build_design_documents.py",
+      "required_sections": [
+        "책임 범위",
+        "현재 상태",
+        "현재 결정과 제약",
+        "다음 작업",
+        "검증 경로"
+      ]
+    },
+    {
+      "document_id": "urban-legend-06",
+      "title": "Urban Legend 아트 본책",
+      "discipline": "아트",
+      "responsibility_coverage": [
+        "아트"
+      ],
+      "status": "ACTIVE",
+      "source_path": "../06_아트/06_아트_본책.md",
+      "source_format": "markdown",
+      "source_role": "narrative_spec",
+      "publication_policy": "always_sync",
+      "output_pdf": "../06_아트/06_아트_본책.pdf",
+      "output_docx": null,
+      "asset_dir": null,
+      "diagram_policy": "none",
+      "publication_manifest": "../06_아트/06_아트_본책_PUBLICATION_MANIFEST.json",
+      "generator": "tools/build_design_documents.py",
+      "required_sections": [
+        "책임 범위",
+        "현재 상태",
+        "현재 결정과 제약",
+        "다음 작업",
+        "검증 경로"
+      ]
+    },
+    {
+      "document_id": "urban-legend-07",
+      "title": "Urban Legend 사운드 본책",
+      "discipline": "사운드",
+      "responsibility_coverage": [
+        "사운드"
+      ],
+      "status": "ACTIVE",
+      "source_path": "../07_사운드/07_사운드_본책.md",
+      "source_format": "markdown",
+      "source_role": "narrative_spec",
+      "publication_policy": "always_sync",
+      "output_pdf": "../07_사운드/07_사운드_본책.pdf",
+      "output_docx": null,
+      "asset_dir": null,
+      "diagram_policy": "none",
+      "publication_manifest": "../07_사운드/07_사운드_본책_PUBLICATION_MANIFEST.json",
+      "generator": "tools/build_design_documents.py",
+      "required_sections": [
+        "책임 범위",
+        "현재 상태",
+        "현재 결정과 제약",
+        "다음 작업",
+        "검증 경로"
+      ]
+    },
+    {
+      "document_id": "urban-legend-08",
+      "title": "Urban Legend QA 본책",
+      "discipline": "QA",
+      "responsibility_coverage": [
+        "QA"
+      ],
+      "status": "ACTIVE",
+      "source_path": "../08_QA/08_QA_본책.md",
+      "source_format": "markdown",
+      "source_role": "narrative_spec",
+      "publication_policy": "always_sync",
+      "output_pdf": "../08_QA/08_QA_본책.pdf",
+      "output_docx": null,
+      "asset_dir": null,
+      "diagram_policy": "none",
+      "publication_manifest": "../08_QA/08_QA_본책_PUBLICATION_MANIFEST.json",
+      "generator": "tools/build_design_documents.py",
+      "required_sections": [
+        "책임 범위",
+        "현재 상태",
+        "현재 결정과 제약",
+        "다음 작업",
+        "검증 경로"
+      ]
+    },
+    {
+      "document_id": "urban-legend-09",
+      "title": "Urban Legend 프로덕션·PM 본책",
+      "discipline": "프로덕션·PM",
+      "responsibility_coverage": [
+        "프로덕션·PM"
+      ],
+      "status": "ACTIVE",
+      "source_path": "../09_프로덕션_PM/09_프로덕션_PM_본책.md",
+      "source_format": "markdown",
+      "source_role": "narrative_spec",
+      "publication_policy": "always_sync",
+      "output_pdf": "../09_프로덕션_PM/09_프로덕션_PM_본책.pdf",
+      "output_docx": null,
+      "asset_dir": null,
+      "diagram_policy": "none",
+      "publication_manifest": "../09_프로덕션_PM/09_프로덕션_PM_본책_PUBLICATION_MANIFEST.json",
+      "generator": "tools/build_design_documents.py",
+      "required_sections": [
+        "책임 범위",
+        "현재 상태",
+        "현재 결정과 제약",
+        "다음 작업",
+        "검증 경로"
+      ]
+    },
+    {
+      "document_id": "urban-legend-10",
+      "title": "Urban Legend 분석·유저리서치 본책",
+      "discipline": "분석·유저리서치",
+      "responsibility_coverage": [
+        "분석·유저리서치"
+      ],
+      "status": "ACTIVE",
+      "source_path": "../10_분석_유저리서치/10_분석_유저리서치_본책.md",
+      "source_format": "markdown",
+      "source_role": "narrative_spec",
+      "publication_policy": "always_sync",
+      "output_pdf": "../10_분석_유저리서치/10_분석_유저리서치_본책.pdf",
+      "output_docx": null,
+      "asset_dir": null,
+      "diagram_policy": "none",
+      "publication_manifest": "../10_분석_유저리서치/10_분석_유저리서치_본책_PUBLICATION_MANIFEST.json",
+      "generator": "tools/build_design_documents.py",
+      "required_sections": [
+        "책임 범위",
+        "현재 상태",
+        "현재 결정과 제약",
+        "다음 작업",
+        "검증 경로"
+      ]
+    },
+    {
+      "document_id": "urban-legend-11",
+      "title": "Urban Legend 통합검수 본책",
+      "discipline": "통합검수",
+      "responsibility_coverage": [
+        "통합검수"
+      ],
+      "status": "ACTIVE",
+      "source_path": "../11_통합검수/11_통합검수_본책.md",
+      "source_format": "markdown",
+      "source_role": "narrative_spec",
+      "publication_policy": "always_sync",
+      "output_pdf": "../11_통합검수/11_통합검수_본책.pdf",
+      "output_docx": null,
+      "asset_dir": null,
+      "diagram_policy": "none",
+      "publication_manifest": "../11_통합검수/11_통합검수_본책_PUBLICATION_MANIFEST.json",
+      "generator": "tools/build_design_documents.py",
+      "required_sections": [
+        "책임 범위",
+        "현재 상태",
+        "현재 결정과 제약",
+        "다음 작업",
+        "검증 경로"
+      ]
+    }
+  ]
+}

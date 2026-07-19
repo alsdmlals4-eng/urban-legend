@@ -1,0 +1,94 @@
+name: Validate Urban Legend Document Publications
+
+on:
+  pull_request:
+    paths:
+      - "README.md"
+      - "AGENTS.md"
+      - "[기획서]/**"
+      - "skills/**"
+      - "schemas/**"
+      - "tools/**"
+      - "requirements-publication.txt"
+      - ".github/workflows/validate-document-publications.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish-linux:
+    name: document-publications-linux
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          show-progress: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+      - name: Install publication dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends libreoffice-writer fonts-nanum poppler-utils
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-publication.txt
+      - name: Validate migration and publications
+        run: |
+          python tools/verify_migration_inventory.py --before docs/MIGRATION_INVENTORY_BEFORE.json --after docs/MIGRATION_INVENTORY_AFTER.json
+          python tools/check_active_markdown_links.py
+          python tools/build_design_documents.py --registry "[기획서]/00_프로젝트_허브/DESIGN_DOCUMENT_REGISTRY.json" --source-commit dd3c9a8776eb938eeeeb2f1319af6bfc4a135202
+          python tools/build_project_skill_map.py --registry "[기획서]/00_프로젝트_허브/SKILL_REGISTRY.json" --output-dir "[기획서]/00_프로젝트_허브" --project-name "Urban Legend" --source-commit dd3c9a8776eb938eeeeb2f1319af6bfc4a135202
+          python tools/check_project_operating_system.py
+          git diff --check
+      - name: Upload publication evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: urban-legend-publication-manifests-linux
+          path: "**/*PUBLICATION_MANIFEST.json"
+          if-no-files-found: error
+          retention-days: 7
+
+  publish-windows:
+    name: document-publications-windows
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          show-progress: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+      - name: Install publication dependencies
+        shell: pwsh
+        run: |
+          choco install libreoffice-fresh -y --no-progress
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-publication.txt
+      - name: Validate migration and publications
+        shell: pwsh
+        run: |
+          $env:BASE_LIBREOFFICE = 'C:\Program Files\LibreOffice\program\soffice.exe'
+          python tools/verify_migration_inventory.py --before docs/MIGRATION_INVENTORY_BEFORE.json --after docs/MIGRATION_INVENTORY_AFTER.json
+          python tools/check_active_markdown_links.py
+          python tools/build_design_documents.py --registry "[기획서]/00_프로젝트_허브/DESIGN_DOCUMENT_REGISTRY.json" --source-commit dd3c9a8776eb938eeeeb2f1319af6bfc4a135202
+          python tools/build_project_skill_map.py --registry "[기획서]/00_프로젝트_허브/SKILL_REGISTRY.json" --output-dir "[기획서]/00_프로젝트_허브" --project-name "Urban Legend" --source-commit dd3c9a8776eb938eeeeb2f1319af6bfc4a135202
+          python tools/check_project_operating_system.py
+          git diff --check
+      - name: Upload publication evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: urban-legend-publication-manifests-windows
+          path: "**/*PUBLICATION_MANIFEST.json"
+          if-no-files-found: error
+          retention-days: 7

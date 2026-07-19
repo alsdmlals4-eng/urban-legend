@@ -1,0 +1,5195 @@
+{
+  "baseline_files": 581,
+  "missing": [],
+  "rows": [
+    {
+      "source_path": ".agent-workflow.json",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        ".agent-workflow.json"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": ".gitattributes",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        ".gitattributes"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": ".github/ISSUE_TEMPLATE/mvp-feature.yml",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        ".github/ISSUE_TEMPLATE/mvp-feature.yml"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": ".github/copilot-instructions.md",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        ".github/copilot-instructions.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": ".github/pull_request_template.md",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        ".github/pull_request_template.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": ".gitignore",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [],
+      "state": "UPDATED_BY_CONTRACT"
+    },
+    {
+      "source_path": ".serena/.gitignore",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        ".serena/.gitignore"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": ".serena/memories/conventions.md",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        ".serena/memories/conventions.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": ".serena/memories/core.md",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        ".serena/memories/core.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": ".serena/memories/memory_maintenance.md",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        ".serena/memories/memory_maintenance.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": ".serena/memories/suggested_commands.md",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        ".serena/memories/suggested_commands.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": ".serena/memories/task_completion.md",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        ".serena/memories/task_completion.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": ".serena/memories/tech_stack.md",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        ".serena/memories/tech_stack.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": ".serena/project.yml",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        ".serena/project.yml"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": ".superpowers/brainstorm/.last-port",
+      "git_state": "TRACKED",
+      "disposition": "[백업]",
+      "preserved_paths": [
+        ".superpowers/brainstorm/.last-port"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": ".superpowers/brainstorm/.last-token",
+      "git_state": "TRACKED",
+      "disposition": "[백업]",
+      "preserved_paths": [
+        ".superpowers/brainstorm/.last-token"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": ".superpowers/brainstorm/1995-1783902369/content/clue-access-options.html",
+      "git_state": "TRACKED",
+      "disposition": "[백업]",
+      "preserved_paths": [
+        ".superpowers/brainstorm/1995-1783902369/content/clue-access-options.html"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": ".superpowers/brainstorm/1995-1783902369/content/investigation-flow-ac-detail.html",
+      "git_state": "TRACKED",
+      "disposition": "[백업]",
+      "preserved_paths": [
+        ".superpowers/brainstorm/1995-1783902369/content/investigation-flow-ac-detail.html"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": ".superpowers/brainstorm/1995-1783902369/content/investigation-flow-options.html",
+      "git_state": "TRACKED",
+      "disposition": "[백업]",
+      "preserved_paths": [
+        ".superpowers/brainstorm/1995-1783902369/content/investigation-flow-options.html"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": ".superpowers/brainstorm/1995-1783902369/content/waiting-dialogue-design.html",
+      "git_state": "TRACKED",
+      "disposition": "[백업]",
+      "preserved_paths": [
+        ".superpowers/brainstorm/1995-1783902369/content/waiting-dialogue-design.html"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": ".superpowers/brainstorm/1995-1783902369/state/events",
+      "git_state": "TRACKED",
+      "disposition": "[백업]",
+      "preserved_paths": [
+        ".superpowers/brainstorm/1995-1783902369/state/events"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": ".superpowers/brainstorm/1995-1783902369/state/server-instance-id",
+      "git_state": "TRACKED",
+      "disposition": "[백업]",
+      "preserved_paths": [
+        ".superpowers/brainstorm/1995-1783902369/state/server-instance-id"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": ".superpowers/brainstorm/1995-1783902369/state/server-stopped",
+      "git_state": "TRACKED",
+      "disposition": "[백업]",
+      "preserved_paths": [
+        ".superpowers/brainstorm/1995-1783902369/state/server-stopped"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": ".superpowers/brainstorm/1995-1783902369/state/server.pid",
+      "git_state": "TRACKED",
+      "disposition": "[제거]",
+      "preserved_paths": [],
+      "state": "REMOVED_BY_CONTRACT"
+    },
+    {
+      "source_path": "AGENTS.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/root/AGENTS.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "DESIGN_INTENT.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/01_설정_내러티브/등록_부록/DESIGN_INTENT.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "MVP_ROADMAP.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/09_프로덕션_PM/등록_부록/MVP_ROADMAP.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "PROJECT_BRIEF.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/01_설정_내러티브/등록_부록/PROJECT_BRIEF.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "README.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/root/README.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "TEST_CHECKLIST.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/08_QA/등록_부록/TEST_CHECKLIST.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/ASSET_MANIFEST.json",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/ASSET_MANIFEST.json"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/agents/cutouts/kang_ijun_cutout_sheet.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/agents/cutouts/kang_ijun_cutout_sheet.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/agents/cutouts/kang_ijun_cutout_sheet.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/agents/cutouts/kang_ijun_cutout_sheet.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/agents/cutouts/kwon_narae_cutout_sheet.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/agents/cutouts/kwon_narae_cutout_sheet.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/agents/cutouts/kwon_narae_cutout_sheet.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/agents/cutouts/kwon_narae_cutout_sheet.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/agents/cutouts/oh_hyun_cutout_sheet.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/agents/cutouts/oh_hyun_cutout_sheet.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/agents/cutouts/oh_hyun_cutout_sheet.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/agents/cutouts/oh_hyun_cutout_sheet.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/agents/kang_ijun_expressions.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/agents/kang_ijun_expressions.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/agents/kang_ijun_expressions.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/agents/kang_ijun_expressions.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/agents/kwon_narae_expressions.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/agents/kwon_narae_expressions.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/agents/kwon_narae_expressions.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/agents/kwon_narae_expressions.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/agents/oh_hyun_expressions.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/agents/oh_hyun_expressions.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/agents/oh_hyun_expressions.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/agents/oh_hyun_expressions.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/anomalies/afterlife_b.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/anomalies/afterlife_b.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/anomalies/afterlife_b.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/anomalies/afterlife_b.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/anomalies/afterlife_d.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/anomalies/afterlife_d.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/anomalies/afterlife_d.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/anomalies/afterlife_d.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/anomalies/cutouts/afterlife_b_cutout.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/anomalies/cutouts/afterlife_b_cutout.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/anomalies/cutouts/afterlife_b_cutout.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/anomalies/cutouts/afterlife_b_cutout.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/anomalies/cutouts/afterlife_d_cutout.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/anomalies/cutouts/afterlife_d_cutout.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/anomalies/cutouts/afterlife_d_cutout.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/anomalies/cutouts/afterlife_d_cutout.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/anomalies/cutouts/red_umbrella_b_cutout.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/anomalies/cutouts/red_umbrella_b_cutout.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/anomalies/cutouts/red_umbrella_b_cutout.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/anomalies/cutouts/red_umbrella_b_cutout.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/anomalies/cutouts/red_umbrella_d_cutout.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/anomalies/cutouts/red_umbrella_d_cutout.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/anomalies/cutouts/red_umbrella_d_cutout.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/anomalies/cutouts/red_umbrella_d_cutout.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/anomalies/red_umbrella_b.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/anomalies/red_umbrella_b.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/anomalies/red_umbrella_b.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/anomalies/red_umbrella_b.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/anomalies/red_umbrella_d.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/anomalies/red_umbrella_d.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/anomalies/red_umbrella_d.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/anomalies/red_umbrella_d.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/backgrounds/afterlife_entrance.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/backgrounds/afterlife_entrance.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/backgrounds/afterlife_entrance.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/backgrounds/afterlife_entrance.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/backgrounds/afterlife_platform.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/backgrounds/afterlife_platform.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/backgrounds/afterlife_platform.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/backgrounds/afterlife_platform.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/backgrounds/afterlife_recovery.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/backgrounds/afterlife_recovery.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/backgrounds/afterlife_recovery.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/backgrounds/afterlife_recovery.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/backgrounds/red_alley_entrance.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/backgrounds/red_alley_entrance.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/backgrounds/red_alley_entrance.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/backgrounds/red_alley_entrance.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/backgrounds/red_crossroads.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/backgrounds/red_crossroads.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/backgrounds/red_crossroads.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/backgrounds/red_crossroads.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/backgrounds/red_recovery.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/backgrounds/red_recovery.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/backgrounds/red_recovery.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/backgrounds/red_recovery.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/ASSET_MANIFEST.json",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/ASSET_MANIFEST.json"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/agents/han_yuri/full_body.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/agents/han_yuri/full_body.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/agents/han_yuri/full_body.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/agents/han_yuri/full_body.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/agents/han_yuri/investigation_support.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/agents/han_yuri/investigation_support.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/agents/han_yuri/investigation_support.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/agents/han_yuri/investigation_support.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/agents/han_yuri/portrait.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/agents/han_yuri/portrait.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/agents/han_yuri/portrait.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/agents/han_yuri/portrait.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/agents/han_yuri/recovery_support.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/agents/han_yuri/recovery_support.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/agents/han_yuri/recovery_support.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/agents/han_yuri/recovery_support.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/agents/kang_ijun/full_body.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/agents/kang_ijun/full_body.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/agents/kang_ijun/full_body.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/agents/kang_ijun/full_body.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/agents/kang_ijun/investigation_support.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/agents/kang_ijun/investigation_support.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/agents/kang_ijun/investigation_support.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/agents/kang_ijun/investigation_support.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/agents/kang_ijun/portrait.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/agents/kang_ijun/portrait.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/agents/kang_ijun/portrait.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/agents/kang_ijun/portrait.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/agents/kang_ijun/recovery_support.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/agents/kang_ijun/recovery_support.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/agents/kang_ijun/recovery_support.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/agents/kang_ijun/recovery_support.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/agents/kwon_narae/full_body.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/agents/kwon_narae/full_body.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/agents/kwon_narae/full_body.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/agents/kwon_narae/full_body.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/agents/kwon_narae/investigation_support.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/agents/kwon_narae/investigation_support.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/agents/kwon_narae/investigation_support.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/agents/kwon_narae/investigation_support.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/agents/kwon_narae/portrait.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/agents/kwon_narae/portrait.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/agents/kwon_narae/portrait.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/agents/kwon_narae/portrait.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/agents/kwon_narae/recovery_support.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/agents/kwon_narae/recovery_support.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/agents/kwon_narae/recovery_support.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/agents/kwon_narae/recovery_support.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/agents/oh_hyun/full_body.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/agents/oh_hyun/full_body.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/agents/oh_hyun/full_body.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/agents/oh_hyun/full_body.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/agents/oh_hyun/investigation_support.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/agents/oh_hyun/investigation_support.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/agents/oh_hyun/investigation_support.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/agents/oh_hyun/investigation_support.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/agents/oh_hyun/portrait.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/agents/oh_hyun/portrait.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/agents/oh_hyun/portrait.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/agents/oh_hyun/portrait.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/agents/oh_hyun/recovery_support.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/agents/oh_hyun/recovery_support.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/agents/oh_hyun/recovery_support.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/agents/oh_hyun/recovery_support.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/agents/yoon_seoha/full_body.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/agents/yoon_seoha/full_body.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/agents/yoon_seoha/full_body.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/agents/yoon_seoha/full_body.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/agents/yoon_seoha/investigation_support.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/agents/yoon_seoha/investigation_support.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/agents/yoon_seoha/investigation_support.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/agents/yoon_seoha/investigation_support.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/agents/yoon_seoha/portrait.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/agents/yoon_seoha/portrait.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/agents/yoon_seoha/portrait.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/agents/yoon_seoha/portrait.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/agents/yoon_seoha/recovery_support.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/agents/yoon_seoha/recovery_support.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/agents/yoon_seoha/recovery_support.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/agents/yoon_seoha/recovery_support.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/contacts/camila_vargas/hq_contact.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/contacts/camila_vargas/hq_contact.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/contacts/camila_vargas/hq_contact.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/contacts/camila_vargas/hq_contact.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/contacts/camila_vargas/portrait.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/contacts/camila_vargas/portrait.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/contacts/camila_vargas/portrait.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/contacts/camila_vargas/portrait.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/contacts/lee_serin/hq_contact.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/contacts/lee_serin/hq_contact.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/contacts/lee_serin/hq_contact.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/contacts/lee_serin/hq_contact.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/contacts/lee_serin/portrait.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/contacts/lee_serin/portrait.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/contacts/lee_serin/portrait.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/contacts/lee_serin/portrait.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/contacts/park_doyoon/hq_contact.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/contacts/park_doyoon/hq_contact.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/contacts/park_doyoon/hq_contact.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/contacts/park_doyoon/hq_contact.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/contacts/park_doyoon/portrait.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/contacts/park_doyoon/portrait.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/contacts/park_doyoon/portrait.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/contacts/park_doyoon/portrait.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/contacts/raymond_kane/hq_contact.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/contacts/raymond_kane/hq_contact.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/contacts/raymond_kane/hq_contact.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/contacts/raymond_kane/hq_contact.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/contacts/raymond_kane/portrait.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/contacts/raymond_kane/portrait.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/characters/mvp043/contacts/raymond_kane/portrait.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/characters/mvp043/contacts/raymond_kane/portrait.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/fonts/noto/NotoSansKR-VF.ttf",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/fonts/noto/NotoSansKR-VF.ttf"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/fonts/noto/NotoSansKR-VF.ttf.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/fonts/noto/NotoSansKR-VF.ttf.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/fonts/noto/NotoSerifKR-VF.ttf",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/fonts/noto/NotoSerifKR-VF.ttf"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/fonts/noto/NotoSerifKR-VF.ttf.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/fonts/noto/NotoSerifKR-VF.ttf.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/fonts/noto/OFL.txt",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/fonts/noto/OFL.txt"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/log/log_focus.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/log/log_focus.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/log/log_normal.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/log/log_normal.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/log/log_warning.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/log/log_warning.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/source/mvp043_character_v1/.gdignore",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        ".godot/.gdignore",
+        "assets/source/mvp043_character_v1/.gdignore",
+        "assets/source/mvp043_generated/.gdignore"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/source/mvp043_character_v1/camila_vargas.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/source/mvp043_character_v1/camila_vargas.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/source/mvp043_character_v1/han_yuri.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/source/mvp043_character_v1/han_yuri.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/source/mvp043_character_v1/kang_ijun.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/source/mvp043_character_v1/kang_ijun.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/source/mvp043_character_v1/kwon_narae.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/source/mvp043_character_v1/kwon_narae.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/source/mvp043_character_v1/lee_serin.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/source/mvp043_character_v1/lee_serin.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/source/mvp043_character_v1/lineup.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/source/mvp043_character_v1/lineup.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/source/mvp043_character_v1/oh_hyun.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/source/mvp043_character_v1/oh_hyun.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/source/mvp043_character_v1/park_doyoon.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/source/mvp043_character_v1/park_doyoon.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/source/mvp043_character_v1/raymond_kane.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/source/mvp043_character_v1/raymond_kane.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/source/mvp043_character_v1/yoon_seoha.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/source/mvp043_character_v1/yoon_seoha.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/source/mvp043_generated/.gdignore",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        ".godot/.gdignore",
+        "assets/source/mvp043_character_v1/.gdignore",
+        "assets/source/mvp043_generated/.gdignore"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/source/mvp043_generated/camila_vargas_hq_contact.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/source/mvp043_generated/camila_vargas_hq_contact.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/source/mvp043_generated/camila_vargas_portrait_chroma.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/source/mvp043_generated/camila_vargas_portrait_chroma.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/source/mvp043_generated/han_yuri_full_body_chroma.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/source/mvp043_generated/han_yuri_full_body_chroma.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/source/mvp043_generated/han_yuri_investigation_support.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/source/mvp043_generated/han_yuri_investigation_support.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/source/mvp043_generated/han_yuri_portrait_chroma.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/source/mvp043_generated/han_yuri_portrait_chroma.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/source/mvp043_generated/han_yuri_recovery_support.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/source/mvp043_generated/han_yuri_recovery_support.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/source/mvp043_generated/kang_ijun_full_body_chroma.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/source/mvp043_generated/kang_ijun_full_body_chroma.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/source/mvp043_generated/kang_ijun_investigation_support.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/source/mvp043_generated/kang_ijun_investigation_support.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/source/mvp043_generated/kang_ijun_portrait_chroma.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/source/mvp043_generated/kang_ijun_portrait_chroma.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/source/mvp043_generated/kang_ijun_recovery_support.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/source/mvp043_generated/kang_ijun_recovery_support.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/source/mvp043_generated/kwon_narae_full_body_chroma.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/source/mvp043_generated/kwon_narae_full_body_chroma.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/source/mvp043_generated/kwon_narae_investigation_support.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/source/mvp043_generated/kwon_narae_investigation_support.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/source/mvp043_generated/kwon_narae_portrait_chroma.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/source/mvp043_generated/kwon_narae_portrait_chroma.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/source/mvp043_generated/kwon_narae_recovery_support.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/source/mvp043_generated/kwon_narae_recovery_support.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/source/mvp043_generated/lee_serin_hq_contact.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/source/mvp043_generated/lee_serin_hq_contact.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/source/mvp043_generated/lee_serin_portrait_chroma.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/source/mvp043_generated/lee_serin_portrait_chroma.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/source/mvp043_generated/oh_hyun_full_body_chroma.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/source/mvp043_generated/oh_hyun_full_body_chroma.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/source/mvp043_generated/oh_hyun_investigation_support.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/source/mvp043_generated/oh_hyun_investigation_support.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/source/mvp043_generated/oh_hyun_portrait_chroma.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/source/mvp043_generated/oh_hyun_portrait_chroma.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/source/mvp043_generated/oh_hyun_recovery_support.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/source/mvp043_generated/oh_hyun_recovery_support.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/source/mvp043_generated/park_doyoon_hq_contact.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/source/mvp043_generated/park_doyoon_hq_contact.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/source/mvp043_generated/park_doyoon_portrait_chroma.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/source/mvp043_generated/park_doyoon_portrait_chroma.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/source/mvp043_generated/raymond_kane_hq_contact.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/source/mvp043_generated/raymond_kane_hq_contact.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/source/mvp043_generated/raymond_kane_portrait_chroma.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/source/mvp043_generated/raymond_kane_portrait_chroma.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/source/mvp043_generated/yoon_seoha_full_body_chroma.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/source/mvp043_generated/yoon_seoha_full_body_chroma.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/source/mvp043_generated/yoon_seoha_investigation_support.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/source/mvp043_generated/yoon_seoha_investigation_support.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/source/mvp043_generated/yoon_seoha_portrait_chroma.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/source/mvp043_generated/yoon_seoha_portrait_chroma.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/source/mvp043_generated/yoon_seoha_recovery_support.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/source/mvp043_generated/yoon_seoha_recovery_support.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/ui/afterlife/generated/afterlife_metal_panel_v1.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/ui/afterlife/generated/afterlife_metal_panel_v1.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/ui/afterlife/generated/afterlife_metal_panel_v1.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/ui/afterlife/generated/afterlife_metal_panel_v1.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/ui/afterlife/generated/route_tile_base_v1.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/ui/afterlife/generated/route_tile_base_v1.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/ui/afterlife/generated/route_tile_base_v1.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/ui/afterlife/generated/route_tile_base_v1.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/ui/afterlife/manual_book_frame.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/ui/afterlife/manual_book_frame.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "assets/ui/afterlife/manual_book_frame.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "assets/ui/afterlife/manual_book_frame.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "data/agents.json",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "data/agents.json"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "data/daily_episodes.json",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "data/daily_episodes.json"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "data/episodes/episode_001_afterlife_station.json",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "data/episodes/episode_001_afterlife_station.json"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "data/episodes/episode_002_red_umbrella_alley.json",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "data/episodes/episode_002_red_umbrella_alley.json"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "data/episodes/episode_003_dead_frequency_station.json",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "data/episodes/episode_003_dead_frequency_station.json"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "data/faction_requests.json",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "data/faction_requests.json"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/AI_DELEGATION_WORKFLOW.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/root-docs/AI_DELEGATION_WORKFLOW.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/AI_SHARED_WORK_RULES.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/root-docs/AI_SHARED_WORK_RULES.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/AI_SKILL_ADOPTION_GUIDE.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/root-docs/AI_SKILL_ADOPTION_GUIDE.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/AI_WORKFLOW_RULES.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/root-docs/AI_WORKFLOW_RULES.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/BASE_MIGRATION_AUDIT_2026-07-19.md",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/audits/BASE_MIGRATION_AUDIT_2026-07-19.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/BASE_RULES_VERSION.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/root-docs/BASE_RULES_VERSION.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/BENCHMARKING_REFERENCE_GUIDE.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/10_분석_유저리서치/등록_부록/BENCHMARKING_REFERENCE_GUIDE.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/CINEMATIC_FIELD_RECOVERY_UI.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/03_UX_UI_접근성/등록_부록/CINEMATIC_FIELD_RECOVERY_UI.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/CODEX_ACCOUNT_HANDOFF.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/root-docs/CODEX_ACCOUNT_HANDOFF.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/CODEX_GOAL_MVP_017.md",
+      "git_state": "TRACKED",
+      "disposition": "[백업]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/completed-work/CODEX_GOAL_MVP_017.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/CODEX_GOAL_MVP_018.md",
+      "git_state": "TRACKED",
+      "disposition": "[백업]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/completed-work/CODEX_GOAL_MVP_018.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/CODEX_GOAL_MVP_020.md",
+      "git_state": "TRACKED",
+      "disposition": "[백업]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/completed-work/CODEX_GOAL_MVP_020.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/CODEX_GOAL_MVP_021.md",
+      "git_state": "TRACKED",
+      "disposition": "[백업]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/completed-work/CODEX_GOAL_MVP_021.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/CODEX_GOAL_MVP_022.md",
+      "git_state": "TRACKED",
+      "disposition": "[백업]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/completed-work/CODEX_GOAL_MVP_022.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/CODEX_GOAL_MVP_023_027.md",
+      "git_state": "TRACKED",
+      "disposition": "[백업]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/completed-work/CODEX_GOAL_MVP_023_027.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/CODEX_GOAL_MVP_028.md",
+      "git_state": "TRACKED",
+      "disposition": "[백업]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/completed-work/CODEX_GOAL_MVP_028.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/CODEX_GOAL_MVP_029_030.md",
+      "git_state": "TRACKED",
+      "disposition": "[백업]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/completed-work/CODEX_GOAL_MVP_029_030.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/CODEX_GOAL_MVP_043.md",
+      "git_state": "TRACKED",
+      "disposition": "[백업]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/completed-work/CODEX_GOAL_MVP_043.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/CODEX_SHARED_WORK_RULES.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/root-docs/CODEX_SHARED_WORK_RULES.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/CONTENT_DIRECTION_V09.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/11_통합검수/등록_부록/CONTENT_DIRECTION_V09.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/CURRENT_HANDOFF.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/completed-work/CURRENT_HANDOFF.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/CURRENT_STATUS.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/completed-work/CURRENT_STATUS.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/DIALOGUE_AUTHORING_WORKFLOW.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/root-docs/DIALOGUE_AUTHORING_WORKFLOW.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/DOCUMENTATION_MAP.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/root-docs/DOCUMENTATION_MAP.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/DOCUMENT_LIFECYCLE.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/root-docs/DOCUMENT_LIFECYCLE.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/GAME_DESIGN_DOCUMENT.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/original-appendices/game-design/GAME_DESIGN_DOCUMENT.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/GODOT_NATIVE_UI_ARCHITECTURE.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/03_UX_UI_접근성/등록_부록/GODOT_NATIVE_UI_ARCHITECTURE.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/IMAGE_ASSET_WORKFLOW.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/05_테크니컬아트_콘텐츠_파이프라인/등록_부록/IMAGE_ASSET_WORKFLOW.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/MINIGAME_SYSTEM_SPEC.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/02_게임_디자인/등록_부록/MINIGAME_SYSTEM_SPEC.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/MULTIMODEL_20_TASK_EVALUATION.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/10_분석_유저리서치/등록_부록/MULTIMODEL_20_TASK_EVALUATION.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/MVP037_CAMPAIGN_CORE.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/02_게임_디자인/등록_부록/MVP037_CAMPAIGN_CORE.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/MVP038_SEQUENTIAL_CAMPAIGN.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/02_게임_디자인/등록_부록/MVP038_SEQUENTIAL_CAMPAIGN.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/MVP_STATUS_AUDIT.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/completed-work/MVP_STATUS_AUDIT.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/MVP_WORKFLOW_CHECKLIST.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/completed-work/MVP_WORKFLOW_CHECKLIST.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/PROJECT_COMPACT_AUDIT.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/11_통합검수/등록_부록/PROJECT_COMPACT_AUDIT.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/PROJECT_CONTEXT.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/root-docs/PROJECT_CONTEXT.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/SERENA_CODEX_MANUAL_CONFIG.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/root-docs/SERENA_CODEX_MANUAL_CONFIG.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/UI_UX_REDESIGN_R1_REPORT.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/03_UX_UI_접근성/등록_부록/UI_UX_REDESIGN_R1_REPORT.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/URBAN_LEGEND_GAME_DESIGN.docx",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/02_게임_디자인/등록_부록/URBAN_LEGEND_GAME_DESIGN.docx"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/archive/README.md",
+      "git_state": "TRACKED",
+      "disposition": "[백업]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/archive/README.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/archive/backup/2026-07-16/COMPLETED_QA_RULES_HANDOFF_BACKUP.md",
+      "git_state": "TRACKED",
+      "disposition": "[백업]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/archive/backup/2026-07-16/COMPLETED_QA_RULES_HANDOFF_BACKUP.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/archive/backup/2026-07-16/CONTENT_DIRECTION_V09_BACKUP.md",
+      "git_state": "TRACKED",
+      "disposition": "[백업]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/archive/backup/2026-07-16/CONTENT_DIRECTION_V09_BACKUP.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/archive/backup/2026-07-16/DOCUMENT_CLEANUP_MANIFEST.md",
+      "git_state": "TRACKED",
+      "disposition": "[백업]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/archive/backup/2026-07-16/DOCUMENT_CLEANUP_MANIFEST.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/archive/backup/2026-07-16/PROJECT_STATUS_AND_ROADMAP_BACKUP.md",
+      "git_state": "TRACKED",
+      "disposition": "[백업]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/archive/backup/2026-07-16/PROJECT_STATUS_AND_ROADMAP_BACKUP.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/archive/backup/2026-07-16/README.md",
+      "git_state": "TRACKED",
+      "disposition": "[백업]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/archive/backup/2026-07-16/README.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/archive/history/MVP_ROADMAP_PRE_LIVING_GDD.md",
+      "git_state": "TRACKED",
+      "disposition": "[백업]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/archive/history/MVP_ROADMAP_PRE_LIVING_GDD.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/archive/history/README_MVP001_038_PRE_GDD.md",
+      "git_state": "TRACKED",
+      "disposition": "[백업]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/archive/history/README_MVP001_038_PRE_GDD.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/archive/history/TEST_CHECKLIST_PRE_LIVING_GDD.md",
+      "git_state": "TRACKED",
+      "disposition": "[백업]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/archive/history/TEST_CHECKLIST_PRE_LIVING_GDD.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/archive/legacy/urban_legend_flow_dashboard.html",
+      "git_state": "TRACKED",
+      "disposition": "[백업]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/archive/legacy/urban_legend_flow_dashboard.html"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/archive/reports/MVP_STATUS_AUDIT_2026-07-11.md",
+      "git_state": "TRACKED",
+      "disposition": "[백업]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/archive/reports/MVP_STATUS_AUDIT_2026-07-11.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/archive/reports/PROJECT_COMPACT_AUDIT_2026-07-11.md",
+      "git_state": "TRACKED",
+      "disposition": "[백업]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/archive/reports/PROJECT_COMPACT_AUDIT_2026-07-11.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/archive/reports/UI_UX_REDESIGN_R1_REPORT_2026-07-13.md",
+      "git_state": "TRACKED",
+      "disposition": "[백업]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/archive/reports/UI_UX_REDESIGN_R1_REPORT_2026-07-13.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/benchmarks/GDD_MYSTERY_UX_BENCHMARK_2026-07-14.md",
+      "git_state": "TRACKED",
+      "disposition": "[보류]",
+      "preserved_paths": [
+        "[기획서]/10_분석_유저리서치/등록_부록/GDD_MYSTERY_UX_BENCHMARK_2026-07-14.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/benchmarks/MVP-035_LOG_AI_COMPANION.md",
+      "git_state": "TRACKED",
+      "disposition": "[보류]",
+      "preserved_paths": [
+        "[기획서]/10_분석_유저리서치/등록_부록/MVP-035_LOG_AI_COMPANION.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/benchmarks/TEXT_NOVEL_BENCHMARK_2026-07-14.md",
+      "git_state": "TRACKED",
+      "disposition": "[보류]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/original-appendices/research/TEXT_NOVEL_BENCHMARK_2026-07-14.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/gpt_tasks/MVP038_FACTION_REQUEST_COPY_PROMPT.md",
+      "git_state": "TRACKED",
+      "disposition": "[보류]",
+      "preserved_paths": [
+        "[기획서]/[보류]/urban-legend/gpt_tasks/MVP038_FACTION_REQUEST_COPY_PROMPT.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/planning/ART_PRESENTATION_PLAN.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/06_아트/등록_부록/ART_PRESENTATION_PLAN.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/planning/NARRATIVE_CONTENT_PLAN.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/01_설정_내러티브/등록_부록/NARRATIVE_CONTENT_PLAN.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/planning/PROJECT_DIRECTION.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/01_설정_내러티브/등록_부록/PROJECT_DIRECTION.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/planning/README.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/09_프로덕션_PM/등록_부록/README.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/planning/REFERENCE_CASES.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/10_분석_유저리서치/등록_부록/REFERENCE_CASES.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/planning/ROADMAP_AND_HANDOFF.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/09_프로덕션_PM/등록_부록/ROADMAP_AND_HANDOFF.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/MVP039_MANUAL_UX_VALIDATION.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/08_QA/등록_부록/MVP039_MANUAL_UX_VALIDATION.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/MVP040_DEAD_FREQUENCY_SLICE.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/08_QA/등록_부록/MVP040_DEAD_FREQUENCY_SLICE.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/MVP041_THREE_CASE_CAMPAIGN_MANUAL_QA.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/08_QA/등록_부록/MVP041_THREE_CASE_CAMPAIGN_MANUAL_QA.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/MVP042_DAILY_EPISODE_VALIDATION.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/08_QA/등록_부록/MVP042_DAILY_EPISODE_VALIDATION.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/MVP043_AFTERLIFE_GAP_ANALYSIS.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/08_QA/등록_부록/MVP043_AFTERLIFE_GAP_ANALYSIS.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/MVP043_AFTERLIFE_ROUTE_BOARD_V01.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/08_QA/등록_부록/MVP043_AFTERLIFE_ROUTE_BOARD_V01.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/MVP043_AFTERLIFE_UI_REPLACEMENT.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/08_QA/등록_부록/MVP043_AFTERLIFE_UI_REPLACEMENT.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/MVP043_ROUTE_POC_VALIDATION.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/08_QA/등록_부록/MVP043_ROUTE_POC_VALIDATION.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/MVP043_UI_PROTAGONIST_VALIDATION.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/08_QA/등록_부록/MVP043_UI_PROTAGONIST_VALIDATION.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/TWO_CASE_CAMPAIGN_MANUAL_QA.md",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/08_QA/등록_부록/TWO_CASE_CAMPAIGN_MANUAL_QA.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/campaign-qa/afterlife-three-agent-recovery-1280x720.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/campaign-qa/afterlife-three-agent-recovery-1280x720.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/legacy-pre-mvp043/capture-error.log",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[제거]",
+      "preserved_paths": [],
+      "state": "REMOVED_BY_CONTRACT"
+    },
+    {
+      "source_path": "docs/qa/captures/legacy-pre-mvp043/capture.log",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[제거]",
+      "preserved_paths": [],
+      "state": "REMOVED_BY_CONTRACT"
+    },
+    {
+      "source_path": "docs/qa/captures/legacy-pre-mvp043/investigation-1280.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/legacy-pre-mvp043/investigation-1280.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/legacy-pre-mvp043/investigation-1920.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/legacy-pre-mvp043/investigation-1920.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/legacy-pre-mvp043/investigation-1920.png.err.log",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[제거]",
+      "preserved_paths": [],
+      "state": "REMOVED_BY_CONTRACT"
+    },
+    {
+      "source_path": "docs/qa/captures/legacy-pre-mvp043/investigation-1920.png.log",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[제거]",
+      "preserved_paths": [],
+      "state": "REMOVED_BY_CONTRACT"
+    },
+    {
+      "source_path": "docs/qa/captures/legacy-pre-mvp043/recovery-1280.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/legacy-pre-mvp043/recovery-1280.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/legacy-pre-mvp043/recovery-1280.png.err.log",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[제거]",
+      "preserved_paths": [],
+      "state": "REMOVED_BY_CONTRACT"
+    },
+    {
+      "source_path": "docs/qa/captures/legacy-pre-mvp043/recovery-1280.png.log",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[제거]",
+      "preserved_paths": [],
+      "state": "REMOVED_BY_CONTRACT"
+    },
+    {
+      "source_path": "docs/qa/captures/legacy-pre-mvp043/recovery-1920.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/legacy-pre-mvp043/recovery-1920.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/legacy-pre-mvp043/recovery-1920.png.err.log",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[제거]",
+      "preserved_paths": [],
+      "state": "REMOVED_BY_CONTRACT"
+    },
+    {
+      "source_path": "docs/qa/captures/legacy-pre-mvp043/recovery-1920.png.log",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[제거]",
+      "preserved_paths": [],
+      "state": "REMOVED_BY_CONTRACT"
+    },
+    {
+      "source_path": "docs/qa/captures/legacy-pre-mvp043/recovery-evidence-1280-fixed.err.log",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[제거]",
+      "preserved_paths": [],
+      "state": "REMOVED_BY_CONTRACT"
+    },
+    {
+      "source_path": "docs/qa/captures/legacy-pre-mvp043/recovery-evidence-1280-fixed.log",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[제거]",
+      "preserved_paths": [],
+      "state": "REMOVED_BY_CONTRACT"
+    },
+    {
+      "source_path": "docs/qa/captures/legacy-pre-mvp043/recovery-evidence-1280-fixed.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/legacy-pre-mvp043/recovery-evidence-1280-fixed.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/legacy-pre-mvp043/recovery-evidence-1280.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/legacy-pre-mvp043/recovery-evidence-1280.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/legacy-pre-mvp043/recovery-evidence-1280.png.err.log",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[제거]",
+      "preserved_paths": [],
+      "state": "REMOVED_BY_CONTRACT"
+    },
+    {
+      "source_path": "docs/qa/captures/legacy-pre-mvp043/recovery-evidence-1280.png.log",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[제거]",
+      "preserved_paths": [],
+      "state": "REMOVED_BY_CONTRACT"
+    },
+    {
+      "source_path": "docs/qa/captures/legacy-pre-mvp043/recovery-evidence-1920.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/legacy-pre-mvp043/recovery-evidence-1920.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/legacy-pre-mvp043/recovery-evidence-1920.png.err.log",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[제거]",
+      "preserved_paths": [],
+      "state": "REMOVED_BY_CONTRACT"
+    },
+    {
+      "source_path": "docs/qa/captures/legacy-pre-mvp043/recovery-evidence-1920.png.log",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[제거]",
+      "preserved_paths": [],
+      "state": "REMOVED_BY_CONTRACT"
+    },
+    {
+      "source_path": "docs/qa/captures/legacy-pre-mvp043/result-1280.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/legacy-pre-mvp043/result-1280.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/legacy-pre-mvp043/result-1280.png.err.log",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[제거]",
+      "preserved_paths": [],
+      "state": "REMOVED_BY_CONTRACT"
+    },
+    {
+      "source_path": "docs/qa/captures/legacy-pre-mvp043/result-1280.png.log",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[제거]",
+      "preserved_paths": [],
+      "state": "REMOVED_BY_CONTRACT"
+    },
+    {
+      "source_path": "docs/qa/captures/legacy-pre-mvp043/result-1920.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/legacy-pre-mvp043/result-1920.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/legacy-pre-mvp043/result-1920.png.err.log",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[제거]",
+      "preserved_paths": [],
+      "state": "REMOVED_BY_CONTRACT"
+    },
+    {
+      "source_path": "docs/qa/captures/legacy-pre-mvp043/result-1920.png.log",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[제거]",
+      "preserved_paths": [],
+      "state": "REMOVED_BY_CONTRACT"
+    },
+    {
+      "source_path": "docs/qa/captures/legacy-pre-mvp043/result-reasoning-1280.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/legacy-pre-mvp043/result-reasoning-1280.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/legacy-pre-mvp043/result-reasoning-1280.png.err.log",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[제거]",
+      "preserved_paths": [],
+      "state": "REMOVED_BY_CONTRACT"
+    },
+    {
+      "source_path": "docs/qa/captures/legacy-pre-mvp043/result-reasoning-1280.png.log",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[제거]",
+      "preserved_paths": [],
+      "state": "REMOVED_BY_CONTRACT"
+    },
+    {
+      "source_path": "docs/qa/captures/legacy-pre-mvp043/result-reasoning-1920.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/legacy-pre-mvp043/result-reasoning-1920.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/legacy-pre-mvp043/result-reasoning-1920.png.err.log",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[제거]",
+      "preserved_paths": [],
+      "state": "REMOVED_BY_CONTRACT"
+    },
+    {
+      "source_path": "docs/qa/captures/legacy-pre-mvp043/result-reasoning-1920.png.log",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[제거]",
+      "preserved_paths": [],
+      "state": "REMOVED_BY_CONTRACT"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp039/afterlife-investigation-1280x720.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp039/afterlife-investigation-1280x720.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp039/afterlife-investigation-1920x1080.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp039/afterlife-investigation-1920x1080.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp039/afterlife-recovery-1280x720.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp039/afterlife-recovery-1280x720.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp039/afterlife-recovery-1920x1080.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp039/afterlife-recovery-1920x1080.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp039/afterlife-result-1280x720.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp039/afterlife-result-1280x720.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp039/afterlife-result-1920x1080.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp039/afterlife-result-1920x1080.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp039/afterlife-result-reasoning-1280x720.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp039/afterlife-result-reasoning-1280x720.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp039/afterlife-result-reasoning-1920x1080.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp039/afterlife-result-reasoning-1920x1080.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp039/red-umbrella-investigation-1280x720.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp039/red-umbrella-investigation-1280x720.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp039/red-umbrella-investigation-1920x1080.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp039/red-umbrella-investigation-1920x1080.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp039/red-umbrella-recovery-1280x720.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp039/red-umbrella-recovery-1280x720.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp039/red-umbrella-recovery-1920x1080.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp039/red-umbrella-recovery-1920x1080.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp039/red-umbrella-result-1280x720.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp039/red-umbrella-result-1280x720.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp039/red-umbrella-result-1920x1080.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp039/red-umbrella-result-1920x1080.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp039/red-umbrella-result-reasoning-1280x720.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp039/red-umbrella-result-reasoning-1280x720.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp039/red-umbrella-result-reasoning-1920x1080.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp039/red-umbrella-result-reasoning-1920x1080.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp041/dead-frequency-investigation-1280x720.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp041/dead-frequency-investigation-1280x720.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp041/dead-frequency-investigation-1920x1080.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp041/dead-frequency-investigation-1920x1080.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp041/dead-frequency-recovery-1280x720.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp041/dead-frequency-recovery-1280x720.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp041/dead-frequency-recovery-1920x1080.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp041/dead-frequency-recovery-1920x1080.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp041/dead-frequency-result-1280x720.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp041/dead-frequency-result-1280x720.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp041/dead-frequency-result-1920x1080.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp041/dead-frequency-result-1920x1080.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp042/daily-1280x720-final.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp042/daily-1280x720-final.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp042/daily-1280x720-final2.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp042/daily-1280x720-final2.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp042/daily-1280x720.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp042/daily-1280x720.png",
+        "docs/qa/captures/mvp042/daily-debug-1280x720.png",
+        "docs/qa/captures/mvp042/daily-debug2-1280x720.png",
+        "docs/qa/captures/mvp042/hq-1280x720.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp042/daily-debug-1280x720.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp042/daily-1280x720.png",
+        "docs/qa/captures/mvp042/daily-debug-1280x720.png",
+        "docs/qa/captures/mvp042/daily-debug2-1280x720.png",
+        "docs/qa/captures/mvp042/hq-1280x720.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp042/daily-debug2-1280x720.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp042/daily-1280x720.png",
+        "docs/qa/captures/mvp042/daily-debug-1280x720.png",
+        "docs/qa/captures/mvp042/daily-debug2-1280x720.png",
+        "docs/qa/captures/mvp042/hq-1280x720.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp042/daily-result-1280x720-final.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp042/daily-result-1280x720-final.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp042/daily-result-1920x1080-final.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp042/daily-result-1920x1080-final.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp042/database-1280x720-final.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp042/database-1280x720-final.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp042/database-1280x720.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp042/database-1280x720.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp042/database-1920x1080-final.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp042/database-1920x1080-final.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp042/hq-1280x720-final.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp042/hq-1280x720-final.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp042/hq-1280x720.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp042/daily-1280x720.png",
+        "docs/qa/captures/mvp042/daily-debug-1280x720.png",
+        "docs/qa/captures/mvp042/daily-debug2-1280x720.png",
+        "docs/qa/captures/mvp042/hq-1280x720.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp042/hq-1920x1080-final.png",
+      "git_state": "UNTRACKED_OR_DIRTY",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp042/hq-1920x1080-final.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/integrated/external_contacts_1280x720.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/integrated/external_contacts_1280x720.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/integrated/external_contacts_1280x720.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/integrated/external_contacts_1280x720.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/integrated/external_contacts_1920x1080.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/integrated/external_contacts_1920x1080.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/integrated/external_contacts_1920x1080.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/integrated/external_contacts_1920x1080.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/integrated/investigation_1280x720.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/integrated/investigation_1280x720.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/integrated/investigation_1280x720.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/integrated/investigation_1280x720.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/integrated/investigation_1920x1080.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/integrated/investigation_1920x1080.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/integrated/investigation_1920x1080.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/integrated/investigation_1920x1080.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/integrated/preparation_dashboard_1280x720.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/integrated/preparation_dashboard_1280x720.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/integrated/preparation_dashboard_1280x720.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/integrated/preparation_dashboard_1280x720.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/integrated/preparation_dashboard_1920x1080.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/integrated/preparation_dashboard_1920x1080.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/integrated/preparation_dashboard_1920x1080.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/integrated/preparation_dashboard_1920x1080.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/integrated/recovery_loop_1280x720.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/integrated/recovery_loop_1280x720.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/integrated/recovery_loop_1280x720.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/integrated/recovery_loop_1280x720.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/integrated/recovery_loop_1920x1080.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/integrated/recovery_loop_1920x1080.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/integrated/recovery_loop_1920x1080.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/integrated/recovery_loop_1920x1080.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/integrated/result_panel_1280x720.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/integrated/result_panel_1280x720.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/integrated/result_panel_1280x720.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/integrated/result_panel_1280x720.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/integrated/result_panel_1920x1080.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/integrated/result_panel_1920x1080.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/integrated/result_panel_1920x1080.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/integrated/result_panel_1920x1080.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/integrated/team_status_1280x720.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/integrated/team_status_1280x720.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/integrated/team_status_1280x720.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/integrated/team_status_1280x720.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/integrated/team_status_1920x1080.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/integrated/team_status_1920x1080.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/integrated/team_status_1920x1080.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/integrated/team_status_1920x1080.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/investigation_case_popup_1280x720.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/investigation_case_popup_1280x720.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/investigation_case_popup_1280x720.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/investigation_case_popup_1280x720.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/investigation_cases_1280x720.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/investigation_cases_1280x720.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/investigation_cases_1280x720.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/investigation_cases_1280x720.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/investigation_reasoning_1280x720.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/investigation_reasoning_1280x720.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/investigation_reasoning_1280x720.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/investigation_reasoning_1280x720.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/investigation_reasoning_1920x1080.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/investigation_reasoning_1920x1080.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/investigation_reasoning_1920x1080.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/investigation_reasoning_1920x1080.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/investigation_risk_1280x720.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/investigation_risk_1280x720.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/investigation_risk_1280x720.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/investigation_risk_1280x720.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/route_final_1280x720.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/route_final_1280x720.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/route_final_1280x720.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/route_final_1280x720.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/ui_replacement/briefing_1280x720.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/ui_replacement/briefing_1280x720.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/ui_replacement/briefing_1280x720.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/ui_replacement/briefing_1280x720.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/ui_replacement/briefing_1920x1080.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/ui_replacement/briefing_1920x1080.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/ui_replacement/briefing_1920x1080.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/ui_replacement/briefing_1920x1080.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/ui_replacement/investigation_cases_1280x720.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/ui_replacement/investigation_cases_1280x720.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/ui_replacement/investigation_cases_1280x720.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/ui_replacement/investigation_cases_1280x720.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/ui_replacement/investigation_cases_1920x1080.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/ui_replacement/investigation_cases_1920x1080.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/ui_replacement/investigation_cases_1920x1080.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/ui_replacement/investigation_cases_1920x1080.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/ui_replacement/investigation_initial_1280x720.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/ui_replacement/investigation_initial_1280x720.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/ui_replacement/investigation_initial_1280x720.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/ui_replacement/investigation_initial_1280x720.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/ui_replacement/investigation_initial_1920x1080.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/ui_replacement/investigation_initial_1920x1080.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/ui_replacement/investigation_initial_1920x1080.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/ui_replacement/investigation_initial_1920x1080.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/ui_replacement/investigation_risk_1280x720.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/ui_replacement/investigation_risk_1280x720.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/ui_replacement/investigation_risk_1280x720.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/ui_replacement/investigation_risk_1280x720.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/ui_replacement/investigation_risk_1920x1080.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/ui_replacement/investigation_risk_1920x1080.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/ui_replacement/investigation_risk_1920x1080.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/ui_replacement/investigation_risk_1920x1080.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/ui_replacement/route_final_1280x720.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/ui_replacement/route_final_1280x720.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/ui_replacement/route_final_1280x720.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/ui_replacement/route_final_1280x720.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/ui_replacement/route_final_1920x1080.png",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/ui_replacement/route_final_1920x1080.png"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/qa/captures/mvp043/ui_replacement/route_final_1920x1080.png.import",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "docs/qa/captures/mvp043/ui_replacement/route_final_1920x1080.png.import"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/superpowers/plans/2026-07-11-episode-minigames.md",
+      "git_state": "TRACKED",
+      "disposition": "[백업]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/superpowers/plans/2026-07-11-episode-minigames.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/superpowers/plans/2026-07-13-agent-system-v32.md",
+      "git_state": "TRACKED",
+      "disposition": "[백업]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/superpowers/plans/2026-07-13-agent-system-v32.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/superpowers/plans/2026-07-13-mvp-033-unified-field-recovery.md",
+      "git_state": "TRACKED",
+      "disposition": "[백업]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/superpowers/plans/2026-07-13-mvp-033-unified-field-recovery.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/superpowers/plans/2026-07-13-mvp-034-faction-market.md",
+      "git_state": "TRACKED",
+      "disposition": "[백업]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/superpowers/plans/2026-07-13-mvp-034-faction-market.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/superpowers/plans/2026-07-13-mvp-035-log-ai-companion.md",
+      "git_state": "TRACKED",
+      "disposition": "[백업]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/superpowers/plans/2026-07-13-mvp-035-log-ai-companion.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/superpowers/specs/2026-07-11-episode-minigames-design.md",
+      "git_state": "TRACKED",
+      "disposition": "[백업]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/superpowers/specs/2026-07-11-episode-minigames-design.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/superpowers/specs/2026-07-13-log-ai-companion-design.md",
+      "git_state": "TRACKED",
+      "disposition": "[백업]",
+      "preserved_paths": [
+        "[기획서]/[백업]/urban-legend/superpowers/specs/2026-07-13-log-ai-companion-design.md"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "docs/urban_legend_flow_dashboard.html",
+      "git_state": "TRACKED",
+      "disposition": "[본책 이주]",
+      "preserved_paths": [
+        "[기획서]/11_통합검수/등록_부록/urban_legend_flow_dashboard.html"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "project.godot",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "project.godot"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scenes/battle_scene.tscn",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scenes/battle_scene.tscn"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scenes/case_data_scene.tscn",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scenes/case_data_scene.tscn"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scenes/daily_episode_scene.tscn",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scenes/daily_episode_scene.tscn"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scenes/database_view.tscn",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scenes/database_view.tscn"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scenes/dialogue_scene.tscn",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scenes/dialogue_scene.tscn"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scenes/investigation_scene.tscn",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scenes/investigation_scene.tscn"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scenes/main_menu.tscn",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scenes/main_menu.tscn"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scenes/market_scene.tscn",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scenes/market_scene.tscn"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scenes/minigame_scene.tscn",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scenes/minigame_scene.tscn"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scenes/preparation_scene.tscn",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scenes/preparation_scene.tscn"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scenes/result_scene.tscn",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scenes/result_scene.tscn"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scenes/ui/action_choice_card.tscn",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scenes/ui/action_choice_card.tscn"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scenes/ui/afterlife_choice.tscn",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scenes/ui/afterlife_choice.tscn"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scenes/ui/afterlife_header.tscn",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scenes/ui/afterlife_header.tscn"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scenes/ui/agent_selection_card.tscn",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scenes/ui/agent_selection_card.tscn"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scenes/ui/team_status_chip.tscn",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scenes/ui/team_status_chip.tscn"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scenes/ui/team_status_popover.tscn",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scenes/ui/team_status_popover.tscn"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/core/campaign_state.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/core/campaign_state.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/core/campaign_state.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/core/campaign_state.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/core/game_state.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/core/game_state.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/core/game_state.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/core/game_state.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/core/urban_legend_state.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/core/urban_legend_state.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/core/urban_legend_state.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/core/urban_legend_state.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/data/agent_catalog.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/data/agent_catalog.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/data/agent_catalog.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/data/agent_catalog.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/data/case_data.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/data/case_data.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/data/case_data.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/data/case_data.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/data/daily_episode_catalog.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/data/daily_episode_catalog.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/data/daily_episode_catalog.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/data/daily_episode_catalog.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/data/episode_loader.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/data/episode_loader.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/data/episode_loader.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/data/episode_loader.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/minigames/minigame_result_formatter.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/minigames/minigame_result_formatter.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/minigames/minigame_result_formatter.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/minigames/minigame_result_formatter.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/minigames/minigame_rules.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/minigames/minigame_rules.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/minigames/minigame_rules.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/minigames/minigame_rules.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/minigames/rain_dodge_game.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/minigames/rain_dodge_game.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/minigames/rain_dodge_game.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/minigames/rain_dodge_game.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/minigames/rhythm_timing_game.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/minigames/rhythm_timing_game.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/minigames/rhythm_timing_game.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/minigames/rhythm_timing_game.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/minigames/route_restore_game.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/minigames/route_restore_game.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/minigames/route_restore_game.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/minigames/route_restore_game.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/scenes/battle_scene.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/scenes/battle_scene.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/scenes/battle_scene.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/scenes/battle_scene.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/scenes/case_data_scene.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/scenes/case_data_scene.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/scenes/case_data_scene.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/scenes/case_data_scene.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/scenes/daily_episode_scene.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/scenes/daily_episode_scene.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/scenes/daily_episode_scene.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/scenes/daily_episode_scene.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/scenes/dialogue_scene.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/scenes/dialogue_scene.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/scenes/dialogue_scene.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/scenes/dialogue_scene.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/scenes/investigation_scene.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/scenes/investigation_scene.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/scenes/investigation_scene.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/scenes/investigation_scene.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/scenes/market_scene.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/scenes/market_scene.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/scenes/market_scene.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/scenes/market_scene.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/scenes/minigame_scene.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/scenes/minigame_scene.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/scenes/minigame_scene.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/scenes/minigame_scene.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/scenes/preparation_scene.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/scenes/preparation_scene.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/scenes/preparation_scene.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/scenes/preparation_scene.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/scenes/result_scene.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/scenes/result_scene.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/scenes/result_scene.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/scenes/result_scene.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/ui/accessibility_settings.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/ui/accessibility_settings.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/ui/accessibility_settings.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/ui/accessibility_settings.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/ui/action_choice_card.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/ui/action_choice_card.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/ui/action_choice_card.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/ui/action_choice_card.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/ui/afterlife_choice.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/ui/afterlife_choice.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/ui/afterlife_choice.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/ui/afterlife_choice.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/ui/afterlife_header.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/ui/afterlife_header.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/ui/afterlife_header.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/ui/afterlife_header.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/ui/afterlife_manual_catalog.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/ui/afterlife_manual_catalog.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/ui/afterlife_manual_catalog.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/ui/afterlife_manual_catalog.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/ui/afterlife_station_theme.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/ui/afterlife_station_theme.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/ui/afterlife_station_theme.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/ui/afterlife_station_theme.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/ui/agent_selection_card.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/ui/agent_selection_card.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/ui/agent_selection_card.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/ui/agent_selection_card.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/ui/anomaly_manual_drawer.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/ui/anomaly_manual_drawer.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/ui/anomaly_manual_drawer.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/ui/anomaly_manual_drawer.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/ui/database_view.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/ui/database_view.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/ui/database_view.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/ui/database_view.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/ui/log_guide.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/ui/log_guide.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/ui/log_guide.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/ui/log_guide.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/ui/log_tutorial_catalog.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/ui/log_tutorial_catalog.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/ui/log_tutorial_catalog.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/ui/log_tutorial_catalog.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/ui/main_menu.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/ui/main_menu.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/ui/main_menu.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/ui/main_menu.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/ui/runtime_ui_editor.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/ui/runtime_ui_editor.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/ui/runtime_ui_editor.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/ui/runtime_ui_editor.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/ui/scene_presentation.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/ui/scene_presentation.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/ui/scene_presentation.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/ui/scene_presentation.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/ui/team_status_chip.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/ui/team_status_chip.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/ui/team_status_chip.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/ui/team_status_chip.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/ui/team_status_popover.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/ui/team_status_popover.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/ui/team_status_popover.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/ui/team_status_popover.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/ui/ui_asset_catalog.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/ui/ui_asset_catalog.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/ui/ui_asset_catalog.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/ui/ui_asset_catalog.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/ui/ui_layout_store.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/ui/ui_layout_store.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/ui/ui_layout_store.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/ui/ui_layout_store.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/ui/ui_theme_factory.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/ui/ui_theme_factory.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "scripts/ui/ui_theme_factory.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "scripts/ui/ui_theme_factory.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/accessibility_settings_test.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/accessibility_settings_test.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/accessibility_settings_test.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/accessibility_settings_test.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/agent_selection_card_test.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/agent_selection_card_test.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/agent_selection_card_test.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/agent_selection_card_test.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/anomaly_manual_drawer_test.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/anomaly_manual_drawer_test.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/cinematic_ui_redesign_test.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/cinematic_ui_redesign_test.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/cinematic_ui_redesign_test.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/cinematic_ui_redesign_test.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/daily_episode_ui_test.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/daily_episode_ui_test.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/daily_episode_ui_test.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/daily_episode_ui_test.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/investigation_return_flow_test.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/investigation_return_flow_test.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/investigation_return_flow_test.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/investigation_return_flow_test.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/manual_minigame_launcher.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/manual_minigame_launcher.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/manual_minigame_launcher.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/manual_minigame_launcher.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/minigame_controls_test.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/minigame_controls_test.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/minigame_controls_test.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/minigame_controls_test.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/minigame_formatter_test.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/minigame_formatter_test.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/minigame_formatter_test.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/minigame_formatter_test.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/minigame_pipeline_test.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/minigame_pipeline_test.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/minigame_pipeline_test.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/minigame_pipeline_test.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/minigame_rules_test.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/minigame_rules_test.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/minigame_rules_test.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/minigame_rules_test.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/minigame_scene_smoke_test.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/minigame_scene_smoke_test.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/minigame_scene_smoke_test.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/minigame_scene_smoke_test.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/mvp043_afterlife_evidence_flow_test.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/mvp043_afterlife_evidence_flow_test.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/mvp043_afterlife_evidence_flow_test.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/mvp043_afterlife_evidence_flow_test.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/mvp043_investigation_ui_test.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/mvp043_investigation_ui_test.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/mvp043_investigation_ui_test.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/mvp043_investigation_ui_test.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/mvp043_opening_flow_test.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/mvp043_opening_flow_test.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/mvp043_opening_flow_test.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/mvp043_opening_flow_test.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/mvp043_protagonist_support_test.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/mvp043_protagonist_support_test.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/mvp043_protagonist_support_test.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/mvp043_protagonist_support_test.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/mvp043_reasoning_ui_test.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/mvp043_reasoning_ui_test.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/mvp043_reasoning_ui_test.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/mvp043_reasoning_ui_test.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/mvp043_recovery_loop_test.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/mvp043_recovery_loop_test.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/mvp043_recovery_loop_test.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/mvp043_recovery_loop_test.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/post_mvp_visual_data_test.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/post_mvp_visual_data_test.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/post_mvp_visual_data_test.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/post_mvp_visual_data_test.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/preparation_agent_ui_test.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/preparation_agent_ui_test.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/preparation_agent_ui_test.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/preparation_agent_ui_test.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/preparation_schedule_ui_test.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/preparation_schedule_ui_test.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/preparation_schedule_ui_test.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/preparation_schedule_ui_test.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/runtime_ui_editor_scene_test.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/runtime_ui_editor_scene_test.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/runtime_ui_editor_scene_test.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/runtime_ui_editor_scene_test.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/runtime_ui_editor_test.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/runtime_ui_editor_test.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/runtime_ui_editor_test.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/runtime_ui_editor_test.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/test_account_handoff_contract.ps1",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [],
+      "state": "UPDATED_BY_CONTRACT"
+    },
+    {
+      "source_path": "tests/test_agent_system.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/test_agent_system.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/test_agent_system.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/test_agent_system.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/test_agent_system.tscn",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/test_agent_system.tscn"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/test_dialogue_workflow_contract.ps1",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [],
+      "state": "UPDATED_BY_CONTRACT"
+    },
+    {
+      "source_path": "tests/test_multimodel_workflow_contract.ps1",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [],
+      "state": "UPDATED_BY_CONTRACT"
+    },
+    {
+      "source_path": "tests/test_mvp033_unified_recovery.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/test_mvp033_unified_recovery.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/test_mvp033_unified_recovery.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/test_mvp033_unified_recovery.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/test_mvp033_unified_recovery.tscn",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/test_mvp033_unified_recovery.tscn"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/test_mvp034_faction_market.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/test_mvp034_faction_market.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/test_mvp034_faction_market.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/test_mvp034_faction_market.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/test_mvp034_faction_market.tscn",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/test_mvp034_faction_market.tscn"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/test_mvp035_log_companion.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/test_mvp035_log_companion.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/test_mvp035_log_companion.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/test_mvp035_log_companion.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/test_mvp035_log_companion.tscn",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/test_mvp035_log_companion.tscn"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/test_mvp037_campaign_state.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/test_mvp037_campaign_state.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/test_mvp037_campaign_state.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/test_mvp037_campaign_state.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/test_mvp037_campaign_state.tscn",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/test_mvp037_campaign_state.tscn"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/test_mvp038_requests.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/test_mvp038_requests.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/test_mvp038_requests.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/test_mvp038_requests.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/test_mvp038_requests.tscn",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/test_mvp038_requests.tscn"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/test_mvp039_manual_ux_validation.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/test_mvp039_manual_ux_validation.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/test_mvp039_manual_ux_validation.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/test_mvp039_manual_ux_validation.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/test_mvp040_dead_frequency_slice.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/test_mvp040_dead_frequency_slice.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/test_mvp040_dead_frequency_slice.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/test_mvp040_dead_frequency_slice.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/test_mvp042_daily_episodes.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/test_mvp042_daily_episodes.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/test_mvp042_daily_episodes.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/test_mvp042_daily_episodes.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/test_save_guard.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/test_save_guard.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/test_save_guard.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/test_save_guard.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/test_three_case_campaign_manual_qa.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/test_three_case_campaign_manual_qa.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/test_three_case_campaign_manual_qa.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/test_three_case_campaign_manual_qa.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/test_two_case_campaign_manual_qa.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/test_two_case_campaign_manual_qa.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/test_two_case_campaign_manual_qa.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/test_two_case_campaign_manual_qa.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/test_workflow_context.ps1",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [],
+      "state": "UPDATED_BY_CONTRACT"
+    },
+    {
+      "source_path": "tests/ui_asset_catalog_test.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/ui_asset_catalog_test.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/ui_asset_catalog_test.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/ui_asset_catalog_test.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/ui_layout_store_test.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/ui_layout_store_test.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/ui_layout_store_test.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/ui_layout_store_test.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/ui_visual_capture.gd",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/ui_visual_capture.gd"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tests/ui_visual_capture.gd.uid",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tests/ui_visual_capture.gd.uid"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tools/codex_profiles/Assert-CodexProfileIsolation.ps1",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tools/codex_profiles/Assert-CodexProfileIsolation.ps1"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tools/codex_profiles/Get-CodexHandoffAction.ps1",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tools/codex_profiles/Get-CodexHandoffAction.ps1"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tools/codex_profiles/Install-CodexProfiles.ps1",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tools/codex_profiles/Install-CodexProfiles.ps1"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tools/codex_profiles/Start-CodexProfile.ps1",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tools/codex_profiles/Start-CodexProfile.ps1"
+      ],
+      "state": "PRESERVED"
+    },
+    {
+      "source_path": "tools/docs/build_game_design_doc.py",
+      "git_state": "TRACKED",
+      "disposition": "[증거]",
+      "preserved_paths": [
+        "tools/docs/build_game_design_doc.py"
+      ],
+      "state": "PRESERVED"
+    }
+  ]
+}

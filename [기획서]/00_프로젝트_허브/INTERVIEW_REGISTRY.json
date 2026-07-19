@@ -1,0 +1,14 @@
+{
+  "$schema": "../../schemas/interview-registry-v1.schema.json",
+  "schema_version": 1,
+  "registry_role": "deep-requirement-interview-index",
+  "interviews": [
+    {
+      "interview_id": "urban-legend-base-sync-2026-07-20",
+      "status": "CONFIRMED",
+      "record_path": "INTERVIEWS/2026-07-20-base-sync.md",
+      "executable_prompt_path": "EXECUTABLE_PROMPTS/urban-legend-base-sync-2026-07-20.md",
+      "confirmation_evidence": "사용자 메시지: '맞습니다 (권장)'"
+    }
+  ]
+}

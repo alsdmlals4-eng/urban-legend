@@ -31,3 +31,6 @@ exports/
 *.ipa
 *.zip
 
+# Local QA capture diagnostics are reproducible logs, not preservation evidence.
+docs/qa/captures/**/*.log
+
