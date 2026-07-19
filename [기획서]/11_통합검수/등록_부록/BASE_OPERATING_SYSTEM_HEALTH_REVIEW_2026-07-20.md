@@ -38,6 +38,8 @@
 - `data/episodes/**`
 - `scripts/**`, `scenes/**`, `assets/**`, `docs/qa/captures/**`
 
+이 판정은 PR 1에서 동결한 작업 시작 기준선(`BASE_SYNC_AUDIT.md`) 대비다. `main` 대비 PR 전체 diff에는 작업 시작 전에 dirty 상태였던 승인 자산·QA 캡처가 보존 대상 그대로 포함될 수 있으며, 이 이주 작업이 새로 만들거나 수정한 게임 변경으로 해석하지 않는다.
+
 ## 후속 조치
 
 1. Windows CI에서 `pwsh` 계약 테스트와 문서 거버넌스 워크플로를 확인한다.
