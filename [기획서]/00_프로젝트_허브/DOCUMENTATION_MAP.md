@@ -22,3 +22,7 @@
 | 이주·발행·최종 게이트 | `../11_통합검수/11_통합검수_본책.md` |
 
 Registry는 `DESIGN_DOCUMENT_REGISTRY.json`, `SKILL_REGISTRY.json`, `ASSET_REGISTRY.json`이 원본이다. 과거 원문은 `[백업]`, 재개 조건이 있는 미결 제안은 `[보류]`로 라우팅하며 활성 지시로 해석하지 않는다.
+
+## 전역 productivity 경계
+
+`SKILL_REGISTRY.json`의 `global_productivity`는 Base `d2457e75a856260d309203e20262f2a2142d2dd6`와 `Base:skills/PRODUCTIVITY_SOURCE_MANIFEST.json`을 가리킨다. productivity 스킬을 이 저장소에 복사하지 않는다. 프로젝트 상태는 `ACTIVE_CONTEXT.md`와 프로젝트 `HANDOFF.md`, 임시 대화 인수인계는 전역 `handoff`, 이전 세션 재개는 전역 `resume-work`를 사용한다.
