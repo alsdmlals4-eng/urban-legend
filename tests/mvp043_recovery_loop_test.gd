@@ -29,9 +29,15 @@ func _run() -> void:
 	var response_scroll := current_scene.find_child("ResponseScroll", true, false)
 	var response_grid := current_scene.find_child("ResponseGrid", true, false) as GridContainer
 	var consumables := current_scene.find_child("ConsumableRow", true, false) as HBoxContainer
+	var manual_host := current_scene.find_child("ManualBookHost", true, false) as Control
+	var manual := current_scene.find_child("AnomalyManualBook", true, false) as AnomalyManualDrawer
 	_expect(response_scroll == null, "recovery action choices should not use the old response scroll")
 	_expect(response_grid != null and response_grid.columns == 3, "recovery choices should use one horizontal three-card row")
 	_expect(consumables != null, "consumables should have a separate auxiliary row")
+	_expect(manual_host != null, "recovery must reserve a right-side manual book host")
+	_expect(manual != null and manual.visible and manual.find_child("BookFrame", true, false) != null, "recovery must show the persistent book-style anomaly manual")
+	_expect((current_scene.find_child("CinematicStage", true, false) as Control).anchor_right < 0.75, "recovery field and anomaly stage must stay left of the manual book")
+	_expect((current_scene.find_child("ActionDock", true, false) as Control).global_position.x > 200.0, "recovery choices must occupy the central lower area")
 	var initial_pattern: Dictionary = current_scene.get("_current_pattern")
 	var responses: Array = initial_pattern.get("responses", [])
 	_expect(not responses.is_empty(), "automatic telegraph should expose response choices immediately")

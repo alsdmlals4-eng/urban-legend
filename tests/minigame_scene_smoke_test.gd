@@ -39,6 +39,16 @@ func _run() -> void:
 	if not found:
 		_finish(1, "Expected child script was not created: %s" % expected_script)
 		return
+	if scene.find_child("MiniGameFieldPanel", true, false) == null:
+		_finish(1, "Mini-game must expose the left field-image panel")
+		return
+	if scene.find_child("MiniGamePlayPanel", true, false) == null or scene.find_child("MiniGamePlayfield", true, false) == null:
+		_finish(1, "Mini-game must keep the central play panel and playfield")
+		return
+	var manual := scene.find_child("AnomalyManualBook", true, false) as AnomalyManualDrawer
+	if manual == null or not manual.visible or manual.find_child("BookFrame", true, false) == null:
+		_finish(1, "Mini-game must show the persistent book-style anomaly manual")
+		return
 
 	_finish(0, "MINIGAME SCENE OK: %s" % expected_script)
 

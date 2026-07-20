@@ -72,6 +72,131 @@ func _build_afterlife_briefing_ui() -> void:
 	var shade := get_node_or_null("ArtLayer/Shade") as ColorRect
 	if shade != null:
 		shade.color = Color(0.01, 0.008, 0.012, 0.36)
+	var safe := MarginContainer.new()
+	safe.name = "AfterlifeBriefingSafeFrame"
+	safe.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	safe.add_theme_constant_override("margin_left", 16)
+	safe.add_theme_constant_override("margin_top", 12)
+	safe.add_theme_constant_override("margin_right", 16)
+	safe.add_theme_constant_override("margin_bottom", 12)
+	add_child(safe)
+	var root := VBoxContainer.new()
+	root.add_theme_constant_override("separation", 8)
+	safe.add_child(root)
+	var header := AfterlifeHeaderScene.instantiate() as AfterlifeHeader
+	header.configure("저승역 · 긴급 보고", "팀 상태 · 3명")
+	root.add_child(header)
+	var team_popover := TeamStatusPopoverScene.instantiate() as TeamStatusPopover
+	add_child(team_popover)
+	team_popover.set_anchors_preset(Control.PRESET_CENTER)
+	team_popover.position = Vector2(-180, -110)
+	header.team_requested.connect(func() -> void: team_popover.open(_make_team_status_entries()))
+	var status := PanelContainer.new()
+	status.theme_type_variation = &"AfterlifeHeader"
+	root.add_child(status)
+	var status_label := Label.new()
+	status_label.text = "신규 긴급 사건 · 같은 방송을 들은 승객들이 서로 다른 목적지를 기억합니다."
+	status_label.theme_type_variation = &"AfterlifeMeta"
+	status.add_child(status_label)
+	var columns := HBoxContainer.new()
+	columns.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	columns.add_theme_constant_override("separation", 8)
+	root.add_child(columns)
+	var location := PanelContainer.new()
+	location.name = "LocationPanel"
+	location.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	location.size_flags_stretch_ratio = 0.26
+	location.theme_type_variation = &"AfterlifePanel"
+	columns.add_child(location)
+	var location_box := VBoxContainer.new()
+	location_box.add_theme_constant_override("separation", 8)
+	location.add_child(location_box)
+	var location_title := Label.new()
+	location_title.text = "현장 이미지"
+	location_title.theme_type_variation = &"AfterlifeSection"
+	location_box.add_child(location_title)
+	var preview := TextureRect.new()
+	preview.name = "FieldImage"
+	preview.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	var background := get_node_or_null("ArtLayer/Background") as TextureRect
+	if background != null:
+		preview.texture = background.texture
+	location_box.add_child(preview)
+	var location_meta := Label.new()
+	location_meta.text = "저승역 · 플랫폼 진입부\n기록원 현장 연결 대기"
+	location_meta.theme_type_variation = &"AfterlifeMeta"
+	location_box.add_child(location_meta)
+	_dialogue_panel = PanelContainer.new()
+	_dialogue_panel.name = "DialogueDock"
+	_dialogue_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_dialogue_panel.size_flags_stretch_ratio = 0.48
+	_dialogue_panel.theme_type_variation = &"AfterlifePanel"
+	columns.add_child(_dialogue_panel)
+	var dialogue_content := VBoxContainer.new()
+	dialogue_content.add_theme_constant_override("separation", 9)
+	_dialogue_panel.add_child(dialogue_content)
+	_name_label = Label.new()
+	_name_label.theme_type_variation = &"AfterlifeSection"
+	_name_label.text = "기록원 관제"
+	dialogue_content.add_child(_name_label)
+	var briefing_title := Label.new()
+	briefing_title.text = "긴급 보고"
+	briefing_title.theme_type_variation = &"AfterlifeTitle"
+	dialogue_content.add_child(briefing_title)
+	_dialogue_label = Label.new()
+	_dialogue_label.name = "SituationText"
+	_dialogue_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_dialogue_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	dialogue_content.add_child(_dialogue_label)
+	_condition_label = Label.new()
+	_condition_label.visible = false
+	_condition_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	dialogue_content.add_child(_condition_label)
+	_choice_box = VBoxContainer.new()
+	_choice_box.name = "ChoiceBox"
+	_choice_box.visible = false
+	_choice_box.add_theme_constant_override("separation", 6)
+	dialogue_content.add_child(_choice_box)
+	_next_button = Button.new()
+	_next_button.text = "보고 계속"
+	_next_button.pressed.connect(_advance_line)
+	dialogue_content.add_child(_next_button)
+	_manual_drawer = AnomalyManualDrawerScript.new()
+	_manual_drawer.set_persistent_book(true)
+	_manual_drawer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_manual_drawer.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_manual_drawer.size_flags_stretch_ratio = 0.26
+	columns.add_child(_manual_drawer)
+	_refresh_manual_drawer(false)
+	header.record_requested.connect(func() -> void: _manual_drawer.open_drawer())
+	_stage_label = Label.new()
+	_stage_label.visible = false
+	add_child(_stage_label)
+	_standing_label = Label.new()
+	_standing_label.visible = false
+	add_child(_standing_label)
+	_agent_strip = HBoxContainer.new()
+	_agent_strip.visible = false
+	add_child(_agent_strip)
+	_agent_status_label = Label.new()
+	_agent_status_label.visible = false
+	add_child(_agent_status_label)
+	_agent_reaction_label = Label.new()
+	_agent_reaction_label.visible = false
+	add_child(_agent_reaction_label)
+	_support_panel = PanelContainer.new()
+	_support_panel.visible = false
+	add_child(_support_panel)
+	_hint_label = Label.new()
+	_clue_status_label = Label.new()
+
+
+func _build_afterlife_briefing_legacy_ui() -> void:
+	var shade := get_node_or_null("ArtLayer/Shade") as ColorRect
+	if shade != null:
+		shade.color = Color(0.01, 0.008, 0.012, 0.36)
 
 	var safe := MarginContainer.new()
 	safe.name = "AfterlifeBriefingSafeFrame"

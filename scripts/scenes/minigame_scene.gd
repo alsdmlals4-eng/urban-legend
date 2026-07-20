@@ -9,6 +9,7 @@ const RhythmGame = preload("res://scripts/minigames/rhythm_timing_game.gd")
 const RainDodgeGame = preload("res://scripts/minigames/rain_dodge_game.gd")
 const RouteRestoreGame = preload("res://scripts/minigames/route_restore_game.gd")
 const AnomalyManualDrawerScript = preload("res://scripts/ui/anomaly_manual_drawer.gd")
+const AssetCatalog = preload("res://scripts/ui/ui_asset_catalog.gd")
 
 var _minigame: Dictionary = {}
 var _equipment_hint: Dictionary = {}
@@ -65,6 +66,86 @@ func _is_route_restore_minigame() -> bool:
 
 
 func _build_ui() -> void:
+	if _is_route_restore_minigame():
+		_build_route_restore_ui()
+		return
+	_build_minigame_book_layout()
+
+
+func _build_minigame_book_layout() -> void:
+	var background := ColorRect.new()
+	background.color = Color(0.018, 0.028, 0.038)
+	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	add_child(background)
+	var margin := MarginContainer.new()
+	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	margin.add_theme_constant_override("margin_left", 18)
+	margin.add_theme_constant_override("margin_top", 14)
+	margin.add_theme_constant_override("margin_right", 18)
+	margin.add_theme_constant_override("margin_bottom", 14)
+	add_child(margin)
+	var root := VBoxContainer.new()
+	root.add_theme_constant_override("separation", 8)
+	margin.add_child(root)
+	var header := Label.new()
+	header.name = "MiniGameSituationHeader"
+	header.text = "현장 검증 · %s" % GameState.get_current_episode_title()
+	header.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	header.add_theme_font_size_override("font_size", 20)
+	root.add_child(header)
+	var columns := HBoxContainer.new()
+	columns.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	columns.add_theme_constant_override("separation", 10)
+	root.add_child(columns)
+	var field := _add_section(columns, "현장 이미지", 0.26)
+	field.get_parent().get_parent().name = "MiniGameFieldPanel"
+	_add_field_visual(field, "investigation")
+	var play := _add_section(columns, _make_play_title(), 0.48)
+	play.get_parent().get_parent().name = "MiniGamePlayPanel"
+	var situation := _make_body_label(String(_minigame.get("description", "현장 검증을 준비합니다.")))
+	situation.add_theme_color_override("font_color", Color(0.82, 0.88, 0.9))
+	play.add_child(situation)
+	_status_label = Label.new()
+	_status_label.text = "현장 정보를 불러오는 중"
+	_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_status_label.add_theme_font_size_override("font_size", 16)
+	play.add_child(_status_label)
+	_progress_bar = ProgressBar.new()
+	_progress_bar.min_value = 0
+	_progress_bar.max_value = 100
+	_progress_bar.show_percentage = false
+	_progress_bar.custom_minimum_size.y = 8
+	play.add_child(_progress_bar)
+	var playfield_frame := PanelContainer.new()
+	playfield_frame.name = "MiniGamePlayfield"
+	playfield_frame.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	playfield_frame.add_theme_stylebox_override("panel", _make_panel_style(Color(0.012, 0.025, 0.034), Color(0.18, 0.42, 0.46)))
+	play.add_child(playfield_frame)
+	_result_label = _make_body_label("조작 결과와 다음 기록은 이곳에 남습니다.")
+	play.add_child(_result_label)
+	_return_button = Button.new()
+	_return_button.text = "조사 현장으로 복귀"
+	_return_button.custom_minimum_size.y = 42
+	_return_button.visible = false
+	_return_button.pressed.connect(_return_to_flow)
+	play.add_child(_return_button)
+	_manual_drawer = _create_persistent_manual()
+	_manual_drawer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_manual_drawer.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_manual_drawer.size_flags_stretch_ratio = 0.26
+	columns.add_child(_manual_drawer)
+	if _existing_result.is_empty():
+		_game_control = _make_game_control()
+		playfield_frame.add_child(_game_control)
+		_game_control.status_changed.connect(_on_status_changed)
+		_game_control.completed.connect(_on_game_completed)
+		_game_control.configure(_minigame, not _equipment_hint.is_empty())
+	else:
+		_show_saved_result(playfield_frame)
+
+
+func _build_legacy_ui() -> void:
 	if _is_route_restore_minigame():
 		_build_route_restore_ui()
 		return
@@ -177,6 +258,103 @@ func _build_ui() -> void:
 
 
 func _build_route_restore_ui() -> void:
+	var surface := TextureRect.new()
+	surface.texture = load("res://assets/ui/afterlife/generated/afterlife_metal_panel_v1.png")
+	surface.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	surface.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	surface.stretch_mode = TextureRect.STRETCH_SCALE
+	surface.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(surface)
+	var shade := ColorRect.new()
+	shade.color = Color(0.01, 0.008, 0.012, 0.32)
+	shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(shade)
+	var margin := MarginContainer.new()
+	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	margin.add_theme_constant_override("margin_left", 16)
+	margin.add_theme_constant_override("margin_top", 12)
+	margin.add_theme_constant_override("margin_right", 16)
+	margin.add_theme_constant_override("margin_bottom", 12)
+	add_child(margin)
+	var root := VBoxContainer.new()
+	root.add_theme_constant_override("separation", 6)
+	margin.add_child(root)
+	var header := AfterlifeHeaderScene.instantiate() as AfterlifeHeader
+	header.configure("저승역 · 최종 검증", "팀 상태")
+	root.add_child(header)
+	var team_popover := TeamStatusPopoverScene.instantiate() as TeamStatusPopover
+	add_child(team_popover)
+	team_popover.set_anchors_preset(Control.PRESET_CENTER)
+	team_popover.position = Vector2(-180, -110)
+	header.team_requested.connect(func() -> void: team_popover.open(_make_team_status_entries()))
+	var stage_bar := PanelContainer.new()
+	stage_bar.custom_minimum_size.y = 30
+	stage_bar.theme_type_variation = &"AfterlifeHeader"
+	root.add_child(stage_bar)
+	var stage_label := Label.new()
+	stage_label.text = "현장 검증 2/2 · 현재 목표: 안전 노선 복원"
+	stage_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	stage_label.theme_type_variation = &"AfterlifeMeta"
+	stage_bar.add_child(stage_label)
+	var columns := HBoxContainer.new()
+	columns.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	columns.add_theme_constant_override("separation", 8)
+	root.add_child(columns)
+	var field := _add_route_panel(columns, "현장 이미지", 0.26)
+	field.get_parent().name = "MiniGameFieldPanel"
+	_add_field_visual(field, "investigation")
+	var play := _add_route_panel(columns, "노선 복원", 0.48)
+	play.get_parent().name = "MiniGamePlayPanel"
+	_status_label = Label.new()
+	_status_label.text = "공식 기록과 현장 경로를 대조합니다."
+	_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_status_label.theme_type_variation = &"AfterlifeMeta"
+	play.add_child(_status_label)
+	_progress_bar = ProgressBar.new()
+	_progress_bar.min_value = 0
+	_progress_bar.max_value = 100
+	_progress_bar.show_percentage = false
+	_progress_bar.custom_minimum_size.y = 5
+	play.add_child(_progress_bar)
+	var playfield_frame := PanelContainer.new()
+	playfield_frame.name = "MiniGamePlayfield"
+	playfield_frame.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	playfield_frame.theme_type_variation = &"AfterlifePanel"
+	play.add_child(playfield_frame)
+	_result_label = Label.new()
+	_result_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_result_label.theme_type_variation = &"AfterlifeMeta"
+	play.add_child(_result_label)
+	_return_button = Button.new()
+	_return_button.text = "현장 기록으로 복귀"
+	_return_button.visible = false
+	_return_button.pressed.connect(_return_to_flow)
+	play.add_child(_return_button)
+	_manual_drawer = _create_persistent_manual()
+	_manual_drawer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_manual_drawer.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_manual_drawer.size_flags_stretch_ratio = 0.26
+	columns.add_child(_manual_drawer)
+	header.record_requested.connect(func() -> void: _manual_drawer.open_drawer())
+	header.hq_requested.connect(func() -> void:
+		if _completed:
+			_return_to_flow()
+	)
+	if _existing_result.is_empty():
+		_game_control = _make_game_control()
+		playfield_frame.add_child(_game_control)
+		_game_control.status_changed.connect(_on_status_changed)
+		_game_control.completed.connect(_on_game_completed)
+		if _game_control.has_signal("stage_changed"):
+			_game_control.connect("stage_changed", _on_route_stage_changed)
+		_game_control.configure(_minigame, false)
+	else:
+		_show_saved_result(playfield_frame)
+
+
+func _build_route_restore_legacy_ui() -> void:
 	var surface := TextureRect.new()
 	surface.texture = load("res://assets/ui/afterlife/generated/afterlife_metal_panel_v1.png")
 	surface.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -306,6 +484,70 @@ func _add_route_panel(parent: Control, title_text: String, ratio: float) -> VBox
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	content.add_child(title)
 	return content
+
+
+func _add_field_visual(parent: VBoxContainer, background_role: String) -> void:
+	var image := TextureRect.new()
+	image.name = "FieldImage"
+	image.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	var catalog := AssetCatalog.new()
+	image.texture = catalog.get_texture(catalog.get_background_id(GameState.get_current_episode_id(), background_role))
+	image.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	image.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	image.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	parent.add_child(image)
+	var location := Label.new()
+	location.text = "현재 위치 · %s" % GameState.get_current_episode_title()
+	location.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	if _is_route_restore_minigame():
+		location.theme_type_variation = &"AfterlifeMeta"
+	else:
+		location.add_theme_color_override("font_color", Color(0.68, 0.74, 0.77))
+	parent.add_child(location)
+	var purpose := Label.new()
+	purpose.text = "현장 확인 · %s" % _make_play_title()
+	purpose.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	if _is_route_restore_minigame():
+		purpose.theme_type_variation = &"AfterlifeMeta"
+	else:
+		purpose.add_theme_color_override("font_color", Color(0.68, 0.74, 0.77))
+	parent.add_child(purpose)
+
+
+func _create_persistent_manual() -> AnomalyManualDrawer:
+	var manual: AnomalyManualDrawer = AnomalyManualDrawerScript.new()
+	manual.set_persistent_book(true)
+	var sections: Array = [
+		{
+			"title": "현재 상황",
+			"text": String(_minigame.get("description", "현장 검증을 진행합니다."))
+		},
+		{
+			"title": "조작 규칙",
+			"text": String(_minigame.get("rules_text", _make_control_hint()))
+		},
+		{
+			"title": "현장 기록",
+			"text": "공식 기록과 현장 관찰을 대조해 다음 판단을 확인합니다."
+		}
+	]
+	if _is_route_restore_minigame():
+		sections = [
+			{
+				"title": "공식 운행 기록",
+				"text": "2번 승강장에서 출발해 3번 승강장을 지난 뒤 1번 승강장으로 진입합니다. 직선 구간은 최소 한 번 포함합니다."
+			},
+			{
+				"title": "방송 원본",
+				"text": "종료 안내 뒤에만 이동합니다. 개인 목적지 표기는 경로 판단에서 제외합니다."
+			},
+			{
+				"title": "조작 기록",
+				"text": _make_control_hint()
+			}
+		]
+	manual.set_sections(sections)
+	return manual
 
 
 func _make_team_status_entries() -> Array:

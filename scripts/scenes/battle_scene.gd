@@ -102,16 +102,13 @@ func _build_scene_ui() -> void:
 	%RepresentativeSwitchButton.pressed.connect(_switch_representative)
 	(%ClueDrawer as PanelContainer).visible = false
 	_manual_drawer = AnomalyManualDrawerScript.new()
-	add_child(_manual_drawer)
-	_manual_drawer.anchor_left = 0.66
-	_manual_drawer.anchor_top = 0.12
-	_manual_drawer.anchor_right = 0.985
-	_manual_drawer.anchor_bottom = 0.60
+	_manual_drawer.set_persistent_book(true)
+	%ManualBookHost.add_child(_manual_drawer)
 	_manual_drawer.set_sections([
 		{"title": "회수 자동 반영 단서", "text": _make_auto_effect_text()},
 		{"title": "요원 지원", "text": "대표 교체와 지원 행동은 현재 전조를 확인한 뒤 선택할 수 있습니다."}
 	])
-	_manual_drawer.bind_toggle_button(%ClueDrawerButton)
+	%ClueDrawerButton.visible = false
 	_manual_prediction_label = _make_label("")
 	_manual_drawer.add_detail_control(_manual_prediction_label)
 	_evidence_label = _make_label("")
@@ -127,6 +124,7 @@ func _build_scene_ui() -> void:
 	_log_guide = LogGuideScript.new()
 	_log_guide.set_compact(true)
 	_log_guide.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	%RecoveryLogHost.visible = false
 	%RecoveryLogHost.add_child(_log_guide)
 	_populate_team_strip()
 	_refresh_representative_agent()
@@ -186,7 +184,6 @@ func _setup_runtime_editor() -> void:
 		"image_target": _anomaly_image,
 		"style_target": _anomaly_panel
 	})
-	_runtime_editor.register_element("cinematic_action_dock", _action_panel, {"minimum_size": Vector2(720, 220), "free_layout": true})
 	_runtime_editor.risk_preview_changed.connect(_preview_risk_stage)
 
 
@@ -451,6 +448,8 @@ func _begin_recovery_turn(last_result: String = "") -> void:
 		var ability := String(response_copy.get("ability", "analysis"))
 		var agent := GameState.find_best_agent_for_ability(ability)
 		var card := ActionChoiceCardScene.instantiate()
+		card.custom_minimum_size = Vector2(0, 76)
+		card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		_response_box.add_child(card)
 		card.configure({
 			"id": String(response_copy.get("id", "response")),
