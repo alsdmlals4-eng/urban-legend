@@ -1,6 +1,6 @@
 # Current Project Status
 
-> 문서 위치: `docs/CURRENT_STATUS.md` | 기획 인수인계: `docs/planning/README.md` | 과거 상태·중복 설명: `docs/archive/backup/2026-07-16/`
+> 문서 위치: `docs/CURRENT_STATUS.md` | 최상위 라우터: `START_HERE.md` | 기획 인수인계: `docs/planning/README.md` | 과거 상태·중복 설명: `docs/archive/backup/2026-07-16/`
 
 이 문서는 **현재 구현 사실과 승인됐지만 아직 구현되지 않은 다음 계획을 구분하는 단일 상태 원본**이다. 새 작업자는 모든 과거 Goal·QA·제안서를 읽지 않고 이 문서와 `docs/planning/README.md`에서 필요한 갈래를 선택한다.
 
@@ -32,6 +32,18 @@
 - 소문시장·마도회·퇴마사 계보, 3칸 세력 의뢰 게시판
 - 초기 5인과 외부 4인 캐릭터 아트 28종
 - 플레이어 노출 안내자 명칭 `기록관 아카`; 내부 `로그` ID는 호환용 유지
+
+## Base 운영체계 동기화 — 게임 구현과 별도
+
+| 항목 | 상태 | 설명 |
+|---|---|---|
+| Base 기준 | 검토 중 | `alsdmlals4-eng/Base@ee265576da7f67d3278f8099dd97d4e714ef0651` |
+| 비파괴 동기화 | Draft PR | 기존 `docs/`, GDD, Roadmap, Test, 게임 파일 경로를 유지하고 운영 모델·Registry·검증만 추가 |
+| PR #41~#43 | 병합 차단 권고 | 승인 없는 대규모 이동, 루트 규칙 축약, 구형 Foundation Skill 활성화가 최신 Base와 이주 계약에 충돌 |
+| 게임 코드·데이터·Scene·자산 | 변경 없음 | Base 동기화 범위에서 제외 |
+| Godot·수동 플레이 QA | `NOT_RUN` | 플레이어 화면과 런타임 파일을 변경하지 않음 |
+
+Base 동기화 PR이 존재한다는 사실은 게임 기능 구현 완료나 프로젝트 구조 이주 완료를 뜻하지 않는다. 병합 전 `tests/test_base_operating_sync.py`와 PR changed-file 감사를 통과해야 한다. 상세 감사: `docs/qa/BASE_SYNC_AUDIT_2026-07-21.md`.
 
 ## 승인된 다음 계획 — 아직 GitHub main 구현 완료 아님
 
@@ -79,6 +91,10 @@
 
 ## 문서 선택
 
+- 운영 시작점: `START_HERE.md`
+- 운영 모델: `docs/OPERATING_MODEL.md`
+- Work Mode·Skill 라우팅: `docs/WORK_MODE_AND_SKILL_ROUTING.md`
+- Skill Registry: `skills/SKILL_REGISTRY.json`
 - 기획 인수인계: `docs/planning/README.md`
 - 상세 게임 설계: `docs/GAME_DESIGN_DOCUMENT.md`
 - 프로젝트 용어·표현 원칙: `docs/PROJECT_CONTEXT.md`
