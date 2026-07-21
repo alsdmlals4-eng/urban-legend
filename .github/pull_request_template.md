@@ -1,79 +1,62 @@
 ## 변경 이유
 
-- 어떤 플레이어 가치 또는 개발 문제를 해결하는가:
-- 연결된 Issue:
-- 현재 Work Mode / Skill / Skill Mode:
+- 해결할 플레이어 가치·개발 문제:
+- 연결 Issue/Goal:
+- Work Mode / 주 프로젝트 Skill / Base 지원 Skill / Mode:
 - 선택 이유:
+
+## 코어·범위·보존 계약
+
+- [ ] `docs/PROJECT_CORE.md` 영향과 재승인 필요 여부를 판정했다.
+- [ ] 포함·제외·완료 기준·영향 파일·rollback을 적었다.
+- [ ] 저장·ID·Schema·보호 경로·사용자 변경을 보존한다.
+- [ ] 구조 개선과 의도적 기능 변경을 분리했다.
+
+## 구조 개선 판정
+
+- 가지치기: `KEEP / MERGE / MOVE_TO_REFERENCE / STUB / ARCHIVE / DELETE / UNVERIFIED`
+- 간소화: 본문 유지 계약 / 이동 reference / 발견성 검증:
+- 리팩토링 baseline / 보존 인터페이스·출력·Schema:
+
+## 적대적 검토
+
+- 실패 가정·공격 렌즈:
+- `MUST_FIX`:
+- 승인한 `SHOULD_FIX`:
+- `DEFER / REJECT / UNVERIFIED`:
+- regression-recheck 결과:
 
 ## 구현 내용
 
 -
 
-## 범위 확인
+## Base·Skill·정본 확인
 
-- [ ] Issue/Goal/사용자 승인 범위 안에서만 변경했다.
-- [ ] 기존 사용자 변경사항을 되돌리지 않았다.
-- [ ] 요청하지 않은 리팩터링을 포함하지 않았다.
-- [ ] 저장/불러오기와 기존 흐름 영향을 확인했다.
-- [ ] 보호 경로 변경 여부와 근거를 적었다.
-- [ ] 삭제·rename·대량 이동이 있으면 승인된 처리표와 복구 경로가 있다.
+- [ ] `docs/BASE_RULES_VERSION.md`의 pin과 Registry·Index·Adapter가 일치한다.
+- [ ] Base 25개·18책임 Coverage와 프로젝트 Skill 10개가 누락 없이 연결된다.
+- [ ] 전체 Skill을 기본 로드하거나 공용 본문을 불필요하게 복제하지 않았다.
+- [ ] 통합·이름·경로 변경에 Alias·역참조·생성기·테스트 갱신이 있다.
+- [ ] 책임 원본과 실제 파일·파생본 상태가 일치한다.
 
-## Base·Skill·정본·참조 확인
+## 검증
 
-- [ ] 적용한 Base commit과 필요한 Registry blob을 고정했다.
-- [ ] 전체 Base 파일·Skill을 불필요하게 복제하지 않았다.
-- [ ] Registry 행만 읽지 않고 선택된 실제 `SKILL.md`와 mode를 수행했다.
-- [ ] 주 프로젝트 분야 Skill은 최대 1개, 지원 Skill은 최대 3개다.
-- [ ] 새 Skill 추가 전 기존 Skill mode로 통합 가능한지 확인했다.
-- [ ] 활성 프로젝트 Skill은 Registry `path`와 실제 패키지가 1:1이다.
-- [ ] 통합·제거한 Skill은 고유 절차 승계와 Legacy Alias가 있다.
-- [ ] 최신 Skill ID를 사용하고 구형 ID는 Alias로만 처리했다.
-- [ ] 경로·ID·Schema·정본·생성기 변경의 활성 소비자와 파생본을 확인했다.
-- [ ] 기존 프로젝트 책임 원본과 고유 정보가 유지된다.
-- [ ] stacked PR이면 base PR의 차단 finding을 상속하지 않는다.
+- 자동·정적:
+- Godot·런타임:
+- 저장·회귀:
+- 수동 UI·해상도·입력:
+- GitHub Actions:
+- `NOT_RUN / UNVERIFIED`:
 
-## 검증 내용
+## Changed-file·PR 감사
 
-- 자동/정적 검증:
-- Skill 패키지·trigger·routing 검증:
-- Godot Scene 실행 검증:
-- 회귀·저장 호환 검증:
-- 수동 확인하지 못한 항목:
-- GitHub Actions 상태:
+- [ ] 변경 파일을 전수 확인했다.
+- [ ] 삭제·rename·바이너리·보호 경로를 별도로 확인했다.
+- [ ] stacked PR의 차단 finding을 상속하지 않는다.
+- [ ] PR 설명·실제 CI·테스트 결과가 일치한다.
 
-실행하지 않은 검사는 `NOT_RUN` 또는 `UNVERIFIED`로 기록하고 통과로 표시하지 않는다.
+## 결과
 
-Skill·Registry 변경 시 최소 검사:
-
-```text
-python -m unittest tests/test_base_operating_sync.py tests/test_skill_package_integrity.py
-```
-
-## Godot 확인 순서
-
-1.
-2.
-3.
-
-## 변경 파일 감사
-
-- [ ] 변경 파일 목록을 전부 확인했다.
-- [ ] 범위 밖 게임 코드·데이터·Scene·자산이 없다.
-- [ ] rename·삭제·바이너리 변경을 별도로 확인했다.
-- [ ] PR 설명의 검증 주장과 실제 CI·테스트 결과가 일치한다.
-
-## 남은 위험과 다음 작업
-
-- 남은 위험:
-- 다음 MVP에 넘길 항목:
-- rollback 또는 복구 경로:
-
-## 실행 결과 보고
-
-- 수행 내용:
-- 얻은 결과·증거:
+- 보존한 기능·코어·장점:
+- 실제 변경·감소한 중복:
+- 남은 위험·다음 trigger:
 - 상태: `PASS | PARTIAL | FAIL | UNVERIFIED`
-
-## 권장 커밋 이름
-
-`type: concise purpose`
