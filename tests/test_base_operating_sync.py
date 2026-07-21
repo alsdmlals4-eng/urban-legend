@@ -35,12 +35,35 @@ LEGACY_ACTIVE_IDS = {
     "reviewing-and-implementing-base-change-proposals",
     "reviewing-external-ai-drafts",
 }
+REQUIRED_ADAPTER_ROLES = {
+    "project_agents",
+    "project_start_here",
+    "operating_model",
+    "work_mode_and_skill_routing",
+    "active_context",
+    "handoff",
+    "documentation_map",
+    "design_document_registry_equivalent",
+    "skill_registry",
+    "legacy_skill_aliases",
+    "skill_learning_log",
+    "roadmap",
+    "validation_contract",
+    "project_context",
+    "game_design_source",
+    "game_design_docx_derivative",
+    "game_design_generator",
+    "base_version",
+    "base_sync_audit",
+}
 
 
 class BaseOperatingSyncTests(unittest.TestCase):
     def setUp(self) -> None:
         self.registry_path = ROOT / "skills/SKILL_REGISTRY.json"
         self.registry = json.loads(self.registry_path.read_text(encoding="utf-8"))
+        self.adapter_path = ROOT / "skills/PROJECT_PATH_ADAPTER.json"
+        self.adapter = json.loads(self.adapter_path.read_text(encoding="utf-8"))
 
     def test_cold_start_entrypoints_exist(self) -> None:
         required = [
@@ -52,6 +75,7 @@ class BaseOperatingSyncTests(unittest.TestCase):
             "docs/DOCUMENTATION_MAP.md",
             "docs/BASE_RULES_VERSION.md",
             "skills/SKILL_REGISTRY.json",
+            "skills/PROJECT_PATH_ADAPTER.json",
             "skills/LEGACY_SKILL_ALIASES.md",
             "skills/SKILL_LEARNING_LOG.md",
         ]
@@ -65,6 +89,7 @@ class BaseOperatingSyncTests(unittest.TestCase):
             "docs/WORK_MODE_AND_SKILL_ROUTING.md",
             "docs/BASE_RULES_VERSION.md",
             "skills/SKILL_REGISTRY.json",
+            "skills/PROJECT_PATH_ADAPTER.json",
             "skills/SKILL_LEARNING_LOG.md",
         ]
         missing = [
@@ -73,6 +98,7 @@ class BaseOperatingSyncTests(unittest.TestCase):
         ]
         self.assertEqual(missing, [], f"Base commit mismatch: {missing}")
         self.assertEqual(self.registry["base"]["commit"], BASE_COMMIT)
+        self.assertEqual(self.adapter["base"]["commit"], BASE_COMMIT)
 
     def test_automatic_routing_contract(self) -> None:
         policy = self.registry["routing_policy"]
@@ -104,6 +130,59 @@ class BaseOperatingSyncTests(unittest.TestCase):
         aliases = (ROOT / "skills/LEGACY_SKILL_ALIASES.md").read_text(encoding="utf-8")
         for legacy_id in LEGACY_ACTIVE_IDS:
             self.assertIn(legacy_id, aliases)
+
+    def test_project_path_adapter_is_complete(self) -> None:
+        self.assertEqual(
+            self.adapter["adapter_role"],
+            "urban-legend-base-operating-path-adapter",
+        )
+        self.assertEqual(
+            self.adapter["project"]["layout_policy"],
+            "preserve-existing-canonical-paths",
+        )
+        self.assertFalse(self.adapter["project"]["base_example_paths_are_authoritative"])
+        bindings = self.adapter["role_bindings"]
+        self.assertEqual(set(bindings), REQUIRED_ADAPTER_ROLES)
+        missing = [role for role, raw_path in bindings.items() if not (ROOT / raw_path).exists()]
+        self.assertEqual(missing, [], f"Missing adapter-bound project paths: {missing}")
+
+    def test_base_example_paths_are_overridden_explicitly(self) -> None:
+        overrides = {
+            item["base_example"]: item["project_path"]
+            for item in self.adapter["base_path_overrides"]
+        }
+        self.assertEqual(
+            overrides["[기획서]/00_프로젝트_허브/START_HERE.md"],
+            "START_HERE.md",
+        )
+        self.assertEqual(
+            overrides["[기획서]/00_프로젝트_허브/ACTIVE_CONTEXT.md"],
+            "docs/CURRENT_STATUS.md",
+        )
+        self.assertEqual(
+            overrides["[기획서]/00_프로젝트_허브/DOCUMENTATION_MAP.md"],
+            "docs/DOCUMENTATION_MAP.md",
+        )
+        self.assertEqual(
+            overrides["[기획서]/00_프로젝트_허브/DESIGN_DOCUMENT_REGISTRY.json"],
+            "docs/DOCUMENTATION_MAP.md",
+        )
+        for project_path in overrides.values():
+            self.assertTrue((ROOT / project_path).exists(), project_path)
+
+    def test_existing_gdd_publication_contract_is_not_silently_replaced(self) -> None:
+        publication = self.adapter["publication_compatibility"]
+        self.assertEqual(
+            publication["current_model"],
+            "markdown-source-plus-checked-docx-derivative",
+        )
+        self.assertEqual(
+            publication["base_v3_registry_migration"],
+            "DEFERRED_REQUIRES_SEPARATE_APPROVAL",
+        )
+        for field in ("source", "docx", "generator"):
+            self.assertTrue((ROOT / publication[field]).exists(), publication[field])
+        self.assertIn("--check", publication["validation"])
 
     def test_project_canonical_sources_are_preserved(self) -> None:
         missing: list[str] = []
