@@ -116,7 +116,7 @@ Base Design Document Registry v3의 `milestone_sync/always_sync`는 PDF와 Publi
 | 프로젝트 불변 용어·보호 경로 보존 | `PASS` | `AGENTS.md` 계약 검사 |
 | 변경 파일 범위 | `PASS` | PR #46 changed files 19개, 게임 코드·데이터·Scene·자산 0건 |
 | 삭제·rename | `PASS` | 삭제 0건, rename 0건 |
-| GitHub Actions | `PASS` | run `29837615016`, job `88657893496`, `Validate pinned Base operating contract` 성공 |
+| GitHub Actions | `PASS` | PR의 현재 head에서 `Validate Base operating sync`와 `Validate pinned Base operating contract` 성공 필수 |
 | Godot headless | `NOT_RUN` | 게임 런타임 파일 미변경 |
 | 수동 플레이·화면 QA | `NOT_RUN` | 플레이어 화면 변경 없음 |
 
