@@ -22,7 +22,7 @@ REQUIRED_BASE_SKILLS = {
     "auditing-and-refining-ui-art",
     "managing-base-change-proposals",
 }
-LEGACY_ACTIVE_IDS = {
+LEGACY_BASE_IDS = {
     "routing-project-work-by-discipline",
     "conducting-deep-requirement-interviews",
     "transforming-requests-into-prompts",
@@ -45,6 +45,7 @@ REQUIRED_ADAPTER_ROLES = {
     "documentation_map",
     "design_document_registry_equivalent",
     "skill_registry",
+    "project_discipline_skill_root",
     "legacy_skill_aliases",
     "skill_learning_log",
     "roadmap",
@@ -60,10 +61,12 @@ REQUIRED_ADAPTER_ROLES = {
 
 class BaseOperatingSyncTests(unittest.TestCase):
     def setUp(self) -> None:
-        self.registry_path = ROOT / "skills/SKILL_REGISTRY.json"
-        self.registry = json.loads(self.registry_path.read_text(encoding="utf-8"))
-        self.adapter_path = ROOT / "skills/PROJECT_PATH_ADAPTER.json"
-        self.adapter = json.loads(self.adapter_path.read_text(encoding="utf-8"))
+        self.registry = json.loads(
+            (ROOT / "skills/SKILL_REGISTRY.json").read_text(encoding="utf-8")
+        )
+        self.adapter = json.loads(
+            (ROOT / "skills/PROJECT_PATH_ADAPTER.json").read_text(encoding="utf-8")
+        )
 
     def test_cold_start_entrypoints_exist(self) -> None:
         required = [
@@ -92,11 +95,12 @@ class BaseOperatingSyncTests(unittest.TestCase):
             "skills/PROJECT_PATH_ADAPTER.json",
             "skills/SKILL_LEARNING_LOG.md",
         ]
-        missing = [
-            path for path in files
+        mismatched = [
+            path
+            for path in files
             if BASE_COMMIT not in (ROOT / path).read_text(encoding="utf-8")
         ]
-        self.assertEqual(missing, [], f"Base commit mismatch: {missing}")
+        self.assertEqual(mismatched, [], f"Base commit mismatch: {mismatched}")
         self.assertEqual(self.registry["base"]["commit"], BASE_COMMIT)
         self.assertEqual(self.adapter["base"]["commit"], BASE_COMMIT)
 
@@ -121,14 +125,15 @@ class BaseOperatingSyncTests(unittest.TestCase):
             self.assertEqual(item["status"], "ACTIVE")
             self.assertFalse(item["load_by_default"])
             self.assertTrue(item["trigger_tags"])
+            self.assertTrue(item["review_triggers"])
             self.assertTrue(item["base_path"].startswith("skills/"))
             self.assertTrue(item["base_path"].endswith("/SKILL.md"))
 
-    def test_legacy_ids_are_not_active(self) -> None:
+    def test_legacy_base_ids_are_not_active(self) -> None:
         ids = {item["skill_id"] for item in self.registry["base_skills"]}
-        self.assertFalse(ids & LEGACY_ACTIVE_IDS)
+        self.assertFalse(ids & LEGACY_BASE_IDS)
         aliases = (ROOT / "skills/LEGACY_SKILL_ALIASES.md").read_text(encoding="utf-8")
-        for legacy_id in LEGACY_ACTIVE_IDS:
+        for legacy_id in LEGACY_BASE_IDS:
             self.assertIn(legacy_id, aliases)
 
     def test_project_path_adapter_is_complete(self) -> None:
@@ -143,7 +148,10 @@ class BaseOperatingSyncTests(unittest.TestCase):
         self.assertFalse(self.adapter["project"]["base_example_paths_are_authoritative"])
         bindings = self.adapter["role_bindings"]
         self.assertEqual(set(bindings), REQUIRED_ADAPTER_ROLES)
-        missing = [role for role, raw_path in bindings.items() if not (ROOT / raw_path).exists()]
+        missing = [
+            role for role, raw_path in bindings.items()
+            if not (ROOT / raw_path).exists()
+        ]
         self.assertEqual(missing, [], f"Missing adapter-bound project paths: {missing}")
 
     def test_base_example_paths_are_overridden_explicitly(self) -> None:
@@ -151,24 +159,18 @@ class BaseOperatingSyncTests(unittest.TestCase):
             item["base_example"]: item["project_path"]
             for item in self.adapter["base_path_overrides"]
         }
-        self.assertEqual(
-            overrides["[기획서]/00_프로젝트_허브/START_HERE.md"],
-            "START_HERE.md",
-        )
-        self.assertEqual(
-            overrides["[기획서]/00_프로젝트_허브/ACTIVE_CONTEXT.md"],
-            "docs/CURRENT_STATUS.md",
-        )
-        self.assertEqual(
-            overrides["[기획서]/00_프로젝트_허브/DOCUMENTATION_MAP.md"],
-            "docs/DOCUMENTATION_MAP.md",
-        )
-        self.assertEqual(
-            overrides["[기획서]/00_프로젝트_허브/DESIGN_DOCUMENT_REGISTRY.json"],
-            "docs/DOCUMENTATION_MAP.md",
-        )
+        expected = {
+            "[기획서]/00_프로젝트_허브/START_HERE.md": "START_HERE.md",
+            "[기획서]/00_프로젝트_허브/ACTIVE_CONTEXT.md": "docs/CURRENT_STATUS.md",
+            "[기획서]/00_프로젝트_허브/DOCUMENTATION_MAP.md": "docs/DOCUMENTATION_MAP.md",
+            "[기획서]/00_프로젝트_허브/DESIGN_DOCUMENT_REGISTRY.json": "docs/DOCUMENTATION_MAP.md",
+            "skills/disciplines/<discipline>/SKILL.md": "skills/disciplines/<skill-id>/SKILL.md",
+        }
+        for base_example, project_path in expected.items():
+            self.assertEqual(overrides[base_example], project_path)
         for project_path in overrides.values():
-            self.assertTrue((ROOT / project_path).exists(), project_path)
+            if "<" not in project_path:
+                self.assertTrue((ROOT / project_path).exists(), project_path)
 
     def test_existing_gdd_publication_contract_is_not_silently_replaced(self) -> None:
         publication = self.adapter["publication_compatibility"]
@@ -185,15 +187,23 @@ class BaseOperatingSyncTests(unittest.TestCase):
         self.assertIn("--check", publication["validation"])
 
     def test_project_canonical_sources_are_preserved(self) -> None:
+        self.assertEqual(len(self.registry["project_disciplines"]), 10)
         missing: list[str] = []
         for discipline in self.registry["project_disciplines"]:
             self.assertEqual(discipline["status"], "ACTIVE")
             self.assertFalse(discipline["load_by_default"])
             self.assertTrue(discipline["trigger_tags"])
+            self.assertTrue((ROOT / discipline["path"]).is_file(), discipline["path"])
             for raw_path in discipline["canonical_sources"]:
                 if not (ROOT / raw_path).exists():
                     missing.append(f"{discipline['skill_id']} -> {raw_path}")
         self.assertEqual(missing, [], "Missing project canonical sources:\n" + "\n".join(missing))
+
+    def test_consolidated_project_skill_has_compatibility_alias(self) -> None:
+        active_ids = {item["skill_id"] for item in self.registry["project_disciplines"]}
+        self.assertNotIn("urban-legend-integration-review", active_ids)
+        aliases = (ROOT / "skills/LEGACY_SKILL_ALIASES.md").read_text(encoding="utf-8")
+        self.assertIn("urban-legend-integration-review", aliases)
 
     def test_project_invariants_remain_in_agents(self) -> None:
         agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
