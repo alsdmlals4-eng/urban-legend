@@ -1,75 +1,44 @@
 ---
 name: urban-legend-analytics-user-research
-description: Use for Urban Legend benchmark analysis, player-response research, playtest evidence, telemetry planning, and evidence synthesis tied to a concrete product or design decision.
+description: Use for Urban Legend benchmark, player-response, playtest, telemetry, and evidence synthesis tied to a concrete product decision.
 ---
 
 # Urban Legend Analytics·User Research
 
-## Core principle
+> 공통 실행·DoR·DoD·보고·구조 개선 계약: `skills/disciplines/PROJECT_DISCIPLINE_CONTRACT.md`
 
-외부 사례·리뷰·행동 데이터는 프로젝트 결정을 지원하는 근거이지 정답이 아니다. 표본·출처·관찰과 해석을 분리하고, 실제 적용·제외·검증 결론으로 끝낸다.
+## Purpose and boundary
 
-## Use when
+외부 사례·리뷰·행동 데이터는 결정을 지원하는 근거이지 정답이 아니다. 표본·출처·관찰과 해석을 분리하고 적용·제외·검증 결론으로 끝낸다.
 
-- 비교 게임·시장·사용자 반응·플레이테스트를 조사한다.
-- 텔레메트리 이벤트·퍼널·실험·연구 질문을 설계한다.
-- 정성·정량 근거를 기획·UX·우선순위 결정으로 변환한다.
+- Use: 비교 게임·시장·사용자 반응·플레이테스트 조사, 텔레메트리·퍼널·실험 설계, 정성·정량 근거 합성.
+- Do not use: 출처 없는 인기 목록, 확정 기능 구현, 외부 평균으로 프로젝트 고유 서사·수치 덮어쓰기.
 
-## Do not use when
+## Modes
 
-- 출처 없는 인기 목록만 수집한다.
-- 이미 확정된 단일 기능을 구현한다.
-- 프로젝트 고유 서사·수치를 외부 평균으로 덮어쓴다.
+`research → telemetry → playtest-analysis → synthesis`
 
-## Skill modes
-
-- `research`: 질문·표본·출처·관찰 기준을 정하고 근거를 수집한다.
-- `telemetry`: 결정에 필요한 이벤트·속성·퍼널·보호 지표를 설계한다.
-- `playtest-analysis`: 대표·변형·실패 경로의 행동과 피드백을 분석한다.
-- `synthesis`: 관찰·해석·불확실성·적용·제외·검증을 결정안으로 압축한다.
-
-## Required inputs and read first
+## Read first
 
 1. `docs/CURRENT_STATUS.md`
-2. `docs/BENCHMARKING_REFERENCE_GUIDE.md`
-3. `docs/planning/REFERENCE_CASES.md`
-4. 관련 기획·UX 책임 원본
-5. 실제 플레이테스트·리뷰·텔레메트리 자료
-6. 결정할 질문과 완료 기준
+2. `docs/PROJECT_CORE.md`
+3. `docs/BENCHMARKING_REFERENCE_GUIDE.md`
+4. `docs/planning/REFERENCE_CASES.md`
+5. 관련 기획·UX 원본
+6. 실제 연구·플레이테스트·텔레메트리
+7. 결정 질문·완료 기준
 
-## Workflow
+## Domain workflow
 
-```text
-결정 질문·가설·사용 가능한 근거 확인
-→ 공식·개발자·사용자·행동 자료 분리
-→ 표본·기간·편향·비교 가능성 평가
-→ 관찰과 해석 분리
-→ 적용·제외·위험·검증 계획 작성
-→ 책임 원본·PoC·플레이테스트에 연결
-```
+- 결정 질문·가설·성공·실패 신호를 먼저 고정한다.
+- 출처·표본·기간·편향·사실·행동·자기보고·해석을 분리해 적용·제외·다음 검증으로 연결한다.
 
-## Definition of Ready
+## Done and failure gate
 
-- 조사 결과로 내릴 결정과 성공·실패 신호가 명확하다.
-- 필요한 최신성·표본·출처 수준과 시간 제한이 있다.
-- 프로젝트에서 변경 가능한 범위가 정해졌다.
+- 출처·날짜·표본·한계와 사실·추론이 구분된다.
+- 텔레메트리·플레이테스트가 실제 의사결정과 재검토 조건에 연결된다.
+- Failure: 표본 편향 은폐, 자기보고와 행동 혼동, 여러 변수 동시 실험, 출처 없는 수치, 결정·검증 없는 조사면 실패다.
 
-## Definition of Done
+## Selective support
 
-- 출처·날짜·표본·한계와 사실·추론을 구분한다.
-- 기능 복사가 아니라 프로젝트 적용 이유와 제외 이유를 남긴다.
-- 텔레메트리·플레이테스트가 실제 의사결정에 연결된다.
-- 불충분한 근거는 가설 또는 `UNVERIFIED`로 표시한다.
-
-## Validation and failure conditions
-
-- 상충 근거·대표성·최신성·측정 가능성과 프로젝트 적용 후 검증 계획을 확인한다.
-- 리뷰 표본 편향 은폐, 자기보고와 행동 혼동, 여러 변수 동시 실험, 출처 없는 수치, 조사만 하고 결정·검증이 없으면 실패다.
-
-## Related skills
-
-- 컨셉·PoC 통합: `analyzing-and-refining-game-concepts`
-- Vertical Slice·외부 플레이테스트: `designing-vertical-slices`
-- 게임 설계: `urban-legend-game-design`
-- 변경 검증: `reviewing-and-validating-project-changes`
-- 학습 기록: `skills/SKILL_LEARNING_LOG.md`
+11영역 누락 감사는 `governing-game-user-research-coverage`, 컨셉·PoC 합성은 `analyzing-and-refining-game-concepts`, 변경 증거는 `reviewing-and-validating-project-changes`.
