@@ -18,6 +18,7 @@
 | 주인공·요원 | 권나래 고정 주인공 / 초기 요원 5인 / 서포트 최대 2인 |
 | 현재 계획 | MVP-044 서사 확장 → MVP-045 관계 연속 이벤트 → MVP-046 대화·표정·컷인 연출 |
 | Base 운영 기준 | `alsdmlals4-eng/Base@ee265576da7f67d3278f8099dd97d4e714ef0651` 비파괴 동기화 검토 중 |
+| Skill 구조 | Base 13개 고정 참조 + 프로젝트 실행 패키지 10개 |
 
 MVP-044~046은 Codex 전달 패키지와 기획 문서가 작성된 **승인 계획**이며 GitHub `main` 구현 완료를 뜻하지 않는다. 현재 구현 사실과 계획의 구분은 [`docs/CURRENT_STATUS.md`](docs/CURRENT_STATUS.md)를 따른다.
 
@@ -31,12 +32,15 @@ START_HERE.md
 → docs/CURRENT_STATUS.md
 → docs/DOCUMENTATION_MAP.md
 → skills/SKILL_REGISTRY.json
+→ skills/PROJECT_PATH_ADAPTER.json
+→ 선택된 프로젝트 분야 skills/disciplines/<skill-id>/SKILL.md 최대 1개
+→ 선택된 Base Skill 전문 최대 3개
 → docs/planning/README.md
 → 이번 작업의 분야별 책임 원본
 → 실제 대상 파일
 ```
 
-Base와 저장소를 “전부 확인”한다는 요청은 모든 파일과 Skill을 무작정 읽는다는 뜻이 아니다. 라우터와 Registry로 현재 작업에 필요한 최소 책임 원본·Skill·Skill Mode를 선택한다.
+Base와 저장소를 “전부 확인”한다는 요청은 모든 파일과 Skill을 무작정 읽는다는 뜻이 아니다. 라우터와 Registry로 현재 작업에 필요한 최소 책임 원본·Skill·Skill Mode를 선택하고, 실제 `SKILL.md`를 읽은 뒤 실행한다.
 
 ### 운영 문서
 
@@ -45,6 +49,8 @@ Base와 저장소를 “전부 확인”한다는 요청은 모든 파일과 Ski
 - 운영 생명주기: [`docs/OPERATING_MODEL.md`](docs/OPERATING_MODEL.md)
 - Work Mode·Skill 라우팅: [`docs/WORK_MODE_AND_SKILL_ROUTING.md`](docs/WORK_MODE_AND_SKILL_ROUTING.md)
 - Skill Registry: [`skills/SKILL_REGISTRY.json`](skills/SKILL_REGISTRY.json)
+- 프로젝트 분야 Skill 패키지: [`skills/disciplines/`](skills/disciplines/)
+- Base 경로 어댑터: [`skills/PROJECT_PATH_ADAPTER.json`](skills/PROJECT_PATH_ADAPTER.json)
 - Base 기준: [`docs/BASE_RULES_VERSION.md`](docs/BASE_RULES_VERSION.md)
 
 ### 기획 문서
@@ -105,8 +111,10 @@ scripts/scenes/         화면별 진행 연결
 scripts/ui/             공용 UI·프레젠테이션·접근성
 docs/planning/          프로젝트 방향·서사·아트·연출·로드맵·사례
 docs/                   현행 설계·상태·검증·백업 라우터
-skills/                 Base 고정 참조와 프로젝트 분야 Registry
-tests/                  Godot·계약·회귀 테스트
+skills/SKILL_REGISTRY.json      Base·프로젝트 선택 라우터
+skills/disciplines/             프로젝트 분야 실행 Skill 10개
+skills/PROJECT_PATH_ADAPTER.json Base 역할과 실제 경로 연결
+tests/                  Godot·계약·Skill 패키지·회귀 테스트
 tools/docs/             GDD DOCX 생성기
 ```
 
@@ -116,14 +124,14 @@ tools/docs/             GDD DOCX 생성기
 & "C:\Users\user\Downloads\Godot_v4.7-stable_win64.exe\Godot_v4.7-stable_win64_console.exe" --headless --path . --quit
 git diff --check
 & "C:\Users\user\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe" tools/docs/build_game_design_doc.py --check
-python -m unittest tests/test_base_operating_sync.py
+python -m unittest tests/test_base_operating_sync.py tests/test_skill_package_integrity.py
 ```
 
 상세 수동·기능 검증은 [`TEST_CHECKLIST.md`](TEST_CHECKLIST.md)를 따른다. 실행하지 않은 항목은 통과로 기록하지 않는다.
 
 ## 현재 남은 작업
 
-1. Base 비파괴 동기화 PR의 자동 검증과 changed-file 감사를 완료한다.
+1. Base 비파괴 동기화 PR의 최종 리뷰와 병합 여부를 결정한다.
 2. 충돌하는 기존 PR #41~#43은 병합하지 않거나 비파괴 PR로 대체한다.
 3. 선택한 Codex ZIP의 `IMP-00` 사전 감사를 현재 `main`에서 실행한다.
 4. 분야별 기획서와 실제 대상 파일의 차이를 확인한다.
