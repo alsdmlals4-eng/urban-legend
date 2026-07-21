@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "adapter_role": "urban-legend-base-operating-path-adapter",
+  "base": {
+    "repository": "alsdmlals4-eng/Base",
+    "commit": "ee265576da7f67d3278f8099dd97d4e714ef0651"
+  },
+  "project": {
+    "repository": "alsdmlals4-eng/urban-legend",
+    "layout_policy": "preserve-existing-canonical-paths",
+    "base_example_paths_are_authoritative": false
+  },
+  "role_bindings": {
+    "project_agents": "AGENTS.md",
+    "project_start_here": "START_HERE.md",
+    "operating_model": "docs/OPERATING_MODEL.md",
+    "work_mode_and_skill_routing": "docs/WORK_MODE_AND_SKILL_ROUTING.md",
+    "active_context": "docs/CURRENT_STATUS.md",
+    "handoff": "docs/CURRENT_HANDOFF.md",
+    "documentation_map": "docs/DOCUMENTATION_MAP.md",
+    "design_document_registry_equivalent": "docs/DOCUMENTATION_MAP.md",
+    "skill_registry": "skills/SKILL_REGISTRY.json",
+    "legacy_skill_aliases": "skills/LEGACY_SKILL_ALIASES.md",
+    "skill_learning_log": "skills/SKILL_LEARNING_LOG.md",
+    "roadmap": "MVP_ROADMAP.md",
+    "validation_contract": "TEST_CHECKLIST.md",
+    "project_context": "docs/PROJECT_CONTEXT.md",
+    "game_design_source": "docs/GAME_DESIGN_DOCUMENT.md",
+    "game_design_docx_derivative": "docs/URBAN_LEGEND_GAME_DESIGN.docx",
+    "game_design_generator": "tools/docs/build_game_design_doc.py",
+    "base_version": "docs/BASE_RULES_VERSION.md",
+    "base_sync_audit": "docs/qa/BASE_SYNC_AUDIT_2026-07-21.md"
+  },
+  "base_path_overrides": [
+    {
+      "base_example": "[기획서]/00_프로젝트_허브/START_HERE.md",
+      "project_path": "START_HERE.md",
+      "reason": "urban-legend의 현행 콜드 스타트 경로를 유지하고 승인 없는 대규모 이동을 방지한다."
+    },
+    {
+      "base_example": "[기획서]/00_프로젝트_허브/ACTIVE_CONTEXT.md",
+      "project_path": "docs/CURRENT_STATUS.md",
+      "reason": "현재 구현 사실과 승인 계획을 구분하는 기존 단일 상태 원본이다."
+    },
+    {
+      "base_example": "[기획서]/00_프로젝트_허브/DOCUMENTATION_MAP.md",
+      "project_path": "docs/DOCUMENTATION_MAP.md",
+      "reason": "기존 문서 책임·조건부 읽기 라우터를 제자리에서 확장한다."
+    },
+    {
+      "base_example": "[기획서]/00_프로젝트_허브/DESIGN_DOCUMENT_REGISTRY.json",
+      "project_path": "docs/DOCUMENTATION_MAP.md",
+      "reason": "Base에는 템플릿·Schema만 있고 현재 프로젝트는 Markdown GDD와 선택 DOCX 생성 계약을 사용한다. 미생성 PDF·Manifest를 강제하지 않는다."
+    }
+  ],
+  "publication_compatibility": {
+    "current_model": "markdown-source-plus-checked-docx-derivative",
+    "source": "docs/GAME_DESIGN_DOCUMENT.md",
+    "docx": "docs/URBAN_LEGEND_GAME_DESIGN.docx",
+    "generator": "tools/docs/build_game_design_doc.py",
+    "validation": "python tools/docs/build_game_design_doc.py --check",
+    "base_v3_registry_migration": "DEFERRED_REQUIRES_SEPARATE_APPROVAL",
+    "reason": "Base v3 milestone_sync/always_sync는 PDF와 Publication Manifest를 요구하므로 기존 프로젝트의 검증된 DOCX 파이프라인을 이번 운영 동기화에서 임의 교체하지 않는다."
+  },
+  "protected_paths": [
+    "scripts/core/game_state.gd",
+    "data/episodes/**",
+    "project.godot",
+    "knowledge/base-pack/**"
+  ],
+  "validation": {
+    "test": "tests/test_base_operating_sync.py",
+    "workflow": ".github/workflows/validate-base-operating-sync.yml"
+  }
+}
