@@ -1,6 +1,6 @@
 # urban-legend
 
-> 문서 위치: `README.md` | 현재 상태 원본: `docs/CURRENT_STATUS.md` | 기획 인수인계: `docs/planning/README.md` | 과거 소개·로드맵 백업: `docs/archive/backup/2026-07-16/PROJECT_STATUS_AND_ROADMAP_BACKUP.md`
+> 최상위 시작점: `START_HERE.md` | 현재 상태 원본: `docs/CURRENT_STATUS.md` | 운영 모델: `docs/OPERATING_MODEL.md` | 기획 인수인계: `docs/planning/README.md` | 과거 소개·로드맵 백업: `docs/archive/backup/2026-07-16/PROJECT_STATUS_AND_ROADMAP_BACKUP.md`
 
 `괴이 기록국`은 Godot 4.7 stable과 GDScript로 제작하는 PC용 현대 오컬트 수사 어드벤처다. 플레이어는 권나래를 주인공으로 운용하고 최대 두 명의 서포트와 함께 괴이의 규칙을 조사해 현재 출현을 안정화한 뒤, 다음 피해를 막을 괴이 매뉴얼을 남긴다.
 
@@ -17,19 +17,35 @@
 | 구현 사건 | 저승역, 비 오는 골목의 빨간 우산, 폐주파수 방송국 |
 | 주인공·요원 | 권나래 고정 주인공 / 초기 요원 5인 / 서포트 최대 2인 |
 | 현재 계획 | MVP-044 서사 확장 → MVP-045 관계 연속 이벤트 → MVP-046 대화·표정·컷인 연출 |
+| Base 운영 기준 | `alsdmlals4-eng/Base@ee265576da7f67d3278f8099dd97d4e714ef0651` 비파괴 동기화 검토 중 |
 
 MVP-044~046은 Codex 전달 패키지와 기획 문서가 작성된 **승인 계획**이며 GitHub `main` 구현 완료를 뜻하지 않는다. 현재 구현 사실과 계획의 구분은 [`docs/CURRENT_STATUS.md`](docs/CURRENT_STATUS.md)를 따른다.
 
 ## 새 담당자·새 AI 읽기 순서
 
 ```text
-AGENTS.md
+START_HERE.md
+→ AGENTS.md
+→ docs/OPERATING_MODEL.md
+→ docs/WORK_MODE_AND_SKILL_ROUTING.md
 → docs/CURRENT_STATUS.md
+→ docs/DOCUMENTATION_MAP.md
+→ skills/SKILL_REGISTRY.json
 → docs/planning/README.md
-→ docs/planning/PROJECT_DIRECTION.md
-→ 이번 작업의 분야별 기획서
+→ 이번 작업의 분야별 책임 원본
 → 실제 대상 파일
 ```
+
+Base와 저장소를 “전부 확인”한다는 요청은 모든 파일과 Skill을 무작정 읽는다는 뜻이 아니다. 라우터와 Registry로 현재 작업에 필요한 최소 책임 원본·Skill·Skill Mode를 선택한다.
+
+### 운영 문서
+
+- 최상위 라우터: [`START_HERE.md`](START_HERE.md)
+- 프로젝트 강제 규칙: [`AGENTS.md`](AGENTS.md)
+- 운영 생명주기: [`docs/OPERATING_MODEL.md`](docs/OPERATING_MODEL.md)
+- Work Mode·Skill 라우팅: [`docs/WORK_MODE_AND_SKILL_ROUTING.md`](docs/WORK_MODE_AND_SKILL_ROUTING.md)
+- Skill Registry: [`skills/SKILL_REGISTRY.json`](skills/SKILL_REGISTRY.json)
+- Base 기준: [`docs/BASE_RULES_VERSION.md`](docs/BASE_RULES_VERSION.md)
 
 ### 기획 문서
 
@@ -82,7 +98,6 @@ AGENTS.md
 ```text
 assets/                 배경·요원·괴이·아카·캐릭터 아트
 data/episodes/          구현 사건 JSON 3개
-data/daily_episodes.json
 scenes/                 메인·준비·대화·현장·회수·결과·DB·시장
 scripts/core/           저장 파사드와 캠페인 상태
 scripts/data/           에피소드·일상 데이터 로딩
@@ -90,6 +105,7 @@ scripts/scenes/         화면별 진행 연결
 scripts/ui/             공용 UI·프레젠테이션·접근성
 docs/planning/          프로젝트 방향·서사·아트·연출·로드맵·사례
 docs/                   현행 설계·상태·검증·백업 라우터
+skills/                 Base 고정 참조와 프로젝트 분야 Registry
 tests/                  Godot·계약·회귀 테스트
 tools/docs/             GDD DOCX 생성기
 ```
@@ -100,14 +116,16 @@ tools/docs/             GDD DOCX 생성기
 & "C:\Users\user\Downloads\Godot_v4.7-stable_win64.exe\Godot_v4.7-stable_win64_console.exe" --headless --path . --quit
 git diff --check
 & "C:\Users\user\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe" tools/docs/build_game_design_doc.py --check
+python -m unittest tests/test_base_operating_sync.py
 ```
 
-상세 수동·기능 검증은 [`TEST_CHECKLIST.md`](TEST_CHECKLIST.md)를 따른다.
+상세 수동·기능 검증은 [`TEST_CHECKLIST.md`](TEST_CHECKLIST.md)를 따른다. 실행하지 않은 항목은 통과로 기록하지 않는다.
 
 ## 현재 남은 작업
 
-1. 선택한 Codex ZIP의 `IMP-00` 사전 감사를 현재 `main`에서 실행한다.
-2. 분야별 기획서와 실제 대상 파일의 차이를 확인한다.
-3. MVP-044~046 중 한 범위만 작은 end-to-end 단위로 구현한다.
-4. 구현 완료 후 상태·로드맵·테스트·해당 기획서를 갱신한다.
-5. 이후 Steam 데모 패키징과 180~220분 플레이타임 실측을 진행한다.
+1. Base 비파괴 동기화 PR의 자동 검증과 changed-file 감사를 완료한다.
+2. 충돌하는 기존 PR #41~#43은 병합하지 않거나 비파괴 PR로 대체한다.
+3. 선택한 Codex ZIP의 `IMP-00` 사전 감사를 현재 `main`에서 실행한다.
+4. 분야별 기획서와 실제 대상 파일의 차이를 확인한다.
+5. MVP-044~046 중 한 범위만 작은 end-to-end 단위로 구현한다.
+6. 구현 완료 후 상태·로드맵·테스트·해당 기획서를 갱신한다.
