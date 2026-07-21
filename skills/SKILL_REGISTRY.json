@@ -1,0 +1,490 @@
+{
+  "schema_version": 1,
+  "registry_role": "urban-legend-project-skill-router",
+  "base": {
+    "repository": "alsdmlals4-eng/Base",
+    "branch": "main",
+    "commit": "ee265576da7f67d3278f8099dd97d4e714ef0651",
+    "source_registry": "skills/SKILL_REGISTRY.json",
+    "source_type": "pinned-remote-reference",
+    "copy_all_skills": false
+  },
+  "routing_policy": {
+    "load_all_skills": false,
+    "default_selection": "automatic-trigger-match",
+    "automatic_selection": true,
+    "user_skill_declaration_required": false,
+    "require_trigger_match": true,
+    "require_execution_report": true,
+    "work_modes": [
+      "PLAN",
+      "BUILD",
+      "REVIEW"
+    ],
+    "max_primary_discipline_skills": 1,
+    "max_foundation_skills": 3,
+    "exclude_statuses": [
+      "HOLD",
+      "BACKUP",
+      "REMOVAL_CANDIDATE"
+    ]
+  },
+  "base_skills": [
+    {
+      "skill_id": "managing-project-intake-and-work-contract",
+      "layer": "foundation",
+      "base_path": "skills/managing-project-intake-and-work-contract/SKILL.md",
+      "status": "ACTIVE",
+      "load_by_default": false,
+      "trigger_tags": [
+        "new-request",
+        "cross-discipline",
+        "ambiguous-scope",
+        "work-contract",
+        "work-decomposition",
+        "cold-start",
+        "work-mode-selection",
+        "automatic-skill-routing",
+        "skill-execution-report"
+      ],
+      "use_when": [
+        "요청 의도와 현재 단계를 파악해 Work Mode, 최소 Skill·Skill Mode, 실행 계약과 의존성 순서를 자동 선택한다."
+      ],
+      "do_not_use_when": [
+        "L0 수정, 승인된 작은 작업, 입력이 같은 검사 재실행 또는 이미 유효한 실행 순서가 있는 작업이다."
+      ]
+    },
+    {
+      "skill_id": "managing-game-project-operating-system",
+      "layer": "foundation",
+      "base_path": "skills/managing-game-project-operating-system/SKILL.md",
+      "status": "ACTIVE",
+      "load_by_default": false,
+      "trigger_tags": [
+        "existing-project",
+        "safe-migration",
+        "operating-system-health",
+        "legacy-file",
+        "versioned-duplicate",
+        "stale-copy",
+        "legacy-reconciliation"
+      ],
+      "use_when": [
+        "기존 프로젝트를 감사하고 구형·중복 파일을 판정하며 승인 범위만 마이그레이션하고 전체 연결을 검수한다."
+      ],
+      "do_not_use_when": [
+        "운영체계와 무관한 L0 수정 또는 현행 정본과 참조가 명확한 단일 파일 편집이다."
+      ]
+    },
+    {
+      "skill_id": "managing-design-documents",
+      "layer": "foundation",
+      "base_path": "skills/managing-design-documents/SKILL.md",
+      "status": "ACTIVE",
+      "load_by_default": false,
+      "trigger_tags": [
+        "design-document",
+        "responsibility-map",
+        "document-restructure",
+        "pdf-publication",
+        "publication-stale"
+      ],
+      "use_when": [
+        "등록된 기획 책임 원본을 작성·갱신·재구조화하고 발행 정책에 따라 파생본을 생성·검수한다."
+      ],
+      "do_not_use_when": [
+        "문서 구조·내용·발행 상태에 영향 없는 코드 수정 또는 단순 조회다."
+      ]
+    },
+    {
+      "skill_id": "evolving-project-discipline-skills",
+      "layer": "foundation",
+      "base_path": "skills/evolving-project-discipline-skills/SKILL.md",
+      "status": "ACTIVE",
+      "load_by_default": false,
+      "trigger_tags": [
+        "skill-audit",
+        "skill-learning",
+        "skill-consolidation",
+        "missing-discipline-skill"
+      ],
+      "use_when": [
+        "프로젝트 분야 Skill을 생성·통합·학습·갱신하고 오래된 ID·경로·참조를 검증한다."
+      ],
+      "do_not_use_when": [
+        "Skill 구조에 영향 없는 일반 구현 작업이다."
+      ]
+    },
+    {
+      "skill_id": "maintaining-project-context-and-handoff",
+      "layer": "foundation",
+      "base_path": "skills/maintaining-project-context-and-handoff/SKILL.md",
+      "status": "ACTIVE",
+      "load_by_default": false,
+      "trigger_tags": [
+        "handoff",
+        "active-context-change",
+        "phase-boundary",
+        "new-chat"
+      ],
+      "use_when": [
+        "현재 상태·다음 작업·위험을 새 채팅용으로 압축 갱신한다."
+      ],
+      "do_not_use_when": [
+        "저장소 상태가 바뀌지 않은 단순 대화다."
+      ]
+    },
+    {
+      "skill_id": "analyzing-and-refining-game-concepts",
+      "layer": "specialist",
+      "base_path": "skills/analyzing-and-refining-game-concepts/SKILL.md",
+      "status": "ACTIVE",
+      "load_by_default": false,
+      "trigger_tags": [
+        "core-concept",
+        "pointed-fun",
+        "game-direction",
+        "benchmark-research",
+        "player-reviews",
+        "playtest-design",
+        "digital-dopamine-design",
+        "poc",
+        "concept-recalibration"
+      ],
+      "use_when": [
+        "핵심 컨셉·뾰족한 재미·제약·DDD·외부 근거·플레이테스트를 개선안과 PoC 방향으로 변환한다."
+      ],
+      "do_not_use_when": [
+        "확정 문서의 단순 문장 편집, 단일 기능 구현 또는 출처 없는 인기 목록 수집이다."
+      ]
+    },
+    {
+      "skill_id": "designing-vertical-slices",
+      "layer": "specialist",
+      "base_path": "skills/designing-vertical-slices/SKILL.md",
+      "status": "ACTIVE",
+      "load_by_default": false,
+      "trigger_tags": [
+        "vertical-slice",
+        "first-playable",
+        "production-proof",
+        "quality-bar",
+        "pipeline-proof",
+        "playtest-evidence"
+      ],
+      "use_when": [
+        "대표 플레이 구간으로 핵심 재미, 목표 품질, 실제 플레이 증거와 제작 파이프라인을 함께 증명한다."
+      ],
+      "do_not_use_when": [
+        "단일 기능 구현, 작은 Prototype 또는 전체 MVP 기능 목록 작성이다."
+      ]
+    },
+    {
+      "skill_id": "orchestrating-deepseek-worktrees",
+      "layer": "specialist",
+      "base_path": "skills/orchestrating-deepseek-worktrees/SKILL.md",
+      "status": "ACTIVE",
+      "load_by_default": false,
+      "trigger_tags": [
+        "external-ai",
+        "large-draft",
+        "isolated-worktree"
+      ],
+      "use_when": [
+        "대량 초안·분류 작업을 격리된 외부 AI 작업 공간에 위임한다."
+      ],
+      "do_not_use_when": [
+        "작은 작업이거나 외부 AI가 필요하지 않다."
+      ]
+    },
+    {
+      "skill_id": "reviewing-and-validating-project-changes",
+      "layer": "foundation",
+      "base_path": "skills/reviewing-and-validating-project-changes/SKILL.md",
+      "status": "ACTIVE",
+      "load_by_default": false,
+      "trigger_tags": [
+        "change-review",
+        "contract-check",
+        "diff-review",
+        "reference-freshness",
+        "static-validation",
+        "runtime-validation",
+        "accessibility-review",
+        "performance-profile",
+        "regression",
+        "evidence-report"
+      ],
+      "use_when": [
+        "코드·데이터·문서·자산 변경을 승인 계약, 실제 diff, 정적·런타임·회귀 증거로 통합 검증한다."
+      ],
+      "do_not_use_when": [
+        "변경이 없는 아이디어 비교 또는 같은 입력의 단순 검사 재실행이다."
+      ]
+    },
+    {
+      "skill_id": "auditing-canonical-reference-freshness",
+      "layer": "specialist",
+      "base_path": "skills/auditing-canonical-reference-freshness/SKILL.md",
+      "status": "ACTIVE",
+      "load_by_default": false,
+      "trigger_tags": [
+        "canonical-source-change",
+        "stale-reference",
+        "rename",
+        "path-migration",
+        "schema-change",
+        "skill-id-change",
+        "publication-stale",
+        "propagation-gap"
+      ],
+      "use_when": [
+        "정본·경로·ID·Schema·정책·생성기 변경이 활성 소비자와 파생본에 빠짐없이 전파됐는지 감사한다."
+      ],
+      "do_not_use_when": [
+        "외부 참조가 없는 L0 오탈자 또는 동일 입력 검사 재실행이다."
+      ]
+    },
+    {
+      "skill_id": "designing-art-prompts-and-technique-cards",
+      "layer": "specialist",
+      "base_path": "skills/designing-art-prompts-and-technique-cards/SKILL.md",
+      "status": "ACTIVE",
+      "load_by_default": false,
+      "trigger_tags": [
+        "art-direction",
+        "image-prompt",
+        "technique-card"
+      ],
+      "use_when": [
+        "아트·UI 제작 기술과 이미지 생성·편집 프롬프트를 설계한다."
+      ],
+      "do_not_use_when": [
+        "기존 승인 이미지의 상태·경로 정리만 필요하다."
+      ]
+    },
+    {
+      "skill_id": "auditing-and-refining-ui-art",
+      "layer": "specialist",
+      "base_path": "skills/auditing-and-refining-ui-art/SKILL.md",
+      "status": "ACTIVE",
+      "load_by_default": false,
+      "trigger_tags": [
+        "ui-art-audit",
+        "godot-ui",
+        "web-ui",
+        "visual-refinement",
+        "render-review"
+      ],
+      "use_when": [
+        "Godot·Web UI 결과를 감사하고 사용자 승인 범위만 개선·재검수한다."
+      ],
+      "do_not_use_when": [
+        "UI 결과 감사 없이 새 이미지 프롬프트나 기술 카드만 설계한다."
+      ]
+    },
+    {
+      "skill_id": "managing-base-change-proposals",
+      "layer": "foundation",
+      "base_path": "skills/managing-base-change-proposals/SKILL.md",
+      "status": "ACTIVE",
+      "load_by_default": false,
+      "trigger_tags": [
+        "project-learning",
+        "base-promotion",
+        "repeated-pattern",
+        "base-change-proposal",
+        "promotion-review",
+        "approved-base-change"
+      ],
+      "use_when": [
+        "프로젝트 교훈을 공용 원리로 분리해 Base 변경 제안을 제출·검토하고 승인 범위만 별도 PR로 구현한다."
+      ],
+      "do_not_use_when": [
+        "프로젝트 고유 값뿐이거나 사용자 승인 없이 Base를 직접 변경하려는 경우다."
+      ]
+    }
+  ],
+  "project_disciplines": [
+    {
+      "skill_id": "urban-legend-narrative",
+      "discipline": "설정·내러티브",
+      "status": "ACTIVE",
+      "load_by_default": false,
+      "trigger_tags": [
+        "narrative",
+        "dialogue",
+        "relationship",
+        "episode-content"
+      ],
+      "canonical_sources": [
+        "docs/planning/NARRATIVE_CONTENT_PLAN.md",
+        "docs/PROJECT_CONTEXT.md"
+      ]
+    },
+    {
+      "skill_id": "urban-legend-game-design",
+      "discipline": "게임 디자인",
+      "status": "ACTIVE",
+      "load_by_default": false,
+      "trigger_tags": [
+        "game-design",
+        "investigation",
+        "stabilization",
+        "minigame",
+        "campaign-rules"
+      ],
+      "canonical_sources": [
+        "docs/GAME_DESIGN_DOCUMENT.md",
+        "docs/MINIGAME_SYSTEM_SPEC.md"
+      ]
+    },
+    {
+      "skill_id": "urban-legend-ux-ui-accessibility",
+      "discipline": "UX·UI·접근성",
+      "status": "ACTIVE",
+      "load_by_default": false,
+      "trigger_tags": [
+        "ux",
+        "ui",
+        "accessibility",
+        "input",
+        "information-hierarchy"
+      ],
+      "canonical_sources": [
+        "docs/GODOT_NATIVE_UI_ARCHITECTURE.md",
+        "docs/CINEMATIC_FIELD_RECOVERY_UI.md"
+      ]
+    },
+    {
+      "skill_id": "urban-legend-engineering",
+      "discipline": "개발·엔지니어링",
+      "status": "ACTIVE",
+      "load_by_default": false,
+      "trigger_tags": [
+        "godot",
+        "gdscript",
+        "save",
+        "scene",
+        "data-boundary"
+      ],
+      "canonical_sources": [
+        "AGENTS.md",
+        "project.godot"
+      ]
+    },
+    {
+      "skill_id": "urban-legend-technical-art-pipeline",
+      "discipline": "테크니컬 아트·콘텐츠 파이프라인",
+      "status": "ACTIVE",
+      "load_by_default": false,
+      "trigger_tags": [
+        "image-import",
+        "asset-manifest",
+        "content-pipeline"
+      ],
+      "canonical_sources": [
+        "docs/IMAGE_ASSET_WORKFLOW.md"
+      ]
+    },
+    {
+      "skill_id": "urban-legend-art",
+      "discipline": "아트",
+      "status": "ACTIVE",
+      "load_by_default": false,
+      "trigger_tags": [
+        "character-art",
+        "background-art",
+        "visual-language",
+        "approved-asset"
+      ],
+      "canonical_sources": [
+        "docs/planning/ART_PRESENTATION_PLAN.md"
+      ]
+    },
+    {
+      "skill_id": "urban-legend-audio",
+      "discipline": "사운드",
+      "status": "ACTIVE",
+      "load_by_default": false,
+      "trigger_tags": [
+        "bgm",
+        "sfx",
+        "voice-event",
+        "mixing"
+      ],
+      "canonical_sources": [
+        "docs/GAME_DESIGN_DOCUMENT.md",
+        "docs/planning/PROJECT_DIRECTION.md"
+      ]
+    },
+    {
+      "skill_id": "urban-legend-qa",
+      "discipline": "QA",
+      "status": "ACTIVE",
+      "load_by_default": false,
+      "trigger_tags": [
+        "qa",
+        "test",
+        "defect",
+        "capture-evidence",
+        "release-gate"
+      ],
+      "canonical_sources": [
+        "TEST_CHECKLIST.md",
+        "docs/MVP_WORKFLOW_CHECKLIST.md"
+      ]
+    },
+    {
+      "skill_id": "urban-legend-production-pm",
+      "discipline": "프로덕션·PM",
+      "status": "ACTIVE",
+      "load_by_default": false,
+      "trigger_tags": [
+        "roadmap",
+        "issue",
+        "pull-request",
+        "priority",
+        "handoff"
+      ],
+      "canonical_sources": [
+        "MVP_ROADMAP.md",
+        "docs/planning/ROADMAP_AND_HANDOFF.md"
+      ]
+    },
+    {
+      "skill_id": "urban-legend-analytics-user-research",
+      "discipline": "분석·유저리서치",
+      "status": "ACTIVE",
+      "load_by_default": false,
+      "trigger_tags": [
+        "benchmark",
+        "player-response",
+        "telemetry",
+        "research-plan"
+      ],
+      "canonical_sources": [
+        "docs/BENCHMARKING_REFERENCE_GUIDE.md",
+        "docs/planning/REFERENCE_CASES.md"
+      ]
+    },
+    {
+      "skill_id": "urban-legend-integration-review",
+      "discipline": "통합검수",
+      "status": "ACTIVE",
+      "load_by_default": false,
+      "trigger_tags": [
+        "integration-review",
+        "cross-discipline-contract",
+        "publication-ready",
+        "final-readiness"
+      ],
+      "canonical_sources": [
+        "docs/CURRENT_STATUS.md",
+        "docs/DOCUMENTATION_MAP.md"
+      ]
+    }
+  ],
+  "legacy_aliases": "skills/LEGACY_SKILL_ALIASES.md",
+  "learning_log": "skills/SKILL_LEARNING_LOG.md"
+}
