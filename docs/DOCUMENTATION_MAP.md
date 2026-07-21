@@ -1,6 +1,6 @@
 # Documentation Map
 
-> 문서 위치: `docs/DOCUMENTATION_MAP.md` | 최상위 라우터: `START_HERE.md` | 운영 모델: `docs/OPERATING_MODEL.md` | 기획 인수인계: `docs/planning/README.md` | 문서 보존 규칙: `docs/DOCUMENT_LIFECYCLE.md` | 백업 찾기: `docs/archive/README.md`
+> 문서 위치: `docs/DOCUMENTATION_MAP.md` | 최상위 라우터: `START_HERE.md` | 운영 모델: `docs/OPERATING_MODEL.md` | Base 경로 어댑터: `skills/PROJECT_PATH_ADAPTER.json` | 기획 인수인계: `docs/planning/README.md` | 문서 보존 규칙: `docs/DOCUMENT_LIFECYCLE.md` | 백업 찾기: `docs/archive/README.md`
 
 이 문서는 작업에 필요한 문서만 선택하는 라우터다. 모든 문서와 Skill을 매번 읽지 않는다.
 
@@ -17,6 +17,7 @@
 → CURRENT_STATUS.md
 → DOCUMENTATION_MAP.md
 → ../skills/SKILL_REGISTRY.json
+→ ../skills/PROJECT_PATH_ADAPTER.json
 → 대상 코드·데이터·문서
 ```
 
@@ -33,10 +34,11 @@
 → planning/PROJECT_DIRECTION.md
 → 분야별 기획서 1개
 → ../skills/SKILL_REGISTRY.json
+→ ../skills/PROJECT_PATH_ADAPTER.json
 → 대상 코드·데이터·에셋
 ```
 
-추가 문서와 Base Skill 전문은 실제 작업 trigger가 있을 때만 읽는다.
+추가 문서와 Base Skill 전문은 실제 작업 trigger가 있을 때만 읽는다. Base 문서에 `[기획서]/...` 또는 템플릿 경로가 나타나면 `PROJECT_PATH_ADAPTER.json`의 binding을 우선한다.
 
 ## 운영 책임 원본
 
@@ -47,6 +49,7 @@
 | 공용 작업 생명주기 | `OPERATING_MODEL.md` | L1 이상 작업·구조·검증 판단 |
 | Work Mode·Skill·Skill Mode | `WORK_MODE_AND_SKILL_ROUTING.md` | L1 이상 자동 라우팅·실행 보고 |
 | Base·프로젝트 Skill 선택 | `../skills/SKILL_REGISTRY.json` | trigger에 맞는 최소 Skill 선택 |
+| Base 역할·예시 경로 변환 | `../skills/PROJECT_PATH_ADAPTER.json` | Base Skill의 required input·read-first·발행 예외 해석 |
 | 통합 전 Skill ID | `../skills/LEGACY_SKILL_ALIASES.md` | 과거 문서·PR·실행 경로에서 이전 ID 발견 |
 | Base 기준 커밋·동기화 | `BASE_RULES_VERSION.md` | Base 동기화·승격 |
 | Skill 실행 학습 | `../skills/SKILL_LEARNING_LOG.md` | 반복 가능한 실패·결정·검증 결과 발생 |
@@ -70,13 +73,13 @@
 | 현재 계정 인수 상태 | `CURRENT_HANDOFF.md` | 계정·채팅 교대 |
 | 문서 보존·백업 정책 | `DOCUMENT_LIFECYCLE.md` | 문서 이동·정리 |
 
-같은 사실을 다른 문서에 장문으로 복사하지 않고 책임 원본을 링크한다. Base 공용 예시는 프로젝트 구현 상태의 정본이 아니다.
+같은 사실을 다른 문서에 장문으로 복사하지 않고 책임 원본을 링크한다. Base 공용 예시는 프로젝트 구현 상태의 정본이 아니다. 현재 프로젝트의 문서 Registry 상당 책임은 이 Documentation Map과 Skill Registry가 분담하며, Base v3 PDF·Manifest 발행 Registry로의 이주는 별도 승인이 필요하다.
 
 ## 조건부 라우팅
 
 | 작업 조건 | 추가로 읽을 문서·Skill |
 |---|---|
-| 기존 구조 감사·구형 파일·경로 이동 | `BASE_RULES_VERSION.md`, Base `managing-game-project-operating-system`, 필요 시 `auditing-canonical-reference-freshness` |
+| 기존 구조 감사·구형 파일·경로 이동 | `BASE_RULES_VERSION.md`, `../skills/PROJECT_PATH_ADAPTER.json`, Base `managing-game-project-operating-system`, 필요 시 `auditing-canonical-reference-freshness` |
 | 코드·데이터·문서·자산 diff 검수 | Base `reviewing-and-validating-project-changes` |
 | 대사·상황지시문·일상·후일담 | `planning/NARRATIVE_CONTENT_PLAN.md`, `DIALOGUE_AUTHORING_WORKFLOW.md`, `PROJECT_CONTEXT.md` |
 | 관계 태그·선택 기억·연속 이벤트 | `planning/NARRATIVE_CONTENT_PLAN.md`, 실제 저장·이벤트 데이터 |
