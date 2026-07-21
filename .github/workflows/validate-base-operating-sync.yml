@@ -7,35 +7,34 @@ on:
       - ".github/workflows/validate-base-operating-sync.yml"
       - "START_HERE.md"
       - "AGENTS.md"
+      - "README.md"
+      - "docs/BASE_RULES_VERSION.md"
+      - "docs/CURRENT_STATUS.md"
+      - "docs/PROJECT_CORE.md"
+      - "docs/DOCUMENTATION_MAP.md"
+      - "docs/MVP_WORKFLOW_CHECKLIST.md"
       - "docs/OPERATING_MODEL.md"
       - "docs/WORK_MODE_AND_SKILL_ROUTING.md"
-      - "docs/CURRENT_STATUS.md"
-      - "docs/DOCUMENTATION_MAP.md"
-      - "docs/BASE_RULES_VERSION.md"
-      - "docs/AI_SHARED_WORK_RULES.md"
-      - "docs/AI_WORKFLOW_RULES.md"
-      - "docs/MVP_WORKFLOW_CHECKLIST.md"
-      - "docs/qa/BASE_SYNC_AUDIT_2026-07-21.md"
+      - "docs/qa/BASE_SYNC_AUDIT_*.md"
       - "skills/**"
       - "tests/test_base_operating_sync.py"
       - "tests/test_skill_package_integrity.py"
   push:
-    branches:
-      - main
+    branches: [main]
     paths:
       - ".github/pull_request_template.md"
       - ".github/workflows/validate-base-operating-sync.yml"
       - "START_HERE.md"
       - "AGENTS.md"
+      - "README.md"
+      - "docs/BASE_RULES_VERSION.md"
+      - "docs/CURRENT_STATUS.md"
+      - "docs/PROJECT_CORE.md"
+      - "docs/DOCUMENTATION_MAP.md"
+      - "docs/MVP_WORKFLOW_CHECKLIST.md"
       - "docs/OPERATING_MODEL.md"
       - "docs/WORK_MODE_AND_SKILL_ROUTING.md"
-      - "docs/CURRENT_STATUS.md"
-      - "docs/DOCUMENTATION_MAP.md"
-      - "docs/BASE_RULES_VERSION.md"
-      - "docs/AI_SHARED_WORK_RULES.md"
-      - "docs/AI_WORKFLOW_RULES.md"
-      - "docs/MVP_WORKFLOW_CHECKLIST.md"
-      - "docs/qa/BASE_SYNC_AUDIT_2026-07-21.md"
+      - "docs/qa/BASE_SYNC_AUDIT_*.md"
       - "skills/**"
       - "tests/test_base_operating_sync.py"
       - "tests/test_skill_package_integrity.py"
@@ -51,7 +50,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Validate Base operating and Skill package contracts
+      - name: Validate Base, core, coverage, routing, and compact Skill contracts
         run: >-
           python -m unittest
           tests/test_base_operating_sync.py
