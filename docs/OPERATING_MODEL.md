@@ -11,10 +11,11 @@
 2. 프로젝트 `AGENTS.md`와 보호·저장·엔진 규칙
 3. `docs/CURRENT_STATUS.md`와 승인된 작업 계약
 4. 프로젝트 책임 원본과 실제 코드·데이터·자산·테스트
-5. `skills/PROJECT_PATH_ADAPTER.json`에 고정된 프로젝트 경로·호환 예외
-6. 이 저장소에 동기화된 Base 기준
-7. Base 원격 원본
-8. 외부 사례·리뷰·과거 대화·초안·추정
+5. 선택된 프로젝트 분야 `SKILL.md`의 고유 작업 계약
+6. `skills/PROJECT_PATH_ADAPTER.json`에 고정된 프로젝트 경로·호환 예외
+7. 이 저장소에 동기화된 Base Registry 메타데이터
+8. Base 고정 커밋의 선택된 Skill 전문
+9. 외부 사례·리뷰·과거 대화·초안·추정
 
 정상 동작 중인 사용자 변경을 임의로 되돌리지 않는다. 외부 자료와 Base 공용 예시는 프로젝트 구현 사실이나 사용자 승인 결정을 대체하지 않는다. Base 문서의 `[기획서]/...` 경로는 설치 예시이며 이 프로젝트에서는 경로 어댑터의 binding이 우선한다.
 
@@ -24,6 +25,7 @@
 Prompt 의도·현재 단계·위험 파악
 → Work Mode 자동 선택
 → 최소 Skill·Skill Mode 자동 라우팅
+→ 선택된 실제 SKILL.md 전문 확인
 → 요구·범위·보호 대상·완료 기준 확정
 → 필요 시 검증 가능한 결과 단위와 의존성 계획
 → 승인 범위 구현·제작·갱신
@@ -41,6 +43,8 @@ Prompt 의도·현재 단계·위험 파악
 현재 구현·승인 계획 → docs/CURRENT_STATUS.md
 문서 위치·읽기 조건 → docs/DOCUMENTATION_MAP.md
 Base 역할→프로젝트 실제 경로 → skills/PROJECT_PATH_ADAPTER.json
+Skill 선택·상태·trigger → skills/SKILL_REGISTRY.json
+프로젝트 분야 Skill 전문 → skills/disciplines/<skill-id>/SKILL.md
 프로젝트 방향 → docs/planning/PROJECT_DIRECTION.md
 서사·관계 → docs/planning/NARRATIVE_CONTENT_PLAN.md
 아트·연출 → docs/planning/ART_PRESENTATION_PLAN.md
@@ -49,7 +53,6 @@ Base 역할→프로젝트 실제 경로 → skills/PROJECT_PATH_ADAPTER.json
 검증 계약 → TEST_CHECKLIST.md
 공용 작업 계약 → docs/OPERATING_MODEL.md
 Work Mode·Skill 라우팅 → docs/WORK_MODE_AND_SKILL_ROUTING.md
-Skill 선택·상태 → skills/SKILL_REGISTRY.json
 과거 상태 → Git 이력과 docs/archive/
 ```
 
@@ -102,13 +105,31 @@ KEEP_UNRESOLVED
 
 - 사용자는 Skill이나 Skill Mode를 직접 선택할 필요가 없다.
 - `skills/SKILL_REGISTRY.json`의 trigger와 비사용 조건으로 최소 집합을 자동 선택한다.
-- Base Skill은 고정 커밋의 원격 원본을 참조하며 저장소에 전부 복제하지 않는다.
+- Registry 항목만 읽고 Skill을 실행했다고 보고하지 않는다.
+- 프로젝트 분야 Skill은 Registry의 `path`가 가리키는 실제 `skills/disciplines/<skill-id>/SKILL.md`를 읽고 고유 판단·입력·절차·DoR·DoD·실패 조건을 수행한다.
+- Base Skill은 고정 커밋의 `base_path` 전문을 필요할 때만 읽으며 저장소에 전부 복제하지 않는다.
 - Base Skill의 required input·read-first 경로는 `skills/PROJECT_PATH_ADAPTER.json`을 통해 프로젝트 실제 경로로 해석한다.
-- 프로젝트 분야 Skill은 기존 프로젝트 책임 원본과 실제 파일을 입력으로 사용한다.
+- Base 활성 Skill은 13개이며 Registry trigger·비사용 조건·review trigger는 Base Registry blob `2291bce0d139905f8b8b6721ffbc9859774dcb06`과 일치한다.
+- 프로젝트 분야 Skill은 실행 패키지를 가진 10개다.
+- `urban-legend-integration-review`는 독립 책임이 없어 Base `reviewing-and-validating-project-changes`와 `managing-game-project-operating-system: verify`로 통합한다.
+- 주 책임 프로젝트 분야 Skill은 최대 1개, Foundation·전문 지원 Skill은 최대 3개다.
 - `load_by_default=false`는 자동 선택 금지가 아니라 trigger가 없을 때 읽지 않는다는 뜻이다.
+- 전체 `skills/` 폴더를 기본 컨텍스트로 읽지 않는다.
 - 통합 전 Skill ID는 `skills/LEGACY_SKILL_ALIASES.md`로만 변환하며 활성 Registry에 두지 않는다.
 
-## 7. 검증과 보고
+## 7. Skill 통합 기준
+
+독립 Skill은 다음을 모두 가져야 한다.
+
+- 고유 입력과 먼저 읽을 책임 원본
+- 고유 산출물 또는 판단 경계
+- 고유 Quality Bar와 실패 조건
+- 실제 경로와 검증 방법
+- 반복 사용 가능성
+
+기존 Base Skill mode로 처리할 수 있고 고유 책임이 없으면 새 Skill을 만들지 않는다. 통합 시 고유 절차를 잃지 않고 Alias·Registry·진입 문서·테스트를 함께 갱신한다.
+
+## 8. 검증과 보고
 
 변경 영향에 맞춰 다음을 선택한다.
 
@@ -121,5 +142,13 @@ contract-check
 → regression
 → evidence-report
 ```
+
+Skill·Registry 변경에는 다음을 추가한다.
+
+```text
+python -m unittest tests/test_base_operating_sync.py tests/test_skill_package_integrity.py
+```
+
+검사는 Base trigger 원본 일치, 프로젝트 Skill 패키지 1:1, front matter, 책임 원본·로컬 참조, trigger 중복, routing example, 통합 alias, 경로 어댑터와 선택적 로드 상한을 확인한다.
 
 L1 이상 완료 보고에는 실제 사용한 `Work Mode / Skill / Skill Mode / 선택 이유 / 수행 내용 / 결과·증거 / 미검증`을 포함한다. 실행하지 않은 테스트·렌더·권한·사람 검수는 `NOT_RUN` 또는 `UNVERIFIED`로 기록한다.
