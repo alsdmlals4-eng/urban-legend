@@ -27,7 +27,7 @@
 - trigger: 기존 프로젝트 Base 전면 동기화, 구형 Skill ID, 대규모 경로 이동 PR
 - 입력·범위: Base `ee265576...`, urban-legend `main`, PR #41~#43
 - 수행: 현행 책임 원본을 제자리에 유지하는 운영 모델·Registry·검증 경로를 추가하고 스택 PR의 계약 위반을 분리했다.
-- 검증 증거: `docs/qa/BASE_SYNC_AUDIT_2026-07-21.md`, `tests/test_base_operating_sync.py`
-- 결과: `PARTIAL` — 자동 정적 검증은 PR CI에서 확인하며 Godot 런타임은 게임 파일 미변경으로 `NOT_RUN`
-- 재사용 가능한 교훈: 기존 프로젝트에는 신규 설치형 대규모 이동보다 `UPDATE_IN_PLACE`·`COMPATIBILITY_STUB`가 우선이며, 이주 계약과 실제 diff를 PR 단위로 대조해야 한다.
+- 검증 증거: `docs/qa/BASE_SYNC_AUDIT_2026-07-21.md`, `tests/test_base_operating_sync.py`, Actions run `29836276846`
+- 결과: `PASS` — Base commit·13개 Skill·legacy alias·보호 경로·책임 원본 보존·changed-file 범위 검증 통과. Godot 런타임과 수동 화면 QA는 게임 파일 미변경으로 `NOT_RUN`.
+- 재사용 가능한 교훈: 기존 프로젝트에는 신규 설치형 대규모 이동보다 `UPDATE_IN_PLACE`·원문 보존형 `COMPATIBILITY_STUB`가 우선이며, 이주 계약과 실제 diff를 PR 단위로 대조해야 한다.
 - Registry·Skill 갱신 필요: `no`
