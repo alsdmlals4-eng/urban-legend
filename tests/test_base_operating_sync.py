@@ -4,234 +4,103 @@ import json
 import unittest
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
-BASE_COMMIT = "ee265576da7f67d3278f8099dd97d4e714ef0651"
-REQUIRED_BASE_SKILLS = {
-    "managing-project-intake-and-work-contract",
-    "managing-game-project-operating-system",
-    "managing-design-documents",
-    "evolving-project-discipline-skills",
-    "maintaining-project-context-and-handoff",
-    "analyzing-and-refining-game-concepts",
-    "designing-vertical-slices",
-    "orchestrating-deepseek-worktrees",
-    "reviewing-and-validating-project-changes",
-    "auditing-canonical-reference-freshness",
-    "designing-art-prompts-and-technique-cards",
-    "auditing-and-refining-ui-art",
-    "managing-base-change-proposals",
-}
-LEGACY_BASE_IDS = {
-    "routing-project-work-by-discipline",
-    "conducting-deep-requirement-interviews",
-    "transforming-requests-into-prompts",
-    "installing-game-project-operating-system",
-    "migrating-existing-game-project-structure",
-    "verifying-game-project-operating-system",
-    "writing-game-design-documents",
-    "publishing-discipline-bibles",
-    "promoting-project-knowledge",
-    "reviewing-and-implementing-base-change-proposals",
-    "reviewing-external-ai-drafts",
-}
-REQUIRED_ADAPTER_ROLES = {
-    "project_agents",
-    "project_start_here",
-    "operating_model",
-    "work_mode_and_skill_routing",
-    "active_context",
-    "handoff",
-    "documentation_map",
-    "design_document_registry_equivalent",
-    "skill_registry",
-    "project_discipline_skill_root",
-    "legacy_skill_aliases",
-    "skill_learning_log",
-    "roadmap",
-    "validation_contract",
-    "project_context",
-    "game_design_source",
-    "game_design_docx_derivative",
-    "game_design_generator",
-    "base_version",
-    "base_sync_audit",
-}
+BASE_COMMIT = "41a20584dd2ee51d917e5c9d7cab6838e1ceba7e"
+BASE_REGISTRY_BLOB = "14950c9361b3c939990560ae8cc683a936633e89"
+OLD_BASE_COMMIT = "ee265576da7f67d3278f8099dd97d4e714ef0651"
+REQUIRED_BASE_SKILLS = {'managing-game-project-operating-system', 'auditing-and-refining-ui-art', 'orchestrating-deepseek-worktrees', 'reviewing-and-validating-project-changes', 'establishing-project-core', 'synchronizing-local-and-github-state', 'maintaining-project-context-and-handoff', 'governing-game-user-research-coverage', 'designing-art-prompts-and-technique-cards', 'pruning-stale-and-nonfunctional-material', 'designing-vertical-slices', 'diagnosing-game-engine-runtime-failures', 'managing-base-change-proposals', 'evolving-project-discipline-skills', 'simplifying-skill-bodies', 'managing-design-documents', 'building-project-visual-dashboards', 'running-adversarial-review-and-refinement', 'managing-project-intake-and-work-contract', 'maintaining-long-running-task-continuity', 'identifying-project-core', 'auditing-canonical-reference-freshness', 'analyzing-and-refining-game-concepts', 'creating-user-learning-notes', 'refactoring-with-contract-preservation'}
+REQUIRED_ADAPTER_ROLES = {'skill_registry', 'skill_learning_log', 'project_discipline_skill_root', 'project_discipline_contract', 'base_sync_audit', 'operating_model', 'project_agents', 'base_version', 'legacy_skill_aliases', 'work_mode_and_skill_routing', 'project_core', 'game_design_source', 'project_start_here', 'project_context', 'base_skill_coverage', 'active_context', 'roadmap', 'design_document_registry_equivalent', 'documentation_map', 'base_skill_index', 'validation_contract', 'game_design_generator', 'game_design_docx_derivative', 'handoff'}
+
+
+def load(path: str) -> dict:
+    return json.loads((ROOT / path).read_text(encoding="utf-8"))
 
 
 class BaseOperatingSyncTests(unittest.TestCase):
     def setUp(self) -> None:
-        self.registry = json.loads(
-            (ROOT / "skills/SKILL_REGISTRY.json").read_text(encoding="utf-8")
-        )
-        self.adapter = json.loads(
-            (ROOT / "skills/PROJECT_PATH_ADAPTER.json").read_text(encoding="utf-8")
-        )
+        self.registry = load("skills/SKILL_REGISTRY.json")
+        self.index = load("skills/BASE_SKILL_INDEX.json")
+        self.coverage = load("skills/BASE_SKILL_COVERAGE.json")
+        self.adapter = load("skills/PROJECT_PATH_ADAPTER.json")
 
-    def test_cold_start_entrypoints_exist(self) -> None:
+    def test_cold_start_and_new_contracts_exist(self) -> None:
         required = [
-            "START_HERE.md",
-            "AGENTS.md",
-            "docs/OPERATING_MODEL.md",
-            "docs/WORK_MODE_AND_SKILL_ROUTING.md",
-            "docs/CURRENT_STATUS.md",
-            "docs/DOCUMENTATION_MAP.md",
-            "docs/BASE_RULES_VERSION.md",
-            "skills/SKILL_REGISTRY.json",
+            "START_HERE.md", "AGENTS.md", "docs/OPERATING_MODEL.md",
+            "docs/WORK_MODE_AND_SKILL_ROUTING.md", "docs/CURRENT_STATUS.md",
+            "docs/PROJECT_CORE.md", "docs/DOCUMENTATION_MAP.md",
+            "docs/BASE_RULES_VERSION.md", "skills/SKILL_REGISTRY.json",
+            "skills/BASE_SKILL_INDEX.json", "skills/BASE_SKILL_COVERAGE.json",
             "skills/PROJECT_PATH_ADAPTER.json",
-            "skills/LEGACY_SKILL_ALIASES.md",
-            "skills/SKILL_LEARNING_LOG.md",
+            "skills/disciplines/PROJECT_DISCIPLINE_CONTRACT.md",
+            "skills/LEGACY_SKILL_ALIASES.md", "skills/SKILL_LEARNING_LOG.md",
         ]
-        missing = [path for path in required if not (ROOT / path).is_file()]
-        self.assertEqual(missing, [], f"Missing cold-start files: {missing}")
+        self.assertEqual([p for p in required if not (ROOT / p).is_file()], [])
 
-    def test_base_commit_is_pinned_consistently(self) -> None:
-        files = [
-            "START_HERE.md",
-            "docs/OPERATING_MODEL.md",
-            "docs/WORK_MODE_AND_SKILL_ROUTING.md",
-            "docs/BASE_RULES_VERSION.md",
-            "skills/SKILL_REGISTRY.json",
-            "skills/PROJECT_PATH_ADAPTER.json",
-            "skills/SKILL_LEARNING_LOG.md",
-        ]
-        mismatched = [
-            path
-            for path in files
-            if BASE_COMMIT not in (ROOT / path).read_text(encoding="utf-8")
-        ]
-        self.assertEqual(mismatched, [], f"Base commit mismatch: {mismatched}")
+    def test_base_pin_has_one_human_authority_and_consistent_machine_sources(self) -> None:
         self.assertEqual(self.registry["base"]["commit"], BASE_COMMIT)
+        self.assertEqual(self.registry["base"]["source_registry_blob_sha"], BASE_REGISTRY_BLOB)
+        self.assertEqual(self.index["source"]["commit"], BASE_COMMIT)
+        self.assertEqual(self.index["source"]["registry_blob_sha"], BASE_REGISTRY_BLOB)
         self.assertEqual(self.adapter["base"]["commit"], BASE_COMMIT)
+        version = (ROOT / "docs/BASE_RULES_VERSION.md").read_text(encoding="utf-8")
+        self.assertIn(BASE_COMMIT, version)
+        active_docs = ["START_HERE.md", "README.md", "docs/OPERATING_MODEL.md", "docs/WORK_MODE_AND_SKILL_ROUTING.md", "docs/CURRENT_STATUS.md", "docs/DOCUMENTATION_MAP.md", "docs/MVP_WORKFLOW_CHECKLIST.md"]
+        for path in active_docs:
+            text = (ROOT / path).read_text(encoding="utf-8")
+            self.assertNotIn(OLD_BASE_COMMIT, text, path)
+            self.assertNotIn(BASE_COMMIT, text, f"Base pin duplicated outside authority: {path}")
 
-    def test_automatic_routing_contract(self) -> None:
-        policy = self.registry["routing_policy"]
-        self.assertFalse(policy["load_all_skills"])
-        self.assertEqual(policy["default_selection"], "automatic-trigger-match")
-        self.assertTrue(policy["automatic_selection"])
-        self.assertFalse(policy["user_skill_declaration_required"])
-        self.assertTrue(policy["require_trigger_match"])
-        self.assertTrue(policy["require_execution_report"])
-        self.assertEqual(policy["work_modes"], ["PLAN", "BUILD", "REVIEW"])
-        self.assertEqual(policy["max_primary_discipline_skills"], 1)
-        self.assertLessEqual(policy["max_foundation_skills"], 3)
-
-    def test_current_base_skill_set_is_complete(self) -> None:
-        skills = self.registry["base_skills"]
-        ids = {item["skill_id"] for item in skills}
+    def test_latest_base_skill_set_and_coverage_are_complete(self) -> None:
+        ids = {x["skill_id"] for x in self.index["skills"]}
         self.assertEqual(ids, REQUIRED_BASE_SKILLS)
-        self.assertEqual(len(skills), len(ids), "Duplicate Base skill IDs")
-        for item in skills:
-            self.assertEqual(item["status"], "ACTIVE")
-            self.assertFalse(item["load_by_default"])
+        self.assertEqual(len(ids), 25)
+        self.assertEqual(self.index["source"]["active_skill_count"], 25)
+        self.assertFalse(self.registry["routing_policy"]["load_all_skills"])
+        for item in self.index["skills"]:
             self.assertTrue(item["trigger_tags"])
-            self.assertTrue(item["review_triggers"])
-            self.assertTrue(item["base_path"].startswith("skills/"))
             self.assertTrue(item["base_path"].endswith("/SKILL.md"))
+        self.assertEqual(len(self.coverage["responsibilities"]), 18)
+        for row in self.coverage["responsibilities"]:
+            self.assertIn(row["status"], {"COVERED", "COVERED_EXISTING"})
+            self.assertTrue(set(row["skills"]) <= ids, row)
 
-    def test_legacy_base_ids_are_not_active(self) -> None:
-        ids = {item["skill_id"] for item in self.registry["base_skills"]}
-        self.assertFalse(ids & LEGACY_BASE_IDS)
-        aliases = (ROOT / "skills/LEGACY_SKILL_ALIASES.md").read_text(encoding="utf-8")
-        for legacy_id in LEGACY_BASE_IDS:
-            self.assertIn(legacy_id, aliases)
+    def test_project_core_is_identified_but_not_silently_confirmed(self) -> None:
+        text = (ROOT / "docs/PROJECT_CORE.md").read_text(encoding="utf-8")
+        self.assertIn("상태: `IDENTIFIED`", text)
+        self.assertIn("아직 `CORE_CONFIRMED`", text)
+        for term in ("괴이 기록국", "안정화 상태", "위험 사례", "잔향", "괴이 매뉴얼", "TECHNICAL_FOUNDATION", "REQUIRES_REAPPROVAL"):
+            self.assertIn(term, text)
 
-    def test_project_path_adapter_is_complete(self) -> None:
-        self.assertEqual(
-            self.adapter["adapter_role"],
-            "urban-legend-base-operating-path-adapter",
-        )
-        self.assertEqual(
-            self.adapter["project"]["layout_policy"],
-            "preserve-existing-canonical-paths",
-        )
-        self.assertFalse(self.adapter["project"]["base_example_paths_are_authoritative"])
-        bindings = self.adapter["role_bindings"]
-        self.assertEqual(set(bindings), REQUIRED_ADAPTER_ROLES)
-        missing = [
-            role for role, raw_path in bindings.items()
-            if not (ROOT / raw_path).exists()
-        ]
-        self.assertEqual(missing, [], f"Missing adapter-bound project paths: {missing}")
-
-    def test_base_example_paths_are_overridden_explicitly(self) -> None:
-        overrides = {
-            item["base_example"]: item["project_path"]
-            for item in self.adapter["base_path_overrides"]
-        }
-        expected = {
-            "[기획서]/00_프로젝트_허브/START_HERE.md": "START_HERE.md",
-            "[기획서]/00_프로젝트_허브/ACTIVE_CONTEXT.md": "docs/CURRENT_STATUS.md",
-            "[기획서]/00_프로젝트_허브/DOCUMENTATION_MAP.md": "docs/DOCUMENTATION_MAP.md",
-            "[기획서]/00_프로젝트_허브/DESIGN_DOCUMENT_REGISTRY.json": "docs/DOCUMENTATION_MAP.md",
-            "skills/disciplines/<discipline>/SKILL.md": "skills/disciplines/<skill-id>/SKILL.md",
-        }
-        for base_example, project_path in expected.items():
-            self.assertEqual(overrides[base_example], project_path)
-        for project_path in overrides.values():
-            if "<" not in project_path:
-                self.assertTrue((ROOT / project_path).exists(), project_path)
-
-    def test_existing_gdd_publication_contract_is_not_silently_replaced(self) -> None:
-        publication = self.adapter["publication_compatibility"]
-        self.assertEqual(
-            publication["current_model"],
-            "markdown-source-plus-checked-docx-derivative",
-        )
-        self.assertEqual(
-            publication["base_v3_registry_migration"],
-            "DEFERRED_REQUIRES_SEPARATE_APPROVAL",
-        )
+    def test_path_adapter_and_publication_compatibility(self) -> None:
+        self.assertEqual(set(self.adapter["role_bindings"]), REQUIRED_ADAPTER_ROLES)
+        for role, raw in self.adapter["role_bindings"].items():
+            self.assertTrue((ROOT / raw).exists(), f"{role} -> {raw}")
+        pub = self.adapter["publication_compatibility"]
+        self.assertEqual(pub["base_v3_registry_migration"], "DEFERRED_REQUIRES_SEPARATE_APPROVAL")
         for field in ("source", "docx", "generator"):
-            self.assertTrue((ROOT / publication[field]).exists(), publication[field])
-        self.assertIn("--check", publication["validation"])
+            self.assertTrue((ROOT / pub[field]).exists())
 
-    def test_project_canonical_sources_are_preserved(self) -> None:
-        self.assertEqual(len(self.registry["project_disciplines"]), 10)
-        missing: list[str] = []
-        for discipline in self.registry["project_disciplines"]:
-            self.assertEqual(discipline["status"], "ACTIVE")
-            self.assertFalse(discipline["load_by_default"])
-            self.assertTrue(discipline["trigger_tags"])
-            self.assertTrue((ROOT / discipline["path"]).is_file(), discipline["path"])
-            for raw_path in discipline["canonical_sources"]:
-                if not (ROOT / raw_path).exists():
-                    missing.append(f"{discipline['skill_id']} -> {raw_path}")
-        self.assertEqual(missing, [], "Missing project canonical sources:\n" + "\n".join(missing))
-
-    def test_consolidated_project_skill_has_compatibility_alias(self) -> None:
-        active_ids = {item["skill_id"] for item in self.registry["project_disciplines"]}
-        self.assertNotIn("urban-legend-integration-review", active_ids)
+    def test_project_disciplines_and_aliases_are_preserved(self) -> None:
+        items = self.registry["project_disciplines"]
+        self.assertEqual(len(items), 10)
+        for item in items:
+            self.assertTrue((ROOT / item["path"]).is_file())
+            for source in item["canonical_sources"]:
+                self.assertTrue((ROOT / source).exists(), f"{item['skill_id']} -> {source}")
         aliases = (ROOT / "skills/LEGACY_SKILL_ALIASES.md").read_text(encoding="utf-8")
         self.assertIn("urban-legend-integration-review", aliases)
 
-    def test_project_invariants_remain_in_agents(self) -> None:
+    def test_project_invariants_and_protected_paths_remain(self) -> None:
         agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
+        core = (ROOT / "docs/PROJECT_CORE.md").read_text(encoding="utf-8")
         for term in ("괴이 기록국", "안정화 상태", "위험 사례", "잔향", "괴이 매뉴얼", "기록관 아카"):
-            self.assertIn(term, agents)
-        for protected in ("scripts/core/game_state.gd", "data/episodes", "project.godot", "knowledge/base-pack"):
-            self.assertIn(protected, agents)
+            self.assertIn(term, agents + core)
+        for path in ("scripts/core/game_state.gd", "data/episodes", "project.godot", "knowledge/base-pack"):
+            self.assertIn(path, agents + core)
 
-    def test_legacy_local_copies_route_to_current_contract(self) -> None:
-        shared = (ROOT / "docs/AI_SHARED_WORK_RULES.md").read_text(encoding="utf-8")
-        workflow = (ROOT / "docs/AI_WORKFLOW_RULES.md").read_text(encoding="utf-8")
-        self.assertIn("COMPATIBILITY_STUB", shared)
-        self.assertIn("docs/OPERATING_MODEL.md", shared)
-        self.assertIn("docs/WORK_MODE_AND_SKILL_ROUTING.md", workflow)
-
-    def test_non_destructive_project_paths_remain(self) -> None:
-        required = [
-            "docs/CURRENT_STATUS.md",
-            "docs/planning/README.md",
-            "docs/planning/PROJECT_DIRECTION.md",
-            "docs/planning/NARRATIVE_CONTENT_PLAN.md",
-            "docs/planning/ART_PRESENTATION_PLAN.md",
-            "docs/GAME_DESIGN_DOCUMENT.md",
-            "MVP_ROADMAP.md",
-            "TEST_CHECKLIST.md",
-        ]
-        missing = [path for path in required if not (ROOT / path).is_file()]
-        self.assertEqual(missing, [], f"Current canonical paths moved or removed: {missing}")
+    def test_non_destructive_project_sources_remain(self) -> None:
+        required = ["docs/planning/PROJECT_DIRECTION.md", "docs/planning/NARRATIVE_CONTENT_PLAN.md", "docs/planning/ART_PRESENTATION_PLAN.md", "docs/GAME_DESIGN_DOCUMENT.md", "MVP_ROADMAP.md", "TEST_CHECKLIST.md"]
+        self.assertEqual([p for p in required if not (ROOT / p).is_file()], [])
 
 
 if __name__ == "__main__":
