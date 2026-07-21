@@ -3,6 +3,8 @@ name: Validate Base operating sync
 on:
   pull_request:
     paths:
+      - ".github/pull_request_template.md"
+      - ".github/workflows/validate-base-operating-sync.yml"
       - "START_HERE.md"
       - "AGENTS.md"
       - "docs/OPERATING_MODEL.md"
@@ -17,11 +19,12 @@ on:
       - "skills/**"
       - "tests/test_base_operating_sync.py"
       - "tests/test_skill_package_integrity.py"
-      - ".github/workflows/validate-base-operating-sync.yml"
   push:
     branches:
       - main
     paths:
+      - ".github/pull_request_template.md"
+      - ".github/workflows/validate-base-operating-sync.yml"
       - "START_HERE.md"
       - "AGENTS.md"
       - "docs/OPERATING_MODEL.md"
@@ -36,7 +39,6 @@ on:
       - "skills/**"
       - "tests/test_base_operating_sync.py"
       - "tests/test_skill_package_integrity.py"
-      - ".github/workflows/validate-base-operating-sync.yml"
 
 permissions:
   contents: read
