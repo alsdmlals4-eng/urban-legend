@@ -1,6 +1,6 @@
 # Repository Guidelines
 
-> 문서 위치: `AGENTS.md` | 문서 라우터: `docs/DOCUMENTATION_MAP.md` | 기획 인수인계: `docs/planning/README.md` | 과거 규칙·완료 기록: `docs/archive/README.md`
+> 문서 위치: `AGENTS.md` | 최상위 라우터: `START_HERE.md` | 운영 모델: `docs/OPERATING_MODEL.md` | 문서 라우터: `docs/DOCUMENTATION_MAP.md` | 기획 인수인계: `docs/planning/README.md` | 과거 규칙·완료 기록: `docs/archive/README.md`
 
 최신 사용자 지시를 최우선으로 따른다.
 
@@ -10,9 +10,13 @@
 
 ```text
 최신 사용자 지시
+→ START_HERE.md
 → AGENTS.md
+→ docs/OPERATING_MODEL.md
+→ docs/WORK_MODE_AND_SKILL_ROUTING.md
 → docs/CURRENT_STATUS.md
 → docs/DOCUMENTATION_MAP.md
+→ skills/SKILL_REGISTRY.json
 → 이번 작업의 대상 파일
 → 필요한 조건부 문서만 추가
 ```
@@ -21,17 +25,34 @@
 
 ```text
 최신 사용자 지시
+→ START_HERE.md
 → AGENTS.md
+→ docs/OPERATING_MODEL.md
+→ docs/WORK_MODE_AND_SKILL_ROUTING.md
 → docs/CURRENT_STATUS.md
 → docs/planning/README.md
 → docs/planning/PROJECT_DIRECTION.md
 → 분야별 기획서 1개
+→ skills/SKILL_REGISTRY.json
 → 실제 대상 파일
 ```
 
 모든 Goal·QA·벤치마크·백업을 기본으로 읽지 않는다. `docs/archive/**`, 완료된 `docs/qa/**`, 완료된 `docs/CODEX_GOAL_*`, `docs/benchmarks/**`, `docs/superpowers/**`는 현재 작업이 명시적으로 요구할 때만 연다.
 
 `DESIGN_INTENT.md`, `PROJECT_BRIEF.md`, `docs/CONTENT_DIRECTION_V09.md`는 리디렉션 문서다. 현행 설계로 사용하지 않는다. Base 동기화·공용 기획 지식 승격 작업이 아니면 `docs/BASE_RULES_VERSION.md`와 Base 원격도 기본 읽기에서 제외한다.
+
+## Work Mode·Skill 자동 라우팅
+
+- Prompt 의도와 현재 단계에서 주 Work Mode 하나를 자동 선택한다.
+  - `PLAN`: 요구·근거·설계·순서, 기본 읽기·제안
+  - `BUILD`: 승인 범위의 구현·제작·갱신
+  - `REVIEW`: 적대적 검토·반례·검증, 기본 읽기 전용
+- `skills/SKILL_REGISTRY.json`의 trigger와 비사용 조건으로 최소 Base Skill·프로젝트 분야 Skill·Skill Mode를 자동 선택한다.
+- 사용자는 Skill이나 Skill Mode를 선언할 필요가 없다.
+- Base Skill 전문은 `docs/BASE_RULES_VERSION.md`에 고정된 Base 커밋을 참조한다. 전체 Base Skill을 복제하거나 기본 로드하지 않는다.
+- 통합 전 Foundation Skill ID는 `skills/LEGACY_SKILL_ALIASES.md`로만 변환하며 활성 Registry에 두지 않는다.
+- 복합 작업은 `PLAN → BUILD → REVIEW`로 전환한다. 사용자 승인 전 현행 책임 원본의 대량 이동·삭제·통합을 하지 않는다.
+- L1 이상 완료 보고에는 실제 사용한 Work Mode·Skill·Skill Mode, 선택 이유, 수행 내용, 결과·증거와 미검증을 포함한다.
 
 ## 작업 원칙
 
@@ -42,6 +63,9 @@
 - 가장 작은 end-to-end 변경을 구현하고 자동·수동 검증 뒤 `main`에 통합한다.
 - 사용자 변경과 dirty worktree를 보존한다.
 - 생성·삭제·이동·대규모 수정은 이유, 참조 영향, 백업 위치를 보고한다.
+- 기존 프로젝트 구조 변경은 `audit`와 승인된 처리표 없이 수행하지 않는다.
+- 구형 파일은 `CURRENT / UPDATE_IN_PLACE / MERGE_TO_CANONICAL / COMPATIBILITY_STUB / ARCHIVE_HISTORY / DELETE_APPROVED / KEEP_UNRESOLVED` 중 하나로 판정한다.
+- Base 폴더 구조에 맞춘 강제 개명, 파일명만 근거로 한 삭제, stale 참조를 남기는 이동을 금지한다.
 
 ## 보호 경로와 고위험 영역
 
@@ -66,6 +90,9 @@
 - 검증 계약: `TEST_CHECKLIST.md`
 - 조건부 문서 선택: `docs/DOCUMENTATION_MAP.md`
 - 보존 규칙: `docs/DOCUMENT_LIFECYCLE.md`
+- 공용 운영 계약: `docs/OPERATING_MODEL.md`
+- Work Mode·Skill 라우팅: `docs/WORK_MODE_AND_SKILL_ROUTING.md`
+- Skill Registry: `skills/SKILL_REGISTRY.json`
 - 과거 자료 검색: `docs/archive/README.md`
 
 다른 문서는 위 원본을 링크하고 작업별 차이만 적는다. GDD가 변경되면 `docs/URBAN_LEGEND_GAME_DESIGN.docx`를 재생성하고 `--check`로 동기화를 검증한다.
@@ -109,11 +136,12 @@
 - Base로 승격: 기획 순서, 조사 방법, 아트·연출 판단 프레임, 품질 체크, 도구·스킬 선택 기준, 익명화된 사례 카드
 - 프로젝트에 유지: 캐릭터명, 사건 규칙, 세계관, 수치, 에셋 경로, 저장 구조, 실제 QA 결과
 
-Base를 갱신한 뒤 프로젝트의 `docs/BASE_RULES_VERSION.md`에 기준 커밋과 동기화 상태를 기록한다.
+Base를 갱신한 뒤 프로젝트의 `docs/BASE_RULES_VERSION.md`에 기준 커밋과 동기화 상태를 기록한다. 제안 PR과 Base 활성 구현 PR은 분리한다.
 
 ## 검증과 보고
 
 - 변경에 맞춰 JSON, `git diff --check`, Godot headless, 변경 장면, 영향 플레이 경로를 검증한다.
+- 경로·ID·Schema·정본·생성기를 변경하면 변경된 파일뿐 아니라 갱신됐어야 하는 활성 소비자와 파생본을 확인한다.
 - 1280×720과 1920×1080에서 한국어 줄바꿈·포커스·첫 선택 노출을 확인한다.
 - 미실행 항목은 통과로 쓰지 않는다.
 - 완료 보고에는 변경 파일, 이유, 결과, 검증, 미검증, 위험, 저장·UI 호환, 갱신 문서, 백업 위치, 다음 진입점을 포함한다.
