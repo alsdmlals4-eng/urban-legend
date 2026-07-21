@@ -17,6 +17,9 @@
 → docs/CURRENT_STATUS.md
 → docs/DOCUMENTATION_MAP.md
 → skills/SKILL_REGISTRY.json
+→ skills/PROJECT_PATH_ADAPTER.json
+→ 자동 선택된 프로젝트 분야 SKILL.md 최대 1개
+→ 자동 선택된 Base Skill 전문 최대 3개
 → 이번 작업의 대상 파일
 → 필요한 조건부 문서만 추가
 ```
@@ -34,6 +37,9 @@
 → docs/planning/PROJECT_DIRECTION.md
 → 분야별 기획서 1개
 → skills/SKILL_REGISTRY.json
+→ skills/PROJECT_PATH_ADAPTER.json
+→ 자동 선택된 프로젝트 분야 SKILL.md 최대 1개
+→ 필요한 Base Skill 전문 최대 3개
 → 실제 대상 파일
 ```
 
@@ -49,8 +55,11 @@
   - `REVIEW`: 적대적 검토·반례·검증, 기본 읽기 전용
 - `skills/SKILL_REGISTRY.json`의 trigger와 비사용 조건으로 최소 Base Skill·프로젝트 분야 Skill·Skill Mode를 자동 선택한다.
 - 사용자는 Skill이나 Skill Mode를 선언할 필요가 없다.
-- Base Skill 전문은 `docs/BASE_RULES_VERSION.md`에 고정된 Base 커밋을 참조한다. 전체 Base Skill을 복제하거나 기본 로드하지 않는다.
-- 통합 전 Foundation Skill ID는 `skills/LEGACY_SKILL_ALIASES.md`로만 변환하며 활성 Registry에 두지 않는다.
+- Registry 항목만 읽고 Skill을 실행했다고 보고하지 않는다. 프로젝트 분야 Skill은 Registry의 `path`에 있는 실제 `skills/disciplines/<skill-id>/SKILL.md`를 읽는다.
+- Base Skill 전문은 `docs/BASE_RULES_VERSION.md`에 고정된 Base 커밋의 `base_path`를 읽는다. 전체 Base Skill을 복제하거나 기본 로드하지 않는다.
+- 주 책임 프로젝트 분야 Skill은 최대 1개, Foundation·검증·발행·Handoff 지원 Skill은 최대 3개다.
+- 프로젝트 분야 Skill은 실행 패키지를 가진 10개만 활성화한다. `urban-legend-integration-review`는 Base 통합검수와 운영체계 `verify`로 통합한다.
+- 통합 전 Foundation·프로젝트 Skill ID는 `skills/LEGACY_SKILL_ALIASES.md`로만 변환하며 활성 Registry에 두지 않는다.
 - 복합 작업은 `PLAN → BUILD → REVIEW`로 전환한다. 사용자 승인 전 현행 책임 원본의 대량 이동·삭제·통합을 하지 않는다.
 - L1 이상 완료 보고에는 실제 사용한 Work Mode·Skill·Skill Mode, 선택 이유, 수행 내용, 결과·증거와 미검증을 포함한다.
 
@@ -93,6 +102,8 @@
 - 공용 운영 계약: `docs/OPERATING_MODEL.md`
 - Work Mode·Skill 라우팅: `docs/WORK_MODE_AND_SKILL_ROUTING.md`
 - Skill Registry: `skills/SKILL_REGISTRY.json`
+- 프로젝트 분야 Skill 패키지: `skills/disciplines/`
+- Base 경로 어댑터: `skills/PROJECT_PATH_ADAPTER.json`
 - 과거 자료 검색: `docs/archive/README.md`
 
 다른 문서는 위 원본을 링크하고 작업별 차이만 적는다. GDD가 변경되면 `docs/URBAN_LEGEND_GAME_DESIGN.docx`를 재생성하고 `--check`로 동기화를 검증한다.
@@ -141,6 +152,7 @@ Base를 갱신한 뒤 프로젝트의 `docs/BASE_RULES_VERSION.md`에 기준 커
 ## 검증과 보고
 
 - 변경에 맞춰 JSON, `git diff --check`, Godot headless, 변경 장면, 영향 플레이 경로를 검증한다.
+- Skill·Registry를 변경하면 `tests/test_base_operating_sync.py`와 `tests/test_skill_package_integrity.py`를 실행한다.
 - 경로·ID·Schema·정본·생성기를 변경하면 변경된 파일뿐 아니라 갱신됐어야 하는 활성 소비자와 파생본을 확인한다.
 - 1280×720과 1920×1080에서 한국어 줄바꿈·포커스·첫 선택 노출을 확인한다.
 - 미실행 항목은 통과로 쓰지 않는다.
