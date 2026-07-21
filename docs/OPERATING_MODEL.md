@@ -1,7 +1,7 @@
 # Urban Legend 운영 모델
 
 > Base 기준: `alsdmlals4-eng/Base@ee265576da7f67d3278f8099dd97d4e714ef0651`  
-> 시작 지점: `START_HERE.md` | 라우팅: `docs/WORK_MODE_AND_SKILL_ROUTING.md` | Skill Registry: `skills/SKILL_REGISTRY.json`
+> 시작 지점: `START_HERE.md` | 라우팅: `docs/WORK_MODE_AND_SKILL_ROUTING.md` | Skill Registry: `skills/SKILL_REGISTRY.json` | 경로 어댑터: `skills/PROJECT_PATH_ADAPTER.json`
 
 이 문서는 Base의 공용 운영 계약을 `urban-legend`의 기존 구조에 비파괴적으로 적용한 프로젝트 운영 원본이다. 프로젝트 고유 책임 원본은 현재 경로를 유지하며 Base 전문을 복제하지 않는다.
 
@@ -11,11 +11,12 @@
 2. 프로젝트 `AGENTS.md`와 보호·저장·엔진 규칙
 3. `docs/CURRENT_STATUS.md`와 승인된 작업 계약
 4. 프로젝트 책임 원본과 실제 코드·데이터·자산·테스트
-5. 이 저장소에 동기화된 Base 기준
-6. Base 원격 원본
-7. 외부 사례·리뷰·과거 대화·초안·추정
+5. `skills/PROJECT_PATH_ADAPTER.json`에 고정된 프로젝트 경로·호환 예외
+6. 이 저장소에 동기화된 Base 기준
+7. Base 원격 원본
+8. 외부 사례·리뷰·과거 대화·초안·추정
 
-정상 동작 중인 사용자 변경을 임의로 되돌리지 않는다. 외부 자료와 Base 공용 예시는 프로젝트 구현 사실이나 사용자 승인 결정을 대체하지 않는다.
+정상 동작 중인 사용자 변경을 임의로 되돌리지 않는다. 외부 자료와 Base 공용 예시는 프로젝트 구현 사실이나 사용자 승인 결정을 대체하지 않는다. Base 문서의 `[기획서]/...` 경로는 설치 예시이며 이 프로젝트에서는 경로 어댑터의 binding이 우선한다.
 
 ## 2. 운영 생명주기
 
@@ -39,6 +40,7 @@ Prompt 의도·현재 단계·위험 파악
 ```text
 현재 구현·승인 계획 → docs/CURRENT_STATUS.md
 문서 위치·읽기 조건 → docs/DOCUMENTATION_MAP.md
+Base 역할→프로젝트 실제 경로 → skills/PROJECT_PATH_ADAPTER.json
 프로젝트 방향 → docs/planning/PROJECT_DIRECTION.md
 서사·관계 → docs/planning/NARRATIVE_CONTENT_PLAN.md
 아트·연출 → docs/planning/ART_PRESENTATION_PLAN.md
@@ -52,6 +54,8 @@ Skill 선택·상태 → skills/SKILL_REGISTRY.json
 ```
 
 한 질문에는 현행 책임 원본 하나를 둔다. PDF·DOCX·캡처·Manifest는 원본과 검증 상태를 대체하지 않는다.
+
+현재 GDD 발행 모델은 Markdown 원본과 `--check` 가능한 DOCX 파생본이다. Base v3의 PDF·Publication Manifest 기반 Registry로 바꾸는 작업은 별도 승인 전까지 `DEFERRED_REQUIRES_SEPARATE_APPROVAL`이며, 상세 계약은 경로 어댑터가 기록한다.
 
 ## 4. 기존 프로젝트 안전 계약
 
@@ -99,6 +103,7 @@ KEEP_UNRESOLVED
 - 사용자는 Skill이나 Skill Mode를 직접 선택할 필요가 없다.
 - `skills/SKILL_REGISTRY.json`의 trigger와 비사용 조건으로 최소 집합을 자동 선택한다.
 - Base Skill은 고정 커밋의 원격 원본을 참조하며 저장소에 전부 복제하지 않는다.
+- Base Skill의 required input·read-first 경로는 `skills/PROJECT_PATH_ADAPTER.json`을 통해 프로젝트 실제 경로로 해석한다.
 - 프로젝트 분야 Skill은 기존 프로젝트 책임 원본과 실제 파일을 입력으로 사용한다.
 - `load_by_default=false`는 자동 선택 금지가 아니라 trigger가 없을 때 읽지 않는다는 뜻이다.
 - 통합 전 Skill ID는 `skills/LEGACY_SKILL_ALIASES.md`로만 변환하며 활성 Registry에 두지 않는다.
