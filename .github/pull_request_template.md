@@ -18,11 +18,16 @@
 - [ ] 보호 경로 변경 여부와 근거를 적었다.
 - [ ] 삭제·rename·대량 이동이 있으면 승인된 처리표와 복구 경로가 있다.
 
-## Base·정본·참조 확인
+## Base·Skill·정본·참조 확인
 
-- [ ] 적용한 Base commit을 고정했다.
+- [ ] 적용한 Base commit과 필요한 Registry blob을 고정했다.
 - [ ] 전체 Base 파일·Skill을 불필요하게 복제하지 않았다.
-- [ ] 최신 Skill ID를 사용하고 구형 ID는 alias로만 처리했다.
+- [ ] Registry 행만 읽지 않고 선택된 실제 `SKILL.md`와 mode를 수행했다.
+- [ ] 주 프로젝트 분야 Skill은 최대 1개, 지원 Skill은 최대 3개다.
+- [ ] 새 Skill 추가 전 기존 Skill mode로 통합 가능한지 확인했다.
+- [ ] 활성 프로젝트 Skill은 Registry `path`와 실제 패키지가 1:1이다.
+- [ ] 통합·제거한 Skill은 고유 절차 승계와 Legacy Alias가 있다.
+- [ ] 최신 Skill ID를 사용하고 구형 ID는 Alias로만 처리했다.
 - [ ] 경로·ID·Schema·정본·생성기 변경의 활성 소비자와 파생본을 확인했다.
 - [ ] 기존 프로젝트 책임 원본과 고유 정보가 유지된다.
 - [ ] stacked PR이면 base PR의 차단 finding을 상속하지 않는다.
@@ -30,12 +35,19 @@
 ## 검증 내용
 
 - 자동/정적 검증:
+- Skill 패키지·trigger·routing 검증:
 - Godot Scene 실행 검증:
 - 회귀·저장 호환 검증:
 - 수동 확인하지 못한 항목:
 - GitHub Actions 상태:
 
 실행하지 않은 검사는 `NOT_RUN` 또는 `UNVERIFIED`로 기록하고 통과로 표시하지 않는다.
+
+Skill·Registry 변경 시 최소 검사:
+
+```text
+python -m unittest tests/test_base_operating_sync.py tests/test_skill_package_integrity.py
+```
 
 ## Godot 확인 순서
 
