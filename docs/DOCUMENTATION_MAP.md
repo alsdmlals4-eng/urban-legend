@@ -2,7 +2,7 @@
 
 > 문서 위치: `docs/DOCUMENTATION_MAP.md` | 최상위 라우터: `START_HERE.md` | 운영 모델: `docs/OPERATING_MODEL.md` | Base 경로 어댑터: `skills/PROJECT_PATH_ADAPTER.json` | 기획 인수인계: `docs/planning/README.md` | 문서 보존 규칙: `docs/DOCUMENT_LIFECYCLE.md` | 백업 찾기: `docs/archive/README.md`
 
-이 문서는 작업에 필요한 문서만 선택하는 라우터다. 모든 문서와 Skill을 매번 읽지 않는다.
+이 문서는 작업에 필요한 문서와 실제 Skill 패키지만 선택하는 라우터다. 모든 문서와 Skill을 매번 읽지 않는다.
 
 ## 기본 읽기 순서
 
@@ -18,6 +18,8 @@
 → DOCUMENTATION_MAP.md
 → ../skills/SKILL_REGISTRY.json
 → ../skills/PROJECT_PATH_ADAPTER.json
+→ 자동 선택된 프로젝트 분야 SKILL.md 최대 1개
+→ 자동 선택된 Base Skill 전문 최대 3개
 → 대상 코드·데이터·문서
 ```
 
@@ -35,10 +37,12 @@
 → 분야별 기획서 1개
 → ../skills/SKILL_REGISTRY.json
 → ../skills/PROJECT_PATH_ADAPTER.json
+→ 자동 선택된 프로젝트 분야 SKILL.md 최대 1개
+→ 필요한 Base Skill 전문 최대 3개
 → 대상 코드·데이터·에셋
 ```
 
-추가 문서와 Base Skill 전문은 실제 작업 trigger가 있을 때만 읽는다. Base 문서에 `[기획서]/...` 또는 템플릿 경로가 나타나면 `PROJECT_PATH_ADAPTER.json`의 binding을 우선한다.
+추가 문서와 Base Skill 전문은 실제 작업 trigger가 있을 때만 읽는다. Base 문서에 `[기획서]/...` 또는 템플릿 경로가 나타나면 `PROJECT_PATH_ADAPTER.json`의 binding을 우선한다. Registry 행만 읽고 Skill을 실행했다고 보고하지 않는다.
 
 ## 운영 책임 원본
 
@@ -49,10 +53,29 @@
 | 공용 작업 생명주기 | `OPERATING_MODEL.md` | L1 이상 작업·구조·검증 판단 |
 | Work Mode·Skill·Skill Mode | `WORK_MODE_AND_SKILL_ROUTING.md` | L1 이상 자동 라우팅·실행 보고 |
 | Base·프로젝트 Skill 선택 | `../skills/SKILL_REGISTRY.json` | trigger에 맞는 최소 Skill 선택 |
+| 프로젝트 분야 Skill 전문 | `../skills/disciplines/<skill-id>/SKILL.md` | Registry가 프로젝트 주 책임 Skill을 선택했을 때 |
 | Base 역할·예시 경로 변환 | `../skills/PROJECT_PATH_ADAPTER.json` | Base Skill의 required input·read-first·발행 예외 해석 |
 | 통합 전 Skill ID | `../skills/LEGACY_SKILL_ALIASES.md` | 과거 문서·PR·실행 경로에서 이전 ID 발견 |
 | Base 기준 커밋·동기화 | `BASE_RULES_VERSION.md` | Base 동기화·승격 |
 | Skill 실행 학습 | `../skills/SKILL_LEARNING_LOG.md` | 반복 가능한 실패·결정·검증 결과 발생 |
+| Skill 패키지 무결성 | `../tests/test_skill_package_integrity.py` | Skill·Registry·trigger·routing 변경 |
+
+## 활성 프로젝트 분야 Skill
+
+| 분야 | 실제 Skill | 핵심 책임 원본 |
+|---|---|---|
+| 설정·내러티브 | `urban-legend-narrative` | `planning/NARRATIVE_CONTENT_PLAN.md`, `PROJECT_CONTEXT.md` |
+| 게임 디자인 | `urban-legend-game-design` | `GAME_DESIGN_DOCUMENT.md`, `MINIGAME_SYSTEM_SPEC.md` |
+| UX·UI·접근성 | `urban-legend-ux-ui-accessibility` | `GODOT_NATIVE_UI_ARCHITECTURE.md`, `CINEMATIC_FIELD_RECOVERY_UI.md` |
+| 개발·엔지니어링 | `urban-legend-engineering` | `../AGENTS.md`, 실제 코드·Scene·데이터 |
+| 테크니컬 아트·파이프라인 | `urban-legend-technical-art-pipeline` | `IMAGE_ASSET_WORKFLOW.md` |
+| 아트 | `urban-legend-art` | `planning/ART_PRESENTATION_PLAN.md` |
+| 사운드 | `urban-legend-audio` | GDD, `planning/PROJECT_DIRECTION.md` |
+| QA | `urban-legend-qa` | `../TEST_CHECKLIST.md`, `MVP_WORKFLOW_CHECKLIST.md` |
+| 프로덕션·PM | `urban-legend-production-pm` | `../MVP_ROADMAP.md`, `planning/ROADMAP_AND_HANDOFF.md` |
+| 분석·유저리서치 | `urban-legend-analytics-user-research` | `BENCHMARKING_REFERENCE_GUIDE.md`, `planning/REFERENCE_CASES.md` |
+
+`urban-legend-integration-review`는 독립 Skill이 아니다. 최종 통합검수는 Base `reviewing-and-validating-project-changes`와 `managing-game-project-operating-system: verify`로 수행한다.
 
 ## 프로젝트 현행 책임 원본
 
@@ -80,18 +103,22 @@
 | 작업 조건 | 추가로 읽을 문서·Skill |
 |---|---|
 | 기존 구조 감사·구형 파일·경로 이동 | `BASE_RULES_VERSION.md`, `../skills/PROJECT_PATH_ADAPTER.json`, Base `managing-game-project-operating-system`, 필요 시 `auditing-canonical-reference-freshness` |
+| Skill 누락·중복·통합·trigger 변경 | Base `evolving-project-discipline-skills`, `../tests/test_skill_package_integrity.py` |
 | 코드·데이터·문서·자산 diff 검수 | Base `reviewing-and-validating-project-changes` |
-| 대사·상황지시문·일상·후일담 | `planning/NARRATIVE_CONTENT_PLAN.md`, `DIALOGUE_AUTHORING_WORKFLOW.md`, `PROJECT_CONTEXT.md` |
-| 관계 태그·선택 기억·연속 이벤트 | `planning/NARRATIVE_CONTENT_PLAN.md`, 실제 저장·이벤트 데이터 |
-| 캐릭터 아트·표정·컷인 | `planning/ART_PRESENTATION_PLAN.md`, `IMAGE_ASSET_WORKFLOW.md` |
-| Godot UI·Theme·컴포넌트 | `planning/ART_PRESENTATION_PLAN.md`, `GODOT_NATIVE_UI_ARCHITECTURE.md` |
-| 조사·회수 장면 UI | `CINEMATIC_FIELD_RECOVERY_UI.md`, GDD 관련 장 |
-| 미니게임 규칙·조작·복구 | `MINIGAME_SYSTEM_SPEC.md` |
+| 최종 통합검수 | Base `reviewing-and-validating-project-changes`, `managing-game-project-operating-system: verify` |
+| 대사·상황지시문·일상·후일담 | `urban-legend-narrative`, `planning/NARRATIVE_CONTENT_PLAN.md`, `DIALOGUE_AUTHORING_WORKFLOW.md`, `PROJECT_CONTEXT.md` |
+| 관계 태그·선택 기억·연속 이벤트 | `urban-legend-narrative`, 실제 저장·이벤트 데이터 |
+| 게임 규칙·미니게임·캠페인 | `urban-legend-game-design`, `GAME_DESIGN_DOCUMENT.md`, `MINIGAME_SYSTEM_SPEC.md` |
+| Godot·저장·Scene 구현 | `urban-legend-engineering`, 실제 코드·Scene·데이터 |
+| Godot UI·Theme·컴포넌트 | `urban-legend-ux-ui-accessibility`, `planning/ART_PRESENTATION_PLAN.md`, `GODOT_NATIVE_UI_ARCHITECTURE.md` |
+| 조사·회수 장면 UI | `urban-legend-ux-ui-accessibility`, `CINEMATIC_FIELD_RECOVERY_UI.md`, GDD 관련 장 |
+| 캐릭터 아트·표정·컷인 | `urban-legend-art`, `planning/ART_PRESENTATION_PLAN.md`, `IMAGE_ASSET_WORKFLOW.md` |
+| 이미지 import·Manifest | `urban-legend-technical-art-pipeline`, `IMAGE_ASSET_WORKFLOW.md` |
+| BGM·SFX·음성·믹싱 | `urban-legend-audio`, 관련 Scene·UI 계약 |
+| QA·결함·release gate | `urban-legend-qa`, `../TEST_CHECKLIST.md` |
+| MVP·Issue·PR·우선순위 | `urban-legend-production-pm`, `../MVP_ROADMAP.md`, `planning/ROADMAP_AND_HANDOFF.md` |
+| 최신 외부 사례·플레이테스트·텔레메트리 | `urban-legend-analytics-user-research`, 필요 시 Base `analyzing-and-refining-game-concepts` |
 | 외부 GPT·DeepSeek·이미지 모델 위임 | `AI_DELEGATION_WORKFLOW.md`, 필요 시 Base `orchestrating-deepseek-worktrees` |
-| 기존 사례 재사용 | `planning/REFERENCE_CASES.md` |
-| 최신 외부 사례 비교가 필요한 새 판단 | `BENCHMARKING_REFERENCE_GUIDE.md`, 필요한 최신 1차 근거, Base `analyzing-and-refining-game-concepts` |
-| 저장·진행·일정·위험·경제 | 관련 코드, `MVP037_CAMPAIGN_CORE.md`, `MVP038_SEQUENTIAL_CAMPAIGN.md` |
-| 실제 MVP 시작·종료 절차 | `planning/ROADMAP_AND_HANDOFF.md`, `MVP_WORKFLOW_CHECKLIST.md` |
 | Base 공용 규칙·기획 지식 승격 | `BASE_RULES_VERSION.md`, Base `managing-base-change-proposals` |
 | 계정 교대·저사용량 checkpoint | `CURRENT_HANDOFF.md`, `CODEX_ACCOUNT_HANDOFF.md` |
 | 과거 결정·완료 근거 | `archive/README.md`에서 필요한 파일 하나만 선택 |
@@ -106,6 +133,7 @@
 - `AI_SHARED_WORK_RULES.md` — 최신 `OPERATING_MODEL.md`로 연결하는 `COMPATIBILITY_STUB`
 - `AI_WORKFLOW_RULES.md` — 최신 Work Mode·Skill 라우팅과 프로젝트 전용 위임 문서 연결
 - `BASE_RULES_VERSION.md` — Base 동기화 작업 외에는 기본 읽기 제외
+- `urban-legend-integration-review` — Legacy Alias를 통해 Base 통합검수·`verify`로 변환
 
 호환 문서를 본 뒤 연결된 현행 원본으로 이동하며 내용 복제 동기화를 만들지 않는다.
 
@@ -118,6 +146,7 @@
 - `superpowers/**`
 - 과거 보고서·HTML·일회성 감사
 - Base 전체 `skills/**`
+- 선택되지 않은 프로젝트 분야 `skills/disciplines/**`
 
 이 자료는 현재 작업의 직접 근거가 필요할 때만 연다. “혹시 필요할 수 있음”은 읽기 조건이 아니다.
 
@@ -131,6 +160,7 @@ ZIP/00_README_코덱스_전달사항.md
 → 필요한 제안서·레지스트리
 → CURRENT_STATUS.md
 → planning/README.md와 분야별 기획서
+→ 선택된 분야 SKILL.md
 → 실제 대상 파일
 ```
 
@@ -148,6 +178,7 @@ Base 제안과 Base 활성 구현은 별도 PR로 관리한다. 반영 뒤 `BASE
 ## 상시 동기화
 
 - 플레이어 노출 설계가 바뀌면 `CURRENT_STATUS.md`, GDD, Roadmap, Test, 해당 분야별 기획서를 함께 심사한다.
+- Skill·Registry·trigger가 바뀌면 실제 Skill 패키지, alias, routing example, 테스트와 진입 문서를 함께 갱신한다.
 - 경로·ID·Schema·정본·생성기가 바뀌면 untouched 활성 소비자와 파생본까지 reference-freshness를 감사한다.
 - GDD 수정 후 DOCX를 재생성하고 `--check`를 실행한다.
 - 큰 단계·MVP 종료 시 날짜·버전·다음 작업을 갱신한다.
