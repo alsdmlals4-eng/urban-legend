@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "adapter_role": "urban-legend-base-operating-path-adapter",
   "base": {
     "repository": "alsdmlals4-eng/Base",
@@ -20,6 +20,7 @@
     "documentation_map": "docs/DOCUMENTATION_MAP.md",
     "design_document_registry_equivalent": "docs/DOCUMENTATION_MAP.md",
     "skill_registry": "skills/SKILL_REGISTRY.json",
+    "project_discipline_skill_root": "skills/disciplines",
     "legacy_skill_aliases": "skills/LEGACY_SKILL_ALIASES.md",
     "skill_learning_log": "skills/SKILL_LEARNING_LOG.md",
     "roadmap": "MVP_ROADMAP.md",
@@ -51,6 +52,11 @@
       "base_example": "[기획서]/00_프로젝트_허브/DESIGN_DOCUMENT_REGISTRY.json",
       "project_path": "docs/DOCUMENTATION_MAP.md",
       "reason": "Base에는 템플릿·Schema만 있고 현재 프로젝트는 Markdown GDD와 선택 DOCX 생성 계약을 사용한다. 미생성 PDF·Manifest를 강제하지 않는다."
+    },
+    {
+      "base_example": "skills/disciplines/<discipline>/SKILL.md",
+      "project_path": "skills/disciplines/<skill-id>/SKILL.md",
+      "reason": "프로젝트 분야 Skill은 숫자 폴더가 아니라 Registry skill_id와 같은 디렉터리명을 사용해 1:1 무결성 검사를 단순화한다."
     }
   ],
   "publication_compatibility": {
@@ -69,7 +75,10 @@
     "knowledge/base-pack/**"
   ],
   "validation": {
-    "test": "tests/test_base_operating_sync.py",
+    "tests": [
+      "tests/test_base_operating_sync.py",
+      "tests/test_skill_package_integrity.py"
+    ],
     "workflow": ".github/workflows/validate-base-operating-sync.yml"
   }
 }
