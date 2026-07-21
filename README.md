@@ -1,139 +1,58 @@
 # urban-legend
 
-> 최상위 시작점: `START_HERE.md` | 현재 상태 원본: `docs/CURRENT_STATUS.md` | 운영 모델: `docs/OPERATING_MODEL.md` | 기획 인수인계: `docs/planning/README.md` | 과거 소개·로드맵 백업: `docs/archive/backup/2026-07-16/PROJECT_STATUS_AND_ROADMAP_BACKUP.md`
+> 시작: `START_HERE.md` | 현재 상태: `docs/CURRENT_STATUS.md` | 프로젝트 코어: `docs/PROJECT_CORE.md` | 운영 모델: `docs/OPERATING_MODEL.md`
 
-`괴이 기록국`은 Godot 4.7 stable과 GDScript로 제작하는 PC용 현대 오컬트 수사 어드벤처다. 플레이어는 권나래를 주인공으로 운용하고 최대 두 명의 서포트와 함께 괴이의 규칙을 조사해 현재 출현을 안정화한 뒤, 다음 피해를 막을 괴이 매뉴얼을 남긴다.
-
-> 괴이는 완전히 죽지 않는다. 그렇기에 규칙을 기록하고, 다음에 살아남을 방법을 남긴다.
+**괴이 기록국**은 Godot 4.7 stable과 GDScript로 제작하는 PC용 현대 오컬트 수사 어드벤처다. 플레이어는 권나래와 최대 두 명의 서포트를 운용해 괴이의 규칙을 조사하고 현재 출현을 안정화한 뒤, 잔향·위험 사례·대응 절차를 괴이 매뉴얼로 남긴다.
 
 ## 현재 기준
 
-| 항목 | 값 |
-|---|---|
-| 구현 기준선 | MVP-043 |
-| 화면 버전 | Ver 4.1 |
-| 저장 스키마 | `mvp-039` (`mvp-038` 이관 지원) |
-| 플랫폼 | PC / Steam, 16:9, 마우스·키보드 |
-| 구현 사건 | 저승역, 비 오는 골목의 빨간 우산, 폐주파수 방송국 |
-| 주인공·요원 | 권나래 고정 주인공 / 초기 요원 5인 / 서포트 최대 2인 |
-| 현재 계획 | MVP-044 서사 확장 → MVP-045 관계 연속 이벤트 → MVP-046 대화·표정·컷인 연출 |
-| Base 운영 기준 | `alsdmlals4-eng/Base@ee265576da7f67d3278f8099dd97d4e714ef0651` 비파괴 동기화 검토 중 |
-| Skill 구조 | Base 13개 고정 참조 + 프로젝트 실행 패키지 10개 |
+- 구현 기준선: MVP-043 / 화면 Ver 4.1.
+- 저장: `mvp-039`, `mvp-038` 이관 지원.
+- 사건: 저승역, 비 오는 골목의 빨간 우산, 폐주파수 방송국.
+- 플랫폼: PC/Steam, 16:9, 마우스·키보드.
+- 다음 승인 계획: MVP-044 서사 → MVP-045 관계 → MVP-046 대화·표정·컷인. 문서 존재는 구현 완료가 아니다.
 
-MVP-044~046은 Codex 전달 패키지와 기획 문서가 작성된 **승인 계획**이며 GitHub `main` 구현 완료를 뜻하지 않는다. 현재 구현 사실과 계획의 구분은 [`docs/CURRENT_STATUS.md`](docs/CURRENT_STATUS.md)를 따른다.
-
-## 새 담당자·새 AI 읽기 순서
+## 읽기 순서
 
 ```text
-START_HERE.md
-→ AGENTS.md
-→ docs/OPERATING_MODEL.md
-→ docs/WORK_MODE_AND_SKILL_ROUTING.md
-→ docs/CURRENT_STATUS.md
-→ docs/DOCUMENTATION_MAP.md
-→ skills/SKILL_REGISTRY.json
-→ skills/PROJECT_PATH_ADAPTER.json
-→ 선택된 프로젝트 분야 skills/disciplines/<skill-id>/SKILL.md 최대 1개
-→ 선택된 Base Skill 전문 최대 3개
-→ docs/planning/README.md
-→ 이번 작업의 분야별 책임 원본
-→ 실제 대상 파일
+START_HERE → AGENTS → CURRENT_STATUS → PROJECT_CORE
+→ DOCUMENTATION_MAP → SKILL_REGISTRY
+→ 선택된 Skill·책임 원본 → 실제 파일
 ```
 
-Base와 저장소를 “전부 확인”한다는 요청은 모든 파일과 Skill을 무작정 읽는다는 뜻이 아니다. 라우터와 Registry로 현재 작업에 필요한 최소 책임 원본·Skill·Skill Mode를 선택하고, 실제 `SKILL.md`를 읽은 뒤 실행한다.
+Base 공용 25개 Skill은 `skills/BASE_SKILL_INDEX.json`에서 선택하고 고정된 Base 전문만 읽는다. 프로젝트 고유 분야 Skill 10개는 `skills/disciplines/`에 있으며 공통 계약을 공유한다.
 
-### 운영 문서
-
-- 최상위 라우터: [`START_HERE.md`](START_HERE.md)
-- 프로젝트 강제 규칙: [`AGENTS.md`](AGENTS.md)
-- 운영 생명주기: [`docs/OPERATING_MODEL.md`](docs/OPERATING_MODEL.md)
-- Work Mode·Skill 라우팅: [`docs/WORK_MODE_AND_SKILL_ROUTING.md`](docs/WORK_MODE_AND_SKILL_ROUTING.md)
-- Skill Registry: [`skills/SKILL_REGISTRY.json`](skills/SKILL_REGISTRY.json)
-- 프로젝트 분야 Skill 패키지: [`skills/disciplines/`](skills/disciplines/)
-- Base 경로 어댑터: [`skills/PROJECT_PATH_ADAPTER.json`](skills/PROJECT_PATH_ADAPTER.json)
-- Base 기준: [`docs/BASE_RULES_VERSION.md`](docs/BASE_RULES_VERSION.md)
-
-### 기획 문서
-
-- 프로젝트 방향: [`docs/planning/PROJECT_DIRECTION.md`](docs/planning/PROJECT_DIRECTION.md)
-- 서사·대화·관계: [`docs/planning/NARRATIVE_CONTENT_PLAN.md`](docs/planning/NARRATIVE_CONTENT_PLAN.md)
-- 아트·표정·컷인·연출: [`docs/planning/ART_PRESENTATION_PLAN.md`](docs/planning/ART_PRESENTATION_PLAN.md)
-- 통합 로드맵·인수인계: [`docs/planning/ROADMAP_AND_HANDOFF.md`](docs/planning/ROADMAP_AND_HANDOFF.md)
-- 적용 사례 라이브러리: [`docs/planning/REFERENCE_CASES.md`](docs/planning/REFERENCE_CASES.md)
-
-## 다른 핵심 문서
-
-- 작업별 문서 선택: [`docs/DOCUMENTATION_MAP.md`](docs/DOCUMENTATION_MAP.md)
-- 상세 게임 설계: [`docs/GAME_DESIGN_DOCUMENT.md`](docs/GAME_DESIGN_DOCUMENT.md)
-- 검증 계약: [`TEST_CHECKLIST.md`](TEST_CHECKLIST.md)
-- 문서 보존 규칙: [`docs/DOCUMENT_LIFECYCLE.md`](docs/DOCUMENT_LIFECYCLE.md)
-
-모든 과거 Goal·QA·제안서를 기본으로 읽지 않는다. 필요한 근거만 [`docs/archive/README.md`](docs/archive/README.md)에서 선택한다.
-
-## 프로젝트 열기
-
-1. Godot 4.7 stable을 실행한다.
-2. `Import`를 누른다.
-3. 이 저장소의 `project.godot`을 선택한다.
-4. 실행하면 `scenes/main_menu.tscn`에서 시작한다.
-
-## 현재 구현 플레이 흐름
+## 핵심 플레이 흐름
 
 ```text
-신규 캠페인 → 저승역 온보딩 또는 현재 반일 계획
-→ (선택) HQ 일정 비소모 일상 에피소드
-→ 조사·휴식·세력 의뢰 배치
-→ 사건 조사 → 규칙 판단 → 안정화·잔향 회수
-→ 반일 결과 → 사건 보고서·DB·연구·시장 → 다음 반일
+캠페인·일정
+→ 사건 조사·단서 수집
+→ 규칙 판단·검증
+→ 안정화·잔향 회수
+→ 보고서·DB·괴이 매뉴얼
+→ 다음 반일
 ```
 
-## 구현 핵심
-
-- 최대 10일, 오전·오후 순차 반일 운영
-- 권나래 주인공과 서포트 0~2명 저장 호환
-- 조사 중 HQ 중단·재개
-- 세 사건의 조사·판단·회수·보고서·DB
-- 위험 사례를 다음 판단 근거로 남기는 페어플레이 추리
-- 저승역 3×3 학습·4×4 최종 검증과 페이지형 괴이 매뉴얼
-- 기록관 아카 관제 안내
-- 초기 5인과 외부 접점 4인의 캐릭터 아트
-- 소문시장·마도회·퇴마사 계보 및 3칸 세력 의뢰 게시판
+괴이는 처치 대상이 아니며 실패는 다음 판단을 위한 위험 사례로 남는다. 기록관 아카와 요원은 정보를 설명하지만 정답을 대신하지 않는다.
 
 ## 주요 구조
 
 ```text
-assets/                 배경·요원·괴이·아카·캐릭터 아트
-data/episodes/          구현 사건 JSON 3개
-scenes/                 메인·준비·대화·현장·회수·결과·DB·시장
-scripts/core/           저장 파사드와 캠페인 상태
-scripts/data/           에피소드·일상 데이터 로딩
-scripts/scenes/         화면별 진행 연결
-scripts/ui/             공용 UI·프레젠테이션·접근성
-docs/planning/          프로젝트 방향·서사·아트·연출·로드맵·사례
-docs/                   현행 설계·상태·검증·백업 라우터
-skills/SKILL_REGISTRY.json      Base·프로젝트 선택 라우터
-skills/disciplines/             프로젝트 분야 실행 Skill 10개
-skills/PROJECT_PATH_ADAPTER.json Base 역할과 실제 경로 연결
-tests/                  Godot·계약·Skill 패키지·회귀 테스트
-tools/docs/             GDD DOCX 생성기
+assets/          승인 아트·오디오
+data/            사건·일상·시스템 데이터
+scenes/          메뉴·HQ·조사·회수·결과·DB·시장
+scripts/         저장·데이터·Scene·UI 로직
+docs/            상태·코어·설계·운영·QA
+skills/          Base 인덱스·Coverage·프로젝트 Skill
+tests/           계약·회귀 테스트
+tools/docs/      GDD DOCX 생성기
 ```
 
 ## 검증
 
-```powershell
-& "C:\Users\user\Downloads\Godot_v4.7-stable_win64.exe\Godot_v4.7-stable_win64_console.exe" --headless --path . --quit
-git diff --check
-& "C:\Users\user\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe" tools/docs/build_game_design_doc.py --check
+```text
 python -m unittest tests/test_base_operating_sync.py tests/test_skill_package_integrity.py
+python tools/docs/build_game_design_doc.py --check  # GDD 변경 시
 ```
 
-상세 수동·기능 검증은 [`TEST_CHECKLIST.md`](TEST_CHECKLIST.md)를 따른다. 실행하지 않은 항목은 통과로 기록하지 않는다.
-
-## 현재 남은 작업
-
-1. Base 비파괴 동기화 PR의 최종 리뷰와 병합 여부를 결정한다.
-2. 충돌하는 기존 PR #41~#43은 병합하지 않거나 비파괴 PR로 대체한다.
-3. 선택한 Codex ZIP의 `IMP-00` 사전 감사를 현재 `main`에서 실행한다.
-4. 분야별 기획서와 실제 대상 파일의 차이를 확인한다.
-5. MVP-044~046 중 한 범위만 작은 end-to-end 단위로 구현한다.
-6. 구현 완료 후 상태·로드맵·테스트·해당 기획서를 갱신한다.
+Godot·플레이어 화면 변경이 있는 작업은 `TEST_CHECKLIST.md`의 headless·해상도·입력·저장·플레이 경로 검증을 추가한다. 실행하지 않은 항목은 통과로 기록하지 않는다.
