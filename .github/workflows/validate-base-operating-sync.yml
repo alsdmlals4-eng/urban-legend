@@ -1,0 +1,49 @@
+name: Validate Base operating sync
+
+on:
+  pull_request:
+    paths:
+      - "START_HERE.md"
+      - "AGENTS.md"
+      - "docs/OPERATING_MODEL.md"
+      - "docs/WORK_MODE_AND_SKILL_ROUTING.md"
+      - "docs/CURRENT_STATUS.md"
+      - "docs/DOCUMENTATION_MAP.md"
+      - "docs/BASE_RULES_VERSION.md"
+      - "docs/AI_SHARED_WORK_RULES.md"
+      - "docs/AI_WORKFLOW_RULES.md"
+      - "docs/MVP_WORKFLOW_CHECKLIST.md"
+      - "skills/**"
+      - "tests/test_base_operating_sync.py"
+      - ".github/workflows/validate-base-operating-sync.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "START_HERE.md"
+      - "AGENTS.md"
+      - "docs/OPERATING_MODEL.md"
+      - "docs/WORK_MODE_AND_SKILL_ROUTING.md"
+      - "docs/CURRENT_STATUS.md"
+      - "docs/DOCUMENTATION_MAP.md"
+      - "docs/BASE_RULES_VERSION.md"
+      - "docs/AI_SHARED_WORK_RULES.md"
+      - "docs/AI_WORKFLOW_RULES.md"
+      - "docs/MVP_WORKFLOW_CHECKLIST.md"
+      - "skills/**"
+      - "tests/test_base_operating_sync.py"
+      - ".github/workflows/validate-base-operating-sync.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate-base-operating-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate pinned Base operating contract
+        run: python -m unittest tests/test_base_operating_sync.py
