@@ -7,7 +7,7 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-EXPECTED_BASE_INDEX_SHA256 = "2b72bbde009aa912c54724b2b1a14dc034e0143f10cf836be7f055176b494a34"
+EXPECTED_BASE_INDEX_BLOB_SHA = "e227a227461a16162a9861ca858b5c4e267488cb"
 EXPECTED_BASE_IDS = {'managing-game-project-operating-system', 'auditing-and-refining-ui-art', 'orchestrating-deepseek-worktrees', 'reviewing-and-validating-project-changes', 'establishing-project-core', 'synchronizing-local-and-github-state', 'maintaining-project-context-and-handoff', 'governing-game-user-research-coverage', 'designing-art-prompts-and-technique-cards', 'pruning-stale-and-nonfunctional-material', 'designing-vertical-slices', 'diagnosing-game-engine-runtime-failures', 'managing-base-change-proposals', 'evolving-project-discipline-skills', 'simplifying-skill-bodies', 'managing-design-documents', 'building-project-visual-dashboards', 'running-adversarial-review-and-refinement', 'managing-project-intake-and-work-contract', 'maintaining-long-running-task-continuity', 'identifying-project-core', 'auditing-canonical-reference-freshness', 'analyzing-and-refining-game-concepts', 'creating-user-learning-notes', 'refactoring-with-contract-preservation'}
 NO_LOSS = {'urban-legend-narrative': ['미확보', '선택 기억', 'continuity-review'], 'urban-legend-game-design': ['처치', '위험 사례', 'balance-review'], 'urban-legend-ux-ui-accessibility': ['1280×720', '동등한', 'interaction-review'], 'urban-legend-engineering': ['저장', '보호 경로', 'compatibility-review'], 'urban-legend-technical-art-pipeline': ['Manifest', '재생성', 'pipeline-review'], 'urban-legend-art': ['식별성', '의미 키', 'asset-spec'], 'urban-legend-audio': ['음소거', '폴백', 'mix-review'], 'urban-legend-qa': ['NOT_RUN', 'release-gate', '원래 실패'], 'urban-legend-production-pm': ['차단 PR', 'rollback', 'production-handoff'], 'urban-legend-analytics-user-research': ['표본', '자기보고', 'synthesis']}
 FRONT = re.compile(r"\A---\n(?P<body>.*?)\n---\n", re.DOTALL)
@@ -46,7 +46,9 @@ class SkillPackageIntegrityTests(unittest.TestCase):
         self.index = load("skills/BASE_SKILL_INDEX.json")
 
     def test_base_index_snapshot_is_frozen_and_complete(self) -> None:
-        self.assertEqual(hashlib.sha256(self.index_path.read_bytes()).hexdigest(), EXPECTED_BASE_INDEX_SHA256)
+        data = self.index_path.read_bytes()
+        blob_sha = hashlib.sha1(f"blob {len(data)}\0".encode() + data).hexdigest()
+        self.assertEqual(blob_sha, EXPECTED_BASE_INDEX_BLOB_SHA)
         ids = [x["skill_id"] for x in self.index["skills"]]
         self.assertEqual(set(ids), EXPECTED_BASE_IDS)
         self.assertEqual(len(ids), len(set(ids)))
