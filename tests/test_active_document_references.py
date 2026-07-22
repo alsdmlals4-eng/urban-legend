@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+import subprocess
 import unittest
 from pathlib import Path
 
@@ -33,7 +34,14 @@ STALE_FILE_PATTERNS = [
     re.compile(r"docs/CONTENT_DIRECTION_V09\.md"),
     re.compile(r"\.github/core-validation-1b/"),
     re.compile(r"apply-core-validation-1b\.yml"),
+    re.compile(r"apply-core-validation-manual-promotion\.yml"),
     re.compile(r"agent/core-validation-slice"),
+]
+FORBIDDEN_TRACKED_PATHS = [
+    re.compile(r"(?:^|/)__pycache__(?:/|$)"),
+    re.compile(r"\.py[co]$"),
+    re.compile(r"^\.github/core-validation-1b/"),
+    re.compile(r"^\.github/workflows/apply-core-validation-(?:1b|manual-promotion)\.yml$"),
 ]
 
 
@@ -122,6 +130,22 @@ class ActiveDocumentReferenceTests(unittest.TestCase):
                 failures.append(f"{relative} -> {match.group(0)}")
             for match in re.finditer(r"docs/CODEX_GOAL_[A-Za-z0-9_.-]+\.md", text):
                 failures.append(f"{relative} -> {match.group(0)}")
+        self.assertEqual([], failures)
+
+    def test_tracked_tree_has_no_generated_or_bootstrap_files(self) -> None:
+        result = subprocess.run(
+            ["git", "ls-files"],
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        tracked = [line.strip() for line in result.stdout.splitlines() if line.strip()]
+        failures = [
+            path
+            for path in tracked
+            if any(pattern.search(path) for pattern in FORBIDDEN_TRACKED_PATHS)
+        ]
         self.assertEqual([], failures)
 
 
