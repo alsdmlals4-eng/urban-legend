@@ -1,4 +1,4 @@
-name: Snapshot latest main for clean rebase
+name: Validate replacement PR final tree
 
 on:
   pull_request:
@@ -10,23 +10,83 @@ permissions:
   contents: read
 
 jobs:
-  snapshot-main:
+  validate-replacement-pr:
     runs-on: ubuntu-latest
+    timeout-minutes: 75
+    env:
+      EXPECTED_HEAD: 01ded0cdb04385f48628219d925f1607e6a9f10e
+      PYTHONDONTWRITEBYTECODE: "1"
+      GODOT_SILENCE_ROOT_WARNING: "1"
+      GODOT_TEST_TMP: ${{ runner.temp }}/urban-legend-godot-tests
+      GODOT_TEST_TIMEOUT: "300"
     steps:
-      - name: Check out latest main
+      - name: Check out PR 48 head branch
         uses: actions/checkout@v4
         with:
-          ref: main
+          ref: agent/core-validation-manual-promotion
           fetch-depth: 0
 
-      - name: Record main commit
-        run: git rev-parse HEAD | tee MAIN_COMMIT.txt
+      - name: Confirm exact source and model post-cleanup tree
+        run: |
+          test "$(git rev-parse HEAD)" = "$EXPECTED_HEAD"
+          git rm .github/workflows/apply-core-validation-manual-promotion.yml
+          test "$(git diff --cached --name-only)" = ".github/workflows/apply-core-validation-manual-promotion.yml"
+          git diff --cached --check
 
-      - name: Upload exact main snapshot
-        uses: actions/upload-artifact@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          name: urban-legend-latest-main
-          path: .
-          include-hidden-files: true
-          if-no-files-found: error
-          retention-days: 1
+          python-version: "3.12"
+
+      - name: Install document dependencies
+        run: python -m pip install --disable-pip-version-check Pillow python-docx
+
+      - name: Validate Python contracts and repository hygiene
+        run: python -m unittest discover -s tests -p 'test_*.py' -v
+
+      - name: Parse all JSON data
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          files = sorted(Path("data").rglob("*.json"))
+          if not files:
+              raise SystemExit("No JSON files found")
+          for path in files:
+              json.loads(path.read_text(encoding="utf-8"))
+              print(f"OK {path}")
+          PY
+
+      - name: Verify GDD source and DOCX mirror
+        run: |
+          python tools/docs/build_game_design_doc.py --check
+          python tools/docs/build_game_design_doc.py --build
+          python tools/docs/build_game_design_doc.py --check
+          git diff --exit-code -- docs/GAME_DESIGN_DOCUMENT.md docs/URBAN_LEGEND_GAME_DESIGN.docx
+
+      - name: Install verified Godot 4.7.1
+        env:
+          GODOT_URL: https://github.com/godotengine/godot-builds/releases/download/4.7.1-stable/Godot_v4.7.1-stable_linux.x86_64.zip
+          GODOT_ZIP_SHA256: c7ff14fd28472c8d4f193043de30278dcf7e5241a1dcf7566b02e27addaa33ba
+        run: |
+          curl --fail --location --retry 3 --output "$RUNNER_TEMP/godot.zip" "$GODOT_URL"
+          echo "$GODOT_ZIP_SHA256  $RUNNER_TEMP/godot.zip" | sha256sum --check --strict
+          mkdir -p "$RUNNER_TEMP/godot"
+          unzip -q "$RUNNER_TEMP/godot.zip" -d "$RUNNER_TEMP/godot"
+          chmod +x "$RUNNER_TEMP/godot/Godot_v4.7.1-stable_linux.x86_64"
+          echo "GODOT_BIN=$RUNNER_TEMP/godot/Godot_v4.7.1-stable_linux.x86_64" >> "$GITHUB_ENV"
+
+      - name: Import project and run all Godot regressions
+        run: |
+          "$GODOT_BIN" --version
+          "$GODOT_BIN" --headless --path . --import --quit
+          chmod +x tests/run_godot_regression.sh
+          bash tests/run_godot_regression.sh
+
+      - name: Verify exact modeled final tree
+        run: |
+          test "$(git rev-parse HEAD)" = "$EXPECTED_HEAD"
+          test "$(git diff --cached --name-only)" = ".github/workflows/apply-core-validation-manual-promotion.yml"
+          test -z "$(git diff --name-only)"
+          git diff --check
