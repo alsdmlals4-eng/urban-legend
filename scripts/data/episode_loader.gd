@@ -45,8 +45,8 @@ func _apply_optional_core_validation_overlay(file_path: String, base_data: Dicti
 	if overlay.is_empty():
 		return base_data
 
-	var episode := base_data.get("episode", {})
-	var episode_id := String(episode.get("id", "")) if typeof(episode) == TYPE_DICTIONARY else ""
+	var episode_value: Variant = base_data.get("episode", {})
+	var episode_id := String(episode_value.get("id", "")) if typeof(episode_value) == TYPE_DICTIONARY else ""
 	var target_episode_id := String(overlay.get("target_episode_id", ""))
 	if episode_id.is_empty() or target_episode_id != episode_id:
 		push_error("Core validation overlay target mismatch: %s -> %s" % [overlay_path, episode_id])
@@ -57,7 +57,7 @@ func _apply_optional_core_validation_overlay(file_path: String, base_data: Dicti
 		push_error("Core validation overlay overrides must be a Dictionary: %s" % overlay_path)
 		return base_data
 
-	var merged := base_data.duplicate(true)
+	var merged: Dictionary = base_data.duplicate(true)
 	for key in overrides.keys():
 		merged[key] = overrides[key]
 	return merged
