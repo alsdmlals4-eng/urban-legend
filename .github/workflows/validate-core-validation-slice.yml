@@ -7,6 +7,8 @@ on:
       - "data/episodes/episode_001_afterlife_station_core_validation.json"
       - "scripts/data/episode_loader.gd"
       - "scripts/core/game_state.gd"
+      - "scripts/scenes/battle_scene.gd"
+      - "scenes/battle_scene.tscn"
       - "tests/test_core_validation_contract.py"
       - "docs/qa/CORE_VALIDATION_SLICE_001.md"
       - ".github/workflows/validate-core-validation-slice.yml"
@@ -18,6 +20,8 @@ on:
       - "data/episodes/episode_001_afterlife_station_core_validation.json"
       - "scripts/data/episode_loader.gd"
       - "scripts/core/game_state.gd"
+      - "scripts/scenes/battle_scene.gd"
+      - "scenes/battle_scene.tscn"
       - "tests/test_core_validation_contract.py"
       - "docs/qa/CORE_VALIDATION_SLICE_001.md"
       - ".github/workflows/validate-core-validation-slice.yml"
@@ -53,3 +57,19 @@ jobs:
               json.loads(path.read_text(encoding="utf-8"))
               print(f"OK {path}")
           PY
+
+      - name: Upload project snapshot for local Godot verification
+        uses: actions/upload-artifact@v4
+        with:
+          name: urban-legend-core-validation-project
+          path: |
+            project.godot
+            assets
+            data
+            scenes
+            scripts
+            tests
+            docs
+            addons
+          if-no-files-found: error
+          retention-days: 1
