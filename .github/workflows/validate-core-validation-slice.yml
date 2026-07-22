@@ -42,7 +42,6 @@ jobs:
         if: ${{ hashFiles('.github/core-validation-1b/part*') != '' }}
         run: |
           cat .github/core-validation-1b/part* > "$RUNNER_TEMP/core-validation-1b.patch.gz.b64"
-          echo "a562278368dbd178a78fd1b0e86d70dcb2059a2bd222ce5679eff09c45059c13  $RUNNER_TEMP/core-validation-1b.patch.gz.b64" | sha256sum --check --strict
           base64 --decode "$RUNNER_TEMP/core-validation-1b.patch.gz.b64" | gzip --decompress > "$RUNNER_TEMP/core-validation-1b.patch"
           echo "8859cd4958e1499475a6b0a5c7d5bbeb6f81c87482a10e2e3791f3a080edaed9  $RUNNER_TEMP/core-validation-1b.patch" | sha256sum --check --strict
           git apply --check "$RUNNER_TEMP/core-validation-1b.patch"
