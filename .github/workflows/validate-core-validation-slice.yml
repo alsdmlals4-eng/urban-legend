@@ -40,8 +40,18 @@ jobs:
       - name: Reassemble and apply verified 1B patch
         id: apply_patch
         if: ${{ hashFiles('.github/core-validation-1b/part*') != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PATCH_TREE_SHA: 498ef1b5def6f1c813f67ffcb77380bf916444b8
         run: |
-          cat .github/core-validation-1b/part* > "$RUNNER_TEMP/core-validation-1b.patch.gz.b64"
+          : > "$RUNNER_TEMP/core-validation-1b.patch.gz.b64"
+          while IFS= read -r blob_sha; do
+            gh api "repos/$GITHUB_REPOSITORY/git/blobs/$blob_sha" --jq .content \
+              | tr -d '\n\r ' \
+              | base64 --decode \
+              >> "$RUNNER_TEMP/core-validation-1b.patch.gz.b64"
+          done < <(gh api "repos/$GITHUB_REPOSITORY/git/trees/$PATCH_TREE_SHA" --jq '.tree | sort_by(.path) | .[].sha')
+          echo "a562278368dbd178a78fd1b0e86d70dcb2059a2bd222ce5679eff09c45059c13  $RUNNER_TEMP/core-validation-1b.patch.gz.b64" | sha256sum --check --strict
           base64 --decode "$RUNNER_TEMP/core-validation-1b.patch.gz.b64" | gzip --decompress > "$RUNNER_TEMP/core-validation-1b.patch"
           echo "8859cd4958e1499475a6b0a5c7d5bbeb6f81c87482a10e2e3791f3a080edaed9  $RUNNER_TEMP/core-validation-1b.patch" | sha256sum --check --strict
           git apply --check "$RUNNER_TEMP/core-validation-1b.patch"
