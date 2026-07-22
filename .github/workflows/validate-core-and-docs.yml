@@ -14,7 +14,7 @@ on:
       - "tests/**"
       - "tools/docs/**"
       - ".gitignore"
-      - ".github/workflows/validate-core-and-docs.yml"
+      - ".github/workflows/**"
   push:
     branches:
       - main
@@ -30,7 +30,7 @@ on:
       - "tests/**"
       - "tools/docs/**"
       - ".gitignore"
-      - ".github/workflows/validate-core-and-docs.yml"
+      - ".github/workflows/**"
   workflow_dispatch:
 
 permissions:
