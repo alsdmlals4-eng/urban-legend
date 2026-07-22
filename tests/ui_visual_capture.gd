@@ -44,6 +44,14 @@ func _capture() -> void:
 			game_state.start_resolution_phase()
 			game_state.save_recovery_result(true, "core_recovered", 100)
 			game_state.record_current_case_report()
+	if ui_state.begins_with("core_validation_"):
+		game_state.set_clue_collected("clue_repeating_announcement", true)
+		game_state.set_clue_collected("clue_missing_terminal_sign", true)
+	if ui_state in ["core_validation_result", "core_validation_database", "core_validation_database_bottom"]:
+		_prepare_core_validation_manual(game_state)
+		game_state.start_resolution_phase()
+		game_state.save_recovery_result(true, "core_recovered", 100)
+		game_state.record_current_case_report()
 	if ui_state.begins_with("mvp042_"):
 		game_state.reset_run_state()
 		if ui_state == "mvp042_daily" or ui_state == "mvp042_daily_result":
@@ -170,10 +178,36 @@ func _capture() -> void:
 		current_scene.call("_toggle_clue_drawer")
 		for _frame in range(3):
 			await process_frame
+	if ui_state.begins_with("core_validation_") and current_scene.has_method("_select_hypothesis"):
+		var pattern: Dictionary = current_scene.get("_current_pattern")
+		var correct_response := _find_correct_response(pattern)
+		if ui_state in ["core_validation_evidence", "core_validation_response"] and not correct_response.is_empty():
+			current_scene.call("_select_hypothesis", correct_response)
+			for _frame in range(3):
+				await process_frame
+		if ui_state == "core_validation_response":
+			current_scene.call("_toggle_evidence", "clue_repeating_announcement")
+			current_scene.call("_confirm_evidence_step")
+			for _frame in range(3):
+				await process_frame
 	if ui_state == "mvp042_database" and current_scene.has_method("_show_section"):
 		current_scene.call("_show_section", "daily_episode_records")
 		for _frame in range(3):
 			await process_frame
+	if ui_state in ["core_validation_database", "core_validation_database_bottom"] and current_scene.has_method("_show_section"):
+		current_scene.call("_show_section", "anomaly_manual_records")
+		for _frame in range(3):
+			await process_frame
+		if ui_state == "core_validation_database_bottom":
+			var detail_scroll := current_scene.find_child("DatabaseDetailScroll", true, false) as ScrollContainer
+			var danger_panel := current_scene.find_child("AnomalyManualDangerCases", true, false) as Control
+			if detail_scroll != null and danger_panel != null:
+				for _frame in range(4):
+					await process_frame
+				var vertical_bar := detail_scroll.get_v_scroll_bar()
+				detail_scroll.scroll_vertical = maxi(0, int(vertical_bar.max_value - vertical_bar.page))
+				for _frame in range(4):
+					await process_frame
 	if args.size() > 3 and String(args[3]) == "editor":
 		var f2 := InputEventKey.new()
 		f2.keycode = KEY_F2
@@ -181,7 +215,7 @@ func _capture() -> void:
 		Input.parse_input_event(f2)
 		for _frame in range(3):
 			await process_frame
-	if args.size() > 4:
+	if args.size() > 4 and not String(args[4]).is_empty():
 		var focus_control := current_scene.find_child(String(args[4]), true, false) as Control
 		var scroll := _find_scroll_container(focus_control)
 		if focus_control != null and scroll != null:
@@ -241,9 +275,79 @@ func _prepare_mvp039_evidence(game_state: Node) -> void:
 			game_state.mark_hint_seen(String(hint.get("id", "")))
 
 
+func _prepare_core_validation_manual(game_state: Node) -> void:
+	var official_context := _manual_capture_context(
+		"목적지 기록 충돌",
+		"개인에게 들리는 목적지와 공식 운행 기록을 분리해 검증한다.",
+		"전광판의 목적지는 객관적 노선이 아니라 방송 공백을 개인 기억이 채운 결과다.",
+		"방송 공백과 전광판 차이를 대조해 안내 신호를 차단한다",
+		["clue_repeating_announcement", "clue_missing_terminal_sign"],
+		["반복 안내방송 원본", "목적지 표기 공백"],
+		true,
+		"검증 완료",
+		"cut_false_broadcast"
+	)
+	var danger_context := _manual_capture_context(
+		"목적지 기록 충돌",
+		"개인에게 들리는 목적지와 공식 운행 기록을 분리해 검증한다.",
+		"사라지기 전 마지막 표기가 안전한 실제 종착지다.",
+		"전광판이 가리키는 승강장을 실제 종착지로 보고 이동한다",
+		["clue_missing_terminal_sign"],
+		["목적지 표기 공백"],
+		false,
+		"현장 대응 실패",
+		"follow_terminal"
+	)
+	var candidate_context := _manual_capture_context(
+		"시선과 동선 불일치",
+		"괴이의 현재 행동보다 사건 전부터 남은 피해자 기록을 우선 대조한다.",
+		"역무원의 시선은 피해자의 실제 동선과 반대 방향으로 유도하는 현상이다.",
+		"시선을 따르지 않고 피해자의 시간 기록으로 동선을 고정한다",
+		["clue_last_message"],
+		["00:00 고정 문자"],
+		false,
+		"대응 확인·근거 일부",
+		"trace_victim_time"
+	)
+	game_state.record_recovery_pattern_outcome("pattern_station_false_terminal", "follow_terminal", false, "공식 기록으로 검증되지 않은 목적지를 따르면 개인 기억이 괴이 노선으로 고정된다.", danger_context)
+	game_state.record_recovery_pattern_outcome("pattern_station_false_terminal", "cut_false_broadcast", true, "가설·근거·대응 검증 완료", official_context)
+	game_state.record_recovery_pattern_outcome("pattern_station_gaze_lure", "trace_victim_time", true, "대응은 확인했지만 작성 근거 일부만 선택했다.", candidate_context)
+
+
+func _manual_capture_context(pattern_name: String, manual_draft: String, hypothesis: String, response_label: String, evidence_ids: Array, evidence_titles: Array, verified: bool, verification_label: String, response_id: String) -> Dictionary:
+	return {
+		"guided": true,
+		"episode_id": "episode_001_afterlife_station",
+		"episode_title": "저승역",
+		"pattern_name": pattern_name,
+		"question": "현재 기록으로 어떤 규칙을 검증할 수 있는가?",
+		"manual_draft": manual_draft,
+		"response_label": response_label,
+		"selected_hypothesis_response_id": response_id,
+		"hypothesis": hypothesis,
+		"authored_supporting_clue_ids": ["clue_repeating_announcement", "clue_missing_terminal_sign"],
+		"authored_supporting_clue_titles": ["반복 안내방송 원본", "목적지 표기 공백"],
+		"selected_evidence_ids": evidence_ids,
+		"selected_evidence_titles": evidence_titles,
+		"selected_contradicted_clue_ids": [],
+		"reasoning": "확보 기록을 비교해 규칙과 대응의 연결을 검증한다.",
+		"response_reasoning": "현장 대응 결과를 기록한다.",
+		"verification_label": verification_label,
+		"verified": verified
+	}
+
+
 func _find_wrong_response(pattern: Dictionary) -> Dictionary:
 	var correct_id := String(pattern.get("correct_response_id", ""))
 	for response in pattern.get("responses", []):
 		if typeof(response) == TYPE_DICTIONARY and String(response.get("id", "")) != correct_id:
+			return response.duplicate(true)
+	return {}
+
+
+func _find_correct_response(pattern: Dictionary) -> Dictionary:
+	var correct_id := String(pattern.get("correct_response_id", ""))
+	for response in pattern.get("responses", []):
+		if typeof(response) == TYPE_DICTIONARY and String(response.get("id", "")) == correct_id:
 			return response.duplicate(true)
 	return {}

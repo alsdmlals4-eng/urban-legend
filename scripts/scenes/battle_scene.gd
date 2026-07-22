@@ -16,6 +16,14 @@ const BASE_RECOVERY_THRESHOLD := 70
 const MAX_RECOVERY_THRESHOLD := 90
 const CLUE_THRESHOLD_FACTOR := 0.5
 const CLUE_START_WEAKEN_FACTOR := 0.2
+
+enum GuidedDecisionStep {
+	DIRECT,
+	HYPOTHESIS,
+	EVIDENCE,
+	RESPONSE
+}
+
 var _anomaly_stability := BASE_ANOMALY_STABILITY
 var _fear_level := 0
 var _recovery_threshold := BASE_RECOVERY_THRESHOLD
@@ -53,6 +61,14 @@ var _turn_locked := false
 var _log_guide: LogGuide
 var _manual_drawer: AnomalyManualDrawer
 var _manual_prediction_label: Label
+var _last_result_detail_label: Label
+var _decision_progress_label: Label
+var _decision_instruction_label: Label
+var _decision_back_button: Button
+var _decision_confirm_button: Button
+var _decision_step := GuidedDecisionStep.DIRECT
+var _selected_hypothesis_response_id := ""
+var _selected_evidence_ids: Array[String] = []
 
 
 func _ready() -> void:
@@ -85,6 +101,8 @@ func _build_scene_ui() -> void:
 	_action_panel = %ActionDock
 	_telegraph_label = %TelegraphLabel
 	_prediction_summary_label = %PredictionSummaryLabel
+	_decision_progress_label = %DecisionProgressLabel
+	_decision_instruction_label = %DecisionInstructionLabel
 	_response_box = %ResponseGrid
 	_response_box.columns = 3
 	_consumable_row = %ConsumableRow
@@ -93,12 +111,16 @@ func _build_scene_ui() -> void:
 	_threshold_label = %ThresholdLabel
 	_prediction_label = %PredictionLabel
 	_auto_effect_label = %ClueSummaryLabel
+	_decision_back_button = %DecisionBackButton
+	_decision_confirm_button = %DecisionConfirmButton
 
 	var initial_stage := SceneVisuals.apply_anomaly(_anomaly_image, GameState.get_anomaly_risk())
 	_anomaly_stage_label.text = "관측 위험 단계 %s · %s" % [initial_stage, _make_resolution_phase_text()]
 	_auto_effect_label.text = _make_clue_summary()
 	_auto_effect_label.tooltip_text = "괴이 매뉴얼에서 확보 단서와 회수 효과를 확인합니다."
 	_recover_button.pressed.connect(_recover_anomaly_core)
+	_decision_back_button.pressed.connect(_go_back_decision_step)
+	_decision_confirm_button.pressed.connect(_confirm_evidence_step)
 	%RepresentativeSwitchButton.pressed.connect(_switch_representative)
 	(%ClueDrawer as PanelContainer).visible = false
 	_manual_drawer = AnomalyManualDrawerScript.new()
@@ -114,6 +136,8 @@ func _build_scene_ui() -> void:
 	_manual_drawer.bind_toggle_button(%ClueDrawerButton)
 	_manual_prediction_label = _make_label("")
 	_manual_drawer.add_detail_control(_manual_prediction_label)
+	_last_result_detail_label = _make_label("직전 판단 상세\n아직 실행한 대응이 없습니다.")
+	_manual_drawer.add_detail_control(_last_result_detail_label)
 	_evidence_label = _make_label("")
 	_manual_drawer.add_detail_control(_evidence_label)
 	# 기존 회수 지원과 이동 조작은 화면 기본 정보에서는 숨기되, 기능을 제거하지 않고
@@ -292,28 +316,46 @@ func _make_auto_effect_text() -> String:
 
 func _make_recovery_evidence_text() -> String:
 	if _current_pattern.is_empty():
-		return "이번 판단 근거\n전조: 다음 전조를 관측하면 근거가 갱신됩니다.\n연결 단서: 없음\n오대응 학습: 없음\n다음 판단: 전조를 먼저 관측합니다."
+		return "이번 판단 근거\n전조: 다음 전조를 관측하면 근거가 갱신됩니다.\n판단 질문: 없음\n선택 가설: 없음\n선택 근거: 없음\n오대응 학습: 없음\n다음 판단: 전조를 먼저 관측합니다."
 
 	var lines: Array[String] = [
 		"이번 판단 근거",
-		"전조: %s" % String(_current_pattern.get("telegraph", "현상이 불규칙하게 반복됩니다."))
+		"전조: %s" % String(_current_pattern.get("telegraph", "현상이 불규칙하게 반복됩니다.")),
+		"판단 질문: %s" % String(_current_pattern.get("question", "전조와 연결 기록을 대조해 대응 규칙을 판단합니다."))
 	]
 	var related_titles: Array[String] = []
-	for clue_id in _current_pattern.get("related_clue_ids", []):
-		var clue := _find_clue(String(clue_id))
-		if not clue.is_empty() and GameState.has_collected_clue(String(clue_id)):
+	for clue_id_value in _current_pattern.get("related_clue_ids", []):
+		var clue_id := String(clue_id_value)
+		var clue := _find_clue(clue_id)
+		if not clue.is_empty() and GameState.has_collected_clue(clue_id):
 			related_titles.append(String(clue.get("title", clue_id)))
 	if related_titles.is_empty():
 		lines.append("연결 단서: 이 전조와 직접 연결된 확보 단서가 없습니다.")
 	else:
 		lines.append("연결 단서: %s" % ", ".join(related_titles))
 
-	var learning: Dictionary = GameState.get_recovery_pattern_learning().get(String(_current_pattern.get("id", "")), {})
+	var selected_hypothesis := _find_response_by_id(_selected_hypothesis_response_id)
+	if selected_hypothesis.is_empty():
+		lines.append("선택 가설: 아직 선택하지 않았습니다.")
+	else:
+		lines.append("선택 가설: %s" % String(selected_hypothesis.get("hypothesis", selected_hypothesis.get("label", "가설"))))
+
+	var selected_titles: Array[String] = []
+	for clue_id in _selected_evidence_ids:
+		var selected_clue := _find_clue(clue_id)
+		selected_titles.append(String(selected_clue.get("title", clue_id)))
+	if selected_titles.is_empty():
+		lines.append("선택 근거: 없음")
+	else:
+		lines.append("선택 근거: %s" % ", ".join(selected_titles))
+
+	var learning_value: Variant = GameState.get_recovery_pattern_learning().get(String(_current_pattern.get("id", "")), {})
+	var learning: Dictionary = learning_value if typeof(learning_value) == TYPE_DICTIONARY else {}
 	if learning.is_empty() or bool(learning.get("correct", false)):
 		lines.append("오대응 학습: 아직 없음")
 	else:
 		lines.append("오대응 학습: %s" % String(learning.get("reason", "오대응 이유를 기록했습니다.")))
-	lines.append("다음 판단: 전조와 연결 단서를 대조해 대응을 고릅니다. 힌트는 방향만 제시하며 회수 근거를 대신하지 않습니다.")
+	lines.append("다음 판단: 가설을 세우고 확보 기록을 선택한 뒤, 그 판단과 일치하는 대응을 실행합니다.")
 	return "\n".join(lines)
 
 
@@ -321,6 +363,18 @@ func _find_clue(clue_id: String) -> Dictionary:
 	for clue in GameState.get_clues():
 		if typeof(clue) == TYPE_DICTIONARY and String(clue.get("id", "")) == clue_id:
 			return clue
+	return {}
+
+
+func _find_response_by_id(response_id: String) -> Dictionary:
+	if response_id.is_empty():
+		return {}
+	for response_value in _current_pattern.get("responses", []):
+		if typeof(response_value) != TYPE_DICTIONARY:
+			continue
+		var response: Dictionary = response_value
+		if String(response.get("id", "")) == response_id:
+			return response.duplicate(true)
 	return {}
 
 
@@ -410,13 +464,15 @@ func _begin_recovery_turn(last_result: String = "") -> void:
 	_current_pattern = GameState.select_next_recovery_pattern()
 	_clear_children(_response_box)
 	_clear_children(_consumable_row)
+	_reset_decision_state()
 	if _current_pattern.is_empty():
 		_telegraph_label.text = "전조 데이터를 찾지 못했습니다."
+		_decision_progress_label.text = "판단 중단"
+		_decision_instruction_label.text = "현장 기록을 다시 확인해 주세요."
 		_refresh_recovery_evidence()
 		_log_guide.show_compact_hint("전조 기록을 찾지 못했습니다. 현장 기록을 다시 확인해 주세요.")
 		return
 	var first_telegraph := not GameState.has_seen_log_tutorial("recovery_first_telegraph")
-	_refresh_recovery_evidence()
 	if first_telegraph:
 		_present_log_tutorial("recovery_first_telegraph")
 	elif not _log_guide.is_sequence_active():
@@ -433,41 +489,257 @@ func _begin_recovery_turn(last_result: String = "") -> void:
 	if not auto_lines.is_empty():
 		_prediction_summary_label.text += "\n%s" % "\n".join(auto_lines)
 	if GameState.has_equipped_item("gear_inverse_listener"):
-		for clue_id in _current_pattern.get("related_clue_ids", []):
-			if GameState.has_collected_clue(String(clue_id)):
-				_prediction_summary_label.text += "\n역위상 청음기: 확보 단서 %s가 이 전조와 연결됩니다." % String(clue_id)
+		for clue_id_value in _current_pattern.get("related_clue_ids", []):
+			var clue_id := String(clue_id_value)
+			if GameState.has_collected_clue(clue_id):
+				_prediction_summary_label.text += "\n역위상 청음기: 확보 단서 %s가 이 전조와 연결됩니다." % clue_id
 				break
-	for loaded_id in GameState.get_consumable_loadout():
-		if String(loaded_id) in ["consumable_mental_incense", "consumable_first_aid"]:
-			var consumable_id := String(loaded_id)
+	for loaded_id_value in GameState.get_consumable_loadout():
+		var loaded_id := String(loaded_id_value)
+		if loaded_id in ["consumable_mental_incense", "consumable_first_aid"]:
 			var use_button := Button.new()
-			use_button.text = "사용: %s" % String(GameState.get_market_item(consumable_id).get("name", consumable_id))
-			use_button.pressed.connect(_use_recovery_consumable.bind(consumable_id, use_button))
+			use_button.text = "사용: %s" % String(GameState.get_market_item(loaded_id).get("name", loaded_id))
+			use_button.pressed.connect(_use_recovery_consumable.bind(loaded_id, use_button))
 			_consumable_row.add_child(use_button)
-	for response in _current_pattern.get("responses", []):
-		if typeof(response) != TYPE_DICTIONARY:
+	_consumable_row.visible = _consumable_row.get_child_count() > 0
+	if _uses_guided_decision_flow():
+		_show_hypothesis_step()
+	else:
+		_show_direct_response_step()
+	_refresh_manual_prediction()
+	_refresh_recovery_evidence()
+	if last_result.is_empty():
+		_update_battle_view("판단 절차: 가설을 세우고 확보 기록으로 검증한 뒤 현장 대응을 선택합니다.")
+	else:
+		_last_result_detail_label.text = "직전 판단 상세\n%s" % last_result
+		_update_battle_view(_make_compact_last_result(last_result))
+
+
+func _make_compact_last_result(last_result: String) -> String:
+	var summaries: Array[String] = []
+	for line_value in last_result.split("\n", false):
+		var line := String(line_value).strip_edges()
+		if line.begins_with("대응 성공:") or line.begins_with("오대응:") or line.begins_with("매뉴얼 검증:") or line.begins_with("괴이 반응:"):
+			summaries.append(line)
+		if summaries.size() >= 2:
+			break
+	if summaries.is_empty():
+		for line_value in last_result.split("\n", false):
+			var line := String(line_value).strip_edges()
+			if not line.is_empty():
+				summaries.append(line)
+				break
+	return "직전 결과 · %s" % " / ".join(summaries)
+
+
+func _reset_decision_state() -> void:
+	_decision_step = GuidedDecisionStep.DIRECT
+	_selected_hypothesis_response_id = ""
+	_selected_evidence_ids.clear()
+	_decision_back_button.visible = false
+	_decision_confirm_button.visible = false
+	_decision_confirm_button.disabled = true
+
+
+func _uses_guided_decision_flow() -> bool:
+	if String(_current_pattern.get("question", "")).strip_edges().is_empty():
+		return false
+	var responses: Array = _current_pattern.get("responses", [])
+	if responses.is_empty():
+		return false
+	for response_value in responses:
+		if typeof(response_value) != TYPE_DICTIONARY:
+			return false
+		var response: Dictionary = response_value
+		if String(response.get("hypothesis", "")).strip_edges().is_empty():
+			return false
+	return true
+
+
+func _show_hypothesis_step() -> void:
+	_decision_step = GuidedDecisionStep.HYPOTHESIS
+	_clear_children(_response_box)
+	_decision_progress_label.text = "1 가설 ●  ›  2 근거  ›  3 대응"
+	_decision_instruction_label.text = String(_current_pattern.get("question", "현재 전조를 설명하는 규칙 가설을 선택하세요."))
+	_decision_back_button.visible = false
+	_decision_confirm_button.visible = false
+	var index := 0
+	for response_value in _current_pattern.get("responses", []):
+		if typeof(response_value) != TYPE_DICTIONARY:
 			continue
+		var response: Dictionary = response_value
+		var response_copy: Dictionary = response.duplicate(true)
+		index += 1
+		_add_decision_card({
+			"id": String(response_copy.get("id", "hypothesis_%d" % index)),
+			"title": String(response_copy.get("hypothesis", response_copy.get("label", "가설을 선택한다"))),
+			"description": "",
+			"meta": "가설 %d · 임시 규칙" % index,
+			"compact": true
+		}, "이 가설을 선택하면 다음 단계에서 확보 기록을 직접 대조합니다.", _select_hypothesis.bind(response_copy))
+	_focus_first_enabled_decision_card()
+	_refresh_recovery_evidence()
+
+
+func _select_hypothesis(response: Dictionary) -> void:
+	if _turn_locked:
+		return
+	_selected_hypothesis_response_id = String(response.get("id", ""))
+	_selected_evidence_ids.clear()
+	_show_evidence_step()
+
+
+func _show_evidence_step() -> void:
+	_decision_step = GuidedDecisionStep.EVIDENCE
+	_clear_children(_response_box)
+	_decision_progress_label.text = "1 가설 ✓  ›  2 근거 ●  ›  3 대응"
+	var selected_response := _find_response_by_id(_selected_hypothesis_response_id)
+	_decision_instruction_label.text = "선택한 가설을 검증할 확보 기록을 하나 이상 고르세요."
+	_decision_back_button.visible = true
+	_decision_back_button.text = "가설로 돌아가기"
+	_decision_confirm_button.visible = true
+	var collected_related_count := 0
+	for clue_id_value in _current_pattern.get("related_clue_ids", []):
+		var clue_id := String(clue_id_value)
+		var clue := _find_clue(clue_id)
+		var collected := GameState.has_collected_clue(clue_id)
+		if collected:
+			collected_related_count += 1
+		var selected := _selected_evidence_ids.has(clue_id)
+		_add_decision_card({
+			"id": clue_id,
+			"title": String(clue.get("title", clue_id)),
+			"description": "",
+			"meta": "선택됨 · 다시 선택하면 해제" if selected else ("확보 기록 · 판단 근거 후보" if collected else "미확보 기록 · 조사 필요"),
+			"enabled": collected,
+			"compact": true
+		}, String(clue.get("description", "확보한 사건 기록입니다.")), _toggle_evidence.bind(clue_id))
+	var can_continue_without_evidence := collected_related_count == 0
+	_decision_confirm_button.text = "근거 없이 대응으로 진행" if can_continue_without_evidence else "선택 근거 확정"
+	_decision_confirm_button.disabled = not can_continue_without_evidence and _selected_evidence_ids.is_empty()
+	_focus_first_enabled_decision_card()
+	_refresh_recovery_evidence()
+
+
+func _toggle_evidence(clue_id: String) -> void:
+	if _turn_locked or not GameState.has_collected_clue(clue_id):
+		return
+	if _selected_evidence_ids.has(clue_id):
+		_selected_evidence_ids.erase(clue_id)
+	else:
+		_selected_evidence_ids.append(clue_id)
+	_show_evidence_step()
+
+
+func _confirm_evidence_step() -> void:
+	if _turn_locked or _decision_step != GuidedDecisionStep.EVIDENCE:
+		return
+	var has_collected_related := false
+	for clue_id_value in _current_pattern.get("related_clue_ids", []):
+		if GameState.has_collected_clue(String(clue_id_value)):
+			has_collected_related = true
+			break
+	if has_collected_related and _selected_evidence_ids.is_empty():
+		_decision_instruction_label.text = "확보한 연결 기록 중 최소 하나를 선택해야 합니다."
+		return
+	_show_response_step()
+
+
+func _show_response_step() -> void:
+	_decision_step = GuidedDecisionStep.RESPONSE
+	_clear_children(_response_box)
+	_decision_progress_label.text = "1 가설 ✓  ›  2 근거 ✓  ›  3 대응 ●"
+	_decision_instruction_label.text = "가설과 선택 근거에 일치하는 현장 대응을 고르세요."
+	_decision_back_button.visible = true
+	_decision_back_button.text = "근거로 돌아가기"
+	_decision_confirm_button.visible = false
+	for response_value in _current_pattern.get("responses", []):
+		if typeof(response_value) != TYPE_DICTIONARY:
+			continue
+		var response: Dictionary = response_value
 		var response_copy: Dictionary = response.duplicate(true)
 		var ability := String(response_copy.get("ability", "analysis"))
-		var agent := GameState.find_best_agent_for_ability(ability)
-		var card := ActionChoiceCardScene.instantiate()
-		_response_box.add_child(card)
-		card.configure({
+		_add_decision_card({
 			"id": String(response_copy.get("id", "response")),
 			"title": String(response_copy.get("label", "상황에 대응한다")),
 			"description": "",
-			"meta": "%s · %s %d" % [String(agent.get("name", "팀")), GameState.ABILITY_LABELS.get(ability, ability), GameState.get_agent_ability(String(agent.get("id", "")), ability)]
-		})
-		card.tooltip_text = String(response_copy.get("summary", "전조와 확보 단서를 근거로 대응합니다."))
-		card.action_requested.connect(func(_action_id: String) -> void: _select_pattern_response(response_copy))
-	_refresh_manual_prediction()
-	_update_battle_view(_make_start_message() if last_result.is_empty() else "직전 결과\n%s" % last_result)
+			"meta": "실행 보조 · %s" % String(GameState.ABILITY_LABELS.get(ability, ability)),
+			"compact": true
+		}, "선택한 가설과 근거에 이 대응이 일치하는지 판단합니다.", _select_pattern_response.bind(response_copy))
+	_focus_first_enabled_decision_card()
+	_refresh_recovery_evidence()
+
+
+func _show_direct_response_step() -> void:
+	_decision_step = GuidedDecisionStep.DIRECT
+	_clear_children(_response_box)
+	_decision_progress_label.text = "전조 대응"
+	_decision_instruction_label.text = "전조와 확보 단서를 대조해 대응을 선택하세요."
+	_decision_back_button.visible = false
+	_decision_confirm_button.visible = false
+	for response_value in _current_pattern.get("responses", []):
+		if typeof(response_value) != TYPE_DICTIONARY:
+			continue
+		var response: Dictionary = response_value
+		var response_copy: Dictionary = response.duplicate(true)
+		var ability := String(response_copy.get("ability", "analysis"))
+		_add_decision_card({
+			"id": String(response_copy.get("id", "response")),
+			"title": String(response_copy.get("label", "상황에 대응한다")),
+			"description": "",
+			"meta": "실행 보조 · %s" % String(GameState.ABILITY_LABELS.get(ability, ability)),
+			"compact": true
+		}, String(response_copy.get("summary", "전조와 확보 단서를 근거로 대응합니다.")), _select_pattern_response.bind(response_copy))
+	_focus_first_enabled_decision_card()
+
+
+func _add_decision_card(config: Dictionary, tooltip: String, callback: Callable) -> void:
+	var card := ActionChoiceCardScene.instantiate()
+	_response_box.add_child(card)
+	card.configure(config)
+	card.tooltip_text = tooltip
+	card.action_requested.connect(func(_action_id: String) -> void: callback.call())
+
+
+func _focus_first_enabled_decision_card() -> void:
+	call_deferred("_grab_first_decision_card_focus")
+
+
+func _grab_first_decision_card_focus() -> void:
+	for child in _response_box.get_children():
+		if child is PanelContainer and child.has_node("%ActionButton"):
+			var action_button := child.get_node("%ActionButton") as Button
+			if not action_button.disabled:
+				action_button.grab_focus()
+				return
+	if _decision_confirm_button.visible and not _decision_confirm_button.disabled:
+		_decision_confirm_button.grab_focus()
+
+
+func _go_back_decision_step() -> void:
+	if _turn_locked or not _uses_guided_decision_flow():
+		return
+	match _decision_step:
+		GuidedDecisionStep.EVIDENCE:
+			_show_hypothesis_step()
+		GuidedDecisionStep.RESPONSE:
+			_show_evidence_step()
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if _turn_locked or not _uses_guided_decision_flow():
+		return
+	if event.is_action_pressed("ui_cancel") and _decision_step in [GuidedDecisionStep.EVIDENCE, GuidedDecisionStep.RESPONSE]:
+		_go_back_decision_step()
+		get_viewport().set_input_as_handled()
 
 
 func _select_pattern_response(response: Dictionary) -> void:
 	if _turn_locked:
 		return
 	_turn_locked = true
+	_decision_back_button.disabled = true
+	_decision_confirm_button.disabled = true
 	for child in _response_box.get_children():
 		if child is Button:
 			child.disabled = true
@@ -478,6 +750,12 @@ func _select_pattern_response(response: Dictionary) -> void:
 	lines.append_array(_run_auto_window("suppression"))
 	var response_id := String(response.get("id", ""))
 	var correct := response_id == String(_current_pattern.get("correct_response_id", ""))
+	var decision_evaluation := _evaluate_guided_decision(response, correct)
+	if bool(decision_evaluation.get("guided", false)):
+		lines.append("판단 가설: %s" % String(decision_evaluation.get("hypothesis_text", "선택 없음")))
+		lines.append("선택 근거: %s" % String(decision_evaluation.get("evidence_text", "없음")))
+		lines.append("가설·대응 일치: %s" % ("일치" if bool(decision_evaluation.get("hypothesis_matches", false)) else "불일치"))
+		lines.append("매뉴얼 검증: %s" % String(decision_evaluation.get("verification_label", "미검증")))
 	if correct:
 		var gain := int(response.get("stability_gain", 15))
 		if int(GameState.get_consumable_loadout().get("consumable_temporary_seal", 0)) > 0 and GameState.use_loaded_consumable("consumable_temporary_seal"):
@@ -505,16 +783,19 @@ func _select_pattern_response(response: Dictionary) -> void:
 			GameState.change_agent_mental(target_id, -remaining)
 		lines.append("오대응: %s" % String(_current_pattern.get("failure_reason", "패턴과 맞지 않는 대응이었습니다.")))
 		lines.append("괴이 반응: %s 정신력 -%d" % [String(target.get("name", "대표 요원")), remaining])
-	var reason := "규칙에 맞는 대응을 확인했다." if correct else String(_current_pattern.get("failure_reason", "오대응 원인을 기록했다."))
-	GameState.record_recovery_pattern_outcome(String(_current_pattern.get("id", "")), response_id, correct, reason)
+	var reason := _make_recovery_learning_reason(response, correct, decision_evaluation)
+	var manual_context := _make_manual_decision_context(response, decision_evaluation)
+	GameState.record_recovery_pattern_outcome(String(_current_pattern.get("id", "")), response_id, correct, reason, manual_context)
 	if not correct:
 		if not GameState.has_seen_log_tutorial("recovery_first_learning"):
 			_present_log_tutorial("recovery_first_learning")
 		elif not _log_guide.is_sequence_active():
 			_log_guide.show_compact_hint("오대응 이유를 기록 서랍에 보존했습니다. 같은 전조가 돌아오면 판단 근거로 사용하세요.")
 		lines.append("다음 판단 근거: 기록 서랍에서 ‘오대응 학습’과 이 전조를 다시 대조하세요.")
+	elif bool(decision_evaluation.get("verified", false)):
+		lines.append("판단 근거 기록: 가설·근거·대응이 일치해 매뉴얼 후보 규칙으로 검증했습니다.")
 	else:
-		lines.append("판단 근거 기록: 전조와 연결 단서에 맞는 대응을 확인했습니다.")
+		lines.append("판단 근거 기록: 현장 대응은 맞았지만 가설 또는 근거가 충분히 검증되지 않았습니다.")
 	_refresh_recovery_evidence()
 	lines.append_array(_run_auto_window("treatment"))
 	lines.append_array(_run_auto_window("rapport"))
@@ -524,9 +805,126 @@ func _select_pattern_response(response: Dictionary) -> void:
 	if _can_recover():
 		_clear_children(_response_box)
 		_telegraph_label.text = "회수 실행 가능\n안정화 기준을 충족했습니다. 현재 규칙을 고정하고 잔향 회수를 실행하십시오."
+		_decision_progress_label.text = "안정화 기준 충족"
+		_decision_instruction_label.text = "검증한 규칙을 괴이 매뉴얼 후보로 남기고 잔향 회수를 실행할 수 있습니다."
+		_decision_back_button.visible = false
+		_decision_confirm_button.visible = false
 		_turn_locked = true
 	else:
 		_begin_recovery_turn(result_text)
+
+
+func _evaluate_guided_decision(response: Dictionary, correct: bool) -> Dictionary:
+	if not _uses_guided_decision_flow():
+		return {
+			"guided": false,
+			"hypothesis_matches": true,
+			"selected_supporting_ids": [],
+			"selected_contradicted_ids": [],
+			"verified": correct,
+			"verification_label": "기존 대응 기록",
+			"hypothesis_text": "직접 대응",
+			"evidence_text": "기존 연결 단서"
+		}
+	var response_id := String(response.get("id", ""))
+	var selected_hypothesis := _find_response_by_id(_selected_hypothesis_response_id)
+	var hypothesis_matches := response_id == _selected_hypothesis_response_id
+	var required_supporting_ids: Array[String] = []
+	var supporting_ids: Array[String] = []
+	var missing_supporting_ids: Array[String] = []
+	var contradicted_ids: Array[String] = []
+	for clue_id_value in selected_hypothesis.get("supporting_clue_ids", []):
+		var clue_id := String(clue_id_value)
+		if clue_id.is_empty() or required_supporting_ids.has(clue_id):
+			continue
+		required_supporting_ids.append(clue_id)
+		if _selected_evidence_ids.has(clue_id):
+			supporting_ids.append(clue_id)
+		else:
+			missing_supporting_ids.append(clue_id)
+	for clue_id_value in selected_hypothesis.get("contradicted_clue_ids", []):
+		var clue_id := String(clue_id_value)
+		if _selected_evidence_ids.has(clue_id):
+			contradicted_ids.append(clue_id)
+	var evidence_titles: Array[String] = []
+	for clue_id in _selected_evidence_ids:
+		var clue := _find_clue(clue_id)
+		evidence_titles.append(String(clue.get("title", clue_id)))
+	var evidence_text := ", ".join(evidence_titles) if not evidence_titles.is_empty() else "없음"
+	var verified := correct and hypothesis_matches and not required_supporting_ids.is_empty() and missing_supporting_ids.is_empty() and contradicted_ids.is_empty()
+	var verification_label := "검증 완료" if verified else "미검증"
+	if correct and hypothesis_matches and supporting_ids.is_empty():
+		verification_label = "대응 확인·근거 부족"
+	elif correct and hypothesis_matches and not missing_supporting_ids.is_empty():
+		verification_label = "대응 확인·근거 일부"
+	elif correct and not hypothesis_matches:
+		verification_label = "대응 확인·가설 불일치"
+	elif not contradicted_ids.is_empty():
+		verification_label = "선택 근거가 가설을 반증"
+	elif not correct:
+		verification_label = "현장 대응 실패"
+	return {
+		"guided": true,
+		"hypothesis_matches": hypothesis_matches,
+		"selected_supporting_ids": supporting_ids,
+		"missing_supporting_ids": missing_supporting_ids,
+		"selected_contradicted_ids": contradicted_ids,
+		"verified": verified,
+		"verification_label": verification_label,
+		"hypothesis_text": String(selected_hypothesis.get("hypothesis", "선택 없음")),
+		"evidence_text": evidence_text
+	}
+
+
+func _make_manual_decision_context(response: Dictionary, evaluation: Dictionary) -> Dictionary:
+	if not bool(evaluation.get("guided", false)):
+		return {}
+	var selected_hypothesis := _find_response_by_id(_selected_hypothesis_response_id)
+	var authored_supporting_ids: Array[String] = []
+	var authored_supporting_titles: Array[String] = []
+	for clue_id_value in selected_hypothesis.get("supporting_clue_ids", []):
+		var clue_id := String(clue_id_value)
+		if clue_id.is_empty() or authored_supporting_ids.has(clue_id):
+			continue
+		authored_supporting_ids.append(clue_id)
+		var clue := _find_clue(clue_id)
+		authored_supporting_titles.append(String(clue.get("title", clue_id)))
+	var selected_evidence_titles: Array[String] = []
+	for clue_id in _selected_evidence_ids:
+		var clue := _find_clue(clue_id)
+		selected_evidence_titles.append(String(clue.get("title", clue_id)))
+	return {
+		"guided": true,
+		"episode_id": GameState.get_current_episode_id(),
+		"episode_title": GameState.get_current_episode_title(),
+		"pattern_name": String(_current_pattern.get("name", _current_pattern.get("id", "전조"))),
+		"question": String(_current_pattern.get("question", "")),
+		"manual_draft": String(_current_pattern.get("manual_draft", "")),
+		"response_label": String(response.get("label", "")),
+		"selected_hypothesis_response_id": _selected_hypothesis_response_id,
+		"hypothesis": String(evaluation.get("hypothesis_text", "")),
+		"authored_supporting_clue_ids": authored_supporting_ids,
+		"authored_supporting_clue_titles": authored_supporting_titles,
+		"selected_evidence_ids": _selected_evidence_ids.duplicate(),
+		"selected_evidence_titles": selected_evidence_titles,
+		"selected_contradicted_clue_ids": evaluation.get("selected_contradicted_ids", []),
+		"reasoning": String(selected_hypothesis.get("reasoning", "")),
+		"response_reasoning": String(response.get("reasoning", "")),
+		"verification_label": String(evaluation.get("verification_label", "미검증")),
+		"verified": bool(evaluation.get("verified", false))
+	}
+
+
+func _make_recovery_learning_reason(response: Dictionary, correct: bool, evaluation: Dictionary) -> String:
+	var base_reason := "규칙에 맞는 대응을 확인했다." if correct else String(_current_pattern.get("failure_reason", "오대응 원인을 기록했다."))
+	if not bool(evaluation.get("guided", false)):
+		return base_reason
+	return "%s 가설: %s / 근거: %s / 검증: %s" % [
+		base_reason,
+		String(evaluation.get("hypothesis_text", "선택 없음")),
+		String(evaluation.get("evidence_text", "없음")),
+		String(evaluation.get("verification_label", "미검증"))
+	]
 
 
 func _use_recovery_consumable(item_id: String, button: Button) -> void:

@@ -83,8 +83,7 @@ func _validate_route(episode: Dictionary, include_wrong_response: bool) -> void:
 	if include_wrong_response:
 		var wrong_response := _find_wrong_response(first_pattern)
 		_check(not wrong_response.is_empty(), "%s has an intentional wrong response" % route_label)
-		battle.call("_select_pattern_response", wrong_response)
-		await process_frame
+		await _resolve_pattern_choice(battle, wrong_response, true)
 		var learning: Dictionary = _game_state.get_recovery_pattern_learning().get(String(first_pattern.get("id", "")), {})
 		_check(not learning.is_empty() and not bool(learning.get("correct", true)), "%s records the wrong-response reason" % route_label)
 		var result_label := battle.get("_result_label") as Label
@@ -99,11 +98,7 @@ func _validate_route(episode: Dictionary, include_wrong_response: bool) -> void:
 		_check(not correct_response.is_empty(), "%s has a supported correct response on turn %d" % [route_label, turn + 1])
 		if correct_response.is_empty():
 			break
-		battle.call("_select_pattern_response", correct_response)
-		await process_frame
-		if not bool(battle.call("_can_recover")):
-			battle.call("_begin_recovery_turn")
-			await process_frame
+		await _resolve_pattern_choice(battle, correct_response, false)
 
 	_check(bool(battle.call("_can_recover")), "%s reaches recovery with evidence-supported responses" % route_label)
 	battle.call("_recover_anomaly_core")
@@ -144,6 +139,23 @@ func _prepare_complete_evidence() -> void:
 	for hint in _game_state.get_hints():
 		if typeof(hint) == TYPE_DICTIONARY:
 			_game_state.mark_hint_seen(String(hint.get("id", "")))
+
+
+func _resolve_pattern_choice(battle: Node, response: Dictionary, prefer_contradiction: bool) -> void:
+	if bool(battle.call("_uses_guided_decision_flow")):
+		battle.call("_select_hypothesis", response)
+		await process_frame
+		var evidence_key := "contradicted_clue_ids" if prefer_contradiction else "supporting_clue_ids"
+		for clue_id_value in response.get(evidence_key, []):
+			var clue_id := String(clue_id_value)
+			if _game_state.has_collected_clue(clue_id):
+				battle.call("_toggle_evidence", clue_id)
+				await process_frame
+				break
+		battle.call("_confirm_evidence_step")
+		await process_frame
+	battle.call("_select_pattern_response", response)
+	await process_frame
 
 
 func _find_wrong_response(pattern: Dictionary) -> Dictionary:

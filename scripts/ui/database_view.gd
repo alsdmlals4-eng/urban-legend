@@ -1,8 +1,6 @@
 # 데이터베이스 화면의 섹션 선택과 완료 사건 기록 표시를 관리한다.
 extends Control
 
-const AfterlifeManualCatalog = preload("res://scripts/ui/afterlife_manual_catalog.gd")
-
 const ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")
 
 const MinigameResultFormatter = preload("res://scripts/minigames/minigame_result_formatter.gd")
@@ -13,6 +11,7 @@ var _section_list: VBoxContainer
 var _detail_title: Label
 var _detail_summary: Label
 var _detail_items: VBoxContainer
+var _detail_scroll: ScrollContainer
 
 
 func _ready() -> void:
@@ -77,17 +76,31 @@ func _build_ui() -> void:
 
 	var left_panel := PanelContainer.new()
 	left_panel.custom_minimum_size = Vector2(170, 0)
+	left_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	body.add_child(left_panel)
 
+	var section_scroll := ScrollContainer.new()
+	section_scroll.name = "DatabaseSectionScroll"
+	section_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	section_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	section_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	section_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	section_scroll.focus_mode = Control.FOCUS_ALL
+	left_panel.add_child(section_scroll)
+
 	_section_list = VBoxContainer.new()
+	_section_list.name = "DatabaseSectionList"
+	_section_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_section_list.add_theme_constant_override("separation", 6)
-	left_panel.add_child(_section_list)
+	section_scroll.add_child(_section_list)
 
 	var right_panel := PanelContainer.new()
 	right_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	body.add_child(right_panel)
 
 	var detail := VBoxContainer.new()
+	detail.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	detail.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	detail.add_theme_constant_override("separation", 10)
 	right_panel.add_child(detail)
 
@@ -100,9 +113,20 @@ func _build_ui() -> void:
 	_detail_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	detail.add_child(_detail_summary)
 
+	_detail_scroll = ScrollContainer.new()
+	_detail_scroll.name = "DatabaseDetailScroll"
+	_detail_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_detail_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_detail_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	_detail_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	_detail_scroll.focus_mode = Control.FOCUS_ALL
+	detail.add_child(_detail_scroll)
+
 	_detail_items = VBoxContainer.new()
+	_detail_items.name = "DatabaseDetailItems"
+	_detail_items.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_detail_items.add_theme_constant_override("separation", 6)
-	detail.add_child(_detail_items)
+	_detail_scroll.add_child(_detail_items)
 
 	_build_section_buttons()
 
@@ -123,6 +147,14 @@ func _build_section_buttons() -> void:
 	)
 	_section_list.add_child(mvp13_button)
 
+	var manual_button := Button.new()
+	manual_button.name = "AnomalyManualRecordsButton"
+	manual_button.text = "괴이 매뉴얼"
+	manual_button.pressed.connect(func() -> void:
+		_show_section("anomaly_manual_records")
+	)
+	_section_list.add_child(manual_button)
+
 	var completed_reports_button := Button.new()
 	completed_reports_button.text = "완료 사건 기록"
 	completed_reports_button.pressed.connect(func() -> void:
@@ -140,8 +172,12 @@ func _build_section_buttons() -> void:
 
 
 func _show_section(section_id: String) -> void:
+	_reset_detail_scroll()
 	if section_id == "mvp13_rewards":
 		_show_mvp13_rewards()
+		return
+	if section_id == "anomaly_manual_records":
+		_show_anomaly_manual_records()
 		return
 	if section_id == "completed_case_reports":
 		_show_completed_case_reports()
@@ -176,6 +212,78 @@ func _show_mvp13_rewards() -> void:
 	_detail_items.add_child(modifier_label)
 
 
+func _show_anomaly_manual_records() -> void:
+	_detail_title.text = "괴이 매뉴얼"
+	_detail_summary.text = "플레이어가 가설·근거·대응을 검증해 승격한 공식 규칙과, 아직 검증 중인 후보, 지워지지 않는 위험 사례를 확인합니다. 저승역 조사 화면의 선행 기록 카탈로그와 별개인 현재 플레이 기록입니다."
+	_clear_detail_items()
+	var records := GameState.get_anomaly_manual_records()
+	if records.is_empty():
+		_add_detail_text("아직 작성된 괴이 매뉴얼이 없습니다. 현장에서 가설과 근거를 연결해 대응을 검증하면 기록됩니다.")
+		return
+	var episode_ids: Array = records.keys()
+	episode_ids.sort()
+	for episode_id_value in episode_ids:
+		var record_value: Variant = records.get(episode_id_value, {})
+		if typeof(record_value) != TYPE_DICTIONARY:
+			continue
+		var record: Dictionary = record_value
+		var panel := PanelContainer.new()
+		_detail_items.add_child(panel)
+		var content := VBoxContainer.new()
+		content.add_theme_constant_override("separation", 6)
+		panel.add_child(content)
+		_add_text_entries(String(record.get("episode_title", episode_id_value)), [
+			"공식 규칙 %d건 / 검증 대기 %d건 / 위험 사례 %d건" % [
+				Dictionary(record.get("verified_rules", {})).size(),
+				Dictionary(record.get("candidate_rules", {})).size(),
+				Array(record.get("danger_cases", [])).size()
+			],
+			"최근 갱신: %s" % String(record.get("updated_at_label", "기록 시각 없음"))
+		], content)
+		_add_text_entries("공식 매뉴얼 규칙", _make_manual_entry_lines(Dictionary(record.get("verified_rules", {})).values()), content)
+		_add_text_entries("검증 대기 후보", _make_manual_entry_lines(Dictionary(record.get("candidate_rules", {})).values()), content)
+		_add_text_entries("위험 사례", _make_danger_case_lines(Array(record.get("danger_cases", []))), content)
+
+
+func _make_manual_entry_lines(entries: Array) -> Array:
+	var lines: Array = []
+	for value in entries:
+		if typeof(value) != TYPE_DICTIONARY:
+			continue
+		var entry: Dictionary = value
+		var evidence_titles: Array = entry.get("selected_evidence_titles", [])
+		lines.append("%s [%s]
+가설: %s
+근거: %s
+대응: %s" % [
+			String(entry.get("manual_draft", entry.get("pattern_name", "규칙"))),
+			String(entry.get("verification_label", "미검증")),
+			String(entry.get("hypothesis", "")),
+			", ".join(evidence_titles) if not evidence_titles.is_empty() else "선택 근거 없음",
+			String(entry.get("response_label", ""))
+		])
+	return lines
+
+
+func _make_danger_case_lines(entries: Array) -> Array:
+	var lines: Array = []
+	for value in entries:
+		if typeof(value) != TYPE_DICTIONARY:
+			continue
+		var entry: Dictionary = value
+		lines.append("%s / 시도 %d회
+가설: %s
+선택 대응: %s
+확인 결과: %s" % [
+			String(entry.get("pattern_name", entry.get("pattern_id", "위험 사례"))),
+			int(entry.get("attempts", 1)),
+			String(entry.get("hypothesis", "")),
+			String(entry.get("response_label", "")),
+			String(entry.get("reason", "오대응 원인을 기록했습니다."))
+		])
+	return lines
+
+
 func _show_completed_case_reports() -> void:
 	_detail_title.text = "완료 사건 기록"
 	_detail_summary.text = "회수에 성공한 사건 보고서를 다시 확인합니다. 각 사건은 최신 기록 1개만 보관합니다."
@@ -189,7 +297,7 @@ func _show_completed_case_reports() -> void:
 
 	var reports := GameState.get_completed_case_reports()
 	if reports.is_empty():
-		_add_detail_text("아직 저장된 완료 사건 보고서가 없습니다. 괴이 핵 회수에 성공하면 결과 화면에서 자동 기록됩니다.")
+		_add_detail_text("아직 저장된 완료 사건 보고서가 없습니다. 잔향 회수와 안정화에 성공하면 결과 화면에서 자동 기록됩니다.")
 		return
 
 	var report_detail := VBoxContainer.new()
@@ -260,19 +368,18 @@ func _show_completed_case_report(report: Dictionary, parent: VBoxContainer) -> v
 		"episode_id: %s" % String(report.get("episode_id", "")),
 		"저승역과 빨간 우산은 사건 id와 제목 기준으로 별도 최신 보고서 1건씩 보관됩니다."
 	], parent)
-	var recovery_label := "저승역 반복 안내 잔향 회수 결과" if String(report.get("episode_id", "")) == "episode_001_afterlife_station" else "괴이 핵 회수 결과"
+	var recovery_label := "저승역 반복 안내 잔향 회수 결과" if String(report.get("episode_id", "")) == "episode_001_afterlife_station" else "잔향 회수 결과"
 	_add_text_entries("회수 결과", [
 		"%s: %s" % [recovery_label, _make_recovery_text(report.get("recovery_result", {}))]
 	], parent)
 	_add_report_entries("수집 단서", report.get("collected_clues", []), "title", "description", parent)
 	_add_minigame_entries(report.get("minigame_results", {}), parent)
-	if String(report.get("episode_id", "")) == "episode_001_afterlife_station":
-		var route_result: Dictionary = report.get("minigame_results", {}).get("minigame_frequency_sync", {})
-		if bool(route_result.get("successful", false)):
-			var manual_lines: Array = []
-			for page in AfterlifeManualCatalog.pages():
-				manual_lines.append("%s\n%s\n대응: %s" % [String(page.get("title", "기록")), String(page.get("observation", "")), String(page.get("procedure", ""))])
-			_add_text_entries("검증된 저승역 괴이 매뉴얼 4페이지", manual_lines, parent)
+	var manual_record_value: Variant = report.get("anomaly_manual_record", {})
+	if typeof(manual_record_value) == TYPE_DICTIONARY and not Dictionary(manual_record_value).is_empty():
+		var manual_record: Dictionary = manual_record_value
+		_add_text_entries("공식 매뉴얼 규칙", _make_manual_entry_lines(Dictionary(manual_record.get("verified_rules", {})).values()), parent)
+		_add_text_entries("검증 대기 후보", _make_manual_entry_lines(Dictionary(manual_record.get("candidate_rules", {})).values()), parent)
+		_add_text_entries("위험 사례", _make_danger_case_lines(Array(manual_record.get("danger_cases", []))), parent)
 	_add_report_entries("연구 보상", report.get("unlocked_research_rewards", []), "ability_name", "ability_description", parent)
 	_add_report_entries("해금 기록물", report.get("unlocked_records", []), "title", "description", parent)
 	_add_report_entries("해금 장비", report.get("unlocked_equipment", []), "name", "description", parent)
@@ -354,6 +461,13 @@ func _make_recovery_text(result: Dictionary) -> String:
 func _add_text_entries(title: String, lines: Array, parent: VBoxContainer) -> void:
 	var panel := PanelContainer.new()
 	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	match title:
+		"공식 매뉴얼 규칙":
+			panel.name = "AnomalyManualVerifiedRules"
+		"검증 대기 후보":
+			panel.name = "AnomalyManualCandidates"
+		"위험 사례":
+			panel.name = "AnomalyManualDangerCases"
 	parent.add_child(panel)
 
 	var content := VBoxContainer.new()
@@ -401,6 +515,13 @@ func _add_dynamic_entry_list(title: String, entries: Array, name_key: String, de
 		]
 		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		_detail_items.add_child(label)
+
+
+func _reset_detail_scroll() -> void:
+	if _detail_scroll == null:
+		return
+	_detail_scroll.scroll_vertical = 0
+	_detail_scroll.call_deferred("set", "scroll_vertical", 0)
 
 
 func _clear_detail_items() -> void:

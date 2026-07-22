@@ -128,6 +128,7 @@ var unlocked_research_rewards: Array = []
 var equipped_items: Array = []
 var used_equipment_effects: Array = []
 var completed_case_reports: Array = []
+var anomaly_manual_records: Dictionary = {}
 var completed_daily_episode_records: Array = []
 var active_daily_episode: Dictionary = {}
 var agent_case_states: Dictionary = {}
@@ -216,6 +217,7 @@ func reset_run_state() -> void:
 	equipped_items.clear()
 	used_equipment_effects.clear()
 	completed_case_reports.clear()
+	anomaly_manual_records.clear()
 	completed_daily_episode_records.clear()
 	active_daily_episode.clear()
 	agent_case_states.clear()
@@ -1387,6 +1389,7 @@ func get_case_report_summary() -> Dictionary:
 		"seen_hint_count": get_seen_hint_ids().size(),
 		"minigame_results": get_minigame_results(),
 		"recovery_result": recovery_result,
+		"anomaly_manual_record": get_current_anomaly_manual_record(),
 		"unlocked_records": record_entries,
 		"unlocked_research_rewards": reward_entries,
 		"unlocked_equipment": equipment_entries,
@@ -1432,6 +1435,109 @@ func get_completed_case_reports() -> Array:
 	return completed_case_reports.duplicate(true)
 
 
+## Returns all persistent player-authored anomaly manual records keyed by episode id.
+func get_anomaly_manual_records() -> Dictionary:
+	return anomaly_manual_records.duplicate(true)
+
+
+## Returns one persistent player-authored anomaly manual record.
+func get_anomaly_manual_record(episode_id: String = "") -> Dictionary:
+	var target_id := episode_id.strip_edges()
+	if target_id.is_empty():
+		target_id = get_current_episode_id()
+	var value: Variant = anomaly_manual_records.get(target_id, {})
+	return value.duplicate(true) if typeof(value) == TYPE_DICTIONARY else {}
+
+
+## Returns the current episode's player-authored manual record.
+func get_current_anomaly_manual_record() -> Dictionary:
+	return get_anomaly_manual_record(get_current_episode_id())
+
+
+func _ensure_anomaly_manual_record(episode_id: String, episode_title: String) -> Dictionary:
+	var value: Variant = anomaly_manual_records.get(episode_id, {})
+	var record: Dictionary = value.duplicate(true) if typeof(value) == TYPE_DICTIONARY else {}
+	record["episode_id"] = episode_id
+	record["episode_title"] = episode_title
+	record["verified_rules"] = _to_dictionary(record.get("verified_rules", {}))
+	record["candidate_rules"] = _to_dictionary(record.get("candidate_rules", {}))
+	record["danger_cases"] = _to_dictionary_array(record.get("danger_cases", []))
+	return record
+
+
+func _record_anomaly_manual_decision(pattern_id: String, response_id: String, correct: bool, reason: String, context: Dictionary) -> void:
+	if context.is_empty() or not bool(context.get("guided", false)):
+		return
+	var episode_id := String(context.get("episode_id", get_current_episode_id())).strip_edges()
+	if episode_id.is_empty():
+		return
+	var episode_title := String(context.get("episode_title", get_current_episode_title()))
+	var manual := _ensure_anomaly_manual_record(episode_id, episode_title)
+	var verified_rules: Dictionary = manual.get("verified_rules", {})
+	var candidate_rules: Dictionary = manual.get("candidate_rules", {})
+	var danger_cases: Array = manual.get("danger_cases", [])
+	var now_label := Time.get_datetime_string_from_system(false, true)
+	var entry := {
+		"pattern_id": pattern_id,
+		"pattern_name": String(context.get("pattern_name", pattern_id)),
+		"question": String(context.get("question", "")),
+		"manual_draft": String(context.get("manual_draft", "")),
+		"response_id": response_id,
+		"response_label": String(context.get("response_label", response_id)),
+		"selected_hypothesis_response_id": String(context.get("selected_hypothesis_response_id", "")),
+		"hypothesis": String(context.get("hypothesis", "")),
+		"authored_supporting_clue_ids": _to_unique_string_array(context.get("authored_supporting_clue_ids", [])),
+		"authored_supporting_clue_titles": _to_unique_string_array(context.get("authored_supporting_clue_titles", [])),
+		"selected_evidence_ids": _to_unique_string_array(context.get("selected_evidence_ids", [])),
+		"selected_evidence_titles": _to_unique_string_array(context.get("selected_evidence_titles", [])),
+		"selected_contradicted_clue_ids": _to_unique_string_array(context.get("selected_contradicted_clue_ids", [])),
+		"reasoning": String(context.get("reasoning", "")),
+		"response_reasoning": String(context.get("response_reasoning", context.get("reasoning", ""))),
+		"verification_label": String(context.get("verification_label", "미검증")),
+		"correct": correct,
+		"verified": bool(context.get("verified", false)),
+		"reason": reason,
+		"updated_at_label": now_label
+	}
+	if correct and bool(entry.get("verified", false)):
+		var previous_verified := _to_dictionary(verified_rules.get(pattern_id, {}))
+		entry["attempts"] = int(previous_verified.get("attempts", 0)) + 1
+		entry["record_status"] = "verified"
+		verified_rules[pattern_id] = entry
+		candidate_rules.erase(pattern_id)
+	elif correct:
+		# 이미 공식 규칙으로 승격된 패턴은 이후의 근거 부족 재시도로 강등하지 않는다.
+		# 공식 지식은 유지하고, 후보는 공식 규칙이 없을 때만 최신 시도를 보관한다.
+		if not verified_rules.has(pattern_id):
+			var previous_candidate := _to_dictionary(candidate_rules.get(pattern_id, {}))
+			entry["attempts"] = int(previous_candidate.get("attempts", 0)) + 1
+			entry["record_status"] = "candidate"
+			candidate_rules[pattern_id] = entry
+	else:
+		var danger_id := "%s:%s:%s" % [pattern_id, response_id, String(entry.get("selected_hypothesis_response_id", ""))]
+		entry["danger_case_id"] = danger_id
+		entry["record_status"] = "danger_case"
+		var existing_index := -1
+		for index in range(danger_cases.size()):
+			var existing: Variant = danger_cases[index]
+			if typeof(existing) == TYPE_DICTIONARY and String(existing.get("danger_case_id", "")) == danger_id:
+				existing_index = index
+				entry["attempts"] = int(existing.get("attempts", 0)) + 1
+				entry["first_recorded_at_label"] = String(existing.get("first_recorded_at_label", now_label))
+				break
+		if existing_index < 0:
+			entry["attempts"] = 1
+			entry["first_recorded_at_label"] = now_label
+			danger_cases.append(entry)
+		else:
+			danger_cases[existing_index] = entry
+	manual["verified_rules"] = verified_rules
+	manual["candidate_rules"] = candidate_rules
+	manual["danger_cases"] = danger_cases
+	manual["updated_at_label"] = now_label
+	anomaly_manual_records[episode_id] = manual
+
+
 ## Returns a read-only summary of the save payload that Continue should preserve.
 func get_save_state_summary() -> Dictionary:
 	return {
@@ -1439,6 +1545,7 @@ func get_save_state_summary() -> Dictionary:
 		"save_path": SAVE_FILE_PATH,
 		"current_scene_path": get_current_scene_path(),
 		"completed_report_count": completed_case_reports.size(),
+		"anomaly_manual_count": anomaly_manual_records.size(),
 		"completed_daily_episode_count": completed_daily_episode_records.size(),
 		"agent_trust_count": agent_trust.size(),
 		"unlocked_record_count": unlocked_records.size(),
@@ -1842,7 +1949,7 @@ func reset_recovery_pattern_state(save_after: bool = true) -> void:
 		save_game()
 
 
-func record_recovery_pattern_outcome(pattern_id: String, response_id: String, correct: bool, reason: String) -> void:
+func record_recovery_pattern_outcome(pattern_id: String, response_id: String, correct: bool, reason: String, decision_context: Dictionary = {}) -> void:
 	var record := {
 		"pattern_id": pattern_id,
 		"response_id": response_id,
@@ -1851,6 +1958,7 @@ func record_recovery_pattern_outcome(pattern_id: String, response_id: String, co
 		"attempts": int(_to_dictionary(recovery_pattern_learning.get(pattern_id, {})).get("attempts", 0)) + 1
 	}
 	recovery_pattern_learning[pattern_id] = record
+	_record_anomaly_manual_decision(pattern_id, response_id, correct, reason, decision_context)
 	if correct:
 		grant_echo_reward("pattern:%s:%s" % [get_current_episode_id(), pattern_id], 5)
 
@@ -2737,6 +2845,7 @@ func load_game() -> bool:
 			equipped_items.erase(equipment_id)
 	used_equipment_effects = _to_unique_string_array(save_data.get("used_equipment_effects", []))
 	completed_case_reports = _to_dictionary_array(save_data.get("completed_case_reports", []))
+	anomaly_manual_records = _to_dictionary(save_data.get("anomaly_manual_records", {}))
 	completed_daily_episode_records = _to_dictionary_array(save_data.get("completed_daily_episode_records", []))
 	active_daily_episode = _to_dictionary(save_data.get("active_daily_episode", {}))
 	echo_fragments = maxi(0, int(save_data.get("echo_fragments", 30)))
@@ -2865,6 +2974,7 @@ func _make_save_data() -> Dictionary:
 		"equipped_items": get_equipped_items(),
 		"used_equipment_effects": get_used_equipment_effects(),
 		"completed_case_reports": get_completed_case_reports(),
+		"anomaly_manual_records": get_anomaly_manual_records(),
 		"completed_daily_episode_records": get_completed_daily_episode_records(),
 		"active_daily_episode": get_active_daily_episode(),
 		"echo_fragments": echo_fragments,
