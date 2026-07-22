@@ -1,4 +1,4 @@
-name: Recover verified core validation baseline
+name: Diagnose core validation patch objects
 
 on:
   pull_request:
@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 jobs:
-  recover:
+  diagnose:
     runs-on: ubuntu-latest
     steps:
       - name: Check out PR head branch
@@ -20,35 +20,49 @@ jobs:
           ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
 
-      - name: Reassemble verified patch from Git objects
+      - name: Export Git object diagnostics
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
           PATCH_TREE_SHA: 498ef1b5def6f1c813f67ffcb77380bf916444b8
         run: |
-          set -euo pipefail
-          : > "$RUNNER_TEMP/core-validation-1b.patch.gz.b64"
-          gh api "repos/$GITHUB_REPOSITORY/git/trees/$PATCH_TREE_SHA" --jq '.tree | sort_by(.path) | .[].sha' > "$RUNNER_TEMP/blob-shas.txt"
-          cat "$RUNNER_TEMP/blob-shas.txt"
+          set -u
+          mkdir -p "$RUNNER_TEMP/core-validation-diagnostics/chunks"
+          gh api "repos/$GITHUB_REPOSITORY/git/trees/$PATCH_TREE_SHA" > "$RUNNER_TEMP/core-validation-diagnostics/tree.json" 2> "$RUNNER_TEMP/core-validation-diagnostics/tree.err"
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root = Path(__import__('os').environ['RUNNER_TEMP']) / 'core-validation-diagnostics'
+          data = json.loads((root / 'tree.json').read_text())
+          entries = sorted(data.get('tree', []), key=lambda item: item.get('path', ''))
+          (root / 'blob-shas.txt').write_text('\n'.join(item['sha'] for item in entries) + '\n')
+          (root / 'tree-summary.txt').write_text('\n'.join(f"{item.get('path')} {item.get('sha')} {item.get('size')}" for item in entries) + '\n')
+          PY
+          index=0
+          : > "$RUNNER_TEMP/core-validation-diagnostics/reassembled.b64"
           while IFS= read -r blob_sha; do
-            gh api "repos/$GITHUB_REPOSITORY/git/blobs/$blob_sha" --jq .content \
-              | tr -d '\n\r ' \
-              | base64 --decode \
-              >> "$RUNNER_TEMP/core-validation-1b.patch.gz.b64"
-          done < "$RUNNER_TEMP/blob-shas.txt"
-          sha256sum "$RUNNER_TEMP/core-validation-1b.patch.gz.b64"
-          base64 --decode "$RUNNER_TEMP/core-validation-1b.patch.gz.b64" | gzip --decompress > "$RUNNER_TEMP/core-validation-1b.patch"
-          sha256sum "$RUNNER_TEMP/core-validation-1b.patch"
-          git apply --check "$RUNNER_TEMP/core-validation-1b.patch"
-          git apply "$RUNNER_TEMP/core-validation-1b.patch"
-          rm -rf .github/core-validation-1b
-          rm -f .github/workflows/apply-core-validation-1b.yml
-          git diff --check
+            chunk="$RUNNER_TEMP/core-validation-diagnostics/chunks/chunk$(printf '%02d' "$index")"
+            gh api "repos/$GITHUB_REPOSITORY/git/blobs/$blob_sha" > "$chunk.json" 2> "$chunk.err"
+            python - "$chunk.json" "$chunk" <<'PY'
+          import base64, json, sys
+          source, target = sys.argv[1:]
+          data = json.loads(open(source, encoding='utf-8').read())
+          open(target, 'wb').write(base64.b64decode(data['content']))
+          PY
+            cat "$chunk" >> "$RUNNER_TEMP/core-validation-diagnostics/reassembled.b64"
+            index=$((index + 1))
+          done < "$RUNNER_TEMP/core-validation-diagnostics/blob-shas.txt"
+          sha256sum "$RUNNER_TEMP/core-validation-diagnostics/reassembled.b64" > "$RUNNER_TEMP/core-validation-diagnostics/reassembled.sha256"
+          base64 --decode "$RUNNER_TEMP/core-validation-diagnostics/reassembled.b64" > "$RUNNER_TEMP/core-validation-diagnostics/reassembled.gz" 2> "$RUNNER_TEMP/core-validation-diagnostics/base64.err" || true
+          gzip --decompress --stdout "$RUNNER_TEMP/core-validation-diagnostics/reassembled.gz" > "$RUNNER_TEMP/core-validation-diagnostics/reassembled.patch" 2> "$RUNNER_TEMP/core-validation-diagnostics/gzip.err" || true
+          sha256sum "$RUNNER_TEMP/core-validation-diagnostics/reassembled.patch" > "$RUNNER_TEMP/core-validation-diagnostics/patch.sha256" || true
 
-      - name: Upload recovered 1B project
+      - name: Upload diagnostics
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: urban-legend-core-validation-1b-recovered
-          path: .
+          name: core-validation-patch-diagnostics
+          path: ${{ runner.temp }}/core-validation-diagnostics
           include-hidden-files: true
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 1
