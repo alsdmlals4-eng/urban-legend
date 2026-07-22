@@ -1,4 +1,4 @@
-name: Apply core validation manual promotion
+name: Finalize active document references
 
 on:
   pull_request:
@@ -10,126 +10,67 @@ permissions:
   contents: write
 
 jobs:
-  apply-validate-and-commit:
+  finalize-references:
     runs-on: ubuntu-latest
-    timeout-minutes: 75
     steps:
-      - name: Check out clean PR head branch
+      - name: Check out PR head branch
         uses: actions/checkout@v4
         with:
           repository: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
           ref: ${{ github.event.pull_request.head.ref || 'agent/core-validation-manual-promotion' }}
           fetch-depth: 0
 
-      - name: Reassemble and verify clean implementation patch
-        env:
-          GH_TOKEN: ${{ github.token }}
-          PATCH_B64_SHA256: b7dd4cf574714adb8e9344dfec9d41c177f3ae383ad41a688813a3c6bc86f38f
-          PATCH_SHA256: 53be3c4d1d604012d20f503f7bd19f991dfb35589d2eabfaeda69229db847b40
-        run: |
-          set -euo pipefail
-          : > "$RUNNER_TEMP/core-validation-1c.patch.xz.b64"
-          for blob_sha in \
-            d567dd0fd395b61c357cecc773a76498f4d2f1d1 \
-            26fe6fead9ba1c82a602cd5695c62b4095ba07b4 \
-            283ecf194c1f76aa4fa4200e0ab57371408aad70 \
-            b43287c040b6ffed706a1049e707e9888e089dfb \
-            fb210409914c65f3214bdde183d115ca5be3607a \
-            c1f7c33a43e3e339d88f507601d1a0bb16f3b7c3 \
-            1996846dc4c55ac11aaa1f2908e279beaa813a5e \
-            eac67d4d950983a0efb187441ffec8b9177c206d
-          do
-            gh api "repos/$GITHUB_REPOSITORY/git/blobs/$blob_sha" --jq .content \
-              | tr -d '\n\r ' \
-              | base64 --decode \
-              >> "$RUNNER_TEMP/core-validation-1c.patch.xz.b64"
-          done
-          echo "$PATCH_B64_SHA256  $RUNNER_TEMP/core-validation-1c.patch.xz.b64" | sha256sum --check --strict
-          base64 --decode "$RUNNER_TEMP/core-validation-1c.patch.xz.b64" > "$RUNNER_TEMP/core-validation-1c.patch.xz"
-          xz --decompress --stdout "$RUNNER_TEMP/core-validation-1c.patch.xz" > "$RUNNER_TEMP/core-validation-1c.patch"
-          echo "$PATCH_SHA256  $RUNNER_TEMP/core-validation-1c.patch" | sha256sum --check --strict
-          git apply --check "$RUNNER_TEMP/core-validation-1c.patch"
-          git apply "$RUNNER_TEMP/core-validation-1c.patch"
-          git diff --check
-
-      - name: Make final validation workflow self-contained
+      - name: Remove stale branch reference and expand audit coverage
         run: |
           python - <<'PY'
           from pathlib import Path
-          path = Path('.github/workflows/validate-core-validation-slice.yml')
-          text = path.read_text(encoding='utf-8')
-          marker = "      - name: Validate Python contracts and active document references\n"
-          step = (
-              "      - name: Install document dependencies\n"
-              "        run: python -m pip install --disable-pip-version-check Pillow python-docx\n\n"
+
+          qa = Path('docs/qa/CORE_VALIDATION_SLICE_001.md')
+          qa_text = qa.read_text(encoding='utf-8')
+          old = '> 대상 브랜치: `agent/core-validation-slice`'
+          new = '> 적용 기준: 최신 `main` 기반 clean PR. 실제 브랜치·커밋은 PR 메타데이터를 따른다.'
+          if old not in qa_text:
+              raise SystemExit('stale QA branch marker not found')
+          qa.write_text(qa_text.replace(old, new, 1), encoding='utf-8')
+
+          test = Path('tests/test_active_document_references.py')
+          text = test.read_text(encoding='utf-8')
+          text = text.replace(
+              ']\nBASELINE_DOCS = ACTIVE_DOCS\n',
+              ']\nCORE_VALIDATION_QA = ROOT / "docs/qa/CORE_VALIDATION_SLICE_001.md"\nREFERENCE_AUDIT_DOCS = ACTIVE_DOCS + [CORE_VALIDATION_QA]\nBASELINE_DOCS = ACTIVE_DOCS\n',
+              1,
           )
-          if 'Install document dependencies' not in text:
-              if marker not in text:
-                  raise SystemExit('validation workflow insertion point not found')
-              text = text.replace(marker, step + marker, 1)
-              path.write_text(text, encoding='utf-8')
+          text = text.replace(
+              '    re.compile(r"apply-core-validation-1b\\.yml"),\n',
+              '    re.compile(r"apply-core-validation-1b\\.yml"),\n    re.compile(r"agent/core-validation-slice"),\n',
+              1,
+          )
+          text = text.replace(
+              '        for path in ACTIVE_DOCS:\n            text = path.read_text(encoding="utf-8")\n            for pattern in STALE_FILE_PATTERNS:',
+              '        for path in REFERENCE_AUDIT_DOCS:\n            text = path.read_text(encoding="utf-8")\n            for pattern in STALE_FILE_PATTERNS:',
+              1,
+          )
+          required = (
+              'CORE_VALIDATION_QA',
+              'REFERENCE_AUDIT_DOCS',
+              'agent/core-validation-slice',
+              'for path in REFERENCE_AUDIT_DOCS:',
+          )
+          if not all(item in text for item in required):
+              raise SystemExit('reference audit transformation incomplete')
+          test.write_text(text, encoding='utf-8')
           PY
+          git diff --check
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Install document dependencies
-        run: python -m pip install --disable-pip-version-check Pillow python-docx
-
-      - name: Validate Python contracts and active references
+      - name: Run active-reference contracts
         run: python -m unittest discover -s tests -p 'test_*.py' -v
 
-      - name: Validate JSON and working tree whitespace
+      - name: Commit finalized references
         run: |
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          files = sorted(Path('data').rglob('*.json'))
-          if not files:
-              raise SystemExit('No JSON files found')
-          for path in files:
-              json.loads(path.read_text(encoding='utf-8'))
-              print(f'OK {path}')
-          PY
-          git diff --check
-
-      - name: Rebuild and verify GDD DOCX mirror
-        run: |
-          python tools/docs/build_game_design_doc.py --build
-          python tools/docs/build_game_design_doc.py --check
-
-      - name: Install verified Godot 4.7.1
-        env:
-          GODOT_URL: https://github.com/godotengine/godot-builds/releases/download/4.7.1-stable/Godot_v4.7.1-stable_linux.x86_64.zip
-          GODOT_ZIP_SHA256: c7ff14fd28472c8d4f193043de30278dcf7e5241a1dcf7566b02e27addaa33ba
-        run: |
-          curl --fail --location --retry 3 --output "$RUNNER_TEMP/godot.zip" "$GODOT_URL"
-          echo "$GODOT_ZIP_SHA256  $RUNNER_TEMP/godot.zip" | sha256sum --check --strict
-          mkdir -p "$RUNNER_TEMP/godot"
-          unzip -q "$RUNNER_TEMP/godot.zip" -d "$RUNNER_TEMP/godot"
-          chmod +x "$RUNNER_TEMP/godot/Godot_v4.7.1-stable_linux.x86_64"
-          echo "GODOT_BIN=$RUNNER_TEMP/godot/Godot_v4.7.1-stable_linux.x86_64" >> "$GITHUB_ENV"
-
-      - name: Import project and run all Godot regressions
-        env:
-          GODOT_SILENCE_ROOT_WARNING: "1"
-          GODOT_TEST_TMP: ${{ runner.temp }}/urban-legend-godot-tests
-          GODOT_TEST_TIMEOUT: "300"
-        run: |
-          "$GODOT_BIN" --version
-          "$GODOT_BIN" --headless --path . --import --quit
-          chmod +x tests/run_godot_regression.sh
-          bash tests/run_godot_regression.sh
-
-      - name: Commit validated code, data, docs, and tests
-        run: |
-          rm -f .github/workflows/validate-core-validation-slice.yml
           git restore --source=HEAD -- .github/workflows/apply-core-validation-manual-promotion.yml
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
+          git add docs/qa/CORE_VALIDATION_SLICE_001.md tests/test_active_document_references.py
           git diff --cached --check
-          git commit -m "feat: complete core validation manual promotion"
+          git commit -m "docs: finalize core validation reference baseline"
           git push origin HEAD:${{ github.event.pull_request.head.ref || 'agent/core-validation-manual-promotion' }}
