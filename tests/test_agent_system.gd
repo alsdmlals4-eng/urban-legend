@@ -123,13 +123,17 @@ func _test_ability_bounds() -> void:
 	_test("ability bounds 1..5", func() -> bool:
 		for agent in GameState.get_agents():
 			var agent_id := String(agent.get("id", ""))
+			var expected_values: Array = EXPECTED_ABILITIES.get(agent_id, [])
 			for index in ABILITY_KEYS.size():
 				var key: String = ABILITY_KEYS[index]
 				var val := GameState.get_agent_ability(agent_id, key)
 				if val < 1 or val > 5:
 					print("  FAIL: %s.%s = %d" % [agent_id, key, val])
 					return false
-				if val != int((EXPECTED_ABILITIES.get(agent_id, []) as Array)[index]):
+				# The approved Ver 3.2 table is exact for the original three agents.
+				# Supplemental catalog agents are validated by the same 1..5 contract
+				# without pretending they belonged to that historical table.
+				if not expected_values.is_empty() and val != int(expected_values[index]):
 					print("  FAIL: %s.%s does not match the approved Ver 3.2 table" % [agent_id, key])
 					return false
 		return true

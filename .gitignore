@@ -2,6 +2,11 @@
 .godot/
 .import/
 
+# Python local cache
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
 # Godot export settings and credentials
 export.cfg
 export_credentials.cfg
@@ -30,4 +35,3 @@ exports/
 *.aab
 *.ipa
 *.zip
-

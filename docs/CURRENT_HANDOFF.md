@@ -2,12 +2,12 @@
 
 > 문서 위치: `docs/CURRENT_HANDOFF.md` | 기획 인수인계: `docs/planning/README.md` | 이전 인수 기록: `docs/archive/backup/2026-07-16/COMPLETED_QA_RULES_HANDOFF_BACKUP.md`
 
-이 문서는 계정·채팅·담당자 교대 시 읽는 짧은 상태다. 실제 완료 여부는 `origin/main`, 테스트, `docs/CURRENT_STATUS.md`로 다시 확인한다.
+이 문서는 계정·채팅·담당자 교대 시 읽는 짧은 상태다. 문서 안에 고정 브랜치명을 상태 사실로 저장하지 않으며, 실제 완료 여부는 현재 Git 브랜치·대상 PR·`origin/main`·테스트·`docs/CURRENT_STATUS.md`를 함께 확인한다.
 
 ```yaml
-status: COMPLETE
-branch: main
-implemented_baseline: MVP-043 / Ver 4.1 / save mvp-039
+status: REVIEW_READY
+branch_policy: 현재 Git 브랜치를 확인하고 main 병합 여부를 별도 검증
+implemented_baseline: MVP-043 + CORE-VALIDATION-001 / Ver 4.2 / save mvp-039
 current_protagonist: 권나래
 implemented_cases:
   - 저승역
@@ -46,7 +46,7 @@ AGENTS.md
 
 ## 현재 핵심 판단
 
-- MVP-043까지가 실제 구현 완료선이다.
+- MVP-043 + CORE-VALIDATION-001까지가 실제 구현 완료선이다.
 - MVP-044~046은 승인된 전달 패키지와 기획 문서가 있으나 `main` 구현 완료가 아니다.
 - 기본 의존 순서는 MVP-044 → MVP-045 → MVP-046이다.
 - MVP-046의 상태 비소유 공용 대화 스테이지만 기존 서사·관계 데이터를 바꾸지 않는 범위에서 선행할 수 있다.
@@ -55,6 +55,8 @@ AGENTS.md
 ## 보호할 계약
 
 - 공식 명칭: 괴이 기록국 / 안정화 상태 / 위험 사례 / 잔향 / 괴이 매뉴얼 / 기록관 아카
+- 저승역 회수는 가설 → 근거 → 대응을 사용하고, 공식 규칙·후보·위험 사례를 `anomaly_manual_records`에 선택 필드로 저장한다.
+- 결과 화면과 DB는 정적 저승역 카탈로그가 아니라 플레이어 작성 기록을 표시한다.
 - 권나래 고정 주인공, 서포트 최대 2인
 - 저장 `mvp-039`, `mvp-038` 이관 지원
 - 기존 사건·선택·보고서·DB ID
@@ -67,7 +69,7 @@ AGENTS.md
 
 - `status: IN_PROGRESS`이면 현재 브랜치와 dirty diff를 먼저 확인한다.
 - `status: CHECKPOINT`이면 실패·미검증 항목을 유지하고 같은 작업 브랜치에서 이어간다.
-- `status: COMPLETE`여도 `main`, `origin/main`, `docs/CURRENT_STATUS.md`를 대조한다.
+- `status: REVIEW_READY`여도 현재 브랜치와 대상 PR, `main`, `origin/main`, `docs/CURRENT_STATUS.md`를 대조한다.
 - 구현되지 않은 계획을 완료 기능으로 문서화하지 않는다.
 - 완료된 Goal·QA·백업은 현재 작업이 요구할 때만 읽는다.
 - 로드맵과 구현이 다르면 실제 코드·테스트를 우선하고 상태 문서를 갱신한다.

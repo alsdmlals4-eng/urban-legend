@@ -34,9 +34,17 @@ func _run() -> void:
 	_expect(consumables != null, "consumables should have a separate auxiliary row")
 	var initial_pattern: Dictionary = current_scene.get("_current_pattern")
 	var responses: Array = initial_pattern.get("responses", [])
-	_expect(not responses.is_empty(), "automatic telegraph should expose response choices immediately")
+	_expect(not responses.is_empty(), "automatic telegraph should expose authored hypotheses")
+	_expect(bool(current_scene.call("_uses_guided_decision_flow")), "afterlife recovery should use the guided hypothesis-evidence-response flow")
+	_expect(int(current_scene.get("_decision_step")) == 1, "guided recovery should start at the hypothesis step")
 	if not responses.is_empty():
-		current_scene.call("_select_pattern_response", responses[0])
+		var correct_response := _find_correct_response(initial_pattern)
+		current_scene.call("_select_hypothesis", correct_response)
+		await process_frame
+		current_scene.call("_confirm_evidence_step")
+		await process_frame
+		_expect(int(current_scene.get("_decision_step")) == 3, "no-evidence route should still reach the response step with an explicit warning")
+		current_scene.call("_select_pattern_response", correct_response)
 		await process_frame
 		var result_label := current_scene.find_child("ResultLabel", true, false) as Label
 		var telegraph_label := current_scene.find_child("TelegraphLabel", true, false) as Label
@@ -44,6 +52,14 @@ func _run() -> void:
 		_expect(telegraph_label != null and (telegraph_label.text.contains("괴이의 전조") or telegraph_label.text.contains("회수 실행 가능")), "the next telegraph or recovery-ready state should appear automatically")
 		_expect(not _visible_button_text(current_scene, "다음 전조 관측"), "manual next-telegraph button must be removed")
 	_finish()
+
+
+func _find_correct_response(pattern: Dictionary) -> Dictionary:
+	var correct_id := String(pattern.get("correct_response_id", ""))
+	for response in pattern.get("responses", []):
+		if typeof(response) == TYPE_DICTIONARY and String(response.get("id", "")) == correct_id:
+			return response.duplicate(true)
+	return {}
 
 
 func _visible_button_text(node: Node, text: String) -> bool:

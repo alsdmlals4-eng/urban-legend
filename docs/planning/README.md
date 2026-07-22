@@ -28,6 +28,7 @@ AGENTS.md
 | 관계·선택 기억·연속 이벤트 | `NARRATIVE_CONTENT_PLAN.md` | 현재 저장 상태, 이벤트 ID, 완료 기록 |
 | 캐릭터 아트·표정·컷인 | `ART_PRESENTATION_PLAN.md` | `assets/characters/`, manifest, 실제 화면 캡처 |
 | 대화 UI·이벤트 연출 | `ART_PRESENTATION_PLAN.md` | 공용 UI 스크립트·씬, 입력·접근성 계약 |
+| 안정화·매뉴얼 기록 UI | `PROJECT_DIRECTION.md` | `docs/CINEMATIC_FIELD_RECOVERY_UI.md`, 실제 회수·결과·DB 코드 |
 | MVP 범위·순서·완료 판단 | `ROADMAP_AND_HANDOFF.md` | `MVP_ROADMAP.md`, `TEST_CHECKLIST.md` |
 | 벤치마킹 근거 재사용 | `REFERENCE_CASES.md` | 해당 사례의 원문·최신 1차 출처 |
 
@@ -47,7 +48,7 @@ AGENTS.md
 
 ## 3. 현재 프로젝트 위치
 
-- **구현 완료선:** MVP-043
+- **구현 완료선:** MVP-043 + CORE-VALIDATION-001 / Ver 4.2 / save `mvp-039`
 - **현재 승인 계획:** MVP-044 → MVP-045 → MVP-046
 - **기본 의존 순서:** 서사 데이터 → 관계 기억 → 공용 연출
 - **예외:** MVP-046의 상태 비소유 공용 대화 스테이지는 기존 서사 데이터를 바꾸지 않는 범위에서 선행 가능
@@ -80,4 +81,4 @@ AGENTS.md
 - 대사·관계 규칙이 바뀌면 `NARRATIVE_CONTENT_PLAN.md`를 갱신한다.
 - 아트·표정·컷인·화면 위계가 바뀌면 `ART_PRESENTATION_PLAN.md`를 갱신한다.
 - 완료된 상세 계획과 과거 버전은 `docs/archive/backup/YYYY-MM-DD/`로 보낸다.
-- 사례에서 얻은 재사용 가능한 원칙은 프로젝트 전용 사실을 제거한 뒤 Base의 `docs/knowledge/` 승격 후보로 정리한다.
+- 사례에서 얻은 재사용 가능한 원칙은 프로젝트 전용 사실을 제거한 뒤 Base 저장소의 docs/knowledge 승격 후보로 정리한다.

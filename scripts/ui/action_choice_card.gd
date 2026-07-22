@@ -22,6 +22,14 @@ func configure(data: Dictionary) -> bool:
 	if next_id.is_empty():
 		return false
 	_action_id = next_id
+	var compact := bool(data.get("compact", false))
+	custom_minimum_size.y = 64.0 if compact else 76.0
+	if compact:
+		_action_button.add_theme_font_size_override("font_size", 14)
+		_meta_label.add_theme_font_size_override("font_size", 11)
+	else:
+		_action_button.remove_theme_font_size_override("font_size")
+		_meta_label.remove_theme_font_size_override("font_size")
 	var is_danger := bool(data.get("danger", data.get("critical", false)))
 	theme_type_variation = &"ActionCardCritical" if is_danger else &"ActionCard"
 	_action_button.text = String(data.get("title", "행동 선택"))
