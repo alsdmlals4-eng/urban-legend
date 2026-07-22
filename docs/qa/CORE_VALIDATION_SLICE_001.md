@@ -1,7 +1,7 @@
 # CORE-VALIDATION-001 저승역 가설·근거 검증 슬라이스
 
 > 상태: `IMPLEMENTED_1A_1B_1C / GODOT_VALIDATED / DOCS_SYNCED / PLAYER_TEST_PENDING`
-> 대상 브랜치: `agent/core-validation-slice`
+> 적용 기준: 최신 `main` 기반 clean PR. 실제 브랜치·커밋은 PR 메타데이터를 따른다.
 > 기준 구현: `MVP-043 + CORE-VALIDATION-001` / `Ver 4.2` / 저장 Schema `mvp-039`
 > 검증 엔진: Godot `4.7.1.stable.official.a13da4feb`
 

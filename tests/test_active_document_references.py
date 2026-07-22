@@ -20,6 +20,8 @@ ACTIVE_DOCS = [
     ROOT / "docs/GODOT_NATIVE_UI_ARCHITECTURE.md",
     ROOT / "docs/MINIGAME_SYSTEM_SPEC.md",
 ]
+CORE_VALIDATION_QA = ROOT / "docs/qa/CORE_VALIDATION_SLICE_001.md"
+REFERENCE_AUDIT_DOCS = ACTIVE_DOCS + [CORE_VALIDATION_QA]
 BASELINE_DOCS = ACTIVE_DOCS
 MARKDOWN_LINK = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
 BACKTICK_PATH = re.compile(r"`((?:docs|scripts|scenes|data|tests|tools|assets)/[^`]+|(?:README|MVP_ROADMAP|TEST_CHECKLIST|AGENTS)\.md)`")
@@ -31,6 +33,7 @@ STALE_FILE_PATTERNS = [
     re.compile(r"docs/CONTENT_DIRECTION_V09\.md"),
     re.compile(r"\.github/core-validation-1b/"),
     re.compile(r"apply-core-validation-1b\.yml"),
+    re.compile(r"agent/core-validation-slice"),
 ]
 
 
@@ -67,7 +70,7 @@ class ActiveDocumentReferenceTests(unittest.TestCase):
 
     def test_active_design_docs_do_not_depend_on_stale_files(self) -> None:
         failures: list[str] = []
-        for path in ACTIVE_DOCS:
+        for path in REFERENCE_AUDIT_DOCS:
             text = path.read_text(encoding="utf-8")
             for pattern in STALE_FILE_PATTERNS:
                 match = pattern.search(text)
