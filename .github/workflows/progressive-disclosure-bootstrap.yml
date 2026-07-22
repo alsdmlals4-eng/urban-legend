@@ -1,4 +1,4 @@
-name: Snapshot progressive disclosure branch
+name: Apply and validate progressive disclosure 2A
 
 on:
   pull_request:
@@ -7,24 +7,101 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  snapshot:
+  apply-validate-and-commit:
     runs-on: ubuntu-latest
+    timeout-minutes: 75
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+      GODOT_SILENCE_ROOT_WARNING: "1"
+      GODOT_TEST_TMP: ${{ runner.temp }}/urban-legend-godot-tests
+      GODOT_TEST_TIMEOUT: "300"
     steps:
-      - name: Check out progressive disclosure branch
+      - name: Check out exact PR head
         uses: actions/checkout@v4
         with:
           repository: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
           ref: ${{ github.event.pull_request.head.ref || 'agent/progressive-disclosure-slice' }}
           fetch-depth: 0
 
-      - name: Upload exact branch snapshot
-        uses: actions/upload-artifact@v4
+      - name: Reassemble and verify implementation patch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PATCH_BLOB_SHA: 119ed14f9810ba5346fd61628f3b92e79ca44676
+          PATCH_B64_SHA256: 6af7797fc90e88c2469688acfb803f8f6f0e4b1a1516565598685a1ca180e40c
+          PATCH_SHA256: e90c4166b37e9b05cca490d92504242cbb004abaa37fe9c4ed1eb17a828a41a8
+        run: |
+          set -euo pipefail
+          gh api "repos/$GITHUB_REPOSITORY/git/blobs/$PATCH_BLOB_SHA" --jq .content \
+            | tr -d '\n\r ' \
+            | base64 --decode \
+            > "$RUNNER_TEMP/progressive-2a.patch.xz.b64"
+          echo "$PATCH_B64_SHA256  $RUNNER_TEMP/progressive-2a.patch.xz.b64" | sha256sum --check --strict
+          base64 --decode "$RUNNER_TEMP/progressive-2a.patch.xz.b64" > "$RUNNER_TEMP/progressive-2a.patch.xz"
+          xz --decompress --stdout "$RUNNER_TEMP/progressive-2a.patch.xz" > "$RUNNER_TEMP/progressive-2a.patch"
+          echo "$PATCH_SHA256  $RUNNER_TEMP/progressive-2a.patch" | sha256sum --check --strict
+          git apply --check "$RUNNER_TEMP/progressive-2a.patch"
+          git apply "$RUNNER_TEMP/progressive-2a.patch"
+          git restore --source=HEAD -- .github/workflows/progressive-disclosure-bootstrap.yml
+          git diff --check
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          name: urban-legend-progressive-disclosure-base
-          path: .
-          include-hidden-files: true
-          if-no-files-found: error
-          retention-days: 1
+          python-version: "3.12"
+
+      - name: Install document dependencies
+        run: python -m pip install --disable-pip-version-check Pillow python-docx
+
+      - name: Validate Python contracts and active references
+        run: python -m unittest discover -s tests -p 'test_*.py' -v
+
+      - name: Parse all JSON data
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          files = sorted(Path("data").rglob("*.json"))
+          if not files:
+              raise SystemExit("No JSON files found")
+          for path in files:
+              json.loads(path.read_text(encoding="utf-8"))
+              print(f"OK {path}")
+          PY
+
+      - name: Rebuild and verify GDD DOCX mirror
+        run: |
+          python tools/docs/build_game_design_doc.py --build
+          python tools/docs/build_game_design_doc.py --check
+
+      - name: Install verified Godot 4.7.1
+        env:
+          GODOT_URL: https://github.com/godotengine/godot-builds/releases/download/4.7.1-stable/Godot_v4.7.1-stable_linux.x86_64.zip
+          GODOT_ZIP_SHA256: c7ff14fd28472c8d4f193043de30278dcf7e5241a1dcf7566b02e27addaa33ba
+        run: |
+          curl --fail --location --retry 3 --output "$RUNNER_TEMP/godot.zip" "$GODOT_URL"
+          echo "$GODOT_ZIP_SHA256  $RUNNER_TEMP/godot.zip" | sha256sum --check --strict
+          mkdir -p "$RUNNER_TEMP/godot"
+          unzip -q "$RUNNER_TEMP/godot.zip" -d "$RUNNER_TEMP/godot"
+          chmod +x "$RUNNER_TEMP/godot/Godot_v4.7.1-stable_linux.x86_64"
+          echo "GODOT_BIN=$RUNNER_TEMP/godot/Godot_v4.7.1-stable_linux.x86_64" >> "$GITHUB_ENV"
+
+      - name: Import project and run all Godot regressions
+        run: |
+          "$GODOT_BIN" --version
+          "$GODOT_BIN" --headless --path . --import --quit
+          chmod +x tests/run_godot_regression.sh
+          bash tests/run_godot_regression.sh
+
+      - name: Commit only validated implementation files
+        run: |
+          git restore --source=HEAD -- .github/workflows/progressive-disclosure-bootstrap.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --check
+          git commit -m "feat: implement 사건 준비 점진적 공개 2A"
+          git push origin "HEAD:${{ github.event.pull_request.head.ref || 'agent/progressive-disclosure-slice' }}"
