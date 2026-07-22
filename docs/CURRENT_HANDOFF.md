@@ -7,19 +7,22 @@
 ```yaml
 status: REVIEW_READY
 branch_policy: 현재 Git 브랜치를 확인하고 main 병합 여부를 별도 검증
-implemented_baseline: MVP-043 + CORE-VALIDATION-001 / Ver 4.2 / save mvp-039
+implemented_baseline: MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A / Ver 4.2 / save mvp-039
 current_protagonist: 권나래
 implemented_cases:
   - 저승역
   - 비 오는 골목의 빨간 우산
   - 폐주파수 방송국
 approved_but_not_implemented:
+  - UX-PD-001 2B 조사 정보 위계
+  - UX-PD-001 2C 결과 정보 위계
   - MVP-044 괴이 1~3편 대사·일상·후일담·세력 서사
   - MVP-045 관계 태그·선택 기억·연속 이벤트
   - MVP-046 대화 UI·표정·컷인·이벤트 연출
 planning_entry: docs/planning/README.md
 next_action:
-  - 대상 Codex ZIP 하나를 선택
+  - UX-PD-001 2B 조사 정보 위계를 작은 슬라이스로 구현
+  - 2C 결과 정보 위계 뒤 대상 Codex ZIP 하나를 선택
   - ZIP의 00_README와 IMP-00 사전 감사부터 진행
   - 분야별 기획서와 실제 대상 파일의 차이를 확인
   - 작은 end-to-end 단위로 구현
@@ -41,12 +44,13 @@ AGENTS.md
 
 - 서사·대사·관계: `docs/planning/NARRATIVE_CONTENT_PLAN.md`
 - 아트·표정·컷인·대화 UI: `docs/planning/ART_PRESENTATION_PLAN.md`
+- 점진적 공개: `docs/planning/PROGRESSIVE_DISCLOSURE_PLAN.md`
 - 사례·벤치마킹 재사용: `docs/planning/REFERENCE_CASES.md`
 - 단계·진입·완료 기준: `docs/planning/ROADMAP_AND_HANDOFF.md`
 
 ## 현재 핵심 판단
 
-- MVP-043 + CORE-VALIDATION-001까지가 실제 구현 완료선이다.
+- MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A까지가 실제 구현 완료선이다.
 - MVP-044~046은 승인된 전달 패키지와 기획 문서가 있으나 `main` 구현 완료가 아니다.
 - 기본 의존 순서는 MVP-044 → MVP-045 → MVP-046이다.
 - MVP-046의 상태 비소유 공용 대화 스테이지만 기존 서사·관계 데이터를 바꾸지 않는 범위에서 선행할 수 있다.
@@ -57,6 +61,7 @@ AGENTS.md
 - 공식 명칭: 괴이 기록국 / 안정화 상태 / 위험 사례 / 잔향 / 괴이 매뉴얼 / 기록관 아카
 - 저승역 회수는 가설 → 근거 → 대응을 사용하고, 공식 규칙·후보·위험 사례를 `anomaly_manual_records`에 선택 필드로 저장한다.
 - 결과 화면과 DB는 정적 저승역 카탈로그가 아니라 플레이어 작성 기록을 표시한다.
+- 준비 화면의 점진적 공개는 표시 계층만 바꾸며 일정·편성·경제·장비·세력 상태를 소유하지 않는다.
 - 권나래 고정 주인공, 서포트 최대 2인
 - 저장 `mvp-039`, `mvp-038` 이관 지원
 - 기존 사건·선택·보고서·DB ID

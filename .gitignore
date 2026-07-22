@@ -35,3 +35,6 @@ exports/
 *.aab
 *.ipa
 *.zip
+
+# Deterministic generated document mirror; rebuild from Markdown when needed.
+/docs/URBAN_LEGEND_GAME_DESIGN.docx

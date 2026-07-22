@@ -18,12 +18,26 @@ ACTIVE_DOCS = [
     ROOT / "docs/planning/README.md",
     ROOT / "docs/planning/PROJECT_DIRECTION.md",
     ROOT / "docs/planning/ROADMAP_AND_HANDOFF.md",
+    ROOT / "docs/planning/PROGRESSIVE_DISCLOSURE_PLAN.md",
     ROOT / "docs/GODOT_NATIVE_UI_ARCHITECTURE.md",
     ROOT / "docs/MINIGAME_SYSTEM_SPEC.md",
 ]
 CORE_VALIDATION_QA = ROOT / "docs/qa/CORE_VALIDATION_SLICE_001.md"
-REFERENCE_AUDIT_DOCS = ACTIVE_DOCS + [CORE_VALIDATION_QA]
+PROGRESSIVE_DISCLOSURE_QA = ROOT / "docs/qa/PROGRESSIVE_DISCLOSURE_SLICE_001.md"
+REFERENCE_AUDIT_DOCS = ACTIVE_DOCS + [CORE_VALIDATION_QA, PROGRESSIVE_DISCLOSURE_QA]
 BASELINE_DOCS = ACTIVE_DOCS
+PROGRESSIVE_BASELINE_DOCS = [
+    ROOT / "README.md",
+    ROOT / "MVP_ROADMAP.md",
+    ROOT / "TEST_CHECKLIST.md",
+    ROOT / "docs/CURRENT_STATUS.md",
+    ROOT / "docs/CURRENT_HANDOFF.md",
+    ROOT / "docs/GAME_DESIGN_DOCUMENT.md",
+    ROOT / "docs/planning/README.md",
+    ROOT / "docs/planning/ROADMAP_AND_HANDOFF.md",
+    ROOT / "docs/planning/PROGRESSIVE_DISCLOSURE_PLAN.md",
+    ROOT / "docs/GODOT_NATIVE_UI_ARCHITECTURE.md",
+]
 MARKDOWN_LINK = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
 BACKTICK_PATH = re.compile(r"`((?:docs|scripts|scenes|data|tests|tools|assets)/[^`]+|(?:README|MVP_ROADMAP|TEST_CHECKLIST|AGENTS)\.md)`")
 STALE_FILE_PATTERNS = [
@@ -42,6 +56,8 @@ FORBIDDEN_TRACKED_PATHS = [
     re.compile(r"\.py[co]$"),
     re.compile(r"^\.github/core-validation-1b/"),
     re.compile(r"^\.github/workflows/apply-core-validation-(?:1b|manual-promotion)\.yml$"),
+    re.compile(r"^\.github/workflows/progressive-disclosure-bootstrap\.yml$"),
+    re.compile(r"^docs/URBAN_LEGEND_GAME_DESIGN\.docx$"),
 ]
 
 
@@ -94,6 +110,24 @@ class ActiveDocumentReferenceTests(unittest.TestCase):
                 if required not in text:
                     failures.append(f"{path.relative_to(ROOT)} missing {required}")
         self.assertEqual([], failures)
+
+    def test_progressive_disclosure_baseline_is_consistent(self) -> None:
+        failures: list[str] = []
+        for path in PROGRESSIVE_BASELINE_DOCS:
+            text = path.read_text(encoding="utf-8")
+            if "UX-PD-001" not in text or "2A" not in text:
+                failures.append(f"{path.relative_to(ROOT)} missing UX-PD-001 2A")
+        self.assertEqual([], failures)
+
+    def test_preparation_progressive_disclosure_is_presentation_only(self) -> None:
+        scene = (ROOT / "scenes/preparation_scene.tscn").read_text(encoding="utf-8")
+        base = (ROOT / "scripts/scenes/preparation_scene.gd").read_text(encoding="utf-8")
+        layer = (ROOT / "scripts/scenes/preparation_progressive_disclosure.gd").read_text(encoding="utf-8")
+        self.assertIn("preparation_progressive_disclosure.gd", scene)
+        self.assertNotIn("preparation_secondary_tools_opened", base)
+        self.assertIn('extends "res://scripts/scenes/preparation_scene.gd"', layer)
+        self.assertIn("set_tab_hidden", layer)
+        self.assertIn("preparation_secondary_tools_opened", layer)
 
     def test_recovery_ui_spec_has_no_old_schema(self) -> None:
         text = (ROOT / "docs/CINEMATIC_FIELD_RECOVERY_UI.md").read_text(encoding="utf-8")

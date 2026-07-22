@@ -10,13 +10,13 @@
 
 | 항목 | 값 |
 |---|---|
-| 구현 기준선 | MVP-043 + CORE-VALIDATION-001 |
+| 구현 기준선 | MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A |
 | 화면 버전 | Ver 4.2 |
 | 저장 스키마 | `mvp-039` (`mvp-038` 이관 지원) |
 | 플랫폼 | PC / Steam, 16:9, 마우스·키보드 |
 | 구현 사건 | 저승역, 비 오는 골목의 빨간 우산, 폐주파수 방송국 |
 | 주인공·요원 | 권나래 고정 주인공 / 초기 요원 5인 / 서포트 최대 2인 |
-| 현재 계획 | MVP-044 서사 확장 → MVP-045 관계 연속 이벤트 → MVP-046 대화·표정·컷인 연출 |
+| 현재 계획 | UX-PD-001 2B 조사 정보 위계 → 2C 결과 정보 위계 → MVP-044~046 |
 
 MVP-044~046은 Codex 전달 패키지와 기획 문서가 작성된 **승인 계획**이며 GitHub `main` 구현 완료를 뜻하지 않는다. 현재 구현 사실과 계획의 구분은 [`docs/CURRENT_STATUS.md`](docs/CURRENT_STATUS.md)를 따른다.
 
@@ -36,6 +36,7 @@ AGENTS.md
 - 프로젝트 방향: [`docs/planning/PROJECT_DIRECTION.md`](docs/planning/PROJECT_DIRECTION.md)
 - 서사·대화·관계: [`docs/planning/NARRATIVE_CONTENT_PLAN.md`](docs/planning/NARRATIVE_CONTENT_PLAN.md)
 - 아트·표정·컷인·연출: [`docs/planning/ART_PRESENTATION_PLAN.md`](docs/planning/ART_PRESENTATION_PLAN.md)
+- 준비·조사·결과 정보 위계: [`docs/planning/PROGRESSIVE_DISCLOSURE_PLAN.md`](docs/planning/PROGRESSIVE_DISCLOSURE_PLAN.md)
 - 통합 로드맵·인수인계: [`docs/planning/ROADMAP_AND_HANDOFF.md`](docs/planning/ROADMAP_AND_HANDOFF.md)
 - 적용 사례 라이브러리: [`docs/planning/REFERENCE_CASES.md`](docs/planning/REFERENCE_CASES.md)
 
@@ -59,6 +60,7 @@ AGENTS.md
 
 ```text
 신규 캠페인 → 저승역 온보딩 또는 현재 반일 계획
+→ 사건·편성 우선 확인 → (선택) 보조 준비 도구 펼치기
 → (선택) HQ 일정 비소모 일상 에피소드
 → 조사·휴식·세력 의뢰 배치
 → 사건 조사 → 규칙 판단 → 안정화·잔향 회수
@@ -69,6 +71,7 @@ AGENTS.md
 
 - 최대 10일, 오전·오후 순차 반일 운영
 - 권나래 주인공과 서포트 0~2명 저장 호환
+- 첫 준비에서 사건·편성을 우선하고 장비·외부 접점·기록을 사용자 선택으로 펼치는 점진적 공개
 - 조사 중 HQ 중단·재개
 - 세 사건의 조사·판단·회수·보고서·DB
 - 위험 사례를 다음 판단 근거로 남기는 페어플레이 추리
@@ -90,7 +93,7 @@ scripts/core/           저장 파사드와 캠페인 상태
 scripts/data/           에피소드·일상 데이터 로딩
 scripts/scenes/         화면별 진행 연결
 scripts/ui/             공용 UI·프레젠테이션·접근성
-docs/planning/          프로젝트 방향·서사·아트·연출·로드맵·사례
+docs/planning/          프로젝트 방향·서사·아트·정보 위계·연출·로드맵·사례
 docs/                   현행 설계·상태·검증·백업 라우터
 tests/                  Godot·계약·회귀 테스트
 tools/docs/             GDD DOCX 생성기
@@ -101,6 +104,7 @@ tools/docs/             GDD DOCX 생성기
 ```powershell
 & "C:\Users\user\Downloads\Godot_v4.7-stable_win64.exe\Godot_v4.7-stable_win64_console.exe" --headless --path . --quit
 git diff --check
+& "C:\Users\user\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe" tools/docs/build_game_design_doc.py --build
 & "C:\Users\user\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe" tools/docs/build_game_design_doc.py --check
 ```
 
@@ -108,8 +112,9 @@ git diff --check
 
 ## 현재 남은 작업
 
-1. 선택한 Codex ZIP의 `IMP-00` 사전 감사를 현재 `main`에서 실행한다.
-2. 분야별 기획서와 실제 대상 파일의 차이를 확인한다.
-3. MVP-044~046 중 한 범위만 작은 end-to-end 단위로 구현한다.
-4. 구현 완료 후 상태·로드맵·테스트·해당 기획서를 갱신한다.
-5. 이후 Steam 데모 패키징과 180~220분 플레이타임 실측을 진행한다.
+1. UX-PD-001 2B에서 조사 화면의 선택 관련 정보 위계를 작은 단위로 검증한다.
+2. 2C에서 결과 화면의 기록·다음 행동 우선순위를 검증한다.
+3. 이후 선택한 Codex ZIP의 `IMP-00` 사전 감사를 현재 `main`에서 실행한다.
+4. MVP-044~046 중 한 범위만 작은 end-to-end 단위로 구현한다.
+5. 구현 완료 후 상태·로드맵·테스트·해당 기획서를 갱신한다.
+6. 이후 Steam 데모 패키징과 180~220분 플레이타임 실측을 진행한다.

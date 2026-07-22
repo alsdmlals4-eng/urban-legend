@@ -82,3 +82,11 @@ AGENTS.md
 - 아트·표정·컷인·화면 위계가 바뀌면 `ART_PRESENTATION_PLAN.md`를 갱신한다.
 - 완료된 상세 계획과 과거 버전은 `docs/archive/backup/YYYY-MM-DD/`로 보낸다.
 - 사례에서 얻은 재사용 가능한 원칙은 프로젝트 전용 사실을 제거한 뒤 Base 저장소의 docs/knowledge 승격 후보로 정리한다.
+
+
+## 점진적 공개·정보 위계
+
+준비·조사·결과 화면의 정보 우선순위와 기능 비잠금 계약은 `docs/planning/PROGRESSIVE_DISCLOSURE_PLAN.md`를 따른다.
+
+
+현재 구현 완료선은 `MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A`이며, 후속 정보 위계는 2B 조사 → 2C 결과 순서로 진행한다.

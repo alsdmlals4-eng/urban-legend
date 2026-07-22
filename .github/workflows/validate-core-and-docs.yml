@@ -80,12 +80,12 @@ jobs:
               print(f"OK {path}")
           PY
 
-      - name: Verify GDD source and DOCX mirror
+      - name: Build and verify GDD DOCX mirror
         run: |
-          python tools/docs/build_game_design_doc.py --check
           python tools/docs/build_game_design_doc.py --build
           python tools/docs/build_game_design_doc.py --check
-          git diff --exit-code -- docs/GAME_DESIGN_DOCUMENT.md docs/URBAN_LEGEND_GAME_DESIGN.docx
+          rm -f docs/URBAN_LEGEND_GAME_DESIGN.docx
+          git diff --exit-code -- docs/GAME_DESIGN_DOCUMENT.md tools/docs/build_game_design_doc.py
 
       - name: Install verified Godot 4.7.1
         env:
