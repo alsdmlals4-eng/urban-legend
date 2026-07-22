@@ -1,0 +1,30 @@
+name: Snapshot progressive disclosure branch
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/progressive-disclosure-bootstrap.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out progressive disclosure branch
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
+          ref: ${{ github.event.pull_request.head.ref || 'agent/progressive-disclosure-slice' }}
+          fetch-depth: 0
+
+      - name: Upload exact branch snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: urban-legend-progressive-disclosure-base
+          path: .
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 1
