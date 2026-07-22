@@ -123,9 +123,10 @@ jobs:
           chmod +x tests/run_godot_regression.sh
           bash tests/run_godot_regression.sh
 
-      - name: Commit only the validated implementation
+      - name: Commit validated code, data, docs, and tests
         run: |
-          rm -f .github/workflows/apply-core-validation-manual-promotion.yml
+          rm -f .github/workflows/validate-core-validation-slice.yml
+          git restore --source=HEAD -- .github/workflows/apply-core-validation-manual-promotion.yml
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
