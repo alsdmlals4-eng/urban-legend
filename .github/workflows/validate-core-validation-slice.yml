@@ -1,6 +1,10 @@
 name: Snapshot core validation branch
 
 on:
+  pull_request:
+    paths:
+      - ".github/workflows/validate-core-validation-slice.yml"
+      - ".github/core-validation-1b/**"
   push:
     branches:
       - "agent/core-validation-slice"
@@ -15,8 +19,11 @@ jobs:
   snapshot:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out branch
+      - name: Check out PR head branch
         uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
+          ref: ${{ github.event.pull_request.head.ref || github.ref_name }}
 
       - name: Upload exact branch snapshot
         uses: actions/upload-artifact@v4
