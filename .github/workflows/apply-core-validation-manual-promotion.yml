@@ -1,11 +1,10 @@
 name: Apply core validation manual promotion
 
 on:
-  push:
-    branches:
-      - "agent/core-validation-manual-promotion"
+  pull_request:
     paths:
       - ".github/workflows/apply-core-validation-manual-promotion.yml"
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -15,10 +14,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 75
     steps:
-      - name: Check out clean branch
+      - name: Check out clean PR head branch
         uses: actions/checkout@v4
         with:
-          ref: agent/core-validation-manual-promotion
+          repository: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
+          ref: ${{ github.event.pull_request.head.ref || 'agent/core-validation-manual-promotion' }}
           fetch-depth: 0
 
       - name: Reassemble and verify clean implementation patch
@@ -131,4 +131,4 @@ jobs:
           git add -A
           git diff --cached --check
           git commit -m "feat: complete core validation manual promotion"
-          git push origin HEAD:agent/core-validation-manual-promotion
+          git push origin HEAD:${{ github.event.pull_request.head.ref || 'agent/core-validation-manual-promotion' }}
