@@ -1,0 +1,55 @@
+name: Validate core validation slice
+
+on:
+  pull_request:
+    paths:
+      - "data/episodes/episode_001_afterlife_station.json"
+      - "data/episodes/episode_001_afterlife_station_core_validation.json"
+      - "scripts/data/episode_loader.gd"
+      - "scripts/core/game_state.gd"
+      - "tests/test_core_validation_contract.py"
+      - "docs/qa/CORE_VALIDATION_SLICE_001.md"
+      - ".github/workflows/validate-core-validation-slice.yml"
+  push:
+    branches:
+      - "agent/core-validation-slice"
+    paths:
+      - "data/episodes/episode_001_afterlife_station.json"
+      - "data/episodes/episode_001_afterlife_station_core_validation.json"
+      - "scripts/data/episode_loader.gd"
+      - "scripts/core/game_state.gd"
+      - "tests/test_core_validation_contract.py"
+      - "docs/qa/CORE_VALIDATION_SLICE_001.md"
+      - ".github/workflows/validate-core-validation-slice.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate hypothesis and evidence contract
+        run: python -m unittest tests.test_core_validation_contract -v
+
+      - name: Parse all episode JSON files
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          files = sorted(Path("data/episodes").glob("*.json"))
+          if not files:
+              raise SystemExit("No episode JSON files found")
+          for path in files:
+              json.loads(path.read_text(encoding="utf-8"))
+              print(f"OK {path}")
+          PY
