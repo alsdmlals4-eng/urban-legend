@@ -1,7 +1,6 @@
 # Godot 네이티브 UI 구조 적용 원칙
 
-> 현행 기준: `MVP-043 + CORE-VALIDATION-001` / `Ver 4.2` / 저장 스키마 `mvp-039`
-
+> 현행 기준: `MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A` / `Ver 4.2` / 저장 스키마 `mvp-039`
 
 ## 검토 결론
 
@@ -47,3 +46,12 @@ GPT의 Godot 네이티브 UI Toolkit 제안은 방향을 채택하되 현재 프
 ## Base 승격 후보
 
 “엔진 네이티브 UI를 도입할 때 새 프레임워크보다 프로젝트의 기존 테마·편집·레이아웃 체계를 먼저 조사하고, 상태를 소유하지 않는 작은 파일럿 컴포넌트로 검증한다”는 원칙은 Base 승격 후보다. 이번 작업에서는 Base 원격을 변경하지 않는다.
+
+## 사건 준비 점진적 공개 계층 — UX-PD-001 2A
+
+- 상태·규칙 원본: `scripts/scenes/preparation_scene.gd`
+- 표시 계층: `scripts/scenes/preparation_progressive_disclosure.gd`
+- 씬 연결: `scenes/preparation_scene.tscn`
+- 영속 기억: 기존 `GameState.seen_hint_ids`의 `preparation_secondary_tools_opened`
+
+표시 계층은 기존 다섯 탭을 삭제하거나 재생성하지 않고 `TabContainer.set_tab_hidden()`으로 가시성만 조정한다. 일정·편성·경제·시장·세력·기록 상태와 저장은 부모 화면과 `GameState`가 계속 소유한다. 신규 저장에서만 보조 탭을 접으며, 보유 콘텐츠가 있는 진행 저장과 사용자가 한 번 펼친 저장은 자동 복원한다.

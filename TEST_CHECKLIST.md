@@ -4,7 +4,7 @@
 
 ## 목적
 
-현재 구현 기준인 **MVP-043 + CORE-VALIDATION-001 / Ver 4.2 / 저장 스키마 `mvp-039`**를 보호하면서 선택한 다음 MVP의 변경만 검증한다. 과거 완료 체크를 매번 재실행하지 않고, 변경 영향이 있는 기능의 `docs/qa/` 기록만 선택해 회귀한다.
+현재 구현 기준인 **MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A / Ver 4.2 / 저장 스키마 `mvp-039`**를 보호하면서 선택한 다음 MVP의 변경만 검증한다. 과거 완료 체크를 매번 재실행하지 않고, 변경 영향이 있는 기능의 `docs/qa/` 기록만 선택해 회귀한다.
 
 ## 작업 전 확인
 
@@ -19,6 +19,7 @@
 ```powershell
 & "C:\Users\user\Downloads\Godot_v4.7-stable_win64.exe\Godot_v4.7-stable_win64_console.exe" --headless --path . --quit
 git diff --check
+& "C:\Users\user\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe" tools/docs/build_game_design_doc.py --build
 & "C:\Users\user\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe" tools/docs/build_game_design_doc.py --check
 ```
 
@@ -58,6 +59,8 @@ git diff --check
 - [ ] 키보드 포커스, Esc/닫기, 마우스 입력이 겹치지 않는다.
 - [ ] 음향·색상만으로 중요한 상태를 전달하지 않는다.
 - [ ] 기록 오버레이·컷인·표정 연출이 선택 입력과 저장 상태를 소유하지 않는다.
+- [ ] 첫 준비에서는 사건·편성이 우선 보이고 보조 준비 도구는 기능 잠금 없이 즉시 펼칠 수 있다.
+- [ ] 한 번 펼친 보조 탭과 진행 저장의 기존 콘텐츠가 재진입에서 다시 숨지 않는다.
 
 ### 문서
 
@@ -69,6 +72,16 @@ git diff --check
 - [ ] 활성 기준 문서가 완료된 Goal·QA·리디렉션을 구현 원본으로 참조하지 않는다.
 - [ ] `tests/test_active_document_references.py`가 기준선·경로·구형 참조 감사를 통과한다.
 
+
+## UX-PD-001 조건부 검증
+
+- [ ] 사건·편성 탭은 항상 보이고 장비·외부 접점·기록 탭의 ID·순서·내부 기능은 보존된다.
+- [ ] 신규 상태에서는 보조 탭이 접히고 `보조 준비 도구` 버튼이 외부 의뢰 자리에서 표시된다.
+- [ ] 공개 버튼 한 번으로 보조 탭과 외부 의뢰 바로가기가 즉시 복원된다.
+- [ ] 공개 상태는 기존 `seen_hint_ids`로 저장되며 새 저장 필드와 버전 증가가 없다.
+- [ ] 완료 보고서·장비·기록·장착·소모품·수락 의뢰가 있는 저장은 자동 공개된다.
+- [ ] 시장·장비·세력 의뢰·소모품·기록 데이터와 가격·보상·조건이 변경되지 않는다.
+- [ ] 1280×720과 1920×1080에서 대시보드와 탭 영역이 잘리지 않는다.
 
 ## CORE-VALIDATION-001 조건부 검증
 
