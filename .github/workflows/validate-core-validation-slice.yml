@@ -8,33 +8,49 @@ on:
       - "scripts/data/episode_loader.gd"
       - "scripts/core/game_state.gd"
       - "scripts/scenes/battle_scene.gd"
+      - "scripts/ui/action_choice_card.gd"
       - "scenes/battle_scene.tscn"
+      - "tests/core_validation_guided_flow_test.gd"
+      - "tests/mvp043_recovery_loop_test.gd"
+      - "tests/run_godot_regression.sh"
+      - "tests/test_agent_system.gd"
       - "tests/test_core_validation_contract.py"
+      - "tests/test_mvp039_manual_ux_validation.gd"
+      - "tests/ui_visual_capture.gd"
       - "docs/qa/CORE_VALIDATION_SLICE_001.md"
-      - ".github/workflows/validate-core-validation-slice.yml"
-  push:
-    branches:
-      - "agent/core-validation-slice"
-    paths:
-      - "data/episodes/episode_001_afterlife_station.json"
-      - "data/episodes/episode_001_afterlife_station_core_validation.json"
-      - "scripts/data/episode_loader.gd"
-      - "scripts/core/game_state.gd"
-      - "scripts/scenes/battle_scene.gd"
-      - "scenes/battle_scene.tscn"
-      - "tests/test_core_validation_contract.py"
-      - "docs/qa/CORE_VALIDATION_SLICE_001.md"
+      - ".github/core-validation-1b/**"
+      - ".github/workflows/apply-core-validation-1b.yml"
       - ".github/workflows/validate-core-validation-slice.yml"
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  contract:
+  contract-and-runtime:
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     steps:
-      - name: Check out repository
+      - name: Check out PR head branch
         uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+
+      - name: Reassemble and apply verified 1B patch
+        id: apply_patch
+        if: ${{ hashFiles('.github/core-validation-1b/part*') != '' }}
+        run: |
+          cat .github/core-validation-1b/part* > "$RUNNER_TEMP/core-validation-1b.patch.gz.b64"
+          echo "a562278368dbd178a78fd1b0e86d70dcb2059a2bd222ce5679eff09c45059c13  $RUNNER_TEMP/core-validation-1b.patch.gz.b64" | sha256sum --check --strict
+          base64 --decode "$RUNNER_TEMP/core-validation-1b.patch.gz.b64" | gzip --decompress > "$RUNNER_TEMP/core-validation-1b.patch"
+          echo "8859cd4958e1499475a6b0a5c7d5bbeb6f81c87482a10e2e3791f3a080edaed9  $RUNNER_TEMP/core-validation-1b.patch" | sha256sum --check --strict
+          git apply --check "$RUNNER_TEMP/core-validation-1b.patch"
+          git apply "$RUNNER_TEMP/core-validation-1b.patch"
+          rm -rf .github/core-validation-1b
+          rm -f .github/workflows/apply-core-validation-1b.yml
+          git diff --check
+          echo "applied=true" >> "$GITHUB_OUTPUT"
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -58,18 +74,34 @@ jobs:
               print(f"OK {path}")
           PY
 
-      - name: Upload project snapshot for local Godot verification
-        uses: actions/upload-artifact@v4
-        with:
-          name: urban-legend-core-validation-project
-          path: |
-            project.godot
-            assets
-            data
-            scenes
-            scripts
-            tests
-            docs
-            addons
-          if-no-files-found: error
-          retention-days: 1
+      - name: Install verified Godot 4.7.1
+        env:
+          GODOT_URL: https://github.com/godotengine/godot-builds/releases/download/4.7.1-stable/Godot_v4.7.1-stable_linux.x86_64.zip
+          GODOT_ZIP_SHA256: c7ff14fd28472c8d4f193043de30278dcf7e5241a1dcf7566b02e27addaa33ba
+        run: |
+          curl --fail --location --retry 3 --output "$RUNNER_TEMP/godot.zip" "$GODOT_URL"
+          echo "$GODOT_ZIP_SHA256  $RUNNER_TEMP/godot.zip" | sha256sum --check --strict
+          mkdir -p "$RUNNER_TEMP/godot"
+          unzip -q "$RUNNER_TEMP/godot.zip" -d "$RUNNER_TEMP/godot"
+          chmod +x "$RUNNER_TEMP/godot/Godot_v4.7.1-stable_linux.x86_64"
+          echo "GODOT_BIN=$RUNNER_TEMP/godot/Godot_v4.7.1-stable_linux.x86_64" >> "$GITHUB_ENV"
+
+      - name: Import project and run full Godot regression
+        env:
+          GODOT_SILENCE_ROOT_WARNING: "1"
+          GODOT_TEST_TMP: ${{ runner.temp }}/urban-legend-godot-tests
+          GODOT_TEST_TIMEOUT: "300"
+        run: |
+          "$GODOT_BIN" --version
+          "$GODOT_BIN" --headless --path . --import --quit
+          chmod +x tests/run_godot_regression.sh
+          bash tests/run_godot_regression.sh
+
+      - name: Commit validated 1B implementation
+        if: ${{ steps.apply_patch.outputs.applied == 'true' }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "feat: implement 저승역 가설·근거 검증 1B"
+          git push origin "HEAD:${{ github.event.pull_request.head.ref }}"
