@@ -20,6 +20,8 @@ func start_session(session_id: String, build_label: String, run_seed: int) -> vo
 
 
 func record(event_name: String, payload: Dictionary = {}) -> void:
+	if event_name == "poc_started" and not _events.is_empty():
+		return
 	_events.append({
 		"sequence": _events.size() + 1,
 		"event": event_name,
