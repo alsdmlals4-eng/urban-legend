@@ -9,6 +9,7 @@ on:
       - "scenes/poc/core_mvp_001/**"
       - "tests/test_core_mvp_001_data_contract.py"
       - "tests/core_mvp_001_*_test.gd"
+      - "tests/run_core_mvp_001_tests.sh"
       - "tests/run_godot_regression.sh"
       - "scripts/ui/main_menu.gd"
   push:
@@ -20,6 +21,7 @@ on:
       - "scenes/poc/core_mvp_001/**"
       - "tests/test_core_mvp_001_data_contract.py"
       - "tests/core_mvp_001_*_test.gd"
+      - "tests/run_core_mvp_001_tests.sh"
       - "tests/run_godot_regression.sh"
       - "scripts/ui/main_menu.gd"
 
@@ -50,6 +52,11 @@ jobs:
           include-templates: false
       - name: Import project
         run: godot --headless --path . --editor --quit-after 1
+      - name: Run focused CORE-MVP-001 tests
+        env:
+          GODOT_BIN: godot
+          GODOT_TEST_TMP: ${{ runner.temp }}/core-mvp-001-tests
+        run: tests/run_core_mvp_001_tests.sh
       - name: Run 43 Godot regression entrypoints
         env:
           GODOT_BIN: godot
@@ -60,6 +67,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: core-mvp-001-godot-logs
-          path: ${{ runner.temp }}/core-mvp-001-tests/logs
+          path: |
+            ${{ runner.temp }}/core-mvp-001-tests/focused-logs
+            ${{ runner.temp }}/core-mvp-001-tests/logs
           if-no-files-found: warn
           retention-days: 14
