@@ -289,6 +289,7 @@ func _panel_for_phase(phase: String) -> String:
 
 
 func _render_investigation(snapshot: Dictionary) -> void:
+	var read_only := not _review_panel_key.is_empty()
 	_clear_children(_choice_grid)
 	for value in _data.get("choices", []):
 		var choice := value as Dictionary
@@ -296,7 +297,7 @@ func _render_investigation(snapshot: Dictionary) -> void:
 		var button := Button.new()
 		button.text = String(choice.get("label", choice_id))
 		button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		button.disabled = (snapshot.get("eliminated_choice_ids", []) as Array).has(choice_id)
+		button.disabled = read_only or (snapshot.get("eliminated_choice_ids", []) as Array).has(choice_id)
 		button.pressed.connect(_on_choice_pressed.bind(choice_id))
 		_choice_grid.add_child(button)
 	_clear_children(_manual_list)
@@ -306,6 +307,7 @@ func _render_investigation(snapshot: Dictionary) -> void:
 		var button := Button.new()
 		button.text = "%s%s\n%s" % ["● " if record_id == _selected_record_id else "", record.get("title", "기록"), record.get("statement", "")]
 		button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		button.disabled = read_only
 		button.pressed.connect(_on_record_pressed.bind(record_id))
 		_manual_list.add_child(button)
 	if _review_panel_key.is_empty() and String(snapshot.get("phase", "")) == "ELIMINATION":
@@ -314,6 +316,7 @@ func _render_investigation(snapshot: Dictionary) -> void:
 
 
 func _render_hypothesis(snapshot: Dictionary) -> void:
+	var read_only := not _review_panel_key.is_empty()
 	var active_ids := snapshot.get("active_hypothesis_ids", []) as Array
 	if not _selected_hypothesis_id.is_empty() and not active_ids.has(_selected_hypothesis_id):
 		_store_current_draft()
@@ -337,6 +340,7 @@ func _render_hypothesis(snapshot: Dictionary) -> void:
 		var button := Button.new()
 		button.text = "%s%s" % ["● " if hypothesis_id == _selected_hypothesis_id else "", String(hypothesis.get("rule_text", "가설"))]
 		button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		button.disabled = read_only
 		button.pressed.connect(_select_hypothesis.bind(hypothesis_id))
 		_hypothesis_buttons.add_child(button)
 	_clear_children(_evidence_list)
@@ -348,6 +352,7 @@ func _render_hypothesis(snapshot: Dictionary) -> void:
 		toggle.text = "[%s] %s" % [role, clue.get("title", clue_id)]
 		toggle.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		toggle.button_pressed = _is_evidence_selected(clue_id, role)
+		toggle.disabled = read_only
 		toggle.toggled.connect(_toggle_evidence.bind(clue_id, role))
 		_evidence_list.add_child(toggle)
 	if _review_panel_key.is_empty() and String(snapshot.get("phase", "")) in ["HYPOTHESIS_AUTHORING", "HYPOTHESIS_REFRESH"]:
@@ -371,6 +376,9 @@ func _render_recovery(snapshot: Dictionary) -> void:
 	_capture_marks_label.text = "포획 표식 %d/3: %s" % [marks.size(), ", ".join(marks)]
 	_last_action_label.text = _last_action_feedback
 	var omen := snapshot.get("omen_result", {}) as Dictionary
+	if _review_panel_key == "recovery" and phase in ["RESULT_COMPARE", "MANUAL_PROMOTION", "COMPLETE"]:
+		_omen_label.text = "직전 전조: %s" % String(omen.get("text", "기록된 전조 없음"))
+		return
 	if phase in ["RECOVERY_READY", "EMERGENCY_RECOVERY", "RECOVERY_TURN_START"]:
 		_omen_label.text = "조사에서 만든 이해를 회수 전투의 전조 해석에 적용한다. 턴을 시작하면 패턴이 먼저 잠긴다."
 		if _review_panel_key.is_empty():
@@ -405,7 +413,8 @@ func _render_recovery(snapshot: Dictionary) -> void:
 
 
 func _render_result(snapshot: Dictionary) -> void:
-	if String(snapshot.get("phase", "")) not in ["RESULT_COMPARE", "MANUAL_PROMOTION", "COMPLETE"]:
+	var phase := String(snapshot.get("phase", ""))
+	if phase not in ["RESULT_COMPARE", "MANUAL_PROMOTION", "COMPLETE"]:
 		return
 	var result := _state.build_result()
 	var delta := _state.build_manual_delta()
@@ -418,8 +427,16 @@ func _render_result(snapshot: Dictionary) -> void:
 		(delta.get("danger_cases", []) as Array).size()
 	]
 	if _review_panel_key.is_empty():
-		_confirm_button.text = "매뉴얼 반영"
-		_confirm_button.disabled = String(snapshot.get("phase", "")) == "COMPLETE"
+		match phase:
+			"RESULT_COMPARE":
+				_confirm_button.text = "매뉴얼 반영 검토"
+				_confirm_button.disabled = false
+			"MANUAL_PROMOTION":
+				_confirm_button.text = "기록 확정"
+				_confirm_button.disabled = false
+			_:
+				_confirm_button.text = "기록 완료"
+				_confirm_button.disabled = true
 
 
 func _on_record_pressed(record_id: String) -> void:
@@ -535,7 +552,7 @@ func _on_confirm_pressed() -> void:
 			result = _state.read_current_omen()
 		"CAPTURE_WINDOW", "EMERGENCY_CAPTURE":
 			result = _state.execute_capture()
-		"RESULT_COMPARE":
+		"RESULT_COMPARE", "MANUAL_PROMOTION":
 			result = _state.confirm_manual_promotion()
 	_record_state_events(result)
 	if not result.is_empty():
