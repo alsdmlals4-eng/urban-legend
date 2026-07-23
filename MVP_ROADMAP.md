@@ -1,6 +1,6 @@
 # MVP_ROADMAP
 
-> 문서 위치: `MVP_ROADMAP.md` | 상태 원본: `docs/CURRENT_STATUS.md` | 상세 설계: `docs/GAME_DESIGN_DOCUMENT.md`
+> 문서 위치: `MVP_ROADMAP.md` | 상태 원본: `docs/CURRENT_STATUS.md` | 통합 명세: `docs/superpowers/specs/2026-07-23-project-core-integrated-spec.md` | CORE-MVP-001 구현 계획: `docs/superpowers/plans/2026-07-23-core-mvp-001-implementation-plan.md`
 
 ## 현재 기준
 
@@ -43,6 +43,13 @@
 
 > 플레이어가 조사에서 직접 만든 규칙 가설이 회수 전투의 전조 정보가 되고, 준비한 대응으로 포획 창을 여는 순간이 게임의 뾰족한 재미로 작동하는지 검증한다.
 
+### 구현 경계
+
+- 새 경로: `data/poc/core_mvp_001/`, `scripts/poc/core_mvp_001/`, `scenes/poc/core_mvp_001/`
+- 진입: `scripts/ui/main_menu.gd`의 F1 개발 패널 버튼
+- 기존 `scripts/core/game_state.gd`, `data/episodes/**`, `scripts/scenes/investigation_scene.gd`, `scripts/scenes/battle_scene.gd`, `project.godot`은 수정하지 않는다.
+- 저장 `mvp-039`와 기존 사용자 저장은 읽거나 변경하지 않는다.
+
 ### 범위
 
 - 사건 1개, 18~25분
@@ -55,6 +62,7 @@
 - 전투 5~8턴
 - 결과 3개: 정상 포획, 비용 있는 포획, 긴급 포획
 - 지원 시스템은 체력과 범용 방어만 사용
+- 로컬 JSONL 플레이테스트 로그
 
 ### 필수 계약
 
@@ -64,6 +72,7 @@
 - 미관측 패턴 첫 발동은 범용 방어로 완화 가능하고 비가역 손실을 만들지 않는다.
 - 가설 카드에는 규칙 문장, 지지, 반박, 미해결, 검증 결과, 기록 상태가 있다.
 - 전투 승리는 포획 조건 달성으로 처리한다.
+- 정상 경로는 최소 5턴이며 미관측 핵심 패턴은 최초 관측 뒤 재발동에서 전용 대응한다.
 
 ### 통과 지표
 
@@ -81,6 +90,19 @@
 - 배제가 찍기로 인식: 가설 카드·근거 연결 `CHANGE / RETEST`
 - 난수 불공정 반복: 중간 이해도 확률 축소 또는 후보 정보 방식으로 변경
 - 조사와 전투가 별개로 인식: `HOLD`, 지원 시스템 확장 금지
+
+### 상태 전이
+
+```text
+POC_PENDING
+→ POC_BUILD_READY
+→ POC_TESTING
+├─ POC_PASSED → CORE-MVP-002 계획 승인 요청
+├─ RETEST_REQUIRED → 한 가설만 변경 후 재검증
+└─ HOLD → 지원 시스템 구현 금지
+```
+
+자동 테스트 통과만으로 `POC_PASSED`를 선언하지 않는다.
 
 ## CORE-MVP-002 - 포획·연구·괴이별 영구 지식
 
