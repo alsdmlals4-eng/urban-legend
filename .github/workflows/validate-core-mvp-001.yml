@@ -9,6 +9,7 @@ on:
       - "scenes/poc/core_mvp_001/**"
       - "scripts/ui/main_menu.gd"
       - "tests/test_core_mvp_001_data_contract.py"
+      - "tests/test_core_mvp_001_static_contract.py"
       - "tests/core_mvp_001_*_test.gd"
       - "tests/run_core_mvp_001_tests.sh"
       - "tests/run_godot_regression.sh"
@@ -31,8 +32,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Validate CORE-MVP-001 data contract
-        run: python -m unittest tests/test_core_mvp_001_data_contract.py
+      - name: Validate CORE-MVP-001 Python contracts
+        run: |
+          python -m unittest \
+            tests/test_core_mvp_001_data_contract.py \
+            tests/test_core_mvp_001_static_contract.py
       - name: Setup Godot 4.7.1
         uses: chickensoft-games/setup-godot@v2
         with:
