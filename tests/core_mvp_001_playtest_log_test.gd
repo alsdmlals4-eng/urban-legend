@@ -16,6 +16,8 @@ func _run() -> void:
 	_expect(events.size() == 1, "start_session should record poc_started")
 	_expect(events[0].get("event") == "poc_started", "first event should be poc_started")
 	_expect(events[0].get("sequence") == 1, "sequence should start at one")
+	log.record("poc_started", {"duplicate": true})
+	_expect(log.get_events().size() == 1, "duplicate poc_started should not create a second session start")
 
 	var payload := {"choice_id": "poc001_choice_move_before_end", "valid": false}
 	log.record("manual_record_linked", payload)
