@@ -88,7 +88,7 @@
 
 ## CORE-MVP-001 구현 경계
 
-- 독립 경로: `data/poc/core_mvp_001/`, `scripts/poc/core_mvp_001/`, `scenes/poc/core_mvp_001/`
+- 계획 독립 경로: **data/poc/core_mvp_001/**, **scripts/poc/core_mvp_001/**, **scenes/poc/core_mvp_001/**
 - F1 개발 패널을 통해서만 진입한다.
 - `scripts/core/game_state.gd`, `data/episodes/**`, `scripts/scenes/investigation_scene.gd`, `scripts/scenes/battle_scene.gd`, `project.godot`, `knowledge/base-pack/**`은 수정하지 않는다.
 - 기존 저장을 읽거나 변경하지 않으며 `mvp-039`를 유지한다.
