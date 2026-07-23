@@ -70,6 +70,10 @@ PhaseHost와 조사·가설·현장 검증·회수·결과 패널, 단계별 스
 
 폐기 ID를 실패 fixture로 포함한 테스트가 자기 자신을 검사하던 문제를 제거했다. 폐기 ID 검사는 제품 데이터와 PoC 런타임에만 적용한다.
 
+### F-009 Godot UI API 불확실성
+
+공식 Godot 문서에서 `Button.autowrap_mode`, `Control.clip_contents`, typed `Array.assign()` API 존재를 확인했다. 이는 정적 호환 확인이며 프로젝트 import·실행 검증을 대체하지 않는다.
+
 ## 4. TDD 증거
 
 | 단계 | 증거 | 결과 |
