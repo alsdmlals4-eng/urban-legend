@@ -453,10 +453,29 @@ func build_result() -> Dictionary:
 
 
 func confirm_manual_promotion() -> Dictionary:
-	if _phase != "RESULT_COMPARE":
-		return _response(false, "결과 비교 단계가 아니다.", false)
-	_phase = "COMPLETE"
-	return _response(true, "", true)
+	if _phase == "RESULT_COMPARE":
+		_phase = "MANUAL_PROMOTION"
+		return _response(
+			true,
+			"",
+			true,
+			[{
+				"event": "manual_promotion_reviewed",
+				"status": build_manual_delta().get("status", "candidate")
+			}]
+		)
+	if _phase == "MANUAL_PROMOTION":
+		_phase = "COMPLETE"
+		return _response(
+			true,
+			"",
+			true,
+			[{
+				"event": "manual_record_confirmed",
+				"status": build_manual_delta().get("status", "candidate")
+			}]
+		)
+	return _response(false, "매뉴얼 반영 단계가 아니다.", false)
 
 
 func _validate_hypothesis_evidence(
