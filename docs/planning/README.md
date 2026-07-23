@@ -8,8 +8,6 @@
 
 ## 1. 권장 읽기 순서
 
-### 새 작업 인수
-
 ```text
 AGENTS.md
 → docs/CURRENT_STATUS.md
@@ -20,65 +18,62 @@ AGENTS.md
 → 대상 코드·데이터·에셋
 ```
 
-### 분야별 추가 문서
+## 2. 분야별 추가 문서
 
 | 작업 | 먼저 읽을 기획서 | 추가 확인 |
 |---|---|---|
+| 준비·조사·결과 정보 위계 | `PROGRESSIVE_DISCLOSURE_PLAN.md` | 준비·조사·결과 씬, 저장·접근성 계약 |
 | 괴이 사건 대사·일상·후일담 | `NARRATIVE_CONTENT_PLAN.md` | `docs/PROJECT_CONTEXT.md`, `data/episodes/`, `data/daily_episodes.json` |
 | 관계·선택 기억·연속 이벤트 | `NARRATIVE_CONTENT_PLAN.md` | 현재 저장 상태, 이벤트 ID, 완료 기록 |
 | 캐릭터 아트·표정·컷인 | `ART_PRESENTATION_PLAN.md` | `assets/characters/`, manifest, 실제 화면 캡처 |
 | 대화 UI·이벤트 연출 | `ART_PRESENTATION_PLAN.md` | 공용 UI 스크립트·씬, 입력·접근성 계약 |
 | 안정화·매뉴얼 기록 UI | `PROJECT_DIRECTION.md` | `docs/CINEMATIC_FIELD_RECOVERY_UI.md`, 실제 회수·결과·DB 코드 |
-| MVP 범위·순서·완료 판단 | `ROADMAP_AND_HANDOFF.md` | `MVP_ROADMAP.md`, `TEST_CHECKLIST.md` |
+| 단계 범위·순서·완료 판단 | `ROADMAP_AND_HANDOFF.md` | `MVP_ROADMAP.md`, `TEST_CHECKLIST.md` |
 | 벤치마킹 근거 재사용 | `REFERENCE_CASES.md` | 해당 사례의 원문·최신 1차 출처 |
 
-## 2. 문서 책임
+## 3. 문서 책임
 
 | 문서 | 책임 | 책임지지 않는 것 |
 |---|---|---|
-| `PROJECT_DIRECTION.md` | 프로젝트의 약속, 핵심 경험, 불변 조건, 현재와 다음 방향 | 세부 대사·파일별 구현 명세 |
+| `PROJECT_DIRECTION.md` | 프로젝트 약속, 핵심 경험, 불변 조건 | 세부 대사·파일별 구현 명세 |
+| `PROGRESSIVE_DISCLOSURE_PLAN.md` | 준비·조사·결과의 정보 우선순위와 단계별 수용 기준 | 게임 상태·경제·사건 규칙 소유 |
 | `NARRATIVE_CONTENT_PLAN.md` | 사건 대사, 일상, 관계, 캐릭터 목소리, 서사 데이터 경계 | 표정 리소스·UI 노드 배치 |
 | `ART_PRESENTATION_PLAN.md` | 아트 방향, 화면 위계, 표정·컷인·연출·접근성 | 사건 규칙과 저장 상태 소유 |
 | `ROADMAP_AND_HANDOFF.md` | 단계 의존성, 진입·완료 기준, 인수인계 절차 | 개별 코드 구현 방법 |
-| `REFERENCE_CASES.md` | 이미 사용한 사례의 관찰·적용·제외 이유 | 다른 작품의 외형·문구 복제 |
+| `REFERENCE_CASES.md` | 사용한 사례의 관찰·적용·제외 이유 | 다른 작품의 외형·문구 복제 |
 | `GAME_DESIGN_DOCUMENT.md` | 현재 구현 기준의 상세 게임 설계 | 최신 미구현 패키지의 전체 대본 |
 | `CURRENT_STATUS.md` | 구현 완료와 승인 계획의 상태 구분 | 장기 설계 상세 |
 
 같은 내용을 여러 문서에 복사하지 않는다. 상위 기획서는 판단 원칙을, 하위 데이터와 구현 문서는 실제 값과 ID를 담당한다.
 
-## 3. 현재 프로젝트 위치
+## 4. 현재 프로젝트 위치
 
-- **구현 완료선:** MVP-043 + CORE-VALIDATION-001 / Ver 4.2 / save `mvp-039`
-- **현재 승인 계획:** MVP-044 → MVP-045 → MVP-046
-- **기본 의존 순서:** 서사 데이터 → 관계 기억 → 공용 연출
-- **예외:** MVP-046의 상태 비소유 공용 대화 스테이지는 기존 서사 데이터를 바꾸지 않는 범위에서 선행 가능
+- **구현 완료선:** MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A / Ver 4.2 / save `mvp-039`
+- **다음 구현:** UX-PD-001 2B 조사 정보 위계
+- **후속 순서:** UX-PD-001 2C → MVP-044 → MVP-045 → MVP-046
+- **기본 원칙:** 기능을 삭제·잠그지 않고 현재 판단에 필요한 정보부터 노출한다.
 
-세 MVP의 전달 패키지는 기획 승인 자료이며 `main` 구현 완료를 의미하지 않는다.
-
-## 4. 기획 판단 우선순위
+## 5. 기획 판단 우선순위
 
 1. 플레이어가 현재 무엇을 보고 어떤 판단을 하는가
 2. 판단 결과가 즉시 어떻게 보이고 무엇이 기록되는가
-3. 캐릭터와 세계관의 매력이 행동과 대화로 드러나는가
-4. 실패가 다음 판단 근거를 남기는가
-5. 기존 저장·진행·사건 ID를 보존하는가
-6. 아트·연출이 정보와 감정을 강화하되 상태를 대신 소유하지 않는가
-7. 콘텐츠 양보다 한 장면의 목적과 차이를 먼저 검증했는가
+3. 실패가 다음 판단 근거를 남기는가
+4. 기존 저장·진행·사건 ID를 보존하는가
+5. 아트·연출이 정보와 감정을 강화하되 상태를 대신 소유하지 않는가
+6. 콘텐츠 양보다 한 장면의 목적과 차이를 먼저 검증했는가
 
-## 5. 작업 전 확인 질문
+## 6. 작업 전 확인 질문
 
 - 이 작업은 현재 구현 수정인가, 승인 계획 구체화인가?
 - 플레이어에게 새로 보이는 경험은 무엇인가?
 - 기존 사건·저장·DB·입력에 어떤 영향이 있는가?
 - 필요한 정보가 어느 책임 원본에 있는가?
-- 기존 사례를 재사용할 수 있는가, 최신 외부 조사가 필요한가?
 - 구현 후 어떤 화면과 기록으로 성공을 확인하는가?
 
-## 6. 업데이트 규칙
+## 7. 업데이트 규칙
 
-- 큰 MVP가 완료되면 `CURRENT_STATUS.md`, `MVP_ROADMAP.md`, `ROADMAP_AND_HANDOFF.md`, `TEST_CHECKLIST.md`를 함께 심사한다.
-- 캐릭터·세계관·표현 원칙이 바뀌면 `PROJECT_DIRECTION.md`와 `PROJECT_CONTEXT.md`를 갱신한다.
+- 단계 완료 시 `CURRENT_STATUS.md`, `README.md`, `MVP_ROADMAP.md`, `TEST_CHECKLIST.md`, 책임 기획서를 함께 갱신한다.
+- 정보 위계가 바뀌면 `PROGRESSIVE_DISCLOSURE_PLAN.md`와 실제 화면 테스트를 갱신한다.
 - 대사·관계 규칙이 바뀌면 `NARRATIVE_CONTENT_PLAN.md`를 갱신한다.
-- 아트·표정·컷인·화면 위계가 바뀌면 `ART_PRESENTATION_PLAN.md`를 갱신한다.
-- 완료된 상세 계획과 과거 버전은 `docs/archive/backup/YYYY-MM-DD/`로 보낸다.
-- 사례에서 얻은 재사용 가능한 원칙은 프로젝트 전용 사실을 제거한 뒤 Base 저장소의 docs/knowledge 승격 후보로 정리한다.
+- 아트·표정·컷인·화면 표현이 바뀌면 `ART_PRESENTATION_PLAN.md`를 갱신한다.
+- 완료 상세와 과거 버전은 `docs/qa/` 또는 `docs/archive/backup/YYYY-MM-DD/`로 보낸다.
