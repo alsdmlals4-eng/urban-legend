@@ -36,3 +36,30 @@ jobs:
           python-version: "3.12"
       - name: Validate CORE-MVP-001 data contract
         run: python -m unittest tests/test_core_mvp_001_data_contract.py
+
+  godot-regression:
+    needs: data-contract
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Godot 4.7.1
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.1
+          use-dotnet: false
+          include-templates: false
+      - name: Import project
+        run: godot --headless --path . --editor --quit-after 1
+      - name: Run 43 Godot regression entrypoints
+        env:
+          GODOT_BIN: godot
+          GODOT_TEST_TMP: ${{ runner.temp }}/core-mvp-001-tests
+        run: tests/run_godot_regression.sh
+      - name: Preserve Godot logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: core-mvp-001-godot-logs
+          path: ${{ runner.temp }}/core-mvp-001-tests/logs
+          if-no-files-found: warn
+          retention-days: 14
