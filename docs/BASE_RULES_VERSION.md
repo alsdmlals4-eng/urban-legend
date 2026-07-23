@@ -14,10 +14,10 @@
 | Base 기능 Coverage | 18개 책임 |
 | 프로젝트 분야 Skill | 10개 |
 | 프로젝트 로컬 Skill | 1개 — `urban-legend-investigation-case-authoring` |
-| 확인일 | 2026-07-23 |
-| 적용 상태 | 이 파일이 포함된 브랜치에 최신 `main` 기준 비파괴 운영 동기화 적용 |
+| 확인일 | 2026-07-24 |
+| 적용 상태 | 고정 Base Registry와 프로젝트 기계 원본 일치 확인; 프로젝트 코어 상태는 `docs/PROJECT_CORE.md`가 소유 |
 
-기계 원본은 `skills/SKILL_REGISTRY.json`, `skills/BASE_SKILL_INDEX.json`, `skills/BASE_SKILL_COVERAGE.json`, `skills/PROJECT_PATH_ADAPTER.json`에 같은 값을 둔다.
+기계 원본은 `skills/SKILL_REGISTRY.json`, `skills/BASE_SKILL_INDEX.json`, `skills/BASE_SKILL_COVERAGE.json`, `skills/PROJECT_PATH_ADAPTER.json`에 같은 Base pin을 둔다.
 
 ## 적용 구조
 
@@ -46,11 +46,11 @@ Base Registry 25개
 
 - Base 공용 판단·절차·검증은 선택적으로 사용한다.
 - 프로젝트 고유 세계관·수치·저장·경로·실제 구현은 urban-legend가 책임진다.
-- 프로젝트 코어는 `docs/PROJECT_CORE.md`의 `IDENTIFIED` 상태이며 명시 승인 전 `CORE_CONFIRMED`로 표시하지 않는다.
+- 프로젝트 코어 상태와 승인일은 `docs/PROJECT_CORE.md`가 단독 소유한다. 현재 코어는 `CORE_RECORDED / CORE_STRESS_TESTED`, 구현은 `POC_PENDING`이며 Production gate는 `HOLD_UNTIL_PLAYER_EVIDENCE`다.
 - 프로젝트 분야 Skill 10개는 공통 실행 계약을 `skills/disciplines/PROJECT_DISCIPLINE_CONTRACT.md`로 공유한다.
 - 괴이 사건 작성 로컬 Skill은 전조·가설·근거·대응·매뉴얼 상태의 페어플레이 콘텐츠 계약만 담당한다.
 - GDD는 Markdown 원본이 정본이며 `docs/URBAN_LEGEND_GAME_DESIGN.docx`는 필요 시 결정적으로 재생성하는 비추적 파생본이다.
-- PDF·Manifest v3 이주는 별도 승인 대상이다.
+- 전역 PDF·Manifest v3 이주는 별도 승인 대상이다. 작업별 `docs/qa/` 검증 보고서의 사람용 PDF·해시 기록은 전역 Registry 이주가 아니라 해당 QA 증거의 파생 발행으로 제한한다.
 
 ## 구조 개선 순서
 
