@@ -10,13 +10,13 @@
 
 | 항목 | 값 |
 |---|---|
-| 구현 기준선 | MVP-043 + CORE-VALIDATION-001 |
+| 구현 기준선 | MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A |
 | 화면 버전 | Ver 4.2 |
 | 저장 스키마 | `mvp-039` (`mvp-038` 이관 지원) |
 | 플랫폼 | PC / Steam, 16:9, 마우스·키보드 |
 | 구현 사건 | 저승역, 비 오는 골목의 빨간 우산, 폐주파수 방송국 |
 | 주인공·요원 | 권나래 고정 주인공 / 초기 요원 5인 / 서포트 최대 2인 |
-| 현재 계획 | MVP-044 서사 확장 → MVP-045 관계 연속 이벤트 → MVP-046 대화·표정·컷인 연출 |
+| 현재 계획 | UX-PD-001 2B 조사 정보 위계 → 2C 결과 정보 위계 → MVP-044~046 |
 
 MVP-044~046은 Codex 전달 패키지와 기획 문서가 작성된 **승인 계획**이며 GitHub `main` 구현 완료를 뜻하지 않는다. 현재 구현 사실과 계획의 구분은 [`docs/CURRENT_STATUS.md`](docs/CURRENT_STATUS.md)를 따른다.
 
@@ -34,6 +34,7 @@ AGENTS.md
 ### 기획 문서
 
 - 프로젝트 방향: [`docs/planning/PROJECT_DIRECTION.md`](docs/planning/PROJECT_DIRECTION.md)
+- 점진적 공개·정보 위계: [`docs/planning/PROGRESSIVE_DISCLOSURE_PLAN.md`](docs/planning/PROGRESSIVE_DISCLOSURE_PLAN.md)
 - 서사·대화·관계: [`docs/planning/NARRATIVE_CONTENT_PLAN.md`](docs/planning/NARRATIVE_CONTENT_PLAN.md)
 - 아트·표정·컷인·연출: [`docs/planning/ART_PRESENTATION_PLAN.md`](docs/planning/ART_PRESENTATION_PLAN.md)
 - 통합 로드맵·인수인계: [`docs/planning/ROADMAP_AND_HANDOFF.md`](docs/planning/ROADMAP_AND_HANDOFF.md)
@@ -75,6 +76,7 @@ AGENTS.md
 - 저승역 3×3 학습·4×4 최종 검증과 페이지형 괴이 매뉴얼
 - 저승역 안정화의 가설·근거·대응 단계형 선택
 - 공식 매뉴얼 규칙·검증 대기 후보·위험 사례의 저장·결과·DB 연결
+- 사건 준비 화면의 핵심/보조 정보 점진적 공개
 - 기록관 아카 관제 안내
 - 초기 5인과 외부 접점 4인의 캐릭터 아트
 - 소문시장·마도회·퇴마사 계보 및 3칸 세력 의뢰 게시판
@@ -90,7 +92,7 @@ scripts/core/           저장 파사드와 캠페인 상태
 scripts/data/           에피소드·일상 데이터 로딩
 scripts/scenes/         화면별 진행 연결
 scripts/ui/             공용 UI·프레젠테이션·접근성
-docs/planning/          프로젝트 방향·서사·아트·연출·로드맵·사례
+docs/planning/          프로젝트 방향·정보 위계·서사·아트·로드맵·사례
 docs/                   현행 설계·상태·검증·백업 라우터
 tests/                  Godot·계약·회귀 테스트
 tools/docs/             GDD DOCX 생성기
@@ -108,8 +110,8 @@ git diff --check
 
 ## 현재 남은 작업
 
-1. 선택한 Codex ZIP의 `IMP-00` 사전 감사를 현재 `main`에서 실행한다.
-2. 분야별 기획서와 실제 대상 파일의 차이를 확인한다.
-3. MVP-044~046 중 한 범위만 작은 end-to-end 단위로 구현한다.
-4. 구현 완료 후 상태·로드맵·테스트·해당 기획서를 갱신한다.
-5. 이후 Steam 데모 패키징과 180~220분 플레이타임 실측을 진행한다.
+1. UX-PD-001 2B 조사 정보 위계를 작은 end-to-end 단위로 구현한다.
+2. UX-PD-001 2C 결과 정보 위계를 구현한다.
+3. 이후 MVP-044~046을 순서대로 진행한다.
+4. 구현 완료 후 상태·로드맵·테스트·해당 기획서를 함께 갱신한다.
+5. Steam 데모 패키징과 180~220분 플레이타임 실측을 진행한다.
