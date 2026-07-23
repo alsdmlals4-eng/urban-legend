@@ -39,6 +39,6 @@ description: Use for Urban Legend BGM, SFX, voice-event, mixing, silence, and au
 - 장면 전환에서 중첩·누수가 없고 미실행 청취 환경은 `NOT_RUN`이다.
 - Failure: 소리만으로 규칙·정답 전달, 과도한 놀람 자극, 대사 마스킹, 루프 누수, 라이선스 불명 자산이면 실패다.
 
-## Selective support
+## Selective support and handoff
 
-접근성 계약은 `urban-legend-ux-ui-accessibility`, 변경·회귀 증거는 `reviewing-and-validating-project-changes`.
+Base 검증 지원은 `reviewing-and-validating-project-changes`만 선택한다. 비음향 폴백·입력·정보 위계 판단은 동시 주 Skill 호출이 아니라 `urban-legend-ux-ui-accessibility`로 명시적 인수인계하거나, 해당 요청의 주 책임이 UX라면 처음부터 UX Skill을 선택한다.
