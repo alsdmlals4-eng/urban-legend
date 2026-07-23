@@ -23,7 +23,7 @@ func _run() -> void:
 	_expect(snapshot.get("available_choice_ids", []).size() == 4, "four choices should be available")
 	_expect(not snapshot.has("enemy_hp"), "PoC state must not expose enemy hp")
 
-	var invalid := state.link_record_to_choice("poc001_manual_official_signal", "poc001_choice_move_before_end")
+	var invalid := state.link_record_to_choice("poc001_manual_ticket_contact_danger", "poc001_choice_move_before_end")
 	_expect_common_response(invalid, "invalid elimination")
 	_expect(not invalid.get("ok", true), "invalid record-choice link should fail")
 	_expect(not invalid.get("state_changed", true), "invalid link should not change state")
@@ -31,7 +31,7 @@ func _run() -> void:
 	_expect(state.get_snapshot().get("risk") == 0, "invalid link should not add risk")
 
 	_expect(state.link_record_to_choice("poc001_manual_early_movement_reset", "poc001_choice_move_before_end").get("ok", false), "first valid elimination should pass")
-	_expect(state.link_record_to_choice("poc001_manual_passenger_count_unreliable", "poc001_choice_follow_passenger_count").get("ok", false), "second valid elimination should pass")
+	_expect(state.link_record_to_choice("poc001_manual_personal_destination", "poc001_choice_follow_passenger_count").get("ok", false), "second valid elimination should pass")
 	_expect(state.get_snapshot().get("eliminated_choice_ids", []).size() == 2, "exactly two choices should be eliminated")
 	_expect(state.advance_to_hypothesis().get("ok", false), "two eliminations should unlock hypothesis authoring")
 
@@ -74,7 +74,7 @@ func _run() -> void:
 
 	state.begin_recovery_turn()
 	state.read_current_omen(100)
-	_expect(state.resolve_recovery_action("poc001_action_anchor_boundary").get("valid", false), "turn two rule response should be valid")
+	_expect(state.resolve_recovery_action("poc001_action_fix_boundary").get("valid", false), "turn two rule response should be valid")
 
 	state.begin_recovery_turn()
 	var hidden_read := state.read_current_omen(1)
@@ -117,7 +117,7 @@ func _test_wrong_hypothesis(data: Dictionary) -> void:
 	var state := CoreState.new()
 	state.start(data, 1001)
 	state.link_record_to_choice("poc001_manual_early_movement_reset", "poc001_choice_move_before_end")
-	state.link_record_to_choice("poc001_manual_passenger_count_unreliable", "poc001_choice_follow_passenger_count")
+	state.link_record_to_choice("poc001_manual_personal_destination", "poc001_choice_follow_passenger_count")
 	state.advance_to_hypothesis()
 	state.submit_hypothesis(
 		"poc001_hypothesis_display_route",
@@ -145,7 +145,7 @@ func _test_emergency_recovery(data: Dictionary) -> void:
 	var state := CoreState.new()
 	state.start(emergency_data, 1001)
 	state.link_record_to_choice("poc001_manual_early_movement_reset", "poc001_choice_move_before_end")
-	state.link_record_to_choice("poc001_manual_passenger_count_unreliable", "poc001_choice_follow_passenger_count")
+	state.link_record_to_choice("poc001_manual_personal_destination", "poc001_choice_follow_passenger_count")
 	state.advance_to_hypothesis()
 	state.submit_hypothesis(
 		"poc001_hypothesis_display_route",
