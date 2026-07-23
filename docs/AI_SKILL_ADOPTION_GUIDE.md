@@ -32,6 +32,14 @@
 
 기본 한도는 프로세스 스킬 1개 + 도메인 스킬 1개다. 같은 기능을 중복하는 스킬을 여러 개 동시에 호출하지 않는다.
 
+### 프로젝트 로컬 Skill
+
+| Skill | 경로 | 사용 시점 | Base 공용 스킬과의 경계 |
+|---|---|---|---|
+| `urban-legend-investigation-case-authoring` | `skills/urban-legend-investigation-case-authoring/SKILL.md` | 새 괴이 사건의 전조·질문·가설·근거·대응·안정화·매뉴얼 후보·위험 사례를 작성하거나 고칠 때 | 일반 문서·검수·UI 감사가 아니라, 괴담기록국의 페어플레이 추리 사건 콘텐츠 계약만 담당 |
+
+이 Skill은 `CURRENT_STATUS.md`, `planning/PROJECT_DIRECTION.md`, `GAME_DESIGN_DOCUMENT.md`, 실제 에피소드 데이터와 충돌하는 사실을 임의로 확정하지 않는다.
+
 ### 자원 인식형 도구·에이전트 운영
 
 - 성능 문제가 생기면 작업량을 줄이기 전에 전체 메모리, 상위 점유 프로세스, 중복 MCP·언어 서버·브라우저 렌더러를 측정한다.
