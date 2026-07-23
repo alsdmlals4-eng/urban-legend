@@ -35,7 +35,7 @@ Base 공용 운영체계를 urban-legend의 기존 구조와 프로젝트 코어
 
 ```text
 현재 상태 → docs/CURRENT_STATUS.md
-프로젝트 코어 → docs/PROJECT_CORE.md
+프로젝트 코어·승인 상태 → docs/PROJECT_CORE.md
 문서 위치·조건 → docs/DOCUMENTATION_MAP.md
 프로젝트 Skill → skills/SKILL_REGISTRY.json
 Base Skill 라우팅 → skills/BASE_SKILL_INDEX.json
@@ -60,7 +60,7 @@ Base Skill 라우팅 → skills/BASE_SKILL_INDEX.json
 
 ## 프로젝트 코어와 변경 권한
 
-`docs/PROJECT_CORE.md`는 현재 `IDENTIFIED`다. 제거·대체 테스트와 영향 분석에 사용하지만, 사용자 승인 없이 `CORE_CONFIRMED`로 승격하거나 일반 리팩토링으로 코어를 바꾸지 않는다.
+`docs/PROJECT_CORE.md`가 프로젝트 코어의 승인 상태와 재승인 경계를 단독 소유한다. 현재 상태는 `CORE_RECORDED / CORE_STRESS_TESTED`, 구현은 `POC_PENDING`, Production gate는 `HOLD_UNTIL_PLAYER_EVIDENCE`다. 일반 리팩토링으로 코어를 바꾸거나 플레이 증거 없이 구현 완료·제작 확대를 선언하지 않는다.
 
 ## 가지치기·간소화·리팩토링
 
