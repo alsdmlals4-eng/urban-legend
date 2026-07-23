@@ -193,7 +193,7 @@ func begin_recovery_turn() -> Dictionary:
 		return _response(false, "회수 턴을 시작할 수 없다.", false)
 	_turn += 1
 	var sequence := _case_data.get("recovery_sequence", []) as Array
-	var index := min(_turn - 1, sequence.size() - 1)
+	var index: int = min(_turn - 1, sequence.size() - 1)
 	_current_pattern_id = String(sequence[index])
 	_omen_result.clear()
 	_phase = "OMEN_READ"
