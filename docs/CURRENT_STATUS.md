@@ -1,6 +1,6 @@
 # Current Project Status
 
-> 문서 위치: `docs/CURRENT_STATUS.md` | 프로젝트 코어: `docs/PROJECT_CORE.md` | 실행 로드맵: `MVP_ROADMAP.md`
+> 문서 위치: `docs/CURRENT_STATUS.md` | 프로젝트 코어: `docs/PROJECT_CORE.md` | 통합 명세: `docs/superpowers/specs/2026-07-23-project-core-integrated-spec.md` | 실행 계획: `docs/superpowers/plans/2026-07-23-core-mvp-001-implementation-plan.md`
 
 이 문서는 현재 브랜치의 구현 사실, 사용자 승인 설계, 검증 상태를 분리한다. 프로젝트 코어가 승인·기록됐다는 사실은 게임 코드 구현이나 플레이테스트 통과를 뜻하지 않는다.
 
@@ -41,6 +41,8 @@
 | PR 검토 | Draft PR #55 / `ACCEPT_WITH_FOLLOWUP` |
 | 자동 검증 | Validate Base operating sync 성공 |
 | 책임 보고서 | `docs/planning/PROJECT_CORE_STRESS_TEST_AND_BENCHMARK.md` |
+| 통합 명세 | `docs/superpowers/specs/2026-07-23-project-core-integrated-spec.md` |
+| 구현 계획 | `docs/superpowers/plans/2026-07-23-core-mvp-001-implementation-plan.md` |
 
 ## 확정된 최소 코어 - 미구현 목표
 
@@ -84,6 +86,15 @@
 
 기존 UX-PD-001 2B·2C와 MVP-044~046은 폐기하지 않는다. CORE-MVP-001 결과 뒤 새 코어에 맞게 재매핑한다.
 
+## CORE-MVP-001 구현 경계
+
+- 독립 경로: `data/poc/core_mvp_001/`, `scripts/poc/core_mvp_001/`, `scenes/poc/core_mvp_001/`
+- F1 개발 패널을 통해서만 진입한다.
+- `scripts/core/game_state.gd`, `data/episodes/**`, `scripts/scenes/investigation_scene.gd`, `scripts/scenes/battle_scene.gd`, `project.godot`, `knowledge/base-pack/**`은 수정하지 않는다.
+- 기존 저장을 읽거나 변경하지 않으며 `mvp-039`를 유지한다.
+- 정상 회수는 최소 5턴이며 미관측 핵심 패턴을 최초 관측 뒤 재발동에서 대응한다.
+- 자동 테스트 통과만으로 `POC_PASSED`를 선언하지 않는다.
+
 ## CORE-MVP-001 Production gate
 
 - 사건 1개, 18~25분, 조사 장면 3개, 핵심 단서 6개
@@ -92,8 +103,10 @@
 - 회수 패턴 3개, 전투 5~8턴, 포획 결과 3종
 - 플레이어 80% 이상이 규칙과 대응 이유를 자기 말로 설명
 - 70% 이상이 무작위 시도 없이 올바른 근거로 선택지를 배제
+- 조사-회수 인과 체감 70% 이상
 - 핵심 실패를 난수 탓으로 설명하는 비율 20% 이하
 - 80% 이상이 매뉴얼을 자신이 만든 기록으로 인식
+- 미관측 핵심 패턴에 대응 방법이 없었다는 보고 20% 이하
 
 지표 전에는 `PRODUCTION_READY`로 판정하지 않는다.
 
@@ -101,6 +114,8 @@
 
 - `docs/PROJECT_CORE.md`: 최소 코어와 보호 경계
 - `docs/planning/PROJECT_CORE_STRESS_TEST_AND_BENCHMARK.md`: PR 검토, 진단 점수, SWOT, VRIO, 벤치마크, PoC 근거
+- `docs/superpowers/specs/2026-07-23-project-core-integrated-spec.md`: 상태 머신·데이터·UI·페어플레이·수용 기준 통합 명세
+- `docs/superpowers/plans/2026-07-23-core-mvp-001-implementation-plan.md`: 정확한 파일·인터페이스·TDD·검증 순서
 - `docs/GAME_DESIGN_DOCUMENT.md`: 상세 시스템 계약
 - `MVP_ROADMAP.md`: CORE-MVP-001 우선 순서와 게이트
 - `TEST_CHECKLIST.md`: 현행 회귀와 새 코어 조건부 검증
