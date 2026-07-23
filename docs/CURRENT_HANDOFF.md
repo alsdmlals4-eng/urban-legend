@@ -13,7 +13,7 @@ implementation_state: POC_PENDING
 production_gate: HOLD_UNTIL_PLAYER_EVIDENCE
 pr_review:
   number: 55
-  automated_validation: Validate Base operating sync run 98 PASSED
+  automated_validation: Validate Base operating sync PASSED
 current_protagonist: 권나래
 active_track:
   - CORE-MVP-001 조사·가설 카드·전조 기반 포획 PoC
