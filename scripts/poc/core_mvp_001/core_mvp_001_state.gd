@@ -83,6 +83,7 @@ func get_snapshot() -> Dictionary:
 		"capture_marks": _capture_marks.duplicate(),
 		"turn": _turn,
 		"current_pattern_id": _current_pattern_id,
+		"omen_result": _omen_result.duplicate(true),
 		"outcome_id": _outcome_id
 	}
 
@@ -105,7 +106,16 @@ func link_record_to_choice(record_id: String, choice_id: String) -> Dictionary:
 		duplicate["feedback"] = "이미 배제한 선택지다."
 		return duplicate
 	_eliminated_choice_ids.append(choice_id)
-	var result := _response(true, "", true, [{"event": "choice_eliminated", "choice_id": choice_id, "record_id": record_id}])
+	var result := _response(
+		true,
+		"",
+		true,
+		[{
+			"event": "choice_eliminated",
+			"choice_id": choice_id,
+			"record_id": record_id
+		}]
+	)
 	result["feedback"] = "배제: %s" % String(matched_rule.get("feedback", "근거와 충돌한다."))
 	return result
 
@@ -125,28 +135,44 @@ func submit_hypothesis(
 ) -> Dictionary:
 	if _phase != "HYPOTHESIS_AUTHORING" and _phase != "HYPOTHESIS_REFRESH":
 		return _response(false, "현재 단계에서는 가설을 제출할 수 없다.", false)
-	if not _hypotheses.has(hypothesis_id):
-		return _response(false, "가설을 찾을 수 없다.", false)
+	if not _hypotheses.has(hypothesis_id) or not _active_hypothesis_ids.has(hypothesis_id):
+		return _response(false, "현재 검토 가능한 가설을 찾을 수 없다.", false)
 	if supporting_ids.is_empty():
 		return _response(false, "지지 근거가 하나 이상 필요하다.", false)
-	var clue_index := CaseData.index_by_id(_case_data["clues"])
-	for clue_id in supporting_ids + contradiction_ids + unresolved_ids:
-		if not clue_index.has(clue_id):
-			return _response(false, "확보하지 않은 근거가 포함됐다: %s" % clue_id, false)
+	var hypothesis := _hypotheses[hypothesis_id] as Dictionary
+	var evidence_error := _validate_hypothesis_evidence(
+		hypothesis,
+		supporting_ids,
+		contradiction_ids,
+		unresolved_ids
+	)
+	if not evidence_error.is_empty():
+		return _response(false, evidence_error, false)
 	_selected_hypothesis_id = hypothesis_id
 	_hypothesis_card = {
 		"hypothesis_id": hypothesis_id,
-		"rule_text": String((_hypotheses[hypothesis_id] as Dictionary).get("rule_text", "")),
+		"rule_text": String(hypothesis.get("rule_text", "")),
 		"selected_supporting_clue_ids": supporting_ids.duplicate(),
 		"selected_contradiction_clue_ids": contradiction_ids.duplicate(),
 		"selected_unresolved_question_ids": unresolved_ids.duplicate(),
 		"field_test_result": {}
 	}
+	var previous_understanding := _understanding
 	_understanding = "clue"
-	if _eliminated_choice_ids.size() == 2 and not contradiction_ids.is_empty():
+	if _contains_all(supporting_ids, hypothesis.get("required_supporting_clue_ids", []) as Array) and _contains_all(contradiction_ids, hypothesis.get("required_contradiction_clue_ids", []) as Array):
 		_understanding = "likely"
 	_phase = "FIELD_TEST"
-	return _response(true, "", true, [{"event": "hypothesis_submitted", "hypothesis_id": hypothesis_id}])
+	var events: Array = [{
+		"event": "hypothesis_submitted",
+		"hypothesis_id": hypothesis_id
+	}]
+	if previous_understanding != _understanding:
+		events.append({
+			"event": "understanding_changed",
+			"from": previous_understanding,
+			"to": _understanding
+		})
+	return _response(true, "", true, events)
 
 
 func resolve_field_test(field_test_id: String) -> Dictionary:
@@ -159,52 +185,90 @@ func resolve_field_test(field_test_id: String) -> Dictionary:
 	var damage := int(test.get("damage", 0))
 	var risk_delta := int(test.get("risk_delta", 0))
 	_health = max(1, _health - damage)
-	_risk = min(100, _risk + risk_delta)
+	_risk = min(int((_case_data.get("case", {}) as Dictionary).get("max_risk", 100)), _risk + risk_delta)
+	var reaction_clue_id := String(test.get("reaction_clue_id", ""))
 	_hypothesis_card["field_test_result"] = {
 		"field_test_id": field_test_id,
 		"correct": correct,
 		"damage": damage,
-		"risk_delta": risk_delta
+		"risk_delta": risk_delta,
+		"reaction_clue_id": reaction_clue_id
 	}
+	var events: Array = [{
+		"event": "field_test_resolved",
+		"field_test_id": field_test_id,
+		"correct": correct,
+		"damage": damage,
+		"risk_delta": risk_delta,
+		"reaction_clue_id": reaction_clue_id
+	}]
 	if correct:
+		var previous_understanding := _understanding
 		_understanding = "understood"
 		_phase = "RECOVERY_READY"
+		if previous_understanding != _understanding:
+			events.append({
+				"event": "understanding_changed",
+				"from": previous_understanding,
+				"to": _understanding
+			})
 	else:
-		_danger_cases.append({
-			"source": "field_test",
-			"field_test_id": field_test_id,
-			"text": String(test.get("danger_case_text", "잘못된 가설이 위험 사례를 남겼다.")),
-			"attempts": 1
-		})
-		_phase = "HYPOTHESIS_REFRESH"
-		var refresh_id := String(test.get("refresh_hypothesis_id", ""))
-		_active_hypothesis_ids = [_selected_hypothesis_id]
-		if not refresh_id.is_empty() and refresh_id != _selected_hypothesis_id:
-			_active_hypothesis_ids.append(refresh_id)
-	var result := _response(true, "", true, [{"event": "field_test_resolved", "correct": correct, "damage": damage, "risk_delta": risk_delta}])
+		_record_danger_case(
+			"field_test:%s" % field_test_id,
+			{
+				"source": "field_test",
+				"field_test_id": field_test_id,
+				"reaction_clue_id": reaction_clue_id,
+				"text": String(test.get("danger_case_text", "잘못된 가설이 위험 사례를 남겼다."))
+			}
+		)
+		if _risk >= int((_case_data.get("case", {}) as Dictionary).get("max_risk", 100)):
+			_phase = "EMERGENCY_RECOVERY"
+		else:
+			_phase = "HYPOTHESIS_REFRESH"
+			var refresh_id := String(test.get("refresh_hypothesis_id", ""))
+			_active_hypothesis_ids = [_selected_hypothesis_id]
+			if not refresh_id.is_empty() and refresh_id != _selected_hypothesis_id:
+				_active_hypothesis_ids.append(refresh_id)
+	var result := _response(true, "", true, events)
 	result["correct"] = correct
 	result["damage"] = damage
 	result["risk_delta"] = risk_delta
+	result["reaction_clue_id"] = reaction_clue_id
 	return result
 
 
 func begin_recovery_turn() -> Dictionary:
-	if _phase not in ["RECOVERY_READY", "RECOVERY_TURN_START"]:
+	if _phase not in ["RECOVERY_READY", "EMERGENCY_RECOVERY", "RECOVERY_TURN_START"]:
 		return _response(false, "회수 턴을 시작할 수 없다.", false)
-	_turn += 1
 	var sequence := _case_data.get("recovery_sequence", []) as Array
+	if sequence.is_empty():
+		return _response(false, "회수 패턴 순서가 비어 있다.", false)
+	_turn += 1
 	var index: int = min(_turn - 1, sequence.size() - 1)
 	_current_pattern_id = String(sequence[index])
 	_omen_result.clear()
 	_phase = "OMEN_READ"
-	return _response(true, "", true, [{"event": "recovery_turn_started", "turn": _turn, "pattern_id": _current_pattern_id}])
+	return _response(
+		true,
+		"",
+		true,
+		[{
+			"event": "recovery_turn_started",
+			"turn": _turn,
+			"pattern_id": _current_pattern_id
+		}]
+	)
 
 
 func read_current_omen(forced_roll: int = -1) -> Dictionary:
 	if _phase == "RESPONSE_SELECTION" and not _omen_result.is_empty():
-		return _omen_result.duplicate(true)
+		return _omen_response(false, [])
 	if _phase != "OMEN_READ" or not _patterns.has(_current_pattern_id):
-		return {"ok": false, "error": "전조를 읽을 수 없다.", "success": false, "text": ""}
+		var invalid := _response(false, "전조를 읽을 수 없다.", false)
+		invalid["success"] = false
+		invalid["text"] = ""
+		return invalid
 	var pattern := _patterns[_current_pattern_id] as Dictionary
 	var first_hidden := bool(pattern.get("first_use_hidden", false)) and not _observed_pattern_ids.has(_current_pattern_id)
 	var roll := forced_roll
@@ -212,9 +276,7 @@ func read_current_omen(forced_roll: int = -1) -> Dictionary:
 		roll = _rng.randi_range(1, 100)
 	var rate := int(((_case_data.get("understanding", {}) as Dictionary).get("omen_read_rates", {}) as Dictionary).get(_understanding, 0))
 	var success := not first_hidden and roll <= rate
-	var result := {
-		"ok": true,
-		"error": "",
+	_omen_result = {
 		"success": success,
 		"roll": roll,
 		"tier": _understanding,
@@ -223,21 +285,33 @@ func read_current_omen(forced_roll: int = -1) -> Dictionary:
 		"revealed_fields": []
 	}
 	if success:
-		result["text"] = "놈은 %s을 하려 한다." % String(pattern.get("action_name", "무언가"))
+		_omen_result["text"] = "놈은 %s을 하려 한다." % String(pattern.get("action_name", "무언가"))
 		var revealed: Array[String] = []
 		for field in pattern.get("readable_fields", []):
 			var field_name := String(field)
 			revealed.append(field_name)
-			result[field_name] = pattern.get(field_name)
-		result["revealed_fields"] = revealed
-	_omen_result = result.duplicate(true)
+			_omen_result[field_name] = pattern.get(field_name)
+		_omen_result["revealed_fields"] = revealed
 	_phase = "RESPONSE_SELECTION"
-	return result
+	return _omen_response(
+		true,
+		[{
+			"event": "omen_read",
+			"turn": _turn,
+			"pattern_id": _current_pattern_id,
+			"success": success,
+			"tier": _understanding
+		}]
+	)
 
 
 func resolve_recovery_action(action_id: String) -> Dictionary:
 	if _phase != "RESPONSE_SELECTION" or not _actions.has(action_id) or not _patterns.has(_current_pattern_id):
-		return {"ok": false, "error": "회수 행동을 실행할 수 없다.", "valid": false, "damage": 0}
+		var invalid := _response(false, "회수 행동을 실행할 수 없다.", false)
+		invalid["valid"] = false
+		invalid["damage"] = 0
+		invalid["risk_delta"] = 0
+		return invalid
 	var pattern := _patterns[_current_pattern_id] as Dictionary
 	var first_hidden := bool(pattern.get("first_use_hidden", false)) and not _observed_pattern_ids.has(_current_pattern_id)
 	var valid := false
@@ -245,7 +319,8 @@ func resolve_recovery_action(action_id: String) -> Dictionary:
 	var risk_delta := 0
 	if first_hidden:
 		valid = (pattern.get("generic_mitigation_action_ids", []) as Array).has(action_id)
-		damage = min(int(pattern.get("max_first_observation_damage", 18)), 6 if valid else int(pattern.get("max_first_observation_damage", 18)))
+		var first_damage_cap := int(pattern.get("max_first_observation_damage", 18))
+		damage = min(first_damage_cap, 6 if valid else first_damage_cap)
 		risk_delta = 6 if valid else int(pattern.get("risk_on_failure", 18))
 		_observed_pattern_ids.append(_current_pattern_id)
 	else:
@@ -263,21 +338,36 @@ func resolve_recovery_action(action_id: String) -> Dictionary:
 	_health = max(1, _health - damage)
 	_risk = min(100, _risk + risk_delta)
 	if not valid:
-		_danger_cases.append({
-			"source": "recovery_action",
-			"pattern_id": _current_pattern_id,
-			"action_id": action_id,
-			"text": "전조와 맞지 않는 대응이었다.",
-			"attempts": 1
-		})
+		_record_danger_case(
+			"recovery_action:%s:%s" % [_current_pattern_id, action_id],
+			{
+				"source": "recovery_action",
+				"pattern_id": _current_pattern_id,
+				"action_id": action_id,
+				"text": "전조와 맞지 않는 대응이었다."
+			}
+		)
 	var capture := _case_data.get("capture_rule", {}) as Dictionary
-	if _capture_marks.size() == (capture.get("required_capture_marks", []) as Array).size() and _turn >= int(capture.get("min_capture_turn", 5)):
-		_phase = "CAPTURE_WINDOW"
-	elif _risk >= int(capture.get("emergency_risk_threshold", 100)) or _health <= int(capture.get("emergency_health_threshold", 15)) or _turn >= int(capture.get("max_recovery_turn", 8)):
+	var required_marks := capture.get("required_capture_marks", []) as Array
+	var emergency := _risk >= int(capture.get("emergency_risk_threshold", 100)) or _health <= int(capture.get("emergency_health_threshold", 15)) or _turn >= int(capture.get("max_recovery_turn", 8))
+	var events: Array = [{
+		"event": "recovery_action_resolved",
+		"turn": _turn,
+		"pattern_id": _current_pattern_id,
+		"action_id": action_id,
+		"valid": valid,
+		"damage": damage,
+		"risk_delta": risk_delta
+	}]
+	if emergency:
 		_phase = "EMERGENCY_CAPTURE"
+		events.append({"event": "capture_window_opened", "emergency": true})
+	elif _contains_all(_capture_marks, required_marks) and _turn >= int(capture.get("min_capture_turn", 5)):
+		_phase = "CAPTURE_WINDOW"
+		events.append({"event": "capture_window_opened", "emergency": false})
 	else:
 		_phase = "RECOVERY_TURN_START"
-	var result := _response(true, "", true, [{"event": "recovery_action_resolved", "action_id": action_id, "valid": valid, "damage": damage}])
+	var result := _response(true, "", true, events)
 	result["valid"] = valid
 	result["damage"] = damage
 	result["risk_delta"] = risk_delta
@@ -289,7 +379,8 @@ func execute_capture() -> Dictionary:
 	if _phase not in ["CAPTURE_WINDOW", "EMERGENCY_CAPTURE"]:
 		return _response(false, "포획 창이 열리지 않았다.", false)
 	var capture := _case_data.get("capture_rule", {}) as Dictionary
-	var damage_taken := int((_case_data.get("case", {}) as Dictionary).get("starting_health", 100)) - _health
+	var starting_health := int((_case_data.get("case", {}) as Dictionary).get("starting_health", 100))
+	var damage_taken := starting_health - _health
 	if _phase == "EMERGENCY_CAPTURE":
 		_outcome_id = "poc001_outcome_emergency_capture"
 	elif damage_taken <= int(capture.get("normal_max_damage", 20)):
@@ -297,17 +388,39 @@ func execute_capture() -> Dictionary:
 	else:
 		_outcome_id = "poc001_outcome_costly_capture"
 	_phase = "RESULT_COMPARE"
-	return _response(true, "", true, [{"event": "poc_completed", "outcome_id": _outcome_id}])
+	return _response(
+		true,
+		"",
+		true,
+		[{
+			"event": "poc_completed",
+			"outcome_id": _outcome_id
+		}]
+	)
 
 
 func build_manual_delta() -> Dictionary:
 	var status := "candidate"
-	if _selected_hypothesis_id == "poc001_hypothesis_broadcast_blank" and _understanding == "understood" and not _outcome_id.is_empty():
-		status = "verified"
+	if _hypotheses.has(_selected_hypothesis_id):
+		var hypothesis := _hypotheses[_selected_hypothesis_id] as Dictionary
+		var support_complete := _contains_all(
+			_hypothesis_card.get("selected_supporting_clue_ids", []) as Array,
+			hypothesis.get("required_supporting_clue_ids", []) as Array
+		)
+		var contradiction_complete := _contains_all(
+			_hypothesis_card.get("selected_contradiction_clue_ids", []) as Array,
+			hypothesis.get("required_contradiction_clue_ids", []) as Array
+		)
+		var field_result := _hypothesis_card.get("field_test_result", {}) as Dictionary
+		if _selected_hypothesis_id == "poc001_hypothesis_broadcast_blank" and support_complete and contradiction_complete and bool(field_result.get("correct", false)) and _understanding == "understood" and not _outcome_id.is_empty():
+			status = "verified"
 	return {
 		"status": status,
 		"hypothesis_id": _selected_hypothesis_id,
 		"rule_text": String(_hypothesis_card.get("rule_text", "")),
+		"supporting_clue_ids": (_hypothesis_card.get("selected_supporting_clue_ids", []) as Array).duplicate(),
+		"contradiction_clue_ids": (_hypothesis_card.get("selected_contradiction_clue_ids", []) as Array).duplicate(),
+		"unresolved_question_ids": (_hypothesis_card.get("selected_unresolved_question_ids", []) as Array).duplicate(),
 		"danger_cases": _danger_cases.duplicate(true),
 		"observed_pattern_ids": _observed_pattern_ids.duplicate()
 	}
@@ -315,12 +428,27 @@ func build_manual_delta() -> Dictionary:
 
 func build_result() -> Dictionary:
 	var starting_health := int((_case_data.get("case", {}) as Dictionary).get("starting_health", 100))
+	var damage := starting_health - _health
+	var capture := _case_data.get("capture_rule", {}) as Dictionary
+	var damage_management := "controlled"
+	if damage > int(capture.get("costly_max_damage", 45)):
+		damage_management = "critical"
+	elif damage > int(capture.get("normal_max_damage", 20)):
+		damage_management = "strained"
+	var recovery_quality := "pending"
+	for value in _case_data.get("outcomes", []):
+		var outcome := value as Dictionary
+		if String(outcome.get("id", "")) == _outcome_id:
+			recovery_quality = String(outcome.get("quality", "pending"))
+			break
 	return {
 		"outcome_id": _outcome_id,
-		"damage": starting_health - _health,
+		"recovery_quality": recovery_quality,
+		"damage_management": damage_management,
+		"knowledge_quality": build_manual_delta().get("status", "candidate"),
+		"damage": damage,
 		"risk": _risk,
-		"capture_marks": _capture_marks.duplicate(),
-		"knowledge_quality": build_manual_delta().get("status", "candidate")
+		"capture_marks": _capture_marks.duplicate()
 	}
 
 
@@ -329,6 +457,61 @@ func confirm_manual_promotion() -> Dictionary:
 		return _response(false, "결과 비교 단계가 아니다.", false)
 	_phase = "COMPLETE"
 	return _response(true, "", true)
+
+
+func _validate_hypothesis_evidence(
+	hypothesis: Dictionary,
+	supporting_ids: Array[String],
+	contradiction_ids: Array[String],
+	unresolved_ids: Array[String]
+) -> String:
+	var clue_index := CaseData.index_by_id(_case_data["clues"])
+	var allowed_support := hypothesis.get("required_supporting_clue_ids", []) as Array
+	var allowed_contradiction := hypothesis.get("required_contradiction_clue_ids", []) as Array
+	var allowed_unresolved := hypothesis.get("unresolved_question_ids", []) as Array
+	for clue_id in supporting_ids:
+		if not clue_index.has(clue_id):
+			return "확보하지 않은 지지 근거가 포함됐다: %s" % clue_id
+		if not allowed_support.has(clue_id):
+			return "선택한 가설과 무관한 지지 근거다: %s" % clue_id
+	for clue_id in contradiction_ids:
+		if not clue_index.has(clue_id):
+			return "확보하지 않은 반박 근거가 포함됐다: %s" % clue_id
+		if not allowed_contradiction.has(clue_id):
+			return "선택한 가설과 무관한 반박 근거다: %s" % clue_id
+	for clue_id in unresolved_ids:
+		if not clue_index.has(clue_id):
+			return "확보하지 않은 미해결 질문이 포함됐다: %s" % clue_id
+		if not allowed_unresolved.has(clue_id):
+			return "선택한 가설과 무관한 미해결 질문이다: %s" % clue_id
+	return ""
+
+
+func _contains_all(selected: Array, required: Array) -> bool:
+	for value in required:
+		if not selected.has(value):
+			return false
+	return true
+
+
+func _record_danger_case(case_key: String, payload: Dictionary) -> void:
+	for index in range(_danger_cases.size()):
+		var existing := _danger_cases[index]
+		if String(existing.get("case_key", "")) == case_key:
+			existing["attempts"] = int(existing.get("attempts", 1)) + 1
+			_danger_cases[index] = existing
+			return
+	var entry := payload.duplicate(true)
+	entry["case_key"] = case_key
+	entry["attempts"] = 1
+	_danger_cases.append(entry)
+
+
+func _omen_response(changed: bool, events: Array) -> Dictionary:
+	var response := _response(true, "", changed, events)
+	for key in _omen_result:
+		response[key] = _omen_result[key]
+	return response
 
 
 func _response(ok: bool, error: String, changed: bool, events: Array = []) -> Dictionary:
