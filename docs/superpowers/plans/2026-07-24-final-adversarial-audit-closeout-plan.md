@@ -4,7 +4,7 @@
 
 **Goal:** 사용자 승인 코어와 CORE-MVP-001 계약을 5개 독립 공격 관점으로 검토하고, 검증된 정본·참조·계약 drift만 수정한 뒤 PR·PDF·Manifest 상태를 증거와 일치시킨다.
 
-**Architecture:** 게임 런타임을 변경하지 않는다. `docs/qa/2026-07-24_FINAL_ADVERSARIAL_AUDIT.md`가 이번 작업의 증거 보고서이고, 기존 `PROJECT_CORE`, GDD, `CURRENT_STATUS`, Roadmap은 각자 책임을 유지한다. 자동 계약 테스트로 활성 문서 상태와 구현 계약을 고정하고, PDF는 QA 보고서의 사람용 파생본으로만 발행한다.
+**Architecture:** 게임 런타임을 변경하지 않는다. 실행 시 확정하는 `[QA_REPORT_PATH]`가 이번 작업의 증거 보고서이고, 기존 `PROJECT_CORE`, GDD, `CURRENT_STATUS`, Roadmap은 각자 책임을 유지한다. 자동 계약 테스트로 활성 문서 상태와 구현 계약을 고정하고, PDF는 QA 보고서의 사람용 파생본으로만 발행한다. 완료 QA 경로는 결과 파일이 실제 생성된 뒤에만 보고한다.
 
 **Tech Stack:** Markdown, Python `unittest`, GitHub Actions, DOCX/PDF 결정적 생성·렌더, GitHub PR API.
 
@@ -22,7 +22,7 @@
 ### Task 1: 기준선·결정 원장·Red 증거
 
 **Files:**
-- Create: `docs/qa/2026-07-24_FINAL_ADVERSARIAL_AUDIT.md`
+- Create on execution: `[QA_REPORT_PATH]`
 
 **Interfaces:**
 - Consumes: 현재 사용자 지시, `AGENTS.md`, `START_HERE.md`, `DOCUMENTATION_MAP`, `CURRENT_STATUS`, PR #55 diff.
@@ -98,8 +98,8 @@
 ### Task 6: 5차 - 구형 참조·GitHub·PR·발행 감사
 
 **Files:**
-- Modify: `docs/qa/2026-07-24_FINAL_ADVERSARIAL_AUDIT.md`
-- Create: `docs/qa/2026-07-24_FINAL_ADVERSARIAL_AUDIT_PUBLICATION.json`
+- Create or update on execution: `[QA_REPORT_PATH]`
+- Create on execution: `[QA_MANIFEST_PATH]`
 - Modify: PR #55 title/body if required.
 
 **Interfaces:**
