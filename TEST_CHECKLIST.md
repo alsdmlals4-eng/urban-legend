@@ -86,6 +86,7 @@ GDD DOCX build/check - GDD 변경 시
 
 - [ ] 첫 발동 행동명 비공개
 - [ ] 범용 방어·엄폐·보호 중 하나 이상 항상 유효
+- [ ] 최초 관측 피해 상한 18, 체력 최저 1
 - [ ] 즉사·강제 중상·소프트락·영구 히든 실패 금지
 - [ ] 첫 발동 뒤 패턴과 결과가 매뉴얼에 등록
 - [ ] 두 번째부터 이해도 해석 적용
@@ -97,6 +98,18 @@ GDD DOCX build/check - GDD 변경 시
 - [ ] 체력은 실패 예산으로만 기능
 - [ ] 대응 결과가 다음 턴 패턴·포획 창에 즉시 반영
 - [ ] 긴급 포획은 가능하되 최고 결과 등급은 불가
+
+### 단계별 UI·접근성
+
+- [ ] 현재 단계 패널만 표시되고 비활성 단계 패널은 포커스를 받지 않음
+- [ ] Footer는 고정되고 단계 콘텐츠 스크롤과 분리됨
+- [ ] 720p 넘침은 현재 단계 내부 ScrollContainer에서만 처리
+- [ ] 단계 진입·뒤로가기 뒤 첫 유효 컨트롤로 포커스를 복구
+- [ ] Esc 뒤 선택한 근거·가설이 보존됨
+- [ ] 조사·가설·회수·결과 정보가 한 화면에 동시에 경쟁하지 않음
+- [ ] 미관측 전조는 텍스트와 아이콘으로 함께 표시
+- [ ] 시간 제한 없음
+- [ ] 화면 흔들림·섬광·왜곡의 기존 접근성 설정을 존중
 
 ### 플레이테스트
 
@@ -140,15 +153,18 @@ GDD DOCX build/check - GDD 변경 시
 ## 문서·참조 최신성
 
 - [ ] README·CURRENT_STATUS·CURRENT_HANDOFF·PROJECT_CORE·GDD·ROADMAP·TEST_CHECKLIST 정합
+- [ ] BASE_RULES_VERSION·OPERATING_MODEL이 PROJECT_CORE의 최신 상태를 가리킴
+- [ ] Documentation Map이 GDD와 CORE-MVP-001 마일스톤 계약의 책임을 분리
 - [ ] planning README·ROADMAP_AND_HANDOFF·REFERENCE_CASES 최신화
+- [ ] UX-PD-001 2B·2C가 `DEFERRED_FOR_REMAP`으로 표시됨
 - [ ] `tests/test_active_document_references.py` 통과
-- [ ] `tests/test_base_operating_sync.py`가 명시 승인 상태를 검증
+- [ ] `tests/test_base_operating_sync.py`가 명시 승인 상태와 현재 활성 트랙을 검증
 - [ ] 새 책임 문서 링크와 경로가 유효
 - [ ] 구현되지 않은 설계를 완료 기능으로 기록하지 않음
 
 ## 완료 보고
 
-- 판정: ACCEPT / ACCEPT_WITH_FOLLOWUP / REVISE / REJECT / UNVERIFIED
+- 판정: ACCEPT / ACCEPT_WITH_FOLLOWUP / REVISE / REJECT / UNVERIFIED / BLOCKED
 - 변경 파일과 이유
 - 자동·수동 검증 결과
 - 플레이테스트 행동·자기보고 결과 분리
