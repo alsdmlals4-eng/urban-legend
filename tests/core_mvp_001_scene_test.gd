@@ -75,7 +75,7 @@ func _run() -> void:
 
 	scene.call(
 		"debug_link_record_to_choice",
-		"poc001_manual_passenger_count_unreliable",
+		"poc001_manual_personal_destination",
 		"poc001_choice_follow_passenger_count"
 	)
 	scene.call("debug_confirm_current_step")
