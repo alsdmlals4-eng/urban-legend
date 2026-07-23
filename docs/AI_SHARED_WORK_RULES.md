@@ -1,5 +1,7 @@
 # AI Shared Work Rules
 
+> 수명주기: `COMPATIBILITY_STUB`이 포함된 보존 문서다. 최신 작업 계약은 `docs/OPERATING_MODEL.md`와 `docs/WORK_MODE_AND_SKILL_ROUTING.md`가 책임진다. 아래 원문은 과거 링크와 고유 절차 보존용이며, 충돌 시 최신 사용자 지시 → `AGENTS.md` → 최신 운영 원본 순으로 판단한다.
+
 > **Base 공용 규칙의 로컬 사본**: 원본은 [`alsdmlals4-eng/Base`](https://github.com/alsdmlals4-eng/Base)이며, 기준 커밋과 동기화 방식은 `docs/BASE_RULES_VERSION.md`를 따른다. 일반 작업에서는 Base 링크보다 이 로컬 사본을 먼저 읽는다.
 
 이 문서는 특정 엔진이나 장르에 종속되지 않는 공용 AI 작업 규칙이다. 새 프로젝트를 시작할 때 복사하고, 프로젝트의 `AGENTS.md`와 전용 규칙 문서가 이 문서보다 구체적인 내용을 덧붙인다.

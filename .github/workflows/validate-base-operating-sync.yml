@@ -1,0 +1,62 @@
+name: Validate Base operating sync
+
+on:
+  pull_request:
+    paths:
+      - ".github/pull_request_template.md"
+      - ".github/workflows/validate-base-operating-sync.yml"
+      - "START_HERE.md"
+      - "AGENTS.md"
+      - "README.md"
+      - "docs/AI_SKILL_ADOPTION_GUIDE.md"
+      - "docs/BASE_RULES_VERSION.md"
+      - "docs/CURRENT_STATUS.md"
+      - "docs/PROJECT_CORE.md"
+      - "docs/DOCUMENTATION_MAP.md"
+      - "docs/MVP_WORKFLOW_CHECKLIST.md"
+      - "docs/OPERATING_MODEL.md"
+      - "docs/WORK_MODE_AND_SKILL_ROUTING.md"
+      - "docs/qa/BASE_SYNC_AUDIT_*.md"
+      - "skills/**"
+      - "tests/test_base_operating_sync.py"
+      - "tests/test_skill_package_integrity.py"
+      - "tests/test_active_document_references.py"
+  push:
+    branches: [main]
+    paths:
+      - ".github/pull_request_template.md"
+      - ".github/workflows/validate-base-operating-sync.yml"
+      - "START_HERE.md"
+      - "AGENTS.md"
+      - "README.md"
+      - "docs/AI_SKILL_ADOPTION_GUIDE.md"
+      - "docs/BASE_RULES_VERSION.md"
+      - "docs/CURRENT_STATUS.md"
+      - "docs/PROJECT_CORE.md"
+      - "docs/DOCUMENTATION_MAP.md"
+      - "docs/MVP_WORKFLOW_CHECKLIST.md"
+      - "docs/OPERATING_MODEL.md"
+      - "docs/WORK_MODE_AND_SKILL_ROUTING.md"
+      - "docs/qa/BASE_SYNC_AUDIT_*.md"
+      - "skills/**"
+      - "tests/test_base_operating_sync.py"
+      - "tests/test_skill_package_integrity.py"
+      - "tests/test_active_document_references.py"
+
+permissions:
+  contents: read
+
+jobs:
+  validate-base-operating-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate Base, core, routing, local Skill, and active references
+        run: >-
+          python -m unittest
+          tests/test_base_operating_sync.py
+          tests/test_skill_package_integrity.py
+          tests/test_active_document_references.py

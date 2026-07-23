@@ -1,6 +1,6 @@
 # urban-legend
 
-> 문서 위치: `README.md` | 현재 상태 원본: `docs/CURRENT_STATUS.md` | 기획 인수인계: `docs/planning/README.md` | 과거 소개·로드맵 백업: `docs/archive/backup/2026-07-16/PROJECT_STATUS_AND_ROADMAP_BACKUP.md`
+> 시작: `START_HERE.md` | 현재 상태 원본: `docs/CURRENT_STATUS.md` | 프로젝트 코어: `docs/PROJECT_CORE.md` | 운영 모델: `docs/OPERATING_MODEL.md` | 기획 인수인계: `docs/planning/README.md`
 
 `괴이 기록국`은 Godot 4.7 stable과 GDScript로 제작하는 PC용 현대 오컬트 수사 어드벤처다. 플레이어는 권나래를 주인공으로 운용하고 최대 두 명의 서포트와 함께 괴이의 규칙을 조사해 현재 출현을 안정화한 뒤, 다음 피해를 막을 괴이 매뉴얼을 남긴다.
 
@@ -23,13 +23,19 @@ MVP-044~046은 Codex 전달 패키지와 기획 문서가 작성된 **승인 계
 ## 새 담당자·새 AI 읽기 순서
 
 ```text
-AGENTS.md
+START_HERE.md
+→ AGENTS.md
+→ docs/OPERATING_MODEL.md
+→ docs/WORK_MODE_AND_SKILL_ROUTING.md
 → docs/CURRENT_STATUS.md
-→ docs/planning/README.md
-→ docs/planning/PROJECT_DIRECTION.md
-→ 이번 작업의 분야별 기획서
+→ docs/PROJECT_CORE.md
+→ docs/DOCUMENTATION_MAP.md
+→ skills/SKILL_REGISTRY.json
+→ 선택된 Skill·책임 원본
 → 실제 대상 파일
 ```
+
+Base 공용 Skill은 `skills/BASE_SKILL_INDEX.json`에서 선택해 고정된 전문만 읽는다. 프로젝트 분야 Skill 10개와 괴이 사건 작성 로컬 Skill은 `skills/SKILL_REGISTRY.json`이 라우팅한다.
 
 ### 기획 문서
 
@@ -42,7 +48,7 @@ AGENTS.md
 
 ## 다른 핵심 문서
 
-- 작업별 문서 선택: [`docs/DOCUMENTATION_MAP.md`](docs/DOCUMENTATION_MAP.md)
+- 작업별 문서·Skill 선택: [`docs/DOCUMENTATION_MAP.md`](docs/DOCUMENTATION_MAP.md)
 - 상세 게임 설계: [`docs/GAME_DESIGN_DOCUMENT.md`](docs/GAME_DESIGN_DOCUMENT.md)
 - 검증 계약: [`TEST_CHECKLIST.md`](TEST_CHECKLIST.md)
 - 문서 보존 규칙: [`docs/DOCUMENT_LIFECYCLE.md`](docs/DOCUMENT_LIFECYCLE.md)
@@ -87,14 +93,14 @@ AGENTS.md
 ```text
 assets/                 배경·요원·괴이·아카·캐릭터 아트
 data/episodes/          구현 사건 JSON 3개
-data/daily_episodes.json
 scenes/                 메인·준비·대화·현장·회수·결과·DB·시장
 scripts/core/           저장 파사드와 캠페인 상태
 scripts/data/           에피소드·일상 데이터 로딩
 scripts/scenes/         화면별 진행 연결
 scripts/ui/             공용 UI·프레젠테이션·접근성
 docs/planning/          프로젝트 방향·서사·아트·정보 위계·연출·로드맵·사례
-docs/                   현행 설계·상태·검증·백업 라우터
+docs/                   현행 설계·상태·운영·검증·백업 라우터
+skills/                 Base 인덱스·Coverage·프로젝트 분야/로컬 Skill
 tests/                  Godot·계약·회귀 테스트
 tools/docs/             GDD DOCX 생성기
 ```
@@ -102,13 +108,14 @@ tools/docs/             GDD DOCX 생성기
 ## 검증
 
 ```powershell
+python -m unittest tests/test_base_operating_sync.py tests/test_skill_package_integrity.py tests/test_active_document_references.py
 & "C:\Users\user\Downloads\Godot_v4.7-stable_win64.exe\Godot_v4.7-stable_win64_console.exe" --headless --path . --quit
 git diff --check
 & "C:\Users\user\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe" tools/docs/build_game_design_doc.py --build
 & "C:\Users\user\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe" tools/docs/build_game_design_doc.py --check
 ```
 
-상세 수동·기능 검증은 [`TEST_CHECKLIST.md`](TEST_CHECKLIST.md)를 따른다.
+DOCX는 Markdown 정본에서 필요 시 재생성하는 비추적 파생본이다. 상세 수동·기능 검증은 [`TEST_CHECKLIST.md`](TEST_CHECKLIST.md)를 따른다.
 
 ## 현재 남은 작업
 

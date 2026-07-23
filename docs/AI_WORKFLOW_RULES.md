@@ -1,5 +1,7 @@
 # AI Workflow Rules
 
+> 수명주기: `COMPATIBILITY_STUB`이 포함된 프로젝트 확장 보존 문서다. 최신 공용 Work Mode·Skill 계약은 `docs/OPERATING_MODEL.md`와 `docs/WORK_MODE_AND_SKILL_ROUTING.md`가 책임진다. 아래 원문은 도시괴담 기록국의 외부 위임·Goal·벤치마킹 절차 보존용이며, 충돌 시 최신 운영 원본을 우선한다.
+
 ## 멀티모델 위임
 
 토큰 효율형 작업 분류, 최소 입력 묶음, 공급자별 산출물, 실패 인수와 20건 측정은 `docs/AI_DELEGATION_WORKFLOW.md`를 따른다. 대사는 `docs/DIALOGUE_AUTHORING_WORKFLOW.md`, 이미지는 `docs/IMAGE_ASSET_WORKFLOW.md`를 추가 적용한다. 보호 경로와 실제 적용·검증은 항상 Codex가 소유한다.

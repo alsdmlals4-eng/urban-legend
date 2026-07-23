@@ -22,9 +22,24 @@ ACTIVE_DOCS = [
     ROOT / "docs/GODOT_NATIVE_UI_ARCHITECTURE.md",
     ROOT / "docs/MINIGAME_SYSTEM_SPEC.md",
 ]
+OPERATING_DOCS = [
+    ROOT / "START_HERE.md",
+    ROOT / "AGENTS.md",
+    ROOT / "docs/OPERATING_MODEL.md",
+    ROOT / "docs/WORK_MODE_AND_SKILL_ROUTING.md",
+    ROOT / "docs/PROJECT_CORE.md",
+    ROOT / "docs/DOCUMENTATION_MAP.md",
+    ROOT / "docs/MVP_WORKFLOW_CHECKLIST.md",
+    ROOT / "docs/AI_SKILL_ADOPTION_GUIDE.md",
+]
 CORE_VALIDATION_QA = ROOT / "docs/qa/CORE_VALIDATION_SLICE_001.md"
 PROGRESSIVE_DISCLOSURE_QA = ROOT / "docs/qa/PROGRESSIVE_DISCLOSURE_SLICE_001.md"
-REFERENCE_AUDIT_DOCS = ACTIVE_DOCS + [CORE_VALIDATION_QA, PROGRESSIVE_DISCLOSURE_QA]
+ALL_ROUTED_DOCS = ACTIVE_DOCS + OPERATING_DOCS
+STALE_REFERENCE_DOCS = [
+    path
+    for path in ALL_ROUTED_DOCS + [CORE_VALIDATION_QA, PROGRESSIVE_DISCLOSURE_QA]
+    if path not in {ROOT / "AGENTS.md", ROOT / "docs/DOCUMENTATION_MAP.md"}
+]
 BASELINE_DOCS = ACTIVE_DOCS
 PROGRESSIVE_BASELINE_DOCS = [
     ROOT / "README.md",
@@ -39,7 +54,10 @@ PROGRESSIVE_BASELINE_DOCS = [
     ROOT / "docs/GODOT_NATIVE_UI_ARCHITECTURE.md",
 ]
 MARKDOWN_LINK = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
-BACKTICK_PATH = re.compile(r"`((?:docs|scripts|scenes|data|tests|tools|assets)/[^`]+|(?:README|MVP_ROADMAP|TEST_CHECKLIST|AGENTS)\.md)`")
+BACKTICK_PATH = re.compile(
+    r"`((?:docs|scripts|scenes|data|tests|tools|assets)/[^`]+|"
+    r"(?:README|MVP_ROADMAP|TEST_CHECKLIST|AGENTS|START_HERE)\.md)`"
+)
 STALE_FILE_PATTERNS = [
     re.compile(r"docs/qa/[A-Za-z0-9_.-]+\.md"),
     re.compile(r"docs/CODEX_GOAL_[A-Za-z0-9_.-]+\.md"),
@@ -62,13 +80,13 @@ FORBIDDEN_TRACKED_PATHS = [
 
 
 class ActiveDocumentReferenceTests(unittest.TestCase):
-    def test_active_documents_exist(self) -> None:
-        for path in ACTIVE_DOCS:
+    def test_active_and_operating_documents_exist(self) -> None:
+        for path in ALL_ROUTED_DOCS:
             self.assertTrue(path.is_file(), path.relative_to(ROOT))
 
     def test_relative_markdown_links_resolve(self) -> None:
         failures: list[str] = []
-        for path in ACTIVE_DOCS:
+        for path in ALL_ROUTED_DOCS:
             text = path.read_text(encoding="utf-8")
             for raw_target in MARKDOWN_LINK.findall(text):
                 target = raw_target.split("#", 1)[0].strip()
@@ -81,11 +99,13 @@ class ActiveDocumentReferenceTests(unittest.TestCase):
 
     def test_backticked_repository_paths_exist(self) -> None:
         failures: list[str] = []
-        for path in ACTIVE_DOCS:
+        for path in ALL_ROUTED_DOCS:
             text = path.read_text(encoding="utf-8")
             for raw_target in BACKTICK_PATH.findall(text):
                 target = raw_target.rstrip(".,:;")
                 if any(token in target for token in ("*", "YYYY", "<", ">")):
+                    continue
+                if target in {"docs/URBAN_LEGEND_GAME_DESIGN.docx", "docs/knowledge/"}:
                     continue
                 resolved = ROOT / target
                 if not resolved.exists():
@@ -94,7 +114,7 @@ class ActiveDocumentReferenceTests(unittest.TestCase):
 
     def test_active_design_docs_do_not_depend_on_stale_files(self) -> None:
         failures: list[str] = []
-        for path in REFERENCE_AUDIT_DOCS:
+        for path in STALE_REFERENCE_DOCS:
             text = path.read_text(encoding="utf-8")
             for pattern in STALE_FILE_PATTERNS:
                 match = pattern.search(text)
@@ -118,6 +138,15 @@ class ActiveDocumentReferenceTests(unittest.TestCase):
             if "UX-PD-001" not in text or "2A" not in text:
                 failures.append(f"{path.relative_to(ROOT)} missing UX-PD-001 2A")
         self.assertEqual([], failures)
+
+    def test_operating_entrypoints_reference_skill_router(self) -> None:
+        combined = "\n".join(path.read_text(encoding="utf-8") for path in OPERATING_DOCS)
+        for required in (
+            "skills/SKILL_REGISTRY.json",
+            "skills/BASE_SKILL_INDEX.json",
+            "skills/urban-legend-investigation-case-authoring/SKILL.md",
+        ):
+            self.assertIn(required, combined)
 
     def test_preparation_progressive_disclosure_is_presentation_only(self) -> None:
         scene = (ROOT / "scenes/preparation_scene.tscn").read_text(encoding="utf-8")
