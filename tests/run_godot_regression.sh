@@ -32,6 +32,7 @@ script_tests=(
   post_mvp_visual_data_test
   preparation_agent_ui_test
   preparation_schedule_ui_test
+  progressive_disclosure_preparation_test
   runtime_ui_editor_scene_test
   runtime_ui_editor_test
   test_mvp039_manual_ux_validation
@@ -90,5 +91,5 @@ for test_name in "${scene_tests[@]}"; do
   run_test "$test_name" scene
 done
 
-echo "Godot regression suite: 38/38 test entrypoints passed"
+echo "Godot regression suite: 39/39 test entrypoints passed"
 echo "Logs: $LOG_ROOT"
