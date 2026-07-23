@@ -31,7 +31,7 @@
 - [x] 모든 `support_skills`가 Base Skill ID인지 검사한다.
 - [x] `related_disciplines`가 유효한 프로젝트 분야이며 자기 자신을 가리키지 않는지 검사한다.
 - [x] 동일 태그 조합의 라우팅 예시 중복을 차단한다.
-- [ ] GitHub Actions에서 세 운영 계약 테스트가 실패하는지 확인한다.
+- [x] GitHub Actions에서 세 운영 계약 테스트가 통과하는지 확인한다.
 
 ### Task 2: Registry와 Skill 본문 계약 정렬
 
@@ -68,14 +68,14 @@
 ### Task 4: Base 공용 불일치 제안 분리
 
 **Files:**
-- Create in Base proposal branch: `[수정제안서]/BCP-2026-07-23-active-skill-count-authority/PROPOSAL.md`
+- Create in Base proposal branch: `[수정제안서]/BCP-2026-003-active-skill-authority/PROPOSAL.md`
 
 **Interfaces:**
 - Consumes: Base Registry 25개와 `AGENTS.md`·`docs/OPERATING_MODEL.md`의 13개 표기 충돌
 - Produces: 프로젝트 우회 없이 공용 원본에서 해결하는 수정제안서
 
-- [ ] Base 수정제안서를 별도 브랜치와 PR로 제출한다.
-- [ ] 제안 PR과 urban-legend 구현 PR을 분리한다.
+- [x] Base 수정제안서를 별도 브랜치와 PR로 제출한다.
+- [x] 제안 PR과 urban-legend 구현 PR을 분리한다.
 
 ### Task 5: 전체 참조·회귀 검증
 
@@ -88,7 +88,7 @@
 - Consumes: Tasks 1~4 산출물
 - Produces: CI 증거와 미검증 목록
 
-- [ ] GitHub Actions 세 테스트 PASS를 확인한다.
-- [ ] 변경 파일에 게임 런타임 경로가 없는지 확인한다.
-- [ ] 구형 Skill ID·stale 경로·중복 라우팅 예시가 없는지 검사한다.
-- [ ] Godot·수동 플레이는 런타임 변경 없음으로 `NOT_RUN` 기록한다.
+- [x] GitHub Actions run #78에서 세 테스트 PASS를 확인한다.
+- [x] PR #54 변경 파일 8개에 게임 런타임 경로가 없는지 확인한다.
+- [x] 구형 Skill ID·stale 경로·중복 라우팅 예시를 자동 테스트로 검사한다.
+- [x] Godot·수동 플레이는 런타임 변경 없음으로 `NOT_RUN` 기록한다.
