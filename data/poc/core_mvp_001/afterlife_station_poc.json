@@ -68,16 +68,16 @@
       "known_at_start": true
     },
     {
-      "id": "poc001_manual_passenger_count_unreliable",
-      "title": "승객 수 불일치 사례",
-      "statement": "현장 인원수는 카메라·표·육안에서 일치하지 않았다.",
+      "id": "poc001_manual_personal_destination",
+      "title": "개인 목적지 진술 사례",
+      "statement": "승객이 지목한 목적지와 다수 의견은 반복마다 달라 안전 기준이 되지 못했다.",
       "status": "danger_case",
       "known_at_start": true
     },
     {
-      "id": "poc001_manual_official_signal",
-      "title": "공식 신호 대기 절차",
-      "statement": "반복마다 동일한 공식 식별 신호가 끝난 뒤에만 위치를 바꾼다.",
+      "id": "poc001_manual_ticket_contact_danger",
+      "title": "검은 승차권 접촉 위험",
+      "statement": "검은 승차권과 직접 접촉한 대상의 이름을 닮은 천공 흔적이 남았다.",
       "status": "candidate",
       "known_at_start": true
     }
@@ -140,11 +140,11 @@
       "feedback": "기존 위험 사례에서 안내 종료 전 이동은 공간 초기화를 일으켰다."
     },
     {
-      "id": "poc001_elimination_passenger_count",
-      "record_id": "poc001_manual_passenger_count_unreliable",
+      "id": "poc001_elimination_personal_destination",
+      "record_id": "poc001_manual_personal_destination",
       "choice_id": "poc001_choice_follow_passenger_count",
       "relation": "contradiction",
-      "feedback": "승객 수는 관측 수단마다 달라 안전한 식별 기준이 될 수 없다."
+      "feedback": "승객 수와 개인 목적지는 반복마다 달라 안전한 식별 기준이 될 수 없다."
     }
   ],
   "hypotheses": [
@@ -238,7 +238,7 @@
       "target": "플랫폼",
       "range": "전체",
       "condition": "경계 표식이 고정되지 않음",
-      "valid_action_ids": ["poc001_action_anchor_boundary"],
+      "valid_action_ids": ["poc001_action_fix_boundary"],
       "capture_mark": "boundary_fixed",
       "damage_on_failure": 12,
       "risk_on_failure": 16
@@ -275,6 +275,12 @@
   ],
   "recovery_actions": [
     {
+      "id": "poc001_action_observe",
+      "category": "observe",
+      "label": "전조의 변화만 관측해 다음 판단 근거를 남긴다",
+      "generic": true
+    },
+    {
       "id": "poc001_action_guard",
       "category": "guard",
       "label": "몸을 낮추고 전조의 충격을 방어한다",
@@ -299,7 +305,7 @@
       "generic": false
     },
     {
-      "id": "poc001_action_anchor_boundary",
+      "id": "poc001_action_fix_boundary",
       "category": "rule_response",
       "label": "안전선과 기둥 사이에 경계 표식을 고정한다",
       "generic": false
