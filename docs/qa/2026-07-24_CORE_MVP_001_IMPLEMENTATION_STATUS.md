@@ -20,59 +20,24 @@
 
 ## 2. 작성된 구현
 
-### 데이터
-
-- `data/poc/core_mvp_001/afterlife_station_poc.json`
-- 조사 장면 3개, 단서 6개, 관련 매뉴얼 3개
-- 선택지 4개, 배제 규칙 2개, 가설 2개, 현장 검증 2개
-- 회수 패턴 3개, 행동 8개, 고정 5턴
-- 포획 결과 3개
-
-### 런타임
-
-- `CoreMvp001CaseData`: JSON 로드, 고정 ID·수량·중복·참조·미관측 패턴·포획 규칙 검증
-- `CoreMvp001State`: 조사 배제, 가설 카드, 현장 검증, 이해도, 질문 해소, 전조, 회수 대응, 포획, 결과 3축, 매뉴얼 delta
-- `CoreMvp001PlaytestLog`: 연속 sequence, deep copy, JSONL, 중복 세션 시작 방지
-- `CoreMvp001Scene`: 단계별 단일 패널, 각 단계 ScrollContainer, 고정 Footer, 읽기 전용 이전 단계, 포커스 복구, 명시적 회수 진행
-- `scripts/ui/main_menu.gd`: F1 개발 패널의 `CORE-MVP-001 조사→전조→포획 PoC` 진입
+- 전용 JSON: 조사 장면 3, 단서 6, 매뉴얼 3, 선택지 4, 가설 2, 패턴 3, 행동 8, 고정 5턴, 결과 3
+- 런타임 검증기: 고정 ID·수량·중복·참조·미관측 패턴·포획 규칙 검사
+- 상태 머신: 배제, 가설 카드, 현장 검증, 이해도, 질문 해소, 전조, 회수 대응, 포획, 결과 3축, 매뉴얼 delta
+- 로그: 연속 sequence, deep copy, JSONL, 중복 세션 시작 방지
+- UI: 단계별 단일 패널, 단계별 ScrollContainer, 고정 Footer, 읽기 전용 이전 단계, 포커스 복구
+- F1 개발 패널 진입: `CORE-MVP-001 조사→전조→포획 PoC`
 
 ## 3. 수정된 정적 finding
 
-### F-001 고정 ID drift
-
-매뉴얼·행동 ID를 통합 명세와 동일하게 정렬하고 Python·GDScript 양쪽에서 정확한 집합을 검사한다.
-
-### F-002 런타임 참조 검증 누락
-
-`reaction_clue_id`, `resolves_question_id`, `refresh_hypothesis_id`를 런타임 validator에 추가했다.
-
-### F-003 결과 상태 축약
-
-`RESULT_COMPARE → MANUAL_PROMOTION → COMPLETE`로 분리했다.
-
-### F-004 미해결 질문 해소 누락
-
-`resolved_question_ids`를 상태와 매뉴얼 delta에 기록하고 `understood`·`verified` 조건으로 사용한다.
-
-### F-005 단계별 UI 누락
-
-PhaseHost와 조사·가설·현장 검증·회수·결과 패널, 단계별 스크롤, 읽기 전용 검토를 추가했다.
-
-### F-006 렌더 중 상태 진행 위험
-
-회수 턴 시작과 전조 읽기를 확인 입력으로만 실행한다.
-
-### F-007 중복 세션 시작 로그
-
-두 번째 `poc_started` 기록을 거부한다.
-
-### F-008 정적 테스트 자기 오탐
-
-폐기 ID를 실패 fixture로 포함한 테스트가 자기 자신을 검사하던 문제를 제거했다. 폐기 ID 검사는 제품 데이터와 PoC 런타임에만 적용한다.
-
-### F-009 Godot UI API 불확실성
-
-공식 Godot 문서에서 `Button.autowrap_mode`, `Control.clip_contents`, typed `Array.assign()` API 존재를 확인했다. 이는 정적 호환 확인이며 프로젝트 import·실행 검증을 대체하지 않는다.
+1. 고정 ID drift를 통합 명세와 정렬
+2. 런타임 참조 검증에 `reaction_clue_id`, `resolves_question_id`, `refresh_hypothesis_id` 추가
+3. `RESULT_COMPARE → MANUAL_PROMOTION → COMPLETE` 상태 분리
+4. `resolved_question_ids`를 이해도·매뉴얼 승격 조건에 반영
+5. PhaseHost와 5개 단계 패널·스크롤·읽기 전용 검토 추가
+6. 렌더 중 회수 상태 자동 진행 제거
+7. 중복 `poc_started` 거부
+8. 폐기 ID 정적 검사의 테스트 자기 오탐 제거
+9. Godot UI API는 공식 문서로 정적 확인했으나 import·실행 검증을 대체하지 않음
 
 ## 4. TDD 증거
 
@@ -93,7 +58,7 @@ PhaseHost와 조사·가설·현장 검증·회수·결과 패널, 단계별 스
 
 ## 6. 보호 경계
 
-PR #57 diff에 다음 경로가 없다.
+PR #57 diff에는 다음 경로가 없다.
 
 - `scripts/core/game_state.gd`
 - 기존 `data/episodes/**`
@@ -102,7 +67,7 @@ PR #57 diff에 다음 경로가 없다.
 - `knowledge/base-pack/**`
 - 저장 Schema 변경
 
-변경된 기존 런타임 파일은 `scripts/ui/main_menu.gd`의 F1 개발 버튼 추가뿐이다.
+기존 런타임 변경은 `scripts/ui/main_menu.gd`의 F1 개발 버튼 추가로 제한한다.
 
 ## 7. CI 비용 구조
 
@@ -126,11 +91,7 @@ PR #57 diff에 다음 경로가 없다.
 9. 기존 저장 비침범과 보호 경로 diff 확인
 10. PR review thread·mergeability 확인
 
-## 9. 브랜치 스냅샷 기록 원칙
-
-커밋 자체가 head를 이동시키므로 이 문서에 특정 head SHA·커밋 수·파일 수를 고정하지 않는다. 최신 값은 PR #57을 책임 원본으로 사용한다.
-
-## 10. 결론
+## 9. 결론
 
 코어 슬라이스의 데이터·상태·로그·장면·개발 진입 코드와 테스트는 작성됐다. 최신 커밋의 Python·Godot 실행 증거는 없으므로 현재 판정은 다음과 같다.
 
