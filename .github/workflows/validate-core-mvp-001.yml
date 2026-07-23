@@ -56,12 +56,12 @@ jobs:
         env:
           GODOT_BIN: godot
           GODOT_TEST_TMP: ${{ runner.temp }}/core-mvp-001-tests
-        run: tests/run_core_mvp_001_tests.sh
+        run: bash tests/run_core_mvp_001_tests.sh
       - name: Run 43 Godot regression entrypoints
         env:
           GODOT_BIN: godot
           GODOT_TEST_TMP: ${{ runner.temp }}/core-mvp-001-tests
-        run: tests/run_godot_regression.sh
+        run: bash tests/run_godot_regression.sh
       - name: Preserve Godot logs
         if: always()
         uses: actions/upload-artifact@v4
