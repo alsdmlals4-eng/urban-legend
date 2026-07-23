@@ -55,8 +55,24 @@ jobs:
         with:
           python-version: "3.12"
       - name: Validate Base, core, routing, local Skill, and active references
-        run: >-
-          python -m unittest
-          tests/test_base_operating_sync.py
-          tests/test_skill_package_integrity.py
-          tests/test_active_document_references.py
+        shell: bash
+        run: |
+          set +e
+          python -m unittest \
+            tests/test_base_operating_sync.py \
+            tests/test_skill_package_integrity.py \
+            tests/test_active_document_references.py \
+            2>&1 | tee base-operating-sync-unittest.log
+          status=${PIPESTATUS[0]}
+          echo "$status" > base-operating-sync-exit-code.txt
+          exit "$status"
+      - name: Preserve validation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: base-operating-sync-evidence
+          path: |
+            base-operating-sync-unittest.log
+            base-operating-sync-exit-code.txt
+          if-no-files-found: error
+          retention-days: 14
