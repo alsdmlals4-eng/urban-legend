@@ -64,6 +64,7 @@ func _run() -> void:
 	_expect_common_response(field_result, "field test")
 	_expect(field_result.get("ok", false), "correct field test should resolve")
 	_expect(state.get_snapshot().get("understanding") == "understood", "decisive field test should reach understood")
+	_expect((state.get_snapshot().get("resolved_question_ids", []) as Array).has("poc001_question_ticket_trigger"), "decisive field test should record the resolved question")
 	_expect(state.get_snapshot().get("phase") == "RECOVERY_READY", "correct field test should unlock recovery")
 
 	_expect(state.begin_recovery_turn().get("ok", false), "recovery turn one should begin")
@@ -100,6 +101,8 @@ func _run() -> void:
 	_expect(state.execute_capture().get("ok", false), "capture should execute from capture window")
 	var delta := state.build_manual_delta()
 	_expect(delta.get("status") == "verified", "complete evidence should create a verified rule")
+	_expect((delta.get("unresolved_question_ids", []) as Array).is_empty(), "resolved questions should not remain unresolved in the manual delta")
+	_expect((delta.get("resolved_question_ids", []) as Array).has("poc001_question_ticket_trigger"), "manual delta should preserve resolved question evidence")
 	var result := state.build_result()
 	_expect(result.get("outcome_id") == "poc001_outcome_normal_capture", "low damage complete capture should be normal")
 	_expect(result.has("recovery_quality"), "result should separate recovery quality")
