@@ -5,15 +5,26 @@
 이 문서는 계정·채팅·담당자 교대 시 읽는 짧은 상태다. 실제 완료 여부는 현재 브랜치·대상 PR·`main`·테스트와 함께 확인한다.
 
 ```yaml
-status: ACCEPT_WITH_FOLLOWUP
+status: UNVERIFIED
 implemented_baseline: MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A / Ver 4.2 / save mvp-039
 project_core: CORE_RECORDED
 core_review: CORE_STRESS_TESTED
 implementation_state: POC_PENDING
 production_gate: HOLD_UNTIL_PLAYER_EVIDENCE
+tracking_issue:
+  number: 56
+  scope: CORE-MVP-001 독립 PoC
 pr_review:
   number: 55
-  automated_validation: PASSED
+  state: draft
+  verdict: UNVERIFIED
+  automated_validation: REQUIRED_PASS_ON_LATEST_HEAD
+unverified:
+  - 현재 대화 전체 원문
+  - 로컬 clone/worktree와 Godot 4.7 실행
+  - 기존 Godot 회귀 39개와 저장·Scene smoke
+  - CORE-MVP-001 구현과 신규 플레이어 행동 증거
+  - 사용자의 PDF 직접 시각 검수
 current_protagonist: 권나래
 active_track:
   - CORE-MVP-001 조사·가설 카드·전조 기반 포획 PoC
@@ -27,8 +38,9 @@ deferred_for_remap:
   - MVP-045
   - MVP-046
 next_action:
-  - 통합 명세와 CORE-MVP-001 구현 계획을 읽는다
+  - Issue #56과 통합 명세·CORE-MVP-001 구현 계획을 읽는다
   - 독립 PoC 경로만 TDD로 구현한다
+  - Godot 전체 회귀와 저장 비침범을 확인한다
   - 신규 플레이어 행동 증거 전 지원 시스템을 확장하지 않는다
 ```
 
@@ -43,6 +55,7 @@ AGENTS.md
 → MVP_ROADMAP.md
 → docs/superpowers/plans/2026-07-23-core-mvp-001-implementation-plan.md
 → TEST_CHECKLIST.md
+→ docs/qa/2026-07-24_FINAL_ADVERSARIAL_AUDIT.md
 → 실제 코드·데이터·테스트
 ```
 
@@ -55,6 +68,7 @@ AGENTS.md
 - 핵심 단서·가설·이해도 승격은 결정론적이고, 확률은 중간 이해도의 전조 정보 해석에만 사용한다.
 - 회수 전투는 HP 0 처치가 아니라 패턴 대응으로 포획 창을 여는 구조다.
 - CORE-MVP-001은 기존 `game_state.gd`, 세 사건 데이터, 조사·회수 장면과 `mvp-039`를 건드리지 않는 독립 PoC로 계획됐다.
+- 최종 적대적 감사는 문서 차단 결함을 수정했으나 원문 전체 대화·Godot·PoC·플레이 증거가 없어 `UNVERIFIED`다.
 
 ## 보호할 기술 계약
 
@@ -75,6 +89,7 @@ AGENTS.md
 - 유사 괴이 자동 분류에 따른 이해도 전이
 - 히든 분기를 항상 우월한 정답으로 만드는 보상
 - 자동 테스트만으로 `POC_PASSED` 선언
+- `UNVERIFIED`를 구현 완료·MVP 완료·병합 승인으로 해석
 
 ## 완료 뒤 갱신
 
@@ -85,4 +100,5 @@ AGENTS.md
 5. `TEST_CHECKLIST.md`
 6. `docs/planning/ROADMAP_AND_HANDOFF.md`
 7. `docs/planning/PROJECT_CORE_STRESS_TEST_AND_BENCHMARK.md`
-8. 이 handoff
+8. `docs/qa/2026-07-24_FINAL_ADVERSARIAL_AUDIT.md` - 감사 증거 변경 시
+9. 이 handoff
