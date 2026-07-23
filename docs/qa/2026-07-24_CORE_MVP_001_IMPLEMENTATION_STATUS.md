@@ -122,14 +122,9 @@ PR #57 diff에 다음 경로가 없다.
 9. 기존 저장 비침범과 보호 경로 diff 확인
 10. PR review thread·mergeability 확인
 
-## 9. 최신 브랜치 스냅샷
+## 9. 브랜치 스냅샷 기록 원칙
 
-- head: `68a4e60281a14a927652f1943c857a38d3b02866`
-- 기반 대비: 49 commits ahead / behind 0
-- 변경 파일: 23개
-- mergeable: true
-- PR 상태: Draft
-- 최신 workflow: 비용 게이트로 skipped
+커밋 자체가 head를 이동시키므로 이 문서에 특정 head SHA를 고정하지 않는다. 최신 SHA·커밋 수·파일 수·mergeability는 PR #57을 책임 원본으로 사용한다.
 
 ## 10. 결론
 
