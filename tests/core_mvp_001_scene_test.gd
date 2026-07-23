@@ -36,10 +36,17 @@ func _run() -> void:
 		"UnderstandingLabel",
 		"HealthLabel",
 		"RiskLabel",
+		"PhaseHost",
 		"InvestigationPanel",
+		"InvestigationScroll",
 		"HypothesisPanel",
+		"HypothesisScroll",
+		"FieldTestPanel",
+		"FieldTestScroll",
 		"RecoveryPanel",
+		"RecoveryScroll",
 		"ResultPanel",
+		"ResultScroll",
 		"ChoiceGrid",
 		"ManualList",
 		"FeedbackLabel",
@@ -53,9 +60,7 @@ func _run() -> void:
 	var manual := scene.find_child("ManualList", true, false)
 	_expect(choices != null and choices.get_child_count() == 4, "initial investigation should show four choices")
 	_expect(manual != null and manual.get_child_count() == 3, "initial investigation should show three related records")
-	_expect(scene.find_child("InvestigationPanel", true, false).visible, "investigation panel should be active initially")
-	_expect(not scene.find_child("HypothesisPanel", true, false).visible, "hypothesis panel should be hidden initially")
-	_expect(not scene.find_child("RecoveryPanel", true, false).visible, "recovery panel should be hidden initially")
+	_expect(_visible_phase_panels(scene) == ["InvestigationPanel"], "only investigation panel should be active initially")
 
 	var snapshot: Dictionary = scene.call("debug_snapshot")
 	_expect(snapshot.get("phase") == "ELIMINATION", "scene should expose the state snapshot")
@@ -68,10 +73,37 @@ func _run() -> void:
 	_expect(linked.get("ok", false), "scene should connect manual evidence to a choice")
 	_expect(scene.find_child("FeedbackLabel", true, false).text.contains("배제"), "valid elimination should show its reason")
 
+	scene.call(
+		"debug_link_record_to_choice",
+		"poc001_manual_passenger_count_unreliable",
+		"poc001_choice_follow_passenger_count"
+	)
+	scene.call("debug_confirm_current_step")
+	await process_frame
+	_expect(scene.call("debug_snapshot").get("phase") == "HYPOTHESIS_AUTHORING", "two eliminations should advance to hypothesis authoring")
+	_expect(_visible_phase_panels(scene) == ["HypothesisPanel"], "hypothesis step should show one panel")
+
+	scene.call("debug_review_previous_panel")
+	await process_frame
+	_expect(_visible_phase_panels(scene) == ["InvestigationPanel"], "back should show the previous panel without changing state")
+	_expect(scene.call("debug_snapshot").get("eliminated_choice_ids", []).size() == 2, "reviewing a previous panel should preserve selections")
+	scene.call("debug_return_to_current_panel")
+	await process_frame
+	_expect(_visible_phase_panels(scene) == ["HypothesisPanel"], "return should restore the current state panel")
+
 	var focus_owner := scene.get_viewport().gui_get_focus_owner()
 	_expect(focus_owner is Button, "scene should restore keyboard focus to a button")
 	_expect(not FileAccess.file_exists(game_state.get_save_file_path()), "isolated PoC should not create the campaign save")
 	_finish()
+
+
+func _visible_phase_panels(scene: Node) -> Array[String]:
+	var visible: Array[String] = []
+	for node_name in ["InvestigationPanel", "HypothesisPanel", "FieldTestPanel", "RecoveryPanel", "ResultPanel"]:
+		var panel := scene.find_child(node_name, true, false) as Control
+		if panel != null and panel.visible:
+			visible.append(node_name)
+	return visible
 
 
 func _expect(condition: bool, message: String) -> void:
