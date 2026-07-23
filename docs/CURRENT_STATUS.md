@@ -38,11 +38,15 @@
 | 적대적 검토 | `CORE_STRESS_TESTED` |
 | 구현 상태 | `POC_PENDING` |
 | Production gate | `HOLD_UNTIL_PLAYER_EVIDENCE` |
-| PR 검토 | Draft PR #55 / `ACCEPT_WITH_FOLLOWUP` |
-| 자동 검증 | Validate Base operating sync 성공 |
+| 실행 추적 | Issue #56 |
+| 설계·문서 PR | Draft PR #55 |
+| 최종 감사 판정 | `UNVERIFIED` — 전체 원문 대화·로컬 Godot·PoC 플레이 증거 부족 |
+| 자동 검증 | `Validate Base operating sync` Required Check 통과 필수 |
 | 책임 보고서 | `docs/planning/PROJECT_CORE_STRESS_TEST_AND_BENCHMARK.md` |
 | 통합 명세 | `docs/superpowers/specs/2026-07-23-project-core-integrated-spec.md` |
 | 구현 계획 | `docs/superpowers/plans/2026-07-23-core-mvp-001-implementation-plan.md` |
+
+`UNVERIFIED`는 프로젝트 코어 승인을 취소한다는 뜻이 아니다. 이번 최종 감사에서 원문 전체 대화, 로컬 Godot 실행, 사람 PDF 검수, 신규 플레이어 행동 증거를 확보하지 못했으므로 PR 병합 가능성과 MVP 완료를 확정하지 않는다는 뜻이다.
 
 ## 확정된 최소 코어 - 미구현 목표
 
@@ -79,7 +83,7 @@
 
 | 순서 | 단계 | 상태 | 목적 |
 |---:|---|---|---|
-| 1 | CORE-MVP-001 | 최우선 PoC | 조사·가설 카드·전조 해석·포획의 단일 사건 인과 검증 |
+| 1 | CORE-MVP-001 | 최우선 PoC / Issue #56 | 조사·가설 카드·전조 해석·포획의 단일 사건 인과 검증 |
 | 2 | CORE-MVP-002 | 대기 | 포획·연구·괴이별 영구 지식 재사용 검증 |
 | 3 | CORE-MVP-003 | 대기 | 기간제 챕터·부상·세력 의뢰 최소 통합 |
 | 4 | CORE-MVP-004 | 대기 | 히든 분기·가치관 엔딩 최소 검증 |
@@ -114,10 +118,10 @@
 
 - `docs/PROJECT_CORE.md`: 최소 코어와 보호 경계
 - `docs/planning/PROJECT_CORE_STRESS_TEST_AND_BENCHMARK.md`: PR 검토, 진단 점수, SWOT, VRIO, 벤치마크, PoC 근거
-- `docs/superpowers/specs/2026-07-23-project-core-integrated-spec.md`: 상태 머신·데이터·UI·페어플레이·수용 기준 통합 명세
+- `docs/superpowers/specs/2026-07-23-project-core-integrated-spec.md`: CORE-MVP-001 상태·데이터·UI·페어플레이·수용 마일스톤 계약
 - `docs/superpowers/plans/2026-07-23-core-mvp-001-implementation-plan.md`: 정확한 파일·인터페이스·TDD·검증 순서
-- `docs/GAME_DESIGN_DOCUMENT.md`: 상세 시스템 계약
-- `MVP_ROADMAP.md`: CORE-MVP-001 우선 순서와 게이트
+- `docs/GAME_DESIGN_DOCUMENT.md`: 프로젝트 전체 상세 시스템 계약
+- `MVP_ROADMAP.md`: CORE-MVP-001 우선 순서·Issue #56·게이트
 - `TEST_CHECKLIST.md`: 현행 회귀와 새 코어 조건부 검증
 - `docs/CURRENT_HANDOFF.md`: 다음 작업자 인수 상태
 
