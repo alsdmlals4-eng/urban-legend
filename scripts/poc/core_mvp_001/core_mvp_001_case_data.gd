@@ -1,6 +1,52 @@
 class_name CoreMvp001CaseData
 extends RefCounted
 
+const FIXED_IDS := {
+	"investigation_scenes": [
+		"poc001_scene_broadcast_archive",
+		"poc001_scene_platform_display",
+		"poc001_scene_ticket_gate"
+	],
+	"clues": [
+		"poc001_clue_broadcast_blank",
+		"poc001_clue_reset_timing",
+		"poc001_clue_official_identifier",
+		"poc001_clue_display_mismatch",
+		"poc001_clue_passenger_count",
+		"poc001_question_ticket_trigger"
+	],
+	"manual_records": [
+		"poc001_manual_early_movement_reset",
+		"poc001_manual_personal_destination",
+		"poc001_manual_ticket_contact_danger"
+	],
+	"choices": [
+		"poc001_choice_move_before_end",
+		"poc001_choice_follow_passenger_count",
+		"poc001_choice_follow_display",
+		"poc001_choice_hold_official_signal"
+	],
+	"hypotheses": [
+		"poc001_hypothesis_display_route",
+		"poc001_hypothesis_broadcast_blank"
+	],
+	"recovery_patterns": [
+		"poc001_pattern_false_terminal",
+		"poc001_pattern_boundary_fold",
+		"poc001_pattern_ticket_imprint"
+	],
+	"recovery_actions": [
+		"poc001_action_observe",
+		"poc001_action_guard",
+		"poc001_action_cover",
+		"poc001_action_protect_trace",
+		"poc001_action_hold_position",
+		"poc001_action_fix_boundary",
+		"poc001_action_isolate_ticket",
+		"poc001_action_capture"
+	]
+}
+
 
 static func load_case(path: String) -> Dictionary:
 	if not FileAccess.file_exists(path):
@@ -56,13 +102,17 @@ static func validate_case(data: Dictionary) -> Array[String]:
 			else:
 				all_ids[entry_id] = key
 
+	for key in FIXED_IDS:
+		_validate_exact_ids(data, String(key), FIXED_IDS[key] as Array, errors)
+
 	var exact_counts := {
 		"investigation_scenes": 3,
 		"clues": 6,
 		"manual_records": 3,
 		"choices": 4,
 		"hypotheses": 2,
-		"recovery_patterns": 3
+		"recovery_patterns": 3,
+		"recovery_actions": 8
 	}
 	for key in exact_counts:
 		if (data.get(key, []) as Array).size() != int(exact_counts[key]):
@@ -71,9 +121,12 @@ static func validate_case(data: Dictionary) -> Array[String]:
 	var reference_fields := [
 		"scene_id",
 		"clue_id",
+		"reaction_clue_id",
+		"resolves_question_id",
 		"record_id",
 		"choice_id",
 		"hypothesis_id",
+		"refresh_hypothesis_id",
 		"field_test_id",
 		"pattern_id",
 		"action_id",
@@ -127,6 +180,26 @@ static func index_by_id(entries: Array) -> Dictionary:
 		if not entry_id.is_empty():
 			index[entry_id] = entry.duplicate(true)
 	return index
+
+
+static func _validate_exact_ids(
+	data: Dictionary,
+	key: String,
+	expected: Array,
+	errors: Array[String]
+) -> void:
+	var actual: Array[String] = []
+	for value in data.get(key, []):
+		if typeof(value) == TYPE_DICTIONARY:
+			actual.append(String((value as Dictionary).get("id", "")))
+	if actual.size() != expected.size():
+		errors.append("%s fixed ID count mismatch" % key)
+	for expected_id in expected:
+		if not actual.has(String(expected_id)):
+			errors.append("%s missing fixed id %s" % [key, expected_id])
+	for actual_id in actual:
+		if not expected.has(actual_id):
+			errors.append("%s contains non-canonical id %s" % [key, actual_id])
 
 
 static func _validate_references(
