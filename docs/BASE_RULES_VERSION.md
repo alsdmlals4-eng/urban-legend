@@ -1,71 +1,78 @@
 # Base Rules Version
 
-> 문서 위치: `docs/BASE_RULES_VERSION.md` | Base 공용 지식: `alsdmlals4-eng/Base/docs/knowledge/` | 과거 동기화 기록: `docs/archive/backup/2026-07-16/COMPLETED_QA_RULES_HANDOFF_BACKUP.md`
+이 문서는 urban-legend가 사용하는 Base 버전과 적용 경계의 **단일 사람용 원본**이다. 다른 문서는 커밋 값을 복제하지 않고 이 파일을 참조한다.
 
-이 문서는 **Base 공용 규칙·기획 지식 동기화 작업에서만** 읽는다. 일상적인 urban-legend 구현·기획 작업은 프로젝트의 `AGENTS.md`, `docs/CURRENT_STATUS.md`, `docs/planning/`을 먼저 읽는다.
-
-## 현재 동기화 기준
+## 현재 기준
 
 | 항목 | 값 |
 |---|---|
-| 공용 원본 | `alsdmlals4-eng/Base` |
+| Base 저장소 | `alsdmlals4-eng/Base` |
 | 기준 브랜치 | `main` |
-| 기준 커밋 | `e05e198d9c003623f1a117fa1d4505e97117990e` |
-| 확인일 | 2026-07-16 |
-| Base 지식 버전 | v1.6.0 — 기획·서사·캐릭터 아트·대화 연출·조사·인수인계 확장 |
-| 현재 상태 | 프로젝트 전용 기획과 Base 공용 방법 분리 / 원격 자동 병합 금지 |
+| 기준 커밋 | `41a20584dd2ee51d917e5c9d7cab6838e1ceba7e` |
+| Skill Registry blob | `14950c9361b3c939990560ae8cc683a936633e89` |
+| 활성 Base Skill | 25개 |
+| Base 기능 Coverage | 18개 책임 |
+| 프로젝트 분야 Skill | 10개 |
+| 프로젝트 로컬 Skill | 1개 — `urban-legend-investigation-case-authoring` |
+| 확인일 | 2026-07-23 |
+| 적용 상태 | 이 파일이 포함된 브랜치에 최신 `main` 기준 비파괴 운영 동기화 적용 |
 
-## 이번 Base 반영
+기계 원본은 `skills/SKILL_REGISTRY.json`, `skills/BASE_SKILL_INDEX.json`, `skills/BASE_SKILL_COVERAGE.json`, `skills/PROJECT_PATH_ADAPTER.json`에 같은 값을 둔다.
 
-Base의 canonical 공용 기획 지식 위치는 `docs/knowledge/`다.
+## 적용 구조
 
-- `methods/PLANNING_SYSTEM_METHOD.md`
-- `methods/NARRATIVE_AND_RELATIONSHIP_METHOD.md`
-- `methods/CHARACTER_AND_NARRATIVE_ART_METHOD.md`
-- `methods/DIALOGUE_AND_EVENT_PRESENTATION_METHOD.md`
-- `skills/PLANNING_RESEARCH_HANDOFF_SKILL_MATRIX.md`
-- urban-legend에서 일반화한 프로젝트 사례 7건
-- 미스터리 근거 재열람·캐릭터 반응·학습 가능한 실패 벤치마킹 사례 2건
-- 프로젝트 방향·서사·아트·연출·handoff 템플릿
-
-urban-legend의 캐릭터명, 괴이 규칙, 수치, 파일 경로, 저장 구조, 실제 QA 결과는 프로젝트 저장소에 유지한다.
-
-## 프로젝트에서 우선할 문서
-
-- 현재 구현·승인 계획: `docs/CURRENT_STATUS.md`
-- 기획 인수인계: `docs/planning/README.md`
-- 프로젝트 방향: `docs/planning/PROJECT_DIRECTION.md`
-- 서사·관계: `docs/planning/NARRATIVE_CONTENT_PLAN.md`
-- 아트·연출: `docs/planning/ART_PRESENTATION_PLAN.md`
-- 로드맵·인수인계: `docs/planning/ROADMAP_AND_HANDOFF.md`
-- 프로젝트 적용 사례: `docs/planning/REFERENCE_CASES.md`
-
-Base 공용 문서는 새 방법·사례가 필요한 작업에서만 조건부로 확인한다.
-
-## 현재 로컬 공용 사본
-
-- `docs/AI_SHARED_WORK_RULES.md`
-- `docs/AI_WORKFLOW_RULES.md`
-- `docs/AI_SKILL_ADOPTION_GUIDE.md`
-- `docs/MVP_WORKFLOW_CHECKLIST.md`
-- `docs/BENCHMARKING_REFERENCE_GUIDE.md`
-- `docs/DOCUMENTATION_MAP.md`
-
-Base의 새 `docs/knowledge/` 문서는 현재 프로젝트에 전문을 복사하지 않고 기준 커밋과 경로를 참조한다. 프로젝트 특화 적용 결과는 `docs/planning/`에 유지한다.
-
-## 사용 규칙
-
-- Base 원격은 사용자가 공용 규칙·기획 지식 확인, 동기화, 승격을 요청했을 때만 연다.
-- 프로젝트 고유 용어, 세계관, 저장 경로, Godot 명령, 사건 수치, 캐릭터 아트 스타일은 Base 공용 원칙으로 쓰지 않는다.
-- 동기화는 원격 내용을 무조건 덮어쓰는 절차가 아니다. 공용 방법과 프로젝트 확장을 비교해 필요한 항목만 반영한다.
-- 프로젝트 해결안은 먼저 프로젝트에서 검증하고, 공용성 확인 뒤 Base `cases/`에 승격한다.
-- 한 프로젝트의 미검증 계획을 즉시 공용 method·skill로 승격하지 않는다.
-- Base 기준이 프로젝트 최신 사용자 승인과 충돌하면 프로젝트 규칙이 우선한다.
-
-## 과거 기록
-
-2026-07-10~14의 Base 변경 이력, MVP-032~038 승격 후보, 자원 인식형 AI 운영, 외부 스킬 채택 기록은 백업 파일에서 찾는다. 정리 전 전체 원문은 다음 명령으로 확인할 수 있다.
-
-```bash
-git show 130466e66d3115876a85ba06f47b7661fae3f304:docs/BASE_RULES_VERSION.md
+```text
+Base Registry 25개
+→ skills/BASE_SKILL_INDEX.json에서 trigger·경계 선택
+→ 선택한 Base SKILL.md와 명시된 reference만 고정 커밋에서 읽기
+→ skills/SKILL_REGISTRY.json의 프로젝트 분야 Skill 0~1개
+→ 필요 시 프로젝트 로컬 전문 Skill 0~1개
+→ docs/PROJECT_CORE.md·현행 책임 원본·실제 파일
+→ 검증·실행 보고
 ```
+
+전체 Base Skill 본문을 프로젝트에 복제하거나 기본 로드하지 않는다. 라우팅 정보는 로컬에서 사용할 수 있게 고정하고, 상세 실행 계약은 원격 고정 커밋을 정본으로 사용한다.
+
+## 최신 Base에서 적용한 책임
+
+- 프로젝트 코어 읽기 전용 판정과 사용자 승인 기반 확정.
+- 적대적 `attack → validate-critique → 최소 개선 → regression-recheck`.
+- 가지치기, Skill 본문 간소화, 행동 보존 리팩토링의 책임 분리.
+- 로컬·GitHub 상태 동기화와 긴 작업 checkpoint.
+- 게임 사용자 연구 11영역 Coverage, 사용자 학습 노트, 시각 대시보드, 엔진 런타임 진단.
+- `skills/BASE_SKILL_COVERAGE.json`으로 18개 공용 기능 책임의 무손실 검사.
+
+## urban-legend 적용 경계
+
+- Base 공용 판단·절차·검증은 선택적으로 사용한다.
+- 프로젝트 고유 세계관·수치·저장·경로·실제 구현은 urban-legend가 책임진다.
+- 프로젝트 코어는 `docs/PROJECT_CORE.md`의 `IDENTIFIED` 상태이며 명시 승인 전 `CORE_CONFIRMED`로 표시하지 않는다.
+- 프로젝트 분야 Skill 10개는 공통 실행 계약을 `skills/disciplines/PROJECT_DISCIPLINE_CONTRACT.md`로 공유한다.
+- 괴이 사건 작성 로컬 Skill은 전조·가설·근거·대응·매뉴얼 상태의 페어플레이 콘텐츠 계약만 담당한다.
+- GDD는 Markdown 원본이 정본이며 `docs/URBAN_LEGEND_GAME_DESIGN.docx`는 필요 시 결정적으로 재생성하는 비추적 파생본이다.
+- PDF·Manifest v3 이주는 별도 승인 대상이다.
+
+## 구조 개선 순서
+
+```text
+기능·소비자·정본 인벤토리
+→ PROJECT_CORE·보호 계약 baseline
+→ CURRENT / UPDATE_IN_PLACE / MERGE_TO_CANONICAL / COMPATIBILITY_STUB / ARCHIVE_HISTORY / DELETE_APPROVED / KEEP_UNRESOLVED
+→ 공통 상세 추출·중복 통합
+→ 행동 보존 리팩토링
+→ 적대적 공격과 비판 검증
+→ MUST_FIX·승인 SHOULD_FIX만 최소 반영
+→ 정본·참조·패키지·라우팅·CI 회귀
+```
+
+파일 수 감소 자체를 목표로 하지 않는다. 기능·검증·호환성·발견성을 잃는 통합은 실패다.
+
+## 검증
+
+```text
+python -m unittest tests/test_base_operating_sync.py tests/test_skill_package_integrity.py tests/test_active_document_references.py
+python tools/docs/build_game_design_doc.py --build  # GDD 변경 시
+python tools/docs/build_game_design_doc.py --check  # GDD 변경 시
+```
+
+Godot 런타임·화면 파일을 변경하지 않은 운영 구조 변경에서는 Godot headless와 수동 플레이를 자동 PASS로 바꾸지 않고 `NOT_RUN`으로 기록한다.

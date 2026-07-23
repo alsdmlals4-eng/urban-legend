@@ -54,6 +54,14 @@
 - 실제 일정·편성·경제·시장·세력·기록 상태는 기존 `preparation_scene.gd`와 `GameState`가 계속 소유하고, 표시 계층은 `preparation_progressive_disclosure.gd`만 담당한다.
 - Godot AI 런타임 헬퍼는 편집기·일반 실행에서는 유지하되 headless 회귀에서는 명시적 opt-in이 없으면 Logger를 연결하지 않는다.
 
+## 프로젝트 코어·운영체계
+
+- `docs/PROJECT_CORE.md`는 승인 문서와 실제 구현을 읽기 전용 `IDENTIFIED` 상태로 분류한다. 사용자 명시 승인 없이 `CORE_CONFIRMED` 또는 `CORE_RECORDED`로 올리지 않는다.
+- Base 최신 기준은 `docs/BASE_RULES_VERSION.md` 한 곳에서 관리하며, 공용 25개 Skill은 `skills/BASE_SKILL_INDEX.json`에서 선택적으로 읽는다.
+- Base 기능 Coverage 18개와 프로젝트 분야 Skill 10개는 자동 계약 테스트로 보존한다.
+- 괴이 사건 작성은 `skills/urban-legend-investigation-case-authoring/SKILL.md`를 프로젝트 로컬 전문 Skill로 사용한다. 전조·가설·근거·대응·매뉴얼 후보·공식 규칙·위험 사례를 페어플레이 추리 계약으로 작성·검수한다.
+- 운영·스킬 동기화는 문서·테스트 범위이며 게임 코드·데이터·Scene·승인 자산·저장 스키마를 변경하지 않는다.
+
 ## 승인된 다음 계획 — 아직 GitHub main 구현 완료 아님
 
 | 계획 | 상태 | 핵심 범위 | 구현 선행 관계 |
@@ -79,15 +87,16 @@
 
 ## 현재 권장 구현 순서
 
-1. CORE-VALIDATION-001과 UX-PD-001 2A 회귀, 활성 문서 참조 감사를 기준선으로 확인한다.
+1. Base 운영 계약과 CORE-VALIDATION-001·UX-PD-001 2A 회귀, 활성 문서 참조 감사를 기준선으로 확인한다.
 2. UX-PD-001 2B에서 조사 화면 정보 위계를 작은 end-to-end 단위로 검증한다.
 3. 2C에서 결과 화면의 기록·다음 행동 우선순위를 검증한다.
 4. 이후 대상 Codex ZIP 하나만 선택한다.
 5. `IMP-00`에서 현재 `main`, 보호 경로, 저장 호환, 기존 ID를 감사한다.
-6. 분야별 기획서에서 플레이어 가치·금지 방향·수용 기준을 확인한다.
-7. 구현되지 않은 계획을 `구현 확인`으로 문서에 쓰지 않는다.
-8. 작은 end-to-end 단위로 구현·테스트·수동 QA한다.
-9. 완료 후 이 문서, `MVP_ROADMAP.md`, `TEST_CHECKLIST.md`, 분야별 기획서를 갱신한다.
+6. 사건 콘텐츠 작업이면 로컬 사건 작성 Skill과 게임디자인/서사/QA 분야 Skill 중 필요한 책임만 선택한다.
+7. 분야별 기획서에서 플레이어 가치·금지 방향·수용 기준을 확인한다.
+8. 구현되지 않은 계획을 `구현 확인`으로 문서에 쓰지 않는다.
+9. 작은 end-to-end 단위로 구현·테스트·수동 QA한다.
+10. 완료 후 이 문서, `MVP_ROADMAP.md`, `TEST_CHECKLIST.md`, 분야별 기획서를 갱신한다.
 
 기본 의존 순서는 MVP-044 → MVP-045 → MVP-046이다. 단, MVP-046의 상태 비소유 공용 대화 스테이지는 기존 대사·관계 데이터를 바꾸지 않는 범위에서 선행할 수 있다.
 
@@ -105,6 +114,10 @@
 
 ## 문서 선택
 
+- 시작 지점: `START_HERE.md`
+- 운영 모델: `docs/OPERATING_MODEL.md`
+- Work Mode·Skill 라우팅: `docs/WORK_MODE_AND_SKILL_ROUTING.md`
+- 프로젝트 코어: `docs/PROJECT_CORE.md`
 - 기획 인수인계: `docs/planning/README.md`
 - 상세 게임 설계: `docs/GAME_DESIGN_DOCUMENT.md`
 - 프로젝트 용어·표현 원칙: `docs/PROJECT_CONTEXT.md`
