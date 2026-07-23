@@ -18,7 +18,7 @@ if: ${{ vars.CI_ENABLED == 'true' }}
 현재 상태에서 신규 커밋을 푸시해도 다음 작업은 실행되지 않는다.
 
 - Python 문서 계약 검사
-- CORE-MVP-001 데이터 계약 검사
+- CORE-MVP-001 데이터·정적 계약 검사
 - Godot 4.7.1 import
 - CORE-MVP-001 집중 4개 테스트
 - Godot 전체 43개 회귀
@@ -58,7 +58,7 @@ PR 경로 필터:
 실행 범위:
 
 1. Ubuntu runner 1개만 할당
-2. Python 3.12 데이터 계약
+2. Python 3.12 데이터·정적 계약
 3. Godot 4.7.1 import
 4. CORE-MVP-001 집중 테스트 4개
 5. 기존 테스트를 포함한 Godot 전체 43개 회귀
@@ -174,18 +174,20 @@ jobs:
 
 ## 5. 사용 가능 통보 후 실행 순서
 
-사용자가 `GitHub Actions 사용 가능`이라고 알리면 다음 순서로 재개한다.
+사용자가 **`GitHub Actions 사용 가능`**이라고 알리면 다음 순서로 재개한다.
 
 1. 저장소 변수 `CI_ENABLED=true` 설정 또는 workflow의 비용 게이트 제거
 2. full matrix workflow 추가
 3. PR #57에서 문서 validator 수동 실행
 4. PR #57에서 CORE-MVP-001 코드 validator 수동 실행
-5. Python data contract PASS 확인
+5. Python 데이터·정적 계약 PASS 확인
 6. CORE-MVP-001 집중 테스트 `4/4` 확인
 7. Godot 전체 회귀 `43/43` 확인
 8. failure artifact가 있으면 최초 실패부터 수정
-9. 보호 경로 diff 재확인
-10. PR #57을 `POC_BUILD_READY`로 판정할지 결정
+9. 1280×720·1920×1080 UI·키보드·Esc·포커스 확인
+10. 기존 저장 비침범과 보호 경로 diff 확인
+11. PR review thread·mergeability 확인
+12. `POC_BUILD_READY` 판정 여부 결정
 
 ## 6. 상태 판정 제한
 
@@ -201,7 +203,7 @@ Actions 재개 전 금지 상태:
 - `POC_PASSED`
 - `READY_FOR_MERGE`
 
-사용자가 신규 플레이어 행동 증거와 사전 지표를 면제했으므로, 자동·Godot·보호 경로 검증이 통과하면 `POC_BUILD_READY`까지 판정할 수 있다. 플레이 지표 없이 `POC_PASSED`는 계속 선언하지 않는다.
+사용자가 전체 원문 메시지, 신규 플레이어 행동 증거, 사전 지표를 면제했으므로, 자동·Godot·UI·보호 경로 검증이 통과하면 `POC_BUILD_READY`까지 판정할 수 있다. 플레이 증거 없이 `POC_PASSED`는 계속 선언하지 않는다.
 
 ## 7. 비용 가드레일
 
