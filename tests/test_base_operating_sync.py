@@ -92,15 +92,22 @@ class BaseOperatingSyncTests(unittest.TestCase):
             self.assertIn(row["status"], {"COVERED", "COVERED_EXISTING"})
             self.assertTrue(set(row["skills"]) <= ids, row)
 
-    def test_project_core_is_identified_but_not_silently_confirmed(self) -> None:
+    def test_project_core_records_explicit_approval_without_claiming_implementation(self) -> None:
         text = (ROOT / "docs/PROJECT_CORE.md").read_text(encoding="utf-8")
-        self.assertIn("상태: `IDENTIFIED`", text)
-        self.assertIn("아직 `CORE_CONFIRMED`", text)
+        for required in (
+            "상태: `CORE_RECORDED`",
+            "사용자 승인: 2026-07-23",
+            "검토 상태: `CORE_STRESS_TESTED`",
+            "구현 상태: `POC_PENDING`",
+            "HOLD_UNTIL_PLAYER_EVIDENCE",
+        ):
+            self.assertIn(required, text)
         for term in (
             "괴이 기록국", "안정화 상태", "위험 사례", "잔향", "괴이 매뉴얼",
-            "TECHNICAL_FOUNDATION", "REQUIRES_REAPPROVAL",
+            "TECHNICAL_FOUNDATION", "REQUIRES_REAPPROVAL", "CORE_SUPPORT",
         ):
             self.assertIn(term, text)
+        self.assertNotIn("PRODUCTION_READY", text.split("Production gate:", 1)[1].splitlines()[0])
 
     def test_path_adapter_and_untracked_docx_policy(self) -> None:
         self.assertEqual(set(self.adapter["role_bindings"]), REQUIRED_ADAPTER_ROLES)
