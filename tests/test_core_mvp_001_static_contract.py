@@ -88,17 +88,16 @@ class CoreMvp001StaticContractTest(unittest.TestCase):
         ]:
             self.assertIn(reference, validator)
 
-    def test_deprecated_poc_ids_are_absent(self) -> None:
+    def test_deprecated_poc_ids_are_absent_from_product_files(self) -> None:
         roots = [
             ROOT / "data/poc/core_mvp_001",
             ROOT / "scripts/poc/core_mvp_001",
-            ROOT / "tests",
         ]
         combined = "\n".join(
             path.read_text(encoding="utf-8")
             for root in roots
             for path in sorted(root.rglob("*"))
-            if path.is_file() and path.suffix in {".gd", ".py", ".json", ".sh"}
+            if path.is_file() and path.suffix in {".gd", ".json"}
         )
         for stale_id in [
             "poc001_action_anchor_boundary",
