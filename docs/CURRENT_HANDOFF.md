@@ -27,7 +27,8 @@ deferred_for_remap:
   - MVP-045
   - MVP-046
 next_action:
-  - CORE-MVP-001 사건 1개 PoC만 구현한다
+  - 통합 명세와 CORE-MVP-001 구현 계획을 읽는다
+  - 독립 PoC 경로만 TDD로 구현한다
   - 신규 플레이어 행동 증거 전 지원 시스템을 확장하지 않는다
 ```
 
@@ -38,7 +39,9 @@ AGENTS.md
 → docs/CURRENT_STATUS.md
 → docs/PROJECT_CORE.md
 → docs/planning/PROJECT_CORE_STRESS_TEST_AND_BENCHMARK.md
+→ docs/superpowers/specs/2026-07-23-project-core-integrated-spec.md
 → MVP_ROADMAP.md
+→ docs/superpowers/plans/2026-07-23-core-mvp-001-implementation-plan.md
 → TEST_CHECKLIST.md
 → 실제 코드·데이터·테스트
 ```
@@ -51,6 +54,7 @@ AGENTS.md
 - 챕터, 부상, 연구, 의뢰, 히든 분기, 엔딩은 승인된 `CORE_SUPPORT`이며 PoC 전 불변으로 잠그지 않는다.
 - 핵심 단서·가설·이해도 승격은 결정론적이고, 확률은 중간 이해도의 전조 정보 해석에만 사용한다.
 - 회수 전투는 HP 0 처치가 아니라 패턴 대응으로 포획 창을 여는 구조다.
+- CORE-MVP-001은 기존 `game_state.gd`, 세 사건 데이터, 조사·회수 장면과 `mvp-039`를 건드리지 않는 독립 PoC로 계획됐다.
 
 ## 보호할 기술 계약
 
@@ -58,6 +62,7 @@ AGENTS.md
 - 저장 `mvp-039`, `mvp-038` 이관
 - 기존 사건·선택·보고서·DB ID
 - `scripts/core/game_state.gd`, `data/episodes/**`, `project.godot`, `knowledge/base-pack/**`
+- CORE-MVP-001에서 `scripts/scenes/investigation_scene.gd`, `scripts/scenes/battle_scene.gd` 직접 수정 금지
 - 기록관 아카는 확보 정보를 정리하지만 정답을 대신하지 않음
 - UI·컷인·표정은 상태를 표현하지만 저장·진행을 소유하지 않음
 
@@ -69,13 +74,15 @@ AGENTS.md
 - 미관측 패턴의 즉사·강제 중상·소프트락·영구 분기 실패
 - 유사 괴이 자동 분류에 따른 이해도 전이
 - 히든 분기를 항상 우월한 정답으로 만드는 보상
+- 자동 테스트만으로 `POC_PASSED` 선언
 
 ## 완료 뒤 갱신
 
 1. `docs/CURRENT_STATUS.md`
 2. `docs/PROJECT_CORE.md` - 코어 변경이 있을 때만
-3. `MVP_ROADMAP.md`
-4. `TEST_CHECKLIST.md`
-5. `docs/planning/ROADMAP_AND_HANDOFF.md`
-6. `docs/planning/PROJECT_CORE_STRESS_TEST_AND_BENCHMARK.md`
-7. 이 handoff
+3. `docs/superpowers/specs/2026-07-23-project-core-integrated-spec.md` - 계약이 바뀔 때만
+4. `MVP_ROADMAP.md`
+5. `TEST_CHECKLIST.md`
+6. `docs/planning/ROADMAP_AND_HANDOFF.md`
+7. `docs/planning/PROJECT_CORE_STRESS_TEST_AND_BENCHMARK.md`
+8. 이 handoff
