@@ -109,6 +109,21 @@ class BaseOperatingSyncTests(unittest.TestCase):
             self.assertIn(term, text)
         self.assertNotIn("PRODUCTION_READY", text.split("Production gate:", 1)[1].splitlines()[0])
 
+    def test_active_operating_docs_route_to_recorded_core_and_current_track(self) -> None:
+        base_version = (ROOT / "docs/BASE_RULES_VERSION.md").read_text(encoding="utf-8")
+        operating = (ROOT / "docs/OPERATING_MODEL.md").read_text(encoding="utf-8")
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        stale_claims = (
+            "프로젝트 코어는 `docs/PROJECT_CORE.md`의 `IDENTIFIED` 상태",
+            "`docs/PROJECT_CORE.md`는 현재 `IDENTIFIED`",
+        )
+        for claim in stale_claims:
+            self.assertNotIn(claim, base_version + operating)
+        self.assertIn("CORE-MVP-001", readme)
+        self.assertIn("HOLD_UNTIL_PLAYER_EVIDENCE", readme)
+        self.assertIn("UX-PD-001 2B·2C", readme)
+        self.assertIn("재매핑", readme)
+
     def test_path_adapter_and_untracked_docx_policy(self) -> None:
         self.assertEqual(set(self.adapter["role_bindings"]), REQUIRED_ADAPTER_ROLES)
         generated_role = "game_design_docx_derivative"
