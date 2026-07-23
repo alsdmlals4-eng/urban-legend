@@ -14,6 +14,7 @@
 | 구현 상태 | `POC_PENDING` |
 | Production gate | `HOLD_UNTIL_PLAYER_EVIDENCE` |
 | 목표 구현 트랙 | CORE-MVP-001 → 002 → 003 → 004 |
+| 실행 추적 | Issue #56 / Draft PR #55 |
 | 주인공 | 권나래 고정, 단일 일정 주체 |
 
 ## 재기준화 원칙
@@ -38,6 +39,8 @@
 현재 자동 근거: `tests/run_godot_regression.sh`, `tests/test_core_validation_contract.py`, `tests/test_active_document_references.py`, `tests/test_base_operating_sync.py`.
 
 ## CORE-MVP-001 - 조사·이해도·전조 포획 PoC
+
+> 실행 추적: Issue #56 | 설계·문서 PR: Draft PR #55
 
 ### 목표
 
