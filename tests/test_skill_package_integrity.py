@@ -147,6 +147,8 @@ class SkillPackageIntegrityTests(unittest.TestCase):
         meta = fields(text)
         self.assertEqual(meta.get("name"), item["skill_id"])
         self.assertTrue(meta.get("description"))
+        for mode in item["skill_modes"]:
+            self.assertIn(mode, text, f"Missing local mode {mode}: {path}")
         for token in ("전조", "가설", "근거", "대응", "공식 규칙", "위험 사례", "잔향", "Fairness review"):
             self.assertIn(token, text)
         for source in item["canonical_sources"]:
@@ -159,19 +161,25 @@ class SkillPackageIntegrityTests(unittest.TestCase):
     def test_project_trigger_tags_and_support_references_are_valid(self) -> None:
         owners: dict[str, str] = {}
         duplicates: list[str] = []
-        project_ids = {x["skill_id"] for x in self.disciplines} | {x["skill_id"] for x in self.local_skills}
-        all_ids = EXPECTED_BASE_IDS | project_ids
+        discipline_ids = {x["skill_id"] for x in self.disciplines}
         for item in self.disciplines + self.local_skills:
             for tag in item["trigger_tags"]:
                 if tag in owners:
                     duplicates.append(f"{tag}: {owners[tag]} / {item['skill_id']}")
                 owners[tag] = item["skill_id"]
-            self.assertTrue(set(item["support_skills"]) <= all_ids, item)
+            self.assertTrue(set(item["support_skills"]) <= EXPECTED_BASE_IDS, item)
+            related = set(item.get("related_disciplines", []))
+            self.assertTrue(related <= discipline_ids, item)
+            self.assertNotIn(item["skill_id"], related, item)
         self.assertEqual(duplicates, [])
 
     def test_representative_routing_examples(self) -> None:
         bases = self.index["skills"]
+        seen_examples: set[tuple[str, ...]] = set()
         for case in self.registry["routing_examples"]:
+            example_key = tuple(sorted(case["tags"]))
+            self.assertNotIn(example_key, seen_examples, f"Duplicate routing example: {case}")
+            seen_examples.add(example_key)
             tags = set(case["tags"])
             primary = [x["skill_id"] for x in self.disciplines if tags & set(x["trigger_tags"])]
             local = [x["skill_id"] for x in self.local_skills if tags & set(x["trigger_tags"])]

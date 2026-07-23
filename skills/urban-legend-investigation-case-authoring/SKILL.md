@@ -7,6 +7,12 @@ description: 괴이 기록국의 사건을 페어플레이 추리와 안정화·
 
 괴이는 처치 대상이 아니다. 플레이어가 **관찰 가능한 전조를 읽고, 가설을 세우며, 근거를 확보해, 스스로 대응을 선택**하게 만들어 현재 출현을 안정화하고 잔향을 회수하는 현상이다.
 
+## Modes
+
+- `author`: 새 사건의 현상·전조·질문·가설·근거·대응·실패·매뉴얼 전이를 처음부터 작성한다.
+- `revise`: 기존 사건 ID·저장·정상 흐름을 보존하며 공정성 결함, 기록 상태 불일치 또는 표현 문제만 최소 개정한다.
+- `fairness-review`: 구현·데이터를 바꾸지 않고 전조·가설·근거·대응과 실패 학습의 페어플레이 여부를 검수한다.
+
 ## Read first
 
 `AGENTS.md` → `docs/CURRENT_STATUS.md` → `docs/planning/PROJECT_DIRECTION.md` → `docs/GAME_DESIGN_DOCUMENT.md` → `docs/MINIGAME_SYSTEM_SPEC.md`(해당 시) → 대상 `data/episodes/*`와 관련 테스트.

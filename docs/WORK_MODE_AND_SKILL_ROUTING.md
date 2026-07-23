@@ -10,6 +10,7 @@ Prompt
 → 프로젝트 분야 trigger: 주 Skill 0~1개
 → 프로젝트 로컬 trigger: 전문 Skill 0~1개
 → Base trigger·do-not-use: 지원 Skill 0~3개
+→ 관련 프로젝트 분야는 참조·검토·후속 인수인계로 연결
 → 선택된 전문·필요 reference
 → 실행·검증·보고
 ```
@@ -21,6 +22,7 @@ Prompt
 - **분야 Skill 10개:** 서사, 게임디자인, UX·UI, 엔지니어링, 테크아트, 아트, 오디오, QA, 프로덕션, 분석·유저리서치의 주 책임을 맡는다.
 - **프로젝트 로컬 Skill:** 분야보다 좁은 반복 작업 계약을 맡는다. 현재 활성 로컬 Skill은 `skills/urban-legend-investigation-case-authoring/SKILL.md` 하나다.
 - 사건 작성 작업은 로컬 Skill을 주 전문으로 선택하고, 실제 변경 성격에 따라 게임디자인·서사·QA 분야 Skill 중 주 책임 최대 하나만 함께 선택한다.
+- `support_skills`는 Base 지원 Skill만 등록한다. `related_disciplines`와 `supporting_disciplines`는 동시에 호출할 주 Skill 목록이 아니라 참조·검토·후속 인수인계 경계다.
 - 프로젝트 로컬 Skill이 존재해도 Base의 검증·적대적 검토·정본 최신성 책임을 대체하지 않는다.
 
 ## 주요 라우팅
@@ -65,6 +67,7 @@ work_mode:
 primary_project_skill:
 project_local_skill:
 base_support_skills:
+related_discipline_handoffs:
 skill_modes:
 selection_reason:
 work_performed:
