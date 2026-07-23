@@ -24,6 +24,22 @@ func _run() -> void:
 	broken_reference["recovery_patterns"][0]["valid_action_ids"] = ["poc001_action_missing"]
 	_expect(not CaseData.validate_case(broken_reference).is_empty(), "missing action references should be rejected")
 
+	var broken_reaction := data.duplicate(true)
+	broken_reaction["field_tests"][0]["reaction_clue_id"] = "poc001_clue_missing"
+	_expect(not CaseData.validate_case(broken_reaction).is_empty(), "missing reaction clue references should be rejected")
+
+	var broken_refresh := data.duplicate(true)
+	broken_refresh["field_tests"][0]["refresh_hypothesis_id"] = "poc001_hypothesis_missing"
+	_expect(not CaseData.validate_case(broken_refresh).is_empty(), "missing refresh hypothesis references should be rejected")
+
+	var wrong_fixed_action := data.duplicate(true)
+	wrong_fixed_action["recovery_actions"][5]["id"] = "poc001_action_anchor_boundary"
+	_expect(not CaseData.validate_case(wrong_fixed_action).is_empty(), "non-canonical action IDs should be rejected")
+
+	var wrong_fixed_manual := data.duplicate(true)
+	wrong_fixed_manual["manual_records"][1]["id"] = "poc001_manual_passenger_count_unreliable"
+	_expect(not CaseData.validate_case(wrong_fixed_manual).is_empty(), "non-canonical manual IDs should be rejected")
+
 	var no_mitigation := data.duplicate(true)
 	no_mitigation["recovery_patterns"][2]["generic_mitigation_action_ids"] = []
 	_expect(not CaseData.validate_case(no_mitigation).is_empty(), "hidden pattern without mitigation should be rejected")
