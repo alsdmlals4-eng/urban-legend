@@ -105,8 +105,10 @@ func _run() -> void:
 	_expect(result.has("recovery_quality"), "result should separate recovery quality")
 	_expect(result.has("damage_management"), "result should separate damage management")
 	_expect(result.has("knowledge_quality"), "result should separate knowledge quality")
-	_expect(state.confirm_manual_promotion().get("ok", false), "manual confirmation should complete the PoC")
-	_expect(state.get_snapshot().get("phase") == "COMPLETE", "manual confirmation should complete state")
+	_expect(state.confirm_manual_promotion().get("ok", false), "first manual confirmation should enter promotion review")
+	_expect(state.get_snapshot().get("phase") == "MANUAL_PROMOTION", "result comparison should lead to manual promotion")
+	_expect(state.confirm_manual_promotion().get("ok", false), "second manual confirmation should record the rule")
+	_expect(state.get_snapshot().get("phase") == "COMPLETE", "record confirmation should complete state")
 
 	_test_wrong_hypothesis(data)
 	_test_emergency_recovery(data)
