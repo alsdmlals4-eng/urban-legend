@@ -45,7 +45,7 @@
 
 ### 구현 경계
 
-- 새 경로: `data/poc/core_mvp_001/`, `scripts/poc/core_mvp_001/`, `scenes/poc/core_mvp_001/`
+- 계획 신규 경로: **data/poc/core_mvp_001/**, **scripts/poc/core_mvp_001/**, **scenes/poc/core_mvp_001/**
 - 진입: `scripts/ui/main_menu.gd`의 F1 개발 패널 버튼
 - 기존 `scripts/core/game_state.gd`, `data/episodes/**`, `scripts/scenes/investigation_scene.gd`, `scripts/scenes/battle_scene.gd`, `project.godot`은 수정하지 않는다.
 - 저장 `mvp-039`와 기존 사용자 저장은 읽거나 변경하지 않는다.
