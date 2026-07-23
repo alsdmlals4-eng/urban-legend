@@ -1,0 +1,50 @@
+{
+  "manifest_version": "qa-publication-v1",
+  "publication_id": "FINAL_ADVERSARIAL_AUDIT_2026-07-24",
+  "canonical_source_repository_path": "docs/qa/2026-07-24_FINAL_ADVERSARIAL_AUDIT.md",
+  "delivered_source_filename": "도시괴담_기록국_최종_적대적_검토_및_MVP_마감_보고서_2026-07-24.md",
+  "source_sha256": "548df2fe9f572b9b6c57760ebaf762f5d00e987ad7dc225c29667cd3fdacdcef",
+  "pdf_filename": "도시괴담_기록국_최종_적대적_검토_및_MVP_마감_보고서_2026-07-24.pdf",
+  "pdf_sha256": "2efe4a7d3603ad50a26c76a9ce16f50a5e06e03fc3e8209fc5ae4ed3e52cde32",
+  "docx_filename": "도시괴담_기록국_최종_적대적_검토_및_MVP_마감_보고서_2026-07-24.docx",
+  "docx_sha256": "d2cf65483fddc474a2073f65e753da37a2107f37ba2280f40532c3a5b5782e27",
+  "generator": {
+    "markdown": "UTF-8",
+    "pdf": "pandoc + XeLaTeX",
+    "docx": "pandoc + python-docx",
+    "font": "Noto Sans CJK KR",
+    "page": "A3 landscape"
+  },
+  "page_count": 11,
+  "automated_preflight": {
+    "status": "PASS",
+    "blank_pages": [],
+    "replacement_characters": 0,
+    "extracted_text_characters": 43684,
+    "all_pages_rendered": true,
+    "assistant_visual_review": "PASS",
+    "checks": [
+      "empty pages",
+      "Korean glyph extraction",
+      "table clipping",
+      "paragraph clipping",
+      "page duplication/omission",
+      "TOC presence"
+    ]
+  },
+  "human_visual_review": "NOT_RUN",
+  "responsibility": "human-readable derivative; does not replace Markdown canonical source",
+  "page_stats": [
+    {"page": 1, "width": 1654, "height": 1170, "mean_luma": 250.83, "nonwhite_sample": 808},
+    {"page": 2, "width": 1654, "height": 1170, "mean_luma": 248.27, "nonwhite_sample": 1535},
+    {"page": 3, "width": 1654, "height": 1170, "mean_luma": 244.06, "nonwhite_sample": 2824},
+    {"page": 4, "width": 1654, "height": 1170, "mean_luma": 248.75, "nonwhite_sample": 1785},
+    {"page": 5, "width": 1654, "height": 1170, "mean_luma": 251.34, "nonwhite_sample": 1222},
+    {"page": 6, "width": 1654, "height": 1170, "mean_luma": 250.75, "nonwhite_sample": 1262},
+    {"page": 7, "width": 1654, "height": 1170, "mean_luma": 249.13, "nonwhite_sample": 1716},
+    {"page": 8, "width": 1654, "height": 1170, "mean_luma": 245.63, "nonwhite_sample": 2422},
+    {"page": 9, "width": 1654, "height": 1170, "mean_luma": 247.88, "nonwhite_sample": 1847},
+    {"page": 10, "width": 1654, "height": 1170, "mean_luma": 249.1, "nonwhite_sample": 1423},
+    {"page": 11, "width": 1654, "height": 1170, "mean_luma": 252.27, "nonwhite_sample": 695}
+  ]
+}
