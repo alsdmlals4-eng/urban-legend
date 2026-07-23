@@ -3,10 +3,15 @@ extends RefCounted
 
 const AssetCatalog = preload("res://scripts/ui/ui_asset_catalog.gd")
 const ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")
+const InvestigationDisclosure = preload("res://scripts/ui/investigation_progressive_disclosure.gd")
 
 
 static func apply_background(scene: Control, role: String) -> TextureRect:
 	scene.theme = ThemeFactory.create_theme()
+	if role == "investigation":
+		var disclosure := InvestigationDisclosure.new()
+		scene.add_child(disclosure)
+		disclosure.bind(scene)
 	var texture_rect := scene.get_node_or_null("ArtLayer/Background") as TextureRect
 	if texture_rect == null:
 		return null
