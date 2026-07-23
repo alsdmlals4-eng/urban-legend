@@ -55,9 +55,10 @@ AGENTS.md
 → MVP_ROADMAP.md
 → docs/superpowers/plans/2026-07-23-core-mvp-001-implementation-plan.md
 → TEST_CHECKLIST.md
-→ docs/qa/2026-07-24_FINAL_ADVERSARIAL_AUDIT.md
 → 실제 코드·데이터·테스트
 ```
+
+완료 QA 보고서는 기본 필수 읽기가 아니다. 과거 감사 근거가 필요할 때 `docs/archive/README.md`와 `docs/qa/`에서 해당 날짜의 증거 하나만 선택한다.
 
 ## 현재 핵심 판단
 
@@ -100,5 +101,4 @@ AGENTS.md
 5. `TEST_CHECKLIST.md`
 6. `docs/planning/ROADMAP_AND_HANDOFF.md`
 7. `docs/planning/PROJECT_CORE_STRESS_TEST_AND_BENCHMARK.md`
-8. `docs/qa/2026-07-24_FINAL_ADVERSARIAL_AUDIT.md` - 감사 증거 변경 시
-9. 이 handoff
+8. 이 handoff
