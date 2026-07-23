@@ -26,7 +26,6 @@ permissions:
 
 jobs:
   ubuntu-document-validation:
-    if: ${{ vars.CI_ENABLED == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
