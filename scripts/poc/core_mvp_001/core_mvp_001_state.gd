@@ -19,6 +19,7 @@ var _active_hypothesis_ids: Array[String] = []
 var _selected_hypothesis_id := ""
 var _hypothesis_card: Dictionary = {}
 var _danger_cases: Array[Dictionary] = []
+var _resolved_question_ids: Array[String] = []
 var _observed_pattern_ids: Array[String] = []
 var _capture_marks: Array[String] = []
 var _turn := 0
@@ -48,6 +49,7 @@ func start(case_data: Dictionary, run_seed: int = 1001) -> Dictionary:
 	_selected_hypothesis_id = ""
 	_hypothesis_card.clear()
 	_danger_cases.clear()
+	_resolved_question_ids.clear()
 	_observed_pattern_ids.clear()
 	_capture_marks.clear()
 	_turn = 0
@@ -79,6 +81,7 @@ func get_snapshot() -> Dictionary:
 		"selected_hypothesis_id": _selected_hypothesis_id,
 		"hypothesis_card": _hypothesis_card.duplicate(true),
 		"danger_cases": _danger_cases.duplicate(true),
+		"resolved_question_ids": _resolved_question_ids.duplicate(),
 		"observed_pattern_ids": _observed_pattern_ids.duplicate(),
 		"capture_marks": _capture_marks.duplicate(),
 		"turn": _turn,
@@ -187,12 +190,14 @@ func resolve_field_test(field_test_id: String) -> Dictionary:
 	_health = max(1, _health - damage)
 	_risk = min(int((_case_data.get("case", {}) as Dictionary).get("max_risk", 100)), _risk + risk_delta)
 	var reaction_clue_id := String(test.get("reaction_clue_id", ""))
+	var resolved_question_id := String(test.get("resolves_question_id", ""))
 	_hypothesis_card["field_test_result"] = {
 		"field_test_id": field_test_id,
 		"correct": correct,
 		"damage": damage,
 		"risk_delta": risk_delta,
-		"reaction_clue_id": reaction_clue_id
+		"reaction_clue_id": reaction_clue_id,
+		"resolved_question_id": resolved_question_id
 	}
 	var events: Array = [{
 		"event": "field_test_resolved",
@@ -200,11 +205,17 @@ func resolve_field_test(field_test_id: String) -> Dictionary:
 		"correct": correct,
 		"damage": damage,
 		"risk_delta": risk_delta,
-		"reaction_clue_id": reaction_clue_id
+		"reaction_clue_id": reaction_clue_id,
+		"resolved_question_id": resolved_question_id
 	}]
 	if correct:
+		if not resolved_question_id.is_empty() and not _resolved_question_ids.has(resolved_question_id):
+			_resolved_question_ids.append(resolved_question_id)
 		var previous_understanding := _understanding
-		_understanding = "understood"
+		var hypothesis := _hypotheses[_selected_hypothesis_id] as Dictionary
+		var required_questions := hypothesis.get("unresolved_question_ids", []) as Array
+		if _contains_all(_resolved_question_ids, required_questions):
+			_understanding = "understood"
 		_phase = "RECOVERY_READY"
 		if previous_understanding != _understanding:
 			events.append({
@@ -235,6 +246,7 @@ func resolve_field_test(field_test_id: String) -> Dictionary:
 	result["damage"] = damage
 	result["risk_delta"] = risk_delta
 	result["reaction_clue_id"] = reaction_clue_id
+	result["resolved_question_id"] = resolved_question_id
 	return result
 
 
@@ -401,6 +413,11 @@ func execute_capture() -> Dictionary:
 
 func build_manual_delta() -> Dictionary:
 	var status := "candidate"
+	var unresolved_remaining: Array[String] = []
+	for value in _hypothesis_card.get("selected_unresolved_question_ids", []):
+		var question_id := String(value)
+		if not _resolved_question_ids.has(question_id):
+			unresolved_remaining.append(question_id)
 	if _hypotheses.has(_selected_hypothesis_id):
 		var hypothesis := _hypotheses[_selected_hypothesis_id] as Dictionary
 		var support_complete := _contains_all(
@@ -411,8 +428,12 @@ func build_manual_delta() -> Dictionary:
 			_hypothesis_card.get("selected_contradiction_clue_ids", []) as Array,
 			hypothesis.get("required_contradiction_clue_ids", []) as Array
 		)
+		var questions_complete := _contains_all(
+			_resolved_question_ids,
+			hypothesis.get("unresolved_question_ids", []) as Array
+		)
 		var field_result := _hypothesis_card.get("field_test_result", {}) as Dictionary
-		if _selected_hypothesis_id == "poc001_hypothesis_broadcast_blank" and support_complete and contradiction_complete and bool(field_result.get("correct", false)) and _understanding == "understood" and not _outcome_id.is_empty():
+		if _selected_hypothesis_id == "poc001_hypothesis_broadcast_blank" and support_complete and contradiction_complete and questions_complete and bool(field_result.get("correct", false)) and _understanding == "understood" and not _outcome_id.is_empty():
 			status = "verified"
 	return {
 		"status": status,
@@ -420,7 +441,8 @@ func build_manual_delta() -> Dictionary:
 		"rule_text": String(_hypothesis_card.get("rule_text", "")),
 		"supporting_clue_ids": (_hypothesis_card.get("selected_supporting_clue_ids", []) as Array).duplicate(),
 		"contradiction_clue_ids": (_hypothesis_card.get("selected_contradiction_clue_ids", []) as Array).duplicate(),
-		"unresolved_question_ids": (_hypothesis_card.get("selected_unresolved_question_ids", []) as Array).duplicate(),
+		"unresolved_question_ids": unresolved_remaining,
+		"resolved_question_ids": _resolved_question_ids.duplicate(),
 		"danger_cases": _danger_cases.duplicate(true),
 		"observed_pattern_ids": _observed_pattern_ids.duplicate()
 	}
