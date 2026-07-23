@@ -1,0 +1,38 @@
+name: Validate CORE-MVP-001
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/validate-core-mvp-001.yml"
+      - "data/poc/core_mvp_001/**"
+      - "scripts/poc/core_mvp_001/**"
+      - "scenes/poc/core_mvp_001/**"
+      - "tests/test_core_mvp_001_data_contract.py"
+      - "tests/core_mvp_001_*_test.gd"
+      - "tests/run_godot_regression.sh"
+      - "scripts/ui/main_menu.gd"
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/validate-core-mvp-001.yml"
+      - "data/poc/core_mvp_001/**"
+      - "scripts/poc/core_mvp_001/**"
+      - "scenes/poc/core_mvp_001/**"
+      - "tests/test_core_mvp_001_data_contract.py"
+      - "tests/core_mvp_001_*_test.gd"
+      - "tests/run_godot_regression.sh"
+      - "scripts/ui/main_menu.gd"
+
+permissions:
+  contents: read
+
+jobs:
+  data-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate CORE-MVP-001 data contract
+        run: python -m unittest tests/test_core_mvp_001_data_contract.py
