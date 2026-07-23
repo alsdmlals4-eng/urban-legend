@@ -273,9 +273,16 @@
 ## 책임 원본
 
 - 제품 정체성과 최소 코어: 이 문서
-- 상세 시스템: `docs/GAME_DESIGN_DOCUMENT.md`
+- 프로젝트 전체 상세 시스템: `docs/GAME_DESIGN_DOCUMENT.md`
 - 현재 구현 사실: `docs/CURRENT_STATUS.md`
 - 구현 순서: `MVP_ROADMAP.md`
 - 스트레스 테스트·벤치마킹: `docs/planning/PROJECT_CORE_STRESS_TEST_AND_BENCHMARK.md`
-- 승인 설계 전문: `docs/superpowers/specs/2026-07-23-project-core-finalization-design.md`
-- 실행 계획: `docs/superpowers/plans/2026-07-23-project-core-mvp-rebase.md`
+- CORE-MVP-001 마일스톤 계약: `docs/superpowers/specs/2026-07-23-project-core-integrated-spec.md`
+- CORE-MVP-001 TDD 실행 계획: `docs/superpowers/plans/2026-07-23-core-mvp-001-implementation-plan.md`
+
+### 승인·재기준화 이력
+
+다음 문서는 현재 실행 진입점이 아니라 승인 과정과 이전 재기준화 이력이다.
+
+- `docs/superpowers/specs/2026-07-23-project-core-finalization-design.md`
+- `docs/superpowers/plans/2026-07-23-project-core-mvp-rebase.md`
