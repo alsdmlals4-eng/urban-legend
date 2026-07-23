@@ -1,299 +1,94 @@
 # Project Core MVP Rebase Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development or superpowers:executing-plans. Steps use checkbox syntax.
 
-**Goal:** 승인된 조사-이해도-턴제 회수 코어를 현행 문서 체계와 MVP 로드맵에 충돌 없이 기록하고, 런타임 구현 전 PoC 게이트를 명확히 한다.
+**Goal:** 스트레스 테스트로 확정된 최소 코어를 단일 사건 PoC로 검증하고, 플레이 증거가 있을 때만 지원 시스템으로 확장한다.
 
-**Architecture:** 제품 정체성은 `docs/PROJECT_CORE.md`, 상세 시스템은 `docs/GAME_DESIGN_DOCUMENT.md`, 현재 구현 사실은 `docs/CURRENT_STATUS.md`, 구현 순서는 `MVP_ROADMAP.md`가 각각 소유한다. 설계 전문과 실행 계획은 `docs/superpowers/` 아래에 별도로 보존해 현재 구현과 승인 목표를 혼합하지 않는다.
+**Architecture:** `docs/PROJECT_CORE.md`는 최소 정체성, GDD는 상세 계약, 스트레스 보고서는 검토 근거, `CURRENT_STATUS`는 구현 사실, `MVP_ROADMAP`은 게이트 순서를 소유한다. CORE-MVP-001은 기존 저장·세 사건을 직접 마이그레이션하지 않는 독립 PoC 경로로 만든다.
 
-**Tech Stack:** Markdown, repository document reference tests, Git diff validation, DOCX/PDF generation pipeline.
+**Tech Stack:** Godot 4.7 stable, GDScript, Markdown, Python unittest, headless regression, 플레이테스트 관찰표.
 
 ## Global Constraints
 
-- 권나래는 고정 주인공이며 교체 기능이 없다.
-- 권나래의 일정만 진행·소비하고 서포트는 독립 일정을 요구하지 않는다.
-- 새 코어는 `POC_PENDING`이며 현재 구현 완료로 표시하지 않는다.
-- 현행 저장 스키마 `mvp-039`를 이 문서 단계에서 변경하지 않는다.
-- 기존 MVP-044~046 자산은 삭제하지 않고 구현 보류·재매핑 대상으로 기록한다.
-- 조사와 회수 전투의 연결은 이해도와 전조 해석으로 표현한다.
-- 이해도는 공격력 보너스가 아니라 정보 우위다.
+- 권나래 고정 주인공, 단일 일정 주체
+- 핵심 단서·가설·이해도 승격은 결정론적
+- 확률은 중간 이해도의 전조 정보 해석에만 사용
+- 거짓 예측과 저장 재추첨 금지
+- 회수 승리는 포획 조건, HP 0 처치 금지
+- CORE-MVP-001 전 시장·세력·연구·서사·복수 챕터 확대 금지
+- 현행 `mvp-039`, 기존 ID와 보호 경로 유지
 
 ---
 
-### Task 1: Record the approved core contract
+### Task 1: 문서·자동 계약 동기화
 
 **Files:**
-- Create: `docs/superpowers/specs/2026-07-23-project-core-finalization-design.md`
 - Modify: `docs/PROJECT_CORE.md`
-
-**Interfaces:**
-- Consumes: 2026-07-23 사용자 승인 결정 기록
-- Produces: `CORE_RECORDED` 제품 정체성, WHY/HOW/WHAT, 재승인 조건, PoC 통과 조건
-
-- [ ] **Step 1: Add the design specification**
-
-Create the specification with the approved decisions for investigation choices, manual evidence linking, understanding stages, turn-based recovery, injury, capture, research, hidden branches, chapter requests, and ending axes.
-
-- [ ] **Step 2: Replace the old non-combat core statement**
-
-Update `docs/PROJECT_CORE.md` so `비전투 정체성` is removed and replaced by `전조 기반 턴제 패턴 대응형 회수 전투`. Keep the distinction between killing and recovery.
-
-- [ ] **Step 3: Verify status language**
-
-Run:
-
-```bash
-rg -n "IDENTIFIED|CORE_CONFIRMED|CORE_RECORDED|POC_PENDING" docs/PROJECT_CORE.md docs/superpowers/specs/2026-07-23-project-core-finalization-design.md
-```
-
-Expected:
-
-```text
-docs/PROJECT_CORE.md contains CORE_RECORDED and POC_PENDING.
-The specification contains CORE_RECORDED and POC_PENDING.
-No line claims the runtime implementation is complete.
-```
-
-- [ ] **Step 4: Commit**
-
-```bash
-git add docs/PROJECT_CORE.md docs/superpowers/specs/2026-07-23-project-core-finalization-design.md
-git commit -m "docs: record approved project core"
-```
-
-### Task 2: Rebase direction and detailed design
-
-**Files:**
-- Modify: `docs/planning/PROJECT_DIRECTION.md`
+- Create: `docs/planning/PROJECT_CORE_STRESS_TEST_AND_BENCHMARK.md`
 - Modify: `docs/GAME_DESIGN_DOCUMENT.md`
-
-**Interfaces:**
-- Consumes: `docs/PROJECT_CORE.md`
-- Produces: investigation, understanding, recovery combat, capture, research, chapter, request, and ending system contracts
-
-- [ ] **Step 1: Update the project promise and pointed fun**
-
-Replace the old non-combat promise with the approved investigation-to-recovery causal loop. Preserve fair-play clues, learnable failure, and the anomaly manual as permanent knowledge.
-
-- [ ] **Step 2: Add the investigation contract**
-
-Document exactly:
-
-```text
-4 choices
-→ 2-3 automatically surfaced manual cases
-→ player links evidence to eliminate 2 choices
-→ test 1 of 2 competing hypotheses
-→ update understanding, health, anomaly risk, and scene constraints
-```
-
-- [ ] **Step 3: Add the recovery combat contract**
-
-Document exactly:
-
-```text
-failed omen read: 놈은 무언가 하려 한다.
-successful omen read: 놈은 [행동명]을 하려 한다.
-```
-
-Include the first-use hidden core pattern rule and universal defense mitigation.
-
-- [ ] **Step 4: Add capture, research, hidden branch, chapter, request, and ending contracts**
-
-Use the four value axes `괴이 구제`, `민간인 보호`, `기관 명령 준수`, `진실 공개`. Record one linked request maximum and one independent request per chapter.
-
-- [ ] **Step 5: Validate terminology**
-
-Run:
-
-```bash
-rg -n "비전투 정체성|전통 RPG|턴제|이해도|포획|연구|히든|연계 의뢰|진실 공개" docs/planning/PROJECT_DIRECTION.md docs/GAME_DESIGN_DOCUMENT.md
-```
-
-Expected:
-
-```text
-No active statement defines the product as non-combat.
-Turn-based recovery is described as pattern response rather than killing.
-All approved systems are present in both documents at the appropriate level.
-```
-
-- [ ] **Step 6: Commit**
-
-```bash
-git add docs/planning/PROJECT_DIRECTION.md docs/GAME_DESIGN_DOCUMENT.md
-git commit -m "docs: rebase game design around investigation and recovery"
-```
-
-### Task 3: Rebase status and MVP roadmap
-
-**Files:**
 - Modify: `docs/CURRENT_STATUS.md`
+- Modify: `docs/CURRENT_HANDOFF.md`
+- Modify: `docs/planning/README.md`
+- Modify: `docs/planning/ROADMAP_AND_HANDOFF.md`
+- Modify: `docs/planning/REFERENCE_CASES.md`
 - Modify: `MVP_ROADMAP.md`
+- Modify: `TEST_CHECKLIST.md`
+- Modify: `tests/test_base_operating_sync.py`
 
-**Interfaces:**
-- Consumes: approved core and current implementation baseline
-- Produces: clear separation of implemented baseline and CORE-MVP-001~004 future track
+- [ ] `CORE_RECORDED / CORE_STRESS_TESTED / POC_PENDING` 상태를 검증한다.
+- [ ] 최소 코어와 CORE_SUPPORT를 분리한다.
+- [ ] `Ver 4.2`, `CORE-VALIDATION-001`, `mvp-039` 활성 기준선을 유지한다.
+- [ ] Base operating sync와 active reference tests를 실행한다.
 
-- [ ] **Step 1: Preserve current implementation facts**
+### Task 2: CORE-MVP-001 데이터 계약
 
-Keep the implemented baseline exactly as:
+**Files:** PoC 전용 사건 데이터·Schema·계약 테스트를 현재 저장 책임 원본과 분리해 추가한다.
 
-```text
-MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A
-Ver 4.2
-save mvp-039
-```
+- [ ] 단서 6개를 지지 3·반박 2·미해결 1로 작성한다.
+- [ ] 4개 선택지와 논리적 배제 관계를 작성한다.
+- [ ] 가설 카드 2개의 필드를 정의한다.
+- [ ] 현장 이해도 승격 조건을 결정론적으로 정의한다.
+- [ ] 패턴 3개와 포획 조건을 판정 전에 고정한다.
+- [ ] 실패 사례에 반응 단서와 위험 사례가 항상 존재하는 테스트를 작성한다.
 
-- [ ] **Step 2: Add approved but unimplemented status**
+### Task 3: 조사 UI 세로 슬라이스
 
-Mark the new core as `CORE_RECORDED` and `POC_PENDING`. List turn-based recovery, understanding, chapter conversion, capture research, hidden branches, and ending axes under `구현되지 않은 항목`.
+- [ ] 현재 전조·4개 선택지·관련 매뉴얼 2~3개를 우선 표시한다.
+- [ ] 기록을 선택지에 연결해 2개를 배제한다.
+- [ ] 규칙 가설 카드에 지지·반박·미해결을 연결한다.
+- [ ] 배제 실패에는 자원 비용을 주지 않는다.
+- [ ] 오답 뒤 기존 1 + 신규 변형 1로 부분 갱신한다.
+- [ ] 1280×720·1920×1080, 키보드·마우스·Esc를 검증한다.
 
-- [ ] **Step 3: Add the four-stage MVP track**
+### Task 4: 전조 해석과 턴제 회수 PoC
 
-Record:
+- [ ] 실제 패턴을 해석 판정 전에 고정한다.
+- [ ] 실패는 `놈은 무언가 하려 한다.`만 표시한다.
+- [ ] 성공은 행동명과 확인한 세부 정보만 표시한다.
+- [ ] 이해 단계는 확정 해석한다.
+- [ ] 미관측 패턴 첫 발동에 범용 방어를 보장한다.
+- [ ] 포획 조건 충족으로 승리한다.
+- [ ] 저장 재개 또는 PoC 재진입에서 같은 판정을 재추첨하지 않는다.
 
-```text
-CORE-MVP-001 조사·이해도·회수 PoC
-CORE-MVP-002 실패·부상·결과·포획·연구
-CORE-MVP-003 기간제 챕터·세력 의뢰
-CORE-MVP-004 연구 히든 분기·가치관 엔딩
-```
+### Task 5: 결과·매뉴얼 승격
 
-- [ ] **Step 4: Reclassify previous plans**
+- [ ] 가설과 회수 관측을 비교한다.
+- [ ] 후보·공식 규칙·위험 사례를 분리한다.
+- [ ] 실패도 다음 판단에 사용할 기록을 남긴다.
+- [ ] 결과 화면은 회수 품질·피해·지식 품질을 구분한다.
+- [ ] 매뉴얼이 정답집이 아니라 플레이어 작성 기록으로 보이는지 수동 검증한다.
 
-Mark UX-PD-001 2B·2C and MVP-044~046 as `재평가 대기` or `구현 보류`. Do not delete their assets or describe them as implemented.
+### Task 6: 플레이테스트와 Production gate
 
-- [ ] **Step 5: Run document reference tests**
+- [ ] 신규 플레이어와 기존 노출 플레이어를 구분한다.
+- [ ] 18~25분 과제와 관찰 포인트를 고정한다.
+- [ ] 행동·퍼널·인터뷰를 분리 기록한다.
+- [ ] 사전 선언한 6개 지표를 계산한다.
+- [ ] `KEEP / AMPLIFY / CHANGE / RETEST / HOLD`를 판정한다.
+- [ ] 지표 미달이면 CORE-MVP-002를 시작하지 않는다.
 
-Run:
+### Task 7: 후속 단계 재매핑
 
-```bash
-python -m pytest tests/test_active_document_references.py -q
-python -m pytest tests/test_core_validation_contract.py -q
-git diff --check
-```
-
-Expected:
-
-```text
-All tests pass.
-git diff --check produces no output.
-```
-
-- [ ] **Step 6: Commit**
-
-```bash
-git add docs/CURRENT_STATUS.md MVP_ROADMAP.md
-git commit -m "docs: add core mvp rebase roadmap"
-```
-
-### Task 4: Generate and verify the PDF brief
-
-**Files:**
-- Create locally: `도시괴담_기록국_프로젝트_코어_MVP_재기준화_2026-07-23.docx`
-- Create locally: `도시괴담_기록국_프로젝트_코어_MVP_재기준화_2026-07-23.pdf`
-
-**Interfaces:**
-- Consumes: `docs/PROJECT_CORE.md`, `docs/GAME_DESIGN_DOCUMENT.md`, `MVP_ROADMAP.md`
-- Produces: a user-readable PDF matching the repository documents
-
-- [ ] **Step 1: Build the DOCX source**
-
-Use `python-docx` with A4 portrait layout, Korean-capable fonts, a title page, heading hierarchy, compact tables, and page numbers.
-
-- [ ] **Step 2: Render the DOCX to PDF and PNG**
-
-Run:
-
-```bash
-python /home/oai/skills/docx/render_docx.py \
-  /mnt/data/도시괴담_기록국_프로젝트_코어_MVP_재기준화_2026-07-23.docx \
-  --output_dir /mnt/data/core_pdf_render \
-  --emit_pdf
-```
-
-Expected:
-
-```text
-A non-empty PDF and one PNG per page are produced.
-```
-
-- [ ] **Step 3: Inspect every rendered page**
-
-Confirm no clipped Korean text, broken tables, missing glyphs, overlaps, or footer collisions. Fix the DOCX and rerender until clean.
-
-- [ ] **Step 4: Render the final PDF independently**
-
-Run:
-
-```bash
-python /home/oai/skills/pdfs/scripts/render_pdf.py \
-  /mnt/data/도시괴담_기록국_프로젝트_코어_MVP_재기준화_2026-07-23.pdf \
-  --out_dir /mnt/data/core_pdf_verify \
-  --dpi 200
-```
-
-Expected:
-
-```text
-Every PDF page renders successfully with no missing glyphs or clipping.
-```
-
-### Task 5: Final review and draft PR
-
-**Files:**
-- Review: all files changed in Tasks 1-3
-
-**Interfaces:**
-- Consumes: completed documentation diff and validation output
-- Produces: draft PR for user review
-
-- [ ] **Step 1: Check scope**
-
-Run:
-
-```bash
-git status -sb
-git diff --stat main...HEAD
-git diff --check
-```
-
-Expected:
-
-```text
-Only the five active documents, one design specification, and one implementation plan are changed.
-No runtime code, data, scene, asset, or save file is changed.
-```
-
-- [ ] **Step 2: Review for implementation claims**
-
-Run:
-
-```bash
-rg -n "구현 완료|구현 확인|완료 기능" docs/PROJECT_CORE.md docs/planning/PROJECT_DIRECTION.md docs/GAME_DESIGN_DOCUMENT.md docs/CURRENT_STATUS.md MVP_ROADMAP.md
-```
-
-Expected:
-
-```text
-Current main facts are clearly separated from CORE-MVP future targets.
-```
-
-- [ ] **Step 3: Open a draft PR**
-
-Use title:
-
-```text
-docs: rebase project core and MVP roadmap
-```
-
-Use a body that states:
-
-```text
-- records the user-approved CORE_RECORDED contract
-- replaces the obsolete non-combat identity with investigation-linked turn-based recovery
-- adds CORE-MVP-001~004 PoC roadmap
-- keeps the current implementation baseline and mvp-039 unchanged
-- defers MVP-044~046 for post-PoC remapping
-```
+- [ ] CORE-MVP-001 통과 뒤에만 CORE-MVP-002 범위를 확정한다.
+- [ ] UX-PD-001 2B·2C와 MVP-044~046을 새 코어에 맞게 재매핑한다.
+- [ ] 시장·세력·연구·복수 챕터·대규모 엔딩은 별도 승인한다.
