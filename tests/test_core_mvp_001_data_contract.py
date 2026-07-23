@@ -23,6 +23,11 @@ FIXED_IDS = {
         "poc001_clue_passenger_count",
         "poc001_question_ticket_trigger",
     },
+    "manual_records": {
+        "poc001_manual_early_movement_reset",
+        "poc001_manual_personal_destination",
+        "poc001_manual_ticket_contact_danger",
+    },
     "choices": {
         "poc001_choice_move_before_end",
         "poc001_choice_follow_passenger_count",
@@ -37,6 +42,16 @@ FIXED_IDS = {
         "poc001_pattern_false_terminal",
         "poc001_pattern_boundary_fold",
         "poc001_pattern_ticket_imprint",
+    },
+    "actions": {
+        "poc001_action_observe",
+        "poc001_action_guard",
+        "poc001_action_cover",
+        "poc001_action_protect_trace",
+        "poc001_action_hold_position",
+        "poc001_action_fix_boundary",
+        "poc001_action_isolate_ticket",
+        "poc001_action_capture",
     },
 }
 
@@ -55,14 +70,17 @@ class CoreMvp001DataContractTests(unittest.TestCase):
         self.assertEqual(2, len(data["hypotheses"]))
         self.assertEqual(3, len(data["recovery_patterns"]))
         self.assertEqual(3, len(data["manual_records"]))
+        self.assertEqual(8, len(data["recovery_actions"]))
 
     def test_fixed_ids_are_exact_and_unique(self) -> None:
         sections = {
             "scenes": "investigation_scenes",
             "clues": "clues",
+            "manual_records": "manual_records",
             "choices": "choices",
             "hypotheses": "hypotheses",
             "patterns": "recovery_patterns",
+            "actions": "recovery_actions",
         }
         seen: set[str] = set()
         for label, key in sections.items():
@@ -73,13 +91,7 @@ class CoreMvp001DataContractTests(unittest.TestCase):
                 self.assertNotIn(entry_id, seen, entry_id)
                 seen.add(entry_id)
 
-        for key in (
-            "manual_records",
-            "elimination_rules",
-            "field_tests",
-            "recovery_actions",
-            "outcomes",
-        ):
+        for key in ("elimination_rules", "field_tests", "outcomes"):
             for entry in self.data[key]:
                 entry_id = str(entry["id"])
                 self.assertTrue(entry_id.startswith("poc001_"), entry_id)
@@ -106,9 +118,12 @@ class CoreMvp001DataContractTests(unittest.TestCase):
         reference_fields = {
             "scene_id",
             "clue_id",
+            "reaction_clue_id",
+            "resolves_question_id",
             "record_id",
             "choice_id",
             "hypothesis_id",
+            "refresh_hypothesis_id",
             "field_test_id",
             "pattern_id",
             "action_id",
@@ -169,7 +184,7 @@ class CoreMvp001DataContractTests(unittest.TestCase):
     @staticmethod
     def _all_ids(data: dict[str, Any]) -> set[str]:
         ids: set[str] = set()
-        for key, value in data.items():
+        for value in data.values():
             if not isinstance(value, list):
                 continue
             for entry in value:
