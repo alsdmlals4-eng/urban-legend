@@ -5,12 +5,15 @@
 이 문서는 계정·채팅·담당자 교대 시 읽는 짧은 상태다. 실제 완료 여부는 현재 브랜치·대상 PR·`main`·테스트와 함께 확인한다.
 
 ```yaml
-status: REVIEW_READY_WITH_POC_HOLD
+status: ACCEPT_WITH_FOLLOWUP
 implemented_baseline: MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A / Ver 4.2 / save mvp-039
 project_core: CORE_RECORDED
 core_review: CORE_STRESS_TESTED
 implementation_state: POC_PENDING
 production_gate: HOLD_UNTIL_PLAYER_EVIDENCE
+pr_review:
+  number: 55
+  automated_validation: Validate Base operating sync run 94 PASSED
 current_protagonist: 권나래
 active_track:
   - CORE-MVP-001 조사·가설 카드·전조 기반 포획 PoC
@@ -24,7 +27,6 @@ deferred_for_remap:
   - MVP-045
   - MVP-046
 next_action:
-  - Draft PR #55의 자동 계약과 활성 문서 참조를 통과시킨다
   - CORE-MVP-001 사건 1개 PoC만 구현한다
   - 신규 플레이어 행동 증거 전 지원 시스템을 확장하지 않는다
 ```
