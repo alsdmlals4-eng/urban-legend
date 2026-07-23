@@ -152,7 +152,7 @@ class ActiveDocumentReferenceTests(unittest.TestCase):
 
         self.assertIn("상세 게임 설계", doc_map)
         self.assertIn("CORE-MVP-001 마일스톤 계약", doc_map)
-        self.assertIn(CORE_INTEGRATED_SPEC.relative_to(ROOT).as_posix(), doc_map)
+        self.assertIn(CORE_INTEGRATED_SPEC.relative_to(ROOT / "docs").as_posix(), doc_map)
         self.assertIn(CORE_IMPLEMENTATION_PLAN.relative_to(ROOT).as_posix(), core)
         self.assertIn(CORE_INTEGRATED_SPEC.relative_to(ROOT).as_posix(), core)
         self.assertIn("DEFERRED_FOR_REMAP", progressive)
