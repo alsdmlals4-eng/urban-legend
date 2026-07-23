@@ -39,7 +39,7 @@
 | 구현 상태 | `POC_PENDING` |
 | Production gate | `HOLD_UNTIL_PLAYER_EVIDENCE` |
 | PR 검토 | Draft PR #55 / `ACCEPT_WITH_FOLLOWUP` |
-| 자동 검증 | Validate Base operating sync run #94 성공 |
+| 자동 검증 | Validate Base operating sync run #97 성공 |
 | 책임 보고서 | `docs/planning/PROJECT_CORE_STRESS_TEST_AND_BENCHMARK.md` |
 
 ## 확정된 최소 코어 - 미구현 목표
