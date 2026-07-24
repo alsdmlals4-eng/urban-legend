@@ -50,11 +50,15 @@ func _run() -> void:
 		"ChoiceGrid",
 		"ManualList",
 		"FeedbackLabel",
+		"Footer",
 		"BackButton",
 		"ConfirmButton",
 		"ExportLogButton"
 	]:
 		_expect(scene.find_child(node_name, true, false) != null, "%s should exist" % node_name)
+
+	await _expect_layout_at(scene, Vector2i(1280, 720))
+	await _expect_layout_at(scene, Vector2i(1920, 1080))
 
 	var choices := scene.find_child("ChoiceGrid", true, false)
 	var manual := scene.find_child("ManualList", true, false)
@@ -82,11 +86,19 @@ func _run() -> void:
 	await process_frame
 	_expect(scene.call("debug_snapshot").get("phase") == "HYPOTHESIS_AUTHORING", "two eliminations should advance to hypothesis authoring")
 	_expect(_visible_phase_panels(scene) == ["HypothesisPanel"], "hypothesis step should show one panel")
+	await _expect_layout_at(scene, Vector2i(1280, 720))
+	await _expect_layout_at(scene, Vector2i(1920, 1080))
 
-	scene.call("debug_review_previous_panel")
+	var escape := InputEventAction.new()
+	escape.action = "ui_cancel"
+	escape.pressed = true
+	scene.call("_unhandled_input", escape)
 	await process_frame
-	_expect(_visible_phase_panels(scene) == ["InvestigationPanel"], "back should show the previous panel without changing state")
-	_expect(scene.call("debug_snapshot").get("eliminated_choice_ids", []).size() == 2, "reviewing a previous panel should preserve selections")
+	_expect(_visible_phase_panels(scene) == ["InvestigationPanel"], "Esc should show the previous panel without changing state")
+	_expect(scene.call("debug_snapshot").get("phase") == "HYPOTHESIS_AUTHORING", "Esc review should not rewind the state machine")
+	_expect(scene.call("debug_snapshot").get("eliminated_choice_ids", []).size() == 2, "Esc review should preserve eliminated choices")
+	_expect(_review_controls_are_read_only(scene), "reviewed investigation controls should be read-only")
+
 	scene.call("debug_return_to_current_panel")
 	await process_frame
 	_expect(_visible_phase_panels(scene) == ["HypothesisPanel"], "return should restore the current state panel")
@@ -95,6 +107,40 @@ func _run() -> void:
 	_expect(focus_owner is Button, "scene should restore keyboard focus to a button")
 	_expect(not FileAccess.file_exists(game_state.get_save_file_path()), "isolated PoC should not create the campaign save")
 	_finish()
+
+
+func _expect_layout_at(scene: Control, viewport_size: Vector2i) -> void:
+	root.size = viewport_size
+	for _frame in range(3):
+		await process_frame
+	var viewport_rect := Rect2(Vector2.ZERO, Vector2(viewport_size))
+	for node_name in ["SafeFrame", "RootColumn", "PhaseHost", "Footer", "BackButton", "ConfirmButton", "ExportLogButton"]:
+		var control := scene.find_child(node_name, true, false) as Control
+		_expect(control != null, "%s should exist at %s" % [node_name, viewport_size])
+		if control == null:
+			continue
+		var rect := control.get_global_rect()
+		_expect(rect.size.x > 0.0 and rect.size.y > 0.0, "%s should have positive size at %s" % [node_name, viewport_size])
+		_expect(viewport_rect.encloses(rect), "%s should remain inside %s" % [node_name, viewport_size])
+	var visible_panels := _visible_phase_panels(scene)
+	_expect(visible_panels.size() == 1, "exactly one phase panel should be visible at %s" % viewport_size)
+	if visible_panels.size() == 1:
+		var panel := scene.find_child(visible_panels[0], true, false) as Control
+		_expect(panel != null and viewport_rect.encloses(panel.get_global_rect()), "visible phase panel should remain inside %s" % viewport_size)
+
+
+func _review_controls_are_read_only(scene: Node) -> bool:
+	var choice_grid := scene.find_child("ChoiceGrid", true, false)
+	var manual_list := scene.find_child("ManualList", true, false)
+	if choice_grid == null or manual_list == null:
+		return false
+	for child in choice_grid.get_children():
+		if child is Button and not (child as Button).disabled:
+			return false
+	for child in manual_list.get_children():
+		if child is Button and not (child as Button).disabled:
+			return false
+	return true
 
 
 func _visible_phase_panels(scene: Node) -> Array[String]:
