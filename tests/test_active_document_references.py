@@ -32,6 +32,8 @@ OPERATING_DOCS = [
     ROOT / "docs/MVP_WORKFLOW_CHECKLIST.md",
     ROOT / "docs/AI_SKILL_ADOPTION_GUIDE.md",
 ]
+CORE_INTEGRATED_SPEC = ROOT / "docs/superpowers/specs/2026-07-23-project-core-integrated-spec.md"
+CORE_IMPLEMENTATION_PLAN = ROOT / "docs/superpowers/plans/2026-07-23-core-mvp-001-implementation-plan.md"
 CORE_VALIDATION_QA = ROOT / "docs/qa/CORE_VALIDATION_SLICE_001.md"
 PROGRESSIVE_DISCLOSURE_QA = ROOT / "docs/qa/PROGRESSIVE_DISCLOSURE_SLICE_001.md"
 ALL_ROUTED_DOCS = ACTIVE_DOCS + OPERATING_DOCS
@@ -83,6 +85,8 @@ class ActiveDocumentReferenceTests(unittest.TestCase):
     def test_active_and_operating_documents_exist(self) -> None:
         for path in ALL_ROUTED_DOCS:
             self.assertTrue(path.is_file(), path.relative_to(ROOT))
+        self.assertTrue(CORE_INTEGRATED_SPEC.is_file())
+        self.assertTrue(CORE_IMPLEMENTATION_PLAN.is_file())
 
     def test_relative_markdown_links_resolve(self) -> None:
         failures: list[str] = []
@@ -138,6 +142,62 @@ class ActiveDocumentReferenceTests(unittest.TestCase):
             if "UX-PD-001" not in text or "2A" not in text:
                 failures.append(f"{path.relative_to(ROOT)} missing UX-PD-001 2A")
         self.assertEqual([], failures)
+
+    def test_core_mvp_001_authority_and_contract_are_aligned(self) -> None:
+        doc_map = (ROOT / "docs/DOCUMENTATION_MAP.md").read_text(encoding="utf-8")
+        core = (ROOT / "docs/PROJECT_CORE.md").read_text(encoding="utf-8")
+        progressive = (ROOT / "docs/planning/PROGRESSIVE_DISCLOSURE_PLAN.md").read_text(encoding="utf-8")
+        spec = CORE_INTEGRATED_SPEC.read_text(encoding="utf-8")
+        plan = CORE_IMPLEMENTATION_PLAN.read_text(encoding="utf-8")
+
+        self.assertIn("상세 게임 설계", doc_map)
+        self.assertIn("CORE-MVP-001 마일스톤 계약", doc_map)
+        self.assertIn(CORE_INTEGRATED_SPEC.relative_to(ROOT / "docs").as_posix(), doc_map)
+        self.assertIn(CORE_IMPLEMENTATION_PLAN.relative_to(ROOT).as_posix(), core)
+        self.assertIn(CORE_INTEGRATED_SPEC.relative_to(ROOT).as_posix(), core)
+        self.assertIn("DEFERRED_FOR_REMAP", progressive)
+
+        self.assertIn("적용 범위: `CORE-MVP-001` 마일스톤 계약", spec)
+        self.assertNotIn("적용 범위: 프로젝트 정체성 전체", spec)
+        self.assertIn("CoreMvp001Scene", spec)
+        self.assertIn("CoreMvp001Scene", plan)
+        self.assertNotIn("CoreMvp001Controller", spec + plan)
+        self.assertIn("func start(case_data: Dictionary, run_seed: int = 1001) -> Dictionary", spec)
+        self.assertIn("func start(case_data: Dictionary, run_seed: int = 1001) -> Dictionary", plan)
+
+        fixed_ids = (
+            "poc001_scene_broadcast_archive",
+            "poc001_scene_platform_display",
+            "poc001_scene_ticket_gate",
+            "poc001_question_ticket_trigger",
+        )
+        for value in fixed_ids:
+            self.assertIn(value, spec)
+            self.assertIn(value, plan)
+        for stale in ("poc001_scene_control_room", "poc001_question_safe_identifier"):
+            self.assertNotIn(stale, spec + plan)
+
+        public_states = (
+            "BOOT", "ELIMINATION", "HYPOTHESIS_AUTHORING", "FIELD_TEST",
+            "HYPOTHESIS_REFRESH", "RECOVERY_READY", "EMERGENCY_RECOVERY",
+            "RECOVERY_TURN_START", "OMEN_READ", "RESPONSE_SELECTION",
+            "CAPTURE_WINDOW", "EMERGENCY_CAPTURE", "RESULT_COMPARE",
+            "MANUAL_PROMOTION", "COMPLETE",
+        )
+        for state in public_states:
+            self.assertIn(state, spec)
+            self.assertIn(state, plan)
+        self.assertIn("INVESTIGATION_SITUATION은 UI 도입 단계", spec)
+        self.assertIn("RESPONSE_RESOLUTION은 명령 내부 원자 전이", spec)
+
+        for ux_contract in (
+            "현재 단계 패널만 표시",
+            "Footer는 고정",
+            "ScrollContainer",
+            "첫 유효 컨트롤로 포커스를 복구",
+        ):
+            self.assertIn(ux_contract, spec)
+            self.assertIn(ux_contract, plan)
 
     def test_operating_entrypoints_reference_skill_router(self) -> None:
         combined = "\n".join(path.read_text(encoding="utf-8") for path in OPERATING_DOCS)

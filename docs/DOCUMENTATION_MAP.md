@@ -71,12 +71,16 @@
 | 준비·조사·결과 정보 위계 | `planning/PROGRESSIVE_DISCLOSURE_PLAN.md` | UX-PD-001 후속 |
 | 단계 의존성·인수인계 | `planning/ROADMAP_AND_HANDOFF.md` | MVP 시작·종료, 역할 교대 |
 | 적용 사례 | `planning/REFERENCE_CASES.md` | 기존 근거 재사용, 적용·제외 판단 |
-| 상세 게임 설계 | `GAME_DESIGN_DOCUMENT.md` | 시스템·콘텐츠 상세 변경 |
+| 상세 게임 설계 | `GAME_DESIGN_DOCUMENT.md` | 프로젝트 전체 시스템·콘텐츠 상세 변경 |
+| CORE-MVP-001 마일스톤 계약 | `superpowers/specs/2026-07-23-project-core-integrated-spec.md` | CORE-MVP-001 구현·검증 기간에만 읽음 |
+| CORE-MVP-001 실행 계획 | `superpowers/plans/2026-07-23-core-mvp-001-implementation-plan.md` | CORE-MVP-001 TDD 구현·QA·게이트 |
 | 프로젝트 용어·표현 원칙 | `PROJECT_CONTEXT.md` | 대사·세계관·캐릭터 작업 |
 | 구현 순서 | `../MVP_ROADMAP.md` | 범위·우선순위 결정 |
 | 검증 계약 | `../TEST_CHECKLIST.md` | 구현·문서 변경 |
 | 실행·프로젝트 소개 | `../README.md` | 실행·외부 안내 |
 | 현재 계정 인수 상태 | `CURRENT_HANDOFF.md` | 계정·채팅 교대 |
+
+`GAME_DESIGN_DOCUMENT.md`는 프로젝트 전체 상세 게임 설계 정본이다. CORE-MVP-001 마일스톤 계약은 그 전역 책임을 대체하지 않고, 승인된 PoC의 고정 ID·상태·테스트 경계만 구체화한다. 두 문서가 충돌하면 `PROJECT_CORE.md → GAME_DESIGN_DOCUMENT.md → CURRENT_STATUS.md → CORE-MVP-001 마일스톤 계약` 순으로 권한을 판정하고 충돌을 즉시 보고한다.
 
 ## Skill 조건부 라우팅
 
@@ -100,6 +104,7 @@
 
 | 작업 조건 | 추가로 읽을 문서 |
 |---|---|
+| CORE-MVP-001 구현·검증 | 통합 명세, 상세 구현 계획, `planning/PROJECT_CORE_STRESS_TEST_AND_BENCHMARK.md` |
 | 관계 태그·선택 기억·연속 이벤트 | `planning/NARRATIVE_CONTENT_PLAN.md`, 실제 저장·이벤트 데이터 |
 | 외부 GPT·DeepSeek·이미지 모델 위임 | `AI_DELEGATION_WORKFLOW.md` |
 | 기존 사례 재사용 | `planning/REFERENCE_CASES.md` |
@@ -127,7 +132,7 @@
 - 완료된 `qa/**`
 - 완료된 `CODEX_GOAL_*`
 - `benchmarks/**`
-- `superpowers/**`
+- `superpowers/**` — 단, 현재 활성 마일스톤 계약과 실행 계획은 위 조건부 라우팅으로 예외
 - 과거 보고서·HTML·일회성 감사
 - Base 전체 Skill 폴더
 
@@ -135,18 +140,20 @@
 
 ## 활성 계획 라우팅
 
-MVP-044~046 전달 패키지는 GitHub `main` 구현 완료 문서가 아니다. ZIP을 받은 작업에서 다음 순서로 읽는다.
+현재 유일한 활성 구현 트랙은 CORE-MVP-001이다.
 
 ```text
-ZIP/00_README_코덱스_전달사항.md
-→ ZIP의 구현 지시서
-→ 필요한 제안서·레지스트리
-→ CURRENT_STATUS.md
-→ planning/README.md와 분야별 기획서
-→ 실제 대상 파일
+CURRENT_STATUS.md
+→ PROJECT_CORE.md
+→ planning/PROJECT_CORE_STRESS_TEST_AND_BENCHMARK.md
+→ superpowers/specs/2026-07-23-project-core-integrated-spec.md
+→ ../MVP_ROADMAP.md
+→ superpowers/plans/2026-07-23-core-mvp-001-implementation-plan.md
+→ ../TEST_CHECKLIST.md
+→ 실제 PoC 코드·데이터·장면·테스트
 ```
 
-패키지 전체를 저장소 현행 문서로 복사하지 않는다. 구현 완료 후 확정된 결과만 상태·GDD·검증·분야별 기획서에 통합한다.
+UX-PD-001 2B·2C와 MVP-044~046 전달 패키지는 CORE-MVP-001 플레이 증거 뒤 재매핑한다. 패키지 전체를 저장소 현행 문서로 복사하지 않으며, 구현 완료 후 확정된 결과만 상태·GDD·검증·분야별 기획서에 통합한다.
 
 ## Base 승격 라우팅
 

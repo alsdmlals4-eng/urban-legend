@@ -1,0 +1,62 @@
+{
+  "manifest_version": "qa-publication-v1",
+  "publication_id": "FINAL_ADVERSARIAL_AUDIT_2026-07-24",
+  "canonical_sources": [
+    {
+      "path": "docs/qa/2026-07-24_FINAL_ADVERSARIAL_AUDIT.md",
+      "sha256": "548df2fe9f572b9b6c57760ebaf762f5d00e987ad7dc225c29667cd3fdacdcef",
+      "role": "main report with required 26 sections"
+    },
+    {
+      "path": "docs/qa/2026-07-24_FINAL_ADVERSARIAL_AUDIT_ADDENDUM.md",
+      "sha256": "4b8a0e7183f265cc24b82e703c48cf2b134a1076155041fc671cf802bdd96dee",
+      "role": "publication-head regression addendum"
+    }
+  ],
+  "combined_source_filename": "도시괴담_기록국_최종_적대적_검토_및_MVP_마감_보고서_2026-07-24.md",
+  "combined_source_sha256": "e3cff6a92894e3a28202b33d66eb81a82bab21195b832039a7102561940fff48",
+  "pdf_filename": "도시괴담_기록국_최종_적대적_검토_및_MVP_마감_보고서_2026-07-24.pdf",
+  "pdf_sha256": "d362450bdde94fac6f0f300faf05cbc81ea8becf39799189ebd49bf7cab9e31d",
+  "docx_filename": "도시괴담_기록국_최종_적대적_검토_및_MVP_마감_보고서_2026-07-24.docx",
+  "docx_sha256": "eef12bf182fe9c0cba320d072e80346a535119aa83fa7f3169987d0aa2dde6ed",
+  "generator": {
+    "markdown": "UTF-8 concatenation of main report and addendum",
+    "pdf": "pandoc + XeLaTeX",
+    "docx": "pandoc + python-docx",
+    "font": "Noto Sans CJK KR",
+    "page": "A3 landscape"
+  },
+  "page_count": 12,
+  "automated_preflight": {
+    "status": "PASS",
+    "blank_pages": [],
+    "replacement_characters": 0,
+    "extracted_text_characters": 45704,
+    "all_pages_rendered": true,
+    "assistant_visual_review": "PASS",
+    "checks": [
+      "empty pages",
+      "Korean glyph extraction",
+      "table clipping",
+      "paragraph clipping",
+      "page duplication/omission",
+      "TOC presence"
+    ]
+  },
+  "human_visual_review": "NOT_RUN",
+  "responsibility": "human-readable derivative; does not replace Markdown canonical sources",
+  "page_stats": [
+    {"page": 1, "width": 1654, "height": 1170, "mean_luma": 250.83, "nonwhite_sample": 808},
+    {"page": 2, "width": 1654, "height": 1170, "mean_luma": 248.49, "nonwhite_sample": 1545},
+    {"page": 3, "width": 1654, "height": 1170, "mean_luma": 244.46, "nonwhite_sample": 2754},
+    {"page": 4, "width": 1654, "height": 1170, "mean_luma": 248.39, "nonwhite_sample": 1867},
+    {"page": 5, "width": 1654, "height": 1170, "mean_luma": 251.49, "nonwhite_sample": 1247},
+    {"page": 6, "width": 1654, "height": 1170, "mean_luma": 250.55, "nonwhite_sample": 1261},
+    {"page": 7, "width": 1654, "height": 1170, "mean_luma": 249.76, "nonwhite_sample": 1592},
+    {"page": 8, "width": 1654, "height": 1170, "mean_luma": 245.46, "nonwhite_sample": 2438},
+    {"page": 9, "width": 1654, "height": 1170, "mean_luma": 247.87, "nonwhite_sample": 1849},
+    {"page": 10, "width": 1654, "height": 1170, "mean_luma": 249.68, "nonwhite_sample": 1278},
+    {"page": 11, "width": 1654, "height": 1170, "mean_luma": 248.07, "nonwhite_sample": 1822},
+    {"page": 12, "width": 1654, "height": 1170, "mean_luma": 254.11, "nonwhite_sample": 234}
+  ]
+}

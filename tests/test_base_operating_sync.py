@@ -92,15 +92,37 @@ class BaseOperatingSyncTests(unittest.TestCase):
             self.assertIn(row["status"], {"COVERED", "COVERED_EXISTING"})
             self.assertTrue(set(row["skills"]) <= ids, row)
 
-    def test_project_core_is_identified_but_not_silently_confirmed(self) -> None:
+    def test_project_core_records_explicit_approval_without_claiming_implementation(self) -> None:
         text = (ROOT / "docs/PROJECT_CORE.md").read_text(encoding="utf-8")
-        self.assertIn("상태: `IDENTIFIED`", text)
-        self.assertIn("아직 `CORE_CONFIRMED`", text)
+        for required in (
+            "상태: `CORE_RECORDED`",
+            "사용자 승인: 2026-07-23",
+            "검토 상태: `CORE_STRESS_TESTED`",
+            "구현 상태: `POC_PENDING`",
+            "HOLD_UNTIL_PLAYER_EVIDENCE",
+        ):
+            self.assertIn(required, text)
         for term in (
             "괴이 기록국", "안정화 상태", "위험 사례", "잔향", "괴이 매뉴얼",
-            "TECHNICAL_FOUNDATION", "REQUIRES_REAPPROVAL",
+            "TECHNICAL_FOUNDATION", "REQUIRES_REAPPROVAL", "CORE_SUPPORT",
         ):
             self.assertIn(term, text)
+        self.assertNotIn("PRODUCTION_READY", text.split("Production gate:", 1)[1].splitlines()[0])
+
+    def test_active_operating_docs_route_to_recorded_core_and_current_track(self) -> None:
+        base_version = (ROOT / "docs/BASE_RULES_VERSION.md").read_text(encoding="utf-8")
+        operating = (ROOT / "docs/OPERATING_MODEL.md").read_text(encoding="utf-8")
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        stale_claims = (
+            "프로젝트 코어는 `docs/PROJECT_CORE.md`의 `IDENTIFIED` 상태",
+            "`docs/PROJECT_CORE.md`는 현재 `IDENTIFIED`",
+        )
+        for claim in stale_claims:
+            self.assertNotIn(claim, base_version + operating)
+        self.assertIn("CORE-MVP-001", readme)
+        self.assertIn("HOLD_UNTIL_PLAYER_EVIDENCE", readme)
+        self.assertIn("UX-PD-001 2B·2C", readme)
+        self.assertIn("재매핑", readme)
 
     def test_path_adapter_and_untracked_docx_policy(self) -> None:
         self.assertEqual(set(self.adapter["role_bindings"]), REQUIRED_ADAPTER_ROLES)

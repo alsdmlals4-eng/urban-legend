@@ -1,128 +1,142 @@
 # Current Project Status
 
-> 문서 위치: `docs/CURRENT_STATUS.md` | 기획 인수인계: `docs/planning/README.md` | 과거 상태·중복 설명: `docs/archive/backup/2026-07-16/`
+> 문서 위치: `docs/CURRENT_STATUS.md` | 프로젝트 코어: `docs/PROJECT_CORE.md` | 통합 명세: `docs/superpowers/specs/2026-07-23-project-core-integrated-spec.md` | 실행 계획: `docs/superpowers/plans/2026-07-23-core-mvp-001-implementation-plan.md`
 
-이 문서는 **이 파일이 포함된 현재 Git 브랜치의 구현 사실과 승인됐지만 아직 구현되지 않은 다음 계획을 구분하는 단일 상태 원본**이다. `main` 반영 여부는 PR과 `origin/main`을 별도로 확인한다. 새 작업자는 모든 과거 Goal·QA·제안서를 읽지 않고 이 문서와 `docs/planning/README.md`에서 필요한 갈래를 선택한다.
+이 문서는 현재 브랜치의 구현 사실, 자동 검증, 플레이 검증을 분리한다. `POC_BUILD_READY`는 구현·계약·회귀·기계적 UI 검증이 통과했다는 뜻이며, 플레이테스트 통과나 제작 확대 승인을 뜻하지 않는다.
 
 ## 현재 구현 기준
 
 | 항목 | 현재 값 |
 |---|---|
-| 구현 기준선 | MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A |
+| 기존 구현 기준선 | MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A |
+| 신규 브랜치 작업 | CORE-MVP-001 독립 PoC 구현 |
 | 화면 버전 | Ver 4.2 |
 | 저장 스키마 | `mvp-039` (`mvp-038` 이관 지원) |
-| 엔진 | Godot 4.7 stable / GDScript |
+| 엔진 | Godot 4.7.1 / GDScript |
 | 플랫폼 | PC / Steam, 16:9, 마우스·키보드 |
-| 구현 사건 | 저승역, 비 오는 골목의 빨간 우산, 폐주파수 방송국 |
+| 구현 사건 | 기존 3사건 + 독립 저승역 CORE-MVP-001 PoC |
 | 주인공 | 권나래 고정 |
-| 초기 요원 | 권나래·윤서하·오현·강이준·한유리 |
-| 외부 접점 | 박도윤·이세린·레이먼드 케인·카밀라 바르가스 |
+| 구현 PR | PR #57 |
+| 실행 추적 | Issue #56 |
 
-## 구현 완료 핵심
+## 프로젝트 코어와 구현 상태
 
-- 최대 10일, 오전·오후 순차 반일 캠페인
-- 권나래 주인공과 서포트 최대 2인 편성·저장 이관
-- 첫 사건 준비에서 사건·편성을 우선하고 장비·외부 접점·기록을 사용자 선택으로 펼치는 점진적 공개
-- 조사 중 HQ 중단·재개
-- 세 사건의 조사·판단·안정화·잔향 회수·보고서·DB
-- 저승역 장소/판단/페이지형 괴이 매뉴얼 3열 UI
-- 저승역 안정화의 `가설 → 근거 → 대응` 단계형 판단 UI와 직접 대응 폴백
-- 현장 성공과 공식 매뉴얼 승격을 분리한 후보·공식 규칙·위험 사례 기록
-- 위험 사례를 삭제하지 않고 같은 사례의 시도 횟수와 배제 근거를 보존하는 구조
-- 3×3 학습과 4×4 최종 노선 검증
-- 자동 전조형 회수와 가로 대응 카드
-- HQ 일정 비소모 일상 에피소드 3장
-- 소문시장·마도회·퇴마사 계보, 3칸 세력 의뢰 게시판
-- 초기 5인과 외부 4인 캐릭터 아트 28종
-- 플레이어 노출 안내자 명칭 `기록관 아카`; 내부 `로그` ID는 호환용 유지
-
-## CORE-VALIDATION-001 완료 범위
-
-- **1A:** 사건 오버레이 데이터 계약과 자동 예측 정답 누설 완화
-- **1B:** 전조 질문 뒤 가설·확보 근거·대응을 순서대로 선택하는 저승역 판단 UI
-- **1C:** 공식 규칙·검증 대기 후보·위험 사례의 저장, 결과 보고서, 기록국 DB 연결
-- 저장 스키마는 `mvp-039`를 유지하며 `anomaly_manual_records`가 없는 저장은 빈 기록으로 이관한다.
-- 저승역 외 사건은 기존 직접 대응 흐름과 ID·밸런스를 유지한다.
-- 기록국 DB는 왼쪽 섹션 탐색과 오른쪽 매뉴얼 상세를 독립 스크롤로 제공해 1280×720에서도 공식 규칙·후보·위험 사례를 모두 열람할 수 있다.
-
-## UX-PD-001 2A 완료 범위
-
-- 첫 신규 준비에서는 `사건`, `편성` 탭을 우선 표시한다.
-- `장비`, `외부 접점`, `기록`은 `보조 준비 도구` 버튼 한 번으로 즉시 복원된다.
-- 공개 경험은 기존 `seen_hint_ids`의 `preparation_secondary_tools_opened`를 사용하며 새 저장 필드를 추가하지 않는다.
-- 완료 보고서·해금/장착 장비·기록·소모품·수락 의뢰가 있는 진행 저장은 보조 도구를 자동 표시한다.
-- 실제 일정·편성·경제·시장·세력·기록 상태는 기존 `preparation_scene.gd`와 `GameState`가 계속 소유하고, 표시 계층은 `preparation_progressive_disclosure.gd`만 담당한다.
-- Godot AI 런타임 헬퍼는 편집기·일반 실행에서는 유지하되 headless 회귀에서는 명시적 opt-in이 없으면 Logger를 연결하지 않는다.
-
-## 프로젝트 코어·운영체계
-
-- `docs/PROJECT_CORE.md`는 승인 문서와 실제 구현을 읽기 전용 `IDENTIFIED` 상태로 분류한다. 사용자 명시 승인 없이 `CORE_CONFIRMED` 또는 `CORE_RECORDED`로 올리지 않는다.
-- Base 최신 기준은 `docs/BASE_RULES_VERSION.md` 한 곳에서 관리하며, 공용 25개 Skill은 `skills/BASE_SKILL_INDEX.json`에서 선택적으로 읽는다.
-- Base 기능 Coverage 18개와 프로젝트 분야 Skill 10개는 자동 계약 테스트로 보존한다.
-- 괴이 사건 작성은 `skills/urban-legend-investigation-case-authoring/SKILL.md`를 프로젝트 로컬 전문 Skill로 사용한다. 전조·가설·근거·대응·매뉴얼 후보·공식 규칙·위험 사례를 페어플레이 추리 계약으로 작성·검수한다.
-- 운영·스킬 동기화는 문서·테스트 범위이며 게임 코드·데이터·Scene·승인 자산·저장 스키마를 변경하지 않는다.
-
-## 승인된 다음 계획 — 아직 GitHub main 구현 완료 아님
-
-| 계획 | 상태 | 핵심 범위 | 구현 선행 관계 |
-|---|---|---|---|
-| UX-PD-001 2B | 승인 계획 / `main` 미구현 | 조사 화면의 현재 선택·근거·위험 우선, 관련 없는 시스템 요약 접기 | 2A 준비 화면 회귀와 조사 UI 상태 소유자 감사 |
-| UX-PD-001 2C | 승인 계획 / `main` 미구현 | 결과 화면의 기록 변화·다음 행동 우선 | 2B 정보 위계와 결과·DB 데이터 계약 확인 |
-| MVP-044 | Codex 전달 패키지·기획서 작성 완료 | 괴이 1~3편 상황지시문·아카 대사, AFTER/DAILY/FACTION 서사 확장 | 현재 사건·일상 ID와 저장 감사 |
-| MVP-045 | Codex 전달 패키지·기획서 작성 완료 | 관계 태그, 선택 기억, 연속 캐릭터 이벤트 | MVP-044 서사 ID·완료 상태 안정화 |
-| MVP-046 | Codex 전달 패키지·연출 기획서 작성 완료 | 공용 대화 UI, 의미 기반 표정, 컷인, 이벤트 연출, 접근성 폴백 | MVP-044 대사와 MVP-045 관계 반응의 의미 키 확인 |
-
-전달 패키지와 기획서가 존재한다는 사실은 구현 완료를 뜻하지 않는다. Codex는 대상 ZIP의 `00_README_코덱스_전달사항.md`와 `IMP-00` 사전 감사부터 진행한다.
-
-## 기획 인수인계 문서
-
-| 문서 | 확인할 내용 |
+| 항목 | 상태 |
 |---|---|
-| `docs/planning/README.md` | 읽기 순서, 문서 책임, 분야별 라우팅 |
-| `docs/planning/PROJECT_DIRECTION.md` | 프로젝트 약속, 핵심 경험, 캐릭터·세계관·시각 불변 조건 |
-| `docs/planning/NARRATIVE_CONTENT_PLAN.md` | 사건 대사, 일상·후일담·세력, 관계 태그와 데이터 경계 |
-| `docs/planning/ART_PRESENTATION_PLAN.md` | 아트 방향, 표정 의미 키, 컷인, 대화 UI, 접근성 |
-| `docs/planning/ROADMAP_AND_HANDOFF.md` | MVP-044~046 진입·완료 기준과 인수인계 절차 |
-| `docs/planning/REFERENCE_CASES.md` | 적용한 벤치마킹·내부 사례의 관찰·적용·제외·검증 |
+| 사용자 승인 | 2026-07-23 |
+| 코어 상태 | `CORE_RECORDED` |
+| 적대적 설계 검토 | `CORE_STRESS_TESTED` |
+| 구현 상태 | `POC_BUILD_READY` |
+| 자동 검증 | `PASSED` |
+| 문서 계약 | run #195 `success` |
+| CORE-MVP-001 검증 | run #69 `success` |
+| POC_PASSED | 미선언 — 플레이 증거 없음 |
+| 제작 확대 | 미승인 |
+| 병합 상태 | 리뷰·병합 결정 대기 |
+| CI | 재활성화 완료 |
 
-## 현재 권장 구현 순서
+사용자는 전체 원문 메시지, 신규 플레이어 행동 증거, 사전 지표를 `POC_BUILD_READY` 차단 조건에서 제외했다. 자동 계약·Godot 전체 회귀·UI 상태 계약·보호 경계 검증이 통과했으므로 `POC_BUILD_READY`를 판정한다. 플레이 증거 없이 `POC_PASSED`를 선언하지 않는다.
 
-1. Base 운영 계약과 CORE-VALIDATION-001·UX-PD-001 2A 회귀, 활성 문서 참조 감사를 기준선으로 확인한다.
-2. UX-PD-001 2B에서 조사 화면 정보 위계를 작은 end-to-end 단위로 검증한다.
-3. 2C에서 결과 화면의 기록·다음 행동 우선순위를 검증한다.
-4. 이후 대상 Codex ZIP 하나만 선택한다.
-5. `IMP-00`에서 현재 `main`, 보호 경로, 저장 호환, 기존 ID를 감사한다.
-6. 사건 콘텐츠 작업이면 로컬 사건 작성 Skill과 게임디자인/서사/QA 분야 Skill 중 필요한 책임만 선택한다.
-7. 분야별 기획서에서 플레이어 가치·금지 방향·수용 기준을 확인한다.
-8. 구현되지 않은 계획을 `구현 확인`으로 문서에 쓰지 않는다.
-9. 작은 end-to-end 단위로 구현·테스트·수동 QA한다.
-10. 완료 후 이 문서, `MVP_ROADMAP.md`, `TEST_CHECKLIST.md`, 분야별 기획서를 갱신한다.
+## CORE-MVP-001 현재 구현
 
-기본 의존 순서는 MVP-044 → MVP-045 → MVP-046이다. 단, MVP-046의 상태 비소유 공용 대화 스테이지는 기존 대사·관계 데이터를 바꾸지 않는 범위에서 선행할 수 있다.
+### 독립 데이터
 
-## 프로젝트 불변 조건
+- `data/poc/core_mvp_001/afterlife_station_poc.json`
+- 조사 장면 3개, 단서 6개, 관련 매뉴얼 3개
+- 선택지 4개, 가설 2개, 현장 검증 2개
+- 회수 패턴 3개, 고정 5턴 순서, 행동 8개
+- 정상·비용·긴급 포획 결과 3개
+- 모든 전용 ID는 통합 명세의 `poc001_` 고정 ID와 일치
 
-- 공식 기관명은 **괴이 기록국**이다.
-- 사건 완료 표기는 **안정화 상태**, 실패 기록은 **위험 사례**, 회수 대상은 **잔향**이다.
-- 최종 기록 보상은 **괴이 매뉴얼 작성·갱신**이다.
-- 괴이는 처치 대상이 아니라 규칙을 조사하고 현재 출현을 안정화할 현상이다.
-- 대사는 일상에서 풍부하게, 조사에서는 짧고 기능적으로 사용한다.
-- 요원·아카·장비·자동행동은 미확보 단서·정답·숨은 수치를 대신 제공하지 않는다.
-- 관계는 연애 호감도 숫자가 아니라 신뢰·경계·부채·경쟁·공감·보호·균열 같은 선택 기억으로 표현한다.
-- 아트·표정·컷인·UI는 상태를 표현하지만 저장·진행 결과를 대신 결정하지 않는다.
-- 저장·진행·경제·엔딩 의미 변경은 고위험이며 별도 승인과 회귀 검증이 필요하다.
+### 독립 런타임
 
-## 문서 선택
+- `CoreMvp001CaseData`: JSON 로드, 고정 ID·수량·참조·미관측 패턴·포획 규칙 검증
+- `CoreMvp001State`: 조사 배제, 가설 카드, 현장 검증, 질문 해소, 이해도, 전조, 회수 대응, 포획, 매뉴얼 delta
+- `CoreMvp001PlaytestLog`: 연속 sequence, deep copy, JSONL 내보내기, 중복 세션 시작 방지
+- `CoreMvp001Scene`: 조사·가설·현장 검증·회수·결과의 단계별 단일 패널 UI
 
-- 시작 지점: `START_HERE.md`
-- 운영 모델: `docs/OPERATING_MODEL.md`
-- Work Mode·Skill 라우팅: `docs/WORK_MODE_AND_SKILL_ROUTING.md`
-- 프로젝트 코어: `docs/PROJECT_CORE.md`
-- 기획 인수인계: `docs/planning/README.md`
-- 상세 게임 설계: `docs/GAME_DESIGN_DOCUMENT.md`
-- 프로젝트 용어·표현 원칙: `docs/PROJECT_CONTEXT.md`
-- 현재 구현 순서: `MVP_ROADMAP.md`
-- 검증 계약: `TEST_CHECKLIST.md`
-- 문서 라우터: `docs/DOCUMENTATION_MAP.md`
-- 문서 보존 규칙: `docs/DOCUMENT_LIFECYCLE.md`
-- 과거 근거: `docs/archive/README.md`
+### 플레이 계약
+
+1. 관련 매뉴얼을 선택지에 연결해 정확히 두 선택지를 배제한다.
+2. 남은 가설에 지지·반박·미해결 근거를 직접 연결한다.
+3. 무관한 근거는 제출 단계에서 거부하며 체력·위험 비용이 없다.
+4. 현장 검증 성공은 핵심 미해결 질문을 해소하고 이해도를 `understood`로 올린다.
+5. 실패는 반응 단서·피해·위험·누적 위험 사례를 남기며 정답을 자동 공개하지 않는다.
+6. 회수에서는 실제 패턴을 먼저 잠그고 현재 이해도로 전조를 해석한다.
+7. 미관측 패턴 첫 발동은 행동명·대상·범위·조건을 숨기고 범용 대응과 피해 상한 18을 제공한다.
+8. 포획 표식 3개를 5턴 이상에서 모으면 포획 창이 열린다.
+9. 결과는 회수 품질·피해 관리·지식 품질로 분리한다.
+10. 결과 비교 뒤 매뉴얼 반영 검토와 기록 확정을 별도 단계로 수행한다.
+
+### UI·접근성
+
+- 한 장면에서 현재 단계 패널만 표시
+- 단계별 `ScrollContainer`
+- 고정 Footer: 이전 단계·확인·로그 내보내기
+- 이전 단계는 읽기 전용 검토이며 선택한 근거와 가설을 보존
+- 단계 전환·Esc 뒤 첫 유효 버튼으로 포커스 복구
+- 1280×720·1920×1080에서 핵심 패널·Footer·버튼이 viewport 안에 유지
+- 텍스트로 전조·성공·위험을 전달하며 시간 제한 없음
+- F1 개발 패널에서 `CORE-MVP-001 조사→전조→포획 PoC`로 진입
+
+## 보호 경계
+
+PR #57은 다음 경로를 수정하지 않는다.
+
+- `scripts/core/game_state.gd`
+- 기존 `data/episodes/**`
+- 기존 `scripts/scenes/investigation_scene.gd`
+- 기존 `scripts/scenes/battle_scene.gd`
+- `project.godot`
+- `knowledge/base-pack/**`
+- 저장 Schema `mvp-039`
+
+PoC는 기존 저장을 읽거나 쓰지 않는다. 장면 테스트는 `TestSaveGuard`로 기존 사용자 저장을 보호하고 save path 비생성을 검증했다.
+
+## TDD와 최신 검증 증거
+
+| 단계 | 증거 | 상태 |
+|---|---|---|
+| 데이터 계약 Red | run #1, fixture 부재로 실패 | 확인 |
+| 데이터 계약 Green | fixture 추가 후 Python 계약 | PASS |
+| Godot 로더 Red | run #8, 신규 로더 부재로 실패 | 확인 |
+| 집중 테스트 run #16 | 로더 PASS, 로그 PASS, 상태 타입 경고 실패 | 원인 확인 |
+| import 회귀 실패 | run #66, import 조기 종료로 기존 미니게임 자산 미생성 | 원인 확인 |
+| import 수정 검증 | run #68, `godot --import` 적용 | PASS |
+| 최종 문서 계약 | run #195 | PASS |
+| 최종 Python 계약 | run #69 | PASS |
+| 최종 Godot import | run #69 | PASS |
+| 집중 Godot | run #69, 4/4 | PASS |
+| 전체 Godot 회귀 | run #69, 43/43 | PASS |
+| UI 상태 계약 | 1280×720·1920×1080, Esc·포커스·읽기 전용·저장 비침범 | PASS |
+| 보호 경로 diff | 기반 브랜치 대비 변경 파일 확인 | PASS |
+| PR review threads | 미해결 스레드 0 | PASS |
+
+## CI 구조
+
+- 문서 PR: Ubuntu + Python 3.12 + 문서 validator
+- 코드 PR: Ubuntu 1개 job에서 Python → Godot `--import` → 집중 테스트 → 전체 회귀
+- main/nightly: Ubuntu·Windows Python 3.11·3.12·3.13 matrix, Godot 전체 회귀는 Ubuntu 한 번
+- 모든 workflow에 ref별 `concurrency`와 `cancel-in-progress: true`
+- 실패 artifact만 7일 보존
+
+## 다음 우선순위
+
+| 순서 | 단계 | 상태 | 목적 |
+|---:|---|---|---|
+| 1 | PR #57 리뷰·병합 결정 | 대기 | `POC_BUILD_READY` 구현 검토 |
+| 2 | 선택적 플레이 검증 | 미실행 | `POC_PASSED` 여부 판단 |
+| 3 | CORE-MVP-002 승인 | 대기 | 포획·연구·괴이별 영구 지식 재사용 |
+| 4 | UX-PD-001 2B·2C / MVP-044~046 | 재매핑 대기 | CORE-MVP-001 결과 뒤 우선순위 재판정 |
+
+CORE-MVP-002는 PR #57 병합과 별도 사용자 승인 전 시작하지 않는다.
+
+## 책임 문서
+
+- 최소 코어: `docs/PROJECT_CORE.md`
+- 프로젝트 전체 상세 설계: `docs/GAME_DESIGN_DOCUMENT.md`
+- CORE-MVP-001 계약: `docs/superpowers/specs/2026-07-23-project-core-integrated-spec.md`
+- TDD 구현 계획: `docs/superpowers/plans/2026-07-23-core-mvp-001-implementation-plan.md`
+- CI 운영: `docs/CI_COST_OPTIMIZATION_AND_REENABLEMENT.md`
+- 구현 PR: #57
+- 실행 Issue: #56

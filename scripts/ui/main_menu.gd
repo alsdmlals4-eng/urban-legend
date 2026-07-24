@@ -180,6 +180,11 @@ func _build_ui() -> void:
 	scene_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	dev_content.add_child(scene_label)
 
+	_add_scene_button(
+		dev_content,
+		"CORE-MVP-001 조사→전조→포획 PoC",
+		"res://scenes/poc/core_mvp_001/core_mvp_001_scene.tscn"
+	)
 	_add_scene_button(dev_content, "조사씬 열기", "res://scenes/investigation_scene.tscn")
 	_add_scene_button(dev_content, "준비 화면 열기", GameState.SCENE_PREPARATION)
 	_add_scene_button(dev_content, "대화씬 열기", "res://scenes/dialogue_scene.tscn")

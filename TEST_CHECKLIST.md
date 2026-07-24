@@ -1,137 +1,207 @@
 # TEST_CHECKLIST
 
-> 문서 위치: `TEST_CHECKLIST.md` | 완료 QA 백업·인덱스: `docs/archive/backup/2026-07-16/COMPLETED_QA_RULES_HANDOFF_BACKUP.md`
+> 문서 위치: `TEST_CHECKLIST.md` | 상태: `docs/CURRENT_STATUS.md` | 코어: `docs/PROJECT_CORE.md` | CI 운영: `docs/CI_COST_OPTIMIZATION_AND_REENABLEMENT.md`
 
 ## 목적
 
-현재 구현 기준인 **MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A / Ver 4.2 / 저장 스키마 `mvp-039`**를 보호하면서 선택한 다음 MVP의 변경만 검증한다. 과거 완료 체크를 매번 재실행하지 않고, 변경 영향이 있는 기능의 `docs/qa/` 기록만 선택해 회귀한다.
+현행 **MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A / Ver 4.2 / `mvp-039`**를 보호하면서 PR #57의 CORE-MVP-001 독립 PoC를 검증한다. 코드 작성, 자동 검증, `POC_BUILD_READY`, 플레이 통과를 혼합하지 않는다.
 
-## 작업 전 확인
+## 현재 게이트
 
-- [ ] `docs/CURRENT_STATUS.md`에서 구현 사실과 승인 계획을 구분했다.
-- [ ] 대상 ZIP 또는 Goal의 `IMP-00` 사전 감사 범위를 확인했다.
-- [ ] 보호 경로·저장/UI 위험·변경 파일·완료 기준을 적었다.
-- [ ] 이미 완료된 Goal·QA·백업을 기본 읽기에서 제외했다.
-- [ ] 벤치마킹이 필요한 새 판단인지, 기존 근거 유지가 가능한 단순 작업인지 기록했다.
+- 구현: `POC_BUILD_READY`
+- 자동 검증: `PASSED`
+- 문서 계약: run #195 PASS
+- CORE-MVP-001 코드 계약: run #69 PASS
+- 플레이 증거: 없음
+- `POC_PASSED`: 미선언
+- 제작 확대: 미승인
+- 전체 원문 대화·신규 플레이어 행동·사전 지표는 사용자의 결정에 따라 `POC_BUILD_READY` 필수 차단 조건에서 제외
+
+## CI 재활성화
+
+- [x] 사용자가 GitHub Actions 사용 가능 상태를 알림
+- [x] PR workflow의 비용 게이트 제거
+- [x] main/nightly full matrix workflow 추가
+- [x] 같은 ref의 이전 실행을 `concurrency`로 취소
+- [x] 문서 PR·코드 PR·main/nightly 책임 분리
+- [x] Godot import는 완료를 기다리는 `--import` 사용
 
 ## 공통 자동 검증
 
-```powershell
-& "C:\Users\user\Downloads\Godot_v4.7-stable_win64.exe\Godot_v4.7-stable_win64_console.exe" --headless --path . --quit
-git diff --check
-& "C:\Users\user\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe" tools/docs/build_game_design_doc.py --build
-& "C:\Users\user\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe" tools/docs/build_game_design_doc.py --check
+### 문서 전용 PR
+
+```text
+Ubuntu
+Python 3.12
+python -m unittest tests/test_base_operating_sync.py tests/test_skill_package_integrity.py tests/test_active_document_references.py
 ```
 
-- [ ] 프로젝트 parse/load가 통과한다.
-- [ ] 변경한 JSON·씬·스크립트의 계약 테스트가 통과한다.
-- [ ] 테스트 저장은 실제 사용자 저장을 덮어쓰지 않는다.
-- [ ] GDD를 바꿨다면 Markdown과 DOCX를 재생성·검증했다.
-- [ ] 실행하지 못한 항목을 통과로 보고하지 않았다.
+- [x] run #195 PASS
+- [x] Godot·Windows·전체 Python matrix 미실행
+- [x] 실패할 때만 artifact 업로드
+- [x] artifact 7일 보존
 
-## 핵심 회귀 계약
+### 코드·데이터·Scene PR
 
-### 저장·캠페인
+```text
+Ubuntu 1개 job
+python -m unittest tests/test_core_mvp_001_data_contract.py tests/test_core_mvp_001_static_contract.py
+godot --headless --path . --import
+bash tests/run_core_mvp_001_tests.sh
+bash tests/run_godot_regression.sh
+```
 
-- [ ] `mvp-039` 저장과 `mvp-038` 이관이 유지된다.
-- [ ] 권나래가 주인공 첫 위치로 해석되고 서포트는 최대 2명이다.
-- [ ] 권나래 일정만 필요·소비하며 기존 일정·진행 중 작전이 보존된다.
-- [ ] 오전 결과 확인 전 오후 계획으로 넘어가지 않는다.
-- [ ] HQ 중단·저장·불러오기·재개로 반일이 중복 완료되지 않는다.
-- [ ] 난수·지원 시도·게시판 상태가 불러오기로 재추첨되지 않는다.
+- [x] Python과 Godot를 한 Ubuntu job에서 순차 실행
+- [x] Python 데이터·정적 계약 PASS
+- [x] Godot 4.7.1 import PASS
+- [x] 집중 테스트 `4/4` PASS
+- [x] 전체 Godot 회귀 `43/43` PASS
+- [x] 실패할 때만 로그 artifact 업로드
+- [x] 실행하지 못한 항목을 통과로 보고하지 않음
 
-### 사건·추리
+### main·nightly
 
-- [ ] 저승역·빨간 우산·폐주파수 방송국의 기존 진입과 보고서·DB가 유지된다.
-- [ ] 상황 설명·선택·짧은 결과·기록·다음 질문 흐름이 유지된다.
-- [ ] 실패가 위험 사례와 다음 판단 근거를 남긴다.
-- [ ] 현장 대응 성공과 공식 매뉴얼 승격이 분리된다.
-- [ ] 근거 부족 성공은 후보, 완전 검증은 공식 규칙, 오대응은 보존되는 위험 사례가 된다.
-- [ ] 같은 위험 사례는 중복 행 대신 시도 횟수를 갱신하고 이후 공식 승격에도 남는다.
-- [ ] 선택하지 않은 요원이 반응·관계·자동 보조에 등장하지 않는다.
-- [ ] 장비·자동행동·아카·관계 이벤트가 핵심 정답을 대신하지 않는다.
-- [ ] 괴이는 처치하지 않고 안정화 상태와 잔향 회수로 종료된다.
+- [x] Ubuntu·Windows × Python 3.11·3.12·3.13 matrix 정의
+- [x] Godot 전체 회귀는 Ubuntu에서 1회만 실행
+- [x] `push: main`, 수동 실행, 03:20 KST nightly 정의
+- [x] PR workflow와 trigger 책임 분리
+- [ ] main 병합 뒤 최초 full matrix 실제 실행 확인
 
-### UI·접근성
+## 보호 경계
 
-- [ ] 1280×720과 1920×1080에서 첫 핵심 선택·대사·상태가 화면 안에 있다.
-- [ ] 긴 한국어 문장이 잘리거나 버튼 밖으로 넘치지 않는다.
-- [ ] 키보드 포커스, Esc/닫기, 마우스 입력이 겹치지 않는다.
-- [ ] 음향·색상만으로 중요한 상태를 전달하지 않는다.
-- [ ] 기록 오버레이·컷인·표정 연출이 선택 입력과 저장 상태를 소유하지 않는다.
-- [ ] 첫 준비에서는 사건·편성이 우선 보이고 보조 준비 도구는 기능 잠금 없이 즉시 펼칠 수 있다.
-- [ ] 한 번 펼친 보조 탭과 진행 저장의 기존 콘텐츠가 재진입에서 다시 숨지 않는다.
+- [x] `scripts/core/game_state.gd` 미변경
+- [x] 기존 `data/episodes/**` 미변경
+- [x] 기존 `scripts/scenes/investigation_scene.gd` 미변경
+- [x] 기존 `scripts/scenes/battle_scene.gd` 미변경
+- [x] `project.godot` 미변경
+- [x] `knowledge/base-pack/**` 미변경
+- [x] 저장 `mvp-039`와 `mvp-038` 이관 유지
+- [x] PoC가 기존 GameState·캠페인 저장을 읽거나 쓰지 않음
+- [x] 테스트가 기존 사용자 저장을 복구함
 
-### 문서
+## CORE-MVP-001 데이터 계약
 
-- [ ] README·CURRENT_STATUS·ROADMAP·PROJECT_CONTEXT의 현재 MVP와 계획 상태가 일치한다.
-- [ ] 구현되지 않은 MVP-044~046을 `구현 확인`으로 쓰지 않았다.
-- [ ] 현행 파일 첫 부분에 위치 표시줄과 백업 경로가 있다.
-- [ ] 완료 상세를 현행 문서에 중복 누적하지 않고 `docs/qa/` 또는 날짜별 백업으로 보냈다.
-- [ ] 링크와 파일 경로가 유효하다.
-- [ ] 활성 기준 문서가 완료된 Goal·QA·리디렉션을 구현 원본으로 참조하지 않는다.
-- [ ] `tests/test_active_document_references.py`가 기준선·경로·구형 참조 감사를 통과한다.
+- [x] `contract_version == core-mvp-001-v1`
+- [x] 조사 장면 3, 단서 6, 매뉴얼 3, 선택지 4, 가설 2, 패턴 3, 행동 8
+- [x] 모든 전용 ID가 `poc001_`로 시작하고 중복 없음
+- [x] 통합 명세의 고정 ID와 정확히 일치
+- [x] `reaction_clue_id`, `resolves_question_id`, `refresh_hypothesis_id` 포함 모든 참조 존재
+- [x] 회수 순서 5턴, 미관측 패턴이 3·5턴에 출현
+- [x] 포획 표식 3개, 최소 포획 5턴, 최대 회수 8턴
+- [x] 미관측 패턴 1개, 범용 완화 행동, 최초 피해 상한 18
+- [x] `enemy_hp` 계약 없음
 
+## 조사·가설 카드
 
-## UX-PD-001 조건부 검증
+- [x] 선택지 4개와 관련 기록 3개 표시
+- [x] 올바른 기록 연결로 정확히 두 선택지 배제
+- [x] 잘못된 연결은 체력·위험·단계 변화 없음
+- [x] 배제 이유 표시
+- [x] 남은 두 가설을 플레이어가 직접 선택
+- [x] 지지·반박·미해결 근거 직접 연결
+- [x] 무관하거나 확보하지 않은 근거 제출 거부
+- [x] 잘못된 가설은 반응 단서·피해·위험 사례를 남김
+- [x] 실패 뒤 기존 가설 1개 + 변형 가설 1개 유지
+- [x] 같은 위험 사례 반복은 `attempts` 증가
 
-- [ ] 사건·편성 탭은 항상 보이고 장비·외부 접점·기록 탭의 ID·순서·내부 기능은 보존된다.
-- [ ] 신규 상태에서는 보조 탭이 접히고 `보조 준비 도구` 버튼이 외부 의뢰 자리에서 표시된다.
-- [ ] 공개 버튼 한 번으로 보조 탭과 외부 의뢰 바로가기가 즉시 복원된다.
-- [ ] 공개 상태는 기존 `seen_hint_ids`로 저장되며 새 저장 필드와 버전 증가가 없다.
-- [ ] 완료 보고서·장비·기록·장착·소모품·수락 의뢰가 있는 저장은 자동 공개된다.
-- [ ] 시장·장비·세력 의뢰·소모품·기록 데이터와 가격·보상·조건이 변경되지 않는다.
-- [ ] 1280×720과 1920×1080에서 대시보드와 탭 영역이 잘리지 않는다.
+## 이해도·미해결 질문
 
-## CORE-VALIDATION-001 조건부 검증
+- [x] `unknown → clue → likely → understood` 단계만 사용
+- [x] 가설 제출과 이해도 승격은 결정론적
+- [x] 필수 지지·반박이 갖춰져야 `likely`
+- [x] 결정적 현장 검증이 핵심 `resolves_question_id` 기록
+- [x] 필수 질문이 해소돼야 `understood`
+- [x] 해소된 질문은 unresolved 목록에서 제거
+- [x] resolved 질문은 별도 목록으로 보존
+- [x] 전조 확률은 관측한 패턴의 정보 공개만 결정
+- [x] 전조 실패는 `놈은 무언가 하려 한다.`
+- [x] 거짓 행동명·대상·범위·조건 제공 금지
 
-- [ ] 저승역 오버레이가 원본 패턴·대응 ID·순서·능력·안정도 획득량을 보존한다.
-- [ ] 가설·근거·대응 단계와 Esc 역행, 포커스, 미수집 근거 비활성화가 동작한다.
-- [ ] 대응 카드가 최고 요원 수치·가설 일치 여부·정답 추론을 미리 누설하지 않는다.
-- [ ] 공식 규칙·후보·위험 사례가 결과 화면과 기록국 DB에 같은 데이터로 표시된다.
-- [ ] `anomaly_manual_records`가 없는 기존 `mvp-039` 저장을 빈 기록으로 불러온다.
-- [ ] 저승역 외 사건은 기존 직접 대응 흐름을 유지한다.
+## 회수 전투
 
-## MVP-044 조건부 검증
+- [x] 실제 패턴을 해석 전에 고정
+- [x] `understood`에서 관측 패턴 확정 해석
+- [x] 미관측 패턴 첫 발동 정보 비공개
+- [x] 첫 발동에 범용 대응 유효
+- [x] 최초 관측 피해 상한 18, 체력 최저 1
+- [x] 첫 발동 뒤 패턴 관측 목록 등록
+- [x] 두 번째 발동에서 이해도 해석 적용
+- [x] 포획 표식을 중복 없이 축적
+- [x] 정상 포획 창은 표식 3개와 5턴 이상에서 개방
+- [x] 위험·체력·최대 턴 임계에서 긴급 포획 가능
+- [x] 승리 조건에 적 HP 0 없음
 
-MVP-044를 구현할 때만 사용한다.
+## 결과·괴이 매뉴얼
 
-- [ ] 세 사건의 기존 장면·선택·회수 ID를 보존했다.
-- [ ] 기록관 아카 대사는 확보된 정보만 말한다.
-- [ ] 서포트 요원 대사는 능력 발동·핵심 반응 순간에만 짧게 표시된다.
-- [ ] AFTER/DAILY/FACTION은 필수 정답과 엔딩 조건을 소유하지 않는다.
-- [ ] 일상 완료 전후 반일·위험·의뢰·편성이 변하지 않는다.
-- [ ] DB 기록과 저장 왕복이 중복 적용되지 않는다.
+- [x] 회수 품질·피해 관리·지식 품질 분리
+- [x] 정상·비용·긴급 포획 결과 구분
+- [x] 검증 요건 미달 시 매뉴얼 `candidate`
+- [x] 올바른 가설·근거·질문 해소·현장 검증·포획 완료 시 `verified`
+- [x] 위험 사례와 관측 패턴 보존
+- [x] `RESULT_COMPARE → MANUAL_PROMOTION → COMPLETE`
+- [x] 반영 검토와 기록 확정 분리
 
-## MVP-045 조건부 검증
+## 플레이테스트 로그
 
-MVP-045를 구현할 때만 사용한다.
+- [x] `poc_started` 세션당 1회
+- [x] 필수 이벤트 이름 정렬
+- [x] sequence 연속 증가
+- [x] payload deep copy
+- [x] JSONL 한 줄 한 객체
+- [x] 기존 save path 참조 없음
+- [x] 로그 내보내기 성공·실패 문구
 
-- [ ] 관계는 숫자형 연애 호감도가 아니라 선택 기억·태그·후속 대사로 표현된다.
-- [ ] 같은 선택을 반복해 관계 보상이나 이벤트를 중복 획득하지 않는다.
-- [ ] 관계 상태가 전투·추리 정답 보너스로 변하지 않는다.
-- [ ] 주인공–요원, 요원–요원, 외부 접점 체인이 올바른 선행 장면을 요구한다.
-- [ ] 저장·불러오기 후 선택 기억과 해금 상태가 유지된다.
+## 단계별 UI·접근성
 
-## MVP-046 조건부 검증
+- [x] `PhaseHost` 아래 현재 단계 패널만 표시
+- [x] Investigation·Hypothesis·FieldTest·Recovery·Result 패널 존재
+- [x] 각 패널 내부 별도 `ScrollContainer`
+- [x] Footer와 단계 스크롤 분리
+- [x] 이전 단계 검토 읽기 전용
+- [x] 뒤로보기 뒤 선택한 근거·가설 유지
+- [x] Esc가 상태를 되감지 않고 이전 단계 검토 실행
+- [x] 단계 전환·뒤로보기 뒤 버튼 포커스 복구
+- [x] 전조·성공·위험을 텍스트로 전달
+- [x] 시간 제한 없음
+- [x] 1280×720·1920×1080에서 핵심 패널·Footer·버튼 viewport 내 유지
+- [x] 기존 접근성 설정 비침범
+- [x] F1 개발 패널 전용 PoC 진입 버튼
+- [ ] 한국어 장문 줄바꿈·시각적 밀도에 대한 사람 눈 QA
 
-MVP-046을 구현할 때만 사용한다.
+## 현행 회귀 계약
 
-- [ ] 공용 대화 스테이지가 기존 세 사건과 일상 화면을 깨뜨리지 않는다.
-- [ ] 표정은 인덱스 직접 지정보다 의미 키를 사용하고 자산 부재 시 기본 표정으로 폴백한다.
-- [ ] 컷인은 정보 중요도에 따라 제한되며 상시 반복되지 않는다.
-- [ ] 관계 이벤트 연출이 대사 데이터·관계 상태를 중복 소유하지 않는다.
-- [ ] 연출 감소·점멸 제한·텍스트 우선 폴백을 제공한다.
-- [ ] 컷인 중 선택지·메뉴·기록 오버레이 입력 충돌이 없다.
+- [x] 기존 39개 회귀 통과
+- [x] 신규 4개 포함 전체 runner 43개 통과
+- [x] 세 사건 진입·보고서·DB 회귀 없음
+- [x] 권나래·서포트·일정·HQ·의뢰·미니게임 회귀 없음
+- [x] 기존 후보·공식 규칙·위험 사례 보존
+- [x] 아카·요원·장비·자동행동이 핵심 정답을 대체하지 않음
+
+## 선택적 플레이 연구
+
+다음은 `POC_BUILD_READY` 필수 조건이 아니며, 별도 플레이 검증 승인 뒤 사용한다.
+
+- [ ] 규칙·대응 이유 설명
+- [ ] 근거 기반 배제
+- [ ] 조사-회수 인과 체감
+- [ ] 난수 불공정 인식
+- [ ] 매뉴얼 저작감
+- [ ] 미관측 패턴 무대응 인식
+
+플레이 증거가 없으므로 현재 판정은 `POC_BUILD_READY`이며 `POC_PASSED`가 아니다.
+
+## 문서·참조 최신성
+
+- [x] CURRENT_STATUS·CURRENT_HANDOFF·MVP_ROADMAP·TEST_CHECKLIST 정합
+- [x] 구현 PR #57과 Issue #56 상태 갱신 대상 확인
+- [x] CI 운영 문서가 재활성화·concurrency·full matrix를 소유
+- [x] 실행되지 않은 검증을 완료로 기록하지 않음
+- [x] 새 책임 문서 링크와 경로 유효
 
 ## 완료 보고
 
-- 변경 파일과 이유
-- 구현 결과와 플레이어가 확인할 변화
-- 자동·수동 검증 결과
-- 미검증 항목과 위험
-- 저장·UI·데이터 호환 결과
-- 갱신한 현행 문서와 이동한 백업 위치
-- 다음 구현 진입점
-
-과거 완료 상세는 `docs/qa/`와 백업 인덱스를 참조하고 이 파일에 다시 복사하지 않는다.
+- 판정: `POC_BUILD_READY`
+- 자동 검증: run #195, run #69 PASS
+- 플레이 검증: 미실행
+- 잔여 위험: 사람 눈 UI 밀도 검토, 플레이 이해도 검증
+- 다음 단계: PR #57 리뷰·병합 결정 또는 수정
