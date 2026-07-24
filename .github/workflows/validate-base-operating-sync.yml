@@ -1,4 +1,4 @@
-name: Validate Base operating sync
+name: Validate documentation contracts
 
 on:
   pull_request:
@@ -10,55 +10,24 @@ on:
       - "README.md"
       - "MVP_ROADMAP.md"
       - "TEST_CHECKLIST.md"
-      - "docs/AI_SKILL_ADOPTION_GUIDE.md"
-      - "docs/BASE_RULES_VERSION.md"
-      - "docs/CURRENT_HANDOFF.md"
-      - "docs/CURRENT_STATUS.md"
-      - "docs/PROJECT_CORE.md"
-      - "docs/DOCUMENTATION_MAP.md"
-      - "docs/MVP_WORKFLOW_CHECKLIST.md"
-      - "docs/OPERATING_MODEL.md"
-      - "docs/WORK_MODE_AND_SKILL_ROUTING.md"
-      - "docs/planning/README.md"
-      - "docs/planning/ROADMAP_AND_HANDOFF.md"
-      - "docs/qa/**"
+      - "docs/**"
       - "skills/**"
       - "tests/test_base_operating_sync.py"
       - "tests/test_skill_package_integrity.py"
       - "tests/test_active_document_references.py"
-  push:
-    branches: [main]
-    paths:
-      - ".github/pull_request_template.md"
-      - ".github/workflows/validate-base-operating-sync.yml"
-      - "START_HERE.md"
-      - "AGENTS.md"
-      - "README.md"
-      - "MVP_ROADMAP.md"
-      - "TEST_CHECKLIST.md"
-      - "docs/AI_SKILL_ADOPTION_GUIDE.md"
-      - "docs/BASE_RULES_VERSION.md"
-      - "docs/CURRENT_HANDOFF.md"
-      - "docs/CURRENT_STATUS.md"
-      - "docs/PROJECT_CORE.md"
-      - "docs/DOCUMENTATION_MAP.md"
-      - "docs/MVP_WORKFLOW_CHECKLIST.md"
-      - "docs/OPERATING_MODEL.md"
-      - "docs/WORK_MODE_AND_SKILL_ROUTING.md"
-      - "docs/planning/README.md"
-      - "docs/planning/ROADMAP_AND_HANDOFF.md"
-      - "docs/qa/**"
-      - "skills/**"
-      - "tests/test_base_operating_sync.py"
-      - "tests/test_skill_package_integrity.py"
-      - "tests/test_active_document_references.py"
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
 
 jobs:
-  validate-base-operating-sync:
+  ubuntu-document-validation:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -72,17 +41,17 @@ jobs:
             tests/test_base_operating_sync.py \
             tests/test_skill_package_integrity.py \
             tests/test_active_document_references.py \
-            2>&1 | tee base-operating-sync-unittest.log
+            2>&1 | tee documentation-validation.log
           status=${PIPESTATUS[0]}
-          echo "$status" > base-operating-sync-exit-code.txt
+          echo "$status" > documentation-validation-exit-code.txt
           exit "$status"
-      - name: Preserve validation evidence
-        if: always()
+      - name: Preserve failure evidence
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: base-operating-sync-evidence
+          name: documentation-validation-failure
           path: |
-            base-operating-sync-unittest.log
-            base-operating-sync-exit-code.txt
+            documentation-validation.log
+            documentation-validation-exit-code.txt
           if-no-files-found: error
-          retention-days: 14
+          retention-days: 7

@@ -13,6 +13,10 @@ script_tests=(
   agent_selection_card_test
   anomaly_manual_drawer_test
   cinematic_ui_redesign_test
+  core_mvp_001_case_data_test
+  core_mvp_001_playtest_log_test
+  core_mvp_001_scene_test
+  core_mvp_001_state_test
   core_validation_database_scroll_test
   core_validation_guided_flow_test
   core_validation_manual_promotion_test
@@ -91,5 +95,5 @@ for test_name in "${scene_tests[@]}"; do
   run_test "$test_name" scene
 done
 
-echo "Godot regression suite: 39/39 test entrypoints passed"
+echo "Godot regression suite: 43/43 test entrypoints passed"
 echo "Logs: $LOG_ROOT"
