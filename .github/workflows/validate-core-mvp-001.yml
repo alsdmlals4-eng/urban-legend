@@ -1,60 +1,66 @@
-name: Apply reviewed CORE-MVP-001 state fix
+name: Validate CORE-MVP-001
 
 on:
   pull_request:
     paths:
       - ".github/workflows/validate-core-mvp-001.yml"
+      - "data/poc/core_mvp_001/**"
+      - "scripts/poc/core_mvp_001/**"
+      - "scenes/poc/core_mvp_001/**"
+      - "scripts/ui/main_menu.gd"
+      - "tests/test_core_mvp_001_data_contract.py"
+      - "tests/test_core_mvp_001_static_contract.py"
+      - "tests/core_mvp_001_*_test.gd"
+      - "tests/run_core_mvp_001_tests.sh"
+      - "tests/run_godot_regression.sh"
+  workflow_dispatch:
 
 concurrency:
-  group: apply-reviewed-core-mvp-state-fix-${{ github.ref }}
+  group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  apply-reviewed-fix:
-    if: ${{ github.event.pull_request.head.ref == 'agent/core-mvp-001-poc-20260724' }}
+  ubuntu-code-validation:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
-          ref: ${{ github.event.pull_request.head.ref }}
-          fetch-depth: 0
-      - name: Patch state contract
-        shell: bash
+          python-version: "3.12"
+      - name: Validate CORE-MVP-001 Python contracts
         run: |
-          python - <<'PY'
-          from pathlib import Path
-
-          path = Path("scripts/poc/core_mvp_001/core_mvp_001_state.gd")
-          text = path.read_text(encoding="utf-8")
-          old = '''\tif not evidence_error.is_empty():
-          \t\treturn _response(false, evidence_error, false)
-          \t_selected_hypothesis_id = hypothesis_id
-          '''
-          new = '''\tif not evidence_error.is_empty():
-          \t\treturn _response(false, evidence_error, false)
-          \tvar required_unresolved := hypothesis.get("unresolved_question_ids", []) as Array
-          \tif not _contains_all(unresolved_ids, required_unresolved):
-          \t\treturn _response(false, "필수 미해결 질문을 가설 카드에 연결해야 한다.", false)
-          \t_selected_hypothesis_id = hypothesis_id
-          '''
-          if old in text:
-              path.write_text(text.replace(old, new, 1), encoding="utf-8")
-          elif new not in text:
-              raise SystemExit("state contract target not found")
-          PY
-      - name: Commit state-only fix
-        shell: bash
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add scripts/poc/core_mvp_001/core_mvp_001_state.gd
-          if git diff --cached --quiet; then
-            echo "State fix already present."
-            exit 0
-          fi
-          git commit -m "fix: require unresolved questions in hypothesis cards"
-          git push origin HEAD:${{ github.event.pull_request.head.ref }}
+          python -m unittest \
+            tests/test_core_mvp_001_data_contract.py \
+            tests/test_core_mvp_001_static_contract.py
+      - name: Setup Godot 4.7.1
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.1
+          use-dotnet: false
+          include-templates: false
+      - name: Import project
+        run: godot --headless --path . --import
+      - name: Run focused CORE-MVP-001 tests
+        env:
+          GODOT_BIN: godot
+          GODOT_TEST_TMP: ${{ runner.temp }}/core-mvp-001-tests
+        run: bash tests/run_core_mvp_001_tests.sh
+      - name: Run full Godot regression
+        env:
+          GODOT_BIN: godot
+          GODOT_TEST_TMP: ${{ runner.temp }}/core-mvp-001-tests
+        run: bash tests/run_godot_regression.sh
+      - name: Preserve failure logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: core-mvp-001-godot-failure-logs
+          path: |
+            ${{ runner.temp }}/core-mvp-001-tests/focused-logs
+            ${{ runner.temp }}/core-mvp-001-tests/logs
+          if-no-files-found: warn
+          retention-days: 7
