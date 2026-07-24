@@ -43,7 +43,7 @@ jobs:
           use-dotnet: false
           include-templates: false
       - name: Import project
-        run: godot --headless --path . --editor --quit-after 1
+        run: godot --headless --path . --import
       - name: Run full Godot regression
         env:
           GODOT_BIN: godot
