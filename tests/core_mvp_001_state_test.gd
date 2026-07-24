@@ -44,6 +44,22 @@ func _run() -> void:
 	_expect(not irrelevant.get("ok", true), "hypothesis should reject unrelated supporting evidence")
 	_expect(state.get_snapshot().get("phase") == "HYPOTHESIS_AUTHORING", "invalid evidence must not advance phase")
 
+	var missing_question := state.submit_hypothesis(
+		"poc001_hypothesis_broadcast_blank",
+		[
+			"poc001_clue_broadcast_blank",
+			"poc001_clue_reset_timing",
+			"poc001_clue_official_identifier"
+		],
+		[
+			"poc001_clue_display_mismatch",
+			"poc001_clue_passenger_count"
+		],
+		[]
+	)
+	_expect(not missing_question.get("ok", true), "hypothesis should require its unresolved question to be authored")
+	_expect(state.get_snapshot().get("phase") == "HYPOTHESIS_AUTHORING", "missing unresolved question must not advance phase")
+
 	var submitted := state.submit_hypothesis(
 		"poc001_hypothesis_broadcast_blank",
 		[
