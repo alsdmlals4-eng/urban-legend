@@ -151,6 +151,9 @@ func submit_hypothesis(
 	)
 	if not evidence_error.is_empty():
 		return _response(false, evidence_error, false)
+	var required_unresolved := hypothesis.get("unresolved_question_ids", []) as Array
+	if not _contains_all(unresolved_ids, required_unresolved):
+		return _response(false, "필수 미해결 질문을 가설 카드에 연결해야 한다.", false)
 	_selected_hypothesis_id = hypothesis_id
 	_hypothesis_card = {
 		"hypothesis_id": hypothesis_id,
