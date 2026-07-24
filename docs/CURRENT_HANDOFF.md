@@ -2,39 +2,47 @@
 
 > 문서 위치: `docs/CURRENT_HANDOFF.md` | 상태 원본: `docs/CURRENT_STATUS.md` | 코어: `docs/PROJECT_CORE.md`
 
-이 문서는 계정·채팅·담당자 교대 시 읽는 짧은 상태다. 실제 완료 여부는 현재 브랜치·대상 PR·테스트 결과와 함께 확인한다.
+이 문서는 계정·채팅·담당자 교대 시 읽는 짧은 상태다. 실제 완료 여부는 현재 브랜치·PR #57·최신 Actions 결과와 함께 확인한다.
 
 ```yaml
-status: ACTION_REQUIRED
+status: POC_BUILD_READY
 implemented_baseline: MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A / Ver 4.2 / save mvp-039
 project_core: CORE_RECORDED
 core_review: CORE_STRESS_TESTED
-implementation_state: IMPLEMENTATION_IN_PROGRESS
-automated_verification: PENDING_ACTIONS_REENABLEMENT
-poc_build_ready: NOT_DECLARED
+implementation_state: POC_BUILD_READY
+automated_verification: PASSED
+verification_runs:
+  documentation: 195
+  core_mvp_001: 69
 poc_passed: NOT_DECLARED
+production_expansion: NOT_APPROVED
 tracking_issue:
   number: 56
   scope: CORE-MVP-001 독립 PoC
 implementation_pr:
   number: 57
-  state: draft
+  state: review_ready
   branch: agent/core-mvp-001-poc-20260724
-ci_gate:
-  variable: CI_ENABLED
-  active_when: "true"
-  current_behavior: jobs skipped without runner allocation
-remaining_required:
+ci:
+  enabled: true
+  pr_document_job: Ubuntu + Python 3.12
+  pr_code_job: Ubuntu + Python + Godot import + focused + full regression
+  full_matrix: main + nightly + manual
+verified:
   - Python 데이터·정적 계약
   - Godot 4.7.1 import
   - 집중 테스트 4/4
   - 전체 Godot 회귀 43/43
-  - 1280x720·1920x1080 UI·접근성 확인
-  - 보호 경로 diff 재확인
+  - 1280x720·1920x1080 viewport 경계
+  - Esc·포커스·읽기 전용 검토
+  - 기존 저장 비침범
+  - 보호 경로 diff
+  - 미해결 review thread 0
 current_protagonist: 권나래
 active_track:
-  - CORE-MVP-001 자동 검증과 정적 마감
+  - PR #57 리뷰·병합 결정
 queued_tracks:
+  - 선택적 CORE-MVP-001 플레이 검증
   - CORE-MVP-002 포획·연구·영구 지식
   - CORE-MVP-003 기간제 챕터·부상·세력 의뢰
   - CORE-MVP-004 히든 분기·가치관 엔딩
@@ -43,12 +51,10 @@ deferred_for_remap:
   - MVP-044
   - MVP-045
   - MVP-046
-next_action_when_actions_available:
-  - CI_ENABLED=true 설정 또는 비용 게이트 제거
-  - main/nightly full matrix workflow 추가
-  - PR #57 Python·Godot 검증 실행
-  - 최초 실패부터 수정
-  - POC_BUILD_READY 판정
+next_action:
+  - PR #57 human review
+  - merge or revision decision
+  - CORE-MVP-002 requires separate user approval
 ```
 
 ## 필수 읽기
@@ -61,13 +67,13 @@ AGENTS.md
 → docs/superpowers/plans/2026-07-23-core-mvp-001-implementation-plan.md
 → docs/CI_COST_OPTIMIZATION_AND_REENABLEMENT.md
 → Issue #56
-→ Draft PR #57
+→ PR #57
 → 실제 PoC 코드·데이터·테스트
 ```
 
 ## 현재 구현 사실
 
-- 독립 PoC 데이터·로더·상태 머신·JSONL 로그·단일 장면이 PR #57에 작성돼 있다.
+- 독립 PoC 데이터·로더·상태 머신·JSONL 로그·단계형 장면이 PR #57에 작성돼 있다.
 - F1 개발 패널에서 `CORE-MVP-001 조사→전조→포획 PoC`로 진입한다.
 - 조사 4지선다에서 매뉴얼 근거로 2개를 배제한다.
 - 남은 가설에 지지·반박·미해결 근거를 연결하고 무관 근거는 거부한다.
@@ -79,24 +85,20 @@ AGENTS.md
 - 결과 비교 뒤 매뉴얼 반영 검토와 기록 확정을 별도 상태로 처리한다.
 - PoC는 기존 `GameState`, 기존 사건 데이터, 기존 조사·회수 장면, 저장 Schema를 사용하지 않는다.
 
-## 검증 증거 경계
+## 최신 검증 증거
 
-확인된 과거 증거:
+- 문서 계약 run #195: PASS
+- Python 데이터·정적 계약 run #69: PASS
+- Godot 4.7.1 import run #69: PASS
+- 집중 테스트 run #69: 4/4 PASS
+- 전체 Godot 회귀 run #69: 43/43 PASS
+- 장면 상태 계약: 1280×720·1920×1080, Esc, 포커스, 읽기 전용 검토, 저장 비침범 PASS
+- 기반 브랜치 대비 보호 경로 변경 없음
+- PR #57 미해결 review thread 0, mergeable true
 
-- 데이터 fixture 부재 Red
-- Python 데이터 계약 Green
-- Godot 로더 부재 Red
-- 집중 run #16에서 로더·로그 PASS
-- 상태 테스트의 명시적 정수 타입 문제 확인 및 수정
+run #66의 전체 회귀 실패는 `--quit-after 1`이 자산 import 완료 전에 종료한 CI 문제였다. workflow를 Godot 4.7.1의 `--import` 명령으로 교체한 뒤 run #68과 #69에서 전체 회귀가 통과했다.
 
-최신 코드에 대해 실행되지 않은 항목:
-
-- 강화된 고정 ID·참조 계약
-- 미해결 질문 해소·매뉴얼 승격 계약
-- 단계별 UI·읽기 전용 뒤로보기
-- 최신 집중 테스트와 전체 회귀
-
-사용자가 전체 원문 대화, 신규 플레이어 행동 증거, 사전 지표를 진행 차단 조건에서 제외했다. 이 항목들을 다시 필수 게이트로 추가하지 않는다. 다만 플레이 증거 없이 `POC_PASSED`는 선언하지 않는다.
+사용자가 전체 원문 대화, 신규 플레이어 행동 증거, 사전 지표를 `POC_BUILD_READY` 차단 조건에서 제외했다. 이 항목들을 다시 필수 게이트로 추가하지 않는다. 다만 플레이 증거 없이 `POC_PASSED`는 선언하지 않는다.
 
 ## 보호할 기술 계약
 
@@ -108,18 +110,17 @@ AGENTS.md
 - 기록관 아카는 정보를 정리하지만 정답을 대신하지 않음
 - UI는 상태를 표현하며 기존 캠페인 진행을 소유하지 않음
 
-## 구현 금지선
+## 진행 금지선
 
-- Actions 검증 전 `POC_BUILD_READY`, `READY_FOR_MERGE` 선언
 - 플레이 증거 없이 `POC_PASSED` 선언
-- CORE-MVP-001 검증 전 CORE-MVP-002·지원 시스템 확장
+- 별도 승인 없이 CORE-MVP-002·지원 시스템 확장
 - 시장·세력·연구 트리·복수 챕터·대규모 서사 확장
 - 핵심 단서·정답의 확률화
 - 거짓 전조 예측
 - 미관측 패턴의 즉사·강제 중상·소프트락·영구 분기 실패
 - 기존 저장·사건·조사·회수 경로 직접 개조
 
-## 검증 뒤 갱신
+## 다음 상태 변경 시 갱신
 
 1. `docs/CURRENT_STATUS.md`
 2. `docs/CURRENT_HANDOFF.md`
@@ -127,4 +128,4 @@ AGENTS.md
 4. `TEST_CHECKLIST.md`
 5. Issue #56
 6. PR #57
-7. `docs/CI_COST_OPTIMIZATION_AND_REENABLEMENT.md` - 재활성화 상태가 바뀔 때
+7. `docs/CI_COST_OPTIMIZATION_AND_REENABLEMENT.md`
