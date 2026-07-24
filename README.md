@@ -19,9 +19,12 @@
 | 연도제 구현 | `NOT_IMPLEMENTED` |
 | 다음 트랙 | `ANNUAL-MVP-001` 계획 승인 대기 |
 | POC_PASSED | `NOT_DECLARED` |
+| Production gate | `HOLD_UNTIL_PLAYER_EVIDENCE` |
 | 제작 확대 | `NOT_APPROVED` |
 
 현재 구현에는 기존 세 사건과 CORE-MVP-001 독립 저승역 PoC가 있다. 연도제 육성 상위 루프는 승인된 설계이며 아직 구현되지 않았다.
+
+UX-PD-001 2B·2C와 기존 MVP-044~046은 폐기하지 않는다. ANNUAL-MVP 수직절편 결과에 맞춰 **재매핑**하며 현재 구현 진입점으로 사용하지 않는다.
 
 ## 새 담당자·새 AI 읽기 순서
 
@@ -50,14 +53,14 @@ docs/superpowers/specs/2026-07-25-annual-raising-visual-novel-design.md
 → TEST_CHECKLIST.md
 ```
 
-CORE-MVP-001 사건 코어를 수정할 때는 다음 과거 구현 계약도 읽는다.
+CORE-MVP-001 사건 코어 수정 시 다음 구현 계약도 읽는다.
 
 ```text
 docs/superpowers/specs/2026-07-23-project-core-integrated-spec.md
 → docs/superpowers/plans/2026-07-23-core-mvp-001-implementation-plan.md
 ```
 
-Base 공용 Skill은 `skills/BASE_SKILL_INDEX.json`에서 선택한다. 프로젝트 분야 Skill과 괴이 사건 작성 Skill은 `skills/SKILL_REGISTRY.json`이 라우팅한다.
+Base 공용 Skill은 `skills/BASE_SKILL_INDEX.json`에서 선택하고, 프로젝트 Skill은 `skills/SKILL_REGISTRY.json`이 라우팅한다.
 
 ## 제품 구조
 
@@ -110,41 +113,29 @@ Base 공용 Skill은 `skills/BASE_SKILL_INDEX.json`에서 선택한다. 프로�
 - 아트·연출: [`docs/planning/ART_PRESENTATION_PLAN.md`](docs/planning/ART_PRESENTATION_PLAN.md)
 - 점진 공개: [`docs/planning/PROGRESSIVE_DISCLOSURE_PLAN.md`](docs/planning/PROGRESSIVE_DISCLOSURE_PLAN.md)
 
-과거 Goal·QA·제안서는 기본으로 읽지 않는다. 필요한 근거만 [`docs/archive/README.md`](docs/archive/README.md)에서 선택한다.
-
 ## 프로젝트 열기
 
 1. Godot 4.7.1을 실행한다.
 2. `Import`를 누른다.
 3. 이 저장소의 `project.godot`을 선택한다.
 4. 실행하면 `scenes/main_menu.tscn`에서 시작한다.
-5. Debug 빌드에서 F1 개발 패널을 열면 CORE-MVP-001 PoC에 진입할 수 있다.
-
-## 현재 구현 플레이 흐름
-
-```text
-신규 캠페인
-→ 기존 준비·대화·조사·미니게임·회수·결과
-→ 사건 보고서·DB·다음 반일
-```
-
-이 흐름은 현행 구현선이다. 승인된 연도제 흐름은 ANNUAL-MVP-001부터 격리 PoC로 추가한다.
+5. Debug 빌드에서 F1 개발 패널로 CORE-MVP-001 PoC에 진입한다.
 
 ## 주요 구조
 
 ```text
-assets/                   배경·요원·괴이·아카·캐릭터 아트
+assets/                   아트 자산
 data/episodes/            기존 구현 사건 JSON
 data/poc/                 독립 PoC 데이터
 scenes/                   본편 Scene
 scenes/poc/               독립 PoC Scene
-scripts/core/             기존 저장 파사드와 캠페인 상태
+scripts/core/             기존 저장·캠페인 상태
 scripts/poc/              격리 PoC 런타임
 docs/planning/            방향·서사·아트·정보 위계·로드맵
 docs/superpowers/         승인 설계와 실행 계획
 docs/                     상태·코어·GDD·운영·검증
-skills/                   Base 인덱스·프로젝트 Skill
-tests/                    Python·Godot 계약·회귀 테스트
+skills/                   Base·프로젝트 Skill
+tests/                    계약·회귀 테스트
 ```
 
 ## 검증
@@ -157,13 +148,13 @@ bash tests/run_godot_regression.sh
 git diff --check
 ```
 
-실행하지 않은 검증은 통과로 보고하지 않는다. 상세 계약은 [`TEST_CHECKLIST.md`](TEST_CHECKLIST.md)를 따른다.
+실행하지 않은 검증은 통과로 보고하지 않는다.
 
 ## 다음 작업
 
-1. 연도제 정본 전환 문서 계약을 완료한다.
-2. ANNUAL-MVP-001 구현 계획을 최종 승인한다.
-3. 기존 저장과 본편을 건드리지 않는 격리 수직절편을 구현한다.
-4. 자동 계약·Godot 회귀·사람 눈 UI QA를 수행한다.
-5. 육성 선택이 사건과 연구로 연결되는지 플레이 검증한다.
-6. 결과를 `KEEP / CHANGE / RETEST / HOLD`로 판정한다.
+1. 연도제 정본 전환 문서 계약 완료
+2. ANNUAL-MVP-001 구현 계획 최종 승인
+3. 기존 저장과 본편을 건드리지 않는 격리 수직절편 구현
+4. 자동 계약·Godot 회귀·사람 눈 UI QA
+5. 육성→사건→연구 인과 플레이 검증
+6. `KEEP / CHANGE / RETEST / HOLD` 판정
