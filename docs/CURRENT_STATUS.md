@@ -1,41 +1,56 @@
 # Current Project Status
 
-> 문서 위치: `docs/CURRENT_STATUS.md` | 프로젝트 코어: `docs/PROJECT_CORE.md` | 통합 명세: `docs/superpowers/specs/2026-07-23-project-core-integrated-spec.md` | 실행 계획: `docs/superpowers/plans/2026-07-23-core-mvp-001-implementation-plan.md`
+> 문서 위치: `docs/CURRENT_STATUS.md`  
+> 프로젝트 코어: `docs/PROJECT_CORE.md`  
+> 상세 설계: `docs/GAME_DESIGN_DOCUMENT.md`  
+> 승인 설계: `docs/superpowers/specs/2026-07-25-annual-raising-visual-novel-design.md`  
+> 현재 구현 계획: `docs/superpowers/plans/2026-07-25-annual-raising-vertical-slice-implementation-plan.md`
 
-이 문서는 현재 브랜치의 구현 사실, 자동 검증, 플레이 검증을 분리한다. `POC_BUILD_READY`는 구현·계약·회귀·기계적 UI 검증이 통과했다는 뜻이며, 플레이테스트 통과나 제작 확대 승인을 뜻하지 않는다.
+이 문서는 현재 `main`의 구현 사실, 자동 검증, 플레이 검증, 승인된 미구현 설계를 분리한다. CORE-MVP-001의 `POC_BUILD_READY`는 사건 코어 구현과 자동 회귀가 준비됐다는 뜻이며, 연도제 육성 시스템 구현이나 플레이 통과를 뜻하지 않는다.
 
-## 현재 구현 기준
+## 현재 기준
 
 | 항목 | 현재 값 |
 |---|---|
-| 기존 구현 기준선 | MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A |
-| 신규 브랜치 작업 | CORE-MVP-001 독립 PoC 구현 |
+| 구현 기준선 | MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A |
 | 화면 버전 | Ver 4.2 |
-| 저장 스키마 | `mvp-039` (`mvp-038` 이관 지원) |
+| 저장 Schema | `mvp-039` (`mvp-038` 이관 지원) |
 | 엔진 | Godot 4.7.1 / GDScript |
 | 플랫폼 | PC / Steam, 16:9, 마우스·키보드 |
-| 구현 사건 | 기존 3사건 + 독립 저승역 CORE-MVP-001 PoC |
 | 주인공 | 권나래 고정 |
-| 구현 PR | PR #57 |
-| 실행 추적 | Issue #56 |
+| 사건 코어 | CORE-MVP-001 `POC_BUILD_READY` |
+| 사건 코어 main 통합 | PR #55 / commit `8d0bf91a2e31538d3c0f142c800a84e8e3693889` |
+| 연도제 설계 | `APPROVED_DESIGN_BASELINE` |
+| 설계 PR | #58, #59 merged |
+| 계획 PR | #60 merged |
+| 연도제 구현 | `NOT_IMPLEMENTED` |
+| POC_PASSED | `NOT_DECLARED` |
+| 현재 작업 | 정본 전환과 ANNUAL-MVP-001 계획 |
+| 제작 확대 | `NOT_APPROVED` |
 
-## 프로젝트 코어와 구현 상태
+## 병합 이력 정정
 
-| 항목 | 상태 |
-|---|---|
-| 사용자 승인 | 2026-07-23 |
-| 코어 상태 | `CORE_RECORDED` |
-| 적대적 설계 검토 | `CORE_STRESS_TESTED` |
-| 구현 상태 | `POC_BUILD_READY` |
-| 자동 검증 | `PASSED` |
-| 문서 계약 | run #195 `success` |
-| CORE-MVP-001 검증 | run #69 `success` |
-| POC_PASSED | 미선언 — 플레이 증거 없음 |
-| 제작 확대 | 미승인 |
-| 병합 상태 | 리뷰·병합 결정 대기 |
-| CI | 재활성화 완료 |
+- PR #57은 PR #55의 head 브랜치에 병합됐다.
+- PR #55가 `main`에 squash merge되며 CORE-MVP-001 구현과 코어 문서가 통합됐다.
+- Issue #56은 완료 상태다.
+- CORE-MVP-001은 `main`에서 F1 개발 패널로 실행 가능하다.
+- 플레이 증거가 없으므로 `POC_PASSED`는 선언하지 않는다.
+- PR #58은 연도제 육성·텍스트 노벨 통합 설계를 추가했다.
+- PR #59는 해당 설계의 사용자 승인을 `APPROVED_DESIGN_BASELINE / NOT_IMPLEMENTED`로 기록했다.
+- PR #60은 정본 전환 계획과 ANNUAL-MVP-001 구현 계획을 추가했다.
 
-사용자는 전체 원문 메시지, 신규 플레이어 행동 증거, 사전 지표를 `POC_BUILD_READY` 차단 조건에서 제외했다. 자동 계약·Godot 전체 회귀·UI 상태 계약·보호 경계 검증이 통과했으므로 `POC_BUILD_READY`를 판정한다. 플레이 증거 없이 `POC_PASSED`를 선언하지 않는다.
+## 프로젝트 코어와 설계 상태
+
+| 구분 | 상태 | 의미 |
+|---|---|---|
+| 최소 제품 코어 | `CORE_RECORDED` | 권나래·규칙 추리·미니게임·회수·매뉴얼 보호 계약 |
+| 연도제 설계 | `APPROVED_DESIGN_BASELINE` | 육성·텍스트 노벨·사건 이중 코어 승인 |
+| 사건 코어 구현 | `POC_BUILD_READY` | 코드·계약·회귀·기계적 UI 검증 통과 |
+| 연도제 상위 루프 | `NOT_IMPLEMENTED` | 문서만 승인됐으며 런타임 없음 |
+| 자동 문서 검증 | 전환 PR에서 실행 | 정본 간 상태·경로·어휘 검사 |
+| 사건 코어 플레이 검증 | `NOT_RUN` | 신규 플레이어 행동 증거 없음 |
+| POC_PASSED | `NOT_DECLARED` | 플레이 증거 없이 선언 금지 |
+| 제작 확대 | `NOT_APPROVED` | ANNUAL-MVP-001 검증 뒤 판정 |
 
 ## CORE-MVP-001 현재 구현
 
@@ -46,97 +61,124 @@
 - 선택지 4개, 가설 2개, 현장 검증 2개
 - 회수 패턴 3개, 고정 5턴 순서, 행동 8개
 - 정상·비용·긴급 포획 결과 3개
-- 모든 전용 ID는 통합 명세의 `poc001_` 고정 ID와 일치
 
 ### 독립 런타임
 
-- `CoreMvp001CaseData`: JSON 로드, 고정 ID·수량·참조·미관측 패턴·포획 규칙 검증
-- `CoreMvp001State`: 조사 배제, 가설 카드, 현장 검증, 질문 해소, 이해도, 전조, 회수 대응, 포획, 매뉴얼 delta
-- `CoreMvp001PlaytestLog`: 연속 sequence, deep copy, JSONL 내보내기, 중복 세션 시작 방지
-- `CoreMvp001Scene`: 조사·가설·현장 검증·회수·결과의 단계별 단일 패널 UI
+- `CoreMvp001CaseData`: JSON 로드와 참조 무결성 검증
+- `CoreMvp001State`: 배제, 가설, 검증, 이해도, 전조, 대응, 포획, 매뉴얼 delta
+- `CoreMvp001PlaytestLog`: JSONL 플레이 이벤트 기록
+- `CoreMvp001Scene`: 조사→가설→검증→회수→결과의 단일 패널 UI
 
-### 플레이 계약
+### 보호된 사건 코어 계약
 
-1. 관련 매뉴얼을 선택지에 연결해 정확히 두 선택지를 배제한다.
-2. 남은 가설에 지지·반박·미해결 근거를 직접 연결한다.
-3. 무관한 근거는 제출 단계에서 거부하며 체력·위험 비용이 없다.
-4. 현장 검증 성공은 핵심 미해결 질문을 해소하고 이해도를 `understood`로 올린다.
-5. 실패는 반응 단서·피해·위험·누적 위험 사례를 남기며 정답을 자동 공개하지 않는다.
-6. 회수에서는 실제 패턴을 먼저 잠그고 현재 이해도로 전조를 해석한다.
-7. 미관측 패턴 첫 발동은 행동명·대상·범위·조건을 숨기고 범용 대응과 피해 상한 18을 제공한다.
-8. 포획 표식 3개를 5턴 이상에서 모으면 포획 창이 열린다.
-9. 결과는 회수 품질·피해 관리·지식 품질로 분리한다.
-10. 결과 비교 뒤 매뉴얼 반영 검토와 기록 확정을 별도 단계로 수행한다.
+1. 관측 가능한 매뉴얼 근거로 정확히 두 선택지를 배제한다.
+2. 남은 가설에 지지·반박·필수 미해결 질문을 연결한다.
+3. 무관 근거 연결은 비용 없이 거부한다.
+4. 실패는 정답 대신 반응 단서·피해·위험 사례를 남긴다.
+5. 조사 결과는 회수 전투의 전조 정보 우위로 변환된다.
+6. 미관측 패턴 첫 발동은 정보 비공개·범용 대응·비가역 손실 금지를 따른다.
+7. 승리는 적 HP 0이 아니라 포획 표식과 포획 창으로 결정한다.
+8. 결과는 회수 품질·피해 관리·지식 품질로 분리한다.
+9. 매뉴얼 반영 검토와 기록 확정을 별도 단계로 수행한다.
+10. 기존 본편 저장을 읽거나 쓰지 않는다.
 
-### UI·접근성
+## 최신 검증 증거
 
-- 한 장면에서 현재 단계 패널만 표시
-- 단계별 `ScrollContainer`
-- 고정 Footer: 이전 단계·확인·로그 내보내기
-- 이전 단계는 읽기 전용 검토이며 선택한 근거와 가설을 보존
-- 단계 전환·Esc 뒤 첫 유효 버튼으로 포커스 복구
-- 1280×720·1920×1080에서 핵심 패널·Footer·버튼이 viewport 안에 유지
-- 텍스트로 전조·성공·위험을 전달하며 시간 제한 없음
-- F1 개발 패널에서 `CORE-MVP-001 조사→전조→포획 PoC`로 진입
+CORE-MVP-001 병합 전 검증:
 
-## 보호 경계
-
-PR #57은 다음 경로를 수정하지 않는다.
-
-- `scripts/core/game_state.gd`
-- 기존 `data/episodes/**`
-- 기존 `scripts/scenes/investigation_scene.gd`
-- 기존 `scripts/scenes/battle_scene.gd`
-- `project.godot`
-- `knowledge/base-pack/**`
-- 저장 Schema `mvp-039`
-
-PoC는 기존 저장을 읽거나 쓰지 않는다. 장면 테스트는 `TestSaveGuard`로 기존 사용자 저장을 보호하고 save path 비생성을 검증했다.
-
-## TDD와 최신 검증 증거
-
-| 단계 | 증거 | 상태 |
+| 검증 | 증거 | 상태 |
 |---|---|---|
-| 데이터 계약 Red | run #1, fixture 부재로 실패 | 확인 |
-| 데이터 계약 Green | fixture 추가 후 Python 계약 | PASS |
-| Godot 로더 Red | run #8, 신규 로더 부재로 실패 | 확인 |
-| 집중 테스트 run #16 | 로더 PASS, 로그 PASS, 상태 타입 경고 실패 | 원인 확인 |
-| import 회귀 실패 | run #66, import 조기 종료로 기존 미니게임 자산 미생성 | 원인 확인 |
-| import 수정 검증 | run #68, `godot --import` 적용 | PASS |
-| 최종 문서 계약 | run #195 | PASS |
-| 최종 Python 계약 | run #69 | PASS |
-| 최종 Godot import | run #69 | PASS |
-| 집중 Godot | run #69, 4/4 | PASS |
-| 전체 Godot 회귀 | run #69, 43/43 | PASS |
-| UI 상태 계약 | 1280×720·1920×1080, Esc·포커스·읽기 전용·저장 비침범 | PASS |
-| 보호 경로 diff | 기반 브랜치 대비 변경 파일 확인 | PASS |
-| PR review threads | 미해결 스레드 0 | PASS |
+| 문서 계약 | PR #55 run #210 | PASS |
+| Python 데이터·정적 계약 | 통합 head run #84 | PASS |
+| Godot 4.7.1 import | 통합 head run #84 | PASS |
+| 집중 CORE-MVP-001 | 4/4 | PASS |
+| 전체 Godot 회귀 | 43/43 | PASS |
+| 기계적 UI | 1280×720·1920×1080, Esc, 포커스, 읽기 전용 | PASS |
+| 저장 비침범 | save path 비생성·복구 | PASS |
+| 플레이 증거 | 없음 | NOT_RUN |
 
-## CI 구조
+현재 정본 전환은 문서 전용 작업이다. 런타임 파일이 변경되지 않으므로 Godot 검증을 새 통과로 보고하지 않는다.
 
-- 문서 PR: Ubuntu + Python 3.12 + 문서 validator
-- 코드 PR: Ubuntu 1개 job에서 Python → Godot `--import` → 집중 테스트 → 전체 회귀
-- main/nightly: Ubuntu·Windows Python 3.11·3.12·3.13 matrix, Godot 전체 회귀는 Ubuntu 한 번
-- 모든 workflow에 ref별 `concurrency`와 `cancel-in-progress: true`
-- 실패 artifact만 7일 보존
+## 승인된 연도제 제품 방향
+
+```text
+주간 일정·육성
+→ 관계·기관·연구·장비 준비
+→ 사건 징후와 출동 판단
+→ 텍스트 노벨형 조사
+→ 조작형 규칙 검증 미니게임
+→ 턴제 회수 전투
+→ 위험 사례·잔향·괴이 매뉴얼
+→ 연구·스킬·분기 정산
+→ 연도 결산·다음 연도 계승
+```
+
+- 1년 4분기
+- 주간 계획 + 중요 반일 선택
+- 기초 역량 4종, 가치 성향, 전문성
+- 피로 1개 + 상태 태그
+- 기본 장비 + 연구 모듈
+- 권나래 + 동료 최대 2명
+- 권나래만 직접 조작, 동료는 고유·공용 스킬 자동 지원
+- 기관 교육·괴이 연구로 공용 보조 스킬 획득
+- 실패 전진
+- 최종 엔딩이 아닌 연도 결산
+
+## ANNUAL-MVP-001 계획 상태
+
+`ANNUAL-MVP-001`은 아직 구현되지 않았다. 승인된 계획은 다음 독립 순환을 검증한다.
+
+```text
+3주 × 주당 3개 일정 슬롯
+→ 권나래 역량·피로·동료 신뢰 변화
+→ 2주차 자율 출동 또는 3주차 강제 출동
+→ 동료·공용 스킬·장비 모듈 준비
+→ 기존 CORE-MVP-001 사건 실행
+→ 사건 결과 반환
+→ 잔향 자료·연구 해금
+→ 분기 결산 모형
+```
+
+보호 경계:
+
+- 기존 `scripts/core/game_state.gd` 미변경
+- 기존 `data/episodes/**` 미변경
+- 기존 조사·회수 장면 미변경
+- `project.godot` 미변경
+- `knowledge/base-pack/**` 미변경
+- 저장 `mvp-039`와 `mvp-038` 이관 비침범
 
 ## 다음 우선순위
 
 | 순서 | 단계 | 상태 | 목적 |
 |---:|---|---|---|
-| 1 | PR #57 리뷰·병합 결정 | 대기 | `POC_BUILD_READY` 구현 검토 |
-| 2 | 선택적 플레이 검증 | 미실행 | `POC_PASSED` 여부 판단 |
-| 3 | CORE-MVP-002 승인 | 대기 | 포획·연구·괴이별 영구 지식 재사용 |
-| 4 | UX-PD-001 2B·2C / MVP-044~046 | 재매핑 대기 | CORE-MVP-001 결과 뒤 우선순위 재판정 |
+| 1 | 연도제 정본 전환 | 진행 | 상위 문서 권한과 상태 정렬 |
+| 2 | ANNUAL-MVP-001 계획 승인 | 대기 | 구현 수치·경계·테스트 최종 승인 |
+| 3 | 격리 수직절편 구현 | 미착수 | 육성→사건→연구 순환 구현 |
+| 4 | 자동·사람 눈 QA | 미착수 | 계약·회귀·텍스트·UI 검증 |
+| 5 | 육성→사건→연구 인과 플레이 검증 | 미실행 | 플레이어 체감 증거 수집 |
+| 6 | KEEP / CHANGE / RETEST / HOLD | 대기 | 제작 확대 여부 판정 |
 
-CORE-MVP-002는 PR #57 병합과 별도 사용자 승인 전 시작하지 않는다.
+## 상태 판정 계약
+
+```text
+canonical_migration: IN_PROGRESS
+annual_mvp_001: PLAN_PENDING_APPROVAL
+automated_document_validation: PENDING
+runtime_changes: NONE
+poc_passed: NOT_DECLARED
+production_expansion: NOT_APPROVED
+```
 
 ## 책임 문서
 
 - 최소 코어: `docs/PROJECT_CORE.md`
-- 프로젝트 전체 상세 설계: `docs/GAME_DESIGN_DOCUMENT.md`
-- CORE-MVP-001 계약: `docs/superpowers/specs/2026-07-23-project-core-integrated-spec.md`
-- TDD 구현 계획: `docs/superpowers/plans/2026-07-23-core-mvp-001-implementation-plan.md`
-- CI 운영: `docs/CI_COST_OPTIMIZATION_AND_REENABLEMENT.md`
-- 구현 PR: #57
-- 실행 Issue: #56
+- 상세 설계: `docs/GAME_DESIGN_DOCUMENT.md`
+- 현재 상태: 이 문서
+- 짧은 인수인계: `docs/CURRENT_HANDOFF.md`
+- 구현 순서: `MVP_ROADMAP.md`
+- 검증: `TEST_CHECKLIST.md`
+- 승인 설계: `docs/superpowers/specs/2026-07-25-annual-raising-visual-novel-design.md`
+- 승인 기록: `docs/superpowers/specs/2026-07-25-annual-raising-visual-novel-design-approval.md`
+- 정본 전환 계획: `docs/superpowers/plans/2026-07-25-annual-design-canonical-migration-plan.md`
+- ANNUAL-MVP-001 계획: `docs/superpowers/plans/2026-07-25-annual-raising-vertical-slice-implementation-plan.md`
