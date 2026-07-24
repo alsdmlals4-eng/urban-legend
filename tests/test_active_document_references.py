@@ -34,6 +34,10 @@ OPERATING_DOCS = [
 ]
 CORE_INTEGRATED_SPEC = ROOT / "docs/superpowers/specs/2026-07-23-project-core-integrated-spec.md"
 CORE_IMPLEMENTATION_PLAN = ROOT / "docs/superpowers/plans/2026-07-23-core-mvp-001-implementation-plan.md"
+ANNUAL_DESIGN_SPEC = ROOT / "docs/superpowers/specs/2026-07-25-annual-raising-visual-novel-design.md"
+ANNUAL_DESIGN_APPROVAL = ROOT / "docs/superpowers/specs/2026-07-25-annual-raising-visual-novel-design-approval.md"
+ANNUAL_CANONICAL_PLAN = ROOT / "docs/superpowers/plans/2026-07-25-annual-design-canonical-migration-plan.md"
+ANNUAL_VERTICAL_SLICE_PLAN = ROOT / "docs/superpowers/plans/2026-07-25-annual-raising-vertical-slice-implementation-plan.md"
 CORE_VALIDATION_QA = ROOT / "docs/qa/CORE_VALIDATION_SLICE_001.md"
 PROGRESSIVE_DISCLOSURE_QA = ROOT / "docs/qa/PROGRESSIVE_DISCLOSURE_SLICE_001.md"
 ALL_ROUTED_DOCS = ACTIVE_DOCS + OPERATING_DOCS
@@ -87,6 +91,52 @@ class ActiveDocumentReferenceTests(unittest.TestCase):
             self.assertTrue(path.is_file(), path.relative_to(ROOT))
         self.assertTrue(CORE_INTEGRATED_SPEC.is_file())
         self.assertTrue(CORE_IMPLEMENTATION_PLAN.is_file())
+
+    def test_annual_design_authority_documents_exist(self) -> None:
+        for path in (
+            ANNUAL_DESIGN_SPEC,
+            ANNUAL_DESIGN_APPROVAL,
+            ANNUAL_CANONICAL_PLAN,
+            ANNUAL_VERTICAL_SLICE_PLAN,
+        ):
+            self.assertTrue(path.is_file(), path.relative_to(ROOT))
+
+    def test_annual_design_baseline_is_canonicalized(self) -> None:
+        core = (ROOT / "docs/PROJECT_CORE.md").read_text(encoding="utf-8")
+        gdd = (ROOT / "docs/GAME_DESIGN_DOCUMENT.md").read_text(encoding="utf-8")
+        status = (ROOT / "docs/CURRENT_STATUS.md").read_text(encoding="utf-8")
+        handoff = (ROOT / "docs/CURRENT_HANDOFF.md").read_text(encoding="utf-8")
+        roadmap = (ROOT / "MVP_ROADMAP.md").read_text(encoding="utf-8")
+
+        for text in (core, gdd, status, handoff, roadmap):
+            self.assertIn("APPROVED_DESIGN_BASELINE", text)
+            self.assertIn("ANNUAL-MVP-001", text)
+
+        self.assertIn("주인공 육성 시뮬레이션 + 텍스트 노벨", core)
+        self.assertIn("연도 결산", gdd)
+        self.assertIn("POC_BUILD_READY", status)
+        self.assertIn("POC_PASSED: NOT_DECLARED", handoff)
+
+    def test_active_status_docs_do_not_claim_old_merge_wait(self) -> None:
+        current_docs = (
+            ROOT / "docs/CURRENT_STATUS.md",
+            ROOT / "docs/CURRENT_HANDOFF.md",
+            ROOT / "MVP_ROADMAP.md",
+            ROOT / "TEST_CHECKLIST.md",
+        )
+        forbidden = (
+            "PR #57 리뷰·병합 결정 대기",
+            "병합 상태 | 리뷰·병합 결정 대기",
+            "implementation_pr:\n  number: 57\n  state: review_ready",
+            "CORE-MVP-002는 PR #57 병합과 별도 사용자 승인 전 시작하지 않는다.",
+        )
+        failures: list[str] = []
+        for path in current_docs:
+            text = path.read_text(encoding="utf-8")
+            for value in forbidden:
+                if value in text:
+                    failures.append(f"{path.relative_to(ROOT)} -> {value}")
+        self.assertEqual([], failures)
 
     def test_relative_markdown_links_resolve(self) -> None:
         failures: list[str] = []
