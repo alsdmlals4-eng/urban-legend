@@ -62,5 +62,6 @@ jobs:
           path: |
             ${{ runner.temp }}/core-mvp-001-tests/focused-logs
             ${{ runner.temp }}/core-mvp-001-tests/logs
+            scripts/poc/core_mvp_001/core_mvp_001_state.gd
           if-no-files-found: warn
           retention-days: 7
