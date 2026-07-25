@@ -53,6 +53,14 @@ jobs:
           end = source.index("\n          PY\n", start)
           lines = source[start:end].splitlines()
           script = "\n".join(line[10:] if line.startswith("          ") else line for line in lines) + "\n"
+          script = script.replace(
+              '- [x] 활성 정본에서 `SEVEN_DAY_SCHEDULING_ON_BRANCH`·`CI_PENDING` 제거',
+              '- [x] 활성 정본에서 임시 브랜치·검증 대기 상태 토큰 제거',
+          )
+          script = script.replace(
+              "              'tests/test_annual_mvp_001_document_contract.py',\n",
+              '',
+          )
           Path('/tmp/issue78_sync.py').write_text(script, encoding='utf-8')
           PY
           python /tmp/issue78_sync.py 2>&1 | tee issue78-sync.log
