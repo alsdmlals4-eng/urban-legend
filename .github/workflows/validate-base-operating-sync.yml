@@ -74,6 +74,27 @@ jobs:
           fi
           python - <<'PY'
           from pathlib import Path
+
+          core_path = Path('docs/PROJECT_CORE.md')
+          core = core_path.read_text(encoding='utf-8')
+          core_marker = '- 데이터 계약은 `annual-mvp-001-v3`다.\n'
+          boundary_rule = '- 일정은 주차 경계를 넘지 못한다.\n'
+          if boundary_rule not in core:
+              if core_marker not in core:
+                  raise SystemExit('PROJECT_CORE data-contract marker not found')
+              core = core.replace(core_marker, core_marker + boundary_rule, 1)
+              core_path.write_text(core, encoding='utf-8')
+
+          protocol_path = Path('docs/PROJECT_UPDATE_PROTOCOL.md')
+          protocol = protocol_path.read_text(encoding='utf-8')
+          detail_line = '> 상세 설계 원본: `docs/GAME_DESIGN_DOCUMENT.md`  \n'
+          if detail_line not in protocol:
+              marker = '> 인수인계 원본: `docs/CURRENT_HANDOFF.md`  \n'
+              if marker not in protocol:
+                  raise SystemExit('PROJECT_UPDATE_PROTOCOL handoff marker not found')
+              protocol = protocol.replace(marker, marker + detail_line, 1)
+              protocol_path.write_text(protocol, encoding='utf-8')
+
           lines = [
               'from __future__ import annotations',
               '',
