@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://scripts/poc/annual_mvp_001/annual_mvp_001_scene.gd" id="1_annual"]
+[ext_resource type="Script" path="res://scripts/poc/annual_mvp_001/annual_mvp_001_themed_scene.gd" id="1_annual"]
 
 [node name="AnnualMvp001Scene" type="Control"]
 layout_mode = 3
