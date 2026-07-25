@@ -80,3 +80,33 @@
 - 사람 사용성·신규 플레이어 검증: `NOT_RUN`
 - `POC_PASSED`: `NOT_DECLARED`
 - 제작 확대: `NOT_APPROVED`
+
+## D-2026-07-26-ANNUAL-GENRE-BENCHMARK — 유사 장르 비교와 개선 후보
+
+- 상태: `BENCHMARK_RESEARCH_COMPLETE / RECOMMENDED_FOR_REVIEW`
+- 추적: Issue #86
+- 비교 대상: Persona 5 Royal, I Was a Teenage Exocolonist, Long Live the Queen, Citizen Sleeper, WORLD OF HORROR, The Case of the Golden Idol, Return of the Obra Dinn, PARANORMASIGHT, Strange Horticulture.
+- 결론: 현재 4주×7일·시스템 우선 구조는 유지한다.
+- P0 검토 후보:
+  - 일정 결과 미리보기
+  - 사건 징후 시계
+  - 관측·가설·반박 분리 보드
+  - 주간 인과 요약
+  - 지난주 복사·템플릿·실행 취소
+  - 동료 지원 적격·확률·준비도 공개
+  - 연구·괴이 매뉴얼 상호 링크
+- 명시적 제외:
+  - 핵심 단서 무작위 출현
+  - 사건 실패 시 전체 초기화
+  - 주사위 중심 행동 성패
+  - 회차 기억 전용 필수 정답
+  - 숨은 임계치 즉사
+  - 동료의 자동 정답 제공
+- 책임 원본:
+  - `docs/research/2026-07-26-genre-benchmark.md`
+  - `docs/planning/ANNUAL_BENCHMARK_RECOMMENDATIONS.md`
+- 기존 승인 설계 변경: 없음
+- 구현 승인: `NOT_GRANTED`
+- 사람 사용성·신규 플레이어 검증: `NOT_RUN`
+- `POC_PASSED`: `NOT_DECLARED`
+- 제작 확대: `NOT_APPROVED`
