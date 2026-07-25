@@ -1,0 +1,90 @@
+--- a/scripts/poc/annual_mvp_001/annual_mvp_001_state.gd
++++ b/scripts/poc/annual_mvp_001/annual_mvp_001_state.gd
+@@ -321,6 +321,100 @@
+ 	_phase = "COMPLETE"
+ 	return _response(true, "", true, [{"event": "annual_mvp_001_completed"}])
+ 
+ 
++func build_save_payload() -> Dictionary:
++	if _phase == "INCIDENT_ACTIVE":
++		return {}
++	if _phase == "BOOT":
++		return {}
++	return {
++		"save_version": "annual-mvp-001-save-v1",
++		"state": get_snapshot()
++	}
++
++
++func restore(config: Dictionary, payload: Dictionary) -> Dictionary:
++	if String(payload.get("save_version", "")) != "annual-mvp-001-save-v1":
++		return _response(false, "지원하지 않는 연도제 저장 버전이다.", false)
++	var saved_value: Variant = payload.get("state")
++	if typeof(saved_value) != TYPE_DICTIONARY:
++		return _response(false, "연도제 저장 상태가 없다.", false)
++	var saved := saved_value as Dictionary
++	var saved_phase := String(saved.get("phase", ""))
++	var allowed_phases := [
++		"WEEK_PLANNING",
++		"WEEK_RESULT",
++		"DEPLOYMENT_DECISION",
++		"PREPARATION",
++		"INCIDENT_RESULT",
++		"POST_INCIDENT_RESEARCH",
++		"QUARTER_SUMMARY",
++		"COMPLETE"
++	]
++	if not allowed_phases.has(saved_phase):
++		return _response(false, "저장할 수 없는 연도제 단계다.", false)
++	var started := start(config, int(saved.get("run_seed", 2001)))
++	if not bool(started.get("ok", false)):
++		return started
++	_phase = saved_phase
++	_week = int(saved.get("week", 1))
++	_planned_activity_ids = _string_array(saved.get("planned_activity_ids", []))
++	_last_week_result = (saved.get("last_week_result", {}) as Dictionary).duplicate(true)
++	_competencies = (saved.get("competencies", {}) as Dictionary).duplicate(true)
++	_fatigue = clampi(int(saved.get("fatigue", 0)), 0, 100)
++	_institution_support = clampi(int(saved.get("institution_support", 0)), 0, 3)
++	_residual_data = maxi(0, int(saved.get("residual_data", 0)))
++	_companion_trust = (saved.get("companion_trust", {}) as Dictionary).duplicate(true)
++	_research_progress = (saved.get("research_progress", {}) as Dictionary).duplicate(true)
++	_completed_research_ids = _string_array(saved.get("completed_research_ids", []))
++	_unlocked_module_ids = _string_array(saved.get("unlocked_module_ids", []))
++	_unlocked_skill_ids = _string_array(saved.get("unlocked_skill_ids", []))
++	_selected_companion_id = String(saved.get("selected_companion_id", ""))
++	_selected_public_skill_id = String(saved.get("selected_public_skill_id", ""))
++	_equipped_module_ids = _string_array(saved.get("equipped_module_ids", []))
++	_deployment_risk = clampi(int(saved.get("deployment_risk", 0)), 0, 100)
++	_forced_deployment = bool(saved.get("forced_deployment", false))
++	_incident_result = (saved.get("incident_result", {}) as Dictionary).duplicate(true)
++	_manual_delta = (saved.get("manual_delta", {}) as Dictionary).duplicate(true)
++	_support_log = _dictionary_array(saved.get("support_log", []))
++	_quarter_summary = (saved.get("quarter_summary", {}) as Dictionary).duplicate(true)
++	_run_seed = int(saved.get("run_seed", 2001))
++	_refresh_institution_unlocks()
++	return _response(true, "", true, [{"event": "annual_mvp_001_restored"}])
++
++
++func _string_array(value: Variant) -> Array[String]:
++	var result: Array[String] = []
++	if typeof(value) != TYPE_ARRAY:
++		return result
++	for item in value as Array:
++		result.append(String(item))
++	return result
++
++
++func _dictionary_array(value: Variant) -> Array[Dictionary]:
++	var result: Array[Dictionary] = []
++	if typeof(value) != TYPE_ARRAY:
++		return result
++	for item in value as Array:
++		if typeof(item) == TYPE_DICTIONARY:
++			result.append((item as Dictionary).duplicate(true))
++	return result
++
++
+ func _refresh_institution_unlocks() -> void:
+ 	for value in _config.get("support_skills", []) as Array:
+ 		var skill := value as Dictionary
