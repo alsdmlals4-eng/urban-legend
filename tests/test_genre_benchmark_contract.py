@@ -36,8 +36,8 @@ class GenreBenchmarkContractTest(unittest.TestCase):
             "권나래 고정",
             "기존 승인 설계 변경: 없음",
             "구현 승인: 없음",
-            "POC_PASSED",
-            "NOT_APPROVED",
+            "poc_passed: NOT_DECLARED",
+            "production_expansion: NOT_APPROVED",
         ):
             self.assertIn(token, text)
 
