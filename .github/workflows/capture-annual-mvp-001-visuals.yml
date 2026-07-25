@@ -37,14 +37,14 @@ jobs:
       - name: Verify keyboard focus and Esc flow
         run: |
           set -o pipefail
-          xvfb-run -a -s "-screen 0 1280x720x24" \
+          timeout 90 xvfb-run -a -s "-screen 0 1280x720x24" \
             godot --path . --rendering-driver opengl3 \
             --script res://tests/annual_mvp_001_input_qa.gd \
             2>&1 | tee annual-input-qa.log
       - name: Verify graphical pointer flow
         run: |
           set -o pipefail
-          xvfb-run -a -s "-screen 0 1280x720x24" \
+          timeout 90 xvfb-run -a -s "-screen 0 1280x720x24" \
             godot --path . --rendering-driver opengl3 \
             --script res://tests/annual_mvp_001_pointer_qa.gd \
             2>&1 | tee annual-pointer-qa.log
@@ -54,7 +54,7 @@ jobs:
         run: |
           set -o pipefail
           mkdir -p annual-qa-artifacts
-          xvfb-run -a -s "-screen 0 1920x1080x24" \
+          timeout 120 xvfb-run -a -s "-screen 0 1920x1080x24" \
             godot --path . --rendering-driver opengl3 \
             --script res://tests/annual_mvp_001_visual_capture.gd \
             2>&1 | tee annual-visual-capture.log
