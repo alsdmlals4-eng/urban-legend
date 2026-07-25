@@ -42,7 +42,9 @@ jobs:
         if: github.head_ref == 'agent/issue-78-doc-sync'
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
+        shell: bash
         run: |
+          set +e
           python - <<'PY'
           from pathlib import Path
           source = Path('.github/workflows/issue-78-doc-sync-helper.yml').read_text(encoding='utf-8')
@@ -53,10 +55,19 @@ jobs:
           script = "\n".join(line[10:] if line.startswith("          ") else line for line in lines) + "\n"
           Path('/tmp/issue78_sync.py').write_text(script, encoding='utf-8')
           PY
-          python /tmp/issue78_sync.py
+          python /tmp/issue78_sync.py 2>&1 | tee issue78-sync.log
+          status=${PIPESTATUS[0]}
+          if [ "$status" -ne 0 ]; then
+            exit "$status"
+          fi
           python -m unittest \
             tests.test_annual_mvp_001_document_contract \
-            tests.test_project_document_sync
+            tests.test_project_document_sync \
+            2>&1 | tee -a issue78-sync.log
+          status=${PIPESTATUS[0]}
+          if [ "$status" -ne 0 ]; then
+            exit "$status"
+          fi
           if ! git diff --quiet; then
             git config user.name 'github-actions[bot]'
             git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
@@ -64,6 +75,14 @@ jobs:
             git commit -m 'docs: synchronize merged seven-day planning records'
             git push origin HEAD:${{ github.head_ref }}
           fi
+      - name: Preserve Issue 78 synchronization failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: issue-78-document-sync-failure
+          path: issue78-sync.log
+          if-no-files-found: error
+          retention-days: 7
       - name: Compile archive validator
         run: python -m py_compile tools/check_archive_governance.py tests/test_archive_retention_governance.py
       - name: Validate archive governance
@@ -91,5 +110,5 @@ jobs:
           path: |
             documentation-validation.log
             documentation-validation-exit-code.txt
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 7
