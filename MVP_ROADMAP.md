@@ -17,10 +17,11 @@
 | 연도제 설계 | `APPROVED_DESIGN_BASELINE` |
 | 정본 전환 | `COMPLETE` |
 | ANNUAL-MVP-001 | `BUILD_READY` — PR #62 / commit `88522ce08f261bce6d61a8043c64caa3b982bd47` |
-| 구현 자동 검증 | `PASSED` — ANNUAL run #63 |
-| 렌더링·텍스트 검토 | `PASSED_ON_PR_65` — visual run #15 |
-| 키보드·Esc 입력 | `PASSED_ON_PR_65` — visual run #15 |
-| 세 출동 경로 scripted QA | `PASSED_ON_PR_65` — visual run #15 |
+| 렌더링·입력 QA | `PASSED` — PR #65 / commit `b4f2e224bf7a2a6ee511c83bbbd45cd9e0b8570a` |
+| 최종 자동 검증 | `PASSED` — visual run #24, ANNUAL run #89, 문서 run #245 |
+| 렌더링·텍스트 검토 | `PASSED` |
+| 키보드·Esc 입력 | `PASSED` |
+| 세 출동 경로 scripted QA | `PASSED` |
 | 수동 마우스 QA | `NOT_RUN` |
 | 신규 플레이어 검증 | `NOT_RUN` |
 | POC_PASSED | `NOT_DECLARED` |
@@ -54,9 +55,9 @@
 ### ANNUAL-MVP-001 — 육성→사건→연구 수직절편
 
 > 구현 상태: `BUILD_READY`  
-> main 통합: PR #62 / commit `88522ce08f261bce6d61a8043c64caa3b982bd47`  
-> 구현 자동 검증: ANNUAL run #63, CORE run #131, 문서 run #234 PASS  
-> 렌더링·입력 QA: PR #65 후보 / visual run #15 PASS
+> 구현 main 통합: PR #62 / commit `88522ce08f261bce6d61a8043c64caa3b982bd47`  
+> 렌더링·입력 QA 통합: PR #65 / commit `b4f2e224bf7a2a6ee511c83bbbd45cd9e0b8570a`  
+> 최종 검증: visual run #24, ANNUAL run #89, 문서 run #245 PASS
 
 #### 구현 범위
 
@@ -96,7 +97,7 @@
 - `ui_accept` 활동 선택: PASS
 - Esc 선택 취소: PASS
 - 조기·지연·긴급 출동 세 경로 결산 도달: PASS
-- visual artifact id `8617041311`
+- 대표 visual artifact id `8617041311`
 - 시각 방향 판정: `KEEP / AMPLIFY`
 
 ## 현재 게이트
@@ -186,9 +187,9 @@
 canonical_migration: COMPLETE
 annual_mvp_001: BUILD_READY
 automated_verification: PASSED
-rendered_visual_review: PASSED_ON_PR_65
-keyboard_input_qa: PASSED_ON_PR_65
-three_route_scripted_qa: PASSED_ON_PR_65
+rendered_visual_review: PASSED
+keyboard_input_qa: PASSED
+three_route_scripted_qa: PASSED
 manual_mouse_qa: NOT_RUN
 player_validation: NOT_RUN
 annual_loop_passed: NOT_DECLARED

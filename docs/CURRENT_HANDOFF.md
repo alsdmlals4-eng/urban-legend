@@ -36,10 +36,13 @@ annual_mvp_001:
   focused_suite: 6/6
   full_regression: 49/49
   rendered_qa:
-    status: PASSED_ON_PR_65
-    visual_run: 15
-    annual_validation_run: 80
-    artifact_id: 8617041311
+    status: PASSED
+    merge_pr: 65
+    main_commit: b4f2e224bf7a2a6ee511c83bbbd45cd9e0b8570a
+    visual_run: 24
+    annual_validation_run: 89
+    document_validation_run: 245
+    representative_artifact_id: 8617041311
     keyboard_input: PASSED
     three_route_scripted: PASSED
     visual_direction: KEEP_AMPLIFY
@@ -76,6 +79,7 @@ AGENTS.md
 ## 현재 구현 사실
 
 - ANNUAL-MVP-001은 PR #62에서 `main`에 squash merge됐다.
+- 렌더링·입력 QA 수정은 PR #65에서 `main`에 squash merge됐다.
 - 별도 `AnnualMvp001State`와 전용 저장을 사용한다.
 - 3주 × 주당 3슬롯의 일정 선택이 역량·피로·기관 지원·오현 신뢰에 반영된다.
 - 2주차 자율 출동, 3주차 위험 +15 출동, 위험 +30 긴급 출동이 구현됐다.
@@ -85,7 +89,7 @@ AGENTS.md
 - 사건 결과는 잔향 자료·기관 지원·연구·공용 스킬·분기 결산으로 환류한다.
 - 분기 결산은 최종 엔딩이 아니라 후속 분기·연도 확장의 중간 결과다.
 
-## PR #65 렌더링·입력 QA
+## 렌더링·입력 QA
 
 수정·확인:
 
@@ -100,10 +104,11 @@ AGENTS.md
 - 1280×720·1920×1080 PNG 22개
 - 조기·지연·긴급 출동 세 경로 manifest
 
-검증:
+최종 검증:
 
-- Visual workflow run #15 PASS
-- ANNUAL workflow run #80 PASS
+- Visual workflow run #24 PASS
+- ANNUAL workflow run #89 PASS
+- 문서 계약 run #245 PASS
 - CORE-MVP-001 4/4 PASS
 - ANNUAL-MVP-001 6/6 PASS
 - 전체 Godot 회귀 49/49 PASS
@@ -136,9 +141,8 @@ AGENTS.md
 
 ## 다음 작업
 
-1. PR #65 리뷰·병합
-2. 수동 마우스 QA
-3. 신규 플레이어 세 경로 플레이
-4. 육성→사건→연구 인과와 지원 공정성 설명 수집
-5. 전체 루프를 `KEEP / AMPLIFY / CHANGE / RETEST / HOLD`로 판정
-6. 별도 사용자 승인 전 ANNUAL-MVP-002를 시작하지 않음
+1. 수동 마우스 QA
+2. 신규 플레이어 세 경로 플레이
+3. 육성→사건→연구 인과와 지원 공정성 설명 수집
+4. 전체 루프를 `KEEP / AMPLIFY / CHANGE / RETEST / HOLD`로 판정
+5. 별도 사용자 승인 전 ANNUAL-MVP-002를 시작하지 않음

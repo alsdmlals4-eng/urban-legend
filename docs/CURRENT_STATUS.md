@@ -23,10 +23,11 @@
 | 연도제 설계 | `APPROVED_DESIGN_BASELINE` |
 | 정본 전환 | `COMPLETE` — PR #61 |
 | ANNUAL-MVP-001 구현 | `BUILD_READY` — PR #62 / commit `88522ce08f261bce6d61a8043c64caa3b982bd47` |
-| 구현 자동 검증 | `PASSED` — ANNUAL run #63, CORE run #131, 문서 run #234 |
-| 렌더링·텍스트 검토 | `PASSED` — PR #65 후보 / visual run #15 |
-| 키보드 포커스·확인·Esc | `PASSED` — visual run #15 |
-| 세 출동 경로 scripted QA | `PASSED` — visual run #15 |
+| 렌더링·입력 QA 통합 | `RENDERED_QA_PASSED` — PR #65 / commit `b4f2e224bf7a2a6ee511c83bbbd45cd9e0b8570a` |
+| 최종 자동 검증 | `PASSED` — visual run #24, ANNUAL run #89, 문서 run #245 |
+| 렌더링·텍스트 검토 | `PASSED` |
+| 키보드 포커스·확인·Esc | `PASSED` |
+| 세 출동 경로 scripted QA | `PASSED` |
 | 수동 마우스 QA | `NOT_RUN` |
 | 신규 플레이어 검증 | `NOT_RUN` |
 | POC_PASSED | `NOT_DECLARED` |
@@ -78,9 +79,7 @@
 
 ## 렌더링·입력 QA 결과
 
-PR #65에서 실제 그래픽 Window와 Noto CJK 글꼴을 사용해 1280×720·1920×1080 화면을 생성했다.
-
-수정·확인한 항목:
+PR #65에서 실제 그래픽 Window와 Noto CJK 글꼴을 사용해 1280×720·1920×1080 화면을 생성하고 발견된 결함을 수정했다.
 
 - ANNUAL Scene에 공용 현대 오컬트 Theme과 어두운 배경 적용
 - Linux·Windows·macOS용 한글 시스템 글꼴 후보 지정
@@ -96,9 +95,10 @@ PR #65에서 실제 그래픽 Window와 Noto CJK 글꼴을 사용해 1280×720·
 
 최종 QA 증거:
 
-- Visual workflow run #15: PASS
-- visual artifact id `8617041311`
-- PR #65 전체 ANNUAL workflow run #80: PASS
+- Visual workflow run #24: PASS
+- ANNUAL workflow run #89: PASS
+- 문서 계약 run #245: PASS
+- 대표 visual artifact id `8617041311`
 - CORE focused 4/4
 - ANNUAL focused 6/6
 - 전체 Godot 회귀 49/49
@@ -141,9 +141,8 @@ PR #65에서 실제 그래픽 Window와 Noto CJK 글꼴을 사용해 1280×720·
 
 ## 다음 게이트
 
-1. PR #65 리뷰·병합
-2. 실제 포인터를 사용한 수동 마우스 QA
-3. 신규 플레이어의 조기·지연·긴급 출동 경로 플레이
-4. 육성→사건→연구 인과와 동료 자동 지원 공정성 설명 수집
-5. 전체 루프를 `KEEP / AMPLIFY / CHANGE / RETEST / HOLD`로 판정
-6. 별도 사용자 승인 전 ANNUAL-MVP-002와 제작 확대 시작 금지
+1. 실제 포인터를 사용한 수동 마우스 QA
+2. 신규 플레이어의 조기·지연·긴급 출동 경로 플레이
+3. 육성→사건→연구 인과와 동료 자동 지원 공정성 설명 수집
+4. 전체 루프를 `KEEP / AMPLIFY / CHANGE / RETEST / HOLD`로 판정
+5. 별도 사용자 승인 전 ANNUAL-MVP-002와 제작 확대 시작 금지
