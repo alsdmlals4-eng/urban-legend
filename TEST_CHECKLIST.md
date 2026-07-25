@@ -3,8 +3,7 @@
 > 문서 위치: `TEST_CHECKLIST.md`  
 > 상태: `docs/CURRENT_STATUS.md`  
 > 코어: `docs/PROJECT_CORE.md`  
-> 로드맵: `MVP_ROADMAP.md`  
-> 렌더링 QA: `docs/qa/2026-07-25-annual-mvp-001-rendered-qa.md`
+> 로드맵: `MVP_ROADMAP.md`
 
 ## 현재 기준
 
