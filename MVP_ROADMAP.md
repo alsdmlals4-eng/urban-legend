@@ -3,7 +3,8 @@
 > 상태 원본: `docs/CURRENT_STATUS.md`  
 > 프로젝트 코어: `docs/PROJECT_CORE.md`  
 > 최신 시간 설계: `docs/superpowers/specs/2026-07-25-annual-mvp-001-seven-day-scheduling-design.md`  
-> 최신 구현 계획: `docs/superpowers/plans/2026-07-25-annual-mvp-001-seven-day-scheduling-implementation-plan.md`
+> 확장 마스터 설계: `docs/superpowers/specs/2026-07-26-annual-expansion-master-design.md`  
+> 임시 데이터 기준선: `docs/planning/ANNUAL_PROVISIONAL_DATA_BASELINE.md`
 
 ## 현재 기준
 
@@ -18,6 +19,10 @@
 | 4주 보정 | `MERGED / AUTOMATED_QA_PASSED` — PR #70 |
 | 7일 주간 계약 | `APPROVED / COMPLETE` — Issue #75 |
 | 7일 주간 구현 | `MERGED / AUTOMATED_QA_PASSED` — PR #76 / commit `57c1f3d92e0fdae658826a23e5c2326fe9efe478` |
+| 확장 순서 | `APPROVED_SEQUENCE` — Issue #84 |
+| 확장 세부 데이터 | `PROVISIONAL_BASELINE` |
+| ANNUAL-MVP-002 설계 | `READY_FOR_USER_REVIEW` |
+| ANNUAL-MVP-002 구현 | `NOT_STARTED` |
 | 사람 사용성 QA | `NOT_RUN` |
 | 신규 플레이어 검증 | `NOT_RUN` |
 | POC_PASSED | `NOT_DECLARED` |
@@ -30,7 +35,8 @@
 - 성장과 동료 지원은 핵심 정답·가설·이해도·포획 조건을 변경하지 않는다.
 - 자동 회귀 통과만으로 `POC_PASSED`나 제작 확대를 선언하지 않는다.
 - 기획·구현·병합 상태 변경은 `docs/PROJECT_UPDATE_PROTOCOL.md`의 동기화 매트릭스를 따른다.
-- 충돌 시 최신 사용자 승인 7일 설계 → 승인 계획 → 활성 정본 → PR #70의 4주×3슬롯 → 기존 3주 구현 순서로 해석한다.
+- 충돌 시 최신 사용자 승인 7일 설계 → 승인 확장 순서 → 활성 정본 → PR #70의 4주×3슬롯 → 기존 3주 구현 순서로 해석한다.
+- `PROVISIONAL_BASELINE` 수치는 플레이 검증을 위한 시작값이며 기존 `FIXED_CONTRACT`를 대체하지 않는다.
 
 ## 완료·보존 자산
 
@@ -95,6 +101,42 @@
 - [x] PR #77 상태 원본 병합 — commit `229c74a80b8aefd71d16befb95758f4dcc7f591f`
 - [x] Issue #75 completed
 
+## 확장 기획 기준선 — 승인, 구현 미착수
+
+승인된 순서:
+
+```text
+ANNUAL-MVP-002 동료·장비·연구 조합
+→ 일정·상태·회복 확장
+→ ANNUAL-MVP-003 1분기 운영
+→ 사건 콘텐츠 제작 규격
+→ 관계·동료·선택적 로맨스 연간 구조
+→ 조작형 규칙 검증 미니게임 규격
+→ ANNUAL-MVP-004 1년 캠페인·결산·계승
+```
+
+책임 원본:
+
+- `docs/superpowers/specs/2026-07-26-annual-expansion-master-design.md`
+- `docs/planning/ANNUAL_PROVISIONAL_DATA_BASELINE.md`
+- `docs/superpowers/specs/2026-07-26-annual-mvp-002-companion-equipment-research-design.md`
+
+세부 데이터 작성 완료 범위:
+
+- 동료 5명 기준선과 고유 스킬 5개
+- 공용 보조 스킬 8개, 준비도·보장 발동 규칙
+- 장비 6개, 모듈 12개
+- 연구 분야 4개, 노드 24개
+- 상태 8종과 회복 규칙
+- 봄 분기 핵심 1·중형 2·소형 4 사건 기준선
+- 기관 요청 6개
+- 사건 제작 데이터 규격
+- 관계 5단계와 가치 태그 4종
+- 미니게임 3종 난이도 기준
+- 연도 결산·다음 연도 계승 payload
+
+모든 신규 세부값은 `PROVISIONAL_BASELINE`이다. 구현 결합 전에 ID 충돌 감사와 사용자 spec 검토를 거친다.
+
 ## 다음 플레이 게이트
 
 - 2주차 조기 출동: 위험 0
@@ -110,27 +152,51 @@
 
 판정은 `KEEP / AMPLIFY / CHANGE / RETEST / HOLD`를 사용한다.
 
-## 후속 트랙 — 현재 시작 금지
+## 후속 트랙
 
-### ANNUAL-MVP-002
+### ANNUAL-MVP-002 — 상세 설계 검토 단계
 
 진입 조건:
 
 - Issue #75 통합 완료 — PR #76 / commit `57c1f3d92e0fdae658826a23e5c2326fe9efe478`
-- 사람 사용성 QA 완료
-- 신규 플레이어가 육성→사건→연구 인과를 설명
-- 동료 지원 공정성 확인
-- 별도 사용자 승인
+- 사용자 승인 확장 순서 — Issue #84
+- 상세 spec 사용자 검토
+- 구현 계획 별도 작성
+- 사람 사용성 QA와 신규 플레이어 검증 상태를 명시적으로 유지
 
-후보: 동료 2명, 고유 스킬 차별화, 공용 슬롯 확장, 장비·연구 조합.
+첫 구현 후보:
+
+- 동료 3명 중 최대 2명 편성
+- 고유 스킬 3개
+- 공용 보조 스킬 6개
+- 장비 3개, 모듈 6개
+- 연구 노드 8개
+- 지원 확률·준비도·보장 발동
+- 기존 CORE-MVP-001 adapter 연결
+
+### 일정·상태·회복 확장
+
+ANNUAL-MVP-002의 지원·장비·연구 데이터가 안정된 뒤 피로 외 상태, 치료, 상담, 반일 중요 이벤트를 추가한다.
 
 ### ANNUAL-MVP-003
 
-1분기 전체 일정·핵심/중형/소형 사건·관계 이벤트·기관 요청·실패 전진.
+1분기 전체 일정·핵심/중형/소형 사건·관계 이벤트·기관 요청·실패 전진. 구현은 별도 사용자 승인 전 시작하지 않는다.
+
+### 사건 콘텐츠 제작 규격
+
+사건 규모별 장면·단서·가설·전조·결말 최소 수량과 공통 데이터 schema를 구현 가능한 형태로 확정한다.
+
+### 관계·동료·선택적 로맨스
+
+업무 신뢰·개인적 유대·가치 충돌·비연애 완결을 연간 구조로 확장한다.
+
+### 조작형 규칙 검증 미니게임
+
+경로 봉쇄, 신호 동기화, 대상 식별 3종을 조사 규칙과 같은 인지 문법으로 구현한다.
 
 ### ANNUAL-MVP-004
 
-1년 4분기, 분기별 핵심 사건, 연간 관계·기관 진행, 연도 결산과 다음 연도 계승.
+1년 4분기, 분기별 핵심 사건, 연간 관계·기관 진행, 연도 결산과 다음 연도 계승. 구현은 별도 사용자 승인 전 시작하지 않는다.
 
 ## 보호 계약
 
@@ -147,6 +213,12 @@
 annual_mvp_001_seven_day_contract: APPROVED
 annual_mvp_001_seven_day_implementation: MERGED
 automated_verification: PASSED
+annual_expansion_sequence: APPROVED
+annual_expansion_provisional_data: AUTHORED
+annual_mvp_002_design: READY_FOR_USER_REVIEW
+annual_mvp_002_implementation: NOT_STARTED
+annual_mvp_003_implementation: NOT_APPROVED
+annual_mvp_004_implementation: NOT_APPROVED
 human_usability_qa: NOT_RUN
 player_validation: NOT_RUN
 annual_loop_passed: NOT_DECLARED
