@@ -186,17 +186,28 @@ func _resolve_and_apply(
 	for decision in decisions:
 		if not bool(decision.get("triggered", false)):
 			continue
+		var skill_id := String(decision.get("skill_id", ""))
+		var already_applied := false
+		for logged in _support_log:
+			if (
+				String(logged.get("event_key", "")) == event_key
+				and String(logged.get("skill_id", "")) == skill_id
+			):
+				already_applied = true
+				break
+		if already_applied:
+			continue
 		var effect := decision.get("effect", {}) as Dictionary
 		var applied: Dictionary = state.call(
 			"apply_external_support",
-			String(decision.get("skill_id", "")),
+			skill_id,
 			event_key,
 			effect
 		)
 		if not bool(applied.get("ok", false)) or not bool(applied.get("state_changed", false)):
 			continue
 		var entry := {
-			"skill_id": String(decision.get("skill_id", "")),
+			"skill_id": skill_id,
 			"skill_name": String(decision.get("skill_name", decision.get("skill_id", ""))),
 			"turn": int(snapshot_before.get("turn", 0)),
 			"pattern_id": String(snapshot_before.get("current_pattern_id", "")),
