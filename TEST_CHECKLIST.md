@@ -14,6 +14,8 @@
 - CORE-MVP-001: `POC_BUILD_READY`
 - 4주 월간 계약: `APPROVED` — Issue #69
 - 4주 구현: `MERGED / AUTOMATED_QA_PASSED` — PR #70 / commit `20a0d052e4d48863481af7c3acc53805105d6a01`
+- PROJECT_CORE·GDD 정밀 동기화: `COMPLETE` — Issue #72 / PR #73 / commit `932bc39300bb6ba7f3169b98c25d910f0e01413a`
+- GDD: v3.1
 - 사람 사용성 QA: `NOT_RUN`
 - 신규 플레이어 검증: `NOT_RUN`
 - `POC_PASSED`: `NOT_DECLARED`
@@ -32,8 +34,9 @@
 - [x] 기존 3주 QA를 삭제하지 않고 `HISTORICAL`로 보존
 - [x] `CURRENT_STATUS`·Handoff·Roadmap·Checklist 동기화
 - [x] 병합 PR·commit·CI 증거 기록
-- [ ] PROJECT_CORE와 GDD의 대규모 원문 정밀 동기화
-- [ ] GDD DOCX 재생성
+- [x] PROJECT_CORE와 GDD의 대규모 원문을 축약하지 않고 최소 diff로 정밀 동기화
+- [x] GDD DOCX 재생성·source hash 검사·11페이지 렌더 전수 확인
+- [x] DOCX 바이너리는 `.gitignore`와 활성 문서 계약에 따라 Git 비추적
 
 ## CORE-MVP-001 보존 회귀
 
@@ -41,8 +44,8 @@
 - [x] 외부 지원 허용 효과는 체력 회복·위험 완화뿐
 - [x] 이해도·가설·관측 패턴·포획 표식 변경 금지
 - [x] 기존 CORE F1 진입 유지
-- [x] CORE focused — run #101 PASS
-- [x] 전체 Godot 회귀 — run #101 PASS
+- [x] CORE focused — run #103 PASS
+- [x] 전체 Godot 회귀 — run #103 PASS
 - [ ] 신규 플레이어 사건 인과 설명
 
 ## 4주 데이터 계약
@@ -55,8 +58,8 @@
 - [x] 총 12슬롯
 - [x] 3주차 자율 출동 위험 15
 - [x] 4주차 강제 출동 위험 30
-- [x] Python 계약 — run #101 PASS
-- [x] Godot 데이터 테스트 — run #101 PASS
+- [x] Python 계약 — run #103 PASS
+- [x] Godot 데이터 테스트 — run #103 PASS
 
 ## 4주 상태 머신
 
@@ -72,7 +75,7 @@
 - [x] 4주차 결과 확인 후 `annual_forced_deployment`
 - [x] 강제 출동 `PREPARATION`, 위험 30
 - [x] 강제 경로 결산 `weeks_used=4`
-- [x] 상태 테스트 — run #101 PASS
+- [x] 상태 테스트 — run #103 PASS
 
 ## 저장·복원
 
@@ -84,7 +87,7 @@
 - [x] 사건 중 저장 금지 유지
 - [x] 본편 `GameState` 비사용
 - [x] `mvp-039`·`mvp-038` 비침범
-- [x] save test — run #101 PASS
+- [x] save test — run #103 PASS
 
 ## UI·접근성·포인터
 
@@ -96,11 +99,28 @@
 - [x] embedded CORE 확장 유지
 - [x] 키보드 포커스·`ui_accept`·Esc 유지
 - [x] 모듈 toggle typed append 수정 유지
-- [x] Scene test — run #101 PASS
+- [x] Scene test — run #103 PASS
 - [x] 키보드·그래픽 포인터 — visual run #34 PASS
 - [x] 1280×720·1920×1080 캡처 — visual run #34 PASS
 - [x] 4주차 결과·강제 출동 캡처 — visual run #34 PASS
 - [ ] 사람 손 장시간 반복 조작
+
+## GDD·DOCX 정밀 동기화
+
+- [x] PROJECT_CORE의 `NOT_IMPLEMENTED` 현재형 표기 제거
+- [x] GDD 현재 트랙의 `3주 육성` 표현을 4주 × 3슬롯로 교정
+- [x] GDD 버전 v3.1
+- [x] 2주차 위험 0·3주차 위험 15·4주차 강제 위험 30 명시
+- [x] 기존 3주 QA를 `HISTORICAL_REGRESSION_EVIDENCE`로 보존
+- [x] 결정적 DOCX 포맷 `urban-legend-gdd-index-v4`
+- [x] 번호 목록이 Markdown 원래 번호를 유지하도록 생성기 수정
+- [x] Markdown 이미지 수와 DOCX 이미지 수 동등성 검사
+- [x] DOCX source hash `b0d35778686f6321f1d2b78efe7bd43267cde5b3e0dedb7b35e7aa46ca67e5ca`
+- [x] DOCX 구조 paragraphs 311 / tables 15 / images 0
+- [x] LibreOffice PDF·PNG 11페이지 렌더
+- [x] 11페이지 글리프·표·번호·머리말·꼬리말·클리핑 전수 확인
+- [x] 문서 계약 run #255 PASS
+- [x] ANNUAL run #103 PASS
 
 ## HISTORICAL QA — 보존 증거
 
@@ -117,24 +137,26 @@
 
 ## 신규 자동 검증
 
-- [x] 문서 계약 — run #253 PASS
-- [x] Python 데이터·정적·활성 문서 계약 — run #101 PASS
-- [x] Godot 4.7.1 import — run #101 PASS
-- [x] CORE-MVP-001 focused — run #101 PASS
-- [x] ANNUAL-MVP-001 focused — run #101 PASS
-- [x] 전체 Godot 회귀 — run #101 PASS
+- [x] 문서 계약 — run #255 PASS
+- [x] Python 데이터·정적·활성 문서 계약 — run #103 PASS
+- [x] Godot 4.7.1 import — run #103 PASS
+- [x] CORE-MVP-001 focused — run #103 PASS
+- [x] ANNUAL-MVP-001 focused — run #103 PASS
+- [x] 전체 Godot 회귀 — run #103 PASS
 - [x] 키보드·포인터·화면 캡처 — run #34 PASS
 - [x] protected paths 변경 없음
 
 ## GitHub 통합
 
 - [x] Issue #69 completed
-- [x] PR #70 changed-file 감사
-- [x] PR #70 review thread 0건
-- [x] required CI 성공
 - [x] PR #70 squash merge
-- [x] main commit `20a0d052e4d48863481af7c3acc53805105d6a01`
-- [x] 상태 보정 PR 진행
+- [x] 4주 구현 main commit `20a0d052e4d48863481af7c3acc53805105d6a01`
+- [x] Issue #72 completed
+- [x] PR #73 changed-file 감사
+- [x] PR #73 review thread 0건
+- [x] PR #73 required CI 성공
+- [x] PR #73 squash merge
+- [x] 정본 문서 동기화 main commit `932bc39300bb6ba7f3169b98c25d910f0e01413a`
 
 ## 사람 플레이 검증 — 미실행
 
@@ -152,6 +174,8 @@
 ```text
 annual_mvp_001_four_week_contract: APPROVED
 annual_mvp_001_four_week_implementation: MERGED
+canonical_core_and_gdd_sync: COMPLETE
+deterministic_docx_generation_qa: PASSED
 automated_verification: PASSED
 rendered_visual_review: PASSED
 keyboard_input_qa: PASSED
