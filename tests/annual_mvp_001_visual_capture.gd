@@ -68,8 +68,8 @@ func _run_path(
 	await process_frame
 
 	await _commit_week(scene, [
+		"annual001_activity_signal_research",
 		"annual001_activity_observation_drill",
-		"annual001_activity_analysis_desk",
 		"annual001_activity_rest"
 	])
 	_scene_confirm(scene)
@@ -80,7 +80,7 @@ func _run_path(
 		_click_button(scene, "1주 더 준비")
 		await process_frame
 		await _commit_week(scene, [
-			"annual001_activity_signal_research",
+			"annual001_activity_analysis_desk",
 			"annual001_activity_field_training",
 			"annual001_activity_rest"
 		])
@@ -146,7 +146,8 @@ func _run_path(
 		"danger_cases": [] if recovery_quality == "normal_capture" else [{"id": "%s_danger" % path_id}],
 		"observed_pattern_ids": ["poc001_pattern_false_terminal"]
 	}
-	var applied: Dictionary = state.call("apply_incident_result", result, manual_delta, [])
+	var support_log: Array[Dictionary] = []
+	var applied: Dictionary = state.call("apply_incident_result", result, manual_delta, support_log)
 	if not bool(applied.get("ok", false)):
 		_failures.append("%s incident result failed: %s" % [path_id, applied.get("error", "")])
 	state.call("advance_from_incident_result")
