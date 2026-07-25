@@ -48,6 +48,10 @@ jobs:
         run: |
           set -o pipefail
           godot --headless --path . --script res://tests/annual_mvp_001_state_test.gd 2>&1 | tee annual-state.log
+      - name: Run annual support resolver test
+        run: |
+          set -o pipefail
+          godot --headless --path . --script res://tests/annual_mvp_001_support_resolver_test.gd 2>&1 | tee annual-support.log
       - name: Preserve failure evidence
         if: failure()
         uses: actions/upload-artifact@v4
@@ -57,5 +61,6 @@ jobs:
             annual-import.log
             annual-data.log
             annual-state.log
+            annual-support.log
           if-no-files-found: warn
           retention-days: 7
