@@ -57,10 +57,28 @@ jobs:
               '- [x] 활성 정본에서 `SEVEN_DAY_SCHEDULING_ON_BRANCH`·`CI_PENDING` 제거',
               '- [x] 활성 정본에서 임시 브랜치·검증 대기 상태 토큰 제거',
           )
-          script = script.replace(
-              "    'tests/test_annual_mvp_001_document_contract.py',\n",
-              '',
-          )
+          scoped_old = """scoped = [
+    'docs/PROJECT_CORE.md',
+    'docs/GAME_DESIGN_DOCUMENT.md',
+    'MVP_ROADMAP.md',
+    'TEST_CHECKLIST.md',
+    'docs/PROJECT_CONTEXT.md',
+    'docs/planning/PROJECT_DIRECTION.md',
+    'docs/planning/ROADMAP_AND_HANDOFF.md',
+    'tests/test_annual_mvp_001_document_contract.py',
+]"""
+          scoped_new = """scoped = [
+    'docs/PROJECT_CORE.md',
+    'docs/GAME_DESIGN_DOCUMENT.md',
+    'MVP_ROADMAP.md',
+    'TEST_CHECKLIST.md',
+    'docs/PROJECT_CONTEXT.md',
+    'docs/planning/PROJECT_DIRECTION.md',
+    'docs/planning/ROADMAP_AND_HANDOFF.md',
+]"""
+          if scoped_old not in script:
+              raise SystemExit('Issue 78 scoped stale-check block not found')
+          script = script.replace(scoped_old, scoped_new, 1)
           Path('/tmp/issue78_sync.py').write_text(script, encoding='utf-8')
           PY
           python /tmp/issue78_sync.py 2>&1 | tee issue78-sync.log
