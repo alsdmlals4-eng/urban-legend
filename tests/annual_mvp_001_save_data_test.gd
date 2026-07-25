@@ -5,6 +5,8 @@ const State = preload("res://scripts/poc/annual_mvp_001/annual_mvp_001_state.gd"
 const SaveData = preload("res://scripts/poc/annual_mvp_001/annual_mvp_001_save_data.gd")
 const Adapter = preload("res://scripts/poc/annual_mvp_001/annual_mvp_001_incident_adapter.gd")
 
+var _failures: Array[String] = []
+
 class FakeCoreState:
 	extends RefCounted
 	var calls: Array[Dictionary] = []
@@ -15,58 +17,77 @@ class FakeCoreState:
 func _init() -> void:
 	var config: Dictionary = Data.load_config("res://data/poc/annual_mvp_001/spring_vertical_slice.json")
 	var state := State.new()
-	assert(state.start(config, 4444)["ok"])
-	assert(state.commit_week([
+	_expect(state.start(config, 4444)["ok"], "state should start")
+	_expect(state.commit_week([
 		"annual001_activity_signal_research",
 		"annual001_activity_signal_research",
 		"annual001_activity_field_training"
-	])["ok"])
-	assert(state.acknowledge_week_result()["ok"])
-	assert(state.commit_week([
+	])["ok"], "week one should commit")
+	_expect(state.acknowledge_week_result()["ok"], "week one result should acknowledge")
+	_expect(state.commit_week([
 		"annual001_activity_companion_drill",
 		"annual001_activity_companion_drill",
 		"annual001_activity_rest"
-	])["ok"])
-	assert(state.acknowledge_week_result()["ok"])
-	assert(state.choose_deployment_decision("annual001_decision_deploy")["ok"])
-	assert(state.complete_research_project("annual001_research_signal_buffer")["ok"])
-	assert(state.configure_loadout(
+	])["ok"], "week two should commit")
+	_expect(state.acknowledge_week_result()["ok"], "week two result should acknowledge")
+	_expect(state.choose_deployment_decision("annual001_decision_deploy")["ok"], "deployment should be selected")
+	_expect(state.complete_research_project("annual001_research_signal_buffer")["ok"], "pre-incident research should complete")
+	_expect(state.configure_loadout(
 		"annual001_companion_oh_hyun",
 		"annual001_skill_emergency_cover",
 		["annual001_module_signal_buffer"]
-	)["ok"])
+	)["ok"], "loadout should configure")
 
 	var payload: Dictionary = state.build_save_payload()
-	assert(payload["save_version"] == "annual-mvp-001-save-v1")
-	assert(payload["state"]["phase"] == "PREPARATION")
-	assert(payload["state"]["run_seed"] == 4444)
+	_expect(not payload.is_empty(), "preparation should build a save payload")
+	if not payload.is_empty():
+		_expect(payload.get("save_version") == "annual-mvp-001-save-v1", "save version should match")
+		var saved_state := payload.get("state", {}) as Dictionary
+		_expect(saved_state.get("phase") == "PREPARATION", "saved phase should be preparation")
+		_expect(saved_state.get("run_seed") == 4444, "saved seed should be preserved")
+
 	var path := "user://annual_mvp_001_test.json"
 	SaveData.delete_payload(path)
-	assert(SaveData.write_payload(payload, path) == OK)
-	assert(SaveData.read_payload(path) == payload)
+	_expect(SaveData.write_payload(payload, path) == OK, "payload should write atomically")
+	var read_payload: Dictionary = SaveData.read_payload(path)
+	_expect(read_payload == payload, "read payload should equal written payload")
 
 	var first := State.new()
 	var second := State.new()
-	assert(first.restore(config, SaveData.read_payload(path))["ok"])
-	assert(second.restore(config, SaveData.read_payload(path))["ok"])
-	assert(first.get_snapshot() == state.get_snapshot())
-	assert(second.get_snapshot() == state.get_snapshot())
+	var first_restore: Dictionary = first.restore(config, read_payload)
+	var second_restore: Dictionary = second.restore(config, read_payload)
+	_expect(first_restore.get("ok", false), "first state should restore")
+	_expect(second_restore.get("ok", false), "second state should restore")
+	if bool(first_restore.get("ok", false)) and bool(second_restore.get("ok", false)):
+		_expect(first.get_snapshot() == state.get_snapshot(), "first restored snapshot should match source")
+		_expect(second.get_snapshot() == state.get_snapshot(), "second restored snapshot should match source")
+		var adapter_a := Adapter.new()
+		var adapter_b := Adapter.new()
+		_expect(adapter_a.configure(config, first.get_snapshot(), int(first.get_snapshot()["run_seed"]))["ok"], "first adapter should configure")
+		_expect(adapter_b.configure(config, second.get_snapshot(), int(second.get_snapshot()["run_seed"]))["ok"], "second adapter should configure")
+		var fake_a := FakeCoreState.new()
+		var fake_b := FakeCoreState.new()
+		var before := {"turn": 1, "current_pattern_id": "poc001_pattern_false_terminal", "observed_pattern_ids": []}
+		var decision_a: Array[Dictionary] = adapter_a.after_omen(fake_a, before, {"success": false})
+		var decision_b: Array[Dictionary] = adapter_b.after_omen(fake_b, before, {"success": false})
+		_expect(decision_a == decision_b, "same saved seed should reproduce support decision")
+		_expect(adapter_a.get_status_lines() == adapter_b.get_status_lines(), "same saved seed should reproduce support status")
 
-	var adapter_a := Adapter.new()
-	var adapter_b := Adapter.new()
-	assert(adapter_a.configure(config, first.get_snapshot(), int(first.get_snapshot()["run_seed"]))["ok"])
-	assert(adapter_b.configure(config, second.get_snapshot(), int(second.get_snapshot()["run_seed"]))["ok"])
-	var fake_a := FakeCoreState.new()
-	var fake_b := FakeCoreState.new()
-	var before := {"turn": 1, "current_pattern_id": "poc001_pattern_false_terminal", "observed_pattern_ids": []}
-	var decision_a: Array[Dictionary] = adapter_a.after_omen(fake_a, before, {"success": false})
-	var decision_b: Array[Dictionary] = adapter_b.after_omen(fake_b, before, {"success": false})
-	assert(decision_a == decision_b)
-	assert(adapter_a.get_status_lines() == adapter_b.get_status_lines())
+	_expect(state.begin_incident()["ok"], "incident should begin")
+	_expect(state.build_save_payload().is_empty(), "incident active phase must not save")
+	_expect(SaveData.delete_payload(path) == OK, "test save should delete")
+	_expect(SaveData.read_payload(path).is_empty(), "deleted save should read empty")
+	_finish()
 
-	assert(state.begin_incident()["ok"])
-	assert(state.build_save_payload().is_empty())
-	assert(SaveData.delete_payload(path) == OK)
-	assert(SaveData.read_payload(path).is_empty())
-	print("ANNUAL MVP 001 SAVE: PASS")
-	quit()
+func _expect(condition: bool, message: String) -> void:
+	if not condition:
+		_failures.append(message)
+
+func _finish() -> void:
+	if _failures.is_empty():
+		print("ANNUAL MVP 001 SAVE: PASS")
+		quit(0)
+		return
+	for failure in _failures:
+		push_error(failure)
+	quit(1)
