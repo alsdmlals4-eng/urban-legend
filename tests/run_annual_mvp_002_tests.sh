@@ -11,6 +11,7 @@ mkdir -p "$LOG_ROOT"
 script_tests=(
   annual_mvp_002_planner_test
   annual_mvp_002_state_test
+  annual_mvp_002_support_resolver_test
 )
 
 run_test() {
