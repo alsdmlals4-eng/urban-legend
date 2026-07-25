@@ -58,7 +58,7 @@ jobs:
               '- [x] 활성 정본에서 임시 브랜치·검증 대기 상태 토큰 제거',
           )
           script = script.replace(
-              "              'tests/test_annual_mvp_001_document_contract.py',\n",
+              "    'tests/test_annual_mvp_001_document_contract.py',\n",
               '',
           )
           Path('/tmp/issue78_sync.py').write_text(script, encoding='utf-8')
