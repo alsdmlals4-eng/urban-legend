@@ -45,6 +45,16 @@ func _capture_initial_planning() -> void:
 		return
 	await _capture(scene, "planning_initial", Vector2i(1280, 720))
 	await _capture(scene, "planning_initial", Vector2i(1920, 1080))
+	scene.call("debug_select_activity", "annual001_activity_field_training")
+	scene.call("debug_select_activity", "annual001_activity_field_training")
+	scene.call("debug_confirm")
+	await process_frame
+	_expect_phase(scene, "WEEK_PLANNING", "auto-rest warning stays in planning")
+	var feedback := scene.find_child("FeedbackLabel", true, false) as Label
+	if feedback == null or not feedback.text.contains("자동 휴식"):
+		_failures.append("auto-rest warning copy missing")
+	await _capture(scene, "planning_auto_rest_warning", Vector2i(1280, 720))
+	await _capture(scene, "planning_auto_rest_warning", Vector2i(1920, 1080))
 	await _free_scene(scene)
 
 
@@ -62,7 +72,8 @@ func _run_path(
 	await _commit_week(scene, [
 		"annual001_activity_signal_research",
 		"annual001_activity_companion_drill",
-		"annual001_activity_field_training"
+		"annual001_activity_rest",
+		"annual001_activity_rest"
 	])
 	_scene_confirm(scene)
 	await process_frame
@@ -70,6 +81,7 @@ func _run_path(
 	await _commit_week(scene, [
 		"annual001_activity_signal_research",
 		"annual001_activity_observation_drill",
+		"annual001_activity_rest",
 		"annual001_activity_rest"
 	])
 	_scene_confirm(scene)
@@ -82,6 +94,7 @@ func _run_path(
 		await _commit_week(scene, [
 			"annual001_activity_analysis_desk",
 			"annual001_activity_field_training",
+			"annual001_activity_rest",
 			"annual001_activity_rest"
 		])
 		_scene_confirm(scene)
@@ -98,7 +111,9 @@ func _run_path(
 		await _commit_week(scene, [
 			"annual001_activity_rest",
 			"annual001_activity_companion_drill",
-			"annual001_activity_analysis_desk"
+			"annual001_activity_analysis_desk",
+			"annual001_activity_rest",
+			"annual001_activity_rest"
 		])
 		await _capture(scene, "%s_week4_result" % path_id, Vector2i(1280, 720))
 		await _capture(scene, "%s_week4_result" % path_id, Vector2i(1920, 1080))
