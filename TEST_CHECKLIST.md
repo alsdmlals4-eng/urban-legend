@@ -8,6 +8,7 @@
 ## 현재 기준
 
 - 구현 기준선: MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A
+- 화면 버전: Ver 4.2
 - 저장 Schema: `mvp-039` (`mvp-038` 이관 지원)
 - ANNUAL save: `annual-mvp-001-save-v1`
 - CORE-MVP-001: `POC_BUILD_READY`
@@ -136,9 +137,9 @@
 
 - [x] 브랜치 `agent/annual-mvp-001-four-week-month`
 - [x] Issue #69
-- [ ] PR 생성
-- [ ] changed-file 감사
-- [ ] review thread 0건 또는 모두 해결
+- [x] PR #70 생성
+- [x] changed-file 감사
+- [x] review thread 0건
 - [ ] required CI 성공
 - [ ] squash merge
 - [ ] Issue #69 완료 처리
