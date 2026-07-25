@@ -8,8 +8,9 @@
 |---|---|
 | Base 저장소 | `alsdmlals4-eng/Base` |
 | 기준 브랜치 | `main` |
-| 기준 커밋 | `c7c1103e4a69f8fdc9ee27aa382a21288605a7fb` |
+| 기존 Base Registry 기준 커밋 | `41a20584dd2ee51d917e5c9d7cab6838e1ceba7e` |
 | 기존 Base Skill Registry blob | `14950c9361b3c939990560ae8cc683a936633e89` |
+| adapter-only 공용 route 기준 커밋 | `c7c1103e4a69f8fdc9ee27aa382a21288605a7fb` |
 | 신규 공용 route Registry | Base `skills/BASE_SHARED_SKILL_ROUTES.json` |
 | 프로젝트 공용 route | `skills/BASE_SHARED_SKILL_ROUTES.json` |
 | 프로젝트 어댑터 | `skills/BASE_SHARED_SKILL_ADAPTER.json` |
@@ -19,18 +20,21 @@
 | 프로젝트 분야 Skill | 10개 |
 | 프로젝트 로컬 Skill | 1개 — `urban-legend-investigation-case-authoring` |
 | 확인일 | 2026-07-25 |
-| 적용 상태 | Base 공용 Skill은 route·adapter 연결, 프로젝트 전용 Skill만 로컬 생성 |
+| 적용 상태 | 기존 25개 Skill pin 보존 + 신규 두 공용 Skill은 별도 route·adapter 연결 |
 
-기계 원본은 `skills/SKILL_REGISTRY.json`, `skills/BASE_SKILL_INDEX.json`, `skills/BASE_SKILL_COVERAGE.json`, `skills/PROJECT_PATH_ADAPTER.json`, `skills/BASE_SHARED_SKILL_ROUTES.json`, `skills/BASE_SHARED_SKILL_ADAPTER.json`에 같은 Base pin을 둔다.
+기존 기계 원본 `skills/SKILL_REGISTRY.json`, `skills/BASE_SKILL_INDEX.json`, `skills/BASE_SKILL_COVERAGE.json`, `skills/PROJECT_PATH_ADAPTER.json`은 기존 Base pin을 유지한다. 신규 두 공용 Skill은 `skills/BASE_SHARED_SKILL_ROUTES.json`과 `skills/BASE_SHARED_SKILL_ADAPTER.json`이 별도 pin을 소유한다.
 
 ## 적용 구조
 
 ```text
-Base 기존 Registry 25개
-+ Base adapter-only 공용 route 2개
-→ skills/BASE_SKILL_INDEX.json 또는 skills/BASE_SHARED_SKILL_ROUTES.json에서 trigger·경계 선택
-→ skills/PROJECT_PATH_ADAPTER.json과 skills/BASE_SHARED_SKILL_ADAPTER.json으로 프로젝트 경로·정본·검증기 연결
-→ 선택한 Base SKILL.md와 명시된 reference만 고정 커밋에서 읽기
+기존 Base Registry 25개 @ 41a20584...
+→ skills/BASE_SKILL_INDEX.json에서 trigger·경계 선택
+
+신규 adapter-only 공용 route 2개 @ c7c1103e...
+→ skills/BASE_SHARED_SKILL_ROUTES.json
+→ skills/BASE_SHARED_SKILL_ADAPTER.json으로 프로젝트 경로·정본·검증기 연결
+
+→ 선택한 Base SKILL.md와 명시된 reference만 해당 고정 커밋에서 읽기
 → skills/SKILL_REGISTRY.json의 프로젝트 분야 Skill 0~1개
 → 필요 시 프로젝트 고유 로컬 전문 Skill 0~1개
 → docs/PROJECT_CORE.md·현행 책임 원본·실제 파일
