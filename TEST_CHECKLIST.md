@@ -13,8 +13,8 @@
 - ANNUAL save: `annual-mvp-001-save-v1`
 - CORE-MVP-001: `POC_BUILD_READY`
 - 4주 보정: `MERGED / HISTORICAL_REGRESSION_EVIDENCE` — PR #70
-- 7일 주간 계약: `APPROVED` — Issue #75
-- 7일 주간 구현: `ON_BRANCH / CI_PENDING`
+- 7일 주간 계약: `APPROVED / COMPLETE` — Issue #75
+- 7일 주간 구현: `MERGED / AUTOMATED_QA_PASSED` — PR #76 / commit `57c1f3d92e0fdae658826a23e5c2326fe9efe478`
 - GDD: v3.2
 - 사람 사용성 QA: `NOT_RUN`
 - 신규 플레이어 검증: `NOT_RUN`
@@ -33,7 +33,7 @@
 - [x] 기존 3주 및 4주×3슬롯 QA를 삭제하지 않고 `HISTORICAL_REGRESSION_EVIDENCE`로 보존
 - [x] PROJECT_CORE와 GDD 원문 구조 유지
 - [x] `CURRENT_STATUS`·Handoff·Roadmap·Checklist를 7일 계약으로 정렬
-- [ ] PR·commit·CI 최종 증거 기록
+- [x] PR #76·commit `57c1f3d92e0fdae658826a23e5c2326fe9efe478`·run #273/#121/#51 기록
 
 ## 7일 데이터 계약
 
@@ -51,8 +51,8 @@
 - [x] 오현 협업 훈련 2일
 - [x] 직접 휴식 1일·피로 -25·상태 회복 가능
 - [x] 활동별 일수 범위 1..3 검증
-- [ ] Python 데이터 계약 PASS
-- [ ] Godot 데이터 테스트 PASS
+- [x] Python 데이터 계약 — run #121 PASS
+- [x] Godot 데이터 테스트 — run #121 PASS
 
 ## 주간 상태 머신
 
@@ -70,7 +70,7 @@
 - [x] 자동 휴식은 피로 외 수치 변경 금지
 - [x] 자동 휴식의 상태·관계·특수 회복·보너스 자격 금지
 - [x] 직접 휴식이 자동 휴식보다 강함
-- [ ] ANNUAL 상태 테스트 PASS
+- [x] ANNUAL 상태 테스트 — run #121 PASS
 
 ## 4주 출동 회귀
 
@@ -83,7 +83,7 @@
 - [x] 결과 확인 후 `annual_forced_deployment`
 - [x] 강제 출동 `PREPARATION`, 위험 30
 - [x] 강제 경로 결산 `weeks_used=4`
-- [ ] 세 출동 경로 자동 회귀 PASS
+- [x] 세 출동 경로 자동 회귀 — run #121/#51 PASS
 
 ## 저장·복원
 
@@ -94,7 +94,7 @@
 - [x] 사건 중 저장 금지 유지
 - [x] 본편 `GameState` 비사용
 - [x] `mvp-039`·`mvp-038` 비침범
-- [ ] save test PASS
+- [x] save test — run #121 PASS
 
 ## UI·접근성·포인터
 
@@ -112,11 +112,11 @@
 - [x] embedded CORE 확장 유지
 - [x] 키보드 포커스·`ui_accept`·Esc 유지
 - [x] 모듈 toggle typed append 수정 유지
-- [ ] Scene test PASS
-- [ ] 1280×720·1920×1080 화면 확인
-- [ ] 자동 휴식 경고 캡처 PASS
-- [ ] 4주차 결과·강제 출동 캡처 PASS
-- [ ] 실제 그래픽 포인터 경로 PASS
+- [x] Scene test — run #121 PASS
+- [x] 1280×720·1920×1080 화면 확인 — run #51 PASS
+- [x] 자동 휴식 경고 캡처 — run #51 PASS
+- [x] 4주차 결과·강제 출동 캡처 — run #51 PASS
+- [x] 실제 그래픽 포인터 경로 — run #51 PASS
 - [ ] 사람 손 장시간 반복 조작
 
 ## GDD·DOCX
@@ -129,9 +129,9 @@
 - [x] 생성기 머리말·꼬리말을 4주×7일로 변경
 - [x] 번호 목록 원문 번호 유지
 - [x] Markdown 이미지 수와 DOCX 이미지 수 검사
-- [ ] DOCX build PASS
-- [ ] DOCX source hash check PASS
-- [ ] 문서 계약 PASS
+- [x] 결정적 DOCX 생성기 계약 — 문서 run #273 PASS
+- [x] DOCX source hash 코드 계약 — 문서 run #273 PASS
+- [x] 문서 계약 — run #273 PASS
 
 ## CORE-MVP-001 보존 회귀
 
@@ -139,8 +139,8 @@
 - [x] 외부 지원 허용 효과는 체력 회복·위험 완화뿐
 - [x] 이해도·가설·관측 패턴·포획 표식 변경 금지
 - [x] 기존 CORE F1 진입 유지
-- [ ] CORE focused PASS
-- [ ] 전체 Godot 회귀에서 CORE 경로 PASS
+- [x] CORE focused — run #121 PASS
+- [x] 전체 Godot 회귀에서 CORE 경로 — run #121 PASS
 - [ ] 신규 플레이어 사건 인과 설명
 
 ## HISTORICAL QA — 보존 증거
@@ -160,13 +160,22 @@
 
 - [x] Issue #75 생성
 - [x] 브랜치 `agent/annual-mvp-001-seven-day-scheduling`
-- [ ] PR 생성
-- [ ] changed-file 감사
-- [ ] review thread 0건 확인
-- [ ] required CI 성공
-- [ ] squash merge
-- [ ] Issue #75 completed
-- [ ] main 상태 문서에 PR·commit·run 기록
+- [x] PR #76 생성
+- [x] changed-file 감사
+- [x] review thread 0건 확인
+- [x] required CI — run #273/#121/#51 PASS
+- [x] PR #76 squash merge — commit `57c1f3d92e0fdae658826a23e5c2326fe9efe478`
+- [x] Issue #75 completed
+- [x] CURRENT_STATUS·CURRENT_HANDOFF 기록 — PR #77 / commit `229c74a80b8aefd71d16befb95758f4dcc7f591f`
+
+## 문서 동기화 계약
+
+- [x] `docs/PROJECT_UPDATE_PROTOCOL.md` 생성
+- [x] `docs/DECISION_LOG.md`에 핵심 설계 결정 보존
+- [x] 활성 정본에서 임시 브랜치·검증 대기 상태 토큰 제거
+- [x] 자동 검증과 사람 검증 상태 분리
+- [x] 과거 3주·4주×3슬롯 증거 보존
+- [ ] 이후 모든 기획·구현 PR에서 영향 문서 동시 갱신
 
 ## 사람 플레이 검증 — 미실행
 
@@ -187,8 +196,8 @@
 
 ```text
 annual_mvp_001_seven_day_contract: APPROVED
-annual_mvp_001_seven_day_implementation: ON_BRANCH
-automated_verification: PENDING
+annual_mvp_001_seven_day_implementation: MERGED
+automated_verification: PASSED
 human_usability_qa: NOT_RUN
 player_validation: NOT_RUN
 annual_loop_passed: NOT_DECLARED

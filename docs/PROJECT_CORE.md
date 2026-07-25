@@ -6,7 +6,7 @@
 > 구현 상태: `POC_PENDING` — 기존 거버넌스 호환 표기이며, CORE-MVP-001 실제 구현은 `POC_BUILD_READY`다.  
 > Production gate: `HOLD_UNTIL_PLAYER_EVIDENCE`  
 > 연도제 설계 상태: `APPROVED_DESIGN_BASELINE / ANNUAL_DESIGN_BASELINE_APPROVED`  
-> 연도제 구현: `ANNUAL-MVP-001 SEVEN_DAY_SCHEDULING_ON_BRANCH / CI_PENDING` — Issue #75  
+> 연도제 구현: `ANNUAL-MVP-001 SEVEN_DAY_SCHEDULING_MERGED / AUTOMATED_QA_PASSED` — Issue #75 / PR #76 / commit `57c1f3d92e0fdae658826a23e5c2326fe9efe478`  
 > 현재 구현 기준: `MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A / Ver 4.2 / save mvp-039`  
 > POC_PASSED: `NOT_DECLARED`
 
@@ -173,8 +173,11 @@
 ```
 
 - 데이터 계약은 `annual-mvp-001-v3`다.
+- 일정은 주차 경계를 넘지 못한다.
 - 기존 `4주 × 주당 3개 일정 슬롯` 계약과 PR #70의 구현 증거는 `HISTORICAL_REGRESSION_EVIDENCE`로 보존한다.
 - 독립 PoC 저장 `annual-mvp-001-save-v1`과 본편 `mvp-039`·`mvp-038` 이관을 유지한다.
+- Issue #75 / PR #76 / commit `57c1f3d92e0fdae658826a23e5c2326fe9efe478`에서 구현·병합했다.
+- 자동 검증은 문서 run #273, ANNUAL run #121, Visual run #51이 통과했다.
 - 사람 사용성·신규 플레이어 검증 전에는 `POC_PASSED`, 연도제 루프 통과, 제작 확대를 선언하지 않는다.
 
 ## 성장·연구 가드레일
@@ -198,7 +201,7 @@
 
 ## CHANGEABLE
 
-- 분기별 주차와 주간 슬롯 수
+- 분기별 주차와 주간 시간 예산·일정별 일수 비용
 - 역량·피로·기관 지원·잔향 자료 수치
 - 상태 태그 지속·해제 공식
 - 사건 마감과 지연 위험 공식
@@ -219,7 +222,7 @@
 ## 구현 트랙
 
 - 완료 자산: CORE-MVP-001 사건 코어 독립 PoC `POC_BUILD_READY`
-- 현재 작업: ANNUAL-MVP-001 4주 구조를 유지한 채 `7일 주간·가변 일정 일수` 계약으로 전환 중 — Issue #75
+- 통합 완료: ANNUAL-MVP-001 4주 구조를 유지한 `7일 주간·가변 일정 일수` 계약 — Issue #75 / PR #76 / commit `57c1f3d92e0fdae658826a23e5c2326fe9efe478`
 - 다음 게이트: 실제 사람의 2주차 조기·3주차 자율·4주차 강제 출동 플레이와 인과 설명
 - 후속 계획은 `MVP_ROADMAP.md`가 소유한다.
 

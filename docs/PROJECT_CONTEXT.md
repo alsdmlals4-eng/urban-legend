@@ -17,7 +17,7 @@
 - CORE-MVP-001 `POC_BUILD_READY`
 - 연도제 설계 `APPROVED_DESIGN_BASELINE`
 - ANNUAL-MVP-001 4주 구조 병합 완료
-- ANNUAL-MVP-001 7일 주간·가변 일정 구현 `ON_BRANCH / CI_PENDING` — Issue #75
+- ANNUAL-MVP-001 7일 주간·가변 일정 구현 `MERGED / AUTOMATED_QA_PASSED` — Issue #75 / PR #76 / commit `57c1f3d92e0fdae658826a23e5c2326fe9efe478`
 - 플레이 증거 없음 / `POC_PASSED NOT_DECLARED`
 
 ## 장르와 화면 문법
@@ -109,7 +109,7 @@
 
 ## 현재 제작 경계
 
-현재 작업은 `ANNUAL-MVP-001` 격리 수직절편의 시간 예산을 다음과 같이 검증한다.
+현재 통합 기준은 `ANNUAL-MVP-001` 격리 수직절편의 시간 예산 구현·자동 검증을 완료했으며, 다음 사람 검증에서 아래 계약의 이해도와 체감을 확인한다.
 
 - 1개월 = 4주 × 주당 7일 = 28일
 - 일정별 1~3일 소비, 주차 경계 초과 금지
@@ -123,7 +123,7 @@
 - 사건 결과 → 연구·분기 결산
 - 본편 `GameState`와 저장 `mvp-039` 비침범
 
-PR #62의 3주 구조와 PR #70의 4주×3슬롯 구조는 `HISTORICAL_REGRESSION_EVIDENCE`로 보존한다.
+PR #62의 3주 구조와 PR #70의 4주×3슬롯 구조는 `HISTORICAL_REGRESSION_EVIDENCE`로 보존한다. 최신 구현은 PR #76 / commit `57c1f3d92e0fdae658826a23e5c2326fe9efe478`이며 문서 run #273, ANNUAL run #121, Visual run #51이 통과했다.
 
 ## 책임 원본
 
@@ -133,3 +133,5 @@ PR #62의 3주 구조와 PR #70의 4주×3슬롯 구조는 `HISTORICAL_REGRESSIO
 - 구현 순서: `MVP_ROADMAP.md`
 - 검증: `TEST_CHECKLIST.md`
 - 최신 설계: `docs/superpowers/specs/2026-07-25-annual-mvp-001-seven-day-scheduling-design.md`
+- 업데이트 프로토콜: `docs/PROJECT_UPDATE_PROTOCOL.md`
+- 결정 로그: `docs/DECISION_LOG.md`
