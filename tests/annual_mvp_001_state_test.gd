@@ -1,7 +1,7 @@
 extends SceneTree
 
 const Data = preload("res://scripts/poc/annual_mvp_001/annual_mvp_001_data.gd")
-const State = preload("res://scripts/poc/annual_mvp_001/annual_mvp_001_state.gd")
+const State = preload("res://scripts/poc/annual_mvp_001/annual_mvp_001_state_v2.gd")
 
 var _config: Dictionary
 
@@ -136,7 +136,20 @@ func _test_forced_emergency_path() -> void:
 	assert(state.choose_deployment_decision("annual001_decision_delay")["ok"])
 	_commit_and_ack(state, ["annual001_activity_rest", "annual001_activity_rest", "annual001_activity_rest"])
 	assert(state.choose_deployment_decision("annual001_decision_delay")["ok"])
+	assert(state.get_snapshot()["week"] == 4)
+	assert(state.get_snapshot()["phase"] == "WEEK_PLANNING")
+	assert(state.commit_week([
+		"annual001_activity_rest",
+		"annual001_activity_rest",
+		"annual001_activity_rest",
+	])["ok"])
+	assert(state.get_snapshot()["phase"] == "WEEK_RESULT")
+	var forced: Dictionary = state.acknowledge_week_result()
+	assert(forced["ok"])
+	assert(forced["events"][0]["event"] == "annual_forced_deployment")
+	assert(forced["events"][0]["week"] == 4)
 	var snapshot: Dictionary = state.get_snapshot()
+	assert(snapshot["phase"] == "PREPARATION")
 	assert(snapshot["forced_deployment"])
 	assert(snapshot["deployment_risk"] == 30)
 	assert(state.configure_loadout("annual001_companion_oh_hyun", "", [])["ok"])
@@ -149,6 +162,7 @@ func _test_forced_emergency_path() -> void:
 	assert(state.get_snapshot()["institution_support"] == 0)
 	assert(state.advance_from_incident_result()["ok"])
 	assert(state.skip_post_incident_research()["ok"])
+	assert(state.get_snapshot()["quarter_summary"]["weeks_used"] == 4)
 	assert(state.get_snapshot()["quarter_summary"]["next_cycle_flags"].has("annual001_flag_emergency_deployment"))
 
 
