@@ -1,6 +1,8 @@
 class_name CoreMvp001Scene
 extends Control
 
+signal session_completed(result: Dictionary, manual_delta: Dictionary, support_log: Array[Dictionary])
+
 const CaseData = preload("res://scripts/poc/core_mvp_001/core_mvp_001_case_data.gd")
 const CoreState = preload("res://scripts/poc/core_mvp_001/core_mvp_001_state.gd")
 const PlaytestLog = preload("res://scripts/poc/core_mvp_001/core_mvp_001_playtest_log.gd")
@@ -19,12 +21,18 @@ var _selected_unresolved_ids: Array[String] = []
 var _hypothesis_drafts: Dictionary = {}
 var _review_panel_key := ""
 var _last_action_feedback := ""
+var _configured_case_override: Dictionary = {}
+var _configured_run_seed := 1001
+var _session_extension: Object = null
+var _support_log: Array[Dictionary] = []
+var _session_completed_emitted := false
 
 var _phase_label: Label
 var _understanding_label: Label
 var _health_label: Label
 var _risk_label: Label
 var _feedback_label: Label
+var _extension_status_label: Label
 var _choice_grid: VBoxContainer
 var _manual_list: VBoxContainer
 var _hypothesis_summary: Label
@@ -46,12 +54,29 @@ var _back_button: Button
 var _confirm_button: Button
 
 
+func configure_session(
+	case_data_override: Dictionary = {},
+	run_seed: int = 1001,
+	session_extension: Object = null
+) -> bool:
+	if is_inside_tree():
+		return false
+	_configured_case_override = case_data_override.duplicate(true)
+	_configured_run_seed = run_seed
+	_session_extension = session_extension
+	return true
+
+
 func _ready() -> void:
 	theme = ThemeFactory.create_theme()
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	_data = CaseData.load_case("res://data/poc/core_mvp_001/afterlife_station_poc.json")
-	var started := _state.start(_data, 1001)
-	_log.start_session("local-%s" % Time.get_unix_time_from_system(), "core-mvp-001", 1001)
+	_data = (
+		_configured_case_override.duplicate(true)
+		if not _configured_case_override.is_empty()
+		else CaseData.load_case("res://data/poc/core_mvp_001/afterlife_station_poc.json")
+	)
+	var started := _state.start(_data, _configured_run_seed)
+	_log.start_session("local-%s" % Time.get_unix_time_from_system(), "core-mvp-001", _configured_run_seed)
 	_build_ui()
 	_record_state_events(started)
 	_log.record("investigation_scene_viewed", {"scene_count": (_data.get("investigation_scenes", []) as Array).size()})
@@ -105,6 +130,12 @@ func _build_ui() -> void:
 	_feedback_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_feedback_label.custom_minimum_size.y = 42
 	root_column.add_child(_feedback_label)
+
+	_extension_status_label = Label.new()
+	_extension_status_label.name = "ExtensionStatusLabel"
+	_extension_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_extension_status_label.text = "외부 지원 없음"
+	root_column.add_child(_extension_status_label)
 
 	var footer := HBoxContainer.new()
 	footer.name = "Footer"
@@ -263,6 +294,7 @@ func _render() -> void:
 	_render_field_test(snapshot)
 	_render_recovery(snapshot)
 	_render_result(snapshot)
+	_render_extension_status()
 	if not _review_panel_key.is_empty():
 		_confirm_button.text = "현재 단계로 돌아가기"
 		_confirm_button.disabled = false
@@ -437,6 +469,53 @@ func _render_result(snapshot: Dictionary) -> void:
 			_:
 				_confirm_button.text = "기록 완료"
 				_confirm_button.disabled = true
+	if phase == "COMPLETE" and not _session_completed_emitted:
+		_session_completed_emitted = true
+		session_completed.emit(
+			_state.build_result(),
+			_state.build_manual_delta(),
+			_support_log.duplicate(true)
+		)
+
+
+func _render_extension_status() -> void:
+	if _extension_status_label == null:
+		return
+	if _session_extension == null or not _session_extension.has_method("get_status_lines"):
+		_extension_status_label.text = "외부 지원 없음"
+		return
+	var lines_value: Variant = _session_extension.call("get_status_lines")
+	if typeof(lines_value) != TYPE_ARRAY or (lines_value as Array).is_empty():
+		_extension_status_label.text = "외부 지원 없음"
+		return
+	var lines: Array[String] = []
+	for value in lines_value as Array:
+		lines.append(String(value))
+	_extension_status_label.text = "\n".join(lines)
+
+
+func _run_extension_hook(method_name: String, snapshot_before: Dictionary, result: Dictionary, action_id: String = "") -> void:
+	if _session_extension == null or not _session_extension.has_method(method_name):
+		return
+	var hook_result: Variant
+	if action_id.is_empty():
+		hook_result = _session_extension.call(method_name, _state, snapshot_before, result)
+	else:
+		hook_result = _session_extension.call(method_name, _state, snapshot_before, action_id, result)
+	if typeof(hook_result) != TYPE_ARRAY:
+		return
+	for value in hook_result as Array:
+		if typeof(value) != TYPE_DICTIONARY:
+			continue
+		var entry := (value as Dictionary).duplicate(true)
+		if bool(entry.get("triggered", false)):
+			_support_log.append(entry)
+			var effect := entry.get("effect", {}) as Dictionary
+			_last_action_feedback += "\n지원: %s / 체력 +%d / 위험 -%d" % [
+				String(entry.get("skill_name", entry.get("skill_id", "지원"))),
+				int(effect.get("health_restore", 0)),
+				int(effect.get("risk_reduction", 0))
+			]
 
 
 func _on_record_pressed(record_id: String) -> void:
@@ -549,7 +628,9 @@ func _on_confirm_pressed() -> void:
 		"RECOVERY_READY", "EMERGENCY_RECOVERY", "RECOVERY_TURN_START":
 			result = _state.begin_recovery_turn()
 		"OMEN_READ":
+			var omen_before := _state.get_snapshot()
 			result = _state.read_current_omen()
+			_run_extension_hook("after_omen", omen_before, result)
 		"CAPTURE_WINDOW", "EMERGENCY_CAPTURE":
 			result = _state.execute_capture()
 		"RESULT_COMPARE", "MANUAL_PROMOTION":
@@ -573,6 +654,7 @@ func _feedback_for_result(result: Dictionary) -> String:
 
 
 func _on_recovery_action(action_id: String) -> void:
+	var snapshot_before := _state.get_snapshot()
 	var result := _state.resolve_recovery_action(action_id)
 	_record_state_events(result)
 	_last_action_feedback = "직전 대응: %s / 피해 %s / 위험 +%s" % [
@@ -580,6 +662,7 @@ func _on_recovery_action(action_id: String) -> void:
 		result.get("damage", 0),
 		result.get("risk_delta", 0)
 	]
+	_run_extension_hook("after_recovery_action", snapshot_before, result, action_id)
 	_feedback_label.text = _last_action_feedback
 	_render()
 
