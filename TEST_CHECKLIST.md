@@ -1,233 +1,171 @@
 # TEST_CHECKLIST
 
-> 문서 위치: `TEST_CHECKLIST.md`  
 > 상태: `docs/CURRENT_STATUS.md`  
 > 코어: `docs/PROJECT_CORE.md`  
-> 로드맵: `MVP_ROADMAP.md`
+> 로드맵: `MVP_ROADMAP.md`  
+> 최신 설계: `docs/superpowers/specs/2026-07-25-annual-mvp-001-four-week-month-design.md`
 
 ## 현재 기준
 
 - 구현 기준선: MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A
-- 화면 버전: Ver 4.2
 - 저장 Schema: `mvp-039` (`mvp-038` 이관 지원)
+- ANNUAL save: `annual-mvp-001-save-v1`
 - CORE-MVP-001: `POC_BUILD_READY`
-- 연도제 설계: `APPROVED_DESIGN_BASELINE`
-- 정본 전환: `COMPLETE`
-- ANNUAL-MVP-001: `BUILD_READY` — PR #62 / commit `88522ce08f261bce6d61a8043c64caa3b982bd47`
-- 렌더링·입력 QA: `PASSED` — PR #65 / commit `b4f2e224bf7a2a6ee511c83bbbd45cd9e0b8570a`
-- 그래픽 포인터 QA: `PASSED` — PR #67 / commit `0f24efa204a04cca62a58e55628e6b831b9bef2d`
-- 최종 자동 검증: `PASSED` — visual run #28, ANNUAL run #94
-- 렌더링·텍스트 검토: `PASSED`
-- 키보드 포커스·확인·Esc: `PASSED`
-- 그래픽 포인터 이벤트: `PASSED`
-- 세 출동 경로 scripted QA: `PASSED`
-- 사람 손 장시간 사용성 QA: `NOT_RUN`
+- 4주 월간 계약: `APPROVED` — Issue #69
+- 4주 구현: `ON_BRANCH / CI_PENDING`
+- 사람 사용성 QA: `NOT_RUN`
 - 신규 플레이어 검증: `NOT_RUN`
 - `POC_PASSED`: `NOT_DECLARED`
 - 제작 확대: `NOT_APPROVED`
 
-## 정본 전환
+## 기획 데이터 무손실
 
-- [x] `PROJECT_CORE`가 육성+사건 이중 코어를 소유
-- [x] GDD v3.0이 연도제 전체 설계를 소유
-- [x] MVP_ROADMAP이 ANNUAL-MVP-001~004를 소유
-- [x] PR #61 정본 전환 병합
-- [x] 문서 계약 PASS
-- [x] 충돌 해석 순서가 최신 승인 설계→승인 구현 계획→활성 정본→레거시로 고정됨
+- [x] 승인 설계 문서 생성
+- [x] 상세 구현 계획 생성
+- [x] Codex Goal 생성
+- [x] Issue #69 생성
+- [x] 기존 활동 7개 ID 유지
+- [x] 기존 동료·스킬·장비·연구 ID 유지
+- [x] 기존 위험 수치 0·15·30 유지
+- [x] 기존 렌더링·한글·포인터 수정 유지
+- [x] 기존 3주 QA를 삭제하지 않고 `HISTORICAL`로 보존
+- [x] `CURRENT_STATUS`·Handoff·Roadmap 동기화
+- [ ] PROJECT_CORE 최신 구현 상태·참조 동기화
+- [ ] GDD와 GDD DOCX 동기화
+- [ ] 병합 후 PR·commit·CI 증거 기록
 
 ## CORE-MVP-001 보존 회귀
 
-- [x] 조사 3, 단서 6, 매뉴얼 3, 선택지 4, 가설 2
-- [x] 관측 가능한 근거로 선택지 배제
-- [x] 지지·반박·미해결 근거를 가진 가설 카드
-- [x] `unknown → clue → likely → understood`
-- [x] 전조 실패 시 거짓 예측 금지
-- [x] 미관측 패턴 첫 발동의 범용 대응과 피해 상한
-- [x] HP 0이 아닌 포획 창 개방
-- [x] 결과 비교→매뉴얼 반영 검토→기록 확정
-- [x] 독립 기본 실행 유지
-- [x] focused suite 4/4 PASS
-- [x] 전체 Godot 회귀에 포함
-- [x] embedded CORE 조사 패널 1280×720·1920×1080 렌더링 노출
-- [x] embedded CORE 단계·이해도 한국어 표시
-- [x] embedded 매뉴얼·조사 선택지 좌표 클릭 입력
+- [x] 조사→가설→검증→전조→회수→매뉴얼 계약 유지
+- [x] 외부 지원 허용 효과는 체력 회복·위험 완화뿐
+- [x] 이해도·가설·관측 패턴·포획 표식 변경 금지
+- [x] 기존 CORE F1 진입 유지
+- [ ] CORE focused 4/4 재실행
+- [ ] 전체 회귀에서 CORE 경로 통과
 - [ ] 신규 플레이어 사건 인과 설명
 
-## ANNUAL-MVP-001 데이터·상태
+## 4주 데이터 계약
 
-- [x] 3주·주당 3슬롯 데이터 계약
-- [x] 활동 7개와 고정 `annual001_` ID
-- [x] 권나래 역량 4종의 결정론적 성장
-- [x] 피로 증가·회복·0~100 상한
-- [x] 기관 지원 0~3
-- [x] 오현 업무 신뢰 0~3
-- [x] 주간 결과 요약
-- [x] 2주차 자율 출동
-- [x] 3주차 출동 위험 +15
-- [x] 3주차 재지연 시 긴급 출동 위험 +30
+- [x] `contract_version = annual-mvp-001-v2`
+- [x] `max_weeks = 4`
+- [x] `slots_per_week = 3`
+- [x] `voluntary_entry_week = 2`
+- [x] `deadline_week = 4`
+- [x] 총 12슬롯
+- [x] 3주차 자율 출동 위험 15
+- [x] 4주차 강제 출동 위험 30
+- [x] Python 계약 테스트 갱신
+- [x] Godot 데이터 검증기 갱신
+- [ ] Python 계약 실행 PASS
+- [ ] Godot 데이터 테스트 PASS
+
+## 4주 상태 머신
+
+- [x] 기존 State 보존
+- [x] `AnnualMvp001StateV2` 추가
+- [x] 1주차 결과 후 2주차 계획
+- [x] 2주차 결과 후 출동 결정
+- [x] 2주차 자율 출동 위험 0
+- [x] 2주차 지연 후 3주차 계획
+- [x] 3주차 자율 출동 위험 15
+- [x] 3주차 지연 후 4주차 계획
+- [x] 4주차 활동 정확히 3개 요구
+- [x] 4주차 결과 확인 전 `WEEK_RESULT` 유지
+- [x] 4주차 결과 확인 후 `annual_forced_deployment`
+- [x] 강제 출동 `PREPARATION`, 위험 30
+- [x] 강제 경로 결산 `weeks_used=4`
 - [x] 잘못된 명령의 상태 불변
-- [x] 정상·비용·긴급 포획 실패 전진 결과
-- [x] 최종 엔딩이 아닌 분기 결산 모형
-
-## 장비·연구
-
-- [x] 기본 장비 `현장 기록기` 1개
-- [x] 모듈 슬롯 1개
-- [x] 신호 완충 모듈 연구
-- [x] 기관 지원으로 공용 `긴급 엄호` 해금
-- [x] 검증된 매뉴얼+잔향 자료로 `신호 교차 검증` 해금
-- [x] 연구가 핵심 정답·가설을 자동 확정하지 않음
-- [x] 사건 결과가 잔향 자료·기관 지원·연구로 환류
-- [x] 모듈 체크박스 실제 클릭
-- [x] 모듈 toggle typed-array 런타임 오류 수정·회귀 고정
-
-## 동료 자동 지원
-
-- [x] 오현 고유 스킬 `절차 교차 확인`
-- [x] 공용 보조 스킬 슬롯 1개
-- [x] 적합 조건에서만 발동 판정
-- [x] 조건·현재 확률·지원 준비도·남은 횟수 공개
-- [x] 연속 불발 시 준비도 누적
-- [x] 최대 준비도에서 다음 적합 조건 확정 발동
-- [x] 신뢰 조건에서 대표 고유 스킬 전투당 보장
-- [x] battle limit 적용
-- [x] 동일 event key 판정 캐시
-- [x] 동일 event key 효과 중복 적용 금지
-- [x] 같은 seed·입력 순서 판정 재현
-- [x] 테스트 고정 판정열과 production seeded RNG 분리
-- [x] 허용 효과는 체력 회복·위험 완화
-- [x] 정답·가설·이해도·관측 패턴·포획 표식 변경 금지
-- [ ] 신규 플레이어가 조건·확률·준비도를 공정하다고 설명
-
-## 사건 adapter·CORE 확장
-
-- [x] 기존 CORE-MVP-001 데이터 override
-- [x] 피로→시작 체력
-- [x] 출동 지연→시작 위험
-- [x] 관찰→전조 판독률 보조
-- [x] 분석→중립 비교 정보
-- [x] 현장 대응→피해 완화
-- [x] 모듈→미관측 첫 피해 상한
-- [x] 핵심 단서·배제 규칙·가설·패턴·포획 조건 불변
-- [x] 결과와 manual delta 반환
-- [x] CORE 외부 지원 event key 멱등성
-- [x] 기존 CORE F1 버튼과 독립 Scene 유지
+- [ ] ANNUAL state test 실행 PASS
 
 ## 저장·복원
 
-- [x] PoC 전용 `user://annual_mvp_001_poc.json`
-- [x] 원자적 temp write·rename
-- [x] 잘못된 버전·깨진 JSON 안전 실패
-- [x] 주간 계획 전·결과 뒤·사건 결과 뒤 저장 가능
-- [x] 사건 진행 중 저장 금지
-- [x] PREPARATION snapshot round-trip
-- [x] 저장 seed로 동료 지원 판정 재현
-- [x] 기존 `GameState` 비사용
-- [x] 기존 `mvp-039`·`mvp-038` 이관 비침범
-- [x] 실제 좌표 클릭으로 PoC 저장·불러오기
-- [x] incident active에서 Save 버튼 비활성
+- [x] `annual-mvp-001-save-v1` 유지
+- [x] payload 필드 추가 없음
+- [x] 2·3주차 기존 저장 복원 가능
+- [x] 기존 강제 출동 준비 상태를 되돌리지 않음
+- [x] 저장 seed 판정 재현 유지
+- [x] 사건 중 저장 금지 유지
+- [x] 본편 `GameState` 비사용
+- [x] `mvp-039`·`mvp-038` 비침범
+- [ ] save test 실행 PASS
 
-## UI·개발 진입
+## UI·접근성·포인터 보존
 
-- [x] F1 `ANNUAL-MVP-001 육성→사건→연구 PoC` 버튼
-- [x] 기존 CORE-MVP-001 버튼 보존
-- [x] 현재 phase 패널 1개만 표시
-- [x] 주간 계획·결과·출동·준비·사건·연구·결산 흐름
-- [x] 1280×720·1920×1080 기계적 레이아웃 계약
-- [x] 1280×720·1920×1080 실제 렌더링 PNG 검토
-- [x] 공용 현대 오컬트 Theme과 어두운 배경 적용
-- [x] Noto CJK·Windows·macOS 한글 시스템 글꼴 후보 적용
-- [x] 한국어 글리프·줄바꿈·시각 밀도 검토
-- [x] 단계·활동·역량·회수·지식 품질 내부 ID 현지화
-- [x] embedded CORE 조사 선택지·매뉴얼·스크롤 영역 노출
-- [x] 초기 키보드 포커스
-- [x] `ui_accept`로 활동 선택
-- [x] Esc로 마지막 주간 선택 취소
-- [x] 분기 결산이 최종 엔딩이 아님을 텍스트로 표시
+- [x] 활성 Scene이 StateV2 사용
+- [x] 주차 표시 `/4`
+- [x] 3주차 안내에 4주차 3슬롯 명시
+- [x] 4주차 강제 출동 피드백 명시
+- [x] 공용 Theme 유지
+- [x] 한글 시스템 글꼴 후보 유지
+- [x] 내부 ID 현지화 유지
+- [x] embedded CORE 확장 유지
+- [x] 키보드 포커스·`ui_accept`·Esc 유지
+- [x] 모듈 toggle typed append 수정 유지
+- [x] 사건 중 Save 버튼 비활성 유지
+- [ ] Scene test 실행 PASS
+- [ ] 1280×720·1920×1080 렌더링 재확인
+- [ ] 4주차 포인터 경로 재확인
+- [ ] 사람 손 장시간 반복 조작
 
-## 그래픽 포인터 이벤트 QA
+## HISTORICAL QA — 보존 증거
 
-- [x] 실제 Window 좌표로 마우스 이동 이벤트 전송
-- [x] 좌클릭 press·release 이벤트 전송
-- [x] 주간 활동 3개 선택
-- [x] 확인 버튼으로 주간 결과 전환
-- [x] PoC 저장·불러오기
-- [x] 2주차 지연과 3주차 자율 출동
-- [x] 출동 전 연구 완료
-- [x] 공용 보조 스킬 체크박스 선택
-- [x] 신호 완충 모듈 체크박스 선택
-- [x] 출동 구성 확정과 사건 시작
-- [x] embedded 매뉴얼 버튼 선택
-- [x] embedded 조사 선택지 선택과 피드백 확인
-- [ ] 사람 손으로 장시간 반복 조작하는 사용성 평가
+다음은 3주 구현 당시 실제 통과 증거다. 4주차 강제 출동의 신규 증거로 재해석하지 않는다.
 
-## 세 출동 경로 scripted QA
-
-- [x] 조기 출동: week 2 / 시작 위험 0
-- [x] 조기 출동: 정상 회수 / 검증 완료 매뉴얼
-- [x] 지연 출동: week 3 / 시작 위험 15
-- [x] 지연 출동: 대가를 치른 회수 / 검증 완료 매뉴얼
-- [x] 긴급 출동: week 3 forced / 시작 위험 30
-- [x] 긴급 출동: 긴급 회수 / 후보 기록 / 위험 사례
-- [x] 세 경로 모두 분기 결산 도달
-- [x] 결산에 자율·긴급 출동과 회수·지식 품질 차이 표시
-
-## 자동 검증 증거
-
-### 구현·렌더링 기준
-
-- [x] PR #62 squash merge 완료
-- [x] PR #65 squash merge 완료 — commit `b4f2e224bf7a2a6ee511c83bbbd45cd9e0b8570a`
-- [x] PR #66 상태 정본 병합 완료
+- [x] PR #65 렌더링·입력 QA
+- [x] PR #67 그래픽 포인터 QA
+- [x] visual run #28
+- [x] ANNUAL run #94
+- [x] CORE focused 4/4
+- [x] ANNUAL focused 6/6
+- [x] 전체 Godot 회귀 49/49
 - [x] 대표 visual artifact id `8617041311`
-- [x] artifact digest `sha256:bb623881ef31a6e4f33cfd6884acbca29735187a1986beaaddd14c64f8353ca4`
 
-### 그래픽 포인터 QA
+## 신규 자동 검증
 
-- [x] PR #67 squash merge 완료 — commit `0f24efa204a04cca62a58e55628e6b831b9bef2d`
-- [x] Visual workflow run #28 PASS
-- [x] graphical pointer flow PASS
-- [x] keyboard input PASS
-- [x] screenshot capture PASS
-- [x] ANNUAL workflow run #94 PASS
-- [x] Godot 4.7.1 import PASS
-- [x] CORE-MVP-001 focused 4/4 PASS
-- [x] ANNUAL-MVP-001 focused 6/6 PASS
-- [x] 전체 Godot 회귀 49/49 PASS
+- [ ] Python 데이터 계약
+- [ ] Python 정적 계약
+- [ ] 활성 문서 참조 계약
+- [ ] Godot 4.7.1 import
+- [ ] CORE-MVP-001 focused
+- [ ] ANNUAL-MVP-001 focused
+- [ ] 전체 Godot 회귀
+- [ ] 현재형 3주 월간 참조 감사
+- [ ] protected paths diff 없음
 
-## 보호 경계
+## GitHub 통합
 
-- [x] `scripts/core/game_state.gd` 미변경
-- [x] 기존 `data/episodes/**` 미변경
-- [x] `scripts/scenes/investigation_scene.gd` 미변경
-- [x] `scripts/scenes/battle_scene.gd` 미변경
-- [x] `project.godot` 미변경
-- [x] `knowledge/base-pack/**` 미변경
+- [x] 브랜치 `agent/annual-mvp-001-four-week-month`
+- [x] Issue #69
+- [ ] PR 생성
+- [ ] changed-file 감사
+- [ ] review thread 0건 또는 모두 해결
+- [ ] required CI 성공
+- [ ] squash merge
+- [ ] Issue #69 완료 처리
+- [ ] main 상태 문서에 최종 PR·commit·run 기록
 
-## 신규 플레이어 검증 — 미실행
+## 사람 플레이 검증 — 미실행
 
-- [ ] 조기 출동과 지연 출동의 차이를 플레이어가 설명
-- [ ] 긴급 출동의 비용과 준비 부족을 이해
+- [ ] 2주차 조기 출동 위험 0
+- [ ] 3주차 자율 출동 위험 15
+- [ ] 4주차 긴급 강제 출동 위험 30
+- [ ] 마지막 3슬롯과 강제 위험의 교환을 설명
 - [ ] 육성 선택이 사건 정보·위험·피해 관리에 연결됨을 설명
 - [ ] 사건 결과가 연구·스킬·결산으로 환류함을 설명
-- [ ] 동료 자동 지원의 조건·확률·준비도가 공정하다고 인식
-- [ ] 분기 결산을 최종 엔딩이 아닌 중간 결과로 인식
-- [ ] 주간 일정 반복 피로도 확인
+- [ ] 동료 지원 조건·확률·준비도가 공정하다고 인식
+- [ ] 반복 일정 피로도 확인
 
 ## 최종 상태
 
 ```text
-canonical_migration: COMPLETE
-automated_document_validation: PASSED
-annual_mvp_001: BUILD_READY
-rendered_visual_review: PASSED
-keyboard_input_qa: PASSED
-graphical_pointer_event_qa: PASSED
-three_route_scripted_qa: PASSED
+annual_mvp_001_four_week_contract: APPROVED
+annual_mvp_001_four_week_implementation: ON_BRANCH
+automated_verification: PENDING
+historical_rendered_visual_review: PASSED
+historical_graphical_pointer_event_qa: PASSED
 human_usability_qa: NOT_RUN
 player_validation: NOT_RUN
 annual_loop_passed: NOT_DECLARED
 poc_passed: NOT_DECLARED
 production_expansion: NOT_APPROVED
-visual_direction: KEEP / AMPLIFY
 ```
