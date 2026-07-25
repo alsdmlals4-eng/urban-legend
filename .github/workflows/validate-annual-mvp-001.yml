@@ -28,6 +28,16 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Preserve core extension source snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: annual-mvp-001-core-source
+          path: |
+            scripts/poc/core_mvp_001/core_mvp_001_state.gd
+            scripts/poc/core_mvp_001/core_mvp_001_scene.gd
+            tests/core_mvp_001_state_test.gd
+            tests/core_mvp_001_scene_test.gd
+          retention-days: 7
       - name: Run annual JSON contract
         run: python -m unittest tests/test_annual_mvp_001_data_contract.py -v
       - name: Setup Godot 4.7.1
