@@ -76,6 +76,20 @@ class AnnualMvp001StaticContractTests(unittest.TestCase):
         for font_name in ("Noto Sans CJK KR", "Noto Sans KR", "Malgun Gothic", "Apple SD Gothic Neo"):
             self.assertIn(font_name, theme_factory)
 
+    def test_annual_wrapper_localizes_internal_ids_and_sizes_embedded_incident(self) -> None:
+        wrapper = (ROOT / "scripts/poc/annual_mvp_001/annual_mvp_001_themed_scene.gd").read_text(encoding="utf-8")
+        for required in (
+            "Background",
+            "주간 계획",
+            "분기 결산",
+            "관찰",
+            "정상 회수",
+            "검증 완료",
+            "size_flags_vertical",
+            "InvestigationPanel",
+        ):
+            self.assertIn(required, wrapper)
+
 
 if __name__ == "__main__":
     unittest.main()
