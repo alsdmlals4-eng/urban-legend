@@ -8,28 +8,30 @@
 이 문서는 4주 월간 계약의 구현·자동 검증과 사람 사용성·신규 플레이어 검증을 분리한다. 연도제 설계 상태는 `APPROVED_DESIGN_BASELINE`이다.
 
 ```yaml
-status: ANNUAL_MVP_001_FOUR_WEEK_INTEGRATION_PENDING_CI
+status: ANNUAL_MVP_001_FOUR_WEEK_MERGED_AUTOMATED_QA_PASSED
 implemented_baseline: MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A / Ver 4.2 / save mvp-039
 annual_design: APPROVED_DESIGN_BASELINE
 core_mvp_001:
   implementation: POC_BUILD_READY
-  focused_suite: 4/4_BASELINE
+  focused_suite: PASSED_IN_RUN_101
   player_validation: NOT_RUN
   POC_PASSED: NOT_DECLARED
 annual_mvp_001:
   original_implementation:
     pr: 62
     commit: 88522ce08f261bce6d61a8043c64caa3b982bd47
-  rendered_qa:
+  historical_rendered_qa:
     pr: 65
     commit: b4f2e224bf7a2a6ee511c83bbbd45cd9e0b8570a
     status: HISTORICAL_REGRESSION_EVIDENCE
-  pointer_qa:
+  historical_pointer_qa:
     pr: 67
     commit: 0f24efa204a04cca62a58e55628e6b831b9bef2d
     status: HISTORICAL_REGRESSION_EVIDENCE
   four_week_contract:
     issue: 69
+    pr: 70
+    commit: 20a0d052e4d48863481af7c3acc53805105d6a01
     contract_version: annual-mvp-001-v2
     max_weeks: 4
     slots_per_week: 3
@@ -37,8 +39,10 @@ annual_mvp_001:
     week_2_risk: 0
     week_3_risk: 15
     week_4_forced_risk: 30
-    implementation: ON_BRANCH
-    automated_verification: PENDING
+    implementation: MERGED
+    documentation_run: 253_PASS
+    annual_validation_run: 101_PASS
+    visual_run: 34_PASS
   save_version: annual-mvp-001-save-v1
   human_usability_qa: NOT_RUN
   new_player_validation: NOT_RUN
@@ -69,7 +73,7 @@ AGENTS.md
 → 사건 → 연구 → 월말/분기 결산 모형
 ```
 
-## 구현 사실
+## 구현·검증 사실
 
 - 데이터 계약은 `annual-mvp-001-v2`다.
 - 활성 Scene은 기존 3주 State를 삭제하지 않고 `AnnualMvp001StateV2`를 사용한다.
@@ -80,6 +84,8 @@ AGENTS.md
 - 기존 `annual-mvp-001-save-v1` payload, 본편 `mvp-039`, `mvp-038` 이관은 유지한다.
 - 기존 활동·동료·스킬·장비·연구 ID를 변경하지 않는다.
 - 렌더링 Theme·한글·포인터 typed-array 수정은 보존한다.
+- 문서 run #253, ANNUAL run #101, Visual run #34가 통과했다.
+- PR #70은 squash merge됐고 Issue #69는 completed로 종료됐다.
 
 ## HISTORICAL QA
 
@@ -111,10 +117,8 @@ PR #65·#67의 3주차 강제 출동 결과는 당시 구현의 실제 증거로
 
 ## 다음 작업
 
-1. 4주 브랜치의 Python 계약과 Godot import 실행
-2. CORE focused, ANNUAL focused, 전체 Godot 회귀 실행
-3. 4주차 렌더링·포인터 경로 재확인
-4. PR 검토와 squash merge
-5. 2주차 조기·3주차 자율·4주차 강제 사람 플레이
-6. `KEEP / AMPLIFY / CHANGE / RETEST / HOLD` 판정
-7. 별도 사용자 승인 전 ANNUAL-MVP-002 시작 금지
+1. 2주차 조기·3주차 자율·4주차 강제 사람 플레이
+2. 장시간 마우스·키보드 사용성 평가
+3. 육성→사건→연구 인과와 지원 공정성 설명 수집
+4. `KEEP / AMPLIFY / CHANGE / RETEST / HOLD` 판정
+5. 별도 사용자 승인 전 ANNUAL-MVP-002 시작 금지
