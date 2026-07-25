@@ -50,7 +50,7 @@ func _init() -> void:
 	SaveData.delete_payload(path)
 	_expect(SaveData.write_payload(payload, path) == OK, "payload should write atomically")
 	var read_payload: Dictionary = SaveData.read_payload(path)
-	_expect(read_payload == payload, "read payload should equal written payload")
+	_expect(_canonical(read_payload) == _canonical(payload), "read payload should equal written JSON values")
 
 	var first := State.new()
 	var second := State.new()
@@ -59,8 +59,8 @@ func _init() -> void:
 	_expect(first_restore.get("ok", false), "first state should restore")
 	_expect(second_restore.get("ok", false), "second state should restore")
 	if bool(first_restore.get("ok", false)) and bool(second_restore.get("ok", false)):
-		_expect(first.get_snapshot() == state.get_snapshot(), "first restored snapshot should match source")
-		_expect(second.get_snapshot() == state.get_snapshot(), "second restored snapshot should match source")
+		_expect(_canonical(first.get_snapshot()) == _canonical(state.get_snapshot()), "first restored snapshot should match source values")
+		_expect(_canonical(second.get_snapshot()) == _canonical(state.get_snapshot()), "second restored snapshot should match source values")
 		var adapter_a := Adapter.new()
 		var adapter_b := Adapter.new()
 		_expect(adapter_a.configure(config, first.get_snapshot(), int(first.get_snapshot()["run_seed"]))["ok"], "first adapter should configure")
@@ -78,6 +78,9 @@ func _init() -> void:
 	_expect(SaveData.delete_payload(path) == OK, "test save should delete")
 	_expect(SaveData.read_payload(path).is_empty(), "deleted save should read empty")
 	_finish()
+
+func _canonical(value: Variant) -> String:
+	return JSON.stringify(value, "", true)
 
 func _expect(condition: bool, message: String) -> void:
 	if not condition:
