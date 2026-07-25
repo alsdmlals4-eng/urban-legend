@@ -19,12 +19,13 @@ func _run() -> void:
 	for _frame in range(5):
 		await process_frame
 
+	_expect(_scene.name == "AnnualMvp001Scene", "annual scene root name should match contract")
 	var required := [
-		"AnnualMvp001Scene", "SafeFrame", "RootColumn", "Header", "PhaseLabel",
-		"WeekLabel", "StatsLabel", "ResourceLabel", "PhaseHost", "WeekPlanningPanel",
-		"WeekResultPanel", "DeploymentPanel", "PreparationPanel", "IncidentHost",
-		"ResearchPanel", "QuarterSummaryPanel", "FeedbackLabel", "Footer",
-		"BackButton", "ConfirmButton", "SaveButton", "LoadButton"
+		"SafeFrame", "RootColumn", "Header", "PhaseLabel", "WeekLabel", "StatsLabel",
+		"ResourceLabel", "PhaseHost", "WeekPlanningPanel", "WeekResultPanel",
+		"DeploymentPanel", "PreparationPanel", "IncidentHost", "ResearchPanel",
+		"QuarterSummaryPanel", "FeedbackLabel", "Footer", "BackButton",
+		"ConfirmButton", "SaveButton", "LoadButton"
 	]
 	for node_name in required:
 		_expect(_scene.find_child(node_name, true, false) != null, "missing node %s" % node_name)
@@ -41,7 +42,7 @@ func _run() -> void:
 	var initial: Dictionary = _scene.call("debug_snapshot")
 	_expect(initial.get("phase") == "WEEK_PLANNING", "scene should start in week planning")
 	_expect(_scene.call("debug_visible_panel") == "WeekPlanningPanel", "only week planning panel should be visible")
-	var before := initial.duplicate(true)
+	var before: Dictionary = initial.duplicate(true)
 	_scene.call("debug_select_activity", "annual001_activity_rest")
 	_scene.call("debug_select_activity", "annual001_activity_rest")
 	_expect(_scene.call("debug_snapshot") == before, "selecting fewer than three activities must not mutate state")
@@ -54,12 +55,18 @@ func _run() -> void:
 	_expect(_scene.call("debug_visible_panel") == "WeekResultPanel", "week result should be the only visible panel")
 
 	for size in [Vector2i(1280, 720), Vector2i(1920, 1080)]:
-		root.content_scale_size = size
-		await process_frame
-		var safe := _scene.find_child("SafeFrame", true, false) as Control
-		var footer := _scene.find_child("Footer", true, false) as Control
-		_expect(_inside_viewport(safe, size), "SafeFrame should fit %sx%s" % [size.x, size.y])
-		_expect(_inside_viewport(footer, size), "Footer should fit %sx%s" % [size.x, size.y])
+		root.size = size
+		for _frame in range(3):
+			await process_frame
+		var viewport_rect := Rect2(Vector2.ZERO, Vector2(size))
+		for node_name in ["SafeFrame", "RootColumn", "PhaseHost", "Footer", "BackButton", "ConfirmButton", "SaveButton", "LoadButton"]:
+			var control := _scene.find_child(node_name, true, false) as Control
+			_expect(control != null, "%s should exist at %s" % [node_name, size])
+			if control == null:
+				continue
+			var rect := control.get_global_rect()
+			_expect(rect.size.x > 0.0 and rect.size.y > 0.0, "%s should have positive size at %s" % [node_name, size])
+			_expect(viewport_rect.encloses(rect), "%s should fit %s" % [node_name, size])
 
 	_scene.call("debug_force_incident_phase")
 	await process_frame
@@ -67,12 +74,6 @@ func _run() -> void:
 	var save_button := _scene.find_child("SaveButton", true, false) as Button
 	_expect(save_button != null and save_button.disabled, "save should be disabled during incident")
 	_finish()
-
-func _inside_viewport(control: Control, size: Vector2i) -> bool:
-	if control == null:
-		return false
-	var rect := control.get_global_rect()
-	return rect.position.x >= -1.0 and rect.position.y >= -1.0 and rect.end.x <= size.x + 1.0 and rect.end.y <= size.y + 1.0
 
 func _expect(condition: bool, message: String) -> void:
 	if not condition:
