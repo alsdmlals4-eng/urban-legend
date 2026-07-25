@@ -28,7 +28,10 @@
 | 렌더링·입력 QA 통합 | `RENDERED_QA_PASSED` — PR #65 / commit `b4f2e224bf7a2a6ee511c83bbbd45cd9e0b8570a` |
 | 그래픽 포인터 QA·모듈 토글 수정 | `PASSED` — PR #67 / commit `0f24efa204a04cca62a58e55628e6b831b9bef2d` |
 | 4주 월간 계약 | `APPROVED` — Issue #69 |
-| 4주 월간 구현 | `IMPLEMENTED_ON_BRANCH / CI_PENDING` |
+| 4주 월간 구현 | `MERGED / AUTOMATED_QA_PASSED` — PR #70 / commit `20a0d052e4d48863481af7c3acc53805105d6a01` |
+| 문서 계약 | `PASSED` — run #253 |
+| ANNUAL 자동 검증 | `PASSED` — run #101 |
+| 4주 시각·입력 QA | `PASSED` — run #34 |
 | 사람 손 장시간 사용성 QA | `NOT_RUN` |
 | 신규 플레이어 검증 | `NOT_RUN` |
 | POC_PASSED | `NOT_DECLARED` |
@@ -97,7 +100,11 @@ PR #65·#67에서 수행한 다음 증거는 렌더링·현지화·키보드·�
 - 전체 Godot 회귀 49/49
 - 대표 visual artifact id `8617041311`
 
-4주 계약 변경 후 위 테스트는 새 브랜치 CI에서 다시 실행해야 한다.
+4주 계약은 PR #70에서 다시 검증됐다.
+
+- 문서 계약 run #253: PASS
+- ANNUAL run #101: Python 계약, Godot 4.7.1 import, CORE focused, ANNUAL focused, 전체 Godot 회귀 PASS
+- Visual run #34: 키보드·Esc, 실제 그래픽 포인터, 4주차 결과·긴급 강제 출동 캡처 PASS
 
 ## 충돌 해석 우선순위
 
@@ -138,10 +145,8 @@ PR #65·#67에서 수행한 다음 증거는 렌더링·현지화·키보드·�
 
 ## 다음 게이트
 
-1. 4주 브랜치의 Python·Godot import·CORE·ANNUAL·전체 회귀
-2. 4주 구조 기준 렌더링·포인터 경로 재확인
-3. 사람 손을 사용한 장시간 마우스·키보드 사용성 평가
-4. 신규 플레이어의 2주차 조기·3주차 자율·4주차 강제 출동 플레이
-5. 육성→사건→연구 인과와 동료 자동 지원 공정성 설명 수집
-6. 전체 루프를 `KEEP / AMPLIFY / CHANGE / RETEST / HOLD`로 판정
-7. 별도 사용자 승인 전 ANNUAL-MVP-002와 제작 확대 시작 금지
+1. 사람 손을 사용한 장시간 마우스·키보드 사용성 평가
+2. 신규 플레이어의 2주차 조기·3주차 자율·4주차 강제 출동 플레이
+3. 육성→사건→연구 인과와 동료 자동 지원 공정성 설명 수집
+4. 전체 루프를 `KEEP / AMPLIFY / CHANGE / RETEST / HOLD`로 판정
+5. 별도 사용자 승인 전 ANNUAL-MVP-002와 제작 확대 시작 금지
