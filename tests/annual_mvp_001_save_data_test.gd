@@ -1,7 +1,7 @@
 extends SceneTree
 
 const Data = preload("res://scripts/poc/annual_mvp_001/annual_mvp_001_data.gd")
-const State = preload("res://scripts/poc/annual_mvp_001/annual_mvp_001_state.gd")
+const State = preload("res://scripts/poc/annual_mvp_001/annual_mvp_001_state_v2.gd")
 const SaveData = preload("res://scripts/poc/annual_mvp_001/annual_mvp_001_save_data.gd")
 const Adapter = preload("res://scripts/poc/annual_mvp_001/annual_mvp_001_incident_adapter.gd")
 
