@@ -150,7 +150,7 @@ func commit_week(activity_ids: Array[String]) -> Dictionary:
 
 		for project_id in (deltas.get("research_progress", {}) as Dictionary).keys():
 			var old_progress := int(_research_progress.get(project_id, 0))
-			var new_progress := max(0, old_progress + int((deltas.get("research_progress", {}) as Dictionary)[project_id]))
+			var new_progress: int = maxi(0, old_progress + int((deltas.get("research_progress", {}) as Dictionary)[project_id]))
 			_research_progress[project_id] = new_progress
 			(applied["research_progress"] as Dictionary)[project_id] = new_progress - old_progress
 
