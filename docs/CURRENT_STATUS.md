@@ -22,8 +22,8 @@
 | 사건 코어 main 통합 | PR #55 / commit `8d0bf91a2e31538d3c0f142c800a84e8e3693889` |
 | 연도제 설계 | `APPROVED_DESIGN_BASELINE` |
 | 정본 전환 | `COMPLETE` — PR #61 |
-| ANNUAL-MVP-001 구현 | `BUILD_READY` — PR #62 후보 |
-| 자동 검증 | `PASSED` — ANNUAL workflow run #59 |
+| ANNUAL-MVP-001 구현 | `BUILD_READY` — PR #62 / commit `88522ce08f261bce6d61a8043c64caa3b982bd47` |
+| 자동 검증 | `PASSED` — ANNUAL workflow run #63, CORE run #131, 문서 run #234 |
 | 사람 눈 UI·텍스트 QA | `NOT_RUN` |
 | 플레이 검증 | `NOT_RUN` |
 | POC_PASSED | `NOT_DECLARED` |
@@ -76,7 +76,7 @@
 
 ## 자동 검증 증거
 
-ANNUAL workflow run #59에서 다음이 모두 통과했다.
+ANNUAL workflow run #63에서 다음이 모두 통과했다.
 
 - Python 데이터·정적·활성 문서 계약: PASS
 - Godot 4.7.1 import: PASS
@@ -86,7 +86,20 @@ ANNUAL workflow run #59에서 다음이 모두 통과했다.
 - 기존 CORE-MVP-001 기본 진입: PASS
 - 기존 저장·보호 경로 비침범 정적 계약: PASS
 
+CORE workflow run #131과 문서 계약 run #234도 병합 전 동일 head에서 PASS했다.
+
 이 자동 결과는 `BUILD_READY` 근거다. 한국어 장문 밀도, 키보드·마우스 실제 조작감, 육성 선택과 사건 결과의 체감 인과는 아직 사람 증거가 없다.
+
+## 충돌 해석 우선순위
+
+구현·문서·기존 코드가 충돌할 때는 다음 순서로 해석한다.
+
+1. 사용자가 승인한 최신 연도제 설계
+2. 승인된 ANNUAL-MVP 구현 계획
+3. `CURRENT_STATUS`·`PROJECT_CORE`·GDD 활성 정본
+4. 기존 PoC와 레거시 구현
+
+최신 기획을 우선하되 보호 경로, 저장 비침범, 기존 CORE 하위 호환 계약은 유지한다.
 
 ## 보호 경계
 
@@ -113,9 +126,8 @@ ANNUAL workflow run #59에서 다음이 모두 통과했다.
 
 ## 다음 게이트
 
-1. PR #62 코드 리뷰와 squash merge 결정
-2. 1280×720·1920×1080 사람 눈 UI·텍스트 QA
-3. 조기 출동·지연 출동·긴급 출동 세 경로 플레이
-4. 육성→사건→연구 인과와 동료 자동 지원 공정성 설명 수집
-5. `KEEP / AMPLIFY / CHANGE / RETEST / HOLD` 판정
-6. 플레이 증거 전에는 ANNUAL-MVP-002와 제작 확대를 시작하지 않음
+1. 1280×720·1920×1080 사람 눈 UI·텍스트 QA
+2. 조기 출동·지연 출동·긴급 출동 세 경로 플레이
+3. 육성→사건→연구 인과와 동료 자동 지원 공정성 설명 수집
+4. `KEEP / AMPLIFY / CHANGE / RETEST / HOLD` 판정
+5. 별도 사용자 승인 전 ANNUAL-MVP-002와 제작 확대 시작 금지

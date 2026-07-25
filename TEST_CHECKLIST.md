@@ -13,7 +13,8 @@
 - CORE-MVP-001: `POC_BUILD_READY`
 - 연도제 설계: `APPROVED_DESIGN_BASELINE`
 - 정본 전환: `COMPLETE`
-- ANNUAL-MVP-001: `BUILD_READY`
+- ANNUAL-MVP-001: `BUILD_READY` — PR #62 / commit `88522ce08f261bce6d61a8043c64caa3b982bd47`
+- 자동 검증: `PASSED` — ANNUAL run #63, CORE run #131, 문서 run #234
 - 사람 눈 QA: `NOT_RUN`
 - 플레이 검증: `NOT_RUN`
 - `POC_PASSED`: `NOT_DECLARED`
@@ -26,6 +27,7 @@
 - [x] MVP_ROADMAP이 ANNUAL-MVP-001~004를 소유
 - [x] PR #61 정본 전환 병합
 - [x] 문서 계약 PASS
+- [x] 충돌 해석 순서가 최신 승인 설계→승인 구현 계획→활성 정본→레거시로 고정됨
 
 ## CORE-MVP-001 보존 회귀
 
@@ -126,7 +128,7 @@
 
 ## 자동 검증 증거
 
-ANNUAL workflow run #59:
+ANNUAL workflow run #63:
 
 - [x] Python 데이터·정적·활성 문서 계약 PASS
 - [x] Godot 4.7.1 import PASS
@@ -135,6 +137,12 @@ ANNUAL workflow run #59:
 - [x] 전체 Godot 회귀 49/49 PASS
 - [x] 신규 Scene 기계적 UI 계약 PASS
 - [x] 보호 경로 정적 계약 PASS
+
+추가 검증:
+
+- [x] CORE workflow run #131 PASS
+- [x] 문서 계약 run #234 PASS
+- [x] PR #62 squash merge 완료
 
 ## 보호 경계
 

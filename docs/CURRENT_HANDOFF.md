@@ -31,8 +31,11 @@ canonical_migration:
 annual_mvp_001:
   implementation: BUILD_READY
   implementation_pr: 62
+  main_commit: 88522ce08f261bce6d61a8043c64caa3b982bd47
   automated_verification: PASSED
-  validation_run: 59
+  validation_run: 63
+  core_validation_run: 131
+  document_validation_run: 234
   focused_suite: 6/6
   full_regression: 49/49
   human_visual_qa: NOT_RUN
@@ -54,9 +57,21 @@ AGENTS.md
 → 기존 CORE-MVP-001 코드·데이터·테스트
 ```
 
+## 충돌 해석
+
+구현·문서·레거시가 다를 때는 다음 순서를 사용한다.
+
+1. 사용자 승인 최신 연도제 설계
+2. 승인된 ANNUAL-MVP 구현 계획
+3. `CURRENT_STATUS`·`PROJECT_CORE`·GDD 활성 정본
+4. 기존 PoC·레거시 구현
+
+최신 기획이 우선이지만 보호 경로, 기존 저장 비침범, CORE 하위 호환은 깨지 않는다.
+
 ## 현재 구현 사실
 
-- ANNUAL-MVP-001은 별도 `AnnualMvp001State`와 전용 저장을 사용한다.
+- ANNUAL-MVP-001은 PR #62에서 `main`에 squash merge됐다.
+- 별도 `AnnualMvp001State`와 전용 저장을 사용한다.
 - 3주 × 주당 3슬롯의 일정 선택이 역량·피로·기관 지원·오현 신뢰에 반영된다.
 - 2주차 자율 출동, 3주차 추가 준비, 위험 +15 출동, 위험 +30 긴급 출동이 구현됐다.
 - 출동 준비에서 오현, 공용 보조 스킬, 신호 완충 모듈을 구성한다.
@@ -73,7 +88,7 @@ AGENTS.md
 
 ## 자동 검증
 
-ANNUAL workflow run #59:
+ANNUAL workflow run #63:
 
 - Python 계약 PASS
 - Godot 4.7.1 import PASS
@@ -82,6 +97,8 @@ ANNUAL workflow run #59:
 - 전체 Godot 회귀 49/49 PASS
 - 1280×720·1920×1080 기계적 레이아웃 PASS
 - 기존 save `mvp-039`와 `mvp-038` 이관 비침범 PASS
+
+CORE workflow run #131과 문서 계약 run #234도 PASS했다.
 
 ## 보호할 계약
 
@@ -109,8 +126,8 @@ ANNUAL workflow run #59:
 
 ## 다음 작업
 
-1. PR #62 리뷰·병합 결정
-2. 세 경로 사람 눈 QA: 조기 출동 / 지연 출동 / 긴급 출동
-3. 신규 플레이어에게 육성→사건→연구 인과를 설명하게 함
-4. 지원 조건·확률·준비도의 공정성 확인
-5. 결과를 `KEEP / AMPLIFY / CHANGE / RETEST / HOLD`로 판정
+1. 세 경로 사람 눈 QA: 조기 출동 / 지연 출동 / 긴급 출동
+2. 신규 플레이어에게 육성→사건→연구 인과를 설명하게 함
+3. 지원 조건·확률·준비도의 공정성 확인
+4. 결과를 `KEEP / AMPLIFY / CHANGE / RETEST / HOLD`로 판정
+5. 별도 사용자 승인 전 ANNUAL-MVP-002를 시작하지 않음

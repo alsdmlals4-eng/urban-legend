@@ -16,8 +16,8 @@
 | 사건 코어 | CORE-MVP-001 `POC_BUILD_READY` |
 | 연도제 설계 | `APPROVED_DESIGN_BASELINE` |
 | 정본 전환 | `COMPLETE` |
-| ANNUAL-MVP-001 | `BUILD_READY` |
-| 자동 검증 | `PASSED` — workflow run #59 |
+| ANNUAL-MVP-001 | `BUILD_READY` — PR #62 / commit `88522ce08f261bce6d61a8043c64caa3b982bd47` |
+| 자동 검증 | `PASSED` — ANNUAL run #63 |
 | 사람 눈 QA | `NOT_RUN` |
 | 플레이 검증 | `NOT_RUN` |
 | POC_PASSED | `NOT_DECLARED` |
@@ -34,6 +34,7 @@
 - 회수 승리는 HP 0이 아니라 패턴 대응으로 포획 창을 여는 것이다.
 - 연말 결과는 최종 엔딩이 아니라 연도 결산이다.
 - 자동 회귀 통과만으로 `POC_PASSED`나 제작 확대를 선언하지 않는다.
+- 충돌 시 사용자 승인 최신 설계 → 승인 구현 계획 → 활성 정본 → 기존 PoC·레거시 순서로 해석한다.
 
 ## 완료·보존
 
@@ -46,13 +47,11 @@
 - 플레이 증거: `NOT_RUN`
 - `POC_PASSED`: `NOT_DECLARED`
 
-## 현재 게이트
-
 ### ANNUAL-MVP-001 — 육성→사건→연구 수직절편
 
 > 구현 상태: `BUILD_READY`  
-> 구현 PR: #62  
-> 자동 검증: workflow run #59 PASS
+> main 통합: PR #62 / commit `88522ce08f261bce6d61a8043c64caa3b982bd47`  
+> 자동 검증: ANNUAL run #63, CORE run #131, 문서 run #234 PASS
 
 #### 구현 범위
 
@@ -82,16 +81,16 @@
 - 1280×720·1920×1080 기계적 UI 계약: PASS
 - 보호 경로·기존 저장 비침범: PASS
 
-#### 다음 통과 조건
+## 현재 게이트
 
-`BUILD_READY → QA_READY`
+### `BUILD_READY → QA_READY`
 
 - 1280×720·1920×1080 사람 눈 UI 검토
 - 한국어 장문 줄바꿈과 정보 밀도 확인
 - 마우스·키보드·Esc·포커스 실제 조작
 - 조기·지연·긴급 출동 세 경로 완주
 
-`QA_READY → 플레이 판정`
+### `QA_READY → 플레이 판정`
 
 - 육성·준비 선택이 사건 정보·위험·피해 관리에 연결됨을 설명
 - 사건 결과가 연구·스킬·결산으로 환류함을 설명
