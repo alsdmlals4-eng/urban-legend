@@ -3,7 +3,7 @@
   "adapter_role": "urban-legend-base-operating-path-adapter",
   "base": {
     "repository": "alsdmlals4-eng/Base",
-    "commit": "c7c1103e4a69f8fdc9ee27aa382a21288605a7fb",
+    "commit": "41a20584dd2ee51d917e5c9d7cab6838e1ceba7e",
     "version_authority": "docs/BASE_RULES_VERSION.md"
   },
   "project": {
