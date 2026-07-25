@@ -14,6 +14,15 @@ const COLOR_DANGER := Color("d0505e")
 
 static func create_theme() -> Theme:
 	var theme := Theme.new()
+	var system_font := SystemFont.new()
+	system_font.font_names = PackedStringArray([
+		"Noto Sans CJK KR",
+		"Noto Sans KR",
+		"Malgun Gothic",
+		"Apple SD Gothic Neo",
+		"Arial"
+	])
+	theme.default_font = system_font
 	theme.default_font_size = 17
 	theme.set_color("font_color", "Label", COLOR_INK)
 	theme.set_color("font_shadow_color", "Label", Color(0, 0, 0, 0.65))
