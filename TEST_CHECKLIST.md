@@ -3,7 +3,8 @@
 > 문서 위치: `TEST_CHECKLIST.md`  
 > 상태: `docs/CURRENT_STATUS.md`  
 > 코어: `docs/PROJECT_CORE.md`  
-> 로드맵: `MVP_ROADMAP.md`
+> 로드맵: `MVP_ROADMAP.md`  
+> 렌더링 QA: `docs/qa/2026-07-25-annual-mvp-001-rendered-qa.md`
 
 ## 현재 기준
 
@@ -14,9 +15,12 @@
 - 연도제 설계: `APPROVED_DESIGN_BASELINE`
 - 정본 전환: `COMPLETE`
 - ANNUAL-MVP-001: `BUILD_READY` — PR #62 / commit `88522ce08f261bce6d61a8043c64caa3b982bd47`
-- 자동 검증: `PASSED` — ANNUAL run #63, CORE run #131, 문서 run #234
-- 사람 눈 QA: `NOT_RUN`
-- 플레이 검증: `NOT_RUN`
+- 구현 자동 검증: `PASSED` — ANNUAL run #63, CORE run #131, 문서 run #234
+- 렌더링·텍스트 검토: `PASSED_ON_PR_65` — visual run #15
+- 키보드 포커스·확인·Esc: `PASSED_ON_PR_65` — visual run #15
+- 세 출동 경로 scripted QA: `PASSED_ON_PR_65` — visual run #15
+- 수동 마우스 QA: `NOT_RUN`
+- 신규 플레이어 검증: `NOT_RUN`
 - `POC_PASSED`: `NOT_DECLARED`
 - 제작 확대: `NOT_APPROVED`
 
@@ -42,8 +46,9 @@
 - [x] 독립 기본 실행 유지
 - [x] focused suite 4/4 PASS
 - [x] 전체 Godot 회귀에 포함
-- [ ] 사람 눈 장문·시각 밀도 QA
-- [ ] 신규 플레이어 인과 설명
+- [x] embedded CORE 조사 패널 1280×720·1920×1080 렌더링 노출
+- [x] embedded CORE 단계·이해도 한국어 표시
+- [ ] 신규 플레이어 사건 인과 설명
 
 ## ANNUAL-MVP-001 데이터·상태
 
@@ -87,6 +92,7 @@
 - [x] 테스트 고정 판정열과 production seeded RNG 분리
 - [x] 허용 효과는 체력 회복·위험 완화
 - [x] 정답·가설·이해도·관측 패턴·포획 표식 변경 금지
+- [ ] 신규 플레이어가 조건·확률·준비도를 공정하다고 설명
 
 ## 사건 adapter·CORE 확장
 
@@ -122,27 +128,54 @@
 - [x] 주간 계획·결과·출동·준비·사건·연구·결산 흐름
 - [x] 사건 중 Save 버튼 비활성
 - [x] 1280×720·1920×1080 기계적 레이아웃 계약
+- [x] 1280×720·1920×1080 실제 렌더링 PNG 검토
+- [x] 공용 현대 오컬트 Theme과 어두운 배경 적용
+- [x] Noto CJK·Windows·macOS 한글 시스템 글꼴 후보 적용
+- [x] 한국어 글리프·줄바꿈·시각 밀도 검토
+- [x] 단계·활동·역량·회수·지식 품질 내부 ID 현지화
+- [x] embedded CORE 조사 선택지·매뉴얼·스크롤 영역 노출
+- [x] 초기 키보드 포커스
+- [x] `ui_accept`로 활동 선택
+- [x] Esc로 마지막 주간 선택 취소
 - [x] 분기 결산이 최종 엔딩이 아님을 텍스트로 표시
-- [ ] 한국어 장문 줄바꿈·시각 밀도 사람 눈 QA
-- [ ] 실제 마우스·키보드·Esc·포커스 QA
+- [ ] 실제 포인터를 사용하는 수동 마우스 QA
+
+## 세 출동 경로 scripted QA
+
+- [x] 조기 출동: week 2 / 시작 위험 0
+- [x] 조기 출동: 정상 회수 / 검증 완료 매뉴얼
+- [x] 지연 출동: week 3 / 시작 위험 15
+- [x] 지연 출동: 대가를 치른 회수 / 검증 완료 매뉴얼
+- [x] 긴급 출동: week 3 forced / 시작 위험 30
+- [x] 긴급 출동: 긴급 회수 / 후보 기록 / 위험 사례
+- [x] 세 경로 모두 분기 결산 도달
+- [x] 결산에 자율·긴급 출동과 회수·지식 품질 차이 표시
 
 ## 자동 검증 증거
 
-ANNUAL workflow run #63:
+### 구현 기준
 
-- [x] Python 데이터·정적·활성 문서 계약 PASS
-- [x] Godot 4.7.1 import PASS
+- [x] ANNUAL workflow run #63 PASS
+- [x] CORE workflow run #131 PASS
+- [x] 문서 계약 run #234 PASS
 - [x] CORE-MVP-001 focused 4/4 PASS
 - [x] ANNUAL-MVP-001 focused 6/6 PASS
 - [x] 전체 Godot 회귀 49/49 PASS
-- [x] 신규 Scene 기계적 UI 계약 PASS
-- [x] 보호 경로 정적 계약 PASS
-
-추가 검증:
-
-- [x] CORE workflow run #131 PASS
-- [x] 문서 계약 run #234 PASS
 - [x] PR #62 squash merge 완료
+
+### 렌더링 QA PR #65
+
+- [x] Visual workflow run #15 PASS
+- [x] ANNUAL workflow run #80 PASS
+- [x] Godot 4.7.1 import PASS
+- [x] 그래픽 Window·OpenGL3·Xvfb 렌더링 PASS
+- [x] 키보드 입력 QA PASS
+- [x] PNG 22개와 세 경로 manifest 생성
+- [x] visual artifact id `8617041311`
+- [x] artifact digest `sha256:bb623881ef31a6e4f33cfd6884acbca29735187a1986beaaddd14c64f8353ca4`
+- [x] CORE-MVP-001 focused 4/4 PASS
+- [x] ANNUAL-MVP-001 focused 6/6 PASS
+- [x] 전체 Godot 회귀 49/49 PASS
 
 ## 보호 경계
 
@@ -153,7 +186,7 @@ ANNUAL workflow run #63:
 - [x] `project.godot` 미변경
 - [x] `knowledge/base-pack/**` 미변경
 
-## 플레이 검증 — 미실행
+## 신규 플레이어 검증 — 미실행
 
 - [ ] 조기 출동과 지연 출동의 차이를 플레이어가 설명
 - [ ] 긴급 출동의 비용과 준비 부족을 이해
@@ -169,10 +202,13 @@ ANNUAL workflow run #63:
 canonical_migration: COMPLETE
 automated_document_validation: PASSED
 annual_mvp_001: BUILD_READY
-automated_verification: PASSED
-human_visual_qa: NOT_RUN
+rendered_visual_review: PASSED_ON_PR_65
+keyboard_input_qa: PASSED_ON_PR_65
+three_route_scripted_qa: PASSED_ON_PR_65
+manual_mouse_qa: NOT_RUN
 player_validation: NOT_RUN
 annual_loop_passed: NOT_DECLARED
 poc_passed: NOT_DECLARED
 production_expansion: NOT_APPROVED
+visual_direction: KEEP / AMPLIFY
 ```
