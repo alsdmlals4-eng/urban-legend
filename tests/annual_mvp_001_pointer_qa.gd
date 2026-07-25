@@ -71,13 +71,14 @@ func _run() -> void:
 	_expect(save_button != null and save_button.disabled, "save button should be disabled during incident")
 
 	var manual_list := _scene.find_child("ManualList", true, false)
-	var choice_grid := _scene.find_child("ChoiceGrid", true, false)
 	var manual_button := _first_enabled_button(manual_list)
-	var choice_button := _first_enabled_button(choice_grid)
 	_expect(manual_button != null, "embedded manual button should be pointer-accessible")
-	_expect(choice_button != null, "embedded choice button should be pointer-accessible")
-	if manual_button != null and choice_button != null:
+	if manual_button != null:
 		await _click_control(manual_button)
+	var choice_grid := _scene.find_child("ChoiceGrid", true, false)
+	var choice_button := _first_enabled_button(choice_grid)
+	_expect(choice_button != null, "embedded choice button should be pointer-accessible after rerender")
+	if choice_button != null:
 		await _click_control(choice_button)
 		var feedback := _scene.find_child("FeedbackLabel", true, false) as Label
 		_expect(feedback != null and not feedback.text.is_empty(), "embedded pointer choice should produce feedback")
@@ -94,8 +95,14 @@ func _click_text(text: String) -> void:
 
 
 func _click_control(control: BaseButton) -> void:
+	if not is_instance_valid(control):
+		_failures.append("pointer target was freed before click")
+		return
 	for _frame in range(2):
 		await process_frame
+	if not is_instance_valid(control):
+		_failures.append("pointer target was freed during layout")
+		return
 	var center := control.get_global_rect().get_center()
 	Input.warp_mouse(center)
 	var motion := InputEventMouseMotion.new()
