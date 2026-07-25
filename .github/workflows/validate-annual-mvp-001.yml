@@ -9,6 +9,7 @@ on:
       - "scripts/poc/core_mvp_001/**"
       - "scripts/ui/main_menu.gd"
       - "tests/**"
+      - "tools/ci/annual_mvp_001_core_tests.patch"
       - ".github/workflows/validate-annual-mvp-001.yml"
   workflow_dispatch:
 
@@ -17,7 +18,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   annual-validation:
@@ -25,6 +26,20 @@ jobs:
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+      - name: Apply staged core extension red tests
+        run: |
+          if git apply --reverse --check tools/ci/annual_mvp_001_core_tests.patch >/dev/null 2>&1; then
+            echo "Core extension red tests already applied."
+          else
+            git apply tools/ci/annual_mvp_001_core_tests.patch
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add tests/core_mvp_001_state_test.gd tests/core_mvp_001_scene_test.gd
+            git commit -m "test: define core session extension contract"
+            git push origin HEAD:${{ github.head_ref || github.ref_name }}
+          fi
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
