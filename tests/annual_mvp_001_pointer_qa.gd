@@ -138,7 +138,7 @@ func _click_control(control: BaseButton) -> void:
 func _find_button_by_text(node: Node, text: String) -> BaseButton:
 	if node is BaseButton:
 		var button := node as BaseButton
-		var matches_activity_cost := button.text.begins_with("%s · " % text)
+		var matches_activity_cost: bool = button.text.begins_with("%s · " % text)
 		if (button.text == text or matches_activity_cost) and button.is_visible_in_tree() and not button.disabled:
 			return button
 	for child in node.get_children():
