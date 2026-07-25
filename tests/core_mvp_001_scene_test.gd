@@ -1,6 +1,8 @@
 extends SceneTree
 
 const TestSaveGuard = preload("res://tests/test_save_guard.gd")
+const CaseData = preload("res://scripts/poc/core_mvp_001/core_mvp_001_case_data.gd")
+const SceneScript = preload("res://scripts/poc/core_mvp_001/core_mvp_001_scene.gd")
 
 var _guard := TestSaveGuard.new()
 var _prepared := false
@@ -19,6 +21,18 @@ func _run() -> void:
 		_finish()
 		return
 	_prepared = true
+	var override: Dictionary = CaseData.load_case("res://data/poc/core_mvp_001/afterlife_station_poc.json")
+	override["case"]["starting_risk"] = 15
+	var configured := SceneScript.new()
+	configured.configure_session(override, 3001, null)
+	root.add_child(configured)
+	for _frame in range(4):
+		await process_frame
+	_expect(configured.debug_snapshot().get("risk") == 15, "configured scene should use case override")
+	_expect(configured.find_child("ExtensionStatusLabel", true, false) != null, "configured scene should expose extension status label")
+	configured.queue_free()
+	await process_frame
+
 	change_scene_to_file("res://scenes/poc/core_mvp_001/core_mvp_001_scene.tscn")
 	for _frame in range(6):
 		await process_frame
@@ -50,6 +64,7 @@ func _run() -> void:
 		"ChoiceGrid",
 		"ManualList",
 		"FeedbackLabel",
+		"ExtensionStatusLabel",
 		"Footer",
 		"BackButton",
 		"ConfirmButton",
