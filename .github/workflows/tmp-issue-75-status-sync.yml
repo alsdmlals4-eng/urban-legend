@@ -1,0 +1,145 @@
+name: Temporary Issue 75 status synchronization
+
+on:
+  push:
+    branches:
+      - agent/issue-75-status-sync
+    paths:
+      - .github/workflows/tmp-issue-75-status-sync.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch-active-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/issue-75-status-sync
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Patch only stale post-merge status text
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          commit = "57c1f3d92e0fdae658826a23e5c2326fe9efe478"
+          files = [
+              Path("docs/PROJECT_CORE.md"),
+              Path("docs/GAME_DESIGN_DOCUMENT.md"),
+              Path("MVP_ROADMAP.md"),
+              Path("TEST_CHECKLIST.md"),
+              Path("docs/PROJECT_CONTEXT.md"),
+              Path("docs/planning/PROJECT_DIRECTION.md"),
+              Path("docs/planning/ROADMAP_AND_HANDOFF.md"),
+              Path("tests/test_annual_mvp_001_document_contract.py"),
+          ]
+
+          common = {
+              "SEVEN_DAY_SCHEDULING_ON_BRANCH / CI_PENDING": "SEVEN_DAY_SCHEDULING_MERGED / AUTOMATED_QA_PASSED",
+              "ANNUAL_MVP_001_SEVEN_DAY_SCHEDULING_ON_BRANCH_CI_PENDING": "ANNUAL_MVP_001_SEVEN_DAY_SCHEDULING_MERGED_AUTOMATED_QA_PASSED",
+              "`ON_BRANCH / CI_PENDING`": "`MERGED / AUTOMATED_QA_PASSED` — PR #76 / commit `" + commit + "`",
+              "annual_mvp_001_seven_day_implementation: ON_BRANCH": "annual_mvp_001_seven_day_implementation: MERGED",
+              "automated_verification: PENDING": "automated_verification: PASSED",
+              "    implementation: ON_BRANCH\n    automated_verification: PENDING": "    implementation: MERGED\n    documentation_run: 273_PASS\n    annual_validation_run: 121_PASS\n    visual_run: 51_PASS",
+          }
+
+          specific = {
+              Path("docs/PROJECT_CORE.md"): {
+                  "— Issue #75  ": "— Issue #75 / PR #76 / commit `" + commit + "`  ",
+                  "- 현재 작업: ANNUAL-MVP-001 4주 구조를 유지한 채 `7일 주간·가변 일정 일수` 계약으로 전환 중 — Issue #75": "- 통합 완료: ANNUAL-MVP-001 4주 구조를 유지한 `7일 주간·가변 일정 일수` 계약 — Issue #75 / PR #76 / commit `" + commit + "`",
+              },
+              Path("docs/GAME_DESIGN_DOCUMENT.md"): {
+                  "— Issue #75 |": "— Issue #75 / PR #76 / commit `" + commit + "` |",
+                  "최신 7일 계약은 Issue #75에서 구현·검증 중이다.": "최신 7일 계약은 Issue #75와 PR #76에서 구현·자동 검증·병합을 완료했다. 문서 run #273, ANNUAL run #121, Visual run #51이 통과했다.",
+              },
+              Path("MVP_ROADMAP.md"): {
+                  "## 현재 작업 — 7일 주간·가변 일정 일수": "## 통합 완료 — 7일 주간·가변 일정 일수",
+                  "- [ ] Python 계약": "- [x] Python 계약 — run #121 PASS",
+                  "- [ ] Godot 4.7.1 import": "- [x] Godot 4.7.1 import — run #121 PASS",
+                  "- [ ] CORE focused": "- [x] CORE focused — run #121 PASS",
+                  "- [ ] ANNUAL focused": "- [x] ANNUAL focused — run #121 PASS",
+                  "- [ ] 전체 Godot 회귀": "- [x] 전체 Godot 회귀 — run #121 PASS",
+                  "- [ ] 7일 편성·자동 휴식 경고 렌더링": "- [x] 7일 편성·자동 휴식 경고 렌더링 — run #51 PASS",
+                  "- [ ] 키보드·그래픽 포인터 경로": "- [x] 키보드·그래픽 포인터 경로 — run #51 PASS",
+                  "- [ ] PR changed-file·review thread 감사": "- [x] PR #76 changed-file·review thread 감사 — thread 0",
+                  "- [ ] squash merge와 main 상태 보정": "- [x] PR #76 squash merge — commit `" + commit + "`\n- [x] Issue #75 completed\n- [ ] main 상태 문서 보정 PR 병합",
+                  "- Issue #75 통합 완료": "- Issue #75 통합 완료 — PR #76 / commit `" + commit + "`",
+              },
+              Path("TEST_CHECKLIST.md"): {
+                  "- [ ] PR·commit·CI 최종 증거 기록": "- [x] PR #76·commit `" + commit + "`·run #273/#121/#51 기록",
+                  "- [ ] Python 데이터 계약 PASS": "- [x] Python 데이터 계약 — run #121 PASS",
+                  "- [ ] Godot 데이터 테스트 PASS": "- [x] Godot 데이터 테스트 — run #121 PASS",
+                  "- [ ] ANNUAL 상태 테스트 PASS": "- [x] ANNUAL 상태 테스트 — run #121 PASS",
+                  "- [ ] 세 출동 경로 자동 회귀 PASS": "- [x] 세 출동 경로 자동 회귀 — run #121/#51 PASS",
+                  "- [ ] save test PASS": "- [x] save test — run #121 PASS",
+                  "- [ ] Scene test PASS": "- [x] Scene test — run #121 PASS",
+                  "- [ ] 1280×720·1920×1080 화면 확인": "- [x] 1280×720·1920×1080 화면 확인 — run #51 PASS",
+                  "- [ ] 자동 휴식 경고 캡처 PASS": "- [x] 자동 휴식 경고 캡처 — run #51 PASS",
+                  "- [ ] 4주차 결과·강제 출동 캡처 PASS": "- [x] 4주차 결과·강제 출동 캡처 — run #51 PASS",
+                  "- [ ] 실제 그래픽 포인터 경로 PASS": "- [x] 실제 그래픽 포인터 경로 — run #51 PASS",
+                  "- [ ] DOCX build PASS": "- [x] 결정적 DOCX 생성기 계약 — 문서 run #273 PASS",
+                  "- [ ] DOCX source hash check PASS": "- [x] DOCX source hash 코드 계약 — 문서 run #273 PASS",
+                  "- [ ] 문서 계약 PASS": "- [x] 문서 계약 — run #273 PASS",
+                  "- [ ] CORE focused PASS": "- [x] CORE focused — run #121 PASS",
+                  "- [ ] 전체 Godot 회귀에서 CORE 경로 PASS": "- [x] 전체 Godot 회귀에서 CORE 경로 — run #121 PASS",
+                  "- [ ] PR 생성": "- [x] PR #76 생성",
+                  "- [ ] changed-file 감사": "- [x] changed-file 감사",
+                  "- [ ] review thread 0건 확인": "- [x] review thread 0건 확인",
+                  "- [ ] required CI 성공": "- [x] required CI — run #273/#121/#51 PASS",
+                  "- [ ] squash merge": "- [x] PR #76 squash merge — commit `" + commit + "`",
+                  "- [ ] Issue #75 completed": "- [x] Issue #75 completed",
+                  "- [ ] main 상태 문서에 PR·commit·run 기록": "- [x] 상태 보정 브랜치에 PR·commit·run 기록\n- [ ] 상태 보정 PR main 병합",
+              },
+              Path("docs/PROJECT_CONTEXT.md"): {
+                  "ANNUAL-MVP-001 7일 주간·가변 일정 구현 `ON_BRANCH / CI_PENDING` — Issue #75": "ANNUAL-MVP-001 7일 주간·가변 일정 구현 `MERGED / AUTOMATED_QA_PASSED` — Issue #75 / PR #76 / commit `" + commit + "`",
+              },
+              Path("docs/planning/PROJECT_DIRECTION.md"): {
+                  "Issue #75의 자동 검증과 병합 뒤 실제 사람의 일정 편성·경고·출동 경로를 검증한다.": "Issue #75와 PR #76의 자동 검증·병합은 완료됐다. 다음으로 실제 사람의 일정 편성·경고·출동 경로를 검증한다.",
+              },
+              Path("docs/planning/ROADMAP_AND_HANDOFF.md"): {
+                  "1. Issue #75 브랜치의 데이터·상태·Scene·테스트 계약을 실행한다.\n2. GDD DOCX build와 source hash를 검증한다.\n3. 7일 편성·자동 휴식 경고를 720p·1080p와 그래픽 포인터로 검증한다.\n4. PR changed-file·review thread·CI를 확인하고 squash merge한다.\n5. main 상태 문서에 최종 PR·commit·run을 기록한다.\n6. 사람 플레이 전에는 `POC_PASSED`를 선언하지 않는다.": "1. 실제 사람의 7일 편성·자동 휴식 경고 반복 조작을 검증한다.\n2. 2주차 조기·3주차 자율·4주차 강제 출동을 신규 플레이어가 수행한다.\n3. 육성→사건→연구 인과와 지원 공정성 설명을 수집한다.\n4. `KEEP / AMPLIFY / CHANGE / RETEST / HOLD`를 판정한다.\n5. 사람 플레이 전에는 `POC_PASSED`를 선언하지 않는다.",
+              },
+              Path("tests/test_annual_mvp_001_document_contract.py"): {
+                  'self.assertIn("SEVEN_DAY_SCHEDULING_ON_BRANCH", text)': 'self.assertIn("SEVEN_DAY_SCHEDULING_MERGED", text)',
+                  'self.assertIn("CI_PENDING", text)': 'self.assertIn("AUTOMATED_QA_PASSED", text)',
+              },
+          }
+
+          for path in files:
+              text = path.read_text(encoding="utf-8")
+              original = text
+              for old, new in common.items():
+                  text = text.replace(old, new)
+              for old, new in specific.get(path, {}).items():
+                  text = text.replace(old, new)
+              if path.name == "test_annual_mvp_001_document_contract.py" and "SEVEN_DAY_SCHEDULING_ON_BRANCH" not in text:
+                  marker = '            self.assertIn("POC_PASSED", text)\n'
+                  insertion = marker + '            self.assertNotIn("SEVEN_DAY_SCHEDULING_ON_BRANCH", text)\n            self.assertNotIn("CI_PENDING", text)\n'
+                  text = text.replace(marker, insertion)
+              if text != original:
+                  path.write_text(text, encoding="utf-8")
+
+          stale = []
+          for path in files:
+              text = path.read_text(encoding="utf-8")
+              for token in ("SEVEN_DAY_SCHEDULING_ON_BRANCH", "CI_PENDING"):
+                  if token in text:
+                      stale.append(f"{path}: {token}")
+          if stale:
+              raise SystemExit("Stale status remains:\n" + "\n".join(stale))
+          PY
+      - name: Commit synchronized active status
+        run: |
+          if git diff --quiet; then
+            echo "No status changes needed"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/PROJECT_CORE.md docs/GAME_DESIGN_DOCUMENT.md MVP_ROADMAP.md TEST_CHECKLIST.md docs/PROJECT_CONTEXT.md docs/planning/PROJECT_DIRECTION.md docs/planning/ROADMAP_AND_HANDOFF.md tests/test_annual_mvp_001_document_contract.py
+          git commit -m "docs: finalize merged seven-day scheduling status"
+          git push origin HEAD:agent/issue-75-status-sync
