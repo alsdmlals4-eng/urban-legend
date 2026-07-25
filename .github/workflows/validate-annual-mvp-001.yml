@@ -37,8 +37,25 @@ jobs:
           use-dotnet: false
           include-templates: false
       - name: Import project
-        run: godot --headless --path . --import
+        run: |
+          set -o pipefail
+          godot --headless --path . --import 2>&1 | tee annual-import.log
       - name: Run annual data loader test
-        run: godot --headless --path . --script res://tests/annual_mvp_001_data_test.gd
+        run: |
+          set -o pipefail
+          godot --headless --path . --script res://tests/annual_mvp_001_data_test.gd 2>&1 | tee annual-data.log
       - name: Run annual state machine test
-        run: godot --headless --path . --script res://tests/annual_mvp_001_state_test.gd
+        run: |
+          set -o pipefail
+          godot --headless --path . --script res://tests/annual_mvp_001_state_test.gd 2>&1 | tee annual-state.log
+      - name: Preserve failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: annual-mvp-001-failure
+          path: |
+            annual-import.log
+            annual-data.log
+            annual-state.log
+          if-no-files-found: warn
+          retention-days: 7
