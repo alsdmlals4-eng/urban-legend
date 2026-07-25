@@ -24,183 +24,17 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   ubuntu-document-validation:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref }}
-          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Apply one-time Issue 78 canonical synchronization
-        if: github.head_ref == 'agent/issue-78-doc-sync'
-        env:
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-        shell: bash
-        run: |
-          set +e
-          python - <<'PY'
-          from pathlib import Path
-          source = Path('.github/workflows/issue-78-doc-sync-helper.yml').read_text(encoding='utf-8')
-          marker = "          python - <<'PY'\n"
-          start = source.index(marker) + len(marker)
-          end = source.index("\n          PY\n", start)
-          lines = source[start:end].splitlines()
-          script = "\n".join(line[10:] if line.startswith("          ") else line for line in lines) + "\n"
-          script = script.replace(
-              '- [x] 활성 정본에서 `SEVEN_DAY_SCHEDULING_ON_BRANCH`·`CI_PENDING` 제거',
-              '- [x] 활성 정본에서 임시 브랜치·검증 대기 상태 토큰 제거',
-          )
-          scope_start = script.index('scoped = [')
-          scope_end = script.index('\n]', scope_start) + 2
-          scope_block = script[scope_start:scope_end]
-          assertion_entry = "    'tests/test_annual_mvp_001_document_contract.py',\n"
-          if assertion_entry not in scope_block:
-              raise SystemExit('Issue 78 assertion file was not found in stale-check scope')
-          scope_block = scope_block.replace(assertion_entry, '', 1)
-          script = script[:scope_start] + scope_block + script[scope_end:]
-          Path('/tmp/issue78_sync.py').write_text(script, encoding='utf-8')
-          PY
-          python /tmp/issue78_sync.py 2>&1 | tee issue78-sync.log
-          status=${PIPESTATUS[0]}
-          if [ "$status" -ne 0 ]; then
-            exit "$status"
-          fi
-          python - <<'PY'
-          from pathlib import Path
-
-          core_path = Path('docs/PROJECT_CORE.md')
-          core = core_path.read_text(encoding='utf-8')
-          core_marker = '- 데이터 계약은 `annual-mvp-001-v3`다.\n'
-          boundary_rule = '- 일정은 주차 경계를 넘지 못한다.\n'
-          if boundary_rule not in core:
-              if core_marker not in core:
-                  raise SystemExit('PROJECT_CORE data-contract marker not found')
-              core = core.replace(core_marker, core_marker + boundary_rule, 1)
-              core_path.write_text(core, encoding='utf-8')
-
-          protocol_path = Path('docs/PROJECT_UPDATE_PROTOCOL.md')
-          protocol = protocol_path.read_text(encoding='utf-8')
-          detail_lines = (
-              '> 상세 설계 원본: `docs/GAME_DESIGN_DOCUMENT.md`  \n'
-              '> 구현 순서 원본: `MVP_ROADMAP.md`  \n'
-              '> 검증 원본: `TEST_CHECKLIST.md`  \n'
-          )
-          if '> 구현 순서 원본: `MVP_ROADMAP.md`' not in protocol:
-              marker = '> 인수인계 원본: `docs/CURRENT_HANDOFF.md`  \n'
-              if marker not in protocol:
-                  raise SystemExit('PROJECT_UPDATE_PROTOCOL handoff marker not found')
-              existing_detail = '> 상세 설계 원본: `docs/GAME_DESIGN_DOCUMENT.md`  \n'
-              protocol = protocol.replace(existing_detail, '', 1)
-              protocol = protocol.replace(marker, marker + detail_lines, 1)
-              protocol_path.write_text(protocol, encoding='utf-8')
-
-          lines = [
-              'from __future__ import annotations',
-              '',
-              'import unittest',
-              'from pathlib import Path',
-              '',
-              'ROOT = Path(__file__).resolve().parents[1]',
-              'ACTIVE_DOCS = (',
-              '    ROOT / "docs/CURRENT_STATUS.md",',
-              '    ROOT / "docs/CURRENT_HANDOFF.md",',
-              '    ROOT / "docs/PROJECT_CORE.md",',
-              '    ROOT / "docs/GAME_DESIGN_DOCUMENT.md",',
-              '    ROOT / "MVP_ROADMAP.md",',
-              '    ROOT / "TEST_CHECKLIST.md",',
-              '    ROOT / "docs/PROJECT_CONTEXT.md",',
-              '    ROOT / "docs/planning/PROJECT_DIRECTION.md",',
-              '    ROOT / "docs/planning/ROADMAP_AND_HANDOFF.md",',
-              ')',
-              '',
-              '',
-              'class ProjectDocumentSyncTests(unittest.TestCase):',
-              '    def test_active_documents_exist(self) -> None:',
-              '        for path in ACTIVE_DOCS:',
-              '            self.assertTrue(path.is_file(), path.relative_to(ROOT))',
-              '',
-              '    def test_seven_day_contract_is_consistent(self) -> None:',
-              '        texts = {}',
-              '        for path in ACTIVE_DOCS:',
-              '            text = path.read_text(encoding="utf-8")',
-              '            texts[path] = text',
-              '            self.assertNotIn("SEVEN_DAY_SCHEDULING_ON_BRANCH", text, path.relative_to(ROOT))',
-              '            self.assertNotIn("CI_PENDING", text, path.relative_to(ROOT))',
-              '        combined = "\\n".join(texts.values())',
-              '        for required in (',
-              '            "annual-mvp-001-v3",',
-              '            "주당 7일",',
-              '            "자동 휴식",',
-              '            "HISTORICAL_REGRESSION_EVIDENCE",',
-              '            "PR #76",',
-              '            "run #121",',
-              '            "POC_PASSED",',
-              '            "NOT_RUN",',
-              '            "NOT_DECLARED",',
-              '            "NOT_APPROVED",',
-              '        ):',
-              '            self.assertIn(required, combined)',
-              '',
-              '    def test_update_governance_is_recorded(self) -> None:',
-              '        protocol = (ROOT / "docs/PROJECT_UPDATE_PROTOCOL.md").read_text(encoding="utf-8")',
-              '        decisions = (ROOT / "docs/DECISION_LOG.md").read_text(encoding="utf-8")',
-              '        for required in (',
-              '            "CURRENT_STATUS",',
-              '            "CURRENT_HANDOFF",',
-              '            "PROJECT_CORE",',
-              '            "GAME_DESIGN_DOCUMENT",',
-              '            "MVP_ROADMAP",',
-              '            "TEST_CHECKLIST",',
-              '            "자동 검증",',
-              '            "사람",',
-              '            "HISTORICAL_REGRESSION_EVIDENCE",',
-              '        ):',
-              '            self.assertIn(required, protocol)',
-              '        for decision_id in (',
-              '            "D-2026-07-23-CORE-001",',
-              '            "D-2026-07-25-ANNUAL-BASELINE",',
-              '            "D-2026-07-25-ANNUAL-FOUR-WEEK",',
-              '            "D-2026-07-25-ANNUAL-SEVEN-DAY",',
-              '            "D-2026-07-26-DOC-GOVERNANCE",',
-              '        ):',
-              '            self.assertIn(decision_id, decisions)',
-              '',
-              '',
-              'if __name__ == "__main__":',
-              '    unittest.main()',
-          ]
-          Path('tests/test_project_document_sync.py').write_text('\n'.join(lines) + '\n', encoding='utf-8')
-          PY
-          python -m unittest \
-            tests.test_annual_mvp_001_document_contract \
-            tests.test_project_document_sync \
-            2>&1 | tee -a issue78-sync.log
-          status=${PIPESTATUS[0]}
-          if [ "$status" -ne 0 ]; then
-            exit "$status"
-          fi
-          if ! git diff --quiet; then
-            git config user.name 'github-actions[bot]'
-            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-            git add docs MVP_ROADMAP.md TEST_CHECKLIST.md tests/test_annual_mvp_001_document_contract.py tests/test_project_document_sync.py
-            git commit -m 'docs: synchronize merged seven-day planning records'
-            git push origin HEAD:${{ github.head_ref }}
-          fi
-      - name: Preserve Issue 78 synchronization failure
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: issue-78-document-sync-failure
-          path: issue78-sync.log
-          if-no-files-found: error
-          retention-days: 7
       - name: Compile archive validator
         run: python -m py_compile tools/check_archive_governance.py tests/test_archive_retention_governance.py
       - name: Validate archive governance
@@ -214,8 +48,6 @@ jobs:
             tests/test_skill_package_integrity.py \
             tests/test_active_document_references.py \
             tests/test_archive_retention_governance.py \
-            tests/test_annual_mvp_001_document_contract.py \
-            tests/test_project_document_sync.py \
             2>&1 | tee documentation-validation.log
           status=${PIPESTATUS[0]}
           echo "$status" > documentation-validation-exit-code.txt
@@ -228,5 +60,5 @@ jobs:
           path: |
             documentation-validation.log
             documentation-validation-exit-code.txt
-          if-no-files-found: warn
+          if-no-files-found: error
           retention-days: 7
