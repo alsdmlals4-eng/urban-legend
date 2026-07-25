@@ -1,11 +1,10 @@
 name: Temporary Issue 75 status synchronization
 
 on:
-  push:
+  pull_request:
     branches:
-      - agent/issue-75-status-sync
-    paths:
-      - .github/workflows/tmp-issue-75-status-sync.yml
+      - main
+    types: [opened, synchronize, reopened]
 
 permissions:
   contents: write
