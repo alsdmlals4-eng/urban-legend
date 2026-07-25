@@ -18,6 +18,13 @@ func _init() -> void:
 	quit()
 
 
+func _strings(values: Array) -> Array[String]:
+	var typed: Array[String] = []
+	for value in values:
+		typed.append(String(value))
+	return typed
+
+
 func _new_state(seed: int = 2001, starting_fatigue: int = 10) -> RefCounted:
 	var state := State.new()
 	var config := _config.duplicate(true)
@@ -26,10 +33,10 @@ func _new_state(seed: int = 2001, starting_fatigue: int = 10) -> RefCounted:
 	return state
 
 
-func _commit_and_ack(state: RefCounted, activities: Array[String]) -> void:
-	var result: Dictionary = state.commit_week(activities)
+func _commit_and_ack(state: RefCounted, activities: Array) -> void:
+	var result: Dictionary = state.commit_week(_strings(activities))
 	if bool(result.get("requires_auto_rest_confirmation", false)):
-		result = state.commit_week_with_auto_rest(activities)
+		result = state.commit_week_with_auto_rest(_strings(activities))
 	assert(result["ok"])
 	assert(state.get_snapshot()["phase"] == "WEEK_RESULT")
 	assert(state.acknowledge_week_result()["ok"])
@@ -44,12 +51,12 @@ func _rests(count: int) -> Array[String]:
 
 func _test_exact_seven_day_week() -> void:
 	var state := _new_state()
-	var result: Dictionary = state.commit_week([
+	var result: Dictionary = state.commit_week(_strings([
 		"annual001_activity_observation_drill",
 		"annual001_activity_field_training",
 		"annual001_activity_rest",
 		"annual001_activity_rest",
-	])
+	]))
 	assert(result["ok"])
 	var snapshot: Dictionary = state.get_snapshot()
 	assert(snapshot["phase"] == "WEEK_RESULT")
@@ -69,7 +76,7 @@ func _test_exact_seven_day_week() -> void:
 func _test_underfilled_warning_and_auto_rest() -> void:
 	var state := _new_state(2010, 60)
 	var before: Dictionary = state.get_snapshot()
-	var activities: Array[String] = ["annual001_activity_analysis_desk"]
+	var activities: Array[String] = _strings(["annual001_activity_analysis_desk"])
 	var warning: Dictionary = state.commit_week(activities)
 	assert(not warning["ok"])
 	assert(warning["requires_auto_rest_confirmation"])
@@ -102,12 +109,13 @@ func _test_underfilled_warning_and_auto_rest() -> void:
 
 func _test_direct_rest_is_stronger_than_auto_rest() -> void:
 	var automatic := _new_state(2011, 60)
-	assert(automatic.commit_week([])["requires_auto_rest_confirmation"])
-	assert(automatic.commit_week_with_auto_rest([])["ok"])
+	var empty_plan: Array[String] = _strings([])
+	assert(automatic.commit_week(empty_plan)["requires_auto_rest_confirmation"])
+	assert(automatic.commit_week_with_auto_rest(empty_plan)["ok"])
 	assert(automatic.get_snapshot()["fatigue"] == 25)
 
 	var direct := _new_state(2012, 60)
-	var direct_plan: Array[String] = ["annual001_activity_rest"]
+	var direct_plan: Array[String] = _strings(["annual001_activity_rest"])
 	assert(direct.commit_week(direct_plan)["requires_auto_rest_confirmation"])
 	assert(direct.commit_week_with_auto_rest(direct_plan)["ok"])
 	assert(direct.get_snapshot()["fatigue"] == 5)
@@ -119,15 +127,15 @@ func _test_direct_rest_is_stronger_than_auto_rest() -> void:
 func _test_over_budget_is_immutable() -> void:
 	var state := _new_state()
 	var before: Dictionary = state.get_snapshot()
-	var result: Dictionary = state.commit_week([
+	var result: Dictionary = state.commit_week(_strings([
 		"annual001_activity_field_training",
 		"annual001_activity_field_training",
 		"annual001_activity_field_training",
-	])
+	]))
 	assert(not result["ok"])
 	assert(String(result["error"]).contains("7일"))
 	assert(state.get_snapshot() == before)
-	assert(not state.commit_week(["annual001_activity_missing"])["ok"])
+	assert(not state.commit_week(_strings(["annual001_activity_missing"]))["ok"])
 	assert(state.get_snapshot() == before)
 
 
@@ -149,7 +157,11 @@ func _test_early_deployment_verified_path() -> void:
 	assert(state.choose_deployment_decision("annual001_decision_deploy")["ok"])
 	assert(state.get_snapshot()["deployment_risk"] == 0)
 	assert(state.complete_research_project("annual001_research_signal_buffer")["ok"])
-	assert(state.configure_loadout("annual001_companion_oh_hyun", "", ["annual001_module_signal_buffer"])["ok"])
+	assert(state.configure_loadout(
+		"annual001_companion_oh_hyun",
+		"",
+		_strings(["annual001_module_signal_buffer"])
+	)["ok"])
 	assert(state.begin_incident()["ok"])
 	assert(state.apply_incident_result(
 		{"recovery_quality": "normal_capture"},
@@ -189,7 +201,11 @@ func _test_week_three_candidate_path() -> void:
 	])
 	assert(state.choose_deployment_decision("annual001_decision_deploy")["ok"])
 	assert(state.get_snapshot()["deployment_risk"] == 15)
-	assert(state.configure_loadout("annual001_companion_oh_hyun", "annual001_skill_emergency_cover", [])["ok"])
+	assert(state.configure_loadout(
+		"annual001_companion_oh_hyun",
+		"annual001_skill_emergency_cover",
+		_strings([])
+	)["ok"])
 	assert(state.begin_incident()["ok"])
 	assert(state.apply_incident_result(
 		{"recovery_quality": "costly_capture"},
