@@ -20,7 +20,7 @@ from docx.shared import Inches, Pt, RGBColor
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = ROOT / "docs" / "GAME_DESIGN_DOCUMENT.md"
 OUTPUT = ROOT / "docs" / "URBAN_LEGEND_GAME_DESIGN.docx"
-FORMAT_VERSION = "urban-legend-gdd-index-v3"
+FORMAT_VERSION = "urban-legend-gdd-index-v4"
 HASH_PREFIX = "gdd-source-sha256="
 FONT = "NanumSquare"
 NAVY = "1F2A44"
@@ -116,7 +116,7 @@ def configure(doc: Document, digest: str) -> None:
     section.left_margin = section.right_margin = Inches(0.72)
     section.top_margin = section.bottom_margin = Inches(0.65)
     doc.core_properties.title = "괴이 기록국 게임기획서"
-    doc.core_properties.subject = "MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A / Ver 4.2"
+    doc.core_properties.subject = "MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A / Ver 4.2 / ANNUAL-MVP-001 4주"
     doc.core_properties.keywords = HASH_PREFIX + digest
     for style_name, size, color in (("Normal", 9, TEXT), ("Heading 1", 16, NAVY), ("Heading 2", 12, BLUE)):
         style = doc.styles[style_name]
@@ -126,7 +126,7 @@ def configure(doc: Document, digest: str) -> None:
         style.font.color.rgb = RGBColor.from_string(color)
     footer = section.footer.paragraphs[0]
     footer.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    font(footer.add_run("괴이 기록국 · GDD v1.3 · UX-PD-001 2A · Ver 4.2"), 8, MUTED)
+    font(footer.add_run("괴이 기록국 · GDD v3.1 · ANNUAL-MVP-001 4주 · Ver 4.2"), 8, MUTED)
 
 
 def render(doc: Document, markdown: str) -> None:
@@ -141,7 +141,8 @@ def render(doc: Document, markdown: str) -> None:
             block: list[str] = []
             index += 1
             while index < len(lines) and not lines[index].startswith("```"):
-                block.append(lines[index]); index += 1
+                block.append(lines[index])
+                index += 1
             table = doc.add_table(rows=1, cols=1)
             shade(table.cell(0, 0), LIGHT)
             run = table.cell(0, 0).paragraphs[0].add_run("\n".join(block))
@@ -159,25 +160,51 @@ def render(doc: Document, markdown: str) -> None:
             continue
         match = re.fullmatch(r"!\[([^\]]*)\]\(([^)]+)\)", line)
         if match:
-            add_picture(doc, (SOURCE.parent / match.group(2)).resolve(), match.group(1)); index += 1; continue
+            add_picture(doc, (SOURCE.parent / match.group(2)).resolve(), match.group(1))
+            index += 1
+            continue
         if line.startswith("# "):
-            paragraph = doc.add_paragraph(); paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
-            run = paragraph.add_run(clean(line[2:])); font(run, 28, NAVY, True); index += 1; continue
+            paragraph = doc.add_paragraph()
+            paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            run = paragraph.add_run(clean(line[2:]))
+            font(run, 28, NAVY, True)
+            index += 1
+            continue
         if line.startswith("## "):
-            doc.add_paragraph(clean(line[3:]), style="Heading 1"); index += 1; continue
+            doc.add_paragraph(clean(line[3:]), style="Heading 1")
+            index += 1
+            continue
         if line.startswith("### "):
-            doc.add_paragraph(clean(line[4:]), style="Heading 2"); index += 1; continue
+            doc.add_paragraph(clean(line[4:]), style="Heading 2")
+            index += 1
+            continue
         if line.startswith("> "):
-            paragraph = doc.add_paragraph(); paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
-            run = paragraph.add_run(clean(line[2:])); font(run, 9, BLUE, True); index += 1; continue
+            paragraph = doc.add_paragraph()
+            paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            run = paragraph.add_run(clean(line[2:]))
+            font(run, 9, BLUE, True)
+            index += 1
+            continue
         if line.startswith("- "):
-            doc.add_paragraph(clean(line[2:]), style="List Bullet"); index += 1; continue
-        if re.match(r"^\d+\. ", line):
-            doc.add_paragraph(clean(re.sub(r"^\d+\.\s+", "", line)), style="List Number"); index += 1; continue
-        paragraph_lines = [line]; index += 1
+            doc.add_paragraph(clean(line[2:]), style="List Bullet")
+            index += 1
+            continue
+        numbered = re.match(r"^(\d+)\.\s+(.+)", line)
+        if numbered:
+            paragraph = doc.add_paragraph()
+            paragraph.paragraph_format.left_indent = Inches(0.18)
+            paragraph.paragraph_format.first_line_indent = Inches(-0.18)
+            run = paragraph.add_run(f"{numbered.group(1)}. {clean(numbered.group(2))}")
+            font(run)
+            index += 1
+            continue
+        paragraph_lines = [line]
+        index += 1
         while index < len(lines) and lines[index].strip() and not re.match(r"^(#|>|- |\d+\. |```|\||!\[)", lines[index].strip()):
-            paragraph_lines.append(lines[index].strip()); index += 1
-        run = doc.add_paragraph().add_run(clean(" ".join(paragraph_lines))); font(run)
+            paragraph_lines.append(lines[index].strip())
+            index += 1
+        run = doc.add_paragraph().add_run(clean(" ".join(paragraph_lines)))
+        font(run)
 
 
 def build() -> None:
@@ -203,10 +230,18 @@ def check() -> None:
     actual = (document.core_properties.keywords or "").removeprefix(HASH_PREFIX)
     if actual != expected:
         raise RuntimeError(f"DOCX is stale: expected {expected}, found {actual or '<missing>'}")
-    if len(document.paragraphs) < 35 or len(document.tables) < 10 or len(document.inline_shapes) < 2:
-        raise RuntimeError("DOCX structural sanity check failed")
+    expected_images = len(image_paths(markdown))
+    if len(document.paragraphs) < 35 or len(document.tables) < 10 or len(document.inline_shapes) != expected_images:
+        raise RuntimeError(
+            "DOCX structural sanity check failed: "
+            f"paragraphs={len(document.paragraphs)} tables={len(document.tables)} "
+            f"images={len(document.inline_shapes)} expected_images={expected_images}"
+        )
     print(f"CURRENT {OUTPUT}\nSOURCE_HASH {expected}")
-    print(f"STRUCTURE paragraphs={len(document.paragraphs)} tables={len(document.tables)} images={len(document.inline_shapes)}")
+    print(
+        f"STRUCTURE paragraphs={len(document.paragraphs)} "
+        f"tables={len(document.tables)} images={len(document.inline_shapes)}"
+    )
 
 
 def main() -> int:
