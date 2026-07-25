@@ -83,6 +83,10 @@ jobs:
         run: |
           set -o pipefail
           godot --headless --path . --script res://tests/annual_mvp_001_incident_adapter_test.gd 2>&1 | tee annual-adapter.log
+      - name: Run annual save test
+        run: |
+          set -o pipefail
+          godot --headless --path . --script res://tests/annual_mvp_001_save_data_test.gd 2>&1 | tee annual-save.log
       - name: Preserve failure evidence
         if: failure()
         uses: actions/upload-artifact@v4
@@ -94,6 +98,7 @@ jobs:
             annual-state.log
             annual-support.log
             annual-adapter.log
+            annual-save.log
             ${{ runner.temp }}/annual-mvp-001-core/focused-logs
           if-no-files-found: warn
           retention-days: 7
