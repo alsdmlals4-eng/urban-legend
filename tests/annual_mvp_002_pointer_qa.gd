@@ -40,7 +40,6 @@ func _run() -> void:
 	await _click_text("주간 결과 확인")
 	_expect_phase("WEEK_PLANNING", "week two pointer planning")
 
-	# Use the saved template through the actual button for week 2.
 	await _click_text("템플릿 1 적용")
 	await _click_text("주간 일정 확정")
 	_expect_phase("WEEK_RESULT", "week two pointer confirmation")
@@ -52,8 +51,6 @@ func _run() -> void:
 	await _click_named("CompanionCard_annual002_companion_ohyun")
 	await _click_named("CompanionCard_annual002_companion_han_serin")
 	_expect((_scene.call("debug_selected_companions") as Array).size() == 2, "pointer should select two companions")
-	# Native OptionButton popup behavior is platform-specific; select a valid equipment/module
-	# through the public scene API, then verify the rendered pointer-facing status.
 	_expect((_scene.call("debug_set_equipment", "annual002_equipment_echo_recorder") as Dictionary).get("ok", false), "equipment should configure")
 	_expect((_scene.call("debug_set_module", "annual002_module_noise_filter") as Dictionary).get("ok", false), "module should configure")
 	var support_label := _scene.find_child("SupportStatusLabel", true, false) as Label
@@ -85,10 +82,18 @@ func _click_named(node_name: String) -> void:
 
 
 func _click_control(control: BaseButton) -> void:
-	for _frame in range(2):
-		await process_frame
 	if not is_instance_valid(control):
 		_failures.append("pointer target was freed")
+		return
+	var ancestor: Node = control.get_parent()
+	while ancestor != null:
+		if ancestor is ScrollContainer:
+			(ancestor as ScrollContainer).ensure_control_visible(control)
+		ancestor = ancestor.get_parent()
+	for _frame in range(4):
+		await process_frame
+	if not is_instance_valid(control):
+		_failures.append("pointer target was freed during layout")
 		return
 	var center := control.get_global_rect().get_center()
 	Input.warp_mouse(center)
@@ -110,7 +115,7 @@ func _click_control(control: BaseButton) -> void:
 	release.global_position = center
 	release.pressed = false
 	Input.parse_input_event(release)
-	for _frame in range(3):
+	for _frame in range(4):
 		await process_frame
 
 
