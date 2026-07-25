@@ -15,11 +15,13 @@
 - 정본 전환: `COMPLETE`
 - ANNUAL-MVP-001: `BUILD_READY` — PR #62 / commit `88522ce08f261bce6d61a8043c64caa3b982bd47`
 - 렌더링·입력 QA: `PASSED` — PR #65 / commit `b4f2e224bf7a2a6ee511c83bbbd45cd9e0b8570a`
-- 최종 자동 검증: `PASSED` — visual run #24, ANNUAL run #89, 문서 run #245
+- 그래픽 포인터 QA: `PASSED` — PR #67 / commit `0f24efa204a04cca62a58e55628e6b831b9bef2d`
+- 최종 자동 검증: `PASSED` — visual run #28, ANNUAL run #94
 - 렌더링·텍스트 검토: `PASSED`
 - 키보드 포커스·확인·Esc: `PASSED`
+- 그래픽 포인터 이벤트: `PASSED`
 - 세 출동 경로 scripted QA: `PASSED`
-- 수동 마우스 QA: `NOT_RUN`
+- 사람 손 장시간 사용성 QA: `NOT_RUN`
 - 신규 플레이어 검증: `NOT_RUN`
 - `POC_PASSED`: `NOT_DECLARED`
 - 제작 확대: `NOT_APPROVED`
@@ -48,6 +50,7 @@
 - [x] 전체 Godot 회귀에 포함
 - [x] embedded CORE 조사 패널 1280×720·1920×1080 렌더링 노출
 - [x] embedded CORE 단계·이해도 한국어 표시
+- [x] embedded 매뉴얼·조사 선택지 좌표 클릭 입력
 - [ ] 신규 플레이어 사건 인과 설명
 
 ## ANNUAL-MVP-001 데이터·상태
@@ -75,6 +78,8 @@
 - [x] 검증된 매뉴얼+잔향 자료로 `신호 교차 검증` 해금
 - [x] 연구가 핵심 정답·가설을 자동 확정하지 않음
 - [x] 사건 결과가 잔향 자료·기관 지원·연구로 환류
+- [x] 모듈 체크박스 실제 클릭
+- [x] 모듈 toggle typed-array 런타임 오류 수정·회귀 고정
 
 ## 동료 자동 지원
 
@@ -119,6 +124,8 @@
 - [x] 저장 seed로 동료 지원 판정 재현
 - [x] 기존 `GameState` 비사용
 - [x] 기존 `mvp-039`·`mvp-038` 이관 비침범
+- [x] 실제 좌표 클릭으로 PoC 저장·불러오기
+- [x] incident active에서 Save 버튼 비활성
 
 ## UI·개발 진입
 
@@ -126,7 +133,6 @@
 - [x] 기존 CORE-MVP-001 버튼 보존
 - [x] 현재 phase 패널 1개만 표시
 - [x] 주간 계획·결과·출동·준비·사건·연구·결산 흐름
-- [x] 사건 중 Save 버튼 비활성
 - [x] 1280×720·1920×1080 기계적 레이아웃 계약
 - [x] 1280×720·1920×1080 실제 렌더링 PNG 검토
 - [x] 공용 현대 오컬트 Theme과 어두운 배경 적용
@@ -138,7 +144,22 @@
 - [x] `ui_accept`로 활동 선택
 - [x] Esc로 마지막 주간 선택 취소
 - [x] 분기 결산이 최종 엔딩이 아님을 텍스트로 표시
-- [ ] 실제 포인터를 사용하는 수동 마우스 QA
+
+## 그래픽 포인터 이벤트 QA
+
+- [x] 실제 Window 좌표로 마우스 이동 이벤트 전송
+- [x] 좌클릭 press·release 이벤트 전송
+- [x] 주간 활동 3개 선택
+- [x] 확인 버튼으로 주간 결과 전환
+- [x] PoC 저장·불러오기
+- [x] 2주차 지연과 3주차 자율 출동
+- [x] 출동 전 연구 완료
+- [x] 공용 보조 스킬 체크박스 선택
+- [x] 신호 완충 모듈 체크박스 선택
+- [x] 출동 구성 확정과 사건 시작
+- [x] embedded 매뉴얼 버튼 선택
+- [x] embedded 조사 선택지 선택과 피드백 확인
+- [ ] 사람 손으로 장시간 반복 조작하는 사용성 평가
 
 ## 세 출동 경로 scripted QA
 
@@ -153,25 +174,23 @@
 
 ## 자동 검증 증거
 
-### 구현 기준
+### 구현·렌더링 기준
 
 - [x] PR #62 squash merge 완료
-- [x] ANNUAL workflow run #63 PASS
-- [x] CORE workflow run #131 PASS
-- [x] 문서 계약 run #234 PASS
-
-### 렌더링·입력 QA
-
 - [x] PR #65 squash merge 완료 — commit `b4f2e224bf7a2a6ee511c83bbbd45cd9e0b8570a`
-- [x] Visual workflow run #24 PASS
-- [x] ANNUAL workflow run #89 PASS
-- [x] 문서 계약 run #245 PASS
-- [x] Godot 4.7.1 import PASS
-- [x] 그래픽 Window·OpenGL3·Xvfb 렌더링 PASS
-- [x] 키보드 입력 QA PASS
-- [x] PNG 22개와 세 경로 manifest 생성
+- [x] PR #66 상태 정본 병합 완료
 - [x] 대표 visual artifact id `8617041311`
 - [x] artifact digest `sha256:bb623881ef31a6e4f33cfd6884acbca29735187a1986beaaddd14c64f8353ca4`
+
+### 그래픽 포인터 QA
+
+- [x] PR #67 squash merge 완료 — commit `0f24efa204a04cca62a58e55628e6b831b9bef2d`
+- [x] Visual workflow run #28 PASS
+- [x] graphical pointer flow PASS
+- [x] keyboard input PASS
+- [x] screenshot capture PASS
+- [x] ANNUAL workflow run #94 PASS
+- [x] Godot 4.7.1 import PASS
 - [x] CORE-MVP-001 focused 4/4 PASS
 - [x] ANNUAL-MVP-001 focused 6/6 PASS
 - [x] 전체 Godot 회귀 49/49 PASS
@@ -203,8 +222,9 @@ automated_document_validation: PASSED
 annual_mvp_001: BUILD_READY
 rendered_visual_review: PASSED
 keyboard_input_qa: PASSED
+graphical_pointer_event_qa: PASSED
 three_route_scripted_qa: PASSED
-manual_mouse_qa: NOT_RUN
+human_usability_qa: NOT_RUN
 player_validation: NOT_RUN
 annual_loop_passed: NOT_DECLARED
 poc_passed: NOT_DECLARED
