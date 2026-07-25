@@ -1,0 +1,135 @@
+{
+  "schema_version": 1,
+  "adapter_role": "base-shared-skill-project-adapter",
+  "base": {
+    "repository": "alsdmlals4-eng/Base",
+    "commit": "c7c1103e4a69f8fdc9ee27aa382a21288605a7fb",
+    "adapter_contract": "docs/BASE_SHARED_SKILL_ADAPTER_CONTRACT.md"
+  },
+  "project": {
+    "repository": "alsdmlals4-eng/urban-legend",
+    "layout_policy": "preserve-existing-canonical-paths",
+    "existing_operating_path_adapter": "skills/PROJECT_PATH_ADAPTER.json"
+  },
+  "role_bindings": {
+    "project_agents": "AGENTS.md",
+    "project_start_here": "START_HERE.md",
+    "operating_model": "docs/OPERATING_MODEL.md",
+    "documentation_map": "docs/DOCUMENTATION_MAP.md",
+    "active_context": "docs/CURRENT_STATUS.md",
+    "project_core": "docs/PROJECT_CORE.md",
+    "handoff": "docs/CURRENT_HANDOFF.md",
+    "skill_registry": "skills/SKILL_REGISTRY.json",
+    "base_skill_index": "skills/BASE_SKILL_INDEX.json",
+    "base_skill_coverage": "skills/BASE_SKILL_COVERAGE.json",
+    "base_rules_version": "docs/BASE_RULES_VERSION.md",
+    "archive_root": "docs/archive/",
+    "third_party_inventory": "docs/THIRD_PARTY_ASSET_AND_PLUGIN_INVENTORY.json",
+    "license_record": "docs/THIRD_PARTY_ASSET_AND_PLUGIN_INVENTORY.json"
+  },
+  "canonical_sources": [
+    "docs/CURRENT_STATUS.md",
+    "docs/PROJECT_CORE.md",
+    "docs/planning/PROJECT_DIRECTION.md",
+    "docs/planning/NARRATIVE_CONTENT_PLAN.md",
+    "docs/planning/ART_PRESENTATION_PLAN.md",
+    "docs/planning/ROADMAP_AND_HANDOFF.md",
+    "docs/GAME_DESIGN_DOCUMENT.md",
+    "docs/PROJECT_CONTEXT.md",
+    "MVP_ROADMAP.md",
+    "TEST_CHECKLIST.md"
+  ],
+  "legacy_search_roots": [
+    "docs/",
+    "skills/",
+    "knowledge/base-pack/"
+  ],
+  "protected_paths": [
+    "scripts/core/game_state.gd",
+    "data/episodes/**",
+    "project.godot",
+    "knowledge/base-pack/**"
+  ],
+  "engine": {
+    "name": "Godot",
+    "version": "4.7 stable",
+    "language": "GDScript",
+    "renderer": "mobile",
+    "platforms": ["Windows PC"],
+    "viewport": "1280x720 16:9",
+    "stretch": "canvas_items expand",
+    "project_root": ".",
+    "addon_root": "addons/",
+    "asset_roots": ["assets/", "scenes/", "data/"]
+  },
+  "existing_third_party": [
+    {
+      "path": "addons/godot_ai/",
+      "status": "EXISTING_REVIEW_REQUIRED",
+      "evidence": "project.godot editor_plugins and autoload"
+    }
+  ],
+  "validators": [
+    {
+      "id": "route-json",
+      "type": "static",
+      "command": "python -m json.tool skills/BASE_SHARED_SKILL_ROUTES.json",
+      "status": "AVAILABLE"
+    },
+    {
+      "id": "adapter-json",
+      "type": "static",
+      "command": "python -m json.tool skills/BASE_SHARED_SKILL_ADAPTER.json",
+      "status": "AVAILABLE"
+    },
+    {
+      "id": "base-operating-sync",
+      "type": "test",
+      "command": "python -m unittest tests/test_base_operating_sync.py",
+      "status": "AVAILABLE"
+    },
+    {
+      "id": "skill-package-integrity",
+      "type": "test",
+      "command": "python -m unittest tests/test_skill_package_integrity.py",
+      "status": "AVAILABLE"
+    },
+    {
+      "id": "active-document-references",
+      "type": "test",
+      "command": "python -m unittest tests/test_active_document_references.py",
+      "status": "AVAILABLE"
+    },
+    {
+      "id": "godot-headless-and-affected-scenes",
+      "type": "runtime",
+      "command": null,
+      "status": "USE_EXISTING_PROJECT_WORKFLOW"
+    }
+  ],
+  "rollback_reference": "Git commit before adapter adoption",
+  "shared_skill_overrides": {
+    "governing-legacy-retention-and-archives": {
+      "archive_root": "docs/archive/",
+      "delete_requires_user_approval": true,
+      "redirect_documents_are_not_canonical": [
+        "DESIGN_INTENT.md",
+        "PROJECT_BRIEF.md",
+        "docs/CONTENT_DIRECTION_V09.md"
+      ]
+    },
+    "evaluating-godot-assets-and-plugins-before-creation": {
+      "search_before_creation": true,
+      "purchase_requires_user_approval": true,
+      "installation_requires_separate_scope": true,
+      "priority_categories": [
+        "dialogue and branching",
+        "localization",
+        "timeline and event authoring",
+        "investigation record UI",
+        "audio event integration"
+      ],
+      "core_system_lock_in": "avoid"
+    }
+  }
+}
