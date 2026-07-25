@@ -9,8 +9,10 @@ on:
       - "scripts/poc/core_mvp_001/**"
       - "scripts/ui/main_menu.gd"
       - "tests/**"
-      - "tools/ci/annual_mvp_001_*.patch"
-      - "tools/ci/apply_annual_mvp_001_*.py"
+      - "TEST_CHECKLIST.md"
+      - "MVP_ROADMAP.md"
+      - "docs/CURRENT_STATUS.md"
+      - "docs/CURRENT_HANDOFF.md"
       - ".github/workflows/validate-annual-mvp-001.yml"
   workflow_dispatch:
 
@@ -19,47 +21,23 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   annual-validation:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref || github.ref_name }}
-      - name: Apply staged implementation patches and scripts
-        run: |
-          changed=0
-          for patch_file in tools/ci/annual_mvp_001_*.patch; do
-            [ -f "$patch_file" ] || continue
-            if git apply --reverse --check "$patch_file" >/dev/null 2>&1; then
-              echo "$patch_file already applied"
-              continue
-            fi
-            git apply "$patch_file"
-            changed=1
-          done
-          for script_file in tools/ci/apply_annual_mvp_001_*.py; do
-            [ -f "$script_file" ] || continue
-            python "$script_file"
-          done
-          if ! git diff --quiet -- scripts tests scenes data; then
-            changed=1
-          fi
-          if [ "$changed" -eq 1 ]; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add scripts tests scenes data
-            git commit -m "feat: apply annual mvp implementation migration"
-            git push origin HEAD:${{ github.head_ref || github.ref_name }}
-          fi
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Run annual Python contracts
-        run: python -m unittest tests/test_annual_mvp_001_data_contract.py tests/test_annual_mvp_001_static_contract.py -v
+      - name: Run annual and active-document Python contracts
+        run: |
+          python -m unittest \
+            tests/test_annual_mvp_001_data_contract.py \
+            tests/test_annual_mvp_001_static_contract.py \
+            tests/test_active_document_references.py -v
       - name: Setup Godot 4.7.1
         uses: chickensoft-games/setup-godot@v2
         with:
@@ -75,30 +53,16 @@ jobs:
           GODOT_BIN: godot
           GODOT_TEST_TMP: ${{ runner.temp }}/annual-mvp-001-core
         run: bash tests/run_core_mvp_001_tests.sh
-      - name: Run annual data loader test
-        run: |
-          set -o pipefail
-          timeout 90 godot --headless --path . --script res://tests/annual_mvp_001_data_test.gd 2>&1 | tee annual-data.log
-      - name: Run annual state machine test
-        run: |
-          set -o pipefail
-          timeout 90 godot --headless --path . --script res://tests/annual_mvp_001_state_test.gd 2>&1 | tee annual-state.log
-      - name: Run annual support resolver test
-        run: |
-          set -o pipefail
-          timeout 90 godot --headless --path . --script res://tests/annual_mvp_001_support_resolver_test.gd 2>&1 | tee annual-support.log
-      - name: Run annual incident adapter test
-        run: |
-          set -o pipefail
-          timeout 90 godot --headless --path . --script res://tests/annual_mvp_001_incident_adapter_test.gd 2>&1 | tee annual-adapter.log
-      - name: Run annual save test
-        run: |
-          set -o pipefail
-          timeout 90 godot --headless --path . --script res://tests/annual_mvp_001_save_data_test.gd 2>&1 | tee annual-save.log
-      - name: Run annual scene test
-        run: |
-          set -o pipefail
-          timeout 90 godot --headless --path . --script res://tests/annual_mvp_001_scene_test.gd 2>&1 | tee annual-scene.log
+      - name: Run focused ANNUAL-MVP-001 tests
+        env:
+          GODOT_BIN: godot
+          GODOT_TEST_TMP: ${{ runner.temp }}/annual-mvp-001-focused
+        run: bash tests/run_annual_mvp_001_tests.sh
+      - name: Run full Godot regression
+        env:
+          GODOT_BIN: godot
+          GODOT_TEST_TMP: ${{ runner.temp }}/annual-mvp-001-regression
+        run: bash tests/run_godot_regression.sh
       - name: Preserve failure evidence
         if: failure()
         uses: actions/upload-artifact@v4
@@ -106,12 +70,8 @@ jobs:
           name: annual-mvp-001-failure
           path: |
             annual-import.log
-            annual-data.log
-            annual-state.log
-            annual-support.log
-            annual-adapter.log
-            annual-save.log
-            annual-scene.log
             ${{ runner.temp }}/annual-mvp-001-core/focused-logs
+            ${{ runner.temp }}/annual-mvp-001-focused/focused-logs
+            ${{ runner.temp }}/annual-mvp-001-regression/regression-logs
           if-no-files-found: warn
           retention-days: 7
