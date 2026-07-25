@@ -40,3 +40,5 @@ jobs:
         run: godot --headless --path . --import
       - name: Run annual data loader test
         run: godot --headless --path . --script res://tests/annual_mvp_001_data_test.gd
+      - name: Run annual state machine test
+        run: godot --headless --path . --script res://tests/annual_mvp_001_state_test.gd
