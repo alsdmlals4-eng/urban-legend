@@ -12,6 +12,7 @@
 | 구현 기준선 | MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A |
 | 화면 버전 | Ver 4.2 |
 | 저장 Schema | `mvp-039` (`mvp-038` 이관 지원) |
+| 연도제 설계 | `APPROVED_DESIGN_BASELINE` |
 | CORE-MVP-001 | `POC_BUILD_READY` |
 | ANNUAL-MVP-001 원 구현 | `BUILD_READY` — PR #62 |
 | 4주 월간 계약 | `APPROVED` — Issue #69 |
