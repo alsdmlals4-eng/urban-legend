@@ -6,7 +6,7 @@
 > 구현 상태: `POC_PENDING` — 기존 거버넌스 호환 표기이며, CORE-MVP-001 실제 구현은 `POC_BUILD_READY`다.  
 > Production gate: `HOLD_UNTIL_PLAYER_EVIDENCE`  
 > 연도제 설계 상태: `APPROVED_DESIGN_BASELINE / ANNUAL_DESIGN_BASELINE_APPROVED`  
-> 연도제 구현: `ANNUAL-MVP-001 FOUR_WEEK_MERGED / AUTOMATED_QA_PASSED` — PR #70 / commit `20a0d052e4d48863481af7c3acc53805105d6a01`  
+> 연도제 구현: `ANNUAL-MVP-001 SEVEN_DAY_SCHEDULING_ON_BRANCH / CI_PENDING` — Issue #75  
 > 현재 구현 기준: `MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A / Ver 4.2 / save mvp-039`  
 > POC_PASSED: `NOT_DECLARED`
 
@@ -161,17 +161,20 @@
 ## ANNUAL-MVP-001 활성 시간 계약
 
 ```text
-1개월 = 4주 × 주당 3개 일정 슬롯 = 최대 12슬롯
-→ 1주차: 활동 3개, 출동 결정 없음
-→ 2주차: 활동 3개, 자율 출동 위험 0 또는 지연
-→ 3주차: 활동 3개, 자율 출동 위험 15 또는 지연
-→ 4주차: 활동 3개와 주간 결과 확인 후 긴급 강제 출동 위험 30
+1개월 = 4주 × 주당 7일 = 총 28일
+→ 일정별 1~3일 소비, 주차 경계 초과 금지
+→ 남은 일수보다 긴 일정 선택 금지
+→ 7일 미만 첫 확정: 자동 휴식 경고 후 편성 유지
+→ 같은 편성 재확정: 남은 일수 자동 휴식
+→ 직접 휴식: 1일, 피로 -25, 상태 회복 가능
+→ 자동 휴식: 1일당 피로 5만 회복, 관계·특수 회복·추가 보상 없음
+→ 2주차 자율 출동 위험 0 / 3주차 위험 15 / 4주차 결과 확인 후 강제 위험 30
 → 기존 CORE-MVP-001 사건 → 연구 → 월말·분기 결산 모형
 ```
 
-- 데이터 계약은 `annual-mvp-001-v2`다.
+- 데이터 계약은 `annual-mvp-001-v3`다.
+- 기존 `4주 × 주당 3개 일정 슬롯` 계약과 PR #70의 구현 증거는 `HISTORICAL_REGRESSION_EVIDENCE`로 보존한다.
 - 독립 PoC 저장 `annual-mvp-001-save-v1`과 본편 `mvp-039`·`mvp-038` 이관을 유지한다.
-- PR #65·#67의 3주 구조 QA는 렌더링·현지화·입력 회귀용 `HISTORICAL_REGRESSION_EVIDENCE`로 보존하며, 현재 시간 계약의 증거로 해석하지 않는다.
 - 사람 사용성·신규 플레이어 검증 전에는 `POC_PASSED`, 연도제 루프 통과, 제작 확대를 선언하지 않는다.
 
 ## 성장·연구 가드레일
@@ -216,7 +219,7 @@
 ## 구현 트랙
 
 - 완료 자산: CORE-MVP-001 사건 코어 독립 PoC `POC_BUILD_READY`
-- 완료 자산: ANNUAL-MVP-001 4주 육성→준비→기존 사건→연구→분기 결산 수직절편 `MERGED / AUTOMATED_QA_PASSED`
+- 현재 작업: ANNUAL-MVP-001 4주 구조를 유지한 채 `7일 주간·가변 일정 일수` 계약으로 전환 중 — Issue #75
 - 다음 게이트: 실제 사람의 2주차 조기·3주차 자율·4주차 강제 출동 플레이와 인과 설명
 - 후속 계획은 `MVP_ROADMAP.md`가 소유한다.
 
@@ -257,4 +260,6 @@
 - 정본 전환 계획: `docs/superpowers/plans/2026-07-25-annual-design-canonical-migration-plan.md`
 - ANNUAL-MVP-001 원 구현 계획: `docs/superpowers/plans/2026-07-25-annual-raising-vertical-slice-implementation-plan.md`
 - ANNUAL-MVP-001 4주 승인 설계: `docs/superpowers/specs/2026-07-25-annual-mvp-001-four-week-month-design.md`
-- ANNUAL-MVP-001 4주 구현 계획: `docs/superpowers/plans/2026-07-25-annual-mvp-001-four-week-month-implementation-plan.md`
+- ANNUAL-MVP-001 4주 구현 계획(역사적 기준): `docs/superpowers/plans/2026-07-25-annual-mvp-001-four-week-month-implementation-plan.md`
+- ANNUAL-MVP-001 7일 주간 승인 설계: `docs/superpowers/specs/2026-07-25-annual-mvp-001-seven-day-scheduling-design.md`
+- ANNUAL-MVP-001 7일 주간 구현 계획: `docs/superpowers/plans/2026-07-25-annual-mvp-001-seven-day-scheduling-implementation-plan.md`
