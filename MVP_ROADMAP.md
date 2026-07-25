@@ -18,11 +18,13 @@
 | 정본 전환 | `COMPLETE` |
 | ANNUAL-MVP-001 | `BUILD_READY` — PR #62 / commit `88522ce08f261bce6d61a8043c64caa3b982bd47` |
 | 렌더링·입력 QA | `PASSED` — PR #65 / commit `b4f2e224bf7a2a6ee511c83bbbd45cd9e0b8570a` |
-| 최종 자동 검증 | `PASSED` — visual run #24, ANNUAL run #89, 문서 run #245 |
+| 그래픽 포인터 QA | `PASSED` — PR #67 / commit `0f24efa204a04cca62a58e55628e6b831b9bef2d` |
+| 최종 자동 검증 | `PASSED` — visual run #28, ANNUAL run #94 |
 | 렌더링·텍스트 검토 | `PASSED` |
 | 키보드·Esc 입력 | `PASSED` |
+| 그래픽 포인터 이벤트 | `PASSED` |
 | 세 출동 경로 scripted QA | `PASSED` |
-| 수동 마우스 QA | `NOT_RUN` |
+| 사람 손 장시간 사용성 QA | `NOT_RUN` |
 | 신규 플레이어 검증 | `NOT_RUN` |
 | POC_PASSED | `NOT_DECLARED` |
 | 제작 확대 | `NOT_APPROVED` |
@@ -37,7 +39,7 @@
 - 같은 저장 seed와 입력 순서에서 지원 판정을 재현한다.
 - 회수 승리는 HP 0이 아니라 패턴 대응으로 포획 창을 여는 것이다.
 - 연말 결과는 최종 엔딩이 아니라 연도 결산이다.
-- 자동 회귀·렌더링 QA 통과만으로 `POC_PASSED`나 제작 확대를 선언하지 않는다.
+- 자동 회귀·렌더링·포인터 이벤트 통과만으로 `POC_PASSED`나 제작 확대를 선언하지 않는다.
 - 충돌 시 사용자 승인 최신 설계 → 승인 구현 계획 → 활성 정본 → 기존 PoC·레거시 순서로 해석한다.
 
 ## 완료·보존
@@ -48,7 +50,7 @@
 - main 통합: PR #55 / commit `8d0bf91a2e31538d3c0f142c800a84e8e3693889`
 - focused suite: 4/4 PASS
 - 전체 회귀: ANNUAL workflow 49/49에 포함
-- embedded 렌더링: 1280×720·1920×1080에서 조사 패널 노출 확인
+- embedded 렌더링·포인터 입력: PASS
 - 신규 플레이어 증거: `NOT_RUN`
 - `POC_PASSED`: `NOT_DECLARED`
 
@@ -57,7 +59,8 @@
 > 구현 상태: `BUILD_READY`  
 > 구현 main 통합: PR #62 / commit `88522ce08f261bce6d61a8043c64caa3b982bd47`  
 > 렌더링·입력 QA 통합: PR #65 / commit `b4f2e224bf7a2a6ee511c83bbbd45cd9e0b8570a`  
-> 최종 검증: visual run #24, ANNUAL run #89, 문서 run #245 PASS
+> 그래픽 포인터 QA·수정 통합: PR #67 / commit `0f24efa204a04cca62a58e55628e6b831b9bef2d`  
+> 최종 검증: visual run #28, ANNUAL run #94 PASS
 
 #### 구현 범위
 
@@ -65,9 +68,7 @@
 - 권나래 역량 4종, 피로, 기관 지원
 - 오현 업무 신뢰
 - 조기 출동, 3주차 위험 출동, 긴급 강제 출동
-- 오현 고유 보조 스킬
-- 기관 공용 보조 스킬
-- 연구 공용 보조 스킬
+- 오현 고유·기관·연구 보조 스킬
 - 발동 조건·확률·지원 준비도·남은 횟수 표시
 - 기본 장비 1개와 모듈 1개
 - 기존 CORE-MVP-001 embedded 실행
@@ -77,7 +78,7 @@
 - PoC 전용 저장·복원
 - F1 독립 개발 진입
 
-#### 구현 자동 검증
+#### 자동 검증
 
 - Python 계약: PASS
 - Godot 4.7.1 import: PASS
@@ -93,21 +94,31 @@
 - 공용 오컬트 Theme·어두운 배경: PASS
 - embedded CORE 조사 패널 확장: PASS
 - 단계·활동·역량·회수·지식 품질 현지화: PASS
-- 초기 키보드 포커스: PASS
-- `ui_accept` 활동 선택: PASS
-- Esc 선택 취소: PASS
+- 초기 키보드 포커스·`ui_accept`·Esc: PASS
 - 조기·지연·긴급 출동 세 경로 결산 도달: PASS
 - 대표 visual artifact id `8617041311`
 - 시각 방향 판정: `KEEP / AMPLIFY`
 
+#### 그래픽 포인터 이벤트 결과
+
+- 실제 Window 좌표 마우스 이동·좌클릭: PASS
+- 주간 선택·확인: PASS
+- PoC 저장·불러오기: PASS
+- 2주차 지연·3주차 출동: PASS
+- 연구·공용 스킬·모듈 선택: PASS
+- embedded 사건 시작·저장 비활성: PASS
+- embedded 매뉴얼·조사 선택지: PASS
+- 모듈 toggle typed-array 런타임 오류: FIXED
+
 ## 현재 게이트
 
-### 렌더링·입력 QA 잔여
+### 사람 사용성 평가
 
-- 실제 포인터를 사용한 수동 마우스 조작
-- 실제 클릭으로 저장·불러오기·출동·연구·결산 동작 확인
+자동 좌표 클릭은 입력 경로를 검증하지만 사람 손의 피로도·가독성·조작 만족도를 대신하지 않는다.
 
-이 두 항목 전까지 전체 `QA_READY`는 선언하지 않는다.
+- 실제 사용자의 장시간 마우스·키보드 조작
+- 실제 플레이에서 저장·불러오기·출동·연구·결산 사용성 확인
+- 주간 일정 반복 피로도 확인
 
 ### 신규 플레이어 판정
 
@@ -115,7 +126,6 @@
 - 사건 결과가 연구·스킬·결산으로 환류함을 설명
 - 동료 지원 조건·확률·준비도가 공정하다고 인식
 - 분기 결산을 최종 엔딩이 아닌 중간 결과로 인식
-- 주간 일정 반복 피로도 보고
 
 판정은 `KEEP / AMPLIFY / CHANGE / RETEST / HOLD` 중 하나로 기록한다.
 
@@ -125,7 +135,7 @@
 
 진입 조건:
 
-- ANNUAL-MVP-001 수동 마우스 QA 완료
+- 사람 손 장시간 사용성 QA 완료
 - 육성→사건→연구 순환의 신규 플레이어 증거
 - 자동 지원 공정성의 플레이 설명
 - 별도 사용자 승인
@@ -189,8 +199,9 @@ annual_mvp_001: BUILD_READY
 automated_verification: PASSED
 rendered_visual_review: PASSED
 keyboard_input_qa: PASSED
+graphical_pointer_event_qa: PASSED
 three_route_scripted_qa: PASSED
-manual_mouse_qa: NOT_RUN
+human_usability_qa: NOT_RUN
 player_validation: NOT_RUN
 annual_loop_passed: NOT_DECLARED
 poc_passed: NOT_DECLARED
