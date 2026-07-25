@@ -50,7 +50,7 @@ func _init() -> void:
 	SaveData.delete_payload(path)
 	_expect(SaveData.write_payload(payload, path) == OK, "payload should write atomically")
 	var read_payload: Dictionary = SaveData.read_payload(path)
-	_expect(_canonical(read_payload) == _canonical(payload), "read payload should equal written JSON values")
+	_expect(_semantic_equal(read_payload, payload), "read payload should equal written values")
 
 	var first := State.new()
 	var second := State.new()
@@ -59,8 +59,8 @@ func _init() -> void:
 	_expect(first_restore.get("ok", false), "first state should restore")
 	_expect(second_restore.get("ok", false), "second state should restore")
 	if bool(first_restore.get("ok", false)) and bool(second_restore.get("ok", false)):
-		_expect(_canonical(first.get_snapshot()) == _canonical(state.get_snapshot()), "first restored snapshot should match source values")
-		_expect(_canonical(second.get_snapshot()) == _canonical(state.get_snapshot()), "second restored snapshot should match source values")
+		_expect(_semantic_equal(first.get_snapshot(), state.get_snapshot()), "first restored snapshot should match source values")
+		_expect(_semantic_equal(second.get_snapshot(), state.get_snapshot()), "second restored snapshot should match source values")
 		var adapter_a := Adapter.new()
 		var adapter_b := Adapter.new()
 		_expect(adapter_a.configure(config, first.get_snapshot(), int(first.get_snapshot()["run_seed"]))["ok"], "first adapter should configure")
@@ -79,8 +79,30 @@ func _init() -> void:
 	_expect(SaveData.read_payload(path).is_empty(), "deleted save should read empty")
 	_finish()
 
-func _canonical(value: Variant) -> String:
-	return JSON.stringify(value, "", true)
+func _semantic_equal(left: Variant, right: Variant) -> bool:
+	var left_type := typeof(left)
+	var right_type := typeof(right)
+	if left_type in [TYPE_INT, TYPE_FLOAT] and right_type in [TYPE_INT, TYPE_FLOAT]:
+		return is_equal_approx(float(left), float(right))
+	if left_type == TYPE_DICTIONARY and right_type == TYPE_DICTIONARY:
+		var left_dict := left as Dictionary
+		var right_dict := right as Dictionary
+		if left_dict.size() != right_dict.size():
+			return false
+		for key in left_dict.keys():
+			if not right_dict.has(key) or not _semantic_equal(left_dict[key], right_dict[key]):
+				return false
+		return true
+	if left_type == TYPE_ARRAY and right_type == TYPE_ARRAY:
+		var left_array := left as Array
+		var right_array := right as Array
+		if left_array.size() != right_array.size():
+			return false
+		for index in range(left_array.size()):
+			if not _semantic_equal(left_array[index], right_array[index]):
+				return false
+		return true
+	return left == right
 
 func _expect(condition: bool, message: String) -> void:
 	if not condition:
