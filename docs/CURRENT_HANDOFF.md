@@ -3,12 +3,13 @@
 > 문서 위치: `docs/CURRENT_HANDOFF.md`  
 > 상태 원본: `docs/CURRENT_STATUS.md`  
 > 코어: `docs/PROJECT_CORE.md`  
+> 렌더링 QA: `docs/qa/2026-07-25-annual-mvp-001-rendered-qa.md`  
 > 구현 기준: `MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A / Ver 4.2 / save mvp-039`
 
-이 문서는 새 담당자가 구현 완료와 검증 미완료를 혼합하지 않도록 하는 짧은 인수인계다.
+이 문서는 새 담당자가 구현·렌더링 QA 완료와 신규 플레이어 검증 미완료를 혼합하지 않도록 하는 짧은 인수인계다.
 
 ```yaml
-status: ANNUAL_MVP_001_BUILD_READY
+status: ANNUAL_MVP_001_RENDERED_QA_PASSED
 implemented_baseline: MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A / Ver 4.2 / save mvp-039
 core_mvp_001:
   implementation: POC_BUILD_READY
@@ -33,13 +34,18 @@ annual_mvp_001:
   implementation_pr: 62
   main_commit: 88522ce08f261bce6d61a8043c64caa3b982bd47
   automated_verification: PASSED
-  validation_run: 63
-  core_validation_run: 131
-  document_validation_run: 234
   focused_suite: 6/6
   full_regression: 49/49
-  human_visual_qa: NOT_RUN
-  player_validation: NOT_RUN
+  rendered_qa:
+    status: PASSED_ON_PR_65
+    visual_run: 15
+    annual_validation_run: 80
+    artifact_id: 8617041311
+    keyboard_input: PASSED
+    three_route_scripted: PASSED
+    visual_direction: KEEP_AMPLIFY
+  manual_mouse_qa: NOT_RUN
+  new_player_validation: NOT_RUN
   annual_loop_passed: NOT_DECLARED
 production_expansion: NOT_APPROVED
 ```
@@ -53,6 +59,7 @@ AGENTS.md
 → docs/GAME_DESIGN_DOCUMENT.md
 → docs/superpowers/specs/2026-07-25-annual-raising-visual-novel-design.md
 → docs/superpowers/plans/2026-07-25-annual-raising-vertical-slice-implementation-plan.md
+→ docs/qa/2026-07-25-annual-mvp-001-rendered-qa.md
 → ANNUAL-MVP-001 코드·데이터·Scene·테스트
 → 기존 CORE-MVP-001 코드·데이터·테스트
 ```
@@ -73,32 +80,37 @@ AGENTS.md
 - ANNUAL-MVP-001은 PR #62에서 `main`에 squash merge됐다.
 - 별도 `AnnualMvp001State`와 전용 저장을 사용한다.
 - 3주 × 주당 3슬롯의 일정 선택이 역량·피로·기관 지원·오현 신뢰에 반영된다.
-- 2주차 자율 출동, 3주차 추가 준비, 위험 +15 출동, 위험 +30 긴급 출동이 구현됐다.
-- 출동 준비에서 오현, 공용 보조 스킬, 신호 완충 모듈을 구성한다.
+- 2주차 자율 출동, 3주차 위험 +15 출동, 위험 +30 긴급 출동이 구현됐다.
 - 오현의 고유·공용 보조 스킬은 조건 충족 시 자동 판정된다.
-- 조건·확률·지원 준비도·남은 횟수를 표시한다.
-- 동일 event key는 다시 판정하거나 다시 적용하지 않는다.
-- 같은 seed와 입력 순서는 같은 지원 결과를 만든다.
+- 동료 지원은 체력 회복과 위험 완화만 가능하며 정답·가설·이해도·포획 표식을 변경하지 않는다.
 - 기존 CORE-MVP-001을 override와 선택적 extension으로 embedded 실행한다.
-- 동료 지원은 체력 회복과 위험 완화만 가능하다.
-- 핵심 정답·가설·이해도·관측 패턴·포획 표식은 변경하지 않는다.
 - 사건 결과는 잔향 자료·기관 지원·연구·공용 스킬·분기 결산으로 환류한다.
 - 분기 결산은 최종 엔딩이 아니라 후속 분기·연도 확장의 중간 결과다.
-- F1 개발 패널에서 CORE-MVP-001과 ANNUAL-MVP-001을 별도로 실행할 수 있다.
 
-## 자동 검증
+## PR #65 렌더링·입력 QA
 
-ANNUAL workflow run #63:
+수정·확인:
 
-- Python 계약 PASS
-- Godot 4.7.1 import PASS
+- 공용 현대 오컬트 Theme과 어두운 배경
+- 한글 시스템 글꼴 후보
+- embedded 조사 패널 확장
+- 단계·활동·역량·회수·지식 품질 현지화
+- embedded CORE 단계·이해도 현지화
+- 초기 키보드 포커스
+- `ui_accept` 활동 선택
+- Esc 선택 취소
+- 1280×720·1920×1080 PNG 22개
+- 조기·지연·긴급 출동 세 경로 manifest
+
+검증:
+
+- Visual workflow run #15 PASS
+- ANNUAL workflow run #80 PASS
 - CORE-MVP-001 4/4 PASS
 - ANNUAL-MVP-001 6/6 PASS
 - 전체 Godot 회귀 49/49 PASS
-- 1280×720·1920×1080 기계적 레이아웃 PASS
-- 기존 save `mvp-039`와 `mvp-038` 이관 비침범 PASS
 
-CORE workflow run #131과 문서 계약 run #234도 PASS했다.
+시각 판정은 `KEEP / AMPLIFY`다. 기본 가독성과 경로 차이는 유지하고, 넓은 여백과 개발용 HUD는 최종 텍스트 노벨 화면에서 강화한다.
 
 ## 보호할 계약
 
@@ -115,10 +127,10 @@ CORE workflow run #131과 문서 계약 run #234도 PASS했다.
 
 ## 아직 완료로 선언하지 않는 것
 
-- 사람 눈 UI·텍스트 QA
-- 실제 마우스·키보드·Esc·포커스 사용성
-- 육성 선택이 사건 차이로 체감되는지에 대한 플레이 증거
+- 실제 포인터를 사용하는 수동 마우스 QA
+- 신규 플레이어가 육성 선택과 사건 차이를 설명하는 증거
 - 동료 자동 지원이 공정하다는 플레이어 설명
+- 주간 일정 반복 피로도 판정
 - `POC_PASSED`
 - `annual loop passed`
 - ANNUAL-MVP-002 진입
@@ -126,8 +138,9 @@ CORE workflow run #131과 문서 계약 run #234도 PASS했다.
 
 ## 다음 작업
 
-1. 세 경로 사람 눈 QA: 조기 출동 / 지연 출동 / 긴급 출동
-2. 신규 플레이어에게 육성→사건→연구 인과를 설명하게 함
-3. 지원 조건·확률·준비도의 공정성 확인
-4. 결과를 `KEEP / AMPLIFY / CHANGE / RETEST / HOLD`로 판정
-5. 별도 사용자 승인 전 ANNUAL-MVP-002를 시작하지 않음
+1. PR #65 리뷰·병합
+2. 수동 마우스 QA
+3. 신규 플레이어 세 경로 플레이
+4. 육성→사건→연구 인과와 지원 공정성 설명 수집
+5. 전체 루프를 `KEEP / AMPLIFY / CHANGE / RETEST / HOLD`로 판정
+6. 별도 사용자 승인 전 ANNUAL-MVP-002를 시작하지 않음
