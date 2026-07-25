@@ -50,6 +50,7 @@ func _ready() -> void:
 	theme = ThemeFactory.create_theme()
 	_add_background()
 	super()
+	_replace_module_toggle_handler()
 	var incident_host := find_child("IncidentHost", true, false) as Control
 	if incident_host != null:
 		incident_host.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -151,6 +152,34 @@ func _unhandled_input(event: InputEvent) -> void:
 	_on_back_pressed()
 	get_viewport().set_input_as_handled()
 	call_deferred("_focus_current_panel")
+
+
+func _replace_module_toggle_handler() -> void:
+	var module_toggle := _find_button_by_text(self, "모듈: 신호 완충") as CheckButton
+	if module_toggle == null:
+		return
+	for connection in module_toggle.toggled.get_connections():
+		var callback := connection.get("callable", Callable()) as Callable
+		if callback.is_valid() and module_toggle.toggled.is_connected(callback):
+			module_toggle.toggled.disconnect(callback)
+	module_toggle.toggled.connect(_on_module_toggle_changed)
+
+
+func _on_module_toggle_changed(enabled: bool) -> void:
+	_selected_module_ids.clear()
+	if enabled:
+		_selected_module_ids.append("annual001_module_signal_buffer")
+	_render()
+
+
+func _find_button_by_text(node: Node, text: String) -> BaseButton:
+	if node is BaseButton and (node as BaseButton).text == text:
+		return node as BaseButton
+	for child in node.get_children():
+		var found := _find_button_by_text(child, text)
+		if found != null:
+			return found
+	return null
 
 
 func _add_background() -> void:
