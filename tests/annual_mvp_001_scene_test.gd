@@ -42,6 +42,8 @@ func _run() -> void:
 	var initial: Dictionary = _scene.call("debug_snapshot")
 	_expect(initial.get("phase") == "WEEK_PLANNING", "scene should start in week planning")
 	_expect(_scene.call("debug_visible_panel") == "WeekPlanningPanel", "only week planning panel should be visible")
+	var week_label := _scene.find_child("WeekLabel", true, false) as Label
+	_expect(week_label != null and week_label.text.contains("/ 4"), "week label should expose the four-week month")
 	var before: Dictionary = initial.duplicate(true)
 	_scene.call("debug_select_activity", "annual001_activity_rest")
 	_scene.call("debug_select_activity", "annual001_activity_rest")
