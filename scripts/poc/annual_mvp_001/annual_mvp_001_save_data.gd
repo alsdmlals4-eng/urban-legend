@@ -42,7 +42,10 @@ static func read_payload(path: String = SAVE_PATH) -> Dictionary:
 	var parsed: Variant = JSON.parse_string(file.get_as_text())
 	if typeof(parsed) != TYPE_DICTIONARY:
 		return {}
-	var payload := parsed as Dictionary
+	var normalized: Variant = _normalize_json_numbers(parsed)
+	if typeof(normalized) != TYPE_DICTIONARY:
+		return {}
+	var payload := normalized as Dictionary
 	if String(payload.get("save_version", "")) != SAVE_VERSION:
 		return {}
 	if typeof(payload.get("state")) != TYPE_DICTIONARY:
@@ -59,3 +62,23 @@ static func delete_payload(path: String = SAVE_PATH) -> Error:
 	if not FileAccess.file_exists(path):
 		return OK
 	return DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+
+
+static func _normalize_json_numbers(value: Variant) -> Variant:
+	match typeof(value):
+		TYPE_FLOAT:
+			var number := float(value)
+			if is_equal_approx(number, round(number)):
+				return int(round(number))
+			return number
+		TYPE_ARRAY:
+			var array: Array = []
+			for item in value as Array:
+				array.append(_normalize_json_numbers(item))
+			return array
+		TYPE_DICTIONARY:
+			var dictionary: Dictionary = {}
+			for key in (value as Dictionary).keys():
+				dictionary[key] = _normalize_json_numbers((value as Dictionary)[key])
+			return dictionary
+	return value
