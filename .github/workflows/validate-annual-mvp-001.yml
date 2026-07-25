@@ -62,6 +62,11 @@ jobs:
           GODOT_BIN: godot
           GODOT_TEST_TMP: ${{ runner.temp }}/annual-mvp-001-focused
         run: bash tests/run_annual_mvp_001_tests.sh
+      - name: Run focused ANNUAL-MVP-002 tests
+        env:
+          GODOT_BIN: godot
+          GODOT_TEST_TMP: ${{ runner.temp }}/annual-mvp-002-focused
+        run: bash tests/run_annual_mvp_002_tests.sh
       - name: Run full Godot regression
         env:
           GODOT_BIN: godot
@@ -76,6 +81,7 @@ jobs:
             annual-import.log
             ${{ runner.temp }}/annual-mvp-001-core/focused-logs
             ${{ runner.temp }}/annual-mvp-001-focused/focused-logs
+            ${{ runner.temp }}/annual-mvp-002-focused/focused-logs
             ${{ runner.temp }}/annual-mvp-001-regression/regression-logs
           if-no-files-found: warn
           retention-days: 7
