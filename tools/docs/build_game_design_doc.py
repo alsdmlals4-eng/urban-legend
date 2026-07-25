@@ -20,7 +20,7 @@ from docx.shared import Inches, Pt, RGBColor
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = ROOT / "docs" / "GAME_DESIGN_DOCUMENT.md"
 OUTPUT = ROOT / "docs" / "URBAN_LEGEND_GAME_DESIGN.docx"
-FORMAT_VERSION = "urban-legend-gdd-index-v4"
+FORMAT_VERSION = "urban-legend-gdd-index-v5"
 HASH_PREFIX = "gdd-source-sha256="
 FONT = "NanumSquare"
 NAVY = "1F2A44"
@@ -116,7 +116,7 @@ def configure(doc: Document, digest: str) -> None:
     section.left_margin = section.right_margin = Inches(0.72)
     section.top_margin = section.bottom_margin = Inches(0.65)
     doc.core_properties.title = "괴이 기록국 게임기획서"
-    doc.core_properties.subject = "MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A / Ver 4.2 / ANNUAL-MVP-001 4주"
+    doc.core_properties.subject = "MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A / Ver 4.2 / ANNUAL-MVP-001 4주×7일"
     doc.core_properties.keywords = HASH_PREFIX + digest
     for style_name, size, color in (("Normal", 9, TEXT), ("Heading 1", 16, NAVY), ("Heading 2", 12, BLUE)):
         style = doc.styles[style_name]
@@ -126,7 +126,7 @@ def configure(doc: Document, digest: str) -> None:
         style.font.color.rgb = RGBColor.from_string(color)
     footer = section.footer.paragraphs[0]
     footer.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    font(footer.add_run("괴이 기록국 · GDD v3.1 · ANNUAL-MVP-001 4주 · Ver 4.2"), 8, MUTED)
+    font(footer.add_run("괴이 기록국 · GDD v3.2 · ANNUAL-MVP-001 4주×7일 · Ver 4.2"), 8, MUTED)
 
 
 def render(doc: Document, markdown: str) -> None:

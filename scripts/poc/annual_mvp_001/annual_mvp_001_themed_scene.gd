@@ -24,7 +24,8 @@ const ACTIVITY_LABELS := {
 	"annual001_activity_interview_duty": "증언 면담 업무",
 	"annual001_activity_signal_research": "신호 현상 연구",
 	"annual001_activity_companion_drill": "오현 협업 훈련",
-	"annual001_activity_rest": "휴식"
+	"annual001_activity_rest": "휴식",
+	"annual001_activity_auto_rest": "자동 휴식"
 }
 const COMPETENCY_LABELS := {
 	"observation": "관찰",
@@ -46,6 +47,9 @@ const KNOWLEDGE_LABELS := {
 	"unknown": "미정"
 }
 
+var _activity_buttons: Dictionary = {}
+var _auto_rest_confirmation_pending := false
+
 
 func _ready() -> void:
 	_state = FourWeekState.new()
@@ -61,29 +65,152 @@ func _ready() -> void:
 	call_deferred("_focus_current_panel")
 
 
+func debug_selected_days() -> int:
+	return _selected_days()
+
+
+func _build_week_planning_panel() -> void:
+	var panel := VBoxContainer.new()
+	panel.name = "WeekPlanningPanel"
+	panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_phase_host.add_child(panel)
+	_panels[panel.name] = panel
+	var guide := Label.new()
+	guide.text = "한 주는 7일입니다. 일정마다 1~3일을 사용하며 주차 경계를 넘을 수 없습니다. 같은 일정을 반복할 수 있습니다."
+	guide.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	panel.add_child(guide)
+	_planning_selection_label = Label.new()
+	_planning_selection_label.name = "PlanningSelectionLabel"
+	_planning_selection_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	panel.add_child(_planning_selection_label)
+	var activity_grid := GridContainer.new()
+	activity_grid.columns = 2
+	panel.add_child(activity_grid)
+	for value in _config_activities_fallback():
+		var activity := value as Dictionary
+		var activity_id := String(activity.get("id", ""))
+		var day_cost := int(activity.get("day_cost", 0))
+		var button := Button.new()
+		button.name = "ActivityButton_%s" % activity_id
+		button.text = "%s · %d일" % [String(activity.get("name", activity_id)), day_cost]
+		button.custom_minimum_size = Vector2(260, 42)
+		button.pressed.connect(func() -> void: _select_activity(activity_id))
+		activity_grid.add_child(button)
+		_activity_buttons[activity_id] = button
+
+
+func _select_activity(activity_id: String) -> void:
+	if _effective_phase() != "WEEK_PLANNING":
+		return
+	var day_cost := _activity_day_cost(activity_id)
+	var remaining_days := _days_per_week() - _selected_days()
+	if day_cost <= 0 or day_cost > remaining_days:
+		_feedback_label.text = "이 일정은 남은 %d일 안에 끝낼 수 없어 다음 주차로 넘길 수 없습니다." % remaining_days
+		_render()
+		return
+	_selected_activity_ids.append(activity_id)
+	_auto_rest_confirmation_pending = false
+	_feedback_label.text = ""
+	_render()
+
+
+func _on_back_pressed() -> void:
+	if _effective_phase() == "WEEK_PLANNING" and not _selected_activity_ids.is_empty():
+		_selected_activity_ids.pop_back()
+		_auto_rest_confirmation_pending = false
+		_feedback_label.text = ""
+		_render()
+
+
+func _on_confirm_pressed() -> void:
+	if _effective_phase() != "WEEK_PLANNING":
+		super()
+		return
+	var result: Dictionary
+	if _auto_rest_confirmation_pending:
+		result = _state.commit_week_with_auto_rest(_selected_activity_ids)
+	else:
+		result = _state.commit_week(_selected_activity_ids)
+		if bool(result.get("requires_auto_rest_confirmation", false)):
+			_auto_rest_confirmation_pending = true
+			_feedback_label.text = String(result.get("error", "남은 일수는 자동 휴식 처리됩니다."))
+			_render()
+			return
+	if bool(result.get("ok", false)):
+		_selected_activity_ids.clear()
+		_auto_rest_confirmation_pending = false
+	_apply_command(result)
+
+
+func _on_load_pressed() -> void:
+	_auto_rest_confirmation_pending = false
+	super()
+
+
 func _render() -> void:
 	super()
 	var snapshot := _state.get_snapshot()
 	var max_weeks := int((_config.get("campaign", {}) as Dictionary).get("max_weeks", 4))
 	if _week_label != null:
 		_week_label.text = "주차: %d / %d" % [int(snapshot.get("week", 0)), max_weeks]
+	var selected_days := _selected_days()
+	var remaining_days := maxi(0, _days_per_week() - selected_days)
+	if _planning_selection_label != null:
+		var selected_names: Array[String] = []
+		for activity_id in _selected_activity_ids:
+			selected_names.append("%s(%d일)" % [String(ACTIVITY_LABELS.get(activity_id, activity_id)), _activity_day_cost(activity_id)])
+		_planning_selection_label.text = "사용 %d/7일 · 남은 %d일\n선택: %s" % [
+			selected_days,
+			remaining_days,
+			"없음" if selected_names.is_empty() else ", ".join(selected_names)
+		]
+	var planning_active := _effective_phase() == "WEEK_PLANNING"
+	for activity_id in _activity_buttons.keys():
+		var button := _activity_buttons[activity_id] as Button
+		button.disabled = not planning_active or _activity_day_cost(String(activity_id)) > remaining_days
+	if _confirm_button != null:
+		if planning_active:
+			_confirm_button.text = "자동 휴식 후 확정" if _auto_rest_confirmation_pending else "주간 일정 확정"
+		else:
+			_confirm_button.text = "확인"
 	_localize_rendered_text()
 	call_deferred("_focus_current_panel")
 
 
 func _apply_command(result: Dictionary) -> void:
+	if bool(result.get("state_changed", false)):
+		_auto_rest_confirmation_pending = false
 	super(result)
 	for value in result.get("events", []) as Array:
 		var event := value as Dictionary
 		if String(event.get("event", "")) == "annual_forced_deployment":
-			_feedback_label.text = "4주차 활동 결과를 확인했습니다. 월말 기한에 따라 긴급 강제 출동으로 전환됩니다. 시작 위험 +30."
+			_feedback_label.text = "4주차 7일 일정 결과를 확인했습니다. 월말 기한에 따라 긴급 강제 출동으로 전환됩니다. 시작 위험 +30."
 			return
+
+
+func _days_per_week() -> int:
+	return int((_config.get("campaign", {}) as Dictionary).get("days_per_week", 7))
+
+
+func _activity_day_cost(activity_id: String) -> int:
+	for value in _config.get("activities", []) as Array:
+		var activity := value as Dictionary
+		if String(activity.get("id", "")) == activity_id:
+			return int(activity.get("day_cost", 0))
+	return 0
+
+
+func _selected_days() -> int:
+	var total := 0
+	for activity_id in _selected_activity_ids:
+		total += _activity_day_cost(activity_id)
+	return total
 
 
 func _deployment_text(snapshot: Dictionary) -> String:
 	if int(snapshot.get("week", 0)) == 2:
-		return "지금 출동하면 추가 위험이 없습니다. 1주 더 준비하면 역량을 보완할 수 있습니다."
-	return "3주차입니다. 지금 출동하면 위험 +15. 지연하면 4주차 활동 3개를 모두 수행한 뒤 긴급 출동으로 전환되어 위험 +30입니다."
+		return "지금 출동하면 추가 위험이 없습니다. 1주 더 준비하면 7일 예산으로 역량을 보완할 수 있습니다."
+	return "3주차입니다. 지금 출동하면 위험 +15. 지연하면 4주차 7일 일정을 마친 뒤 긴급 출동으로 전환되어 위험 +30입니다."
 
 
 func _start_incident() -> void:
@@ -128,10 +255,14 @@ func _week_result_text(snapshot: Dictionary) -> String:
 	var activity_names: Array[String] = []
 	for value in result.get("activity_ids", []) as Array:
 		var activity_id := String(value)
-		activity_names.append(String(ACTIVITY_LABELS.get(activity_id, activity_id)))
-	return "%d주차 결과\n활동: %s\n피로·역량·기관 지원·신뢰 변화가 다음 출동 준비에 반영됩니다." % [
+		activity_names.append("%s(%d일)" % [String(ACTIVITY_LABELS.get(activity_id, activity_id)), _activity_day_cost(activity_id)])
+	var auto_rest_days := int(result.get("auto_rest_days", 0))
+	var auto_rest_text := "없음" if auto_rest_days <= 0 else "자동 휴식 %d일(피로만 최소 회복)" % auto_rest_days
+	return "%d주차 결과\n직접 일정: %s\n%s\n총 사용: %d/7일\n피로·역량·기관 지원·신뢰 변화가 다음 출동 준비에 반영됩니다." % [
 		int(result.get("week", 0)),
-		", ".join(activity_names)
+		"없음" if activity_names.is_empty() else ", ".join(activity_names),
+		auto_rest_text,
+		int(result.get("used_days", 7))
 	]
 
 

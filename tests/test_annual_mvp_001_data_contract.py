@@ -14,15 +14,37 @@ class AnnualMvp001DataContractTests(unittest.TestCase):
         cls.data = json.loads(DATA_PATH.read_text(encoding="utf-8"))
 
     def test_campaign_shape(self) -> None:
-        self.assertEqual("annual-mvp-001-v2", self.data["contract_version"])
+        self.assertEqual("annual-mvp-001-v3", self.data["contract_version"])
         campaign = self.data["campaign"]
         self.assertEqual(4, campaign["max_weeks"])
-        self.assertEqual(3, campaign["slots_per_week"])
+        self.assertEqual(7, campaign["days_per_week"])
+        self.assertEqual(5, campaign["auto_rest_fatigue_recovery_per_day"])
+        self.assertNotIn("slots_per_week", campaign)
         self.assertEqual(2, campaign["voluntary_entry_week"])
         self.assertEqual(4, campaign["deadline_week"])
         self.assertEqual(15, campaign["week_3_entry_risk"])
         self.assertEqual(30, campaign["forced_entry_risk"])
-        self.assertEqual(12, campaign["max_weeks"] * campaign["slots_per_week"])
+        self.assertEqual(28, campaign["max_weeks"] * campaign["days_per_week"])
+
+    def test_activity_day_costs_and_rest_contract(self) -> None:
+        costs = {entry["id"]: entry["day_cost"] for entry in self.data["activities"]}
+        self.assertEqual(
+            {
+                "annual001_activity_observation_drill": 2,
+                "annual001_activity_analysis_desk": 2,
+                "annual001_activity_field_training": 3,
+                "annual001_activity_interview_duty": 2,
+                "annual001_activity_signal_research": 3,
+                "annual001_activity_companion_drill": 2,
+                "annual001_activity_rest": 1,
+            },
+            costs,
+        )
+        self.assertTrue(all(1 <= value <= 3 for value in costs.values()))
+        rest = next(entry for entry in self.data["activities"] if entry["id"] == "annual001_activity_rest")
+        self.assertEqual("direct", rest["rest_mode"])
+        self.assertTrue(rest["status_recovery_eligible"])
+        self.assertEqual(-25, rest["deltas"]["fatigue"])
 
     def test_fixed_counts(self) -> None:
         self.assertEqual(7, len(self.data["activities"]))

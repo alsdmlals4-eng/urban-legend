@@ -16,9 +16,10 @@
 | 현행 구현 | MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A / Ver 4.2 / `mvp-039` |
 | 사건 코어 | CORE-MVP-001 `POC_BUILD_READY` |
 | 연도제 설계 | `APPROVED_DESIGN_BASELINE` |
-| 연도제 구현 | `NOT_IMPLEMENTED` |
+| 4주 보정 | PR #70 `HISTORICAL_REGRESSION_EVIDENCE` |
+| 7일 주간 계약 | `APPROVED` — Issue #75 |
+| 7일 주간 구현 | `ON_BRANCH / CI_PENDING` |
 | POC_PASSED | `NOT_DECLARED` |
-| 현재 트랙 | 정본 전환 → ANNUAL-MVP-001 계획 승인 |
 | 제작 확대 | `NOT_APPROVED` |
 
 ## 상위 방향
@@ -36,51 +37,58 @@
 
 ## 단계 의존성
 
-### 0. 정본 전환
-
-목표:
+### 0. 정본 전환 — 완료
 
 - `PROJECT_CORE`를 육성+사건 이중 코어로 전환
-- GDD v3.0 정렬
-- 상태·인수인계·로드맵의 오래된 PR 대기 문구 제거
-- 문서 지도·테스트 계약 정렬
+- GDD·상태·인수인계·로드맵 정렬
+- PR #61·#73에서 정본과 생성기 동기화
 
-통과 조건:
-
-- 문서 계약 `PASSED`
-- 변경 파일이 Markdown과 문서 계약 테스트로 제한
-- 런타임·데이터·Scene·저장 변경 없음
-
-### 1. ANNUAL-MVP-001 — 3주 수직절편
+### 1. ANNUAL-MVP-001 — 현재 작업
 
 목표:
 
-> 육성·준비 선택이 사건의 정보·위험·피해 관리에 차이를 만들고, 사건 결과가 연구·스킬·분기 결산으로 되돌아오는지 검증한다.
+> 육성·준비 선택과 일정 비용이 사건의 정보·위험·피해 관리에 차이를 만들고, 사건 결과가 연구·스킬·분기 결산으로 되돌아오는지 검증한다.
 
-범위:
+활성 범위:
 
-- 3주 × 주당 3슬롯
+- 1개월 = 4주 × 주당 7일 = 28일
+- 일정별 1~3일 소비
+- 일정의 주차 경계 초과 금지
+- 7일 미만 첫 확정은 자동 휴식 경고와 편성 유지
+- 같은 편성 재확정은 남은 일수 자동 휴식
+- 직접 휴식은 자동 휴식보다 강함
 - 권나래 역량 4종·피로 1개
 - 동료 1명·업무 신뢰
 - 고유 스킬 1개·공용 스킬 2종 후보
 - 기본 장비 1개·모듈 1개
-- 2주차 자율 출동·3주차 강제 출동
+- 2주차 위험 0·3주차 위험 15·4주차 강제 위험 30
 - 기존 CORE-MVP-001 embedded 실행
 - 사건 결과·잔향 자료·연구·분기 결산
-- 전용 저장
+- 전용 저장 `annual-mvp-001-save-v1`
 
 보호:
 
 - 기존 `GameState` 비침범
-- 기존 save `mvp-039`와 `mvp-038` 이관 비침범
+- save `mvp-039`와 `mvp-038` 이관 비침범
 - 기존 사건·조사·회수 장면 비침범
-- CORE-MVP-001 집중 4/4와 전체 43/43 회귀 보호
+- CORE-MVP-001 회귀 보호
+- 기존 활동·동료·스킬·장비·연구 ID 유지
+
+역사적 기준:
+
+- PR #62의 3주×3슬롯 구현
+- PR #70의 4주×3슬롯 보정
+- PR #65·#67의 렌더링·입력 QA
+
+위 항목은 `HISTORICAL_REGRESSION_EVIDENCE`이며 최신 시간 계약이 아니다.
 
 ### 2. ANNUAL-MVP-002 — 동료·장비·연구 조합
 
 진입 조건:
 
-ANNUAL-MVP-001에서 육성→사건→연구 인과가 플레이 증거로 확인된다.
+- Issue #75 구현·자동 검증·사람 사용성 QA 완료
+- 육성→사건→연구 인과가 신규 플레이어 증거로 확인
+- 별도 사용자 승인
 
 범위:
 
@@ -127,7 +135,7 @@ ANNUAL-MVP-001에서 육성→사건→연구 인과가 플레이 증거로 확�
 | 단계 | 자동 증거 | 사람 눈 QA | 플레이 증거 |
 |---|---|---|---|
 | 정본 전환 | 문서 계약·경로·상태 어휘 | 문서 충돌 검토 | 불필요 |
-| ANNUAL-MVP-001 | 데이터·상태·저장·adapter·회귀 | 일정·준비·결산 가독성 | 육성→사건→연구 인과 |
+| ANNUAL-MVP-001 | 데이터·상태·저장·adapter·회귀 | 일정 비용·경고·준비·결산 가독성 | 육성→사건→연구 인과 |
 | ANNUAL-MVP-002 | 지원 확률·보장·재현성 | 스킬 정보 위계 | 동료 조합의 전략성·공정성 |
 | ANNUAL-MVP-003 | 마감·상태·실패 전진 | 분기 템포 | 일정 압박·사건 선택 비용 |
 | ANNUAL-MVP-004 | 계승·결산·분기 연결 | 연간 가독성·서사 | 한 해의 완결감과 다음 해 기대 |
@@ -142,7 +150,7 @@ ANNUAL-MVP-001에서 육성→사건→연구 인과가 플레이 증거로 확�
 - [ ] `../PROJECT_CORE.md` 확인
 - [ ] `../GAME_DESIGN_DOCUMENT.md` 확인
 - [ ] `../../MVP_ROADMAP.md` 확인
-- [ ] 활성 계획 확인
+- [ ] 최신 7일 설계·계획 확인
 - [ ] 보호 경로 확인
 - [ ] Work Mode·Skill 선언
 
@@ -159,7 +167,7 @@ ANNUAL-MVP-001에서 육성→사건→연구 인과가 플레이 증거로 확�
 
 - [ ] 미해결 review thread 0
 - [ ] 예상 head SHA 고정
-- [ ] 문서·코드 workflow 결과 확인
+- [ ] 문서·ANNUAL·Visual workflow 결과 확인
 - [ ] 변경 파일이 계획 범위와 일치
 - [ ] CURRENT_STATUS·CURRENT_HANDOFF·MVP_ROADMAP·TEST_CHECKLIST 정합
 
@@ -167,32 +175,35 @@ ANNUAL-MVP-001에서 육성→사건→연구 인과가 플레이 증거로 확�
 
 ```yaml
 canonical_migration:
-  status: IN_PROGRESS
-  runtime_changes: NONE
+  status: COMPLETE
 annual_design:
   status: APPROVED_DESIGN_BASELINE
 annual_mvp_001:
-  status: PLAN_PENDING_APPROVAL
-  implementation: NOT_IMPLEMENTED
+  contract: SEVEN_DAY_SCHEDULING_APPROVED
+  issue: 75
+  implementation: ON_BRANCH
+  automated_verification: PENDING
+  human_usability_qa: NOT_RUN
+  player_validation: NOT_RUN
 core_mvp_001:
   implementation: POC_BUILD_READY
-  automated_verification: PASSED
   poc_passed: NOT_DECLARED
 production_expansion: NOT_APPROVED
 ```
 
 ## 다음 담당자 행동
 
-1. 정본 전환 PR의 문서 계약을 통과시킨다.
-2. 정본 전환 diff가 코드·데이터·Scene을 포함하지 않는지 확인한다.
-3. 정본 전환을 병합한다.
-4. ANNUAL-MVP-001 구현 계획의 수치·경계·인터페이스를 재검토한다.
-5. 사용자 승인 뒤에만 격리 구현을 시작한다.
+1. Issue #75 브랜치의 데이터·상태·Scene·테스트 계약을 실행한다.
+2. GDD DOCX build와 source hash를 검증한다.
+3. 7일 편성·자동 휴식 경고를 720p·1080p와 그래픽 포인터로 검증한다.
+4. PR changed-file·review thread·CI를 확인하고 squash merge한다.
+5. main 상태 문서에 최종 PR·commit·run을 기록한다.
+6. 사람 플레이 전에는 `POC_PASSED`를 선언하지 않는다.
 
 ## 보류 항목
 
-- UX-PD-001 2B·2C는 연도제 준비 화면에 맞춰 재설계
-- MVP-044~046은 새 ANNUAL-MVP 트랙으로 재매핑
+- UX-PD-001 2B·2C의 연도제 준비 화면 재설계
+- MVP-044~046의 ANNUAL-MVP 트랙 재매핑
 - 대형 경제·시장·세력 직접 경영
 - 복수 연도 전체 콘텐츠
 - 동료 상세 스탯·개인 일정

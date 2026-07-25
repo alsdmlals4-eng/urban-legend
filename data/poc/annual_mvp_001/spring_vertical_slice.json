@@ -1,10 +1,11 @@
 {
-  "contract_version": "annual-mvp-001-v2",
+  "contract_version": "annual-mvp-001-v3",
   "campaign": {
     "id": "annual001_spring_slice",
     "name": "봄 분기 수직절편",
     "max_weeks": 4,
-    "slots_per_week": 3,
+    "days_per_week": 7,
+    "auto_rest_fatigue_recovery_per_day": 5,
     "voluntary_entry_week": 2,
     "deadline_week": 4,
     "week_3_entry_risk": 15,
@@ -35,6 +36,7 @@
     {
       "id": "annual001_activity_observation_drill",
       "name": "관측 훈련",
+      "day_cost": 2,
       "deltas": {
         "competencies": {"observation": 1},
         "fatigue": 12
@@ -43,6 +45,7 @@
     {
       "id": "annual001_activity_analysis_desk",
       "name": "기록 분석",
+      "day_cost": 2,
       "deltas": {
         "competencies": {"analysis": 1},
         "fatigue": 10
@@ -51,6 +54,7 @@
     {
       "id": "annual001_activity_field_training",
       "name": "현장 대응 훈련",
+      "day_cost": 3,
       "deltas": {
         "competencies": {"field_response": 1},
         "fatigue": 15,
@@ -60,6 +64,7 @@
     {
       "id": "annual001_activity_interview_duty",
       "name": "증언 면담 업무",
+      "day_cost": 2,
       "deltas": {
         "competencies": {"interpersonal": 1},
         "fatigue": 10,
@@ -69,6 +74,7 @@
     {
       "id": "annual001_activity_signal_research",
       "name": "신호 현상 연구",
+      "day_cost": 3,
       "deltas": {
         "research_progress": {"annual001_research_signal_buffer": 1},
         "fatigue": 10
@@ -77,6 +83,7 @@
     {
       "id": "annual001_activity_companion_drill",
       "name": "오현 협업 훈련",
+      "day_cost": 2,
       "deltas": {
         "companion_trust": {"annual001_companion_oh_hyun": 1},
         "fatigue": 8
@@ -85,6 +92,9 @@
     {
       "id": "annual001_activity_rest",
       "name": "휴식",
+      "day_cost": 1,
+      "rest_mode": "direct",
+      "status_recovery_eligible": true,
       "deltas": {
         "fatigue": -25
       }

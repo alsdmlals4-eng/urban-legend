@@ -24,11 +24,13 @@ func _run() -> void:
 	for _frame in range(8):
 		await process_frame
 
+	# Week 1: 3 + 3 + 1 = 7 days. This also prepares the signal-buffer research.
 	await _click_text("신호 현상 연구")
-	await _click_text("오현 협업 훈련")
-	await _click_text("현장 대응 훈련")
+	await _click_text("신호 현상 연구")
+	await _click_text("휴식")
 	_expect_selected_count(3, "week 1 pointer selection")
-	await _click_text("확인")
+	_expect_selected_days(7, "week 1 pointer day budget")
+	await _click_text("주간 일정 확정")
 	_expect_phase("WEEK_RESULT", "week 1 confirm")
 
 	await _click_text("PoC 저장")
@@ -40,20 +42,26 @@ func _run() -> void:
 	await _click_text("확인")
 	_expect_phase("WEEK_PLANNING", "advance to week 2 after restore")
 
-	await _click_text("신호 현상 연구")
-	await _click_text("관측 훈련")
+	# Week 2: 3 + 2 + 1 + 1 = 7 days and unlocks institutional support.
+	await _click_text("현장 대응 훈련")
+	await _click_text("오현 협업 훈련")
 	await _click_text("휴식")
-	await _click_text("확인")
+	await _click_text("휴식")
+	_expect_selected_days(7, "week 2 pointer day budget")
+	await _click_text("주간 일정 확정")
 	_expect_phase("WEEK_RESULT", "week 2 confirm")
 	await _click_text("확인")
 	_expect_phase("DEPLOYMENT_DECISION", "week 2 deployment decision")
 	await _click_text("1주 더 준비")
 	_expect_phase("WEEK_PLANNING", "delay should enter week 3 planning")
 
+	# Week 3: 2 + 3 + 1 + 1 = 7 days.
 	await _click_text("기록 분석")
 	await _click_text("현장 대응 훈련")
 	await _click_text("휴식")
-	await _click_text("확인")
+	await _click_text("휴식")
+	_expect_selected_days(7, "week 3 pointer day budget")
+	await _click_text("주간 일정 확정")
 	_expect_phase("WEEK_RESULT", "week 3 confirm")
 	await _click_text("확인")
 	_expect_phase("DEPLOYMENT_DECISION", "week 3 deployment decision")
@@ -130,7 +138,8 @@ func _click_control(control: BaseButton) -> void:
 func _find_button_by_text(node: Node, text: String) -> BaseButton:
 	if node is BaseButton:
 		var button := node as BaseButton
-		if button.text == text and button.is_visible_in_tree() and not button.disabled:
+		var matches_activity_cost: bool = button.text.begins_with("%s · " % text)
+		if (button.text == text or matches_activity_cost) and button.is_visible_in_tree() and not button.disabled:
 			return button
 	for child in node.get_children():
 		var found := _find_button_by_text(child, text)
@@ -156,6 +165,11 @@ func _first_enabled_button(node: Node) -> BaseButton:
 func _expect_selected_count(expected: int, context: String) -> void:
 	var selected := _scene.get("_selected_activity_ids") as Array
 	_expect(selected.size() == expected, "%s expected %d selections, got %d" % [context, expected, selected.size()])
+
+
+func _expect_selected_days(expected: int, context: String) -> void:
+	var actual := int(_scene.call("debug_selected_days"))
+	_expect(actual == expected, "%s expected %d days, got %d" % [context, expected, actual])
 
 
 func _expect_phase(expected: String, context: String) -> void:

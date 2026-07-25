@@ -1,7 +1,7 @@
 class_name AnnualMvp001Data
 extends RefCounted
 
-const CONTRACT_VERSION := "annual-mvp-001-v2"
+const CONTRACT_VERSION := "annual-mvp-001-v3"
 const REQUIRED_COUNTS := {
 	"activities": 7,
 	"companions": 1,
@@ -11,6 +11,8 @@ const REQUIRED_COUNTS := {
 	"research_projects": 2
 }
 const ALLOWED_EFFECT_KEYS := ["health_restore", "risk_reduction"]
+const DAYS_PER_WEEK := 7
+const AUTO_REST_RECOVERY_PER_DAY := 5
 
 
 static func load_config(path: String) -> Dictionary:
@@ -37,14 +39,18 @@ static func validate_config(data: Dictionary) -> Array[String]:
 	var campaign := campaign_value as Dictionary
 	if int(campaign.get("max_weeks", 0)) != 4:
 		errors.append("campaign max_weeks must be 4")
-	if int(campaign.get("slots_per_week", 0)) != 3:
-		errors.append("campaign slots_per_week must be 3")
+	if int(campaign.get("days_per_week", 0)) != DAYS_PER_WEEK:
+		errors.append("campaign days_per_week must be %d" % DAYS_PER_WEEK)
+	if campaign.has("slots_per_week"):
+		errors.append("campaign slots_per_week is obsolete")
+	if int(campaign.get("auto_rest_fatigue_recovery_per_day", 0)) != AUTO_REST_RECOVERY_PER_DAY:
+		errors.append("campaign auto_rest_fatigue_recovery_per_day must be %d" % AUTO_REST_RECOVERY_PER_DAY)
 	if int(campaign.get("voluntary_entry_week", 0)) != 2:
 		errors.append("campaign voluntary_entry_week must be 2")
 	if int(campaign.get("deadline_week", 0)) != 4:
 		errors.append("campaign deadline_week must be 4")
-	if int(campaign.get("max_weeks", 0)) * int(campaign.get("slots_per_week", 0)) != 12:
-		errors.append("campaign must contain 12 monthly activity slots")
+	if int(campaign.get("max_weeks", 0)) * int(campaign.get("days_per_week", 0)) != 28:
+		errors.append("campaign must contain 28 monthly days")
 	var incident_path := String(campaign.get("incident_case_path", ""))
 	if incident_path.is_empty() or not FileAccess.file_exists(incident_path):
 		errors.append("campaign incident_case_path must exist")
@@ -97,9 +103,13 @@ static func validate_config(data: Dictionary) -> Array[String]:
 	var allowed_competencies := ["observation", "analysis", "field_response", "interpersonal"]
 	for value in data.get("activities", []) as Array:
 		var activity := value as Dictionary
+		var activity_id := String(activity.get("id", ""))
+		var day_cost := int(activity.get("day_cost", 0))
+		if day_cost < 1 or day_cost > 3:
+			errors.append("activity %s day_cost must be 1..3" % activity_id)
 		var deltas_value: Variant = activity.get("deltas")
 		if typeof(deltas_value) != TYPE_DICTIONARY:
-			errors.append("activity %s requires deltas" % activity.get("id", ""))
+			errors.append("activity %s requires deltas" % activity_id)
 			continue
 		var deltas := deltas_value as Dictionary
 		for competency_id in (deltas.get("competencies", {}) as Dictionary).keys():
@@ -111,6 +121,15 @@ static func validate_config(data: Dictionary) -> Array[String]:
 			errors.append("activity fatigue delta out of range")
 		if abs(int(deltas.get("institution_support", 0))) > 3:
 			errors.append("activity institution support delta out of range")
+		if activity_id == "annual001_activity_rest":
+			if day_cost != 1:
+				errors.append("direct rest day_cost must be 1")
+			if String(activity.get("rest_mode", "")) != "direct":
+				errors.append("direct rest must use rest_mode direct")
+			if not bool(activity.get("status_recovery_eligible", false)):
+				errors.append("direct rest must be status recovery eligible")
+			if int(deltas.get("fatigue", 0)) != -25:
+				errors.append("direct rest fatigue delta must remain -25")
 
 	for value in data.get("support_skills", []) as Array:
 		var skill := value as Dictionary

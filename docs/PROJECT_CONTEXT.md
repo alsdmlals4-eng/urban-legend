@@ -16,7 +16,8 @@
 - Godot 4.7.1 / GDScript / PC·Steam 16:9 / 마우스·키보드
 - CORE-MVP-001 `POC_BUILD_READY`
 - 연도제 설계 `APPROVED_DESIGN_BASELINE`
-- ANNUAL-MVP-001 `PLAN_PENDING_APPROVAL / NOT_IMPLEMENTED`
+- ANNUAL-MVP-001 4주 구조 병합 완료
+- ANNUAL-MVP-001 7일 주간·가변 일정 구현 `ON_BRANCH / CI_PENDING` — Issue #75
 - 플레이 증거 없음 / `POC_PASSED NOT_DECLARED`
 
 ## 장르와 화면 문법
@@ -91,7 +92,7 @@
 - 가치 성향: 괴이 구제, 민간인 보호, 기관 명령 준수, 진실 공개
 - 상시 관리 수치: 피로 1개
 - 상태 태그: 경상, 중상, 불안, 집착, 과신 등
-- 핵심 자원: 일정 슬롯, 기관 지원도, 잔향 자료
+- 핵심 자원: 일정 일수, 기관 지원도, 잔향 자료
 - 장비: 소수 기본 장비 + 연구 모듈
 - 관계: 업무 신뢰 + 개인적 유대 + 일부 선택적 로맨스
 - 직접 육성 대상은 권나래 한 명
@@ -108,15 +109,21 @@
 
 ## 현재 제작 경계
 
-현재 연도제 시스템은 승인된 설계이며 구현되지 않았다. 다음 구현은 `ANNUAL-MVP-001` 격리 수직절편이다.
+현재 작업은 `ANNUAL-MVP-001` 격리 수직절편의 시간 예산을 다음과 같이 검증한다.
 
-- 3주 × 주당 3슬롯
+- 1개월 = 4주 × 주당 7일 = 28일
+- 일정별 1~3일 소비, 주차 경계 초과 금지
+- 미달 첫 확정은 자동 휴식 경고 후 편성 유지
+- 같은 편성 재확정은 남은 일수 자동 휴식
+- 직접 휴식은 자동 휴식보다 강함
 - 권나래 역량·피로
 - 동료 1명과 자동 보조
 - 기본 장비·모듈
 - 기존 CORE-MVP-001 사건 연결
 - 사건 결과 → 연구·분기 결산
 - 본편 `GameState`와 저장 `mvp-039` 비침범
+
+PR #62의 3주 구조와 PR #70의 4주×3슬롯 구조는 `HISTORICAL_REGRESSION_EVIDENCE`로 보존한다.
 
 ## 책임 원본
 
@@ -125,3 +132,4 @@
 - 현재 상태: `docs/CURRENT_STATUS.md`
 - 구현 순서: `MVP_ROADMAP.md`
 - 검증: `TEST_CHECKLIST.md`
+- 최신 설계: `docs/superpowers/specs/2026-07-25-annual-mvp-001-seven-day-scheduling-design.md`

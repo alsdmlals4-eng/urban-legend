@@ -7,8 +7,14 @@ func _init() -> void:
 	assert(not valid.is_empty())
 	assert(Data.validate_config(valid).is_empty())
 	assert(Data.load_config("res://missing.json").is_empty())
-	var broken := valid.duplicate(true)
-	broken["campaign"]["slots_per_week"] = 2
-	assert(not Data.validate_config(broken).is_empty())
+	var broken_days := valid.duplicate(true)
+	broken_days["campaign"]["days_per_week"] = 6
+	assert(not Data.validate_config(broken_days).is_empty())
+	var broken_cost := valid.duplicate(true)
+	broken_cost["activities"][0]["day_cost"] = 0
+	assert(not Data.validate_config(broken_cost).is_empty())
+	var broken_rest := valid.duplicate(true)
+	broken_rest["activities"][6]["status_recovery_eligible"] = false
+	assert(not Data.validate_config(broken_rest).is_empty())
 	print("ANNUAL MVP 001 DATA: PASS")
 	quit()

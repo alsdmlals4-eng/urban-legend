@@ -7,7 +7,7 @@
 > 현재 구현 기준: MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A / Ver 4.2 / save `mvp-039`  
 > 사건 코어: CORE-MVP-001 `POC_BUILD_READY`  
 > 연도제 설계: `APPROVED_DESIGN_BASELINE`  
-> 연도제 구현: `NOT_IMPLEMENTED`  
+> 연도제 구현: `ANNUAL-MVP-001 SEVEN_DAY_SCHEDULING_ON_BRANCH / CI_PENDING` — Issue #75  
 > Production gate: `NOT_APPROVED`
 
 ## 1. 프로젝트 한 줄 약속
@@ -99,14 +99,19 @@
 
 ## 6. 일정 방향
 
-- 기본 해상도: 주간 계획
-- 중요 사건: 오전·오후 반일 선택
-- 핵심 사건은 징후와 마감을 가짐
-- 조기 출동은 준비 부족 위험
-- 지연 출동은 현상 심화·민간 피해 위험
-- 마감 초과 시 긴급 출동
+- 1주는 실제 7일이다.
+- 일정마다 1~3일을 소비한다.
+- 일정은 주차 경계를 넘지 못한다.
+- 남은 일수보다 긴 일정은 선택하지 못한다.
+- 7일 미만 첫 확정은 자동 휴식 경고와 일정 복귀 기회를 제공한다.
+- 같은 편성 재확정은 남은 일수를 자동 휴식으로 처리한다.
+- 직접 휴식은 자동 휴식보다 강하다.
+- 중요 사건은 오전·오후 반일 선택을 별도 장면으로 사용할 수 있다.
+- 핵심 사건은 징후와 마감을 가진다.
+- 조기 출동은 준비 기회를 포기하고, 지연 출동은 현상 심화 위험을 감수한다.
+- 마감 초과 시 긴급 출동한다.
 
-일정 최적화가 서사를 가리거나, 반복 클릭과 파밍이 코어가 되지 않도록 압축한다.
+일정 최적화가 서사를 가리거나 반복 클릭과 파밍이 코어가 되지 않도록 압축한다.
 
 ## 7. 연구·장비·동료 방향
 
@@ -163,7 +168,16 @@
 
 ### 첫 수직절편
 
-ANNUAL-MVP-001은 3주 × 주당 3슬롯의 격리 PoC다. 기존 CORE-MVP-001 사건을 재사용해 육성→사건→연구 인과만 검증한다.
+ANNUAL-MVP-001은 4주 × 주당 7일의 격리 PoC다. 일정별 1~3일 비용과 자동 휴식 경고를 사용하고, 기존 CORE-MVP-001 사건을 재사용해 육성→사건→연구 인과를 검증한다.
+
+- 2주차 자율 출동 위험 0
+- 3주차 자율 출동 위험 15
+- 4주차 7일 결과 뒤 긴급 강제 출동 위험 30
+- 직접 휴식 1일·피로 -25·상태 회복 가능
+- 자동 휴식 하루당 피로 5·피로 외 보상 없음
+- save `annual-mvp-001-save-v1` 유지
+
+PR #62의 3주 구조와 PR #70의 4주×3슬롯 구조는 `HISTORICAL_REGRESSION_EVIDENCE`다.
 
 ### 첫 완성 캠페인
 
@@ -195,11 +209,14 @@ ANNUAL-MVP-001은 3주 × 주당 3슬롯의 격리 PoC다. 기존 CORE-MVP-001 �
 ## 12. 현재 게이트
 
 ```text
-canonical_migration: IN_PROGRESS
-annual_mvp_001: PLAN_PENDING_APPROVAL
-runtime_changes: NONE
+canonical_migration: COMPLETE
+annual_mvp_001_seven_day_contract: APPROVED
+annual_mvp_001_seven_day_implementation: ON_BRANCH
+automated_verification: PENDING
+human_usability_qa: NOT_RUN
+player_validation: NOT_RUN
 poc_passed: NOT_DECLARED
 production_expansion: NOT_APPROVED
 ```
 
-정본 전환 완료 뒤 ANNUAL-MVP-001 구현 계획을 재검토하고 승인해야 한다.
+Issue #75의 자동 검증과 병합 뒤 실제 사람의 일정 편성·경고·출동 경로를 검증한다.
