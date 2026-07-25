@@ -16,6 +16,7 @@ class AnnualMvp001StaticContractTests(unittest.TestCase):
             "scripts/poc/annual_mvp_001/annual_mvp_001_incident_adapter.gd",
             "scripts/poc/annual_mvp_001/annual_mvp_001_save_data.gd",
             "scripts/poc/annual_mvp_001/annual_mvp_001_scene.gd",
+            "scripts/poc/annual_mvp_001/annual_mvp_001_themed_scene.gd",
             "scenes/poc/annual_mvp_001/annual_mvp_001_scene.tscn",
         )
         for relative in required:
@@ -65,10 +66,12 @@ class AnnualMvp001StaticContractTests(unittest.TestCase):
             self.assertNotIn(forbidden, support_section)
 
     def test_annual_scene_uses_shared_theme_and_korean_font_candidates(self) -> None:
-        scene = (ROOT / "scripts/poc/annual_mvp_001/annual_mvp_001_scene.gd").read_text(encoding="utf-8")
+        wrapper = (ROOT / "scripts/poc/annual_mvp_001/annual_mvp_001_themed_scene.gd").read_text(encoding="utf-8")
+        scene_file = (ROOT / "scenes/poc/annual_mvp_001/annual_mvp_001_scene.tscn").read_text(encoding="utf-8")
         theme_factory = (ROOT / "scripts/ui/ui_theme_factory.gd").read_text(encoding="utf-8")
-        self.assertIn('ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")', scene)
-        self.assertIn("theme = ThemeFactory.create_theme()", scene)
+        self.assertIn('ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")', wrapper)
+        self.assertIn("theme = ThemeFactory.create_theme()", wrapper)
+        self.assertIn("annual_mvp_001_themed_scene.gd", scene_file)
         self.assertIn("SystemFont.new()", theme_factory)
         for font_name in ("Noto Sans CJK KR", "Noto Sans KR", "Malgun Gothic", "Apple SD Gothic Neo"):
             self.assertIn(font_name, theme_factory)
