@@ -1,6 +1,16 @@
 extends "res://scripts/poc/annual_mvp_001/annual_mvp_001_themed_scene.gd"
 
 
+func debug_confirm() -> void:
+	_on_confirm_pressed()
+	_apply_seven_day_result_copy()
+
+
+func _on_confirm_pressed() -> void:
+	super()
+	_apply_seven_day_result_copy()
+
+
 func _render() -> void:
 	super()
 	_apply_seven_day_result_copy()
@@ -8,8 +18,6 @@ func _render() -> void:
 
 func _apply_command(result: Dictionary) -> void:
 	super(result)
-	# The inherited command handler may invoke its own base renderer directly.
-	# Re-apply the active result copy after the entire command chain completes.
 	_apply_seven_day_result_copy()
 
 
