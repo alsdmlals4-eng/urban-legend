@@ -22,8 +22,10 @@ class AnnualMvp001DocumentContractTests(unittest.TestCase):
         core = CORE.read_text(encoding="utf-8")
         gdd = GDD.read_text(encoding="utf-8")
         for text in (core, gdd):
-            self.assertIn("SEVEN_DAY_SCHEDULING_ON_BRANCH", text)
-            self.assertIn("CI_PENDING", text)
+            self.assertIn("SEVEN_DAY_SCHEDULING_MERGED", text)
+            self.assertIn("AUTOMATED_QA_PASSED", text)
+            self.assertNotIn("SEVEN_DAY_SCHEDULING_ON_BRANCH", text)
+            self.assertNotIn("CI_PENDING", text)
             self.assertIn("1개월 = 4주 × 주당 7일 = 총 28일", text)
             self.assertIn("annual-mvp-001-v3", text)
             self.assertIn("일정은 주차 경계를 넘", text)

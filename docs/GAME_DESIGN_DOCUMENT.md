@@ -3,7 +3,7 @@
 > 편집 원본: `docs/GAME_DESIGN_DOCUMENT.md`  
 > 현재 구현 기준: **MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A / Ver 4.2 / save `mvp-039`**  
 > 승인 설계: **연도제 육성·텍스트 노벨 통합 설계 / APPROVED_DESIGN_BASELINE**  
-> 현재 구현 상태: **CORE-MVP-001 POC_BUILD_READY / ANNUAL-MVP-001 SEVEN_DAY_SCHEDULING_ON_BRANCH / CI_PENDING**
+> 현재 구현 상태: **CORE-MVP-001 POC_BUILD_READY / ANNUAL-MVP-001 SEVEN_DAY_SCHEDULING_MERGED / AUTOMATED_QA_PASSED**
 
 | 항목 | 현재 값 |
 |---|---|
@@ -11,7 +11,7 @@
 | 문서 역할 | 연도제 육성·텍스트 노벨·사건 코어 상세 시스템 설계 |
 | 설계 상태 | `APPROVED_DESIGN_BASELINE` |
 | 기존 사건 코어 | CORE-MVP-001 `POC_BUILD_READY` |
-| 연도제 구현 | `ANNUAL-MVP-001 SEVEN_DAY_SCHEDULING_ON_BRANCH / CI_PENDING` — Issue #75 |
+| 연도제 구현 | `ANNUAL-MVP-001 SEVEN_DAY_SCHEDULING_MERGED / AUTOMATED_QA_PASSED` — Issue #75 / PR #76 / commit `57c1f3d92e0fdae658826a23e5c2326fe9efe478` |
 | POC_PASSED | `NOT_DECLARED` |
 | 엔진 | Godot 4.7.1 / GDScript |
 | 플랫폼 | PC / Steam, 16:9, 마우스·키보드 |
@@ -570,7 +570,7 @@ CORE-MVP-001은 사건 1개의 `조사 → 가설 → 현장 검증 → 전조 �
 
 ### 현재 트랙
 
-`ANNUAL-MVP-001`은 4주 × 주당 7일의 육성·출동 준비와 일정별 가변 일수 비용이 기존 CORE-MVP-001 사건의 정보·위험·피해 관리에 영향을 주고, 사건 결과가 연구·스킬·분기 결산으로 되돌아오는지를 격리 경로에서 검증한다. PR #70의 4주 × 3슬롯 구현은 역사적 기준이며, 최신 7일 계약은 Issue #75에서 구현·검증 중이다. 실제 사람의 2주차 조기·3주차 자율·4주차 강제 출동 플레이와 인과 설명은 아직 `NOT_RUN`이다.
+`ANNUAL-MVP-001`은 4주 × 주당 7일의 육성·출동 준비와 일정별 가변 일수 비용이 기존 CORE-MVP-001 사건의 정보·위험·피해 관리에 영향을 주고, 사건 결과가 연구·스킬·분기 결산으로 되돌아오는지를 격리 경로에서 검증한다. PR #70의 4주 × 3슬롯 구현은 역사적 기준이며, 최신 7일 계약은 Issue #75 / PR #76에서 구현·자동 검증·병합을 완료했다. 문서 run #273, ANNUAL run #121, Visual run #51이 통과했다. 실제 사람의 2주차 조기·3주차 자율·4주차 강제 출동 플레이와 인과 설명은 아직 `NOT_RUN`이다.
 
 ### 검증 질문
 
@@ -600,3 +600,5 @@ CORE-MVP-001은 사건 1개의 `조사 → 가설 → 현장 검증 → 전조 �
 - ANNUAL-MVP-001 7일 주간 승인 설계: `docs/superpowers/specs/2026-07-25-annual-mvp-001-seven-day-scheduling-design.md`
 - ANNUAL-MVP-001 7일 주간 구현 계획: `docs/superpowers/plans/2026-07-25-annual-mvp-001-seven-day-scheduling-implementation-plan.md`
 - 검증 체크리스트: `TEST_CHECKLIST.md`
+- 프로젝트 업데이트 프로토콜: `docs/PROJECT_UPDATE_PROTOCOL.md`
+- 결정 로그: `docs/DECISION_LOG.md`

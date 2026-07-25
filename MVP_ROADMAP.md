@@ -16,8 +16,8 @@
 | CORE-MVP-001 | `POC_BUILD_READY` |
 | ANNUAL-MVP-001 원 구현 | `BUILD_READY` — PR #62 |
 | 4주 보정 | `MERGED / AUTOMATED_QA_PASSED` — PR #70 |
-| 7일 주간 계약 | `APPROVED` — Issue #75 |
-| 7일 주간 구현 | `ON_BRANCH / CI_PENDING` |
+| 7일 주간 계약 | `APPROVED / COMPLETE` — Issue #75 |
+| 7일 주간 구현 | `MERGED / AUTOMATED_QA_PASSED` — PR #76 / commit `57c1f3d92e0fdae658826a23e5c2326fe9efe478` |
 | 사람 사용성 QA | `NOT_RUN` |
 | 신규 플레이어 검증 | `NOT_RUN` |
 | POC_PASSED | `NOT_DECLARED` |
@@ -29,6 +29,7 @@
 - ANNUAL 트랙은 기존 `GameState`, `mvp-039`, 기존 사건을 직접 개조하지 않는 격리 경로에서 검증한다.
 - 성장과 동료 지원은 핵심 정답·가설·이해도·포획 조건을 변경하지 않는다.
 - 자동 회귀 통과만으로 `POC_PASSED`나 제작 확대를 선언하지 않는다.
+- 기획·구현·병합 상태 변경은 `docs/PROJECT_UPDATE_PROTOCOL.md`의 동기화 매트릭스를 따른다.
 - 충돌 시 최신 사용자 승인 7일 설계 → 승인 계획 → 활성 정본 → PR #70의 4주×3슬롯 → 기존 3주 구현 순서로 해석한다.
 
 ## 완료·보존 자산
@@ -49,7 +50,7 @@
 - PR #73 PROJECT_CORE·GDD 정밀 동기화
 - visual run #28/#34, ANNUAL run #94/#101/#103, 문서 run #253/#255는 `HISTORICAL_REGRESSION_EVIDENCE`
 
-## 현재 작업 — 7일 주간·가변 일정 일수
+## 통합 완료 — 7일 주간·가변 일정 일수
 
 ```text
 1개월 = 4주 × 주당 7일 = 28일
@@ -82,15 +83,17 @@
 - [x] Issue #75 생성
 - [x] 데이터·StateV2·Scene·테스트 변경
 - [x] PROJECT_CORE·GDD·상태·인수인계·로드맵 정렬
-- [ ] Python 계약
-- [ ] Godot 4.7.1 import
-- [ ] CORE focused
-- [ ] ANNUAL focused
-- [ ] 전체 Godot 회귀
-- [ ] 7일 편성·자동 휴식 경고 렌더링
-- [ ] 키보드·그래픽 포인터 경로
-- [ ] PR changed-file·review thread 감사
-- [ ] squash merge와 main 상태 보정
+- [x] Python 계약 — run #121 PASS
+- [x] Godot 4.7.1 import — run #121 PASS
+- [x] CORE focused — run #121 PASS
+- [x] ANNUAL focused — run #121 PASS
+- [x] 전체 Godot 회귀 — run #121 PASS
+- [x] 7일 편성·자동 휴식 경고 렌더링 — run #51 PASS
+- [x] 키보드·그래픽 포인터 경로 — run #51 PASS
+- [x] PR #76 changed-file·review thread 감사 — thread 0
+- [x] PR #76 squash merge — commit `57c1f3d92e0fdae658826a23e5c2326fe9efe478`
+- [x] PR #77 상태 원본 병합 — commit `229c74a80b8aefd71d16befb95758f4dcc7f591f`
+- [x] Issue #75 completed
 
 ## 다음 플레이 게이트
 
@@ -113,7 +116,7 @@
 
 진입 조건:
 
-- Issue #75 통합 완료
+- Issue #75 통합 완료 — PR #76 / commit `57c1f3d92e0fdae658826a23e5c2326fe9efe478`
 - 사람 사용성 QA 완료
 - 신규 플레이어가 육성→사건→연구 인과를 설명
 - 동료 지원 공정성 확인
@@ -142,8 +145,8 @@
 
 ```text
 annual_mvp_001_seven_day_contract: APPROVED
-annual_mvp_001_seven_day_implementation: ON_BRANCH
-automated_verification: PENDING
+annual_mvp_001_seven_day_implementation: MERGED
+automated_verification: PASSED
 human_usability_qa: NOT_RUN
 player_validation: NOT_RUN
 annual_loop_passed: NOT_DECLARED

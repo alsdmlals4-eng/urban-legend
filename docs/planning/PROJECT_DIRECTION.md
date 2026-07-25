@@ -7,7 +7,7 @@
 > 현재 구현 기준: MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A / Ver 4.2 / save `mvp-039`  
 > 사건 코어: CORE-MVP-001 `POC_BUILD_READY`  
 > 연도제 설계: `APPROVED_DESIGN_BASELINE`  
-> 연도제 구현: `ANNUAL-MVP-001 SEVEN_DAY_SCHEDULING_ON_BRANCH / CI_PENDING` — Issue #75  
+> 연도제 구현: `ANNUAL-MVP-001 SEVEN_DAY_SCHEDULING_MERGED / AUTOMATED_QA_PASSED` — Issue #75 / PR #76 / commit `57c1f3d92e0fdae658826a23e5c2326fe9efe478`  
 > Production gate: `NOT_APPROVED`
 
 ## 1. 프로젝트 한 줄 약속
@@ -211,12 +211,12 @@ PR #62의 3주 구조와 PR #70의 4주×3슬롯 구조는 `HISTORICAL_REGRESSIO
 ```text
 canonical_migration: COMPLETE
 annual_mvp_001_seven_day_contract: APPROVED
-annual_mvp_001_seven_day_implementation: ON_BRANCH
-automated_verification: PENDING
+annual_mvp_001_seven_day_implementation: MERGED
+automated_verification: PASSED
 human_usability_qa: NOT_RUN
 player_validation: NOT_RUN
 poc_passed: NOT_DECLARED
 production_expansion: NOT_APPROVED
 ```
 
-Issue #75의 자동 검증과 병합 뒤 실제 사람의 일정 편성·경고·출동 경로를 검증한다.
+Issue #75 / PR #76의 구현·자동 검증·병합은 완료됐다. 다음으로 실제 사람의 일정 편성·경고·출동 경로를 검증한다.

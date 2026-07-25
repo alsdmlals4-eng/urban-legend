@@ -17,8 +17,8 @@
 | 사건 코어 | CORE-MVP-001 `POC_BUILD_READY` |
 | 연도제 설계 | `APPROVED_DESIGN_BASELINE` |
 | 4주 보정 | PR #70 `HISTORICAL_REGRESSION_EVIDENCE` |
-| 7일 주간 계약 | `APPROVED` — Issue #75 |
-| 7일 주간 구현 | `ON_BRANCH / CI_PENDING` |
+| 7일 주간 계약 | `APPROVED / COMPLETE` — Issue #75 |
+| 7일 주간 구현 | `MERGED / AUTOMATED_QA_PASSED` — PR #76 / commit `57c1f3d92e0fdae658826a23e5c2326fe9efe478` |
 | POC_PASSED | `NOT_DECLARED` |
 | 제작 확대 | `NOT_APPROVED` |
 
@@ -43,7 +43,7 @@
 - GDD·상태·인수인계·로드맵 정렬
 - PR #61·#73에서 정본과 생성기 동기화
 
-### 1. ANNUAL-MVP-001 — 현재 작업
+### 1. ANNUAL-MVP-001 — 구현·자동 검증 완료
 
 목표:
 
@@ -80,13 +80,14 @@
 - PR #70의 4주×3슬롯 보정
 - PR #65·#67의 렌더링·입력 QA
 
-위 항목은 `HISTORICAL_REGRESSION_EVIDENCE`이며 최신 시간 계약이 아니다.
+위 항목은 `HISTORICAL_REGRESSION_EVIDENCE`이며 최신 시간 계약이 아니다. 최신 구현은 PR #76 / commit `57c1f3d92e0fdae658826a23e5c2326fe9efe478`이고 문서 run #273, ANNUAL run #121, Visual run #51이 통과했다.
 
 ### 2. ANNUAL-MVP-002 — 동료·장비·연구 조합
 
 진입 조건:
 
-- Issue #75 구현·자동 검증·사람 사용성 QA 완료
+- Issue #75 / PR #76 구현·자동 검증 완료
+- 사람 사용성 QA 완료
 - 육성→사건→연구 인과가 신규 플레이어 증거로 확인
 - 별도 사용자 승인
 
@@ -169,7 +170,9 @@
 - [ ] 예상 head SHA 고정
 - [ ] 문서·ANNUAL·Visual workflow 결과 확인
 - [ ] 변경 파일이 계획 범위와 일치
-- [ ] CURRENT_STATUS·CURRENT_HANDOFF·MVP_ROADMAP·TEST_CHECKLIST 정합
+- [ ] CURRENT_STATUS·CURRENT_HANDOFF·PROJECT_CORE·GDD·MVP_ROADMAP·TEST_CHECKLIST 정합
+- [ ] `docs/PROJECT_UPDATE_PROTOCOL.md` 동기화 매트릭스 확인
+- [ ] 중요한 기획 결정은 `docs/DECISION_LOG.md`에 추가
 
 ## 현재 인수 상태
 
@@ -181,8 +184,10 @@ annual_design:
 annual_mvp_001:
   contract: SEVEN_DAY_SCHEDULING_APPROVED
   issue: 75
-  implementation: ON_BRANCH
-  automated_verification: PENDING
+  implementation: MERGED
+  documentation_run: 273_PASS
+  annual_validation_run: 121_PASS
+  visual_run: 51_PASS
   human_usability_qa: NOT_RUN
   player_validation: NOT_RUN
 core_mvp_001:
@@ -193,12 +198,11 @@ production_expansion: NOT_APPROVED
 
 ## 다음 담당자 행동
 
-1. Issue #75 브랜치의 데이터·상태·Scene·테스트 계약을 실행한다.
-2. GDD DOCX build와 source hash를 검증한다.
-3. 7일 편성·자동 휴식 경고를 720p·1080p와 그래픽 포인터로 검증한다.
-4. PR changed-file·review thread·CI를 확인하고 squash merge한다.
-5. main 상태 문서에 최종 PR·commit·run을 기록한다.
-6. 사람 플레이 전에는 `POC_PASSED`를 선언하지 않는다.
+1. 실제 사람의 7일 편성·자동 휴식 경고 반복 조작을 검증한다.
+2. 2주차 조기·3주차 자율·4주차 강제 출동을 신규 플레이어가 수행한다.
+3. 육성→사건→연구 인과와 지원 공정성 설명을 수집한다.
+4. `KEEP / AMPLIFY / CHANGE / RETEST / HOLD`를 판정한다.
+5. 사람 플레이 전에는 `POC_PASSED`를 선언하지 않는다.
 
 ## 보류 항목
 
