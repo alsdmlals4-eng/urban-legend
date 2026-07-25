@@ -5,11 +5,12 @@
 > 최신 4주 설계: `docs/superpowers/specs/2026-07-25-annual-mvp-001-four-week-month-design.md`  
 > 최신 구현 계획: `docs/superpowers/plans/2026-07-25-annual-mvp-001-four-week-month-implementation-plan.md`
 
-이 문서는 4주 월간 계약의 구현·자동 검증과 사람 사용성·신규 플레이어 검증을 분리한다.
+이 문서는 4주 월간 계약의 구현·자동 검증과 사람 사용성·신규 플레이어 검증을 분리한다. 연도제 설계 상태는 `APPROVED_DESIGN_BASELINE`이다.
 
 ```yaml
 status: ANNUAL_MVP_001_FOUR_WEEK_INTEGRATION_PENDING_CI
 implemented_baseline: MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A / Ver 4.2 / save mvp-039
+annual_design: APPROVED_DESIGN_BASELINE
 core_mvp_001:
   implementation: POC_BUILD_READY
   focused_suite: 4/4_BASELINE
