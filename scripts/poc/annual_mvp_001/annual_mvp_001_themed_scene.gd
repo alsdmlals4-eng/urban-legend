@@ -3,6 +3,7 @@ extends "res://scripts/poc/annual_mvp_001/annual_mvp_001_scene.gd"
 const ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")
 const AnnualCaseData = preload("res://scripts/poc/core_mvp_001/core_mvp_001_case_data.gd")
 const LocalizedCoreScene = preload("res://scenes/poc/annual_mvp_001/annual_mvp_001_core_scene.tscn")
+const FourWeekState = preload("res://scripts/poc/annual_mvp_001/annual_mvp_001_state_v2.gd")
 
 const PHASE_LABELS := {
 	"BOOT": "초기화",
@@ -47,6 +48,7 @@ const KNOWLEDGE_LABELS := {
 
 
 func _ready() -> void:
+	_state = FourWeekState.new()
 	theme = ThemeFactory.create_theme()
 	_add_background()
 	super()
@@ -61,8 +63,27 @@ func _ready() -> void:
 
 func _render() -> void:
 	super()
+	var snapshot := _state.get_snapshot()
+	var max_weeks := int((_config.get("campaign", {}) as Dictionary).get("max_weeks", 4))
+	if _week_label != null:
+		_week_label.text = "주차: %d / %d" % [int(snapshot.get("week", 0)), max_weeks]
 	_localize_rendered_text()
 	call_deferred("_focus_current_panel")
+
+
+func _apply_command(result: Dictionary) -> void:
+	super(result)
+	for value in result.get("events", []) as Array:
+		var event := value as Dictionary
+		if String(event.get("event", "")) == "annual_forced_deployment":
+			_feedback_label.text = "4주차 활동 결과를 확인했습니다. 월말 기한에 따라 긴급 강제 출동으로 전환됩니다. 시작 위험 +30."
+			return
+
+
+func _deployment_text(snapshot: Dictionary) -> String:
+	if int(snapshot.get("week", 0)) == 2:
+		return "지금 출동하면 추가 위험이 없습니다. 1주 더 준비하면 역량을 보완할 수 있습니다."
+	return "3주차입니다. 지금 출동하면 위험 +15. 지연하면 4주차 활동 3개를 모두 수행한 뒤 긴급 출동으로 전환되어 위험 +30입니다."
 
 
 func _start_incident() -> void:
