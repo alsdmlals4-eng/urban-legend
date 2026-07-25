@@ -91,8 +91,22 @@ func _run_path(
 	await _capture(scene, "%s_deployment" % path_id, Vector2i(1280, 720))
 	await _capture(scene, "%s_deployment" % path_id, Vector2i(1920, 1080))
 
-	_click_button(scene, "1주 더 준비" if force_emergency else "지금 출동")
-	await process_frame
+	if force_emergency:
+		_click_button(scene, "1주 더 준비")
+		await process_frame
+		_expect_phase(scene, "WEEK_PLANNING", "%s week 4 planning" % path_id)
+		await _commit_week(scene, [
+			"annual001_activity_rest",
+			"annual001_activity_companion_drill",
+			"annual001_activity_analysis_desk"
+		])
+		await _capture(scene, "%s_week4_result" % path_id, Vector2i(1280, 720))
+		await _capture(scene, "%s_week4_result" % path_id, Vector2i(1920, 1080))
+		_scene_confirm(scene)
+		await process_frame
+	else:
+		_click_button(scene, "지금 출동")
+		await process_frame
 	_expect_phase(scene, "PREPARATION", "%s preparation" % path_id)
 
 	var state := scene.get("_state") as Object

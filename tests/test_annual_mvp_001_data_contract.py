@@ -14,12 +14,15 @@ class AnnualMvp001DataContractTests(unittest.TestCase):
         cls.data = json.loads(DATA_PATH.read_text(encoding="utf-8"))
 
     def test_campaign_shape(self) -> None:
-        self.assertEqual("annual-mvp-001-v1", self.data["contract_version"])
+        self.assertEqual("annual-mvp-001-v2", self.data["contract_version"])
         campaign = self.data["campaign"]
-        self.assertEqual(3, campaign["max_weeks"])
+        self.assertEqual(4, campaign["max_weeks"])
         self.assertEqual(3, campaign["slots_per_week"])
         self.assertEqual(2, campaign["voluntary_entry_week"])
-        self.assertEqual(3, campaign["deadline_week"])
+        self.assertEqual(4, campaign["deadline_week"])
+        self.assertEqual(15, campaign["week_3_entry_risk"])
+        self.assertEqual(30, campaign["forced_entry_risk"])
+        self.assertEqual(12, campaign["max_weeks"] * campaign["slots_per_week"])
 
     def test_fixed_counts(self) -> None:
         self.assertEqual(7, len(self.data["activities"]))
