@@ -110,3 +110,50 @@
 - 사람 사용성·신규 플레이어 검증: `NOT_RUN`
 - `POC_PASSED`: `NOT_DECLARED`
 - 제작 확대: `NOT_APPROVED`
+
+## D-2026-07-26-ANNUAL-MVP-002-VERTICAL-SLICE — 동료·장비·연구 수직절편
+
+- 상태: `ON_BRANCH / AUTOMATED_QA_PASSED`
+- 사용자 승인: 2026-07-26, “좋아 진행해”
+- 추적: Issue #88 / draft PR #89
+- 대체 관계: `D-2026-07-26-ANNUAL-EXPANSION-SEQUENCE`의 `ANNUAL-MVP-002 구현: NOT_STARTED`를 구현 착수·자동 검증 완료 상태로 갱신한다. 이전 기록은 당시 사실로 보존한다.
+- 구현 결정:
+  - 확장 contract `annual-mvp-002-v1`, base contract `annual-mvp-001-v3`
+  - 동료 오현·한세린·박도윤 3명 중 최대 2명 편성
+  - 고유 스킬 3개, 공용 지원 6개
+  - 장비 3개, 모듈 6개
+  - 연구 자원 4종, 연구 노드 8개
+  - 일정 결과 미리보기, 지난주 복사, 템플릿 3개, 전체 초기화, 한 단계 undo
+  - 템플릿은 주차 전환 뒤에도 유지
+  - 지원 적격·비적격 사유, 확률, 준비도, 보장 거리 공개
+  - 주간 결과의 변화·원인·다음 주 영향 인과 요약
+- 지원 공정성:
+  - 일반 확률 = 기본 + 준비 일정 10%p + 업무 신뢰 0/5/10%p, 상한 90%
+  - 준비도는 일반 확률에 직접 가산하지 않음
+  - 적격 실패 +20, 실패 학습 연구 완료 시 +25
+  - 준비도 100이면 다음 적격 발동 보장, 성공 후 0
+  - 신규 핵심 단서·정답 가설·미관측 패턴·필수 회수 조건 제공 금지
+- 저장·fallback:
+  - save version `annual-mvp-001-save-v1` 유지
+  - `state.annual_mvp_002` 선택 블록 추가
+  - 구 저장은 기본 확장 상태로 복원
+  - 알 수 없는 ID는 `orphaned_ids`에 보존하고 효과 계산에서 제외
+  - 확장 데이터·adapter 실패 시 기존 ANNUAL-MVP-001과 CORE 기본 동작 유지
+- 벤치마크 반영:
+  - 포함: 일정 미리보기, 반복 편성, 지원 투명성, 주간 인과 요약
+  - 후속 분리: 사건 징후 시계, 관측·가설·반박 보드, 전체 연구·매뉴얼 탐색
+- 자동 검증:
+  - 문서 run #333 PASS
+  - ANNUAL run #167 PASS
+  - Visual run #55 PASS
+  - visual artifact `8625300008`, 1280×720·1920×1080 캡처 8장 직접 검사 PASS
+- 책임 원본:
+  - `docs/superpowers/plans/2026-07-26-annual-mvp-002-vertical-slice-implementation-plan.md`
+  - `docs/qa/ANNUAL_MVP_002_AUTOMATED_QA_2026-07-26.md`
+  - `docs/CURRENT_STATUS.md`
+  - `docs/CURRENT_HANDOFF.md`
+- 사람 사용성 QA: `NOT_RUN`
+- 신규 플레이어 검증: `NOT_RUN`
+- `POC_PASSED`: `NOT_DECLARED`
+- 제작 확대: `NOT_APPROVED`
+- ANNUAL-MVP-003: `NOT_APPROVED`
