@@ -1,6 +1,13 @@
 extends "res://scripts/poc/annual_mvp_001/annual_mvp_001_themed_scene.gd"
 
 
+func _ready() -> void:
+	super()
+	if _week_result_label != null:
+		_week_result_label.name = "WeekResultLabel"
+	_apply_seven_day_result_copy()
+
+
 func debug_confirm() -> void:
 	_on_confirm_pressed()
 	_apply_seven_day_result_copy()
