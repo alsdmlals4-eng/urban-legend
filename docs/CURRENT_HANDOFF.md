@@ -9,11 +9,12 @@
 이 문서는 4주 월간 구조 안의 7일 주간·가변 일정 일수 구현과 사람 사용성·신규 플레이어 검증을 분리한다. 연도제 설계 상태는 `APPROVED_DESIGN_BASELINE`이다.
 
 ```yaml
-status: ANNUAL_MVP_001_SEVEN_DAY_SCHEDULING_ON_BRANCH_CI_PENDING
+status: ANNUAL_MVP_001_SEVEN_DAY_SCHEDULING_MERGED_AUTOMATED_QA_PASSED
 implemented_baseline: MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A / Ver 4.2 / save mvp-039
 annual_design: APPROVED_DESIGN_BASELINE
 core_mvp_001:
   implementation: POC_BUILD_READY
+  focused_suite: PASSED_IN_RUN_121
   player_validation: NOT_RUN
   POC_PASSED: NOT_DECLARED
 annual_mvp_001:
@@ -37,6 +38,8 @@ annual_mvp_001:
     status: COMPLETE
   seven_day_contract:
     issue: 75
+    pr: 76
+    commit: 57c1f3d92e0fdae658826a23e5c2326fe9efe478
     contract_version: annual-mvp-001-v3
     max_weeks: 4
     days_per_week: 7
@@ -50,8 +53,10 @@ annual_mvp_001:
     week_2_risk: 0
     week_3_risk: 15
     week_4_forced_risk: 30
-    implementation: ON_BRANCH
-    automated_verification: PENDING
+    implementation: MERGED
+    documentation_run: 273_PASS
+    annual_validation_run: 121_PASS
+    visual_run: 51_PASS
   save_version: annual-mvp-001-save-v1
   human_usability_qa: NOT_RUN
   new_player_validation: NOT_RUN
@@ -89,7 +94,7 @@ AGENTS.md
 - 직접 휴식은 1일·피로 -25·상태 회복 가능이다.
 - 자동 휴식은 하루당 피로 5만 회복하며 관계 이벤트·특수 회복·추가 보상이 없다.
 
-## 구현 사실
+## 구현·검증 사실
 
 - 데이터 계약은 `annual-mvp-001-v3`다.
 - 기존 활동·동료·스킬·장비·연구 ID를 유지한다.
@@ -101,6 +106,9 @@ AGENTS.md
 - `annual-mvp-001-save-v1`, 본편 `mvp-039`, `mvp-038` 이관은 유지한다.
 - 사건 중 저장 금지와 저장 seed 재현성을 유지한다.
 - 성장·동료 지원은 정답·가설·이해도·포획 표식을 변경하지 않는다.
+- PR #76은 squash merge됐고 Issue #75는 completed다.
+- 문서 run #273, ANNUAL run #121, Visual run #51이 통과했다.
+- 최신 main의 Base Skill 어댑터·자산·라이선스 기록을 보존했다.
 
 ## GDD DOCX 정책
 
@@ -108,7 +116,7 @@ AGENTS.md
 - `tools/docs/build_game_design_doc.py`가 결정적 DOCX 미러를 생성한다.
 - 생성기 포맷은 `urban-legend-gdd-index-v5`, GDD 표기는 v3.2다.
 - `docs/URBAN_LEGEND_GAME_DESIGN.docx`는 Git에 추적하지 않는다.
-- PR 검증에서 build·source hash·구조 검사를 수행한다.
+- 생성기와 source hash·구조 계약은 Python 문서 테스트가 보호한다.
 
 ## HISTORICAL QA
 
@@ -133,9 +141,8 @@ AGENTS.md
 
 ## 다음 작업
 
-1. Issue #75 자동 검증과 PR 병합
-2. 7일 편성·경고·자동 휴식의 사람 반복 조작
-3. 2주차 조기·3주차 자율·4주차 강제 사람 플레이
-4. 육성→사건→연구 인과와 지원 공정성 설명 수집
-5. `KEEP / AMPLIFY / CHANGE / RETEST / HOLD` 판정
-6. 별도 사용자 승인 전 ANNUAL-MVP-002 시작 금지
+1. 7일 편성·경고·자동 휴식의 사람 반복 조작
+2. 2주차 조기·3주차 자율·4주차 강제 사람 플레이
+3. 육성→사건→연구 인과와 지원 공정성 설명 수집
+4. `KEEP / AMPLIFY / CHANGE / RETEST / HOLD` 판정
+5. 별도 사용자 승인 전 ANNUAL-MVP-002 시작 금지

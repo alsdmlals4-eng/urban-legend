@@ -29,10 +29,13 @@
 | 그래픽 포인터 QA·모듈 토글 수정 | `PASSED` — PR #67 / commit `0f24efa204a04cca62a58e55628e6b831b9bef2d` |
 | 4주 월간 보정 | `MERGED / AUTOMATED_QA_PASSED` — PR #70 / commit `20a0d052e4d48863481af7c3acc53805105d6a01` |
 | PROJECT_CORE·GDD 4주 동기화 | `COMPLETE` — Issue #72 / PR #73 / commit `932bc39300bb6ba7f3169b98c25d910f0e01413a` |
-| 7일 주간·가변 일정 계약 | `APPROVED` — Issue #75 |
-| 7일 주간 구현 | `ON_BRANCH / CI_PENDING` |
+| 7일 주간·가변 일정 계약 | `APPROVED / COMPLETE` — Issue #75 |
+| 7일 주간 구현 | `MERGED / AUTOMATED_QA_PASSED` — PR #76 / commit `57c1f3d92e0fdae658826a23e5c2326fe9efe478` |
+| 7일 문서 계약 | `PASSED` — run #273 |
+| 7일 ANNUAL 자동 검증 | `PASSED` — run #121 |
+| 7일 시각·입력 QA | `PASSED` — run #51 |
 | GDD 버전 | v3.2 — 4주×7일 계약 반영 |
-| GDD DOCX | 결정적 생성물, Git 비추적; v3.2 재생성 검증 예정 |
+| GDD DOCX | 결정적 생성물, Git 비추적; 생성기 포맷 v5 |
 | 사람 손 장시간 사용성 QA | `NOT_RUN` |
 | 신규 플레이어 검증 | `NOT_RUN` |
 | POC_PASSED | `NOT_DECLARED` |
@@ -69,7 +72,7 @@
 | 오현 협업 훈련 | 2일 |
 | 직접 휴식 | 1일 |
 
-### 구현 중인 시스템
+### 구현된 시스템
 
 - JSON 계약 `annual-mvp-001-v3`
 - `max_weeks=4`, `days_per_week=7`, 월 28일
@@ -85,6 +88,7 @@
 - `annual-mvp-001-save-v1` payload와 본편 `mvp-039`·`mvp-038` 비침범
 - CORE-MVP-001 외부 지원은 체력 회복·위험 완화만 허용
 - 이해도·가설·관측 패턴·포획 표식 변경 금지
+- 최신 main의 Base Skill 어댑터·자산·라이선스 기록 보존
 
 ## 역사적 구현·QA 증거
 
@@ -111,6 +115,15 @@ PR #70의 4주 구조는 달력 월 보정과 위험 0/15/30의 근거로 유지
 - 문서 run #255 PASS
 - ANNUAL run #103 PASS
 - GDD v3.1 DOCX 11페이지 렌더 QA PASS
+
+## 7일 계약 자동 검증
+
+- 문서 계약 run #273: PASS
+- ANNUAL run #121: Python 계약, Godot 4.7.1 import, CORE focused, ANNUAL focused, 전체 Godot 회귀 PASS
+- Visual run #51: 키보드·Esc, 실제 그래픽 좌표 클릭, 자동 휴식 경고, 2·3·4주차 출동 경로와 1280×720·1920×1080 캡처 PASS
+- PR #76 review thread: 0건
+- PR #76 squash merge: commit `57c1f3d92e0fdae658826a23e5c2326fe9efe478`
+- Issue #75: `completed`
 
 ## 충돌 해석 우선순위
 
@@ -149,9 +162,8 @@ PR #70의 4주 구조는 달력 월 보정과 위험 0/15/30의 근거로 유지
 
 ## 다음 게이트
 
-1. Issue #75 구현의 Python·Godot·시각 QA와 GitHub 병합
-2. 실제 사람의 7일 편성·경고·자동 휴식 반복 사용성 평가
-3. 신규 플레이어의 2주차 조기·3주차 자율·4주차 강제 출동 플레이
-4. 육성→사건→연구 인과와 동료 지원 공정성 설명 수집
-5. `KEEP / AMPLIFY / CHANGE / RETEST / HOLD` 판정
-6. 별도 사용자 승인 전 ANNUAL-MVP-002와 제작 확대 시작 금지
+1. 실제 사람의 7일 편성·경고·자동 휴식 반복 사용성 평가
+2. 신규 플레이어의 2주차 조기·3주차 자율·4주차 강제 출동 플레이
+3. 육성→사건→연구 인과와 동료 지원 공정성 설명 수집
+4. `KEEP / AMPLIFY / CHANGE / RETEST / HOLD` 판정
+5. 별도 사용자 승인 전 ANNUAL-MVP-002와 제작 확대 시작 금지
