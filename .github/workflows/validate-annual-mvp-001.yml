@@ -58,8 +58,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Run annual JSON contract
-        run: python -m unittest tests/test_annual_mvp_001_data_contract.py -v
+      - name: Run annual Python contracts
+        run: python -m unittest tests/test_annual_mvp_001_data_contract.py tests/test_annual_mvp_001_static_contract.py -v
       - name: Setup Godot 4.7.1
         uses: chickensoft-games/setup-godot@v2
         with:
