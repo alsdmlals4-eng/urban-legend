@@ -4,8 +4,7 @@
 > 프로젝트 코어: `docs/PROJECT_CORE.md`  
 > 상세 설계: `docs/GAME_DESIGN_DOCUMENT.md`  
 > 승인 설계: `docs/superpowers/specs/2026-07-25-annual-raising-visual-novel-design.md`  
-> 구현 계획: `docs/superpowers/plans/2026-07-25-annual-raising-vertical-slice-implementation-plan.md`  
-> 렌더링 QA: `docs/qa/2026-07-25-annual-mvp-001-rendered-qa.md`
+> 구현 계획: `docs/superpowers/plans/2026-07-25-annual-raising-vertical-slice-implementation-plan.md`
 
 이 문서는 구현, 자동 검증, 렌더링·입력 QA, 신규 플레이어 검증을 분리한다. `BUILD_READY`와 `RENDERED_QA_PASSED`는 `POC_PASSED`, 연간 루프 통과, 제작 확대 승인을 뜻하지 않는다.
 
