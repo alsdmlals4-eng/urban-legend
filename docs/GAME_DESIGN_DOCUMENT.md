@@ -3,15 +3,15 @@
 > 편집 원본: `docs/GAME_DESIGN_DOCUMENT.md`  
 > 현재 구현 기준: **MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A / Ver 4.2 / save `mvp-039`**  
 > 승인 설계: **연도제 육성·텍스트 노벨 통합 설계 / APPROVED_DESIGN_BASELINE**  
-> 현재 구현 상태: **CORE-MVP-001 POC_BUILD_READY / ANNUAL-MVP-001 NOT_IMPLEMENTED**
+> 현재 구현 상태: **CORE-MVP-001 POC_BUILD_READY / ANNUAL-MVP-001 FOUR_WEEK_MERGED / AUTOMATED_QA_PASSED**
 
 | 항목 | 현재 값 |
 |---|---|
-| 문서 버전 | v3.0 |
+| 문서 버전 | v3.1 |
 | 문서 역할 | 연도제 육성·텍스트 노벨·사건 코어 상세 시스템 설계 |
 | 설계 상태 | `APPROVED_DESIGN_BASELINE` |
 | 기존 사건 코어 | CORE-MVP-001 `POC_BUILD_READY` |
-| 연도제 구현 | `NOT_IMPLEMENTED` |
+| 연도제 구현 | `ANNUAL-MVP-001 FOUR_WEEK_MERGED / AUTOMATED_QA_PASSED` — PR #70 |
 | POC_PASSED | `NOT_DECLARED` |
 | 엔진 | Godot 4.7.1 / GDScript |
 | 플랫폼 | PC / Steam, 16:9, 마우스·키보드 |
@@ -140,6 +140,20 @@
 5. 마감까지 출동하지 않으면 긴급 출동한다.
 
 핵심 선택은 `더 성장한 뒤 출동할 것인가, 상황 악화 전에 현재 준비로 출동할 것인가`다.
+
+### ANNUAL-MVP-001 4주 월간 PoC 계약
+
+```text
+1개월 = 4주 × 주당 3개 일정 슬롯 = 최대 12슬롯
+→ 1주차: 활동 3개, 출동 결정 없음
+→ 2주차: 활동 3개, 자율 출동 위험 0 또는 지연
+→ 3주차: 활동 3개, 자율 출동 위험 15 또는 지연
+→ 4주차: 활동 3개와 주간 결과 확인 후 긴급 강제 출동 위험 30
+→ 출동 준비 → 기존 CORE-MVP-001 사건
+→ 사건 결과 → 연구·공용 스킬 → 월말·분기 결산 모형
+```
+
+이 계약은 `annual-mvp-001-v2`와 PR #70의 활성 구현을 설명한다. 기존 활동·동료·스킬·장비·연구 ID와 독립 저장 `annual-mvp-001-save-v1`은 유지한다. PR #65·#67의 3주 구조 QA는 렌더링·현지화·입력 회귀용 `HISTORICAL_REGRESSION_EVIDENCE`로 보존하지만 현재 4주 시간 계약의 플레이 증거로 사용하지 않는다.
 
 ## 5. 주간 일정과 중요 반일 선택
 
@@ -550,7 +564,7 @@ CORE-MVP-001은 사건 1개의 `조사 → 가설 → 현장 검증 → 전조 �
 
 ### 현재 트랙
 
-`ANNUAL-MVP-001`은 3주 육성·출동 준비가 기존 CORE-MVP-001 사건의 정보·위험·피해 관리에 영향을 주고, 사건 결과가 연구·스킬·분기 결산으로 되돌아오는지를 격리 경로에서 검증한다.
+`ANNUAL-MVP-001`은 4주 × 주당 3슬롯의 육성·출동 준비가 기존 CORE-MVP-001 사건의 정보·위험·피해 관리에 영향을 주고, 사건 결과가 연구·스킬·분기 결산으로 되돌아오는지를 격리 경로에서 검증한다. 구현·자동 회귀·시각·키보드·포인터 QA는 PR #70에서 통과했으며, 실제 사람의 2주차 조기·3주차 자율·4주차 강제 출동 플레이와 인과 설명은 아직 `NOT_RUN`이다.
 
 ### 검증 질문
 
@@ -574,5 +588,7 @@ CORE-MVP-001은 사건 1개의 `조사 → 가설 → 현장 검증 → 전조 �
 - 현재 구현 상태: `docs/CURRENT_STATUS.md`
 - 구현 순서: `MVP_ROADMAP.md`
 - 정본 전환 계획: `docs/superpowers/plans/2026-07-25-annual-design-canonical-migration-plan.md`
-- ANNUAL-MVP-001 계획: `docs/superpowers/plans/2026-07-25-annual-raising-vertical-slice-implementation-plan.md`
+- ANNUAL-MVP-001 원 계획: `docs/superpowers/plans/2026-07-25-annual-raising-vertical-slice-implementation-plan.md`
+- ANNUAL-MVP-001 4주 승인 설계: `docs/superpowers/specs/2026-07-25-annual-mvp-001-four-week-month-design.md`
+- ANNUAL-MVP-001 4주 구현 계획: `docs/superpowers/plans/2026-07-25-annual-mvp-001-four-week-month-implementation-plan.md`
 - 검증 체크리스트: `TEST_CHECKLIST.md`
