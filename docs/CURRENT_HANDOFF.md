@@ -2,18 +2,19 @@
 
 > 상태 원본: `docs/CURRENT_STATUS.md`  
 > 프로젝트 코어: `docs/PROJECT_CORE.md`  
+> 상세 설계: `docs/GAME_DESIGN_DOCUMENT.md`  
 > 최신 4주 설계: `docs/superpowers/specs/2026-07-25-annual-mvp-001-four-week-month-design.md`  
 > 최신 구현 계획: `docs/superpowers/plans/2026-07-25-annual-mvp-001-four-week-month-implementation-plan.md`
 
-이 문서는 4주 월간 계약의 구현·자동 검증과 사람 사용성·신규 플레이어 검증을 분리한다. 연도제 설계 상태는 `APPROVED_DESIGN_BASELINE`이다.
+이 문서는 4주 월간 계약의 구현·자동 검증·정본 문서 동기화와 사람 사용성·신규 플레이어 검증을 분리한다. 연도제 설계 상태는 `APPROVED_DESIGN_BASELINE`이다.
 
 ```yaml
-status: ANNUAL_MVP_001_FOUR_WEEK_MERGED_AUTOMATED_QA_PASSED
+status: ANNUAL_MVP_001_FOUR_WEEK_CANONICAL_DOCS_SYNCED
 implemented_baseline: MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A / Ver 4.2 / save mvp-039
 annual_design: APPROVED_DESIGN_BASELINE
 core_mvp_001:
   implementation: POC_BUILD_READY
-  focused_suite: PASSED_IN_RUN_101
+  focused_suite: PASSED_IN_RUN_103
   player_validation: NOT_RUN
   POC_PASSED: NOT_DECLARED
 annual_mvp_001:
@@ -40,9 +41,17 @@ annual_mvp_001:
     week_3_risk: 15
     week_4_forced_risk: 30
     implementation: MERGED
-    documentation_run: 253_PASS
-    annual_validation_run: 101_PASS
     visual_run: 34_PASS
+  canonical_document_sync:
+    issue: 72
+    pr: 73
+    commit: 932bc39300bb6ba7f3169b98c25d910f0e01413a
+    project_core: SYNCED
+    gdd_version: v3.1
+    docx_generator_format: urban-legend-gdd-index-v4
+    docx_binary: GENERATED_AND_QA_PASSED_UNTRACKED_BY_POLICY
+    documentation_run: 255_PASS
+    annual_validation_run: 103_PASS
   save_version: annual-mvp-001-save-v1
   human_usability_qa: NOT_RUN
   new_player_validation: NOT_RUN
@@ -56,6 +65,7 @@ production_expansion: NOT_APPROVED
 AGENTS.md
 → docs/CURRENT_STATUS.md
 → docs/PROJECT_CORE.md
+→ docs/GAME_DESIGN_DOCUMENT.md
 → docs/superpowers/specs/2026-07-25-annual-mvp-001-four-week-month-design.md
 → docs/superpowers/plans/2026-07-25-annual-mvp-001-four-week-month-implementation-plan.md
 → docs/goals/CODEX_GOAL_ANNUAL_MVP_001_FOUR_WEEK_MONTH.md
@@ -84,8 +94,18 @@ AGENTS.md
 - 기존 `annual-mvp-001-save-v1` payload, 본편 `mvp-039`, `mvp-038` 이관은 유지한다.
 - 기존 활동·동료·스킬·장비·연구 ID를 변경하지 않는다.
 - 렌더링 Theme·한글·포인터 typed-array 수정은 보존한다.
-- 문서 run #253, ANNUAL run #101, Visual run #34가 통과했다.
 - PR #70은 squash merge됐고 Issue #69는 completed로 종료됐다.
+- PROJECT_CORE와 GDD v3.1은 PR #73에서 4주 계약으로 정밀 동기화됐다.
+- 문서 run #255와 ANNUAL run #103이 통과했다.
+
+## GDD DOCX 생성 정책
+
+- 편집 원본은 `docs/GAME_DESIGN_DOCUMENT.md`다.
+- `tools/docs/build_game_design_doc.py`가 결정적 DOCX 미러를 생성한다.
+- 생성물 source hash는 `b0d35778686f6321f1d2b78efe7bd43267cde5b3e0dedb7b35e7aa46ca67e5ca`다.
+- 11페이지 PDF·PNG 렌더에서 글리프·표·번호·머리말·꼬리말·클리핑을 전수 확인했다.
+- `docs/URBAN_LEGEND_GAME_DESIGN.docx`는 `.gitignore`와 활성 문서 계약에 따라 Git에 추적하지 않는다.
+- 번호 목록은 Markdown에 적힌 번호를 그대로 사용하며 문서 전체에서 자동 연속 번호로 이어지지 않는다.
 
 ## HISTORICAL QA
 

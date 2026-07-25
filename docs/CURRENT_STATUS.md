@@ -29,8 +29,11 @@
 | 그래픽 포인터 QA·모듈 토글 수정 | `PASSED` — PR #67 / commit `0f24efa204a04cca62a58e55628e6b831b9bef2d` |
 | 4주 월간 계약 | `APPROVED` — Issue #69 |
 | 4주 월간 구현 | `MERGED / AUTOMATED_QA_PASSED` — PR #70 / commit `20a0d052e4d48863481af7c3acc53805105d6a01` |
-| 문서 계약 | `PASSED` — run #253 |
-| ANNUAL 자동 검증 | `PASSED` — run #101 |
+| PROJECT_CORE·GDD 정밀 동기화 | `COMPLETE` — Issue #72 / PR #73 / commit `932bc39300bb6ba7f3169b98c25d910f0e01413a` |
+| GDD 버전 | v3.1 — 활성 4주 계약 반영 |
+| GDD DOCX 생성물 | build·source hash·11페이지 렌더 QA `PASSED`; 저장소 정책상 바이너리 비추적 |
+| 문서 계약 | `PASSED` — run #255 |
+| ANNUAL 자동 검증 | `PASSED` — run #103 |
 | 4주 시각·입력 QA | `PASSED` — run #34 |
 | 사람 손 장시간 사용성 QA | `NOT_RUN` |
 | 신규 플레이어 검증 | `NOT_RUN` |
@@ -74,6 +77,16 @@
   - 사건 진행 중 저장 금지
   - 저장 seed 기반 동료 판정 재현
 
+### 정본 문서·생성물 동기화
+
+- `PROJECT_CORE.md`의 오래된 `NOT_IMPLEMENTED` 표기를 실제 4주 병합 상태로 교정
+- `GAME_DESIGN_DOCUMENT.md`를 v3.1로 갱신하고 4주 시간 계약과 역사적 QA 경계를 반영
+- 결정적 DOCX 생성기를 포맷 v4로 갱신
+- Markdown 번호 목록이 DOCX 전체에서 잘못 연속되는 결함을 수정
+- DOCX source hash `b0d35778686f6321f1d2b78efe7bd43267cde5b3e0dedb7b35e7aa46ca67e5ca` 검증
+- DOCX 11페이지를 PDF·PNG로 렌더링해 글리프·표·번호·머리말·꼬리말·클리핑을 전수 확인
+- `docs/URBAN_LEGEND_GAME_DESIGN.docx`는 결정적 생성물이므로 `.gitignore`와 활성 문서 계약에 따라 Git에 추적하지 않음
+
 ## 기존 3주 QA 증거 — HISTORICAL
 
 PR #65·#67에서 수행한 다음 증거는 렌더링·현지화·키보드·포인터·embedded CORE 호환의 회귀 기준으로 유지한다. 다만 당시 긴급 출동은 3주차 강제로 기록됐으므로 현재 4주 시간 계약의 플레이 증거가 아니다.
@@ -100,10 +113,10 @@ PR #65·#67에서 수행한 다음 증거는 렌더링·현지화·키보드·�
 - 전체 Godot 회귀 49/49
 - 대표 visual artifact id `8617041311`
 
-4주 계약은 PR #70에서 다시 검증됐다.
+4주 계약은 PR #70과 문서 정밀 동기화 PR #73에서 다시 검증됐다.
 
-- 문서 계약 run #253: PASS
-- ANNUAL run #101: Python 계약, Godot 4.7.1 import, CORE focused, ANNUAL focused, 전체 Godot 회귀 PASS
+- 문서 계약 run #255: PASS
+- ANNUAL run #103: Python 계약, Godot 4.7.1 import, CORE focused, ANNUAL focused, 전체 Godot 회귀 PASS
 - Visual run #34: 키보드·Esc, 실제 그래픽 포인터, 4주차 결과·긴급 강제 출동 캡처 PASS
 
 ## 충돌 해석 우선순위
