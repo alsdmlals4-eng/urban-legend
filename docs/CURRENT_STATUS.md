@@ -6,7 +6,7 @@
 > 승인 설계: `docs/superpowers/specs/2026-07-25-annual-raising-visual-novel-design.md`  
 > 구현 계획: `docs/superpowers/plans/2026-07-25-annual-raising-vertical-slice-implementation-plan.md`
 
-이 문서는 구현, 자동 검증, 렌더링·입력 QA, 신규 플레이어 검증을 분리한다. `BUILD_READY`와 `RENDERED_QA_PASSED`는 `POC_PASSED`, 연간 루프 통과, 제작 확대 승인을 뜻하지 않는다.
+이 문서는 구현, 자동 검증, 렌더링·입력 QA, 신규 플레이어 검증을 분리한다. `BUILD_READY`, `RENDERED_QA_PASSED`, 그래픽 포인터 이벤트 통과는 `POC_PASSED`, 연간 루프 통과, 제작 확대 승인을 뜻하지 않는다.
 
 ## 현재 기준
 
@@ -24,11 +24,13 @@
 | 정본 전환 | `COMPLETE` — PR #61 |
 | ANNUAL-MVP-001 구현 | `BUILD_READY` — PR #62 / commit `88522ce08f261bce6d61a8043c64caa3b982bd47` |
 | 렌더링·입력 QA 통합 | `RENDERED_QA_PASSED` — PR #65 / commit `b4f2e224bf7a2a6ee511c83bbbd45cd9e0b8570a` |
-| 최종 자동 검증 | `PASSED` — visual run #24, ANNUAL run #89, 문서 run #245 |
+| 그래픽 포인터 QA·모듈 토글 수정 | `PASSED` — PR #67 / commit `0f24efa204a04cca62a58e55628e6b831b9bef2d` |
+| 최종 자동 검증 | `PASSED` — visual run #28, ANNUAL run #94 |
 | 렌더링·텍스트 검토 | `PASSED` |
 | 키보드 포커스·확인·Esc | `PASSED` |
+| 그래픽 포인터 이벤트 | `PASSED` |
 | 세 출동 경로 scripted QA | `PASSED` |
-| 수동 마우스 QA | `NOT_RUN` |
+| 사람 손 장시간 사용성 QA | `NOT_RUN` |
 | 신규 플레이어 검증 | `NOT_RUN` |
 | POC_PASSED | `NOT_DECLARED` |
 | annual loop passed | `NOT_DECLARED` |
@@ -79,7 +81,7 @@
 
 ## 렌더링·입력 QA 결과
 
-PR #65에서 실제 그래픽 Window와 Noto CJK 글꼴을 사용해 1280×720·1920×1080 화면을 생성하고 발견된 결함을 수정했다.
+PR #65에서 실제 그래픽 Window와 Noto CJK 글꼴을 사용해 1280×720·1920×1080 화면을 생성하고 다음 결함을 수정했다.
 
 - ANNUAL Scene에 공용 현대 오컬트 Theme과 어두운 배경 적용
 - Linux·Windows·macOS용 한글 시스템 글꼴 후보 지정
@@ -93,15 +95,26 @@ PR #65에서 실제 그래픽 Window와 Noto CJK 글꼴을 사용해 1280×720·
 - 긴급 출동: week 3 forced / risk 30 / 긴급 회수 / 후보 기록
 - 분기 결산이 최종 엔딩이 아님을 한국어로 표시
 
+PR #67에서는 실제 버튼 좌표에 마우스 이동·좌클릭 이벤트를 보내 다음 흐름을 검증했다.
+
+- 주간 활동 선택과 확인
+- 전용 저장·불러오기
+- 2주차 지연과 3주차 자율 출동
+- 출동 전 연구·공용 스킬·모듈 선택
+- embedded CORE 사건 시작
+- 사건 중 저장 비활성
+- embedded 매뉴얼·조사 선택지 입력
+
+이 경로에서 모듈 체크박스가 untyped 배열을 `Array[String]`에 대입하던 런타임 오류를 발견해 typed append 방식으로 수정했다.
+
 최종 QA 증거:
 
-- Visual workflow run #24: PASS
-- ANNUAL workflow run #89: PASS
-- 문서 계약 run #245: PASS
-- 대표 visual artifact id `8617041311`
+- Visual workflow run #28: PASS
+- ANNUAL workflow run #94: PASS
 - CORE focused 4/4
 - ANNUAL focused 6/6
 - 전체 Godot 회귀 49/49
+- 대표 visual artifact id `8617041311`
 
 시각 방향 판정은 `KEEP / AMPLIFY`다. 읽기·경로 구분·결산 의미는 유지하고, 최종 제품에서는 넓은 여백을 일러스트·텍스트 노벨 장면·상태 카드로 재구성한다.
 
@@ -141,7 +154,7 @@ PR #65에서 실제 그래픽 Window와 Noto CJK 글꼴을 사용해 1280×720·
 
 ## 다음 게이트
 
-1. 실제 포인터를 사용한 수동 마우스 QA
+1. 사람 손을 사용한 장시간 마우스·키보드 사용성 평가
 2. 신규 플레이어의 조기·지연·긴급 출동 경로 플레이
 3. 육성→사건→연구 인과와 동료 자동 지원 공정성 설명 수집
 4. 전체 루프를 `KEEP / AMPLIFY / CHANGE / RETEST / HOLD`로 판정
