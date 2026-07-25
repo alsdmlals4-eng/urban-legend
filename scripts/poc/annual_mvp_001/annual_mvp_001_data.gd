@@ -1,7 +1,7 @@
 class_name AnnualMvp001Data
 extends RefCounted
 
-const CONTRACT_VERSION := "annual-mvp-001-v1"
+const CONTRACT_VERSION := "annual-mvp-001-v2"
 const REQUIRED_COUNTS := {
 	"activities": 7,
 	"companions": 1,
@@ -35,14 +35,16 @@ static func validate_config(data: Dictionary) -> Array[String]:
 		errors.append("campaign must be a dictionary")
 		return errors
 	var campaign := campaign_value as Dictionary
-	if int(campaign.get("max_weeks", 0)) != 3:
-		errors.append("campaign max_weeks must be 3")
+	if int(campaign.get("max_weeks", 0)) != 4:
+		errors.append("campaign max_weeks must be 4")
 	if int(campaign.get("slots_per_week", 0)) != 3:
 		errors.append("campaign slots_per_week must be 3")
 	if int(campaign.get("voluntary_entry_week", 0)) != 2:
 		errors.append("campaign voluntary_entry_week must be 2")
-	if int(campaign.get("deadline_week", 0)) != 3:
-		errors.append("campaign deadline_week must be 3")
+	if int(campaign.get("deadline_week", 0)) != 4:
+		errors.append("campaign deadline_week must be 4")
+	if int(campaign.get("max_weeks", 0)) * int(campaign.get("slots_per_week", 0)) != 12:
+		errors.append("campaign must contain 12 monthly activity slots")
 	var incident_path := String(campaign.get("incident_case_path", ""))
 	if incident_path.is_empty() or not FileAccess.file_exists(incident_path):
 		errors.append("campaign incident_case_path must exist")
