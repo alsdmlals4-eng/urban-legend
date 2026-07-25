@@ -4,6 +4,16 @@
 
 이 폴더는 현재 작업의 기본 읽기 대상이 아닌 과거 기록을 보존한다. 과거 근거가 필요한 경우에만 이 인덱스에서 파일 하나를 선택한다. `docs/archive/**`를 일괄 탐색하거나 매 작업마다 읽지 않는다.
 
+## 현재 권한과 보존 계약
+
+- 아카이브 자료는 현재 정본이 아니며 구현 권한이 없다.
+- 원문을 비우지 않는다. 경로만 남기고 본문을 삭제하는 방식은 금지한다.
+- 새 아카이브 항목은 `MANIFEST.json`에 classification, 원래·현재 경로, SHA-256, 대체 정본, 사유, rollback ref와 검증 상태를 기록한다.
+- archive record는 `active_authority: false`, `implementation_authority: NONE`을 사용한다.
+- 비밀키·API token·자격증명·private key는 아카이브하지 않는다.
+- Base 공용 절차는 `skills/BASE_SHARED_SKILL_ROUTES.json`과 `ARCHIVE_RETENTION_ADAPTER.json`으로 선택하며 SKILL.md 본문을 이 프로젝트에 복제하지 않는다.
+- 이번 정책 채택은 기존 백업 자료를 재이동·삭제·재작성하지 않는다.
+
 ## 현재 백업 묶음
 
 | 보관일 | 보관 위치 | 내용 | 현행 대체 문서 |
