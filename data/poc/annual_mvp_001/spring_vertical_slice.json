@@ -1,12 +1,12 @@
 {
-  "contract_version": "annual-mvp-001-v1",
+  "contract_version": "annual-mvp-001-v2",
   "campaign": {
     "id": "annual001_spring_slice",
     "name": "봄 분기 수직절편",
-    "max_weeks": 3,
+    "max_weeks": 4,
     "slots_per_week": 3,
     "voluntary_entry_week": 2,
-    "deadline_week": 3,
+    "deadline_week": 4,
     "week_3_entry_risk": 15,
     "forced_entry_risk": 30,
     "incident_case_path": "res://data/poc/core_mvp_001/afterlife_station_poc.json"
