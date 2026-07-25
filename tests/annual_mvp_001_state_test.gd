@@ -30,11 +30,11 @@ func _commit_and_ack(state: RefCounted, activities: Array[String]) -> void:
 
 func _test_initial_and_week_result() -> void:
 	var state := _new_state()
-	var snapshot := state.get_snapshot()
+	var snapshot: Dictionary = state.get_snapshot()
 	assert(snapshot["phase"] == "WEEK_PLANNING")
 	assert(snapshot["week"] == 1)
 	assert(snapshot["fatigue"] == 10)
-	var result := state.commit_week([
+	var result: Dictionary = state.commit_week([
 		"annual001_activity_observation_drill",
 		"annual001_activity_field_training",
 		"annual001_activity_rest",
@@ -70,7 +70,7 @@ func _test_early_deployment_verified_path() -> void:
 		"annual001_skill_emergency_cover",
 		["annual001_module_signal_buffer"]
 	)["ok"])
-	var begin := state.begin_incident()
+	var begin: Dictionary = state.begin_incident()
 	assert(begin["ok"])
 	assert(begin["events"][0]["event"] == "annual_incident_requested")
 	assert(begin["events"][0]["run_seed"] == 2001)
@@ -81,7 +81,7 @@ func _test_early_deployment_verified_path() -> void:
 	)["ok"])
 	assert(state.advance_from_incident_result()["ok"])
 	assert(state.complete_research_project("annual001_research_ticket_protocol")["ok"])
-	var snapshot := state.get_snapshot()
+	var snapshot: Dictionary = state.get_snapshot()
 	assert(snapshot["phase"] == "QUARTER_SUMMARY")
 	assert(snapshot["residual_data"] == 1)
 	assert(snapshot["unlocked_skill_ids"].has("annual001_skill_signal_cross_check"))
@@ -122,7 +122,7 @@ func _test_week_three_candidate_path() -> void:
 	)["ok"])
 	assert(state.advance_from_incident_result()["ok"])
 	assert(state.skip_post_incident_research()["ok"])
-	var summary := state.get_snapshot()["quarter_summary"] as Dictionary
+	var summary: Dictionary = state.get_snapshot()["quarter_summary"] as Dictionary
 	assert(summary["weeks_used"] == 3)
 	assert(summary["recovery_quality"] == "costly_capture")
 	assert(summary["knowledge_quality"] == "candidate")
@@ -136,7 +136,7 @@ func _test_forced_emergency_path() -> void:
 	assert(state.choose_deployment_decision("annual001_decision_delay")["ok"])
 	_commit_and_ack(state, ["annual001_activity_rest", "annual001_activity_rest", "annual001_activity_rest"])
 	assert(state.choose_deployment_decision("annual001_decision_delay")["ok"])
-	var snapshot := state.get_snapshot()
+	var snapshot: Dictionary = state.get_snapshot()
 	assert(snapshot["forced_deployment"])
 	assert(snapshot["deployment_risk"] == 30)
 	assert(state.configure_loadout("annual001_companion_oh_hyun", "", [])["ok"])
@@ -154,7 +154,7 @@ func _test_forced_emergency_path() -> void:
 
 func _test_invalid_command_is_immutable() -> void:
 	var state := _new_state()
-	var before := state.get_snapshot()
-	var result := state.commit_week(["annual001_activity_rest"])
+	var before: Dictionary = state.get_snapshot()
+	var result: Dictionary = state.commit_week(["annual001_activity_rest"])
 	assert(not result["ok"])
 	assert(state.get_snapshot() == before)
