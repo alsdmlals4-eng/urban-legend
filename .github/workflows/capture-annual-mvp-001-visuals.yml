@@ -5,6 +5,7 @@ on:
     paths:
       - "tests/annual_mvp_001_visual_capture.gd"
       - "tests/annual_mvp_001_input_qa.gd"
+      - "tests/annual_mvp_001_pointer_qa.gd"
       - "scripts/poc/annual_mvp_001/**"
       - "scripts/ui/ui_theme_factory.gd"
       - "scenes/poc/annual_mvp_001/**"
@@ -40,6 +41,13 @@ jobs:
             godot --path . --rendering-driver opengl3 \
             --script res://tests/annual_mvp_001_input_qa.gd \
             2>&1 | tee annual-input-qa.log
+      - name: Verify graphical pointer flow
+        run: |
+          set -o pipefail
+          xvfb-run -a -s "-screen 0 1280x720x24" \
+            godot --path . --rendering-driver opengl3 \
+            --script res://tests/annual_mvp_001_pointer_qa.gd \
+            2>&1 | tee annual-pointer-qa.log
       - name: Capture QA screenshots
         env:
           ANNUAL_QA_OUTPUT: ${{ github.workspace }}/annual-qa-artifacts
@@ -58,6 +66,7 @@ jobs:
           path: |
             annual-qa-artifacts
             annual-input-qa.log
+            annual-pointer-qa.log
             annual-visual-capture.log
           if-no-files-found: warn
           retention-days: 14
