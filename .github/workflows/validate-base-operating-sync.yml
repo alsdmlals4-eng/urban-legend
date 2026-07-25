@@ -12,9 +12,11 @@ on:
       - "TEST_CHECKLIST.md"
       - "docs/**"
       - "skills/**"
+      - "tools/check_archive_governance.py"
       - "tests/test_base_operating_sync.py"
       - "tests/test_skill_package_integrity.py"
       - "tests/test_active_document_references.py"
+      - "tests/test_archive_retention_governance.py"
   workflow_dispatch:
 
 concurrency:
@@ -33,7 +35,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Validate Base, core, routing, local Skill, and active references
+      - name: Compile archive validator
+        run: python -m py_compile tools/check_archive_governance.py tests/test_archive_retention_governance.py
+      - name: Validate archive governance
+        run: python tools/check_archive_governance.py
+      - name: Validate Base, core, routing, local Skill, archive, and active references
         shell: bash
         run: |
           set +e
@@ -41,6 +47,7 @@ jobs:
             tests/test_base_operating_sync.py \
             tests/test_skill_package_integrity.py \
             tests/test_active_document_references.py \
+            tests/test_archive_retention_governance.py \
             2>&1 | tee documentation-validation.log
           status=${PIPESTATUS[0]}
           echo "$status" > documentation-validation-exit-code.txt
