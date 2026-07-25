@@ -102,6 +102,36 @@ func _run() -> void:
 	var mitigated := state.resolve_recovery_action("poc001_action_guard")
 	_expect(mitigated.get("valid", false), "generic defense should mitigate first hidden pattern")
 	_expect(int(mitigated.get("damage", 99)) <= 18, "first hidden pattern damage should respect the cap")
+	var before_support: Dictionary = state.get_snapshot()
+	var support_key := "action:3:poc001_pattern_ticket_imprint:poc001_action_guard"
+	var support := state.apply_external_support(
+		"annual001_skill_emergency_cover",
+		support_key,
+		{"health_restore": 6, "risk_reduction": 4}
+	)
+	_expect_common_response(support, "external support")
+	_expect(support.get("ok", false), "valid external support should apply")
+	var after_support: Dictionary = state.get_snapshot()
+	_expect(int(after_support.get("health", 0)) >= int(before_support.get("health", 0)), "external support should restore health")
+	_expect(int(after_support.get("risk", 0)) <= int(before_support.get("risk", 0)), "external support should reduce risk")
+	_expect(after_support.get("understanding") == before_support.get("understanding"), "external support must not change understanding")
+	_expect(after_support.get("selected_hypothesis_id") == before_support.get("selected_hypothesis_id"), "external support must not change hypothesis")
+	_expect(after_support.get("observed_pattern_ids") == before_support.get("observed_pattern_ids"), "external support must not change observed patterns")
+	_expect(after_support.get("capture_marks") == before_support.get("capture_marks"), "external support must not change capture marks")
+	_expect((after_support.get("applied_external_support_event_keys", []) as Array).has(support_key), "external support key should be recorded")
+	var duplicate_support := state.apply_external_support(
+		"annual001_skill_emergency_cover",
+		support_key,
+		{"health_restore": 6, "risk_reduction": 4}
+	)
+	_expect(duplicate_support.get("ok", false), "duplicate support should be idempotent success")
+	_expect(not duplicate_support.get("state_changed", true), "duplicate support should not change state")
+	var invalid_support := state.apply_external_support(
+		"annual001_skill_emergency_cover",
+		"action:3:invalid",
+		{"capture_mark": 1}
+	)
+	_expect(not invalid_support.get("ok", true), "external support should reject rule-changing effects")
 
 	state.begin_recovery_turn()
 	state.read_current_omen(100)

@@ -26,6 +26,7 @@ var _turn := 0
 var _current_pattern_id := ""
 var _omen_result: Dictionary = {}
 var _outcome_id := ""
+var _applied_external_support_event_keys: Array[String] = []
 var _rng := RandomNumberGenerator.new()
 
 
@@ -56,6 +57,7 @@ func start(case_data: Dictionary, run_seed: int = 1001) -> Dictionary:
 	_current_pattern_id = ""
 	_omen_result.clear()
 	_outcome_id = ""
+	_applied_external_support_event_keys.clear()
 	_rng.seed = run_seed
 	for value in _case_data.get("recovery_patterns", []):
 		var pattern := value as Dictionary
@@ -87,7 +89,8 @@ func get_snapshot() -> Dictionary:
 		"turn": _turn,
 		"current_pattern_id": _current_pattern_id,
 		"omen_result": _omen_result.duplicate(true),
-		"outcome_id": _outcome_id
+		"outcome_id": _outcome_id,
+		"applied_external_support_event_keys": _applied_external_support_event_keys.duplicate()
 	}
 
 
@@ -387,6 +390,55 @@ func resolve_recovery_action(action_id: String) -> Dictionary:
 	result["damage"] = damage
 	result["risk_delta"] = risk_delta
 	result["capture_mark"] = String(pattern.get("capture_mark", "")) if valid and not first_hidden else ""
+	return result
+
+
+func apply_external_support(source_id: String, event_key: String, effect: Dictionary) -> Dictionary:
+	var allowed_phases := [
+		"RECOVERY_READY",
+		"EMERGENCY_RECOVERY",
+		"RECOVERY_TURN_START",
+		"OMEN_READ",
+		"RESPONSE_SELECTION",
+		"CAPTURE_WINDOW",
+		"EMERGENCY_CAPTURE"
+	]
+	if not allowed_phases.has(_phase):
+		return _response(false, "현재 단계에서는 외부 지원을 적용할 수 없다.", false)
+	if source_id.is_empty() or event_key.is_empty():
+		return _response(false, "지원 출처와 사건 키가 필요하다.", false)
+	if _applied_external_support_event_keys.has(event_key):
+		return _response(true, "", false)
+	var allowed_effects := ["health_restore", "risk_reduction"]
+	for key in effect.keys():
+		if not allowed_effects.has(String(key)):
+			return _response(false, "허용되지 않은 외부 지원 효과다: %s" % key, false)
+		if int(effect[key]) < 0:
+			return _response(false, "외부 지원 효과는 음수일 수 없다.", false)
+	var health_restore := int(effect.get("health_restore", 0))
+	var risk_reduction := int(effect.get("risk_reduction", 0))
+	if health_restore == 0 and risk_reduction == 0:
+		return _response(false, "적용할 외부 지원 효과가 없다.", false)
+	var starting_health := int((_case_data.get("case", {}) as Dictionary).get("starting_health", 100))
+	var health_before := _health
+	var risk_before := _risk
+	_health = mini(starting_health, _health + health_restore)
+	_risk = maxi(0, _risk - risk_reduction)
+	_applied_external_support_event_keys.append(event_key)
+	var result := _response(
+		true,
+		"",
+		true,
+		[{
+			"event": "external_support_applied",
+			"source_id": source_id,
+			"event_key": event_key,
+			"health_restored": _health - health_before,
+			"risk_reduced": risk_before - _risk
+		}]
+	)
+	result["health_restored"] = _health - health_before
+	result["risk_reduced"] = risk_before - _risk
 	return result
 
 

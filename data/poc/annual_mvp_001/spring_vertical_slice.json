@@ -1,0 +1,194 @@
+{
+  "contract_version": "annual-mvp-001-v1",
+  "campaign": {
+    "id": "annual001_spring_slice",
+    "name": "봄 분기 수직절편",
+    "max_weeks": 3,
+    "slots_per_week": 3,
+    "voluntary_entry_week": 2,
+    "deadline_week": 3,
+    "week_3_entry_risk": 15,
+    "forced_entry_risk": 30,
+    "incident_case_path": "res://data/poc/core_mvp_001/afterlife_station_poc.json"
+  },
+  "starting_state": {
+    "competencies": {
+      "observation": 1,
+      "analysis": 1,
+      "field_response": 1,
+      "interpersonal": 1
+    },
+    "fatigue": 10,
+    "institution_support": 0,
+    "residual_data": 0,
+    "companion_trust": {
+      "annual001_companion_oh_hyun": 0
+    }
+  },
+  "ranges": {
+    "competency": [0, 5],
+    "fatigue": [0, 100],
+    "institution_support": [0, 3],
+    "trust": [0, 3]
+  },
+  "activities": [
+    {
+      "id": "annual001_activity_observation_drill",
+      "name": "관측 훈련",
+      "deltas": {
+        "competencies": {"observation": 1},
+        "fatigue": 12
+      }
+    },
+    {
+      "id": "annual001_activity_analysis_desk",
+      "name": "기록 분석",
+      "deltas": {
+        "competencies": {"analysis": 1},
+        "fatigue": 10
+      }
+    },
+    {
+      "id": "annual001_activity_field_training",
+      "name": "현장 대응 훈련",
+      "deltas": {
+        "competencies": {"field_response": 1},
+        "fatigue": 15,
+        "institution_support": 1
+      }
+    },
+    {
+      "id": "annual001_activity_interview_duty",
+      "name": "증언 면담 업무",
+      "deltas": {
+        "competencies": {"interpersonal": 1},
+        "fatigue": 10,
+        "institution_support": 1
+      }
+    },
+    {
+      "id": "annual001_activity_signal_research",
+      "name": "신호 현상 연구",
+      "deltas": {
+        "research_progress": {"annual001_research_signal_buffer": 1},
+        "fatigue": 10
+      }
+    },
+    {
+      "id": "annual001_activity_companion_drill",
+      "name": "오현 협업 훈련",
+      "deltas": {
+        "companion_trust": {"annual001_companion_oh_hyun": 1},
+        "fatigue": 8
+      }
+    },
+    {
+      "id": "annual001_activity_rest",
+      "name": "휴식",
+      "deltas": {
+        "fatigue": -25
+      }
+    }
+  ],
+  "companions": [
+    {
+      "id": "annual001_companion_oh_hyun",
+      "name": "오현",
+      "unique_skill_id": "annual001_skill_procedural_check",
+      "allowed_public_skill_ids": [
+        "annual001_skill_emergency_cover",
+        "annual001_skill_signal_cross_check"
+      ]
+    }
+  ],
+  "support_skills": [
+    {
+      "id": "annual001_skill_procedural_check",
+      "name": "절차 교차 확인",
+      "type": "unique",
+      "source": "companion",
+      "trigger": "omen_failed",
+      "trigger_label": "전조 해석 실패",
+      "base_chance": 40,
+      "readiness_gain": 30,
+      "readiness_max": 90,
+      "battle_limit": 2,
+      "effect": {
+        "risk_reduction": 4
+      }
+    },
+    {
+      "id": "annual001_skill_emergency_cover",
+      "name": "긴급 엄호",
+      "type": "public",
+      "source": "institution",
+      "unlock": {
+        "institution_support_min": 1
+      },
+      "trigger": "damage_at_least_12",
+      "trigger_label": "피해 12 이상",
+      "base_chance": 50,
+      "readiness_gain": 25,
+      "readiness_max": 100,
+      "battle_limit": 2,
+      "effect": {
+        "health_restore": 6,
+        "risk_reduction": 4
+      }
+    },
+    {
+      "id": "annual001_skill_signal_cross_check",
+      "name": "신호 교차 검증",
+      "type": "public",
+      "source": "research",
+      "trigger": "first_hidden_pattern_resolved",
+      "trigger_label": "첫 미관측 패턴 대응",
+      "base_chance": 55,
+      "readiness_gain": 25,
+      "readiness_max": 100,
+      "battle_limit": 1,
+      "effect": {
+        "health_restore": 4,
+        "risk_reduction": 6
+      }
+    }
+  ],
+  "base_equipment": [
+    {
+      "id": "annual001_equipment_field_recorder",
+      "name": "현장 기록기",
+      "module_slots": 1
+    }
+  ],
+  "modules": [
+    {
+      "id": "annual001_module_signal_buffer",
+      "name": "신호 완충 모듈",
+      "effect": {
+        "hidden_first_damage_cap": 12
+      }
+    }
+  ],
+  "research_projects": [
+    {
+      "id": "annual001_research_signal_buffer",
+      "name": "신호 완충 연구",
+      "timing": "pre_incident",
+      "progress_required": 2,
+      "residual_data_cost": 0,
+      "required_manual_status": "",
+      "unlock_module_ids": ["annual001_module_signal_buffer"],
+      "unlock_skill_ids": []
+    },
+    {
+      "id": "annual001_research_ticket_protocol",
+      "name": "승차권 대응 절차",
+      "timing": "post_incident",
+      "progress_required": 0,
+      "residual_data_cost": 1,
+      "required_manual_status": "verified",
+      "unlock_module_ids": [],
+      "unlock_skill_ids": ["annual001_skill_signal_cross_check"]
+    }
+  ]
+}

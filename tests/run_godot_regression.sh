@@ -9,6 +9,12 @@ LOG_ROOT="$RUN_ROOT/logs"
 mkdir -p "$LOG_ROOT"
 
 script_tests=(
+  annual_mvp_001_data_test
+  annual_mvp_001_state_test
+  annual_mvp_001_support_resolver_test
+  annual_mvp_001_incident_adapter_test
+  annual_mvp_001_save_data_test
+  annual_mvp_001_scene_test
   accessibility_settings_test
   agent_selection_card_test
   anomaly_manual_drawer_test
@@ -95,5 +101,5 @@ for test_name in "${scene_tests[@]}"; do
   run_test "$test_name" scene
 done
 
-echo "Godot regression suite: 43/43 test entrypoints passed"
+echo "Godot regression suite: 49/49 test entrypoints passed"
 echo "Logs: $LOG_ROOT"
