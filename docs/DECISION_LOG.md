@@ -54,3 +54,29 @@
 - 결정: 모든 중요 기획·구현·검증 변경은 `docs/PROJECT_UPDATE_PROTOCOL.md`의 동기화 매트릭스를 따른다.
 - 추적: Issue #78 / PR #80
 - 요구사항: 원문 보존, 결정 로그 추가, 상태 어휘 동기화, 자동/사람 검증 분리, 병합 증거 기록.
+
+## D-2026-07-26-ANNUAL-EXPANSION-SEQUENCE — 시스템 우선 확장 순서
+
+- 상태: `APPROVED_SEQUENCE / PROVISIONAL_DATA_BASELINE`
+- 사용자 승인: 2026-07-26
+- 추적: Issue #84
+- 승인 순서:
+  1. ANNUAL-MVP-002 동료·장비·연구 조합
+  2. 일정·상태·회복 확장
+  3. ANNUAL-MVP-003 1분기 운영
+  4. 사건 콘텐츠 제작 규격
+  5. 관계·동료·선택적 로맨스 연간 구조
+  6. 조작형 규칙 검증 미니게임 규격
+  7. ANNUAL-MVP-004 1년 캠페인·결산·계승
+- 세부 데이터 위임: 구현 준비를 위해 수치·ID·비용·확률·콘텐츠 수량을 임시 작성한다.
+- 데이터 상태: 신규 세부값은 플레이 검증 전 `PROVISIONAL_BASELINE`이며 기존 승인 계약을 대체하지 않는다.
+- 책임 원본:
+  - `docs/superpowers/specs/2026-07-26-annual-expansion-master-design.md`
+  - `docs/planning/ANNUAL_PROVISIONAL_DATA_BASELINE.md`
+  - `docs/superpowers/specs/2026-07-26-annual-mvp-002-companion-equipment-research-design.md`
+- 보호 계약: 권나래 고정, 4주×7일, 위험 0/15/30, CORE·저장·기존 ID 비침범.
+- ANNUAL-MVP-002 구현: `NOT_STARTED`
+- ANNUAL-MVP-003 이후 구현: `NOT_APPROVED`
+- 사람 사용성·신규 플레이어 검증: `NOT_RUN`
+- `POC_PASSED`: `NOT_DECLARED`
+- 제작 확대: `NOT_APPROVED`
