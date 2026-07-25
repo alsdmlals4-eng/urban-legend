@@ -4,8 +4,7 @@
 > 최소 코어: `docs/PROJECT_CORE.md`  
 > 상세 설계: `docs/GAME_DESIGN_DOCUMENT.md`  
 > 승인 설계: `docs/superpowers/specs/2026-07-25-annual-raising-visual-novel-design.md`  
-> 구현 계획: `docs/superpowers/plans/2026-07-25-annual-raising-vertical-slice-implementation-plan.md`  
-> 렌더링 QA: `docs/qa/2026-07-25-annual-mvp-001-rendered-qa.md`
+> 구현 계획: `docs/superpowers/plans/2026-07-25-annual-raising-vertical-slice-implementation-plan.md`
 
 ## 현재 기준
 
