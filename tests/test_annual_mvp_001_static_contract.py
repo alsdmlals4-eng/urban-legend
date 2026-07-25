@@ -64,6 +64,15 @@ class AnnualMvp001StaticContractTests(unittest.TestCase):
         for forbidden in ("capture_marks +=", "_understanding =", "_selected_hypothesis_id =", "_observed_pattern_ids.append"):
             self.assertNotIn(forbidden, support_section)
 
+    def test_annual_scene_uses_shared_theme_and_korean_font_candidates(self) -> None:
+        scene = (ROOT / "scripts/poc/annual_mvp_001/annual_mvp_001_scene.gd").read_text(encoding="utf-8")
+        theme_factory = (ROOT / "scripts/ui/ui_theme_factory.gd").read_text(encoding="utf-8")
+        self.assertIn('ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")', scene)
+        self.assertIn("theme = ThemeFactory.create_theme()", scene)
+        self.assertIn("SystemFont.new()", theme_factory)
+        for font_name in ("Noto Sans CJK KR", "Noto Sans KR", "Malgun Gothic", "Apple SD Gothic Neo"):
+            self.assertIn(font_name, theme_factory)
+
 
 if __name__ == "__main__":
     unittest.main()
