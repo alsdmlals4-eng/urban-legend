@@ -70,10 +70,18 @@ func _apply_day_plan(activity_ids: Array[String], auto_rest_days: int) -> Dictio
 	if auto_rest_days > 0:
 		activity_results.append(_apply_auto_rest(auto_rest_days))
 
+	# `activity_results` is the canonical machine-readable record. The legacy
+	# `activity_ids` field also feeds the inherited result label, so append a
+	# localized automatic-rest entry without changing authored activity IDs.
+	var display_activity_ids: Array[String] = activity_ids.duplicate()
+	if auto_rest_days > 0:
+		display_activity_ids.append("자동 휴식 %d일" % auto_rest_days)
+
 	_refresh_institution_unlocks()
 	_last_week_result = {
 		"week": _week,
-		"activity_ids": activity_ids.duplicate(),
+		"activity_ids": display_activity_ids,
+		"planned_activity_ids": activity_ids.duplicate(),
 		"planned_days": planned_days,
 		"used_days": days_per_week,
 		"auto_rest_days": auto_rest_days,
