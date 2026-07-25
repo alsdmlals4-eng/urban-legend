@@ -16,7 +16,10 @@
 | CORE-MVP-001 | `POC_BUILD_READY` |
 | ANNUAL-MVP-001 원 구현 | `BUILD_READY` — PR #62 |
 | 4주 월간 계약 | `APPROVED` — Issue #69 |
-| 4주 구현 | `ON_BRANCH / CI_PENDING` |
+| 4주 구현 | `MERGED / AUTOMATED_QA_PASSED` — PR #70 / commit `20a0d052e4d48863481af7c3acc53805105d6a01` |
+| 문서 계약 | `PASSED` — run #253 |
+| ANNUAL 자동 검증 | `PASSED` — run #101 |
+| 4주 시각·입력 QA | `PASSED` — run #34 |
 | 사람 사용성 QA | `NOT_RUN` |
 | 신규 플레이어 검증 | `NOT_RUN` |
 | POC_PASSED | `NOT_DECLARED` |
@@ -36,7 +39,7 @@
 
 - 사건 코어 독립 PoC `POC_BUILD_READY`
 - main 통합 PR #55
-- focused suite 기준 4/4
+- focused suite는 4주 통합 run #101에서 재통과
 - 기존 독립 실행·F1 진입 유지
 - 신규 플레이어 증거 `NOT_RUN`
 
@@ -47,7 +50,7 @@
 - PR #67 포인터 경로·모듈 toggle 수정
 - 과거 visual run #28, ANNUAL run #94, 전체 49/49는 `HISTORICAL_REGRESSION_EVIDENCE`
 
-## ANNUAL-MVP-001 4주 월간 보정 — 현재 작업
+## ANNUAL-MVP-001 4주 월간 보정 — 통합 완료
 
 ### 활성 루프
 
@@ -70,25 +73,23 @@
 - save `annual-mvp-001-save-v1` 유지
 - 활성 정본·인수인계·검증 계약 동기화
 
-### 통합 게이트
+### 통합 결과
 
 - [x] 사용자 승인 설계 기록
-- [x] Issue #69 생성
-- [x] 작업 브랜치 생성
+- [x] Issue #69 생성·완료
 - [x] 데이터·StateV2·Scene·테스트 반영
-- [x] `CURRENT_STATUS`·Handoff·Roadmap 동기화
-- [ ] Python 계약
-- [ ] Godot 4.7.1 import
-- [ ] CORE focused suite
-- [ ] ANNUAL focused suite
-- [ ] 전체 Godot 회귀
-- [ ] 4주 렌더링·포인터 경로
-- [ ] PR 검토·squash merge
-- [ ] 병합 후 상태 문서 보정
+- [x] `CURRENT_STATUS`·Handoff·Roadmap·Checklist 동기화
+- [x] 문서 run #253 PASS
+- [x] Godot 4.7.1 import PASS
+- [x] CORE focused PASS
+- [x] ANNUAL focused PASS
+- [x] 전체 Godot 회귀 PASS
+- [x] Visual run #34 PASS
+- [x] PR #70 squash merge
 
 ## 다음 플레이 게이트
 
-통합 뒤 다음 세 경로를 실제 사람이 검증한다.
+다음 세 경로를 실제 사람이 검증한다.
 
 - 2주차 조기 출동: 위험 0
 - 3주차 자율 출동: 위험 15
@@ -110,7 +111,6 @@
 
 진입 조건:
 
-- 4주 월간 통합 완료
 - 사람 사용성 QA 완료
 - 신규 플레이어가 육성→사건→연구 인과를 설명
 - 동료 지원 공정성 확인
@@ -139,10 +139,11 @@
 
 ```text
 annual_mvp_001_four_week_contract: APPROVED
-annual_mvp_001_four_week_implementation: ON_BRANCH
-automated_verification: PENDING
-historical_rendered_visual_review: PASSED
-historical_graphical_pointer_event_qa: PASSED
+annual_mvp_001_four_week_implementation: MERGED
+automated_verification: PASSED
+rendered_visual_review: PASSED
+keyboard_input_qa: PASSED
+graphical_pointer_event_qa: PASSED
 human_usability_qa: NOT_RUN
 player_validation: NOT_RUN
 annual_loop_passed: NOT_DECLARED
