@@ -78,16 +78,15 @@ class AnnualMvp001StaticContractTests(unittest.TestCase):
             self.assertIn(font_name, theme_factory)
 
     def test_annual_wrapper_uses_four_week_seven_day_state_and_copy(self) -> None:
-        scene = (ROOT / "scripts/poc/annual_mvp_001/annual_mvp_001_scene.gd").read_text(encoding="utf-8")
         wrapper = (ROOT / "scripts/poc/annual_mvp_001/annual_mvp_001_themed_scene.gd").read_text(encoding="utf-8")
         state_v2 = (ROOT / "scripts/poc/annual_mvp_001/annual_mvp_001_state_v2.gd").read_text(encoding="utf-8")
         self.assertIn("annual_mvp_001_state_v2.gd", wrapper)
         self.assertIn("_state = FourWeekState.new()", wrapper)
         self.assertIn("4주차 7일", wrapper)
         self.assertNotIn("4주차 활동 3개", wrapper)
-        self.assertIn("사용 %d/7일", scene)
-        self.assertIn("requires_auto_rest_confirmation", scene)
-        self.assertIn("commit_week_with_auto_rest", scene)
+        self.assertIn("사용 %d/7일", wrapper)
+        self.assertIn("requires_auto_rest_confirmation", wrapper)
+        self.assertIn("commit_week_with_auto_rest", wrapper)
         self.assertIn("annual001_activity_auto_rest", state_v2)
         self.assertIn('campaign.get("deadline_week", 4)', state_v2)
 
