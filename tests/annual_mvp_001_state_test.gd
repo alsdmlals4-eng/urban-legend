@@ -25,6 +25,13 @@ func _strings(values: Array) -> Array[String]:
 	return typed
 
 
+func _dictionaries(values: Array) -> Array[Dictionary]:
+	var typed: Array[Dictionary] = []
+	for value in values:
+		typed.append((value as Dictionary).duplicate(true))
+	return typed
+
+
 func _new_state(seed: int = 2001, starting_fatigue: int = 10) -> RefCounted:
 	var state := State.new()
 	var config := _config.duplicate(true)
@@ -166,7 +173,7 @@ func _test_early_deployment_verified_path() -> void:
 	assert(state.apply_incident_result(
 		{"recovery_quality": "normal_capture"},
 		{"status": "verified", "danger_cases": []},
-		[{"skill_id": "annual001_skill_procedural_check"}]
+		_dictionaries([{"skill_id": "annual001_skill_procedural_check"}])
 	)["ok"])
 	assert(state.advance_from_incident_result()["ok"])
 	assert(state.complete_research_project("annual001_research_ticket_protocol")["ok"])
@@ -210,7 +217,7 @@ func _test_week_three_candidate_path() -> void:
 	assert(state.apply_incident_result(
 		{"recovery_quality": "costly_capture"},
 		{"status": "candidate", "danger_cases": [{"id": "danger-1"}]},
-		[]
+		_dictionaries([])
 	)["ok"])
 	assert(state.advance_from_incident_result()["ok"])
 	assert(state.skip_post_incident_research()["ok"])
