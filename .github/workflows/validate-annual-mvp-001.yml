@@ -70,23 +70,23 @@ jobs:
       - name: Run annual data loader test
         run: |
           set -o pipefail
-          godot --headless --path . --script res://tests/annual_mvp_001_data_test.gd 2>&1 | tee annual-data.log
+          timeout 90 godot --headless --path . --script res://tests/annual_mvp_001_data_test.gd 2>&1 | tee annual-data.log
       - name: Run annual state machine test
         run: |
           set -o pipefail
-          godot --headless --path . --script res://tests/annual_mvp_001_state_test.gd 2>&1 | tee annual-state.log
+          timeout 90 godot --headless --path . --script res://tests/annual_mvp_001_state_test.gd 2>&1 | tee annual-state.log
       - name: Run annual support resolver test
         run: |
           set -o pipefail
-          godot --headless --path . --script res://tests/annual_mvp_001_support_resolver_test.gd 2>&1 | tee annual-support.log
+          timeout 90 godot --headless --path . --script res://tests/annual_mvp_001_support_resolver_test.gd 2>&1 | tee annual-support.log
       - name: Run annual incident adapter test
         run: |
           set -o pipefail
-          godot --headless --path . --script res://tests/annual_mvp_001_incident_adapter_test.gd 2>&1 | tee annual-adapter.log
+          timeout 90 godot --headless --path . --script res://tests/annual_mvp_001_incident_adapter_test.gd 2>&1 | tee annual-adapter.log
       - name: Run annual save test
         run: |
           set -o pipefail
-          godot --headless --path . --script res://tests/annual_mvp_001_save_data_test.gd 2>&1 | tee annual-save.log
+          timeout 90 godot --headless --path . --script res://tests/annual_mvp_001_save_data_test.gd 2>&1 | tee annual-save.log
       - name: Preserve failure evidence
         if: failure()
         uses: actions/upload-artifact@v4
