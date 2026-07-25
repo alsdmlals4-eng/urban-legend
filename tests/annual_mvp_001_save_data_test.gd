@@ -21,20 +21,22 @@ func _init() -> void:
 	_expect(state.commit_week([
 		"annual001_activity_signal_research",
 		"annual001_activity_signal_research",
-		"annual001_activity_field_training"
-	])["ok"], "week one should commit")
+		"annual001_activity_rest"
+	])["ok"], "week one should commit seven days")
 	_expect(state.acknowledge_week_result()["ok"], "week one result should acknowledge")
 	_expect(state.commit_week([
 		"annual001_activity_companion_drill",
 		"annual001_activity_companion_drill",
+		"annual001_activity_rest",
+		"annual001_activity_rest",
 		"annual001_activity_rest"
-	])["ok"], "week two should commit")
+	])["ok"], "week two should commit seven days")
 	_expect(state.acknowledge_week_result()["ok"], "week two result should acknowledge")
 	_expect(state.choose_deployment_decision("annual001_decision_deploy")["ok"], "deployment should be selected")
 	_expect(state.complete_research_project("annual001_research_signal_buffer")["ok"], "pre-incident research should complete")
 	_expect(state.configure_loadout(
 		"annual001_companion_oh_hyun",
-		"annual001_skill_emergency_cover",
+		"",
 		["annual001_module_signal_buffer"]
 	)["ok"], "loadout should configure")
 
@@ -45,6 +47,8 @@ func _init() -> void:
 		var saved_state := payload.get("state", {}) as Dictionary
 		_expect(saved_state.get("phase") == "PREPARATION", "saved phase should be preparation")
 		_expect(saved_state.get("run_seed") == 4444, "saved seed should be preserved")
+		var week_result := saved_state.get("last_week_result", {}) as Dictionary
+		_expect(week_result.get("used_days") == 7, "saved week result should preserve seven used days")
 
 	var path := "user://annual_mvp_001_test.json"
 	SaveData.delete_payload(path)
