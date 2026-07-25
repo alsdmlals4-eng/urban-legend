@@ -185,6 +185,11 @@ func _build_ui() -> void:
 		"CORE-MVP-001 조사→전조→포획 PoC",
 		"res://scenes/poc/core_mvp_001/core_mvp_001_scene.tscn"
 	)
+	_add_scene_button(
+		dev_content,
+		"ANNUAL-MVP-001 육성→사건→연구 PoC",
+		"res://scenes/poc/annual_mvp_001/annual_mvp_001_scene.tscn"
+	)
 	_add_scene_button(dev_content, "조사씬 열기", "res://scenes/investigation_scene.tscn")
 	_add_scene_button(dev_content, "준비 화면 열기", GameState.SCENE_PREPARATION)
 	_add_scene_button(dev_content, "대화씬 열기", "res://scenes/dialogue_scene.tscn")
