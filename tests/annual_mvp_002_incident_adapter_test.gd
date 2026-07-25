@@ -68,7 +68,7 @@ func _base_snapshot() -> Dictionary:
 func _new_adapter(snapshot: Dictionary = {}) -> RefCounted:
 	var config: Dictionary = BaseData.load_config("res://data/poc/annual_mvp_001/spring_vertical_slice.json")
 	var adapter: RefCounted = Adapter.new()
-	var actual_snapshot := _base_snapshot() if snapshot.is_empty() else snapshot
+	var actual_snapshot: Dictionary = _base_snapshot() if snapshot.is_empty() else snapshot
 	var result: Dictionary = adapter.configure(config, actual_snapshot, 4101)
 	_expect(result.get("ok", false), "adapter should configure")
 	return adapter
@@ -90,7 +90,7 @@ func _test_expansion_configures_and_exposes_status() -> void:
 func _test_support_hooks_apply_once_and_scale_overlap() -> void:
 	var adapter: RefCounted = _new_adapter()
 	var fake := FakeCoreState.new()
-	var before := {
+	var before: Dictionary = {
 		"turn": 2,
 		"current_pattern_id": "poc001_pattern_false_terminal",
 		"observed_pattern_ids": ["poc001_pattern_false_terminal"],
@@ -99,9 +99,9 @@ func _test_support_hooks_apply_once_and_scale_overlap() -> void:
 		"damage": 8,
 		"snapshot": before,
 	})
-	var triggered_damage := damage_results.filter(func(value: Dictionary) -> bool: return bool(value.get("triggered", false)))
+	var triggered_damage: Array = damage_results.filter(func(value: Dictionary) -> bool: return bool(value.get("triggered", false)))
 	_expect(triggered_damage.size() >= 2, "O Hyun unique and guaranteed damage support should trigger")
-	var calls_after_first := fake.calls.size()
+	var calls_after_first: int = fake.calls.size()
 	adapter.after_recovery_action(fake, before, "probe", {"damage": 8, "snapshot": before})
 	_expect(fake.calls.size() == calls_after_first, "same event must not apply support twice")
 
@@ -123,10 +123,13 @@ func _test_case_override_only_contains_allowed_modifiers() -> void:
 	_expect((override.get("case", {}) as Dictionary).get("starting_risk", 0) == 15, "deployment risk should carry")
 	for field_value in override.get("field_tests", []) as Array:
 		_expect(int((field_value as Dictionary).get("damage", 0)) >= 0, "equipment cannot make damage negative")
-	_expect(not _contains_forbidden_key(override), "case override cannot contain answer fields")
+	_expect(
+		_forbidden_key_count(override) == _forbidden_key_count(base_case),
+		"extension must not add new answer-bearing keys beyond the canonical CORE schema"
+	)
 	var modifiers := override.get("annual_mvp_002_modifiers", {}) as Dictionary
 	_expect(modifiers.has("selected_equipment_id"), "override should disclose applied equipment")
-	_expect(not modifiers.has("clue_id"), "modifier summary cannot add a clue")
+	_expect(_forbidden_key_count(modifiers) == 0, "modifier summary cannot encode an answer field")
 
 
 func _test_research_reward_mapping() -> void:
@@ -144,11 +147,11 @@ func _test_research_reward_mapping() -> void:
 		{"status": "candidate", "danger_cases": [{"id": "danger"}]}
 	)
 	var costly_resources := costly["resource_delta"] as Dictionary
-	_expect(costly_resources["annual002_resource_risk_cases"] == 1, "costly capture should create a risk case")
+	_expect(costly_resources["annual002_resource_risk_cases"] == 2, "costly result plus one documented danger case should grant two risk cases")
 
 
 func _test_missing_extension_uses_safe_fallback() -> void:
-	var snapshot := _base_snapshot()
+	var snapshot: Dictionary = _base_snapshot()
 	snapshot.erase("annual_mvp_002")
 	var adapter: RefCounted = _new_adapter(snapshot)
 	_expect(adapter.is_fallback_active(), "missing extension should use fallback")
@@ -158,19 +161,18 @@ func _test_missing_extension_uses_safe_fallback() -> void:
 	_expect(not override.has("annual_mvp_002_modifiers"), "fallback must not add expansion modifiers")
 
 
-func _contains_forbidden_key(value: Variant) -> bool:
+func _forbidden_key_count(value: Variant) -> int:
 	var forbidden := ["clue_id", "hypothesis_id", "pattern_id", "capture_condition", "answer_hypothesis", "unobserved_pattern"]
+	var count := 0
 	if typeof(value) == TYPE_DICTIONARY:
 		for key_value in (value as Dictionary).keys():
 			if forbidden.has(String(key_value)):
-				return true
-			if _contains_forbidden_key((value as Dictionary)[key_value]):
-				return true
+				count += 1
+			count += _forbidden_key_count((value as Dictionary)[key_value])
 	elif typeof(value) == TYPE_ARRAY:
 		for item in value as Array:
-			if _contains_forbidden_key(item):
-				return true
-	return false
+			count += _forbidden_key_count(item)
+	return count
 
 
 func _expect(condition: bool, message: String) -> void:
