@@ -14,10 +14,11 @@
 - 연도제 설계: `APPROVED_DESIGN_BASELINE`
 - 정본 전환: `COMPLETE`
 - ANNUAL-MVP-001: `BUILD_READY` — PR #62 / commit `88522ce08f261bce6d61a8043c64caa3b982bd47`
-- 구현 자동 검증: `PASSED` — ANNUAL run #63, CORE run #131, 문서 run #234
-- 렌더링·텍스트 검토: `PASSED_ON_PR_65` — visual run #15
-- 키보드 포커스·확인·Esc: `PASSED_ON_PR_65` — visual run #15
-- 세 출동 경로 scripted QA: `PASSED_ON_PR_65` — visual run #15
+- 렌더링·입력 QA: `PASSED` — PR #65 / commit `b4f2e224bf7a2a6ee511c83bbbd45cd9e0b8570a`
+- 최종 자동 검증: `PASSED` — visual run #24, ANNUAL run #89, 문서 run #245
+- 렌더링·텍스트 검토: `PASSED`
+- 키보드 포커스·확인·Esc: `PASSED`
+- 세 출동 경로 scripted QA: `PASSED`
 - 수동 마우스 QA: `NOT_RUN`
 - 신규 플레이어 검증: `NOT_RUN`
 - `POC_PASSED`: `NOT_DECLARED`
@@ -154,23 +155,22 @@
 
 ### 구현 기준
 
+- [x] PR #62 squash merge 완료
 - [x] ANNUAL workflow run #63 PASS
 - [x] CORE workflow run #131 PASS
 - [x] 문서 계약 run #234 PASS
-- [x] CORE-MVP-001 focused 4/4 PASS
-- [x] ANNUAL-MVP-001 focused 6/6 PASS
-- [x] 전체 Godot 회귀 49/49 PASS
-- [x] PR #62 squash merge 완료
 
-### 렌더링 QA PR #65
+### 렌더링·입력 QA
 
-- [x] Visual workflow run #15 PASS
-- [x] ANNUAL workflow run #80 PASS
+- [x] PR #65 squash merge 완료 — commit `b4f2e224bf7a2a6ee511c83bbbd45cd9e0b8570a`
+- [x] Visual workflow run #24 PASS
+- [x] ANNUAL workflow run #89 PASS
+- [x] 문서 계약 run #245 PASS
 - [x] Godot 4.7.1 import PASS
 - [x] 그래픽 Window·OpenGL3·Xvfb 렌더링 PASS
 - [x] 키보드 입력 QA PASS
 - [x] PNG 22개와 세 경로 manifest 생성
-- [x] visual artifact id `8617041311`
+- [x] 대표 visual artifact id `8617041311`
 - [x] artifact digest `sha256:bb623881ef31a6e4f33cfd6884acbca29735187a1986beaaddd14c64f8353ca4`
 - [x] CORE-MVP-001 focused 4/4 PASS
 - [x] ANNUAL-MVP-001 focused 6/6 PASS
@@ -201,9 +201,9 @@
 canonical_migration: COMPLETE
 automated_document_validation: PASSED
 annual_mvp_001: BUILD_READY
-rendered_visual_review: PASSED_ON_PR_65
-keyboard_input_qa: PASSED_ON_PR_65
-three_route_scripted_qa: PASSED_ON_PR_65
+rendered_visual_review: PASSED
+keyboard_input_qa: PASSED
+three_route_scripted_qa: PASSED
 manual_mouse_qa: NOT_RUN
 player_validation: NOT_RUN
 annual_loop_passed: NOT_DECLARED
