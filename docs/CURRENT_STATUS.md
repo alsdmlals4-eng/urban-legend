@@ -22,13 +22,26 @@
 | 사건 코어 main 통합 | PR #55 / commit `8d0bf91a2e31538d3c0f142c800a84e8e3693889` |
 | 연도제 설계 | `APPROVED_DESIGN_BASELINE` |
 | 정본 전환 | `COMPLETE` — PR #61 |
-| ANNUAL-MVP-001 구현 | `BUILD_READY` — PR #62 후보 |
-| 자동 검증 | `PASSED` — ANNUAL workflow run #59 |
+| ANNUAL-MVP-001 구현 | `BUILD_READY` — PR #62 merged |
+| ANNUAL-MVP-001 main 통합 | commit `88522ce08f261bce6d61a8043c64caa3b982bd47` |
+| 자동 검증 | `PASSED` — PR #62 ANNUAL run #63, CORE run #131 |
 | 사람 눈 UI·텍스트 QA | `NOT_RUN` |
 | 플레이 검증 | `NOT_RUN` |
 | POC_PASSED | `NOT_DECLARED` |
 | annual loop passed | `NOT_DECLARED` |
 | 제작 확대 | `NOT_APPROVED` |
+
+## 정본 충돌 해결 순서
+
+기획·문서·구현이 충돌할 때 다음 순서를 적용한다.
+
+1. 최신 사용자 지시
+2. 사용자 승인 연도제 설계 `APPROVED_DESIGN_BASELINE`
+3. 승인된 ANNUAL 구현 계획과 활성 `CURRENT_STATUS`·`PROJECT_CORE`·GDD
+4. 현재 `main`의 검증된 구현 계약
+5. 기존 PoC·레거시 문서·과거 구현
+
+최신 기획을 우선하되, 기존 저장·보호 경로·하위 호환 계약은 명시적인 설계 변경과 별도 검증 없이 파괴하지 않는다. 레거시 구현이 최신 기획과 충돌하면 레거시 동작을 정본으로 승격하지 않고 adapter, compatibility layer, migration 또는 격리 경로로 처리한다.
 
 ## ANNUAL-MVP-001 구현 범위
 
@@ -76,7 +89,7 @@
 
 ## 자동 검증 증거
 
-ANNUAL workflow run #59에서 다음이 모두 통과했다.
+PR #62 병합 전 최종 검증에서 다음이 모두 통과했다.
 
 - Python 데이터·정적·활성 문서 계약: PASS
 - Godot 4.7.1 import: PASS
@@ -113,9 +126,8 @@ ANNUAL workflow run #59에서 다음이 모두 통과했다.
 
 ## 다음 게이트
 
-1. PR #62 코드 리뷰와 squash merge 결정
-2. 1280×720·1920×1080 사람 눈 UI·텍스트 QA
-3. 조기 출동·지연 출동·긴급 출동 세 경로 플레이
-4. 육성→사건→연구 인과와 동료 자동 지원 공정성 설명 수집
-5. `KEEP / AMPLIFY / CHANGE / RETEST / HOLD` 판정
-6. 플레이 증거 전에는 ANNUAL-MVP-002와 제작 확대를 시작하지 않음
+1. 1280×720·1920×1080 사람 눈 UI·텍스트 QA
+2. 조기 출동·지연 출동·긴급 출동 세 경로 플레이
+3. 육성→사건→연구 인과와 동료 자동 지원 공정성 설명 수집
+4. `KEEP / AMPLIFY / CHANGE / RETEST / HOLD` 판정
+5. 통과 시 ANNUAL-MVP-002 진입 결정
