@@ -16,9 +16,13 @@ concurrency:
   group: annual-mvp-001-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
-  contract-red-green:
+  annual-validation:
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -26,3 +30,13 @@ jobs:
           python-version: "3.12"
       - name: Run annual JSON contract
         run: python -m unittest tests/test_annual_mvp_001_data_contract.py -v
+      - name: Setup Godot 4.7.1
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.1
+          use-dotnet: false
+          include-templates: false
+      - name: Import project
+        run: godot --headless --path . --import
+      - name: Run annual data loader test
+        run: godot --headless --path . --script res://tests/annual_mvp_001_data_test.gd
