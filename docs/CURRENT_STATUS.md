@@ -6,7 +6,7 @@
 > 승인 설계: `docs/superpowers/specs/2026-07-25-annual-raising-visual-novel-design.md`  
 > 구현 계획: `docs/superpowers/plans/2026-07-25-annual-raising-vertical-slice-implementation-plan.md`
 
-이 문서는 구현, 자동 검증, 사람 눈 QA, 플레이 검증을 분리한다. `BUILD_READY`는 자동 계약과 회귀를 통과한 격리 수직절편을 뜻하며 `POC_PASSED`, 연간 루프 통과, 제작 확대 승인을 뜻하지 않는다.
+이 문서는 구현, 자동 검증, 렌더링·입력 QA, 신규 플레이어 검증을 분리한다. `BUILD_READY`와 `RENDERED_QA_PASSED`는 `POC_PASSED`, 연간 루프 통과, 제작 확대 승인을 뜻하지 않는다.
 
 ## 현재 기준
 
@@ -23,9 +23,12 @@
 | 연도제 설계 | `APPROVED_DESIGN_BASELINE` |
 | 정본 전환 | `COMPLETE` — PR #61 |
 | ANNUAL-MVP-001 구현 | `BUILD_READY` — PR #62 / commit `88522ce08f261bce6d61a8043c64caa3b982bd47` |
-| 자동 검증 | `PASSED` — ANNUAL workflow run #63, CORE run #131, 문서 run #234 |
-| 사람 눈 UI·텍스트 QA | `NOT_RUN` |
-| 플레이 검증 | `NOT_RUN` |
+| 구현 자동 검증 | `PASSED` — ANNUAL run #63, CORE run #131, 문서 run #234 |
+| 렌더링·텍스트 검토 | `PASSED` — PR #65 후보 / visual run #15 |
+| 키보드 포커스·확인·Esc | `PASSED` — visual run #15 |
+| 세 출동 경로 scripted QA | `PASSED` — visual run #15 |
+| 수동 마우스 QA | `NOT_RUN` |
+| 신규 플레이어 검증 | `NOT_RUN` |
 | POC_PASSED | `NOT_DECLARED` |
 | annual loop passed | `NOT_DECLARED` |
 | 제작 확대 | `NOT_APPROVED` |
@@ -72,23 +75,35 @@
   - 사건 진행 중 저장 금지
   - 저장 seed 기반 동료 판정 재현
 - ANNUAL 전용 Scene과 F1 개발 진입
-- 1280×720·1920×1080 기계적 레이아웃 계약
 
-## 자동 검증 증거
+## 렌더링·입력 QA 결과
 
-ANNUAL workflow run #63에서 다음이 모두 통과했다.
+PR #65에서 실제 그래픽 Window와 Noto CJK 글꼴을 사용해 1280×720·1920×1080 화면을 생성했다.
 
-- Python 데이터·정적·활성 문서 계약: PASS
-- Godot 4.7.1 import: PASS
-- CORE-MVP-001 focused suite: 4/4 PASS
-- ANNUAL-MVP-001 focused suite: 6/6 PASS
-- 전체 Godot 회귀: 49/49 PASS
-- 기존 CORE-MVP-001 기본 진입: PASS
-- 기존 저장·보호 경로 비침범 정적 계약: PASS
+수정·확인한 항목:
 
-CORE workflow run #131과 문서 계약 run #234도 병합 전 동일 head에서 PASS했다.
+- ANNUAL Scene에 공용 현대 오컬트 Theme과 어두운 배경 적용
+- Linux·Windows·macOS용 한글 시스템 글꼴 후보 지정
+- embedded CORE 조사 패널의 가로·세로 확장 복구
+- 단계·활동·역량·회수 품질·지식 품질 내부 ID 현지화
+- embedded CORE 단계·이해도 현지화
+- 초기 키보드 포커스 적용
+- `ui_accept` 활동 선택과 Esc 선택 취소 확인
+- 조기 출동: week 2 / risk 0 / 정상 회수 / 검증 완료
+- 지연 출동: week 3 / risk 15 / 대가를 치른 회수 / 검증 완료
+- 긴급 출동: week 3 forced / risk 30 / 긴급 회수 / 후보 기록
+- 분기 결산이 최종 엔딩이 아님을 한국어로 표시
 
-이 자동 결과는 `BUILD_READY` 근거다. 한국어 장문 밀도, 키보드·마우스 실제 조작감, 육성 선택과 사건 결과의 체감 인과는 아직 사람 증거가 없다.
+최종 QA 증거:
+
+- Visual workflow run #15: PASS
+- visual artifact id `8617041311`
+- PR #65 전체 ANNUAL workflow run #80: PASS
+- CORE focused 4/4
+- ANNUAL focused 6/6
+- 전체 Godot 회귀 49/49
+
+시각 방향 판정은 `KEEP / AMPLIFY`다. 읽기·경로 구분·결산 의미는 유지하고, 최종 제품에서는 넓은 여백을 일러스트·텍스트 노벨 장면·상태 카드로 재구성한다.
 
 ## 충돌 해석 우선순위
 
@@ -126,8 +141,9 @@ CORE workflow run #131과 문서 계약 run #234도 병합 전 동일 head에서
 
 ## 다음 게이트
 
-1. 1280×720·1920×1080 사람 눈 UI·텍스트 QA
-2. 조기 출동·지연 출동·긴급 출동 세 경로 플레이
-3. 육성→사건→연구 인과와 동료 자동 지원 공정성 설명 수집
-4. `KEEP / AMPLIFY / CHANGE / RETEST / HOLD` 판정
-5. 별도 사용자 승인 전 ANNUAL-MVP-002와 제작 확대 시작 금지
+1. PR #65 리뷰·병합
+2. 실제 포인터를 사용한 수동 마우스 QA
+3. 신규 플레이어의 조기·지연·긴급 출동 경로 플레이
+4. 육성→사건→연구 인과와 동료 자동 지원 공정성 설명 수집
+5. 전체 루프를 `KEEP / AMPLIFY / CHANGE / RETEST / HOLD`로 판정
+6. 별도 사용자 승인 전 ANNUAL-MVP-002와 제작 확대 시작 금지

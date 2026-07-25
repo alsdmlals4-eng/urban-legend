@@ -17,9 +17,12 @@
 | 연도제 설계 | `APPROVED_DESIGN_BASELINE` |
 | 정본 전환 | `COMPLETE` |
 | ANNUAL-MVP-001 | `BUILD_READY` — PR #62 / commit `88522ce08f261bce6d61a8043c64caa3b982bd47` |
-| 자동 검증 | `PASSED` — ANNUAL run #63 |
-| 사람 눈 QA | `NOT_RUN` |
-| 플레이 검증 | `NOT_RUN` |
+| 구현 자동 검증 | `PASSED` — ANNUAL run #63 |
+| 렌더링·텍스트 검토 | `PASSED_ON_PR_65` — visual run #15 |
+| 키보드·Esc 입력 | `PASSED_ON_PR_65` — visual run #15 |
+| 세 출동 경로 scripted QA | `PASSED_ON_PR_65` — visual run #15 |
+| 수동 마우스 QA | `NOT_RUN` |
+| 신규 플레이어 검증 | `NOT_RUN` |
 | POC_PASSED | `NOT_DECLARED` |
 | 제작 확대 | `NOT_APPROVED` |
 | 목표 트랙 | ANNUAL-MVP-001 → 002 → 003 → 004 |
@@ -33,7 +36,7 @@
 - 같은 저장 seed와 입력 순서에서 지원 판정을 재현한다.
 - 회수 승리는 HP 0이 아니라 패턴 대응으로 포획 창을 여는 것이다.
 - 연말 결과는 최종 엔딩이 아니라 연도 결산이다.
-- 자동 회귀 통과만으로 `POC_PASSED`나 제작 확대를 선언하지 않는다.
+- 자동 회귀·렌더링 QA 통과만으로 `POC_PASSED`나 제작 확대를 선언하지 않는다.
 - 충돌 시 사용자 승인 최신 설계 → 승인 구현 계획 → 활성 정본 → 기존 PoC·레거시 순서로 해석한다.
 
 ## 완료·보존
@@ -44,14 +47,16 @@
 - main 통합: PR #55 / commit `8d0bf91a2e31538d3c0f142c800a84e8e3693889`
 - focused suite: 4/4 PASS
 - 전체 회귀: ANNUAL workflow 49/49에 포함
-- 플레이 증거: `NOT_RUN`
+- embedded 렌더링: 1280×720·1920×1080에서 조사 패널 노출 확인
+- 신규 플레이어 증거: `NOT_RUN`
 - `POC_PASSED`: `NOT_DECLARED`
 
 ### ANNUAL-MVP-001 — 육성→사건→연구 수직절편
 
 > 구현 상태: `BUILD_READY`  
 > main 통합: PR #62 / commit `88522ce08f261bce6d61a8043c64caa3b982bd47`  
-> 자동 검증: ANNUAL run #63, CORE run #131, 문서 run #234 PASS
+> 구현 자동 검증: ANNUAL run #63, CORE run #131, 문서 run #234 PASS  
+> 렌더링·입력 QA: PR #65 후보 / visual run #15 PASS
 
 #### 구현 범위
 
@@ -71,31 +76,45 @@
 - PoC 전용 저장·복원
 - F1 독립 개발 진입
 
-#### 자동 검증
+#### 구현 자동 검증
 
 - Python 계약: PASS
 - Godot 4.7.1 import: PASS
 - CORE-MVP-001 focused: 4/4 PASS
 - ANNUAL-MVP-001 focused: 6/6 PASS
 - 전체 Godot 회귀: 49/49 PASS
-- 1280×720·1920×1080 기계적 UI 계약: PASS
 - 보호 경로·기존 저장 비침범: PASS
+
+#### 렌더링·입력 QA 결과
+
+- 1280×720·1920×1080 실제 PNG 검토: PASS
+- 한국어 글리프·줄바꿈·정보 밀도: PASS
+- 공용 오컬트 Theme·어두운 배경: PASS
+- embedded CORE 조사 패널 확장: PASS
+- 단계·활동·역량·회수·지식 품질 현지화: PASS
+- 초기 키보드 포커스: PASS
+- `ui_accept` 활동 선택: PASS
+- Esc 선택 취소: PASS
+- 조기·지연·긴급 출동 세 경로 결산 도달: PASS
+- visual artifact id `8617041311`
+- 시각 방향 판정: `KEEP / AMPLIFY`
 
 ## 현재 게이트
 
-### `BUILD_READY → QA_READY`
+### 렌더링·입력 QA 잔여
 
-- 1280×720·1920×1080 사람 눈 UI 검토
-- 한국어 장문 줄바꿈과 정보 밀도 확인
-- 마우스·키보드·Esc·포커스 실제 조작
-- 조기·지연·긴급 출동 세 경로 완주
+- 실제 포인터를 사용한 수동 마우스 조작
+- 실제 클릭으로 저장·불러오기·출동·연구·결산 동작 확인
 
-### `QA_READY → 플레이 판정`
+이 두 항목 전까지 전체 `QA_READY`는 선언하지 않는다.
+
+### 신규 플레이어 판정
 
 - 육성·준비 선택이 사건 정보·위험·피해 관리에 연결됨을 설명
 - 사건 결과가 연구·스킬·결산으로 환류함을 설명
 - 동료 지원 조건·확률·준비도가 공정하다고 인식
 - 분기 결산을 최종 엔딩이 아닌 중간 결과로 인식
+- 주간 일정 반복 피로도 보고
 
 판정은 `KEEP / AMPLIFY / CHANGE / RETEST / HOLD` 중 하나로 기록한다.
 
@@ -105,8 +124,8 @@
 
 진입 조건:
 
-- ANNUAL-MVP-001 사람 눈 QA 완료
-- 육성→사건→연구 순환의 플레이 증거
+- ANNUAL-MVP-001 수동 마우스 QA 완료
+- 육성→사건→연구 순환의 신규 플레이어 증거
 - 자동 지원 공정성의 플레이 설명
 - 별도 사용자 승인
 
@@ -167,9 +186,13 @@
 canonical_migration: COMPLETE
 annual_mvp_001: BUILD_READY
 automated_verification: PASSED
-human_visual_qa: NOT_RUN
+rendered_visual_review: PASSED_ON_PR_65
+keyboard_input_qa: PASSED_ON_PR_65
+three_route_scripted_qa: PASSED_ON_PR_65
+manual_mouse_qa: NOT_RUN
 player_validation: NOT_RUN
 annual_loop_passed: NOT_DECLARED
 poc_passed: NOT_DECLARED
 production_expansion: NOT_APPROVED
+visual_direction: KEEP / AMPLIFY
 ```

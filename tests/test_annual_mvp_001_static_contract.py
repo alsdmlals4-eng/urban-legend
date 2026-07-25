@@ -16,6 +16,7 @@ class AnnualMvp001StaticContractTests(unittest.TestCase):
             "scripts/poc/annual_mvp_001/annual_mvp_001_incident_adapter.gd",
             "scripts/poc/annual_mvp_001/annual_mvp_001_save_data.gd",
             "scripts/poc/annual_mvp_001/annual_mvp_001_scene.gd",
+            "scripts/poc/annual_mvp_001/annual_mvp_001_themed_scene.gd",
             "scenes/poc/annual_mvp_001/annual_mvp_001_scene.tscn",
         )
         for relative in required:
@@ -63,6 +64,31 @@ class AnnualMvp001StaticContractTests(unittest.TestCase):
         support_section = core_state.split("func apply_external_support", 1)[1].split("func execute_capture", 1)[0]
         for forbidden in ("capture_marks +=", "_understanding =", "_selected_hypothesis_id =", "_observed_pattern_ids.append"):
             self.assertNotIn(forbidden, support_section)
+
+    def test_annual_scene_uses_shared_theme_and_korean_font_candidates(self) -> None:
+        wrapper = (ROOT / "scripts/poc/annual_mvp_001/annual_mvp_001_themed_scene.gd").read_text(encoding="utf-8")
+        scene_file = (ROOT / "scenes/poc/annual_mvp_001/annual_mvp_001_scene.tscn").read_text(encoding="utf-8")
+        theme_factory = (ROOT / "scripts/ui/ui_theme_factory.gd").read_text(encoding="utf-8")
+        self.assertIn('ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")', wrapper)
+        self.assertIn("theme = ThemeFactory.create_theme()", wrapper)
+        self.assertIn("annual_mvp_001_themed_scene.gd", scene_file)
+        self.assertIn("SystemFont.new()", theme_factory)
+        for font_name in ("Noto Sans CJK KR", "Noto Sans KR", "Malgun Gothic", "Apple SD Gothic Neo"):
+            self.assertIn(font_name, theme_factory)
+
+    def test_annual_wrapper_localizes_internal_ids_and_sizes_embedded_incident(self) -> None:
+        wrapper = (ROOT / "scripts/poc/annual_mvp_001/annual_mvp_001_themed_scene.gd").read_text(encoding="utf-8")
+        for required in (
+            "Background",
+            "주간 계획",
+            "분기 결산",
+            "관찰",
+            "정상 회수",
+            "검증 완료",
+            "size_flags_vertical",
+            "InvestigationPanel",
+        ):
+            self.assertIn(required, wrapper)
 
 
 if __name__ == "__main__":
