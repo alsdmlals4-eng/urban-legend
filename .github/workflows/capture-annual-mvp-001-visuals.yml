@@ -5,6 +5,7 @@ on:
     paths:
       - "tests/annual_mvp_001_visual_capture.gd"
       - "scripts/poc/annual_mvp_001/**"
+      - "scripts/ui/ui_theme_factory.gd"
       - "scenes/poc/annual_mvp_001/**"
       - ".github/workflows/capture-annual-mvp-001-visuals.yml"
   workflow_dispatch:
@@ -24,10 +25,11 @@ jobs:
           version: 4.7.1
           use-dotnet: false
           include-templates: false
-      - name: Install virtual display
+      - name: Install virtual display and Korean fonts
         run: |
           sudo apt-get update
-          sudo apt-get install -y xvfb
+          sudo apt-get install -y xvfb fonts-noto-cjk
+          fc-cache -f
       - name: Import project
         run: godot --headless --path . --import
       - name: Capture QA screenshots
