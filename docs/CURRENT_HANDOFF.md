@@ -3,7 +3,6 @@
 > 문서 위치: `docs/CURRENT_HANDOFF.md`  
 > 상태 원본: `docs/CURRENT_STATUS.md`  
 > 코어: `docs/PROJECT_CORE.md`  
-> 렌더링 QA: `docs/qa/2026-07-25-annual-mvp-001-rendered-qa.md`  
 > 구현 기준: `MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A / Ver 4.2 / save mvp-039`
 
 이 문서는 새 담당자가 구현·렌더링 QA 완료와 신규 플레이어 검증 미완료를 혼합하지 않도록 하는 짧은 인수인계다.
@@ -59,7 +58,6 @@ AGENTS.md
 → docs/GAME_DESIGN_DOCUMENT.md
 → docs/superpowers/specs/2026-07-25-annual-raising-visual-novel-design.md
 → docs/superpowers/plans/2026-07-25-annual-raising-vertical-slice-implementation-plan.md
-→ docs/qa/2026-07-25-annual-mvp-001-rendered-qa.md
 → ANNUAL-MVP-001 코드·데이터·Scene·테스트
 → 기존 CORE-MVP-001 코드·데이터·테스트
 ```
