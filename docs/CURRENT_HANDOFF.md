@@ -5,10 +5,10 @@
 > 코어: `docs/PROJECT_CORE.md`  
 > 구현 기준: `MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A / Ver 4.2 / save mvp-039`
 
-이 문서는 새 담당자가 구현·렌더링 QA 완료와 신규 플레이어 검증 미완료를 혼합하지 않도록 하는 짧은 인수인계다.
+이 문서는 구현·렌더링·입력 이벤트 검증 완료와 사람 사용성·신규 플레이어 검증 미완료를 혼합하지 않도록 하는 짧은 인수인계다.
 
 ```yaml
-status: ANNUAL_MVP_001_RENDERED_QA_PASSED
+status: ANNUAL_MVP_001_POINTER_QA_PASSED
 implemented_baseline: MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A / Ver 4.2 / save mvp-039
 core_mvp_001:
   implementation: POC_BUILD_READY
@@ -31,22 +31,25 @@ canonical_migration:
 annual_mvp_001:
   implementation: BUILD_READY
   implementation_pr: 62
-  main_commit: 88522ce08f261bce6d61a8043c64caa3b982bd47
-  automated_verification: PASSED
-  focused_suite: 6/6
-  full_regression: 49/49
+  implementation_commit: 88522ce08f261bce6d61a8043c64caa3b982bd47
   rendered_qa:
     status: PASSED
     merge_pr: 65
     main_commit: b4f2e224bf7a2a6ee511c83bbbd45cd9e0b8570a
-    visual_run: 24
-    annual_validation_run: 89
-    document_validation_run: 245
     representative_artifact_id: 8617041311
-    keyboard_input: PASSED
-    three_route_scripted: PASSED
     visual_direction: KEEP_AMPLIFY
-  manual_mouse_qa: NOT_RUN
+  graphical_pointer_qa:
+    status: PASSED
+    merge_pr: 67
+    main_commit: 0f24efa204a04cca62a58e55628e6b831b9bef2d
+    visual_run: 28
+    annual_validation_run: 94
+    keyboard_input: PASSED
+    pointer_event_flow: PASSED
+    module_toggle_runtime_bug: FIXED
+  focused_suite: 6/6
+  full_regression: 49/49
+  human_usability_qa: NOT_RUN
   new_player_validation: NOT_RUN
   annual_loop_passed: NOT_DECLARED
 production_expansion: NOT_APPROVED
@@ -79,38 +82,36 @@ AGENTS.md
 ## 현재 구현 사실
 
 - ANNUAL-MVP-001은 PR #62에서 `main`에 squash merge됐다.
-- 렌더링·입력 QA 수정은 PR #65에서 `main`에 squash merge됐다.
-- 별도 `AnnualMvp001State`와 전용 저장을 사용한다.
+- 렌더링·현지화·키보드 수정은 PR #65에서 `main`에 squash merge됐다.
+- 그래픽 포인터 회귀와 모듈 체크박스 수정은 PR #67에서 `main`에 squash merge됐다.
 - 3주 × 주당 3슬롯의 일정 선택이 역량·피로·기관 지원·오현 신뢰에 반영된다.
 - 2주차 자율 출동, 3주차 위험 +15 출동, 위험 +30 긴급 출동이 구현됐다.
-- 오현의 고유·공용 보조 스킬은 조건 충족 시 자동 판정된다.
 - 동료 지원은 체력 회복과 위험 완화만 가능하며 정답·가설·이해도·포획 표식을 변경하지 않는다.
-- 기존 CORE-MVP-001을 override와 선택적 extension으로 embedded 실행한다.
 - 사건 결과는 잔향 자료·기관 지원·연구·공용 스킬·분기 결산으로 환류한다.
 - 분기 결산은 최종 엔딩이 아니라 후속 분기·연도 확장의 중간 결과다.
 
-## 렌더링·입력 QA
+## 렌더링·입력 검증
 
-수정·확인:
+검증된 항목:
 
-- 공용 현대 오컬트 Theme과 어두운 배경
-- 한글 시스템 글꼴 후보
-- embedded 조사 패널 확장
-- 단계·활동·역량·회수·지식 품질 현지화
-- embedded CORE 단계·이해도 현지화
-- 초기 키보드 포커스
-- `ui_accept` 활동 선택
-- Esc 선택 취소
-- 1280×720·1920×1080 PNG 22개
-- 조기·지연·긴급 출동 세 경로 manifest
+- 공용 현대 오컬트 Theme과 한글 시스템 글꼴 후보
+- embedded CORE 조사 패널 확장과 단계·이해도 현지화
+- 초기 키보드 포커스, `ui_accept`, Esc
+- 조기·지연·긴급 출동 세 경로
+- 실제 버튼 좌표 기반 주간 활동 선택과 확인
+- PoC 저장·불러오기
+- 출동 결정, 연구, 공용 스킬, 모듈 선택
+- embedded 사건 시작과 사건 중 저장 비활성
+- embedded 매뉴얼·조사 선택지 좌클릭
+
+포인터 QA에서 `모듈: 신호 완충` 체크박스가 untyped 배열을 `Array[String]`에 대입하던 런타임 오류를 발견했고 typed append 방식으로 수정했다.
 
 최종 검증:
 
-- Visual workflow run #24 PASS
-- ANNUAL workflow run #89 PASS
-- 문서 계약 run #245 PASS
-- CORE-MVP-001 4/4 PASS
-- ANNUAL-MVP-001 6/6 PASS
+- Visual workflow run #28 PASS
+- ANNUAL workflow run #94 PASS
+- CORE-MVP-001 focused 4/4 PASS
+- ANNUAL-MVP-001 focused 6/6 PASS
 - 전체 Godot 회귀 49/49 PASS
 
 시각 판정은 `KEEP / AMPLIFY`다. 기본 가독성과 경로 차이는 유지하고, 넓은 여백과 개발용 HUD는 최종 텍스트 노벨 화면에서 강화한다.
@@ -130,7 +131,7 @@ AGENTS.md
 
 ## 아직 완료로 선언하지 않는 것
 
-- 실제 포인터를 사용하는 수동 마우스 QA
+- 사람 손으로 장시간 수행하는 마우스·키보드 사용성 평가
 - 신규 플레이어가 육성 선택과 사건 차이를 설명하는 증거
 - 동료 자동 지원이 공정하다는 플레이어 설명
 - 주간 일정 반복 피로도 판정
@@ -141,7 +142,7 @@ AGENTS.md
 
 ## 다음 작업
 
-1. 수동 마우스 QA
+1. 사람 손 장시간 사용성 평가
 2. 신규 플레이어 세 경로 플레이
 3. 육성→사건→연구 인과와 지원 공정성 설명 수집
 4. 전체 루프를 `KEEP / AMPLIFY / CHANGE / RETEST / HOLD`로 판정
