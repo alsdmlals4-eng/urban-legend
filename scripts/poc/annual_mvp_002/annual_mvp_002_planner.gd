@@ -21,12 +21,20 @@ func configure(activities: Array[Dictionary], days_per_week: int = 7) -> Diction
 		if day_cost < 1 or day_cost > days_per_week:
 			return _response(false, "활동 %s의 일수 계약이 잘못되었습니다." % activity_id, false)
 		indexed[activity_id] = activity.duplicate(true)
+	var had_configuration := not _activities.is_empty()
+	var preserved_templates: Array = []
+	if had_configuration:
+		for template in _templates:
+			preserved_templates.append(_strings(template as Array))
 	_activities = indexed
 	_days_per_week = days_per_week
 	_plan.clear()
 	_undo_plan.clear()
 	_undo_available = false
-	_templates = [[], [], []]
+	if had_configuration:
+		_templates = preserved_templates
+	else:
+		_templates = [[], [], []]
 	return _response(true, "", true)
 
 
