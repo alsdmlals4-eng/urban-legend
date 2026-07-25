@@ -1,6 +1,8 @@
 extends "res://scripts/poc/annual_mvp_001/annual_mvp_001_scene.gd"
 
 const ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")
+const AnnualCaseData = preload("res://scripts/poc/core_mvp_001/core_mvp_001_case_data.gd")
+const LocalizedCoreScene = preload("res://scenes/poc/annual_mvp_001/annual_mvp_001_core_scene.tscn")
 
 const PHASE_LABELS := {
 	"BOOT": "초기화",
@@ -53,29 +55,48 @@ func _ready() -> void:
 		incident_host.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		incident_host.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_localize_rendered_text()
+	call_deferred("_focus_current_panel")
 
 
 func _render() -> void:
 	super()
 	_localize_rendered_text()
+	call_deferred("_focus_current_panel")
 
 
 func _start_incident() -> void:
-	super()
-	var incident_host := find_child("IncidentHost", true, false) as Control
-	if incident_host == null:
+	var configured: Dictionary = _state.configure_loadout(
+		"annual001_companion_oh_hyun",
+		_selected_public_skill_id,
+		_selected_module_ids
+	)
+	if not bool(configured.get("ok", false)):
+		_apply_command(configured)
 		return
-	incident_host.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	incident_host.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	for child in incident_host.get_children():
-		if child is Control:
-			var incident := child as Control
-			incident.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			incident.size_flags_vertical = Control.SIZE_EXPAND_FILL
-			var investigation_panel := incident.find_child("InvestigationPanel", true, false) as Control
-			if investigation_panel != null:
-				investigation_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-				investigation_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	var snapshot := _state.get_snapshot()
+	var adapter_result: Dictionary = _adapter.configure(_config, snapshot, int(snapshot.get("run_seed", 2001)))
+	if not bool(adapter_result.get("ok", false)):
+		_feedback_label.text = String(adapter_result.get("error", "사건 어댑터 구성 실패"))
+		return
+	var begin: Dictionary = _state.begin_incident()
+	if not bool(begin.get("ok", false)):
+		_apply_command(begin)
+		return
+	var base_case := AnnualCaseData.load_case(String((_config.get("campaign", {}) as Dictionary).get("incident_case_path", "")))
+	var override := _adapter.build_case_override(base_case)
+	var incident := LocalizedCoreScene.instantiate() as Control
+	incident.configure_session(override, int(snapshot.get("run_seed", 2001)), _adapter)
+	incident.session_completed.connect(_on_incident_completed)
+	incident.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	incident.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_incident_host.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_incident_host.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_incident_host.add_child(incident)
+	var investigation_panel := incident.find_child("InvestigationPanel", true, false) as Control
+	if investigation_panel != null:
+		investigation_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		investigation_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_render()
 
 
 func _week_result_text(snapshot: Dictionary) -> String:
@@ -121,6 +142,17 @@ func _summary_text(snapshot: Dictionary) -> String:
 	]
 
 
+func _unhandled_input(event: InputEvent) -> void:
+	if not event.is_action_pressed("ui_cancel"):
+		return
+	var phase := String((debug_snapshot() as Dictionary).get("phase", "BOOT"))
+	if phase != "WEEK_PLANNING":
+		return
+	_on_back_pressed()
+	get_viewport().set_input_as_handled()
+	call_deferred("_focus_current_panel")
+
+
 func _add_background() -> void:
 	var background := ColorRect.new()
 	background.name = "Background"
@@ -136,3 +168,35 @@ func _localize_rendered_text() -> void:
 		return
 	var phase := String((debug_snapshot() as Dictionary).get("phase", "BOOT"))
 	phase_label.text = "현재 단계: %s" % String(PHASE_LABELS.get(phase, phase))
+
+
+func _focus_current_panel() -> void:
+	var current := get_viewport().gui_get_focus_owner()
+	if current is Control:
+		var current_control := current as Control
+		if current_control.is_visible_in_tree() and (not current_control is BaseButton or not (current_control as BaseButton).disabled):
+			return
+	var panel_name := debug_visible_panel()
+	var panel := find_child(panel_name, true, false)
+	var first_button := _first_enabled_button(panel)
+	if first_button != null:
+		first_button.grab_focus()
+		return
+	if _confirm_button != null and not _confirm_button.disabled:
+		_confirm_button.grab_focus()
+	elif _back_button != null and not _back_button.disabled:
+		_back_button.grab_focus()
+
+
+func _first_enabled_button(node: Node) -> BaseButton:
+	if node == null:
+		return null
+	if node is BaseButton:
+		var button := node as BaseButton
+		if button.is_visible_in_tree() and not button.disabled:
+			return button
+	for child in node.get_children():
+		var found := _first_enabled_button(child)
+		if found != null:
+			return found
+	return null
