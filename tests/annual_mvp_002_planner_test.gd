@@ -7,7 +7,7 @@ var _activities: Array[Dictionary] = []
 
 
 func _init() -> void:
-	var config := BaseData.load_config("res://data/poc/annual_mvp_001/spring_vertical_slice.json")
+	var config: Dictionary = BaseData.load_config("res://data/poc/annual_mvp_001/spring_vertical_slice.json")
 	_activities = _dictionaries(config.get("activities", []) as Array)
 	_test_preview_aggregates_effects()
 	_test_over_budget_rejected_without_mutation()
@@ -33,14 +33,14 @@ func _dictionaries(values: Array) -> Array[Dictionary]:
 
 
 func _new_planner() -> RefCounted:
-	var planner := Planner.new()
+	var planner: RefCounted = Planner.new()
 	var configured: Dictionary = planner.configure(_activities, 7)
 	assert(configured.get("ok", false))
 	return planner
 
 
 func _test_preview_aggregates_effects() -> void:
-	var planner := _new_planner()
+	var planner: RefCounted = _new_planner()
 	assert(planner.set_plan(_strings([
 		"annual001_activity_observation_drill",
 		"annual001_activity_interview_duty",
@@ -55,7 +55,7 @@ func _test_preview_aggregates_effects() -> void:
 		"annual001_activity_interview_duty",
 		"annual001_activity_rest",
 	]))
-	var aggregate := preview["aggregate"] as Dictionary
+	var aggregate: Dictionary = preview["aggregate"] as Dictionary
 	assert(aggregate["fatigue"] == -3)
 	assert((aggregate["competencies"] as Dictionary)["observation"] == 1)
 	assert((aggregate["competencies"] as Dictionary)["interpersonal"] == 1)
@@ -64,7 +64,7 @@ func _test_preview_aggregates_effects() -> void:
 
 
 func _test_over_budget_rejected_without_mutation() -> void:
-	var planner := _new_planner()
+	var planner: RefCounted = _new_planner()
 	assert(planner.set_plan(_strings([
 		"annual001_activity_field_training",
 		"annual001_activity_field_training",
@@ -79,7 +79,7 @@ func _test_over_budget_rejected_without_mutation() -> void:
 
 
 func _test_undo_and_clear() -> void:
-	var planner := _new_planner()
+	var planner: RefCounted = _new_planner()
 	assert(planner.append_activity("annual001_activity_analysis_desk")["ok"])
 	assert(planner.append_activity("annual001_activity_rest")["ok"])
 	assert(planner.undo()["ok"])
@@ -92,20 +92,20 @@ func _test_undo_and_clear() -> void:
 
 
 func _test_last_week_copy_uses_canonical_ids() -> void:
-	var planner := _new_planner()
+	var planner: RefCounted = _new_planner()
 	var copied: Dictionary = planner.copy_last_week({
 		"activity_ids": ["관측 훈련(2일)", "자동 휴식 5일"],
 		"planned_activity_ids": ["annual001_activity_observation_drill"],
 	})
 	assert(copied["ok"])
 	assert(planner.preview()["activity_ids"] == _strings(["annual001_activity_observation_drill"]))
-	var before := planner.get_snapshot()
+	var before: Dictionary = planner.get_snapshot()
 	assert(not planner.copy_last_week({"planned_activity_ids": ["annual001_activity_missing"]})["ok"])
 	assert(planner.get_snapshot() == before)
 
 
 func _test_three_templates_and_restore() -> void:
-	var planner := _new_planner()
+	var planner: RefCounted = _new_planner()
 	assert(planner.set_plan(_strings([
 		"annual001_activity_signal_research",
 		"annual001_activity_rest",
@@ -119,13 +119,13 @@ func _test_three_templates_and_restore() -> void:
 	]))
 	assert(not planner.save_template(0)["ok"])
 	assert(not planner.save_template(4)["ok"])
-	var snapshot := planner.get_snapshot()
+	var snapshot: Dictionary = planner.get_snapshot()
 	assert((snapshot["templates"] as Array).size() == 3)
-	var restored := _new_planner()
+	var restored: RefCounted = _new_planner()
 	assert(restored.restore(snapshot)["ok"])
 	assert(restored.get_snapshot() == snapshot)
-	var invalid := snapshot.duplicate(true)
+	var invalid: Dictionary = snapshot.duplicate(true)
 	(invalid["templates"] as Array)[0] = ["annual001_activity_missing"]
-	var before := restored.get_snapshot()
+	var before: Dictionary = restored.get_snapshot()
 	assert(not restored.restore(invalid)["ok"])
 	assert(restored.get_snapshot() == before)
