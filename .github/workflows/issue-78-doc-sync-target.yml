@@ -1,0 +1,63 @@
+name: Issue 78 document sync target runner
+
+on:
+  pull_request_target:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+
+jobs:
+  synchronize-active-documents:
+    if: github.event.pull_request.head.ref == 'agent/issue-78-doc-sync'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout trusted base tools
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: base
+      - name: Checkout pull request branch
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+          path: work
+      - name: Extract trusted synchronization script
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          source = Path('base/.github/workflows/issue-78-doc-sync-helper.yml').read_text(encoding='utf-8')
+          marker = "          python - <<'PY'\n"
+          start = source.index(marker) + len(marker)
+          end = source.index("\n          PY\n", start)
+          lines = source[start:end].splitlines()
+          script = "\n".join(line[10:] if line.startswith("          ") else line for line in lines) + "\n"
+          Path('/tmp/issue78_sync.py').write_text(script, encoding='utf-8')
+          PY
+      - name: Apply canonical document synchronization
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        working-directory: work
+        run: python /tmp/issue78_sync.py
+      - name: Verify synchronized contracts
+        working-directory: work
+        run: |
+          python -m unittest \
+            tests.test_annual_mvp_001_document_contract \
+            tests.test_project_document_sync
+      - name: Commit synchronization to pull request branch
+        working-directory: work
+        run: |
+          if git diff --quiet; then
+            echo 'No synchronization changes required.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs MVP_ROADMAP.md TEST_CHECKLIST.md tests/test_annual_mvp_001_document_contract.py tests/test_project_document_sync.py
+          git commit -m 'docs: synchronize merged seven-day planning records'
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
