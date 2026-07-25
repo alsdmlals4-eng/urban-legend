@@ -8,30 +8,43 @@
 |---|---|
 | Base 저장소 | `alsdmlals4-eng/Base` |
 | 기준 브랜치 | `main` |
-| 기준 커밋 | `41a20584dd2ee51d917e5c9d7cab6838e1ceba7e` |
-| Skill Registry blob | `14950c9361b3c939990560ae8cc683a936633e89` |
-| 활성 Base Skill | 25개 |
+| 기준 커밋 | `c7c1103e4a69f8fdc9ee27aa382a21288605a7fb` |
+| 기존 Base Skill Registry blob | `14950c9361b3c939990560ae8cc683a936633e89` |
+| 신규 공용 route Registry | Base `skills/BASE_SHARED_SKILL_ROUTES.json` |
+| 프로젝트 공용 route | `skills/BASE_SHARED_SKILL_ROUTES.json` |
+| 프로젝트 어댑터 | `skills/BASE_SHARED_SKILL_ADAPTER.json` |
+| 기존 활성 Base Skill | 25개 |
+| 신규 adapter-only 공용 Skill | 2개 |
 | Base 기능 Coverage | 18개 책임 |
 | 프로젝트 분야 Skill | 10개 |
 | 프로젝트 로컬 Skill | 1개 — `urban-legend-investigation-case-authoring` |
-| 확인일 | 2026-07-24 |
-| 적용 상태 | 고정 Base Registry와 프로젝트 기계 원본 일치 확인; 프로젝트 코어 상태는 `docs/PROJECT_CORE.md`가 소유 |
+| 확인일 | 2026-07-25 |
+| 적용 상태 | Base 공용 Skill은 route·adapter 연결, 프로젝트 전용 Skill만 로컬 생성 |
 
-기계 원본은 `skills/SKILL_REGISTRY.json`, `skills/BASE_SKILL_INDEX.json`, `skills/BASE_SKILL_COVERAGE.json`, `skills/PROJECT_PATH_ADAPTER.json`에 같은 Base pin을 둔다.
+기계 원본은 `skills/SKILL_REGISTRY.json`, `skills/BASE_SKILL_INDEX.json`, `skills/BASE_SKILL_COVERAGE.json`, `skills/PROJECT_PATH_ADAPTER.json`, `skills/BASE_SHARED_SKILL_ROUTES.json`, `skills/BASE_SHARED_SKILL_ADAPTER.json`에 같은 Base pin을 둔다.
 
 ## 적용 구조
 
 ```text
-Base Registry 25개
-→ skills/BASE_SKILL_INDEX.json에서 trigger·경계 선택
+Base 기존 Registry 25개
++ Base adapter-only 공용 route 2개
+→ skills/BASE_SKILL_INDEX.json 또는 skills/BASE_SHARED_SKILL_ROUTES.json에서 trigger·경계 선택
+→ skills/PROJECT_PATH_ADAPTER.json과 skills/BASE_SHARED_SKILL_ADAPTER.json으로 프로젝트 경로·정본·검증기 연결
 → 선택한 Base SKILL.md와 명시된 reference만 고정 커밋에서 읽기
 → skills/SKILL_REGISTRY.json의 프로젝트 분야 Skill 0~1개
-→ 필요 시 프로젝트 로컬 전문 Skill 0~1개
+→ 필요 시 프로젝트 고유 로컬 전문 Skill 0~1개
 → docs/PROJECT_CORE.md·현행 책임 원본·실제 파일
 → 검증·실행 보고
 ```
 
-전체 Base Skill 본문을 프로젝트에 복제하거나 기본 로드하지 않는다. 라우팅 정보는 로컬에서 사용할 수 있게 고정하고, 상세 실행 계약은 원격 고정 커밋을 정본으로 사용한다.
+전체 Base Skill 본문을 프로젝트에 복제하거나 기본 로드하지 않는다. Base 공용 Skill은 어댑터 route로만 사용하고, 프로젝트 로컬 Skill은 urban-legend 고유 세계관·게임 규칙·데이터·제작 절차에만 만든다.
+
+## 신규 공용 route
+
+- `governing-legacy-retention-and-archives`: 레거시 인벤토리·정본 통합·호환 stub·아카이브·승인 삭제·복구 검증.
+- `evaluating-godot-assets-and-plugins-before-creation`: 직접 제작 전에 Godot 기본 기능, 공식 Store, 기존 Asset Library, GitHub, itch.io, 제작자 공식 판매처의 무료·오픈소스·상용 후보를 조사·평가.
+
+Godot 기능·에셋·플러그인은 검색과 평가를 먼저 수행한다. 구매·계정 연결·프로젝트 설치는 별도 사용자 승인 범위에서만 수행하며, 서사·캠페인·저장 정본을 외부 플러그인에 무비판적으로 위임하지 않는다.
 
 ## 최신 Base에서 적용한 책임
 
@@ -41,6 +54,7 @@ Base Registry 25개
 - 로컬·GitHub 상태 동기화와 긴 작업 checkpoint.
 - 게임 사용자 연구 11영역 Coverage, 사용자 학습 노트, 시각 대시보드, 엔진 런타임 진단.
 - `skills/BASE_SKILL_COVERAGE.json`으로 18개 공용 기능 책임의 무손실 검사.
+- 레거시 보존·아카이브와 Godot 자산·플러그인 선행 평가를 프로젝트 어댑터로 연결.
 
 ## urban-legend 적용 경계
 
@@ -51,6 +65,7 @@ Base Registry 25개
 - 괴이 사건 작성 로컬 Skill은 전조·가설·근거·대응·매뉴얼 상태의 페어플레이 콘텐츠 계약만 담당한다.
 - GDD는 Markdown 원본이 정본이며 `docs/URBAN_LEGEND_GAME_DESIGN.docx`는 필요 시 결정적으로 재생성하는 비추적 파생본이다.
 - 전역 PDF·Manifest v3 이주는 별도 승인 대상이다. 작업별 `docs/qa/` 검증 보고서의 사람용 PDF·해시 기록은 전역 Registry 이주가 아니라 해당 QA 증거의 파생 발행으로 제한한다.
+- 기존 로컬 Base 복사본이나 `knowledge/base-pack/**`는 이번 연결만으로 삭제하지 않고 별도 레거시 감사에서 판정한다.
 
 ## 구조 개선 순서
 
@@ -70,6 +85,9 @@ Base Registry 25개
 ## 검증
 
 ```text
+python -m json.tool skills/BASE_SHARED_SKILL_ROUTES.json
+python -m json.tool skills/BASE_SHARED_SKILL_ADAPTER.json
+python -m json.tool docs/THIRD_PARTY_ASSET_AND_PLUGIN_INVENTORY.json
 python -m unittest tests/test_base_operating_sync.py tests/test_skill_package_integrity.py tests/test_active_document_references.py
 python tools/docs/build_game_design_doc.py --build  # GDD 변경 시
 python tools/docs/build_game_design_doc.py --check  # GDD 변경 시
