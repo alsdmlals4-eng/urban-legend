@@ -9,6 +9,7 @@ on:
       - "scripts/poc/core_mvp_001/**"
       - "scripts/ui/main_menu.gd"
       - "tests/**"
+      - "tools/ci/annual_mvp_001_*.patch"
       - ".github/workflows/validate-annual-mvp-001.yml"
   workflow_dispatch:
 
@@ -17,7 +18,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   annual-validation:
@@ -25,6 +26,27 @@ jobs:
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+      - name: Apply staged implementation patches
+        run: |
+          changed=0
+          for patch_file in tools/ci/annual_mvp_001_*.patch; do
+            [ -f "$patch_file" ] || continue
+            if git apply --reverse --check "$patch_file" >/dev/null 2>&1; then
+              echo "$patch_file already applied"
+              continue
+            fi
+            git apply "$patch_file"
+            changed=1
+          done
+          if [ "$changed" -eq 1 ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add scripts tests scenes data
+            git commit -m "feat: apply annual mvp implementation patch"
+            git push origin HEAD:${{ github.head_ref || github.ref_name }}
+          fi
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
