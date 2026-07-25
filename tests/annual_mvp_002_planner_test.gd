@@ -13,7 +13,7 @@ func _init() -> void:
 	_test_over_budget_rejected_without_mutation()
 	_test_undo_and_clear()
 	_test_last_week_copy_uses_canonical_ids()
-	_test_three_templates_and_restore()
+	_test_three_templates_restore_and_survive_week_transition()
 	print("ANNUAL MVP 002 PLANNER: PASS")
 	quit()
 
@@ -104,7 +104,7 @@ func _test_last_week_copy_uses_canonical_ids() -> void:
 	assert(planner.get_snapshot() == before)
 
 
-func _test_three_templates_and_restore() -> void:
+func _test_three_templates_restore_and_survive_week_transition() -> void:
 	var planner: RefCounted = _new_planner()
 	assert(planner.set_plan(_strings([
 		"annual001_activity_signal_research",
@@ -124,6 +124,13 @@ func _test_three_templates_and_restore() -> void:
 	var restored: RefCounted = _new_planner()
 	assert(restored.restore(snapshot)["ok"])
 	assert(restored.get_snapshot() == snapshot)
+	assert(restored.configure(_activities, 7)["ok"])
+	assert((restored.preview()["activity_ids"] as Array).is_empty())
+	assert(restored.apply_template(1)["ok"])
+	assert(restored.preview()["activity_ids"] == _strings([
+		"annual001_activity_signal_research",
+		"annual001_activity_rest",
+	]))
 	var invalid: Dictionary = snapshot.duplicate(true)
 	(invalid["templates"] as Array)[0] = ["annual001_activity_missing"]
 	var before: Dictionary = restored.get_snapshot()
