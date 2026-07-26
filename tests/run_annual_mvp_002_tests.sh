@@ -15,6 +15,7 @@ script_tests=(
   annual_mvp_002_incident_adapter_test
   annual_mvp_002_scene_test
   annual_mvp_002_review_test
+  annual_mvp_002_review_followup_test
 )
 
 run_test() {
