@@ -1,4 +1,7 @@
-# urban-legend
+> [!IMPORTANT]
+> 이 저장소는 새 저장소 이전 작업 중입니다.
+> 이전 완료 전까지 새로운 코드, Issue, PR을 추가하지 않습니다.
+> # urban-legend
 
 > 시작: `START_HERE.md` | 현재 상태: `docs/CURRENT_STATUS.md` | 프로젝트 코어: `docs/PROJECT_CORE.md` | 상세 설계: `docs/GAME_DESIGN_DOCUMENT.md`
 
