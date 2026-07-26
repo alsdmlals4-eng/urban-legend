@@ -12,7 +12,6 @@ on:
       - "scripts/poc/core_mvp_001/**"
       - "scripts/ui/main_menu.gd"
       - "tests/**"
-      - "tools/review/**"
       - "TEST_CHECKLIST.md"
       - "MVP_ROADMAP.md"
       - "docs/CURRENT_STATUS.md"
@@ -25,7 +24,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   annual-validation:
@@ -33,24 +32,9 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.ref || github.ref }}
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Apply approved cross-index disable once
-        if: github.event_name == 'pull_request'
-        run: |
-          if grep -q 'DISABLED_PENDING_HYPOTHESIS_BOARD_HOOK' data/poc/annual_mvp_002/companion_equipment_research.json; then
-            echo "Cross-index disable already applied"
-            exit 0
-          fi
-          python tools/review/apply_cross_index_disable.py
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git commit -m "fix: disable cross-index until hypothesis-board hook"
-          git push origin HEAD:${{ github.event.pull_request.head.ref }}
       - name: Run annual and active-document Python contracts
         run: |
           python -m unittest \
