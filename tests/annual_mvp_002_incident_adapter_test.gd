@@ -39,6 +39,9 @@ func _base_snapshot() -> Dictionary:
 		"fatigue": 55,
 		"deployment_risk": 15,
 		"companion_trust": {"annual001_companion_oh_hyun": 2},
+		"last_week_result": {
+			"planned_activity_ids": ["annual001_activity_field_training"],
+		},
 		"annual_mvp_002": {
 			"enabled": true,
 			"selected_companion_ids": [
@@ -51,11 +54,9 @@ func _base_snapshot() -> Dictionary:
 			},
 			"equipped_support_skills": {
 				"annual002_companion_ohyun": "annual002_support_damage_buffer",
-				"annual002_companion_park_doyun": "annual002_support_containment_window",
 			},
 			"readiness_by_skill": {
 				"annual002_support_damage_buffer": 100,
-				"annual002_support_containment_window": 100,
 			},
 			"selected_equipment_id": "annual002_equipment_field_coat",
 			"installed_module_ids": ["annual002_module_impact_gel"],
@@ -78,7 +79,7 @@ func _test_expansion_configures_and_exposes_status() -> void:
 	var adapter: RefCounted = _new_adapter()
 	_expect(not adapter.is_fallback_active(), "valid extension must not use fallback")
 	var lines: Array[String] = adapter.get_status_lines()
-	_expect(lines.size() == 4, "two companions should expose two unique and two public skills")
+	_expect(lines.size() == 3, "two companions should expose two unique skills and one active public support")
 	for line in lines:
 		_expect(line.contains("적격") or line.contains("비적격"), "status must show eligibility")
 		_expect(line.contains("확률"), "status must show probability")
@@ -105,15 +106,21 @@ func _test_support_hooks_apply_once_and_scale_overlap() -> void:
 	adapter.after_recovery_action(fake, before, "probe", {"damage": 8, "snapshot": before})
 	_expect(fake.calls.size() == calls_after_first, "same event must not apply support twice")
 
-	var capture_results: Array[Dictionary] = adapter.after_capture_window(fake, {
+	var containment_before: Dictionary = {
 		"turn": 3,
 		"current_pattern_id": "poc001_pattern_false_terminal",
-	}, {"capture_window_open": true})
+		"observed_pattern_ids": ["poc001_pattern_false_terminal"],
+	}
+	var containment_results: Array[Dictionary] = adapter.after_recovery_action(fake, containment_before, "containment-probe", {
+		"containment_failure": true,
+		"damage": 0,
+		"risk_delta": 0,
+	})
 	var found_scaled := false
-	for decision in capture_results:
+	for decision in containment_results:
 		if String(decision.get("owner_companion_id", "")) == "annual002_companion_park_doyun" and bool(decision.get("triggered", false)):
-			found_scaled = int((decision.get("effect", {}) as Dictionary).get("capture_window_percent", 0)) == 7
-	_expect(found_scaled, "second overlapping field role effect should scale to 70 percent")
+			found_scaled = int((decision.get("effect", {}) as Dictionary).get("civilian_damage_reduction", 0)) == 11
+	_expect(found_scaled, "second overlapping field-role unique effect should scale to 70 percent")
 
 
 func _test_case_override_only_contains_allowed_modifiers() -> void:
