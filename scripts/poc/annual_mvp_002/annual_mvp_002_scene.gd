@@ -45,6 +45,7 @@ var _module_option: OptionButton
 var _research_node_option: OptionButton
 var _research_resource_label: Label
 var _companion_buttons: Dictionary = {}
+var _support_options: Dictionary = {}
 
 var _selected_companion_ids: Array[String] = []
 var _support_by_companion: Dictionary = {}
@@ -264,10 +265,17 @@ func debug_set_support(companion_id: String, support_id: String) -> Dictionary:
 	if not _selected_companion_ids.has(companion_id):
 		return _ui_error("먼저 동료를 선택해야 합니다.")
 	var companion := _companions.get(companion_id, {}) as Dictionary
-	if not (companion.get("public_skill_ids", []) as Array).has(support_id):
-		return _ui_error("해당 동료가 사용할 수 없는 공용 지원입니다.")
+	if not support_id.is_empty():
+		if not (companion.get("public_skill_ids", []) as Array).has(support_id):
+			return _ui_error("해당 동료가 사용할 수 없는 공용 지원입니다.")
+		var support := _support_skills.get(support_id, {}) as Dictionary
+		if String(support.get("runtime_status", "")) != "ACTIVE":
+			return _ui_error("이 지원은 후속 CORE hook이 필요해 현재 선택할 수 없습니다.")
 	var candidate := _support_by_companion.duplicate(true)
-	candidate[companion_id] = support_id
+	if support_id.is_empty():
+		candidate.erase(companion_id)
+	else:
+		candidate[companion_id] = support_id
 	var response: Dictionary = _state.configure_loadout_v2(
 		_selected_companion_ids,
 		candidate,
@@ -498,6 +506,43 @@ func _build_preparation_panel(host: Control) -> void:
 		)
 		companion_grid.add_child(card)
 		_companion_buttons[companion_id] = card
+	var support_title := Label.new()
+	support_title.text = "공용 지원 선택 · 비활성 항목은 후속 CORE hook이 필요합니다."
+	support_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	panel.add_child(support_title)
+	var support_grid := GridContainer.new()
+	support_grid.columns = 2
+	panel.add_child(support_grid)
+	for companion_id_value in _companions.keys():
+		var companion_id := String(companion_id_value)
+		var companion := _companions[companion_id] as Dictionary
+		var label := Label.new()
+		label.text = String(companion.get("display_name", companion_id))
+		label.custom_minimum_size.x = 120
+		support_grid.add_child(label)
+		var option := OptionButton.new()
+		option.name = "SupportOption_%s" % companion_id
+		option.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		option.add_item("지원 없음")
+		option.set_item_metadata(0, "")
+		for support_id_value in companion.get("public_skill_ids", []) as Array:
+			var support_id := String(support_id_value)
+			var support := _support_skills.get(support_id, {}) as Dictionary
+			var active := String(support.get("runtime_status", "")) == "ACTIVE"
+			var suffix := "" if active else " · 후속 CORE hook"
+			option.add_item("%s%s" % [support.get("display_name", support_id), suffix])
+			var item_index := option.item_count - 1
+			option.set_item_metadata(item_index, support_id)
+			option.set_item_disabled(item_index, not active)
+		option.item_selected.connect(func(index: int) -> void:
+			if _ui_syncing:
+				return
+			var response := debug_set_support(companion_id, String(option.get_item_metadata(index)))
+			if not bool(response.get("ok", false)):
+				_sync_companion_buttons()
+		)
+		support_grid.add_child(option)
+		_support_options[companion_id] = option
 	var equipment_row := HBoxContainer.new()
 	panel.add_child(equipment_row)
 	var equipment_label := Label.new()
@@ -780,6 +825,17 @@ func _sync_companion_buttons() -> void:
 	_ui_syncing = true
 	for key in _companion_buttons.keys():
 		(_companion_buttons[key] as CheckButton).button_pressed = _selected_companion_ids.has(String(key))
+	for key in _support_options.keys():
+		var companion_id := String(key)
+		var option := _support_options[key] as OptionButton
+		option.disabled = not _selected_companion_ids.has(companion_id)
+		var selected_support := String(_support_by_companion.get(companion_id, ""))
+		var selected_index := 0
+		for index in range(option.item_count):
+			if String(option.get_item_metadata(index)) == selected_support:
+				selected_index = index
+				break
+		option.select(selected_index)
 	_ui_syncing = false
 
 

@@ -414,20 +414,42 @@ func _restore_extension(saved: Dictionary) -> void:
 		var resource_id := String(resource_id_value)
 		_research_resources[resource_id] = maxi(0, int(saved_resources.get(resource_id, 0)))
 
-	_active_research.clear()
-	var saved_active := saved.get("active_research", {}) as Dictionary
-	for node_value in saved_active.keys():
-		var node_id := String(node_value)
-		if _extension_research_nodes.has(node_id) and typeof(saved_active[node_value]) == TYPE_DICTIONARY:
-			_active_research[node_id] = (saved_active[node_value] as Dictionary).duplicate(true)
-		else:
-			_append_unique_string(found_orphans, node_id)
 	_completed_extension_research_ids.clear()
 	for node_id in saved_completed_ids:
 		if _extension_research_nodes.has(node_id):
 			_append_unique_string(_completed_extension_research_ids, node_id)
 		else:
 			_append_unique_string(found_orphans, node_id)
+
+	_active_research.clear()
+	var saved_active := saved.get("active_research", {}) as Dictionary
+	var max_active := int((_extension_config.get("rules", {}) as Dictionary).get("max_active_research", 2))
+	for node_value in saved_active.keys():
+		var node_id := String(node_value)
+		if _active_research.size() >= max_active:
+			_append_unique_string(found_orphans, node_id)
+			continue
+		if not _extension_research_nodes.has(node_id) or typeof(saved_active[node_value]) != TYPE_DICTIONARY:
+			_append_unique_string(found_orphans, node_id)
+			continue
+		if _completed_extension_research_ids.has(node_id):
+			_append_unique_string(found_orphans, node_id)
+			continue
+		var node := _extension_research_nodes[node_id] as Dictionary
+		var prerequisites_valid := true
+		for prerequisite_value in node.get("prerequisite_ids", []) as Array:
+			if not _completed_extension_research_ids.has(String(prerequisite_value)):
+				prerequisites_valid = false
+				break
+		if not prerequisites_valid:
+			_append_unique_string(found_orphans, node_id)
+			continue
+		var saved_project := saved_active[node_value] as Dictionary
+		var required := maxi(1, int(node.get("progress_required", 1)))
+		_active_research[node_id] = {
+			"progress": clampi(int(saved_project.get("progress", 0)), 0, required - 1),
+			"reserved_cost": (node.get("resource_cost", {}) as Dictionary).duplicate(true),
+		}
 
 	var templates_value: Variant = saved.get("schedule_templates")
 	if typeof(templates_value) == TYPE_ARRAY and (templates_value as Array).size() == 3:
