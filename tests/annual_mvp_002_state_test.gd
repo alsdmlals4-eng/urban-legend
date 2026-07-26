@@ -59,10 +59,7 @@ func _test_companion_limit_and_role_overlap() -> void:
 	)["ok"])
 	assert(state.configure_loadout_v2(
 		_strings(["annual002_companion_ohyun", "annual002_companion_park_doyun"]),
-		{
-			"annual002_companion_ohyun": "annual002_support_damage_buffer",
-			"annual002_companion_park_doyun": "annual002_support_containment_window",
-		},
+		{"annual002_companion_ohyun": "annual002_support_damage_buffer"},
 		"",
 		_strings([])
 	)["ok"])
@@ -85,29 +82,37 @@ func _test_companion_limit_and_role_overlap() -> void:
 
 func _test_support_and_equipment_validation() -> void:
 	var state: RefCounted = _new_state()
-	var invalid_skill: Dictionary = state.configure_loadout_v2(
+	var wrong_owner: Dictionary = state.configure_loadout_v2(
 		_strings(["annual002_companion_ohyun"]),
 		{"annual002_companion_ohyun": "annual002_support_second_read"},
 		"",
 		_strings([])
 	)
-	assert(not invalid_skill["ok"])
-	assert(state.configure_loadout_v2(
+	assert(not wrong_owner["ok"])
+	var disabled_skill: Dictionary = state.configure_loadout_v2(
 		_strings(["annual002_companion_han_serin"]),
 		{"annual002_companion_han_serin": "annual002_support_second_read"},
+		"",
+		_strings([])
+	)
+	assert(not disabled_skill["ok"])
+	assert(String(disabled_skill.get("error", "")).contains("후속 CORE hook"))
+	assert(state.configure_loadout_v2(
+		_strings(["annual002_companion_ohyun"]),
+		{"annual002_companion_ohyun": "annual002_support_risk_dampening"},
 		"annual002_equipment_echo_recorder",
 		_strings(["annual002_module_noise_filter"])
 	)["ok"])
 	var mismatch: Dictionary = state.configure_loadout_v2(
-		_strings(["annual002_companion_han_serin"]),
-		{"annual002_companion_han_serin": "annual002_support_second_read"},
+		_strings(["annual002_companion_ohyun"]),
+		{"annual002_companion_ohyun": "annual002_support_risk_dampening"},
 		"annual002_equipment_echo_recorder",
 		_strings(["annual002_module_impact_gel"])
 	)
 	assert(not mismatch["ok"])
 	var duplicate: Dictionary = state.configure_loadout_v2(
-		_strings(["annual002_companion_han_serin"]),
-		{"annual002_companion_han_serin": "annual002_support_second_read"},
+		_strings(["annual002_companion_ohyun"]),
+		{"annual002_companion_ohyun": "annual002_support_risk_dampening"},
 		"annual002_equipment_echo_recorder",
 		_strings(["annual002_module_noise_filter", "annual002_module_noise_filter"])
 	)
