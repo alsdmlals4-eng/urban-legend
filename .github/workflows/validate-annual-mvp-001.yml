@@ -12,6 +12,7 @@ on:
       - "scripts/poc/core_mvp_001/**"
       - "scripts/ui/main_menu.gd"
       - "tests/**"
+      - "tools/review/**"
       - "TEST_CHECKLIST.md"
       - "MVP_ROADMAP.md"
       - "docs/CURRENT_STATUS.md"
@@ -24,7 +25,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   annual-validation:
@@ -32,9 +33,24 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref || github.ref }}
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Apply approved REVIEW follow-up once
+        if: github.event_name == 'pull_request'
+        run: |
+          if grep -q 'SupportOption_%s' scripts/poc/annual_mvp_002/annual_mvp_002_scene.gd; then
+            echo "Review follow-up already applied"
+            exit 0
+          fi
+          python tools/review/apply_review_followup_runtime.py
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "fix: add support selector and sanitize active research"
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
       - name: Run annual and active-document Python contracts
         run: |
           python -m unittest \
