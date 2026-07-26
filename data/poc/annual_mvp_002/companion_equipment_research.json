@@ -69,6 +69,7 @@
       "trigger": "first_damage_before",
       "trigger_label": "첫 현장 피해 발생 직전",
       "incident_limit": 1,
+      "runtime_status": "ACTIVE",
       "effect_category": "damage_and_risk",
       "effect": {
         "damage_reduction": 10,
@@ -82,6 +83,7 @@
       "trigger": "clue_count_at_least_3",
       "trigger_label": "확보한 기록 3개 이상",
       "incident_limit": 1,
+      "runtime_status": "DISABLED_PENDING_HYPOTHESIS_BOARD_HOOK",
       "effect_category": "record_readability",
       "effect": {
         "existing_record_conflict_highlight": 1
@@ -94,6 +96,7 @@
       "trigger": "civilian_or_containment_failure_before",
       "trigger_label": "민간 보호 또는 봉쇄 실패 직전",
       "incident_limit": 1,
+      "runtime_status": "ACTIVE",
       "effect_category": "protection_and_tolerance",
       "effect": {
         "civilian_damage_reduction": 15,

@@ -70,9 +70,11 @@ func configure(config: Dictionary, annual_snapshot: Dictionary, run_seed: int) -
 		var companion := _extension_companions[companion_id] as Dictionary
 		var unique_id := String(companion.get("unique_skill_id", ""))
 		if _extension_unique_skills.has(unique_id):
-			var unique_entry := (_extension_unique_skills[unique_id] as Dictionary).duplicate(true)
-			unique_entry["skill_kind"] = "unique"
-			equipped_entries.append(unique_entry)
+			var unique_source := _extension_unique_skills[unique_id] as Dictionary
+			if String(unique_source.get("runtime_status", "")) == "ACTIVE":
+				var unique_entry := unique_source.duplicate(true)
+				unique_entry["skill_kind"] = "unique"
+				equipped_entries.append(unique_entry)
 		var public_id := String(selected_support.get(companion_id, ""))
 		if not public_id.is_empty() and _extension_support_skills.has(public_id):
 			var public_source := _extension_support_skills[public_id] as Dictionary

@@ -25,6 +25,7 @@ const FORBIDDEN_EFFECT_KEYS := [
 ]
 const EQUIPMENT_FAMILIES := ["observation", "protection", "containment"]
 const SUPPORT_RUNTIME_STATUSES := ["ACTIVE", "DISABLED_PENDING_CORE_HOOK"]
+const UNIQUE_RUNTIME_STATUSES := ["ACTIVE", "DISABLED_PENDING_HYPOTHESIS_BOARD_HOOK"]
 const ACTIVE_SUPPORT_EFFECT_KEYS := ["damage_reduction", "risk_reduction"]
 
 
@@ -95,6 +96,9 @@ static func validate_config(data: Dictionary, base_config: Dictionary) -> Array[
 			unique_owners[owner_id] = String(skill.get("id", ""))
 		if int(skill.get("incident_limit", 0)) != 1:
 			errors.append("unique skill incident_limit must be 1")
+		var runtime_status := String(skill.get("runtime_status", ""))
+		if not UNIQUE_RUNTIME_STATUSES.has(runtime_status):
+			errors.append("unique skill %s runtime_status is invalid" % String(skill.get("id", "")))
 		_validate_effect(skill, errors, "unique skill %s" % String(skill.get("id", "")))
 
 	for value in data.get("companions", []) as Array:

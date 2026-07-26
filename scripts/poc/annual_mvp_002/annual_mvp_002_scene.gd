@@ -23,6 +23,7 @@ const COMPETENCY_LABELS := {
 var _config: Dictionary = {}
 var _extension_config: Dictionary = {}
 var _companions: Dictionary = {}
+var _unique_skills: Dictionary = {}
 var _support_skills: Dictionary = {}
 var _equipment: Dictionary = {}
 var _modules: Dictionary = {}
@@ -61,6 +62,7 @@ func _ready() -> void:
 	_config = BaseData.load_config(BASE_CONFIG_PATH)
 	_extension_config = ExtensionData.load_config(EXTENSION_CONFIG_PATH)
 	_companions = ExtensionData.index_by_id(_extension_config.get("companions", []) as Array)
+	_unique_skills = ExtensionData.index_by_id(_extension_config.get("unique_skills", []) as Array)
 	_support_skills = ExtensionData.index_by_id(_extension_config.get("support_skills", []) as Array)
 	_equipment = ExtensionData.index_by_id(_extension_config.get("equipment", []) as Array)
 	_modules = ExtensionData.index_by_id(_extension_config.get("modules", []) as Array)
@@ -766,11 +768,17 @@ func _support_status_text() -> String:
 		return "동료 미편성 · 지원 효과 없음\n%s" % Adapter.FAIRNESS_NOTICE
 	var preview_adapter := Adapter.new()
 	var configured: Dictionary = preview_adapter.configure(_config, _state.get_snapshot(), int(_state.get_snapshot().get("run_seed", 2201)))
+	var lines: Array[String] = []
 	if bool(configured.get("fallback_active", false)):
-		return "%s\n%s" % [String(configured.get("warning", "기본 동작")), preview_adapter.get_fairness_notice()]
-	var lines: Array[String] = preview_adapter.get_status_lines()
+		lines.append(String(configured.get("warning", "기본 동작")))
+	else:
+		lines = preview_adapter.get_status_lines()
 	for companion_id in _selected_companion_ids:
 		var companion := _companions.get(companion_id, {}) as Dictionary
+		var unique_id := String(companion.get("unique_skill_id", ""))
+		var unique_skill := _unique_skills.get(unique_id, {}) as Dictionary
+		if String(unique_skill.get("runtime_status", "")) == "DISABLED_PENDING_HYPOTHESIS_BOARD_HOOK":
+			lines.append("%s · %s | 비활성: 관측·가설 보드 hook 필요" % [companion.get("display_name", companion_id), unique_skill.get("display_name", unique_id)])
 		for support_id_value in companion.get("public_skill_ids", []) as Array:
 			var support_id := String(support_id_value)
 			var support := _support_skills.get(support_id, {}) as Dictionary
