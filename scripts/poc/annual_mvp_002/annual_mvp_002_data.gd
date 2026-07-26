@@ -24,6 +24,9 @@ const FORBIDDEN_EFFECT_KEYS := [
 	"unobserved_pattern",
 ]
 const EQUIPMENT_FAMILIES := ["observation", "protection", "containment"]
+const SUPPORT_RUNTIME_STATUSES := ["ACTIVE", "DISABLED_PENDING_CORE_HOOK"]
+const UNIQUE_RUNTIME_STATUSES := ["ACTIVE", "DISABLED_PENDING_HYPOTHESIS_BOARD_HOOK"]
+const ACTIVE_SUPPORT_EFFECT_KEYS := ["damage_reduction", "risk_reduction"]
 
 
 static func load_config(path: String) -> Dictionary:
@@ -79,6 +82,7 @@ static func validate_config(data: Dictionary, base_config: Dictionary) -> Array[
 	var modules := index_by_id(data.get("modules", []) as Array)
 	var resources := index_by_id(data.get("research_resources", []) as Array)
 	var research_nodes := index_by_id(data.get("research_nodes", []) as Array)
+	var base_activities := index_by_id(base_config.get("activities", []) as Array)
 
 	var unique_owners: Dictionary = {}
 	for value in data.get("unique_skills", []) as Array:
@@ -92,6 +96,9 @@ static func validate_config(data: Dictionary, base_config: Dictionary) -> Array[
 			unique_owners[owner_id] = String(skill.get("id", ""))
 		if int(skill.get("incident_limit", 0)) != 1:
 			errors.append("unique skill incident_limit must be 1")
+		var runtime_status := String(skill.get("runtime_status", ""))
+		if not UNIQUE_RUNTIME_STATUSES.has(runtime_status):
+			errors.append("unique skill %s runtime_status is invalid" % String(skill.get("id", "")))
 		_validate_effect(skill, errors, "unique skill %s" % String(skill.get("id", "")))
 
 	for value in data.get("companions", []) as Array:
@@ -117,6 +124,7 @@ static func validate_config(data: Dictionary, base_config: Dictionary) -> Array[
 		if String(companion.get("availability", "")) not in ["AVAILABLE", "UNAVAILABLE"]:
 			errors.append("companion %s availability is invalid" % companion_id)
 
+	var active_support_count := 0
 	for value in data.get("support_skills", []) as Array:
 		var skill := value as Dictionary
 		var skill_id := String(skill.get("id", ""))
@@ -129,7 +137,25 @@ static func validate_config(data: Dictionary, base_config: Dictionary) -> Array[
 			errors.append("support skill %s readiness_guarantee must be 100" % skill_id)
 		if String(skill.get("trigger", "")).is_empty() or String(skill.get("trigger_label", "")).is_empty():
 			errors.append("support skill %s requires trigger and trigger_label" % skill_id)
+		var runtime_status := String(skill.get("runtime_status", ""))
+		if not SUPPORT_RUNTIME_STATUSES.has(runtime_status):
+			errors.append("support skill %s runtime_status is invalid" % skill_id)
+		var preparation_ids := skill.get("preparation_activity_ids", []) as Array
+		if runtime_status == "ACTIVE":
+			active_support_count += 1
+			if preparation_ids.is_empty():
+				errors.append("active support skill %s requires preparation_activity_ids" % skill_id)
+			for activity_id_value in preparation_ids:
+				if not base_activities.has(String(activity_id_value)):
+					errors.append("support skill %s references missing preparation activity %s" % [skill_id, activity_id_value])
+			for effect_key_value in (skill.get("effect", {}) as Dictionary).keys():
+				if not ACTIVE_SUPPORT_EFFECT_KEYS.has(String(effect_key_value)):
+					errors.append("active support skill %s uses unsupported runtime effect %s" % [skill_id, effect_key_value])
+		elif not preparation_ids.is_empty():
+			errors.append("disabled support skill %s must not claim preparation activities" % skill_id)
 		_validate_effect(skill, errors, "support skill %s" % skill_id)
+	if active_support_count != 2:
+		errors.append("exactly two support skills must be ACTIVE for the current CORE hook")
 
 	var observed_families: Dictionary = {}
 	for value in data.get("equipment", []) as Array:

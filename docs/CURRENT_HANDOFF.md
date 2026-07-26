@@ -11,7 +11,7 @@
 이 문서는 ANNUAL-MVP-001의 4주×7일 계약과 ANNUAL-MVP-002 동료·장비·연구 수직절편 구현을 사람 사용성·신규 플레이어 검증과 분리한다. 자동 검증은 제품 승인이나 제작 확대를 의미하지 않는다.
 
 ```yaml
-status: ANNUAL_MVP_002_ON_BRANCH_AUTOMATED_QA_PASSED
+status: ANNUAL_MVP_002_MERGED_AUTOMATED_QA_PASSED_REVIEW_HARDENING
 implemented_baseline: MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A / Ver 4.2 / save mvp-039
 annual_design: APPROVED_DESIGN_BASELINE
 core_mvp_001:
@@ -62,16 +62,19 @@ annual_mvp_001:
   save_version: annual-mvp-001-save-v1
 annual_mvp_002:
   issue: 88
-  pr: 89_DRAFT
+  pr: 89
   branch: agent/annual-mvp-002-vertical-slice
-  implementation: ON_BRANCH
+  implementation: MERGED
   automated_qa: PASSED
   contract_version: annual-mvp-002-v1
   base_contract_version: annual-mvp-001-v3
   companions: 3
   max_selected_companions: 2
   unique_skills: 3
+  active_unique_skills: 2
+  cross_index_runtime_status: DISABLED_PENDING_HYPOTHESIS_BOARD_HOOK
   public_support_skills: 6
+  active_public_support_skills: 2
   equipment: 3
   modules: 6
   research_resources: 4
@@ -149,7 +152,9 @@ AGENTS.md
 ### 동료·지원
 
 - 동료는 오현·한세린·박도윤 3명이며 최대 2명을 선택한다.
-- 고유 스킬은 명시 조건 충족 시 사건당 1회 확정 발동한다.
+- 오현·박도윤의 런타임 `ACTIVE` 고유 스킬은 명시 조건 충족 시 사건당 1회 확정 발동한다.
+- 한세린 `교차 색인`은 데이터·이름·조건·효과를 보존하지만 `DISABLED_PENDING_HYPOTHESIS_BOARD_HOOK`이며 선택·발동·성공 로그를 금지한다.
+- 준비 화면은 `교차 색인`에 관측·가설 보드 hook 필요 사유를 표시한다.
 - 공용 지원 일반 확률은 기본 + 준비 일정 10%p + 업무 신뢰 0/5/10%p이고 상한은 90%다.
 - 준비도는 일반 확률에 직접 더하지 않는다.
 - 적격 실패 시 준비도 +20, 실패 학습 연구 완료 시 +25다.
@@ -216,8 +221,8 @@ AGENTS.md
 
 ## 다음 작업
 
-1. PR #89 changed-file·보호 경로·review thread 최종 감사
-2. PR #89 squash merge 후 merge commit을 상태 원본과 Issue #88에 기록
+1. PR #89 squash merge 완료 — commit `c790bf747c0fa4f4427d9e4b49b22adbfce92824`
+2. Issue #90 / PR #91 적대적 검수 보정
 3. 7일 편성·템플릿·동료·장비·지원 정보의 사람 반복 조작
 4. 2주차 조기·3주차 자율·4주차 강제 사람 플레이
 5. 동료별 장점과 지원 확률·준비도·보장 발동 설명 수집

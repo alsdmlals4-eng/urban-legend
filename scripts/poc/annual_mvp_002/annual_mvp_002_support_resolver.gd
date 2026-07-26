@@ -147,10 +147,11 @@ func _preview_skill(skill_id: String, context: Dictionary) -> Dictionary:
 
 func _support_chance(skill: Dictionary, owner_id: String) -> int:
 	var chance := int(skill.get("base_chance", 0))
-	var skill_id := String(skill.get("id", ""))
-	var effect_category := String(skill.get("effect_category", ""))
-	if _preparation_tags.has(skill_id) or _preparation_tags.has(effect_category) or _preparation_tags.has("preparation:%s" % effect_category):
-		chance += 10
+	var preparation_activity_ids := skill.get("preparation_activity_ids", []) as Array
+	for activity_id_value in preparation_activity_ids:
+		if _preparation_tags.has(String(activity_id_value)):
+			chance += 10
+			break
 	var companion := _companion_states.get(owner_id, {}) as Dictionary
 	chance += _trust_bonus(int(companion.get("work_trust", 0)))
 	return mini(90, chance)

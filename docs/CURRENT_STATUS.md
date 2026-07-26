@@ -39,7 +39,7 @@
 | 7일 시각·입력 QA | `PASSED` — run #51 |
 | 확장 순서·임시 데이터 기준선 | `APPROVED_SEQUENCE / PROVISIONAL_BASELINE` — Issue #84 / PR #85 |
 | 유사 장르 벤치마크 | `BENCHMARK_RESEARCH_COMPLETE / RECOMMENDED_FOR_REVIEW` — Issue #86 / PR #87 |
-| ANNUAL-MVP-002 구현 | `ON_BRANCH / AUTOMATED_QA_PASSED` — Issue #88 / draft PR #89 |
+| ANNUAL-MVP-002 구현 | `MERGED / AUTOMATED_QA_PASSED` — Issue #88 / PR #89 / commit `c790bf747c0fa4f4427d9e4b49b22adbfce92824` |
 | ANNUAL-MVP-002 데이터 계약 | `annual-mvp-002-v1`, base `annual-mvp-001-v3` |
 | ANNUAL-MVP-002 문서 검증 | `PASSED` — run #333 |
 | ANNUAL-MVP-002 자동 검증 | `PASSED` — run #167 |
@@ -100,13 +100,15 @@
 - 이해도·가설·관측 패턴·포획 표식 변경 금지
 - 최신 main의 Base Skill 어댑터·자산·라이선스 기록 보존
 
-## ANNUAL-MVP-002 수직절편 — 현재 브랜치 구현
+## ANNUAL-MVP-002 수직절편 — main 병합 구현
 
 ### 구현 범위
 
-- 독립 격리 경로 `data/scripts/scenes/poc/annual_mvp_002`
+- 독립 격리 경로 `data/poc/annual_mvp_002`, `scripts/poc/annual_mvp_002`, `scenes/poc/annual_mvp_002`
 - 동료 3명 중 최대 2명 편성: 오현, 한세린, 박도윤
-- 고유 스킬 3개와 공용 지원 6개
+- 고유 스킬 데이터 3개와 공용 지원 데이터 6개
+- 런타임 고유 스킬은 오현·박도윤 2개만 `ACTIVE`; 한세린 `교차 색인`은 데이터 보존 상태로 `DISABLED_PENDING_HYPOTHESIS_BOARD_HOOK`
+- 런타임 공용 지원은 피해·위험 계열 2개만 `ACTIVE`; 나머지 4개는 `DISABLED_PENDING_CORE_HOOK`
 - 공용 지원의 적격 여부, 비적격 사유, 확률, 준비도, 보장 거리 공개
 - 일반 확률 `기본 + 준비 일정 10%p + 업무 신뢰 0/5/10%p`, 상한 90%
 - 적격 실패 준비도 +20, 실패 학습 연구 완료 시 +25, 준비도 100에서 다음 적격 발동 보장

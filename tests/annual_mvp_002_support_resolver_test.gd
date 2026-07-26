@@ -71,7 +71,7 @@ func _test_public_chance_excludes_readiness() -> void:
 	var resolver := _new_resolver(
 		_entries([skill]),
 		{"annual002_companion_ohyun": {"work_trust": 40}},
-		["annual002_support_damage_buffer"],
+		["annual001_activity_field_training"],
 		{"annual002_support_damage_buffer": 80},
 		3002,
 		[99]

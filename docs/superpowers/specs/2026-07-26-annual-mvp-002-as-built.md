@@ -1,8 +1,8 @@
 # ANNUAL-MVP-002 As-Built Specification
 
 > 날짜: 2026-07-26  
-> 추적: Issue #88 / draft PR #89  
-> 상태: `ON_BRANCH / AUTOMATED_QA_PASSED`  
+> 추적: Issue #88 / PR #89 / review Issue #90 / PR #91  
+> 상태: `MERGED / AUTOMATED_QA_PASSED / REVIEW_HARDENING`  
 > 선행 설계: `2026-07-26-annual-mvp-002-companion-equipment-research-design.md`
 
 ## 1. 문서 역할
@@ -22,9 +22,9 @@
 annual_mvp_002_design: APPROVED_IMPLEMENTATION_BASELINE
 annual_mvp_002_data: PROVISIONAL_BASELINE
 a nnual_mvp_002_plan: WRITTEN_AND_EXECUTED
-annual_mvp_002_implementation: ON_BRANCH
+annual_mvp_002_implementation: MERGED
 a nnual_mvp_002_automated_qa: PASSED
-annual_mvp_002_merge: PENDING
+annual_mvp_002_merge: c790bf747c0fa4f4427d9e4b49b22adbfce92824
 human_validation: NOT_RUN
 new_player_validation: NOT_RUN
 POC_PASSED: NOT_DECLARED
@@ -151,7 +151,8 @@ base_chance
 - 성공 후 준비도 0
 - 동일 seed·event key 재현
 - 같은 event key 중복 적용 금지
-- 고유 스킬은 조건 충족 시 사건당 1회 확정 발동
+- 오현·박도윤의 런타임 `ACTIVE` 고유 스킬은 조건 충족 시 사건당 1회 확정 발동
+- 한세린 `교차 색인`은 `DISABLED_PENDING_HYPOTHESIS_BOARD_HOOK`이며 resolver 입력·판정·성공 로그에서 제외
 
 공개 정보:
 
@@ -213,6 +214,7 @@ base_chance
 - 최대 2명 제한
 - 장비·모듈 계열 검증
 - 지원 적격·확률·준비도·보장 거리
+- 비활성 `교차 색인`의 관측·가설 보드 hook 필요 사유
 - 동료·장비가 정답을 대신하지 않는다는 안내
 
 ## 10. 구현하지 않은 벤치마크 후보

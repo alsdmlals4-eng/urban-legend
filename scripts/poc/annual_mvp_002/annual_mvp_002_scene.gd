@@ -9,6 +9,7 @@ const Adapter = preload("res://scripts/poc/annual_mvp_002/annual_mvp_002_inciden
 const ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")
 const CaseData = preload("res://scripts/poc/core_mvp_001/core_mvp_001_case_data.gd")
 const CoreScene = preload("res://scenes/poc/annual_mvp_001/annual_mvp_001_core_scene.tscn")
+const SaveData = preload("res://scripts/poc/annual_mvp_001/annual_mvp_001_save_data.gd")
 
 const BASE_CONFIG_PATH := "res://data/poc/annual_mvp_001/spring_vertical_slice.json"
 const EXTENSION_CONFIG_PATH := "res://data/poc/annual_mvp_002/companion_equipment_research.json"
@@ -22,9 +23,11 @@ const COMPETENCY_LABELS := {
 var _config: Dictionary = {}
 var _extension_config: Dictionary = {}
 var _companions: Dictionary = {}
+var _unique_skills: Dictionary = {}
 var _support_skills: Dictionary = {}
 var _equipment: Dictionary = {}
 var _modules: Dictionary = {}
+var _research_nodes: Dictionary = {}
 var _state := State.new()
 var _planner := Planner.new()
 var _adapter := Adapter.new()
@@ -40,7 +43,10 @@ var _support_status_label: Label
 var _incident_host: VBoxContainer
 var _equipment_option: OptionButton
 var _module_option: OptionButton
+var _research_node_option: OptionButton
+var _research_resource_label: Label
 var _companion_buttons: Dictionary = {}
+var _support_options: Dictionary = {}
 
 var _selected_companion_ids: Array[String] = []
 var _support_by_companion: Dictionary = {}
@@ -56,9 +62,11 @@ func _ready() -> void:
 	_config = BaseData.load_config(BASE_CONFIG_PATH)
 	_extension_config = ExtensionData.load_config(EXTENSION_CONFIG_PATH)
 	_companions = ExtensionData.index_by_id(_extension_config.get("companions", []) as Array)
+	_unique_skills = ExtensionData.index_by_id(_extension_config.get("unique_skills", []) as Array)
 	_support_skills = ExtensionData.index_by_id(_extension_config.get("support_skills", []) as Array)
 	_equipment = ExtensionData.index_by_id(_extension_config.get("equipment", []) as Array)
 	_modules = ExtensionData.index_by_id(_extension_config.get("modules", []) as Array)
+	_research_nodes = ExtensionData.index_by_id(_extension_config.get("research_nodes", []) as Array)
 	_planner.configure(_dictionary_array(_config.get("activities", []) as Array), 7)
 	_build_ui()
 	var started: Dictionary = _state.start(_config, 2201)
@@ -144,6 +152,59 @@ func debug_confirm() -> void:
 	_render()
 
 
+func debug_save_run(path: String = SaveData.SAVE_PATH) -> Dictionary:
+	var payload: Dictionary = _state.build_save_payload()
+	if payload.is_empty():
+		return _ui_error("현재 단계에서는 저장할 수 없습니다.")
+	var error := SaveData.write_payload(payload, path)
+	if error != OK:
+		return _ui_error("연도제 저장에 실패했습니다: %s" % error_string(error))
+	_feedback_label.text = "ANNUAL-MVP-002 진행을 저장했습니다."
+	_render()
+	return {"ok": true, "error": "", "state_changed": false}
+
+
+func debug_load_run(path: String = SaveData.SAVE_PATH) -> Dictionary:
+	var payload: Dictionary = SaveData.read_payload(path)
+	if payload.is_empty():
+		return _ui_error("불러올 ANNUAL-MVP-002 저장이 없습니다.")
+	var restored: Dictionary = _state.restore(_config, payload)
+	if not bool(restored.get("ok", false)):
+		return _ui_error(String(restored.get("error", "저장을 복구할 수 없습니다.")))
+	_sync_runtime_from_state()
+	_feedback_label.text = "ANNUAL-MVP-002 진행을 불러왔습니다."
+	_render()
+	return restored
+
+
+func debug_award_research_resources(delta: Dictionary) -> Dictionary:
+	var response: Dictionary = _state.apply_research_resource_reward(delta)
+	_feedback_label.text = String(response.get("error", ""))
+	_render()
+	return response
+
+
+func debug_start_research(node_id: String) -> Dictionary:
+	var response: Dictionary = _state.start_research(node_id)
+	_feedback_label.text = String(response.get("error", ""))
+	_render()
+	return response
+
+
+func debug_advance_research(node_id: String, amount: int = 1) -> Dictionary:
+	var response: Dictionary = _state.advance_research(node_id, amount)
+	_feedback_label.text = String(response.get("error", ""))
+	_render()
+	return response
+
+
+func debug_cancel_research(node_id: String) -> Dictionary:
+	var response: Dictionary = _state.cancel_research(node_id)
+	_feedback_label.text = String(response.get("error", ""))
+	_render()
+	return response
+
+
 func debug_force_preparation_phase() -> void:
 	var guard := 0
 	while String(_state.get_snapshot().get("phase", "")) != "PREPARATION" and guard < 16:
@@ -176,8 +237,11 @@ func debug_toggle_companion(companion_id: String, enabled: bool) -> Dictionary:
 			return _ui_error("동료는 최대 2명까지 편성할 수 있습니다.")
 		candidate.append(companion_id)
 		var public_ids := (_companions[companion_id] as Dictionary).get("public_skill_ids", []) as Array
-		if not public_ids.is_empty():
-			support_candidate[companion_id] = String(public_ids[0])
+		for public_id_value in public_ids:
+			var public_id := String(public_id_value)
+			if String((_support_skills.get(public_id, {}) as Dictionary).get("runtime_status", "")) == "ACTIVE":
+				support_candidate[companion_id] = public_id
+				break
 	else:
 		candidate.erase(companion_id)
 		support_candidate.erase(companion_id)
@@ -203,10 +267,17 @@ func debug_set_support(companion_id: String, support_id: String) -> Dictionary:
 	if not _selected_companion_ids.has(companion_id):
 		return _ui_error("먼저 동료를 선택해야 합니다.")
 	var companion := _companions.get(companion_id, {}) as Dictionary
-	if not (companion.get("public_skill_ids", []) as Array).has(support_id):
-		return _ui_error("해당 동료가 사용할 수 없는 공용 지원입니다.")
+	if not support_id.is_empty():
+		if not (companion.get("public_skill_ids", []) as Array).has(support_id):
+			return _ui_error("해당 동료가 사용할 수 없는 공용 지원입니다.")
+		var support := _support_skills.get(support_id, {}) as Dictionary
+		if String(support.get("runtime_status", "")) != "ACTIVE":
+			return _ui_error("이 지원은 후속 CORE hook이 필요해 현재 선택할 수 없습니다.")
 	var candidate := _support_by_companion.duplicate(true)
-	candidate[companion_id] = support_id
+	if support_id.is_empty():
+		candidate.erase(companion_id)
+	else:
+		candidate[companion_id] = support_id
 	var response: Dictionary = _state.configure_loadout_v2(
 		_selected_companion_ids,
 		candidate,
@@ -362,6 +433,10 @@ func _build_planning_panel(host: Control) -> void:
 		_add_named_button(row, "Template%dSaveButton" % slot, "템플릿 %d 저장" % slot, func() -> void: debug_save_template(slot))
 		_add_named_button(row, "Template%dApplyButton" % slot, "템플릿 %d 적용" % slot, func() -> void: debug_apply_template(slot))
 	_add_named_button(panel, "ConfirmWeekButton", "주간 일정 확정", debug_confirm)
+	var save_row := HBoxContainer.new()
+	panel.add_child(save_row)
+	_add_named_button(save_row, "SaveRunButton", "진행 저장", func() -> void: debug_save_run())
+	_add_named_button(save_row, "LoadRunButton", "진행 불러오기", func() -> void: debug_load_run())
 
 
 func _build_result_panel(host: Control) -> void:
@@ -433,6 +508,43 @@ func _build_preparation_panel(host: Control) -> void:
 		)
 		companion_grid.add_child(card)
 		_companion_buttons[companion_id] = card
+	var support_title := Label.new()
+	support_title.text = "공용 지원 선택 · 비활성 항목은 후속 CORE hook이 필요합니다."
+	support_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	panel.add_child(support_title)
+	var support_grid := GridContainer.new()
+	support_grid.columns = 2
+	panel.add_child(support_grid)
+	for companion_id_value in _companions.keys():
+		var companion_id := String(companion_id_value)
+		var companion := _companions[companion_id] as Dictionary
+		var label := Label.new()
+		label.text = String(companion.get("display_name", companion_id))
+		label.custom_minimum_size.x = 120
+		support_grid.add_child(label)
+		var option := OptionButton.new()
+		option.name = "SupportOption_%s" % companion_id
+		option.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		option.add_item("지원 없음")
+		option.set_item_metadata(0, "")
+		for support_id_value in companion.get("public_skill_ids", []) as Array:
+			var support_id := String(support_id_value)
+			var support := _support_skills.get(support_id, {}) as Dictionary
+			var active := String(support.get("runtime_status", "")) == "ACTIVE"
+			var suffix := "" if active else " · 후속 CORE hook"
+			option.add_item("%s%s" % [support.get("display_name", support_id), suffix])
+			var item_index := option.item_count - 1
+			option.set_item_metadata(item_index, support_id)
+			option.set_item_disabled(item_index, not active)
+		option.item_selected.connect(func(index: int) -> void:
+			if _ui_syncing:
+				return
+			var response := debug_set_support(companion_id, String(option.get_item_metadata(index)))
+			if not bool(response.get("ok", false)):
+				_sync_companion_buttons()
+		)
+		support_grid.add_child(option)
+		_support_options[companion_id] = option
 	var equipment_row := HBoxContainer.new()
 	panel.add_child(equipment_row)
 	var equipment_label := Label.new()
@@ -477,11 +589,23 @@ func _build_post_incident_panel(host: Control) -> void:
 	panel.name = "PostIncidentPanel"
 	host.add_child(panel)
 	_panels[panel.name] = panel
-	var label := Label.new()
-	label.name = "ResearchResourceLabel"
-	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	label.text = "사건 결과의 관측 기록·잔향 자료·위험 사례·기관 협력 점수는 연구로 환류합니다."
-	panel.add_child(label)
+	_research_resource_label = Label.new()
+	_research_resource_label.name = "ResearchResourceLabel"
+	_research_resource_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	panel.add_child(_research_resource_label)
+	_research_node_option = OptionButton.new()
+	_research_node_option.name = "ResearchNodeOption"
+	for node_id_value in _research_nodes.keys():
+		var node_id := String(node_id_value)
+		var node := _research_nodes[node_id] as Dictionary
+		_research_node_option.add_item(String(node.get("display_name", node_id)))
+		_research_node_option.set_item_metadata(_research_node_option.item_count - 1, node_id)
+	panel.add_child(_research_node_option)
+	var research_row := HBoxContainer.new()
+	panel.add_child(research_row)
+	_add_named_button(research_row, "StartResearchButton", "연구 시작", func() -> void: debug_start_research(_selected_research_node_id()))
+	_add_named_button(research_row, "AdvanceResearchButton", "연구 진행", func() -> void: debug_advance_research(_selected_research_node_id(), 1))
+	_add_named_button(research_row, "CancelResearchButton", "연구 취소", func() -> void: debug_cancel_research(_selected_research_node_id()))
 
 
 func _add_named_button(parent: Control, node_name: String, text: String, callback: Callable) -> Button:
@@ -510,10 +634,6 @@ func _start_incident() -> void:
 	if not bool(loadout.get("ok", false)):
 		_feedback_label.text = String(loadout.get("error", "편성을 확정할 수 없습니다."))
 		return
-	var base_gate: Dictionary = _state.configure_loadout("annual001_companion_oh_hyun", "", [])
-	if not bool(base_gate.get("ok", false)):
-		_feedback_label.text = String(base_gate.get("error", "기본 사건 게이트를 구성할 수 없습니다."))
-		return
 	var snapshot := _state.get_snapshot()
 	var configured: Dictionary = _adapter.configure(_config, snapshot, int(snapshot.get("run_seed", 2201)))
 	if not bool(configured.get("ok", false)):
@@ -534,6 +654,11 @@ func _start_incident() -> void:
 func _on_incident_completed(result: Dictionary, manual_delta: Dictionary, support_log: Array[Dictionary]) -> void:
 	for child in _incident_host.get_children():
 		child.queue_free()
+	var readiness_sync: Dictionary = _state.apply_support_readiness_snapshot(_adapter.get_readiness_snapshot())
+	if not bool(readiness_sync.get("ok", false)):
+		_feedback_label.text = String(readiness_sync.get("error", "지원 준비도를 저장하지 못했습니다."))
+		_render()
+		return
 	var applied: Dictionary = _state.apply_incident_result(result, manual_delta, support_log)
 	if bool(applied.get("ok", false)) and not _adapter.is_fallback_active():
 		var reward: Dictionary = _adapter.build_research_reward(result, manual_delta)
@@ -579,6 +704,8 @@ func _render() -> void:
 	_activity_preview_label.text = _activity_preview_text()
 	_week_causal_summary_label.text = _causal_summary_text(snapshot)
 	_support_status_label.text = _support_status_text()
+	if _research_resource_label != null:
+		_research_resource_label.text = _research_status_text(snapshot)
 	_sync_companion_buttons()
 
 
@@ -641,17 +768,82 @@ func _support_status_text() -> String:
 		return "동료 미편성 · 지원 효과 없음\n%s" % Adapter.FAIRNESS_NOTICE
 	var preview_adapter := Adapter.new()
 	var configured: Dictionary = preview_adapter.configure(_config, _state.get_snapshot(), int(_state.get_snapshot().get("run_seed", 2201)))
+	var lines: Array[String] = []
 	if bool(configured.get("fallback_active", false)):
-		return "%s\n%s" % [String(configured.get("warning", "기본 동작")), preview_adapter.get_fairness_notice()]
-	var lines: Array[String] = preview_adapter.get_status_lines()
+		lines.append(String(configured.get("warning", "기본 동작")))
+	else:
+		lines = preview_adapter.get_status_lines()
+	for companion_id in _selected_companion_ids:
+		var companion := _companions.get(companion_id, {}) as Dictionary
+		var unique_id := String(companion.get("unique_skill_id", ""))
+		var unique_skill := _unique_skills.get(unique_id, {}) as Dictionary
+		if String(unique_skill.get("runtime_status", "")) == "DISABLED_PENDING_HYPOTHESIS_BOARD_HOOK":
+			lines.append("%s · %s | 비활성: 관측·가설 보드 hook 필요" % [companion.get("display_name", companion_id), unique_skill.get("display_name", unique_id)])
+		for support_id_value in companion.get("public_skill_ids", []) as Array:
+			var support_id := String(support_id_value)
+			var support := _support_skills.get(support_id, {}) as Dictionary
+			if String(support.get("runtime_status", "")) == "DISABLED_PENDING_CORE_HOOK":
+				lines.append("%s · %s | 비활성: 후속 CORE hook 필요" % [companion.get("display_name", companion_id), support.get("display_name", support_id)])
 	lines.append(preview_adapter.get_fairness_notice())
 	return "\n".join(lines)
+
+
+func _selected_research_node_id() -> String:
+	if _research_node_option == null or _research_node_option.item_count == 0:
+		return ""
+	return String(_research_node_option.get_item_metadata(_research_node_option.selected))
+
+
+func _research_status_text(snapshot: Dictionary) -> String:
+	var extension := snapshot.get("annual_mvp_002", {}) as Dictionary
+	var resources := extension.get("research_resources", {}) as Dictionary
+	var active := extension.get("active_research", {}) as Dictionary
+	var completed := extension.get("completed_research_ids", []) as Array
+	return "연구 자원 · 기록 %d / 잔향 %d / 위험 사례 %d / 기관 %d
+진행 %d/2 · 완료 %d
+사건 결과는 연구 자원으로 환류하며 시작·진행·취소를 여기서 검증합니다." % [
+		int(resources.get("annual002_resource_records", 0)),
+		int(resources.get("annual002_resource_residue", 0)),
+		int(resources.get("annual002_resource_risk_cases", 0)),
+		int(resources.get("annual002_resource_institution", 0)),
+		active.size(),
+		completed.size(),
+	]
+
+
+func _sync_runtime_from_state() -> void:
+	var snapshot: Dictionary = _state.get_snapshot()
+	var extension := snapshot.get("annual_mvp_002", {}) as Dictionary
+	_selected_companion_ids = _string_array(extension.get("selected_companion_ids", []))
+	_support_by_companion = (extension.get("equipped_support_skills", {}) as Dictionary).duplicate(true)
+	_selected_equipment_id = String(extension.get("selected_equipment_id", ""))
+	_selected_module_ids = _string_array(extension.get("installed_module_ids", []))
+	var planner_snapshot := {
+		"days_per_week": 7,
+		"activity_ids": _string_array(snapshot.get("planned_activity_ids", [])),
+		"undo_activity_ids": [],
+		"undo_available": false,
+		"templates": (extension.get("schedule_templates", [[], [], []]) as Array).duplicate(true),
+	}
+	_planner.restore(planner_snapshot)
+	_refresh_module_option()
 
 
 func _sync_companion_buttons() -> void:
 	_ui_syncing = true
 	for key in _companion_buttons.keys():
 		(_companion_buttons[key] as CheckButton).button_pressed = _selected_companion_ids.has(String(key))
+	for key in _support_options.keys():
+		var companion_id := String(key)
+		var option := _support_options[key] as OptionButton
+		option.disabled = not _selected_companion_ids.has(companion_id)
+		var selected_support := String(_support_by_companion.get(companion_id, ""))
+		var selected_index := 0
+		for index in range(option.item_count):
+			if String(option.get_item_metadata(index)) == selected_support:
+				selected_index = index
+				break
+		option.select(selected_index)
 	_ui_syncing = false
 
 

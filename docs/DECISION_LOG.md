@@ -149,7 +149,7 @@
   - visual artifact `8625300008`, 1280×720·1920×1080 캡처 8장 직접 검사 PASS
 - 책임 원본:
   - `docs/superpowers/plans/2026-07-26-annual-mvp-002-vertical-slice-implementation-plan.md`
-  - `docs/qa/ANNUAL_MVP_002_AUTOMATED_QA_2026-07-26.md`
+  - ANNUAL-MVP-002 자동 QA 기록
   - `docs/CURRENT_STATUS.md`
   - `docs/CURRENT_HANDOFF.md`
 - 사람 사용성 QA: `NOT_RUN`
@@ -157,3 +157,29 @@
 - `POC_PASSED`: `NOT_DECLARED`
 - 제작 확대: `NOT_APPROVED`
 - ANNUAL-MVP-003: `NOT_APPROVED`
+
+
+## 2026-07-26 — ANNUAL-MVP-002 적대적 검수 C안
+
+- 상태: `APPROVED_REVIEW_DECISION`
+- 추적: Issue #90 / PR #91
+- 지원 데이터 6개는 보존한다.
+- 현재 CORE hook이 실제 적용 가능한 피해·위험 계열 2개만 `ACTIVE`로 둔다.
+- 기록 가독성·실수 면제·표시 시간·회수 창 계열 4개는 `DISABLED_PENDING_CORE_HOOK`으로 두며 선택·발동·성공 로그를 금지한다.
+- 준비 보정은 장착 자체가 아니라 직전 주간의 대응 활동 이력에서만 +10%p를 얻는다.
+- 병합 후 정본 상태, 실제 main menu 경로, 준비도 영속화, save 복구 정화, 런타임 저장·연구 조작을 기술 보정한다.
+- 사람 검증 전 `POC_PASSED`, `annual_loop_passed`, 제작 확대는 계속 미선언한다.
+
+## 2026-07-26 — 한세린 `교차 색인` C안
+
+- 상태: `APPROVED_REVIEW_DECISION / IMPLEMENTED_ON_PR_91`
+- 사용자 승인: 2026-07-26, 권장안대로 진행
+- 추적: Issue #90 / PR #91
+- 결정: `교차 색인`의 ID·이름·조건·효과 데이터는 보존한다.
+- 런타임 상태: `DISABLED_PENDING_HYPOTHESIS_BOARD_HOOK`
+- 현재 금지: resolver 입력, 선택, 발동 판정, CORE 적용, 성공 로그.
+- UI: 준비 화면에 `관측·가설 보드 hook 필요`를 표시한다.
+- 활성화 조건: 관측·가설·반박 보드가 기존 기록만 대상으로 충돌 강조를 안전하게 지원하고, 신규 핵심 단서·정답 가설·미관측 패턴을 만들지 않는 계약과 테스트가 승인될 것.
+- 사람 사용성 QA·신규 플레이어 검증: `NOT_RUN`
+- `POC_PASSED`, `annual_loop_passed`, 제작 확대: 계속 미선언.
+

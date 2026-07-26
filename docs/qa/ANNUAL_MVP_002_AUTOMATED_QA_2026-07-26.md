@@ -1,7 +1,7 @@
 # ANNUAL-MVP-002 자동 검증 기록 — 2026-07-26
 
-> 추적: Issue #88 / draft PR #89  
-> 상태: `ON_BRANCH / AUTOMATED_QA_PASSED`  
+> 추적: Issue #88 / PR #89 / review Issue #90 / PR #91  
+> 상태: `MERGED / AUTOMATED_QA_PASSED / REVIEW_HARDENING`  
 > 제품 판정: `POC_PASSED NOT_DECLARED`
 
 ## 검증 대상
@@ -9,7 +9,9 @@
 - `annual-mvp-002-v1` 확장 데이터
 - 일정 미리보기·지난주 복사·템플릿 3개·전체 초기화·한 단계 undo
 - 동료 3명 중 최대 2명 편성
-- 고유 스킬 3개와 공용 지원 6개
+- 고유 스킬 데이터 3개와 공용 지원 데이터 6개
+- 고유 스킬 런타임: 오현·박도윤 2개 `ACTIVE`, 한세린 `교차 색인` 1개 `DISABLED_PENDING_HYPOTHESIS_BOARD_HOOK`
+- 공용 지원 런타임: 피해·위험 계열 2개 `ACTIVE`, 나머지 4개 `DISABLED_PENDING_CORE_HOOK`
 - 적격 여부·확률·준비도·보장 발동 공개
 - 장비 3개와 계열 호환 모듈 6개
 - 연구 자원 4종과 연구 노드 8개
@@ -110,6 +112,10 @@ ANNUAL-MVP-002 focused entrypoints:
 ### 포인터 스크롤
 
 ScrollContainer 밖에 있는 버튼을 화면 좌표로 클릭하던 QA 결함을 수정했다. 클릭 전에 대상 컨트롤을 화면 안으로 이동시키고 실제 mouse motion·press·release를 전송한다.
+
+### 한세린 `교차 색인` 런타임 경계
+
+현재 CORE snapshot과 외부 지원 hook에는 관측 기록 충돌 강조를 안전하게 적용할 관측·가설 보드가 없다. 따라서 데이터는 보존하되 `DISABLED_PENDING_HYPOTHESIS_BOARD_HOOK`으로 두고 resolver 입력, 판정, 성공 로그에서 제외한다. 준비 화면에는 비활성 사유를 표시하며, 향후 관측·가설·반박 보드 구현 시 별도 검토 후 활성화한다.
 
 ## 보호 범위 확인
 

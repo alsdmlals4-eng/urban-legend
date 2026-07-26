@@ -1,7 +1,7 @@
 # ANNUAL-MVP-002 수직절편 구현 계획
 
-> 상태: `IN_EXECUTION`  
-> 추적: Issue #88 / draft PR #89  
+> 상태: `EXECUTED / MERGED / REVIEW_HARDENING`  
+> 추적: Issue #88 / PR #89 / review Issue #90 / PR #91  
 > 실행 방법: 각 작업은 실패 테스트 확인 → 최소 구현 → 기존 회귀 확인 순서로 수행한다.
 
 ## 목표
