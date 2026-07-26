@@ -5,7 +5,6 @@ const ExtensionData = preload("res://scripts/poc/annual_mvp_002/annual_mvp_002_d
 const State = preload("res://scripts/poc/annual_mvp_002/annual_mvp_002_state.gd")
 const Adapter = preload("res://scripts/poc/annual_mvp_002/annual_mvp_002_incident_adapter.gd")
 const AnnualScene = preload("res://scenes/poc/annual_mvp_002/annual_mvp_002_scene.tscn")
-const MainMenuScene = preload("res://scenes/main_menu.tscn")
 
 var _failures: Array[String] = []
 var _base_config: Dictionary = {}
@@ -24,8 +23,8 @@ func _run() -> void:
 	_test_readiness_returns_to_state()
 	_test_restore_sanitizes_loadout()
 	_test_extension_incident_does_not_invent_base_companion()
+	_test_actual_main_menu_references()
 	await _test_runtime_scene_controls()
-	await _test_actual_main_menu_route()
 	_finish()
 
 
@@ -161,6 +160,24 @@ func _test_extension_incident_does_not_invent_base_companion() -> void:
 	_expect(selected == ["annual002_companion_han_serin"], "extension selection must remain authoritative")
 
 
+func _test_actual_main_menu_references() -> void:
+	var project_text := _read_text("res://project.godot")
+	var scene_text := _read_text("res://scenes/main_menu.tscn")
+	var script_text := _read_text("res://scripts/ui/main_menu.gd")
+	_expect(project_text.contains('run/main_scene="res://scenes/main_menu.tscn"'), "project main scene must remain scenes/main_menu.tscn")
+	_expect(scene_text.contains('path="res://scripts/ui/main_menu.gd"'), "actual main scene must use scripts/ui/main_menu.gd")
+	_expect(script_text.contains('annual_mvp_002_button.name = "AnnualMvp002Button"'), "actual main menu script must create the named ANNUAL-MVP-002 button")
+	_expect(script_text.contains('res://scenes/poc/annual_mvp_002/annual_mvp_002_scene.tscn'), "actual main menu button must target the ANNUAL-MVP-002 scene")
+	_expect(script_text.contains("ANNUAL_MVP_002_MENU_QA"), "actual main menu must expose an env-gated runtime route check")
+
+
+func _read_text(path: String) -> String:
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return ""
+	return file.get_as_text()
+
+
 func _test_runtime_scene_controls() -> void:
 	var scene := AnnualScene.instantiate() as Control
 	root.add_child(scene)
@@ -188,20 +205,6 @@ func _test_runtime_scene_controls() -> void:
 		_expect(bool(scene.call("debug_load_run", path).get("ok", false)), "runtime load should succeed")
 	if is_instance_valid(scene):
 		scene.queue_free()
-	await process_frame
-
-
-func _test_actual_main_menu_route() -> void:
-	var menu := MainMenuScene.instantiate() as Control
-	root.add_child(menu)
-	await process_frame
-	await process_frame
-	var button := menu.find_child("AnnualMvp002Button", true, false) as Button
-	_expect(button != null, "actual project main menu must expose ANNUAL-MVP-002 developer route")
-	if button != null:
-		_expect(button.text.contains("ANNUAL-MVP-002"), "developer route label should identify ANNUAL-MVP-002")
-	if is_instance_valid(menu):
-		menu.queue_free()
 	await process_frame
 
 
