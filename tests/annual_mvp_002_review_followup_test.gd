@@ -57,12 +57,20 @@ func _test_restore_sanitizes_active_research() -> void:
 	_expect(not active.has("annual002_research_field_records"), "completed research must not remain active")
 	if active.has("annual002_research_damage_protocol"):
 		var damage := active["annual002_research_damage_protocol"] as Dictionary
+		var damage_cost := damage.get("reserved_cost", {}) as Dictionary
 		_expect(int(damage.get("progress", -1)) == 0, "negative progress must clamp to zero")
-		_expect((damage.get("reserved_cost", {}) as Dictionary) == {"annual002_resource_risk_cases": 2}, "reserved cost must use canonical node cost")
+		_expect(
+			damage_cost.size() == 1 and int(damage_cost.get("annual002_resource_risk_cases", -1)) == 2,
+			"reserved cost must use canonical node cost"
+		)
 	if active.has("annual002_research_rest_quality"):
 		var rest := active["annual002_research_rest_quality"] as Dictionary
+		var rest_cost := rest.get("reserved_cost", {}) as Dictionary
 		_expect(int(rest.get("progress", -1)) == 1, "completed-or-higher progress must clamp below completion threshold")
-		_expect((rest.get("reserved_cost", {}) as Dictionary) == {"annual002_resource_risk_cases": 2}, "rest reserved cost must use canonical node cost")
+		_expect(
+			rest_cost.size() == 1 and int(rest_cost.get("annual002_resource_risk_cases", -1)) == 2,
+			"rest reserved cost must use canonical node cost"
+		)
 
 
 func _test_visible_support_selection() -> void:
