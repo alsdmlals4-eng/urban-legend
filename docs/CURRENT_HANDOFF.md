@@ -71,7 +71,10 @@ annual_mvp_002:
   companions: 3
   max_selected_companions: 2
   unique_skills: 3
+  active_unique_skills: 2
+  cross_index_runtime_status: DISABLED_PENDING_HYPOTHESIS_BOARD_HOOK
   public_support_skills: 6
+  active_public_support_skills: 2
   equipment: 3
   modules: 6
   research_resources: 4
@@ -149,7 +152,9 @@ AGENTS.md
 ### 동료·지원
 
 - 동료는 오현·한세린·박도윤 3명이며 최대 2명을 선택한다.
-- 고유 스킬은 명시 조건 충족 시 사건당 1회 확정 발동한다.
+- 오현·박도윤의 런타임 `ACTIVE` 고유 스킬은 명시 조건 충족 시 사건당 1회 확정 발동한다.
+- 한세린 `교차 색인`은 데이터·이름·조건·효과를 보존하지만 `DISABLED_PENDING_HYPOTHESIS_BOARD_HOOK`이며 선택·발동·성공 로그를 금지한다.
+- 준비 화면은 `교차 색인`에 관측·가설 보드 hook 필요 사유를 표시한다.
 - 공용 지원 일반 확률은 기본 + 준비 일정 10%p + 업무 신뢰 0/5/10%p이고 상한은 90%다.
 - 준비도는 일반 확률에 직접 더하지 않는다.
 - 적격 실패 시 준비도 +20, 실패 학습 연구 완료 시 +25다.
