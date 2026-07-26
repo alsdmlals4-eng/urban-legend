@@ -12,7 +12,6 @@ on:
       - "scripts/poc/core_mvp_001/**"
       - "scripts/ui/main_menu.gd"
       - "tests/**"
-      - "tools/review/**"
       - "TEST_CHECKLIST.md"
       - "MVP_ROADMAP.md"
       - "docs/CURRENT_STATUS.md"
@@ -25,7 +24,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   annual-validation:
@@ -33,26 +32,9 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.ref || github.ref }}
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Apply approved REVIEW hardening once
-        if: github.event_name == 'pull_request'
-        run: |
-          if grep -q '"runtime_status": "ACTIVE"' data/poc/annual_mvp_002/companion_equipment_research.json; then
-            echo "Review hardening already applied"
-            exit 0
-          fi
-          sed -i 's/ANNUAL_MVP_002_AUTOMATED_VALIDATION_2026-07-26.md/ANNUAL_MVP_002_AUTOMATED_QA_2026-07-26.md/' tools/review/apply_annual_mvp_002_hardening.py
-          set -o pipefail
-          python tools/review/apply_annual_mvp_002_hardening.py 2>&1 | tee review-hardening.log
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git commit -m "fix: apply ANNUAL-MVP-002 review hardening"
-          git push origin HEAD:${{ github.event.pull_request.head.ref }}
       - name: Run annual and active-document Python contracts
         run: |
           python -m unittest \
@@ -96,7 +78,6 @@ jobs:
         with:
           name: annual-mvp-001-failure
           path: |
-            review-hardening.log
             annual-import.log
             ${{ runner.temp }}/annual-mvp-001-core/focused-logs
             ${{ runner.temp }}/annual-mvp-001-focused/focused-logs
