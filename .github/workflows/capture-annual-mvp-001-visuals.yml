@@ -8,9 +8,12 @@ on:
       - "tests/annual_mvp_001_pointer_qa.gd"
       - "tests/annual_mvp_002_visual_capture.gd"
       - "tests/annual_mvp_002_pointer_qa.gd"
+      - "tests/annual_mvp_002_main_menu_runtime_qa.gd"
       - "scripts/poc/annual_mvp_001/**"
       - "scripts/poc/annual_mvp_002/**"
+      - "scripts/ui/main_menu.gd"
       - "scripts/ui/ui_theme_factory.gd"
+      - "scenes/main_menu.tscn"
       - "scenes/poc/annual_mvp_001/**"
       - "scenes/poc/annual_mvp_002/**"
       - ".github/workflows/capture-annual-mvp-001-visuals.yml"
@@ -38,6 +41,25 @@ jobs:
           fc-cache -f
       - name: Import project
         run: godot --headless --path . --import
+      - name: Verify actual main-menu F1 route
+        run: |
+          set -o pipefail
+          cp project.godot project.godot.runtime-qa.bak
+          cleanup() { mv -f project.godot.runtime-qa.bak project.godot; }
+          trap cleanup EXIT
+          python - <<'PY'
+          from pathlib import Path
+          path = Path("project.godot")
+          text = path.read_text(encoding="utf-8")
+          marker = "[autoload]\n"
+          qa = 'AnnualMvp002MenuQa="*res://tests/annual_mvp_002_main_menu_runtime_qa.gd"\n'
+          if marker not in text:
+              raise SystemExit("project.godot has no [autoload] section")
+          path.write_text(text.replace(marker, marker + qa, 1), encoding="utf-8")
+          PY
+          timeout 90 xvfb-run -a -s "-screen 0 1280x720x24" \
+            godot --path . --rendering-driver opengl3 \
+            2>&1 | tee annual-mvp-002-main-menu-route.log
       - name: Verify ANNUAL-MVP-001 keyboard focus and Esc flow
         run: |
           set -o pipefail
@@ -86,6 +108,7 @@ jobs:
           name: annual-mvp-001-002-visual-qa
           path: |
             annual-qa-artifacts
+            annual-mvp-002-main-menu-route.log
             annual-input-qa.log
             annual-pointer-qa.log
             annual-mvp-002-pointer-qa.log
