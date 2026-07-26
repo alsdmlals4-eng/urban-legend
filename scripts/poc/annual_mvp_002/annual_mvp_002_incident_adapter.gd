@@ -75,18 +75,21 @@ func configure(config: Dictionary, annual_snapshot: Dictionary, run_seed: int) -
 			equipped_entries.append(unique_entry)
 		var public_id := String(selected_support.get(companion_id, ""))
 		if not public_id.is_empty() and _extension_support_skills.has(public_id):
-			var public_entry := (_extension_support_skills[public_id] as Dictionary).duplicate(true)
-			public_entry["skill_kind"] = "support"
-			public_entry["owner_companion_id"] = companion_id
-			equipped_entries.append(public_entry)
+			var public_source := _extension_support_skills[public_id] as Dictionary
+			if String(public_source.get("runtime_status", "")) == "ACTIVE":
+				var public_entry := public_source.duplicate(true)
+				public_entry["skill_kind"] = "support"
+				public_entry["owner_companion_id"] = companion_id
+				equipped_entries.append(public_entry)
 
 	if equipped_entries.is_empty():
 		_fallback_warning = "ANNUAL-MVP-002 지원 편성이 비어 있어 기본 사건 동작을 사용합니다."
 		return {"ok": true, "fallback_active": true, "warning": _fallback_warning}
 
 	var preparation_tags: Array[String] = []
-	for public_value in selected_support.values():
-		_append_unique(preparation_tags, String(public_value))
+	var last_week_result := annual_snapshot.get("last_week_result", {}) as Dictionary
+	for activity_id in _string_array(last_week_result.get("planned_activity_ids", [])):
+		_append_unique(preparation_tags, activity_id)
 	for research_id in _string_array(_extension_snapshot.get("completed_research_ids", [])):
 		_append_unique(preparation_tags, research_id)
 	var readiness := _extension_snapshot.get("readiness_by_skill", {}) as Dictionary

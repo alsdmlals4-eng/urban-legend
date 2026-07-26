@@ -216,7 +216,7 @@ def patch_documents() -> None:
         "MVP_ROADMAP.md": [
             ("`ON_BRANCH / AUTOMATED_QA_PASSED` — Issue #88 / draft PR #89", "`MERGED / AUTOMATED_QA_PASSED` — Issue #88 / PR #89 / commit `c790bf747c0fa4f4427d9e4b49b22adbfce92824`"),
         ],
-        "docs/qa/ANNUAL_MVP_002_AUTOMATED_VALIDATION_2026-07-26.md": [
+        "docs/qa/ANNUAL_MVP_002_AUTOMATED_QA_2026-07-26.md": [
             ("> 추적: Issue #88 / draft PR #89", "> 추적: Issue #88 / PR #89 / review Issue #90 / PR #91"),
             ("> 상태: `ON_BRANCH / AUTOMATED_QA_PASSED`", "> 상태: `MERGED / AUTOMATED_QA_PASSED / REVIEW_HARDENING`"),
         ],

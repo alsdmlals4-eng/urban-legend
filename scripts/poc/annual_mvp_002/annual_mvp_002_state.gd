@@ -86,6 +86,9 @@ func configure_loadout_v2(
 			return _response(false, "동료가 사용할 수 없는 공용 지원 스킬입니다.", false)
 		if not _extension_support_skills.has(skill_id):
 			return _response(false, "알 수 없는 공용 지원 스킬입니다.", false)
+		var support_skill := _extension_support_skills[skill_id] as Dictionary
+		if String(support_skill.get("runtime_status", "")) != "ACTIVE":
+			return _response(false, "이 지원은 후속 CORE hook이 필요해 현재 선택할 수 없습니다.", false)
 
 	if equipment_id.is_empty() and not module_ids.is_empty():
 		return _response(false, "주 장비 없이 모듈을 장착할 수 없습니다.", false)
@@ -144,6 +147,28 @@ func set_support_readiness(skill_id: String, value: int) -> Dictionary:
 		return _response(false, "알 수 없는 공용 지원 스킬입니다.", false)
 	_readiness_by_skill[skill_id] = clampi(value, 0, 100)
 	return _response(true, "", true)
+
+
+func apply_support_readiness_snapshot(values: Dictionary) -> Dictionary:
+	for skill_value in values.keys():
+		var skill_id := String(skill_value)
+		if not _extension_support_skills.has(skill_id):
+			return _response(false, "알 수 없는 공용 지원 스킬 준비도입니다: %s" % skill_id, false)
+	for skill_value in values.keys():
+		var skill_id := String(skill_value)
+		_readiness_by_skill[skill_id] = clampi(int(values[skill_value]), 0, 100)
+	return _response(true, "", true, [{"event": "annual_mvp_002_readiness_synced"}])
+
+
+func begin_incident() -> Dictionary:
+	if _phase != "PREPARATION":
+		return _response(false, "사건을 시작할 준비가 되지 않았습니다.", false)
+	_phase = "INCIDENT_ACTIVE"
+	return _response(true, "", true, [{
+		"event": "annual_incident_requested",
+		"case_path": String((_config.get("campaign", {}) as Dictionary).get("incident_case_path", "")),
+		"run_seed": _run_seed,
+	}])
 
 
 func apply_research_resource_reward(delta: Dictionary) -> Dictionary:
@@ -320,7 +345,7 @@ func _restore_extension(saved: Dictionary) -> void:
 	var found_orphans: Array[String] = _string_array(saved.get("orphaned_ids", []))
 	var selected: Array[String] = []
 	for companion_id in _string_array(saved.get("selected_companion_ids", [])):
-		if _extension_companions.has(companion_id):
+		if _extension_companions.has(companion_id) and String((_extension_companions[companion_id] as Dictionary).get("availability", "")) == "AVAILABLE":
 			selected.append(companion_id)
 		else:
 			_append_unique_string(found_orphans, companion_id)
@@ -333,7 +358,8 @@ func _restore_extension(saved: Dictionary) -> void:
 		var skill_id := String(saved_support[owner_value])
 		if _selected_companion_ids.has(owner_id) and _extension_support_skills.has(skill_id):
 			var companion := _extension_companions[owner_id] as Dictionary
-			if (companion.get("public_skill_ids", []) as Array).has(skill_id):
+			var support_skill := _extension_support_skills[skill_id] as Dictionary
+			if String(support_skill.get("runtime_status", "")) == "ACTIVE" and (companion.get("public_skill_ids", []) as Array).has(skill_id):
 				valid_support[owner_id] = skill_id
 				continue
 		_append_unique_string(found_orphans, skill_id)
@@ -355,17 +381,32 @@ func _restore_extension(saved: Dictionary) -> void:
 			_append_unique_string(found_orphans, equipment_id)
 	_owned_equipment_ids = owned
 
+	var saved_completed_ids := _string_array(saved.get("completed_research_ids", []))
 	var selected_equipment := String(saved.get("selected_equipment_id", ""))
-	if selected_equipment.is_empty() or _extension_equipment.has(selected_equipment):
+	if selected_equipment.is_empty():
+		_selected_equipment_id = ""
+	elif _extension_equipment.has(selected_equipment) and _owned_equipment_ids.has(selected_equipment):
 		_selected_equipment_id = selected_equipment
 	else:
 		_selected_equipment_id = ""
 		_append_unique_string(found_orphans, selected_equipment)
 	_installed_module_ids.clear()
-	for module_id in _string_array(saved.get("installed_module_ids", [])):
-		if _extension_modules.has(module_id):
-			_installed_module_ids.append(module_id)
-		else:
+	if not _selected_equipment_id.is_empty():
+		var selected_item := _extension_equipment[_selected_equipment_id] as Dictionary
+		var allowed_modules := selected_item.get("allowed_module_ids", []) as Array
+		var module_slots := int(selected_item.get("module_slots", 1))
+		if saved_completed_ids.has("annual002_research_safe_recheck"):
+			module_slots = mini(2, module_slots + 1)
+		for module_id in _string_array(saved.get("installed_module_ids", [])):
+			if _installed_module_ids.size() >= module_slots:
+				_append_unique_string(found_orphans, module_id)
+				continue
+			if _extension_modules.has(module_id) and allowed_modules.has(module_id) and not _installed_module_ids.has(module_id):
+				_installed_module_ids.append(module_id)
+			else:
+				_append_unique_string(found_orphans, module_id)
+	else:
+		for module_id in _string_array(saved.get("installed_module_ids", [])):
 			_append_unique_string(found_orphans, module_id)
 
 	var saved_resources := saved.get("research_resources", {}) as Dictionary
@@ -382,7 +423,7 @@ func _restore_extension(saved: Dictionary) -> void:
 		else:
 			_append_unique_string(found_orphans, node_id)
 	_completed_extension_research_ids.clear()
-	for node_id in _string_array(saved.get("completed_research_ids", [])):
+	for node_id in saved_completed_ids:
 		if _extension_research_nodes.has(node_id):
 			_append_unique_string(_completed_extension_research_ids, node_id)
 		else:
@@ -405,8 +446,14 @@ func _restore_extension(saved: Dictionary) -> void:
 			restored_templates.append(valid_template)
 		_schedule_templates = restored_templates
 
-	_last_loadout = (saved.get("last_loadout", {}) as Dictionary).duplicate(true)
 	_role_overlap_efficiency = _calculate_role_overlap_efficiency(_selected_companion_ids)
+	_last_loadout = {
+		"selected_companion_ids": _selected_companion_ids.duplicate(),
+		"equipped_support_skills": _equipped_support_skills.duplicate(true),
+		"selected_equipment_id": _selected_equipment_id,
+		"installed_module_ids": _installed_module_ids.duplicate(),
+		"role_overlap_efficiency": _role_overlap_efficiency,
+	}
 	_orphaned_ids = found_orphans
 	_orphaned_ids.sort()
 

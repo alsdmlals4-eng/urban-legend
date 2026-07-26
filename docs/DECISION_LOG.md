@@ -157,3 +157,15 @@
 - `POC_PASSED`: `NOT_DECLARED`
 - 제작 확대: `NOT_APPROVED`
 - ANNUAL-MVP-003: `NOT_APPROVED`
+
+
+## 2026-07-26 — ANNUAL-MVP-002 적대적 검수 C안
+
+- 상태: `APPROVED_REVIEW_DECISION`
+- 추적: Issue #90 / PR #91
+- 지원 데이터 6개는 보존한다.
+- 현재 CORE hook이 실제 적용 가능한 피해·위험 계열 2개만 `ACTIVE`로 둔다.
+- 기록 가독성·실수 면제·표시 시간·회수 창 계열 4개는 `DISABLED_PENDING_CORE_HOOK`으로 두며 선택·발동·성공 로그를 금지한다.
+- 준비 보정은 장착 자체가 아니라 직전 주간의 대응 활동 이력에서만 +10%p를 얻는다.
+- 병합 후 정본 상태, 실제 main menu 경로, 준비도 영속화, save 복구 정화, 런타임 저장·연구 조작을 기술 보정한다.
+- 사람 검증 전 `POC_PASSED`, `annual_loop_passed`, 제작 확대는 계속 미선언한다.

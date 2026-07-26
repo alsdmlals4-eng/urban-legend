@@ -1,8 +1,8 @@
 # ANNUAL-MVP-002 As-Built Specification
 
 > 날짜: 2026-07-26  
-> 추적: Issue #88 / draft PR #89  
-> 상태: `ON_BRANCH / AUTOMATED_QA_PASSED`  
+> 추적: Issue #88 / PR #89 / review Issue #90 / PR #91  
+> 상태: `MERGED / AUTOMATED_QA_PASSED / REVIEW_HARDENING`  
 > 선행 설계: `2026-07-26-annual-mvp-002-companion-equipment-research-design.md`
 
 ## 1. 문서 역할
@@ -22,9 +22,9 @@
 annual_mvp_002_design: APPROVED_IMPLEMENTATION_BASELINE
 annual_mvp_002_data: PROVISIONAL_BASELINE
 a nnual_mvp_002_plan: WRITTEN_AND_EXECUTED
-annual_mvp_002_implementation: ON_BRANCH
+annual_mvp_002_implementation: MERGED
 a nnual_mvp_002_automated_qa: PASSED
-annual_mvp_002_merge: PENDING
+annual_mvp_002_merge: c790bf747c0fa4f4427d9e4b49b22adbfce92824
 human_validation: NOT_RUN
 new_player_validation: NOT_RUN
 POC_PASSED: NOT_DECLARED

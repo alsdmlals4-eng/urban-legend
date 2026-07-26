@@ -1,7 +1,7 @@
 # ANNUAL-MVP-002 자동 검증 기록 — 2026-07-26
 
-> 추적: Issue #88 / draft PR #89  
-> 상태: `ON_BRANCH / AUTOMATED_QA_PASSED`  
+> 추적: Issue #88 / PR #89 / review Issue #90 / PR #91  
+> 상태: `MERGED / AUTOMATED_QA_PASSED / REVIEW_HARDENING`  
 > 제품 판정: `POC_PASSED NOT_DECLARED`
 
 ## 검증 대상

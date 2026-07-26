@@ -39,7 +39,7 @@
 | 7일 시각·입력 QA | `PASSED` — run #51 |
 | 확장 순서·임시 데이터 기준선 | `APPROVED_SEQUENCE / PROVISIONAL_BASELINE` — Issue #84 / PR #85 |
 | 유사 장르 벤치마크 | `BENCHMARK_RESEARCH_COMPLETE / RECOMMENDED_FOR_REVIEW` — Issue #86 / PR #87 |
-| ANNUAL-MVP-002 구현 | `ON_BRANCH / AUTOMATED_QA_PASSED` — Issue #88 / draft PR #89 |
+| ANNUAL-MVP-002 구현 | `MERGED / AUTOMATED_QA_PASSED` — Issue #88 / PR #89 / commit `c790bf747c0fa4f4427d9e4b49b22adbfce92824` |
 | ANNUAL-MVP-002 데이터 계약 | `annual-mvp-002-v1`, base `annual-mvp-001-v3` |
 | ANNUAL-MVP-002 문서 검증 | `PASSED` — run #333 |
 | ANNUAL-MVP-002 자동 검증 | `PASSED` — run #167 |
@@ -100,7 +100,7 @@
 - 이해도·가설·관측 패턴·포획 표식 변경 금지
 - 최신 main의 Base Skill 어댑터·자산·라이선스 기록 보존
 
-## ANNUAL-MVP-002 수직절편 — 현재 브랜치 구현
+## ANNUAL-MVP-002 수직절편 — main 병합 구현
 
 ### 구현 범위
 

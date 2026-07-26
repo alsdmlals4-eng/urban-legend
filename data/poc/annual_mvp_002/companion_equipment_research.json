@@ -113,7 +113,9 @@
       "effect_category": "record_readability",
       "effect": {
         "existing_tag_emphasis": 1
-      }
+      },
+      "runtime_status": "DISABLED_PENDING_CORE_HOOK",
+      "preparation_activity_ids": []
     },
     {
       "id": "annual002_support_counterexample",
@@ -126,7 +128,9 @@
       "effect_category": "validation_tolerance",
       "effect": {
         "mistake_cost_waiver": 1
-      }
+      },
+      "runtime_status": "DISABLED_PENDING_CORE_HOOK",
+      "preparation_activity_ids": []
     },
     {
       "id": "annual002_support_damage_buffer",
@@ -139,7 +143,11 @@
       "effect_category": "damage_reduction",
       "effect": {
         "damage_reduction": 6
-      }
+      },
+      "runtime_status": "ACTIVE",
+      "preparation_activity_ids": [
+        "annual001_activity_field_training"
+      ]
     },
     {
       "id": "annual002_support_risk_dampening",
@@ -152,7 +160,11 @@
       "effect_category": "risk_reduction",
       "effect": {
         "risk_reduction": 5
-      }
+      },
+      "runtime_status": "ACTIVE",
+      "preparation_activity_ids": [
+        "annual001_activity_signal_research"
+      ]
     },
     {
       "id": "annual002_support_signal_recheck",
@@ -165,7 +177,9 @@
       "effect_category": "observation_tolerance",
       "effect": {
         "pattern_display_time_percent": 10
-      }
+      },
+      "runtime_status": "DISABLED_PENDING_CORE_HOOK",
+      "preparation_activity_ids": []
     },
     {
       "id": "annual002_support_containment_window",
@@ -178,7 +192,9 @@
       "effect_category": "capture_tolerance",
       "effect": {
         "capture_window_percent": 10
-      }
+      },
+      "runtime_status": "DISABLED_PENDING_CORE_HOOK",
+      "preparation_activity_ids": []
     }
   ],
   "equipment": [

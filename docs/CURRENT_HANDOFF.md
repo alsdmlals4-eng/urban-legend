@@ -11,7 +11,7 @@
 이 문서는 ANNUAL-MVP-001의 4주×7일 계약과 ANNUAL-MVP-002 동료·장비·연구 수직절편 구현을 사람 사용성·신규 플레이어 검증과 분리한다. 자동 검증은 제품 승인이나 제작 확대를 의미하지 않는다.
 
 ```yaml
-status: ANNUAL_MVP_002_ON_BRANCH_AUTOMATED_QA_PASSED
+status: ANNUAL_MVP_002_MERGED_AUTOMATED_QA_PASSED_REVIEW_HARDENING
 implemented_baseline: MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A / Ver 4.2 / save mvp-039
 annual_design: APPROVED_DESIGN_BASELINE
 core_mvp_001:
@@ -62,9 +62,9 @@ annual_mvp_001:
   save_version: annual-mvp-001-save-v1
 annual_mvp_002:
   issue: 88
-  pr: 89_DRAFT
+  pr: 89
   branch: agent/annual-mvp-002-vertical-slice
-  implementation: ON_BRANCH
+  implementation: MERGED
   automated_qa: PASSED
   contract_version: annual-mvp-002-v1
   base_contract_version: annual-mvp-001-v3
@@ -216,8 +216,8 @@ AGENTS.md
 
 ## 다음 작업
 
-1. PR #89 changed-file·보호 경로·review thread 최종 감사
-2. PR #89 squash merge 후 merge commit을 상태 원본과 Issue #88에 기록
+1. PR #89 squash merge 완료 — commit `c790bf747c0fa4f4427d9e4b49b22adbfce92824`
+2. Issue #90 / PR #91 적대적 검수 보정
 3. 7일 편성·템플릿·동료·장비·지원 정보의 사람 반복 조작
 4. 2주차 조기·3주차 자율·4주차 강제 사람 플레이
 5. 동료별 장점과 지원 확률·준비도·보장 발동 설명 수집
