@@ -104,7 +104,7 @@
 
 ### 구현 범위
 
-- 독립 격리 경로 `data/scripts/scenes/poc/annual_mvp_002`
+- 독립 격리 경로 `data/poc/annual_mvp_002`, `scripts/poc/annual_mvp_002`, `scenes/poc/annual_mvp_002`
 - 동료 3명 중 최대 2명 편성: 오현, 한세린, 박도윤
 - 고유 스킬 3개와 공용 지원 6개
 - 공용 지원의 적격 여부, 비적격 사유, 확률, 준비도, 보장 거리 공개

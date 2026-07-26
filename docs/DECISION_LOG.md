@@ -149,7 +149,7 @@
   - visual artifact `8625300008`, 1280×720·1920×1080 캡처 8장 직접 검사 PASS
 - 책임 원본:
   - `docs/superpowers/plans/2026-07-26-annual-mvp-002-vertical-slice-implementation-plan.md`
-  - `docs/qa/ANNUAL_MVP_002_AUTOMATED_QA_2026-07-26.md`
+  - ANNUAL-MVP-002 자동 QA 기록
   - `docs/CURRENT_STATUS.md`
   - `docs/CURRENT_HANDOFF.md`
 - 사람 사용성 QA: `NOT_RUN`
