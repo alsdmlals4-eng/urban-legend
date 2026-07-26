@@ -4,7 +4,10 @@
 > 프로젝트 코어: `docs/PROJECT_CORE.md`  
 > 최신 시간 설계: `docs/superpowers/specs/2026-07-25-annual-mvp-001-seven-day-scheduling-design.md`  
 > 확장 마스터 설계: `docs/superpowers/specs/2026-07-26-annual-expansion-master-design.md`  
-> 임시 데이터 기준선: `docs/planning/ANNUAL_PROVISIONAL_DATA_BASELINE.md`
+> 임시 데이터 기준선: `docs/planning/ANNUAL_PROVISIONAL_DATA_BASELINE.md`  
+> ANNUAL-MVP-002 상세 설계: `docs/superpowers/specs/2026-07-26-annual-mvp-002-companion-equipment-research-design.md`  
+> ANNUAL-MVP-002 구현 계획: `docs/superpowers/plans/2026-07-26-annual-mvp-002-vertical-slice-implementation-plan.md`  
+> 벤치마크 권장안: `docs/planning/ANNUAL_BENCHMARK_RECOMMENDATIONS.md`
 
 ## 현재 기준
 
@@ -19,10 +22,14 @@
 | 4주 보정 | `MERGED / AUTOMATED_QA_PASSED` — PR #70 |
 | 7일 주간 계약 | `APPROVED / COMPLETE` — Issue #75 |
 | 7일 주간 구현 | `MERGED / AUTOMATED_QA_PASSED` — PR #76 / commit `57c1f3d92e0fdae658826a23e5c2326fe9efe478` |
-| 확장 순서 | `APPROVED_SEQUENCE` — Issue #84 |
+| 확장 순서 | `APPROVED_SEQUENCE` — Issue #84 / PR #85 |
 | 확장 세부 데이터 | `PROVISIONAL_BASELINE` |
-| ANNUAL-MVP-002 설계 | `READY_FOR_USER_REVIEW` |
-| ANNUAL-MVP-002 구현 | `NOT_STARTED` |
+| 유사 장르 벤치마크 | `BENCHMARK_RESEARCH_COMPLETE / RECOMMENDED_FOR_REVIEW` — Issue #86 / PR #87 |
+| ANNUAL-MVP-002 설계 | `APPROVED_IMPLEMENTATION_BASELINE` |
+| ANNUAL-MVP-002 구현 | `ON_BRANCH / AUTOMATED_QA_PASSED` — Issue #88 / draft PR #89 |
+| ANNUAL-MVP-002 문서 검증 | run #333 PASS |
+| ANNUAL-MVP-002 자동 검증 | run #167 PASS |
+| ANNUAL-MVP-002 시각·포인터 QA | run #55 PASS / artifact `8625300008` |
 | 사람 사용성 QA | `NOT_RUN` |
 | 신규 플레이어 검증 | `NOT_RUN` |
 | POC_PASSED | `NOT_DECLARED` |
@@ -35,7 +42,7 @@
 - 성장과 동료 지원은 핵심 정답·가설·이해도·포획 조건을 변경하지 않는다.
 - 자동 회귀 통과만으로 `POC_PASSED`나 제작 확대를 선언하지 않는다.
 - 기획·구현·병합 상태 변경은 `docs/PROJECT_UPDATE_PROTOCOL.md`의 동기화 매트릭스를 따른다.
-- 충돌 시 최신 사용자 승인 7일 설계 → 승인 확장 순서 → 활성 정본 → PR #70의 4주×3슬롯 → 기존 3주 구현 순서로 해석한다.
+- 충돌 시 최신 사용자 승인 ANNUAL-MVP-002 범위 → 7일 설계 → 승인 확장 순서 → 활성 정본 → PR #70의 4주×3슬롯 → 기존 3주 구현 순서로 해석한다.
 - `PROVISIONAL_BASELINE` 수치는 플레이 검증을 위한 시작값이며 기존 `FIXED_CONTRACT`를 대체하지 않는다.
 
 ## 완료·보존 자산
@@ -101,7 +108,7 @@
 - [x] PR #77 상태 원본 병합 — commit `229c74a80b8aefd71d16befb95758f4dcc7f591f`
 - [x] Issue #75 completed
 
-## 확장 기획 기준선 — 승인, 구현 미착수
+## 확장 기획 기준선 — 승인
 
 승인된 순서:
 
@@ -120,6 +127,7 @@ ANNUAL-MVP-002 동료·장비·연구 조합
 - `docs/superpowers/specs/2026-07-26-annual-expansion-master-design.md`
 - `docs/planning/ANNUAL_PROVISIONAL_DATA_BASELINE.md`
 - `docs/superpowers/specs/2026-07-26-annual-mvp-002-companion-equipment-research-design.md`
+- `docs/planning/ANNUAL_BENCHMARK_RECOMMENDATIONS.md`
 
 세부 데이터 작성 완료 범위:
 
@@ -135,7 +143,76 @@ ANNUAL-MVP-002 동료·장비·연구 조합
 - 미니게임 3종 난이도 기준
 - 연도 결산·다음 연도 계승 payload
 
-모든 신규 세부값은 `PROVISIONAL_BASELINE`이다. 구현 결합 전에 ID 충돌 감사와 사용자 spec 검토를 거친다.
+모든 신규 세부값은 `PROVISIONAL_BASELINE`이다. 구현 결합 전에 ID 충돌 감사와 사람 플레이 수치 검증을 거친다.
+
+## ANNUAL-MVP-002 수직절편 — 자동 검증 완료, 병합 대기
+
+### 구현 subset
+
+전체 임시 기준선 중 첫 수직절편은 다음으로 제한했다.
+
+- 동료 3명: 오현, 한세린, 박도윤
+- 최대 동시 편성 2명
+- 고유 스킬 3개
+- 공용 지원 6개
+- 장비 3개, 모듈 6개
+- 연구 자원 4종, 연구 노드 8개
+- 동시 연구 최대 2개
+- save 선택 확장 블록 `state.annual_mvp_002`
+
+### 벤치마크 P0 반영
+
+- 일정 결과 미리보기
+- 지난주 복사
+- 템플릿 3개
+- 전체 초기화
+- 마지막 변경 한 단계 취소
+- 템플릿의 주차 간 유지
+- 동료 지원 적격·비적격 사유, 확률, 준비도, 보장 거리 공개
+- 주간 결과의 변화·원인·다음 주 영향 요약
+
+### 공정성·fallback
+
+- 일반 지원 확률은 기본 + 준비 일정 10%p + 업무 신뢰 0/5/10%p, 상한 90%다.
+- 준비도는 일반 확률에 직접 더하지 않는다.
+- 적격 실패 +20, 실패 학습 연구 완료 시 +25다.
+- 준비도 100이면 다음 적격 발동을 보장하고 성공 뒤 0으로 초기화한다.
+- 동료·장비·연구는 신규 핵심 단서, 정답 가설, 미관측 패턴, 필수 회수 조건을 제공하지 않는다.
+- 확장 데이터·adapter 실패 시 기존 ANNUAL-MVP-001과 CORE 기본 동작을 사용한다.
+- save version `annual-mvp-001-save-v1`을 유지한다.
+- 구 저장은 기본 확장 상태로 복원하고 알 수 없는 ID는 `orphaned_ids`에 보존하되 효과 계산에서 제외한다.
+
+### 자동 게이트
+
+- [x] Issue #88 생성
+- [x] draft PR #89 생성
+- [x] 구현 계획 작성
+- [x] 데이터 계약 RED→GREEN
+- [x] planner RED→GREEN
+- [x] State·save·orphan RED→GREEN
+- [x] 지원 resolver RED→GREEN
+- [x] 사건 adapter·fallback RED→GREEN
+- [x] 독립 격리 Scene RED→GREEN
+- [x] Python 계약 — run #167 PASS
+- [x] Godot 4.7.1 import — run #167 PASS
+- [x] CORE focused — run #167 PASS
+- [x] ANNUAL-MVP-001 focused — run #167 PASS
+- [x] ANNUAL-MVP-002 focused — run #167 PASS
+- [x] 전체 Godot 회귀 — run #167 PASS
+- [x] 기존 ANNUAL-MVP-001 키보드·포인터 — run #55 PASS
+- [x] ANNUAL-MVP-002 실제 포인터 — run #55 PASS
+- [x] 1280×720·1920×1080 화면 캡처 — run #55 PASS
+- [x] 캡처 8장 직접 검사 — artifact `8625300008`
+- [x] 문서 계약 — run #333 PASS
+- [ ] PR #89 changed-file·review thread 최종 감사
+- [ ] PR #89 squash merge와 Issue #88 완료 기록
+
+### 별도 후속 범위
+
+- 사건 징후 시계
+- 관측·가설·반박 보드
+- 연구·괴이 매뉴얼 전체 탐색 UI
+- 전체 기준선의 동료 5명·장비 6개·모듈 12개·연구 24개 확대
 
 ## 다음 플레이 게이트
 
@@ -147,32 +224,14 @@ ANNUAL-MVP-002 동료·장비·연구 조합
 - 직접 휴식과 자동 휴식의 차이를 이해하는가
 - 육성 선택이 사건 정보·위험·피해 관리로 연결되는가
 - 사건 결과가 연구·스킬·결산으로 환류하는가
-- 동료 지원 조건·확률·준비도가 공정한가
-- 반복 일정 조작 피로가 허용 가능한가
+- 동료별 장점을 설명할 수 있는가
+- 지원 적격·확률·준비도·보장 발동을 설명할 수 있는가
+- 장비·동료가 사건 정답을 제공한다고 오인하지 않는가
+- 일정 미리보기·템플릿·undo가 반복 조작 피로를 줄이는가
 
 판정은 `KEEP / AMPLIFY / CHANGE / RETEST / HOLD`를 사용한다.
 
 ## 후속 트랙
-
-### ANNUAL-MVP-002 — 상세 설계 검토 단계
-
-진입 조건:
-
-- Issue #75 통합 완료 — PR #76 / commit `57c1f3d92e0fdae658826a23e5c2326fe9efe478`
-- 사용자 승인 확장 순서 — Issue #84
-- 상세 spec 사용자 검토
-- 구현 계획 별도 작성
-- 사람 사용성 QA와 신규 플레이어 검증 상태를 명시적으로 유지
-
-첫 구현 후보:
-
-- 동료 3명 중 최대 2명 편성
-- 고유 스킬 3개
-- 공용 보조 스킬 6개
-- 장비 3개, 모듈 6개
-- 연구 노드 8개
-- 지원 확률·준비도·보장 발동
-- 기존 CORE-MVP-001 adapter 연결
 
 ### 일정·상태·회복 확장
 
@@ -212,11 +271,13 @@ ANNUAL-MVP-002의 지원·장비·연구 데이터가 안정된 뒤 피로 외 �
 ```text
 annual_mvp_001_seven_day_contract: APPROVED
 annual_mvp_001_seven_day_implementation: MERGED
-automated_verification: PASSED
+annual_mvp_001_automated_verification: PASSED
 annual_expansion_sequence: APPROVED
 annual_expansion_provisional_data: AUTHORED
-annual_mvp_002_design: READY_FOR_USER_REVIEW
-annual_mvp_002_implementation: NOT_STARTED
+annual_mvp_002_design: APPROVED_IMPLEMENTATION_BASELINE
+annual_mvp_002_implementation: ON_BRANCH
+annual_mvp_002_automated_verification: PASSED
+annual_mvp_002_merge: PENDING
 annual_mvp_003_implementation: NOT_APPROVED
 annual_mvp_004_implementation: NOT_APPROVED
 human_usability_qa: NOT_RUN
