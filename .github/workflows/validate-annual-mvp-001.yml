@@ -45,6 +45,7 @@ jobs:
             echo "Review hardening already applied"
             exit 0
           fi
+          sed -i 's/ANNUAL_MVP_002_AUTOMATED_VALIDATION_2026-07-26.md/ANNUAL_MVP_002_AUTOMATED_QA_2026-07-26.md/' tools/review/apply_annual_mvp_002_hardening.py
           set -o pipefail
           python tools/review/apply_annual_mvp_002_hardening.py 2>&1 | tee review-hardening.log
           git config user.name "github-actions[bot]"
