@@ -1,0 +1,411 @@
+{
+  "contract_version": "annual-mvp-002-v1",
+  "base_contract_version": "annual-mvp-001-v3",
+  "status": "PROVISIONAL_BASELINE",
+  "rules": {
+    "max_companions": 2,
+    "public_support_slots_per_companion": 1,
+    "base_module_slots": 1,
+    "researched_module_slots": 2,
+    "max_active_research": 2,
+    "preparation_bonus": 10,
+    "trust_bonus_40": 5,
+    "trust_bonus_70": 10,
+    "ordinary_chance_cap": 90,
+    "readiness_gain": 20,
+    "readiness_guarantee": 100,
+    "duplicate_role_efficiency": 70,
+    "research_cancel_refund_percent": 75
+  },
+  "companions": [
+    {
+      "id": "annual002_companion_ohyun",
+      "display_name": "오현",
+      "role_primary": "field_control",
+      "role_secondary": "observation",
+      "unique_skill_id": "annual002_unique_ohyun_field_anchor",
+      "public_skill_ids": [
+        "annual002_support_damage_buffer",
+        "annual002_support_risk_dampening"
+      ],
+      "work_trust": 20,
+      "personal_bond": 10,
+      "availability": "AVAILABLE"
+    },
+    {
+      "id": "annual002_companion_han_serin",
+      "display_name": "한세린",
+      "role_primary": "analysis",
+      "role_secondary": "counterexample",
+      "unique_skill_id": "annual002_unique_han_cross_index",
+      "public_skill_ids": [
+        "annual002_support_second_read",
+        "annual002_support_counterexample"
+      ],
+      "work_trust": 15,
+      "personal_bond": 5,
+      "availability": "AVAILABLE"
+    },
+    {
+      "id": "annual002_companion_park_doyun",
+      "display_name": "박도윤",
+      "role_primary": "containment",
+      "role_secondary": "protection",
+      "unique_skill_id": "annual002_unique_park_safe_perimeter",
+      "public_skill_ids": [
+        "annual002_support_damage_buffer",
+        "annual002_support_containment_window"
+      ],
+      "work_trust": 10,
+      "personal_bond": 5,
+      "availability": "AVAILABLE"
+    }
+  ],
+  "unique_skills": [
+    {
+      "id": "annual002_unique_ohyun_field_anchor",
+      "owner_companion_id": "annual002_companion_ohyun",
+      "display_name": "현장 기준점",
+      "trigger": "first_damage_before",
+      "trigger_label": "첫 현장 피해 발생 직전",
+      "incident_limit": 1,
+      "effect_category": "damage_and_risk",
+      "effect": {
+        "damage_reduction": 10,
+        "risk_reduction": 5
+      }
+    },
+    {
+      "id": "annual002_unique_han_cross_index",
+      "owner_companion_id": "annual002_companion_han_serin",
+      "display_name": "교차 색인",
+      "trigger": "clue_count_at_least_3",
+      "trigger_label": "확보한 기록 3개 이상",
+      "incident_limit": 1,
+      "effect_category": "record_readability",
+      "effect": {
+        "existing_record_conflict_highlight": 1
+      }
+    },
+    {
+      "id": "annual002_unique_park_safe_perimeter",
+      "owner_companion_id": "annual002_companion_park_doyun",
+      "display_name": "안전 경계선",
+      "trigger": "civilian_or_containment_failure_before",
+      "trigger_label": "민간 보호 또는 봉쇄 실패 직전",
+      "incident_limit": 1,
+      "effect_category": "protection_and_tolerance",
+      "effect": {
+        "civilian_damage_reduction": 15,
+        "response_time_percent": 10
+      }
+    }
+  ],
+  "support_skills": [
+    {
+      "id": "annual002_support_second_read",
+      "display_name": "2차 판독",
+      "trigger": "after_clue_recorded",
+      "trigger_label": "기존 단서 기록 직후",
+      "base_chance": 35,
+      "readiness_gain": 20,
+      "readiness_guarantee": 100,
+      "effect_category": "record_readability",
+      "effect": {
+        "existing_tag_emphasis": 1
+      }
+    },
+    {
+      "id": "annual002_support_counterexample",
+      "display_name": "반례 검토",
+      "trigger": "hypothesis_conflict_before",
+      "trigger_label": "기존 근거 연결의 충돌 판정 직전",
+      "base_chance": 30,
+      "readiness_gain": 20,
+      "readiness_guarantee": 100,
+      "effect_category": "validation_tolerance",
+      "effect": {
+        "mistake_cost_waiver": 1
+      }
+    },
+    {
+      "id": "annual002_support_damage_buffer",
+      "display_name": "충격 완화",
+      "trigger": "damage_at_least_6",
+      "trigger_label": "피해 6 이상 발생 직전",
+      "base_chance": 35,
+      "readiness_gain": 20,
+      "readiness_guarantee": 100,
+      "effect_category": "damage_reduction",
+      "effect": {
+        "damage_reduction": 6
+      }
+    },
+    {
+      "id": "annual002_support_risk_dampening",
+      "display_name": "위험 억제",
+      "trigger": "risk_increase_before",
+      "trigger_label": "사건 위험 증가 직전",
+      "base_chance": 30,
+      "readiness_gain": 20,
+      "readiness_guarantee": 100,
+      "effect_category": "risk_reduction",
+      "effect": {
+        "risk_reduction": 5
+      }
+    },
+    {
+      "id": "annual002_support_signal_recheck",
+      "display_name": "신호 재검",
+      "trigger": "observed_pattern_reappears",
+      "trigger_label": "이미 관측한 패턴 재등장",
+      "base_chance": 35,
+      "readiness_gain": 20,
+      "readiness_guarantee": 100,
+      "effect_category": "observation_tolerance",
+      "effect": {
+        "pattern_display_time_percent": 10
+      }
+    },
+    {
+      "id": "annual002_support_containment_window",
+      "display_name": "봉쇄창 연장",
+      "trigger": "capture_window_open",
+      "trigger_label": "확인된 포획 창이 열림",
+      "base_chance": 25,
+      "readiness_gain": 20,
+      "readiness_guarantee": 100,
+      "effect_category": "capture_tolerance",
+      "effect": {
+        "capture_window_percent": 10
+      }
+    }
+  ],
+  "equipment": [
+    {
+      "id": "annual002_equipment_echo_recorder",
+      "display_name": "잔향 기록기",
+      "family": "observation",
+      "module_slots": 1,
+      "allowed_module_ids": [
+        "annual002_module_noise_filter",
+        "annual002_module_repeat_buffer"
+      ],
+      "effect": {
+        "record_omission_prevention": 1
+      }
+    },
+    {
+      "id": "annual002_equipment_field_coat",
+      "display_name": "현장 방호복",
+      "family": "protection",
+      "module_slots": 1,
+      "allowed_module_ids": [
+        "annual002_module_impact_gel",
+        "annual002_module_residue_lining"
+      ],
+      "effect": {
+        "first_damage_reduction": 8
+      }
+    },
+    {
+      "id": "annual002_equipment_seal_case",
+      "display_name": "봉쇄 인장함",
+      "family": "containment",
+      "module_slots": 1,
+      "allowed_module_ids": [
+        "annual002_module_stable_rune",
+        "annual002_module_pattern_memory"
+      ],
+      "effect": {
+        "capture_window_percent": 8
+      }
+    }
+  ],
+  "modules": [
+    {
+      "id": "annual002_module_noise_filter",
+      "display_name": "잡음 필터",
+      "family": "observation",
+      "effect": {
+        "analysis_mistake_cost_reduction": 1
+      }
+    },
+    {
+      "id": "annual002_module_repeat_buffer",
+      "display_name": "반복 버퍼",
+      "family": "observation",
+      "effect": {
+        "observation_input_time_percent": 12
+      }
+    },
+    {
+      "id": "annual002_module_impact_gel",
+      "display_name": "충격 흡수재",
+      "family": "protection",
+      "effect": {
+        "damage_reduction": 5,
+        "incident_limit": 3
+      }
+    },
+    {
+      "id": "annual002_module_residue_lining",
+      "display_name": "잔향 차폐재",
+      "family": "protection",
+      "effect": {
+        "residue_exposure_reduction_percent": 20
+      }
+    },
+    {
+      "id": "annual002_module_stable_rune",
+      "display_name": "안정 인장",
+      "family": "containment",
+      "effect": {
+        "capture_stability_tolerance": 5
+      }
+    },
+    {
+      "id": "annual002_module_pattern_memory",
+      "display_name": "패턴 기억판",
+      "family": "containment",
+      "effect": {
+        "observed_pattern_warning_seconds": 1
+      }
+    }
+  ],
+  "research_resources": [
+    {
+      "id": "annual002_resource_records",
+      "display_name": "관측 기록"
+    },
+    {
+      "id": "annual002_resource_residue",
+      "display_name": "잔향 자료"
+    },
+    {
+      "id": "annual002_resource_risk_cases",
+      "display_name": "위험 사례"
+    },
+    {
+      "id": "annual002_resource_institution",
+      "display_name": "기관 협력 점수"
+    }
+  ],
+  "research_nodes": [
+    {
+      "id": "annual002_research_field_records",
+      "display_name": "현장 기록법",
+      "field": "observation",
+      "progress_required": 2,
+      "resource_cost": {
+        "annual002_resource_records": 2
+      },
+      "prerequisite_ids": [],
+      "effect": {
+        "record_source_time_tags": true
+      }
+    },
+    {
+      "id": "annual002_research_safe_recheck",
+      "display_name": "안전 재확인",
+      "field": "observation",
+      "progress_required": 2,
+      "resource_cost": {
+        "annual002_resource_records": 2
+      },
+      "prerequisite_ids": [
+        "annual002_research_field_records"
+      ],
+      "effect": {
+        "safe_recheck_count": 1
+      }
+    },
+    {
+      "id": "annual002_research_damage_protocol",
+      "display_name": "피해 대응 절차",
+      "field": "protection",
+      "progress_required": 2,
+      "resource_cost": {
+        "annual002_resource_risk_cases": 2
+      },
+      "prerequisite_ids": [],
+      "effect": {
+        "first_damage_reduction": 4
+      }
+    },
+    {
+      "id": "annual002_research_risk_briefing",
+      "display_name": "위험 브리핑",
+      "field": "protection",
+      "progress_required": 2,
+      "resource_cost": {
+        "annual002_resource_records": 1,
+        "annual002_resource_risk_cases": 2
+      },
+      "prerequisite_ids": [
+        "annual002_research_damage_protocol"
+      ],
+      "effect": {
+        "risk_component_category_preview": 1
+      }
+    },
+    {
+      "id": "annual002_research_readiness_training",
+      "display_name": "준비도 훈련",
+      "field": "support",
+      "progress_required": 2,
+      "resource_cost": {
+        "annual002_resource_institution": 2
+      },
+      "prerequisite_ids": [],
+      "effect": {
+        "starting_readiness": 5
+      }
+    },
+    {
+      "id": "annual002_research_failure_learning",
+      "display_name": "실패 학습",
+      "field": "support",
+      "progress_required": 3,
+      "resource_cost": {
+        "annual002_resource_institution": 2,
+        "annual002_resource_risk_cases": 1
+      },
+      "prerequisite_ids": [
+        "annual002_research_readiness_training"
+      ],
+      "effect": {
+        "readiness_gain": 25
+      }
+    },
+    {
+      "id": "annual002_research_rest_quality",
+      "display_name": "휴식 품질",
+      "field": "recovery",
+      "progress_required": 2,
+      "resource_cost": {
+        "annual002_resource_risk_cases": 2
+      },
+      "prerequisite_ids": [],
+      "effect": {
+        "direct_rest_fatigue_recovery": 28
+      }
+    },
+    {
+      "id": "annual002_research_aftercare",
+      "display_name": "사후 관리",
+      "field": "recovery",
+      "progress_required": 3,
+      "resource_cost": {
+        "annual002_resource_residue": 2,
+        "annual002_resource_risk_cases": 1
+      },
+      "prerequisite_ids": [
+        "annual002_research_rest_quality"
+      ],
+      "effect": {
+        "post_incident_fatigue_reduction_percent": 10
+      }
+    }
+  ]
+}

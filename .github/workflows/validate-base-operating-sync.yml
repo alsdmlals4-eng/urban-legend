@@ -21,6 +21,7 @@ on:
       - "tests/test_project_document_sync.py"
       - "tests/test_annual_expansion_planning_contract.py"
       - "tests/test_genre_benchmark_contract.py"
+      - "tests/test_annual_mvp_002_implementation_contract.py"
   workflow_dispatch:
 
 concurrency:
@@ -43,7 +44,7 @@ jobs:
         run: python -m py_compile tools/check_archive_governance.py tests/test_archive_retention_governance.py
       - name: Validate archive governance
         run: python tools/check_archive_governance.py
-      - name: Validate Base, core, routing, local Skill, archive, active references, planning synchronization, expansion baseline, and benchmark recommendations
+      - name: Validate Base, core, routing, local Skill, archive, active references, planning synchronization, expansion baseline, benchmark recommendations, and ANNUAL-MVP-002 implementation records
         shell: bash
         run: |
           set +e
@@ -56,6 +57,7 @@ jobs:
             tests/test_project_document_sync.py \
             tests/test_annual_expansion_planning_contract.py \
             tests/test_genre_benchmark_contract.py \
+            tests/test_annual_mvp_002_implementation_contract.py \
             2>&1 | tee documentation-validation.log
           status=${PIPESTATUS[0]}
           echo "$status" > documentation-validation-exit-code.txt

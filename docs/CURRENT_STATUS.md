@@ -5,7 +5,10 @@
 > 상세 설계: `docs/GAME_DESIGN_DOCUMENT.md`  
 > 연도제 원설계: `docs/superpowers/specs/2026-07-25-annual-raising-visual-novel-design.md`  
 > 최신 시간 계약: `docs/superpowers/specs/2026-07-25-annual-mvp-001-seven-day-scheduling-design.md`  
-> 최신 구현 계획: `docs/superpowers/plans/2026-07-25-annual-mvp-001-seven-day-scheduling-implementation-plan.md`
+> 확장 마스터 설계: `docs/superpowers/specs/2026-07-26-annual-expansion-master-design.md`  
+> ANNUAL-MVP-002 상세 설계: `docs/superpowers/specs/2026-07-26-annual-mvp-002-companion-equipment-research-design.md`  
+> 최신 구현 계획: `docs/superpowers/plans/2026-07-26-annual-mvp-002-vertical-slice-implementation-plan.md`  
+> 벤치마크 권장안: `docs/planning/ANNUAL_BENCHMARK_RECOMMENDATIONS.md`
 
 이 문서는 구현, 자동 검증, 렌더링·입력 QA, 신규 플레이어 검증을 분리한다. 자동 회귀와 화면 검증은 `POC_PASSED`, 연간 루프 통과, 제작 확대 승인을 뜻하지 않는다.
 
@@ -34,6 +37,13 @@
 | 7일 문서 계약 | `PASSED` — run #273 |
 | 7일 ANNUAL 자동 검증 | `PASSED` — run #121 |
 | 7일 시각·입력 QA | `PASSED` — run #51 |
+| 확장 순서·임시 데이터 기준선 | `APPROVED_SEQUENCE / PROVISIONAL_BASELINE` — Issue #84 / PR #85 |
+| 유사 장르 벤치마크 | `BENCHMARK_RESEARCH_COMPLETE / RECOMMENDED_FOR_REVIEW` — Issue #86 / PR #87 |
+| ANNUAL-MVP-002 구현 | `ON_BRANCH / AUTOMATED_QA_PASSED` — Issue #88 / draft PR #89 |
+| ANNUAL-MVP-002 데이터 계약 | `annual-mvp-002-v1`, base `annual-mvp-001-v3` |
+| ANNUAL-MVP-002 문서 검증 | `PASSED` — run #333 |
+| ANNUAL-MVP-002 자동 검증 | `PASSED` — run #167 |
+| ANNUAL-MVP-002 시각·포인터 QA | `PASSED` — run #55 / artifact `8625300008` |
 | GDD 버전 | v3.2 — 4주×7일 계약 반영 |
 | GDD DOCX | 결정적 생성물, Git 비추적; 생성기 포맷 v5 |
 | 사람 손 장시간 사용성 QA | `NOT_RUN` |
@@ -76,7 +86,7 @@
 
 - JSON 계약 `annual-mvp-001-v3`
 - `max_weeks=4`, `days_per_week=7`, 월 28일
-- 기존 3주 상태를 보존하고 활성 Scene이 `AnnualMvp001StateV2` 사용
+- 기존 3주 상태를 보존하고 활성 ANNUAL-MVP-001 Scene이 `AnnualMvp001StateV2` 사용
 - 활동 일수 합계 검증과 7일 초과 불변성
 - 첫 확정 경고와 같은 편성 두 번째 확정
 - 자동 휴식 합산 결과 `annual001_activity_auto_rest`
@@ -89,6 +99,52 @@
 - CORE-MVP-001 외부 지원은 체력 회복·위험 완화만 허용
 - 이해도·가설·관측 패턴·포획 표식 변경 금지
 - 최신 main의 Base Skill 어댑터·자산·라이선스 기록 보존
+
+## ANNUAL-MVP-002 수직절편 — 현재 브랜치 구현
+
+### 구현 범위
+
+- 독립 격리 경로 `data/scripts/scenes/poc/annual_mvp_002`
+- 동료 3명 중 최대 2명 편성: 오현, 한세린, 박도윤
+- 고유 스킬 3개와 공용 지원 6개
+- 공용 지원의 적격 여부, 비적격 사유, 확률, 준비도, 보장 거리 공개
+- 일반 확률 `기본 + 준비 일정 10%p + 업무 신뢰 0/5/10%p`, 상한 90%
+- 적격 실패 준비도 +20, 실패 학습 연구 완료 시 +25, 준비도 100에서 다음 적격 발동 보장
+- 장비 3개와 계열 호환 모듈 6개
+- 연구 자원 4종, 연구 노드 8개, 동시 연구 최대 2개, 취소 시 예약 자원 75% 내림 반환
+- 일정 결과 미리보기: 사용·남은 일수, 피로·역량·기관 영향
+- 지난주 복사, 템플릿 3개, 전체 초기화, 마지막 변경 실행 취소
+- 템플릿은 주차 전환 뒤에도 유지
+- 주간 결과의 `무엇이 변했는가 / 왜 변했는가 / 다음 주 영향` 인과 요약
+- 기존 CORE hook을 통한 피해·위험·허용 오차·회수 창 보조
+- 확장 초기화·adapter 실패 시 기존 ANNUAL-MVP-001과 CORE 기본 동작으로 fallback
+- save version을 올리지 않고 `state.annual_mvp_002` 선택 블록만 추가
+- 구 저장은 기본 확장 상태로 복원하고 알 수 없는 ID는 `orphaned_ids`에 보존하되 효과 계산에서 제외
+
+### 벤치마크 반영 경계
+
+이번 수직절편에 포함:
+
+- 일정 결과 미리보기
+- 반복 편성 도구
+- 동료 지원 투명성
+- 주간 인과 요약
+
+별도 후속 작업:
+
+- 사건 징후 시계
+- 관측·가설·반박 보드
+- 연구·괴이 매뉴얼 전체 탐색 UI
+- ANNUAL-MVP-003 분기 콘텐츠
+
+### 자동 검증
+
+- 문서 run #333: 기존 문서·archive·확장 기획·벤치마크 계약 PASS
+- ANNUAL run #167: Python 계약, Godot 4.7.1 import, CORE focused, ANNUAL-MVP-001 focused, ANNUAL-MVP-002 focused, 전체 Godot 회귀 PASS
+- Visual run #55: 기존 ANNUAL-MVP-001 키보드·포인터, 새 ANNUAL-MVP-002 실제 좌표 편성·템플릿·출동·동료 선택·사건 진입 PASS
+- 1280×720·1920×1080 계획 초기, 결과 미리보기, 주간 인과 요약, 출동 편성 화면 캡처 PASS
+- visual artifact `8625300008`
+- 캡처 직접 검사: 한글 글리프 누락, 겹침, 잘린 핵심 정보 없음; 720p의 긴 계획 화면은 ScrollContainer로 접근 가능
 
 ## 역사적 구현·QA 증거
 
@@ -127,11 +183,13 @@ PR #70의 4주 구조는 달력 월 보정과 위험 0/15/30의 근거로 유지
 
 ## 충돌 해석 우선순위
 
-1. 사용자가 승인한 최신 7일 주간·가변 일정 설계
-2. `docs/superpowers/specs/2026-07-25-annual-mvp-001-seven-day-scheduling-design.md`
-3. 최신 7일 구현 계획
-4. `CURRENT_STATUS`·`PROJECT_CORE`·GDD 활성 정본
-5. PR #70의 4주×3슬롯 구현과 이전 3주 PoC
+1. 사용자가 승인한 ANNUAL-MVP-002 진행과 최신 벤치마크 반영 범위
+2. `docs/superpowers/specs/2026-07-26-annual-mvp-002-companion-equipment-research-design.md`
+3. `docs/superpowers/plans/2026-07-26-annual-mvp-002-vertical-slice-implementation-plan.md`
+4. 사용자가 승인한 7일 주간·가변 일정 설계
+5. `docs/superpowers/specs/2026-07-25-annual-mvp-001-seven-day-scheduling-design.md`
+6. `CURRENT_STATUS`·`PROJECT_CORE`·GDD 활성 정본
+7. PR #70의 4주×3슬롯 구현과 이전 3주 PoC
 
 최신 기획을 우선하되 보호 경로, 저장 비침범, 기존 CORE 하위 호환 계약은 유지한다.
 
@@ -152,18 +210,21 @@ PR #70의 4주 구조는 달력 월 보정과 위험 0/15/30의 근거로 유지
 - 실제 요일·공휴일·월별 사건 배치
 - 일정이 주차 경계를 넘는 다주 일정
 - 자동 휴식의 관계·특수 이벤트
-- 동료 2명 동시 편성
 - 관계·로맨스 연간 진행
 - 중형·소형 일반 사건
 - 신규 대표 조작형 규칙 검증 미니게임
+- 사건 징후 시계와 관측·가설·반박 보드
+- 전체 연구·괴이 매뉴얼 탐색 UI
 - 본편 `GameState` 통합과 기존 save migration
 - 연도 결산 계승 payload의 실제 다음 연도 소비
-- ANNUAL-MVP-002~004
+- ANNUAL-MVP-003·004 구현
 
 ## 다음 게이트
 
-1. 실제 사람의 7일 편성·경고·자동 휴식 반복 사용성 평가
-2. 신규 플레이어의 2주차 조기·3주차 자율·4주차 강제 출동 플레이
-3. 육성→사건→연구 인과와 동료 지원 공정성 설명 수집
-4. `KEEP / AMPLIFY / CHANGE / RETEST / HOLD` 판정
-5. 별도 사용자 승인 전 ANNUAL-MVP-002와 제작 확대 시작 금지
+1. PR #89 changed-file·보호 경로·review thread 최종 감사와 squash merge
+2. 실제 사람의 7일 편성·템플릿·동료·장비 반복 사용성 평가
+3. 신규 플레이어의 2주차 조기·3주차 자율·4주차 강제 출동 플레이
+4. 동료별 장점, 지원 확률·준비도·보장 발동, 육성→사건→연구 인과 설명 수집
+5. 장비·동료가 사건 정답을 제공한다고 오인하지 않는지 확인
+6. `KEEP / AMPLIFY / CHANGE / RETEST / HOLD` 판정
+7. 별도 사용자 승인 전 ANNUAL-MVP-003과 제작 확대 시작 금지
