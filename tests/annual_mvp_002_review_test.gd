@@ -168,7 +168,7 @@ func _test_actual_main_menu_references() -> void:
 	_expect(scene_text.contains('path="res://scripts/ui/main_menu.gd"'), "actual main scene must use scripts/ui/main_menu.gd")
 	_expect(script_text.contains('annual_mvp_002_button.name = "AnnualMvp002Button"'), "actual main menu script must create the named ANNUAL-MVP-002 button")
 	_expect(script_text.contains('res://scenes/poc/annual_mvp_002/annual_mvp_002_scene.tscn'), "actual main menu button must target the ANNUAL-MVP-002 scene")
-	_expect(script_text.contains("ANNUAL_MVP_002_MENU_QA"), "actual main menu must expose an env-gated runtime route check")
+	_expect(FileAccess.file_exists("res://tests/annual_mvp_002_main_menu_runtime_qa.gd"), "normal-project runtime menu QA must exist")
 
 
 func _read_text(path: String) -> String:
