@@ -30,6 +30,7 @@ START_HERE.md
 | `../GAME_DESIGN_DOCUMENT.md` | 조사·가설·이해도·전조·포획 상세 계약 |
 | `ROADMAP_AND_HANDOFF.md` | 단계 의존성과 진입·종료 게이트 |
 | `REFERENCE_CASES.md` | 채택·변형·제외한 벤치마크 원리 |
+| `../research/2026-07-29-fair-play-hypothesis-board-evidence-pack.md` | 관측·가설·반박 보드의 공정 추리 Pilot; `PILOT_RECOMMENDATION / NOT_CANON` |
 | `../CURRENT_STATUS.md` | 현재 구현과 미구현 목표 상태 구분 |
 | `../../MVP_ROADMAP.md` | 현재 실행 순서 |
 | `../superpowers/plans/2026-07-23-core-mvp-001-implementation-plan.md` | CORE-MVP-001의 정확한 파일·인터페이스·TDD·검증 순서 |
@@ -59,6 +60,7 @@ START_HERE.md
 |---|---|---|
 | CORE-MVP-001 조사·전투 PoC | 통합 명세, 구현 계획, 스트레스 보고서 | 규칙 설명, 근거 배제, 전조 인과, 난수 공정성, 저장 비침범 |
 | 사건 작성 | 코어, 통합 명세, `urban-legend-investigation-case-authoring` | 전조·가설·지지·반박·미해결·위험 사례·포획 |
+| 가설 보드 Pilot | 공정 추리 Evidence Pack, GDD, 사건 작성 Skill | 근거 관계 이유, 4→2 제거, 원문 복귀, 실패 복기 |
 | UI 정보 위계 | 통합 명세, GDD, 점진 공개 기획 | 전조·근거·대응 의도·직전 결과 우선 |
 | 포획·연구 | CORE-MVP-002 진입 뒤 | 영구 매뉴얼과 현장 이해도 분리 |
 | 챕터·의뢰 | CORE-MVP-003 진입 뒤 | 의뢰 비필수, 공통 인지 문법, 일정 압박 |
