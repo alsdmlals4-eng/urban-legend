@@ -59,6 +59,10 @@ PROGRESSIVE_BASELINE_DOCS = [
     ROOT / "docs/planning/PROGRESSIVE_DISCLOSURE_PLAN.md",
     ROOT / "docs/GODOT_NATIVE_UI_ARCHITECTURE.md",
 ]
+COMPLETED_VALIDATION_DESIGN_RECORDS = {
+    "docs/superpowers/specs/2026-07-27-annual-mvp-002-human-validation-design.md",
+    "docs/superpowers/plans/2026-07-27-annual-mvp-002-human-validation-plan.md",
+}
 MARKDOWN_LINK = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
 BACKTICK_PATH = re.compile(
     r"`((?:docs|scripts|scenes|data|tests|tools|assets)/[^`]+|"
@@ -296,6 +300,7 @@ class ActiveDocumentReferenceTests(unittest.TestCase):
                 "docs/DOCUMENT_LIFECYCLE.md",
                 "docs/AI_SHARED_WORK_RULES.md",
                 "docs/CONTENT_DIRECTION_V09.md",
+                *COMPLETED_VALIDATION_DESIGN_RECORDS,
             } or path.name.startswith("CODEX_GOAL_"):
                 continue
             text = path.read_text(encoding="utf-8")
