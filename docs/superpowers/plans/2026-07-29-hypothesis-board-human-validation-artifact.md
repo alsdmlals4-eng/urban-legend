@@ -5,7 +5,7 @@ session_packet_id: URBAN-LEGEND-HV-001
 project: 괴이기록국
 baseline_branch: main
 baseline_commit: e29e2da34f06d3e5c762ee763d21409f6f324883
-base_governance: BASE_PR_56_PENDING_MERGE
+base_governance_commit: dd6ae48225da58088045733e8fdc3de5784bdeff
 base_governance_path: docs/knowledge/game-development/HUMAN_VALIDATION_ARTIFACT_GOVERNANCE.md
 base_template_path: templates/research/HUMAN_VALIDATION_SESSION_PACKET.md
 artifact_status: READY_FOR_ONE_CASE_HUMAN_SESSION
@@ -57,34 +57,12 @@ claim_ceiling:
 - 관측 사실은 사실이어야 하고 거짓 전조를 추가하지 않는다.
 - `미해결`은 거짓이나 반박이 아니다.
 
-### 선택지 4개
+실제 계약 요소:
 
-- `poc001_choice_move_before_end`
-- `poc001_choice_follow_passenger_count`
-- `poc001_choice_follow_display`
-- `poc001_choice_hold_official_signal`
-
-### 시작 기록 3개
-
-- `poc001_manual_early_movement_reset`
-- `poc001_manual_personal_destination`
-- `poc001_manual_ticket_contact_danger`
-
-### 관측 단서 6개
-
-| ID | 역할은 진행자 키에서만 사용 |
-|---|---|
-| `poc001_clue_broadcast_blank` | support 후보 |
-| `poc001_clue_reset_timing` | support |
-| `poc001_clue_official_identifier` | support |
-| `poc001_clue_display_mismatch` | contradiction |
-| `poc001_clue_passenger_count` | contradiction |
-| `poc001_question_ticket_trigger` | unresolved |
-
-### 경쟁 가설 2개
-
-- H1 `poc001_hypothesis_display_route`
-- H2 `poc001_hypothesis_broadcast_blank`
+- 선택지 4개: `move_before_end`, `follow_passenger_count`, `follow_display`, `hold_official_signal`.
+- 시작 기록 3개: `early_movement_reset`, `personal_destination`, `ticket_contact_danger`.
+- 관측 단서 6개: 방송 공백, 초기화 시각, 공식 신호, 전광판 불일치, 승객 수 불일치, 승차권 발동 미해결.
+- 경쟁 가설 2개: `poc001_hypothesis_display_route`, `poc001_hypothesis_broadcast_blank`.
 
 ## 4. 최소 Artifact
 
@@ -94,39 +72,35 @@ claim_ceiling:
 4. 경쟁 가설 카드 2장.
 5. 문자·선 형태를 함께 쓰는 관계 토큰.
 6. `scene_id`와 관측 문구를 보여주는 원문 복귀 카드.
-7. 최초 연결 시트.
-8. 피드백 후 수정 시트.
-9. 최종 증명·결과 복기 시트.
-10. 진행자 개입 원장.
+7. 최초 연결 시트와 피드백 후 수정 시트.
+8. 최종 증명·결과 복기 시트.
+9. 진행자 개입 원장.
 
 ## 5. 세션 단계
 
 ### 단계 1 — 4→2 논리 배제
 
-1. 선택지 4장과 기록 3장 공개.
+1. 선택지와 시작 기록을 공개한다.
 2. 참가자가 기록과 선택지를 연결하고 이유를 말한다.
-3. **first_attempt_elimination**을 피드백 전에 기록한다.
-4. 잘못된 연결은 최초 기록을 보존한 뒤에만 `이 기록은 그 선택지를 직접 반박하지 않는다` 수준으로 교정한다.
+3. 피드백 전 `first_attempt_elimination`을 기록한다.
+4. 잘못된 연결의 최초 기록을 보존한 뒤에만 기존 JSON 수준으로 교정한다.
 5. 교정 문구·시점을 `facilitator_intervention`에 기록한다.
-6. **post_feedback_elimination**을 별도 기록한다.
+6. `post_feedback_elimination`을 별도 기록한다.
 
 ### 단계 2 — 관계 편집
 
-1. H1·H2와 단서 6장 공개.
-2. 참가자가 각 단서를 하나 이상의 가설에 연결하고 관계 이유를 말한다.
-3. 모든 최초 관계를 `first_attempt_links`로 저장한다.
+1. 경쟁 가설과 단서 6장을 공개한다.
+2. 참가자가 관계 토큰과 이유를 선택한다.
+3. 최초 관계 전체를 `first_attempt_links`로 저장한다.
 4. 진행자는 기대 관계를 추천하지 않는다.
-5. 원문 확인 요청 시 전체 관측 문구를 다시 보여준다.
-6. 현장 결과 공개 뒤 바꿀 관계를 `post_feedback_links`로 저장한다.
+5. 원문 요청 시 전체 관측 문구를 다시 보여준다.
+6. 현장 결과 뒤 바꿀 관계를 `post_feedback_links`로 저장한다.
 
 ### 단계 3 — 최종 증명
 
-참가자가 직접 작성한다.
-
 ```text
 선택한 가설:
-가장 강한 지지 근거 1:
-가장 강한 지지 근거 2:
+가장 강한 지지 근거 1·2:
 반대 가설을 약화한 근거:
 아직 미해결인 질문:
 현장 검증에서 확인할 행동:
@@ -142,15 +116,13 @@ claim_ceiling:
 ## 6. 정보 제시 조건
 
 ```yaml
-condition_BY_SCENE:
-  clues: 장면별 순차 공개
-condition_ALL_AT_ONCE:
-  clues: 6장 동시 공개
+condition_BY_SCENE: 장면별 순차 공개
+condition_ALL_AT_ONCE: 단서 6장 동시 공개
 ```
 
-이 조건은 우월성 A/B 검증이 아니다. 정보 과부하·원문 복귀·관계 수정 결함을 탐색하기 위한 방향성 조건이다.
+우월성 A/B 검증이 아니라 정보 과부하·원문 복귀·관계 수정 결함 탐색 조건이다.
 
-## 7. 참가자 구성
+## 7. 참가자와 기록
 
 ```yaml
 pilot_purpose: DIRECTIONAL_FINDING_AND_DEFECT_DISCOVERY
@@ -164,38 +136,21 @@ presentation_assignment:
 session_minutes: 30-40
 ```
 
-작은 표본으로 사건 난이도나 전체 추리 유저를 일반화하지 않는다.
+분리 기록:
 
-## 8. 관찰 기록
+- `first_attempt_elimination`, `post_feedback_elimination`.
+- `first_attempt_links`, `post_feedback_links`.
+- 원문 재확인 행동.
+- 진행자 교정·결과 공개 문구와 시점.
+- 최초·수정 후 미해결 보존.
+- 최종 증명 원문.
+- 수정 횟수·시간·카드 재확인 행동.
+- 시스템 정답 오인·문서 노동 자기보고.
+- 진행자 의존·거짓 전조·비관측 규칙 오인의 critical incident.
 
-| 필드 | 정의 |
-|---|---|
-| `participant_id` | 개인정보 없는 코드 |
-| `segment` | LOW / EXPERIENCED |
-| `clue_presentation` | BY_SCENE / ALL_AT_ONCE |
-| `first_attempt_elimination` | 피드백 전 배제와 이유 |
-| `post_feedback_elimination` | 교정 후 배제와 이유 |
-| `first_attempt_links` | 최초 관계·이유 전체 |
-| `source_reopened` | 원문 재확인 횟수·대상 |
-| `facilitator_intervention` | 교정·결과 공개 문구와 시점 |
-| `post_feedback_links` | 결과 뒤 수정 관계·이유 |
-| `unresolved_preserved_first` | 최초 미해결 보존 여부 |
-| `unresolved_preserved_after` | 피드백 후 보존 여부 |
-| `final_proof` | 관측 근거·반대 근거·미해결 질문 |
-| `behavior_observation` | 수정 횟수·시간·카드 재확인 |
-| `player_self_report` | 시스템 정답 오인·문서 노동·확신 |
-| `critical_incident` | 진행자 의존·거짓 전조·비관측 규칙 오인 |
-| `observer_interpretation` | 원자료와 분리한 분석 |
+## 8. 판정
 
-## 9. 판정
-
-1. JSON과 카드 문구·판정이 다르면 `STOP`.
-2. 진행자가 최초 시도 전에 힌트를 주면 해당 결과를 해석하지 않는다.
-3. 심각도 높은 미해결→거짓 처리·시스템 자동 정답 오인 사례를 본다.
-4. 서로 다른 참가자 2명 이상에게 반복된 관계·정보 순서 결함을 본다.
-5. 경험군·표현 조건 차이를 본다.
-6. 정답률보다 이유 품질·최초→수정 변화·미해결 보존을 우선한다.
-7. 수치는 `n/N` 참고값으로 기록한다.
+비율은 `n/N` 참고값으로만 기록한다.
 
 ```yaml
 PROMISING_DIRECTION:
@@ -203,7 +158,7 @@ PROMISING_DIRECTION:
     - "서로 다른 참가자 2명 이상이 관측 사실과 가설 문장을 함께 언급해 관계를 설명"
     - "피드백 뒤 오독 근거와 다음 질문을 스스로 제시"
     - "미해결을 거짓으로 잠그는 심각 결함 없음"
-  claim: "근거 관계 편집기·증명 인터페이스·실패 복기 책임을 다음 fidelity 보드에서 계속 검증할 방향을 지지"
+  claim: "근거 관계 편집기·증명 인터페이스·실패 복기 책임을 다음 fidelity 보드에서 검증할 방향을 지지"
 ADAPT:
   condition: "추론은 가능하지만 원문 복귀·라벨·정보 순서·문서 노동에서 반복 혼란"
 REWORK:
@@ -214,9 +169,9 @@ STOP:
   condition: "거짓 전조, 비관측 판정, JSON 불일치, 최초 시도 전 진행자 정답 누출"
 ```
 
-이 fidelity에서는 `ADOPT_BOARD_RESPONSIBILITIES` 또는 제품 Schema 변경을 선언하지 않는다.
+이 fidelity에서는 제품 보드 `ADOPT`나 Schema 변경을 선언하지 않는다.
 
-## 10. 현재 상태
+## 9. 현재 상태
 
 ```yaml
 case_data_changed: false
