@@ -8,7 +8,7 @@
 |---|---|
 | Base 저장소 | `alsdmlals4-eng/Base` |
 | 기준 브랜치 | `main` |
-| 코어 Skill Registry 기준 커밋 | `41a20584dd2ee51d917e5c9d7cab6838e1ceba7e` |
+| 코어 Skill Registry 기준 커밋 | `7072b9e2742a60d7548fd39df3328ad76a8dbad1` |
 | 코어 Skill Registry blob | `14950c9361b3c939990560ae8cc683a936633e89` |
 | 코어 활성 Base Skill | 25개 |
 | Base 기능 Coverage | 18개 책임 |
@@ -98,3 +98,9 @@ python tools/docs/build_game_design_doc.py --check  # GDD 변경 시
 ```
 
 Godot 런타임·화면 파일을 변경하지 않은 운영 구조 변경에서는 Godot headless와 수동 플레이를 자동 PASS로 바꾸지 않고 `NOT_RUN`으로 기록한다.
+
+## BCA v8
+
+- Prompt: `templates/prompts/VERTICAL_SLICE_INTEGRATED_EXECUTION_PROMPT_v8.md`.
+- Sheet: `NOT_CONFIGURED`.
+- 이미지 workflow: `docs/IMAGE_ASSET_WORKFLOW.md`.

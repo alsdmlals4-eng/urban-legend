@@ -159,3 +159,11 @@ Base를 갱신한 뒤 프로젝트의 `docs/BASE_RULES_VERSION.md`에 기준 커
 - 완료 보고에는 변경 파일, 이유, 결과, 검증, 미검증, 위험, 저장·UI 호환, 갱신 문서, 백업 위치, 다음 진입점을 포함한다.
 - 큰 MVP 종료 시 `docs/CURRENT_STATUS.md`, `MVP_ROADMAP.md`, `TEST_CHECKLIST.md`, 해당 `docs/planning/` 문서를 갱신한다.
 - 5개 MVP마다 문서 중복·구문서·깨진 참조·불필요한 기본 읽기를 감사한다.
+
+## BCA Sheet·GPT 이미지 생성·검수
+
+- Base 기준은 `alsdmlals4-eng/Base@7072b9e2742a60d7548fd39df3328ad76a8dbad1`와 `VERTICAL_SLICE_INTEGRATED_EXECUTION_PROMPT_v8.md`다.
+- Sheet는 `NOT_CONFIGURED`; URL 확인 전 신규 Sheet를 추정 생성하지 않는다.
+- GPT는 기획 중 세계관·인물·에피소드·UI 목업과 기획 종료 Demo·상점 후보를 생성할 수 있다.
+- 생성 결과는 자동 최종 자산이 아니며 `docs/IMAGE_ASSET_WORKFLOW.md`의 검수·manifest·Godot 적용 Gate를 통과해야 한다.
+- 각 단계 뒤 `repository-wide-audit`로 stale 이미지·구형 Prompt·untouched 소비자를 검수한다.
