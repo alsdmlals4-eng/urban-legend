@@ -87,7 +87,7 @@ class SkillPackageIntegrityTests(unittest.TestCase):
         self.local_skills = self.registry.get("project_local_skills", [])
 
     def test_base_index_snapshot_is_frozen_and_complete(self) -> None:
-        data = self.index_path.read_bytes()
+        data = self.index_path.read_text(encoding="utf-8").replace("\r\n", "\n").replace("\r", "\n").encode("utf-8")
         blob_sha = hashlib.sha1(f"blob {len(data)}\0".encode() + data).hexdigest()
         self.assertEqual(blob_sha, EXPECTED_BASE_INDEX_BLOB_SHA)
         ids = [x["skill_id"] for x in self.index["skills"]]

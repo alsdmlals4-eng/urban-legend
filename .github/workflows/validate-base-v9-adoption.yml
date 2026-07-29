@@ -1,0 +1,36 @@
+name: Validate Base v9 adoption
+
+on:
+  pull_request:
+    paths:
+      - 'skills/BASE_V9_ADAPTER.json'
+      - 'docs/BASE_V9_ADOPTION_AUDIT.md'
+      - 'tests/test_base_v9_adoption.py'
+      - 'tests/test_skill_package_integrity.py'
+      - '.github/workflows/validate-base-v9-adoption.yml'
+
+jobs:
+  ci-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run Base v9 adoption contracts
+        run: python -m unittest tests.test_base_v9_adoption tests.test_base_operating_sync tests.test_skill_package_integrity tests.test_bca_visual_sheet_adoption
+
+  adversarial-gate:
+    needs: ci-gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check protected game implementation remains untouched
+        run: |
+          git diff --name-only "${{ github.event.pull_request.base.sha }}" "${{ github.sha }}" > changed.txt
+          if grep -E '^(scripts/|scenes/|data/|assets/|project\.godot$)' changed.txt; then
+            echo 'Base v9 adoption PR must not change game implementation paths.'
+            exit 1
+          fi
+          test -f skills/BASE_V9_ADAPTER.json
+          test -f docs/BASE_V9_ADOPTION_AUDIT.md
