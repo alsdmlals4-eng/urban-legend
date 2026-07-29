@@ -81,6 +81,14 @@ integrity = integrity.replace(
 )
 integrity_path.write_text(integrity, encoding="utf-8")
 
+bca_test_path = ROOT / "tests/test_bca_visual_sheet_adoption.py"
+bca_test = bca_test_path.read_text(encoding="utf-8")
+bca_test = bca_test.replace(
+    '  for p in ("README.md","AGENTS.md","docs/BASE_RULES_VERSION.md"): self.assertIn(BASE_SHA,(ROOT/p).read_text(encoding="utf-8"),p)',
+    '  self.assertIn(BASE_SHA,(ROOT/"docs/BASE_RULES_VERSION.md").read_text(encoding="utf-8"))\n  for p in ("README.md","AGENTS.md"): self.assertIn("PROJECT_SHEET_CONFIGURED",(ROOT/p).read_text(encoding="utf-8"),p)',
+)
+bca_test_path.write_text(bca_test, encoding="utf-8")
+
 qa_path = ROOT / "skills/disciplines/urban-legend-qa/SKILL.md"
 qa = qa_path.read_text(encoding="utf-8")
 old_modes = "`plan → execute → defect-triage → release-gate`"
