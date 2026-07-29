@@ -15,7 +15,7 @@ START_HERE.md
 → docs/superpowers/specs/2026-07-23-project-core-integrated-spec.md
 → MVP_ROADMAP.md
 → docs/superpowers/plans/2026-07-23-core-mvp-001-implementation-plan.md
-→ 현재 작업의 Evidence Pack·사람 검증 Artifact
+→ 현재 작업의 Evidence Pack·사람 검증 Artifact·합성 검증 종료 기록
 → TEST_CHECKLIST.md
 → 대상 코드·데이터·테스트
 ```
@@ -33,6 +33,8 @@ START_HERE.md
 | `REFERENCE_CASES.md` | 채택·변형·제외한 벤치마크 원리 |
 | `../research/2026-07-29-fair-play-hypothesis-board-evidence-pack.md` | 관측·가설·반박 보드의 공정 추리 Pilot; `PILOT_RECOMMENDATION / NOT_CANON` |
 | `../superpowers/plans/2026-07-29-hypothesis-board-human-validation-artifact.md` | 저승역 실제 데이터로 수행할 4→2 배제·관계 편집·최종 증명·복기 세션; `HUMAN_VALIDATION_INPUT / NOT_CANON` |
+| `../research/2026-07-29-hypothesis-board-synthetic-session-execution.md` | 교정 Artifact의 가상 페르소나 합성 실행; `ADAPT / T6_AI_INFERENCE / HUMAN_NOT_RUN` |
+| `../research/2026-07-29-hypothesis-board-synthetic-validation-closure.md` | 합성 검증 전체 계보·최종 판정·다음 게이트·금지 경계; `NO_IMPLEMENTATION_AUTHORITY` |
 | `../CURRENT_STATUS.md` | 현재 구현과 미구현 목표 상태 구분 |
 | `../../MVP_ROADMAP.md` | 현재 실행 순서 |
 | `../superpowers/plans/2026-07-23-core-mvp-001-implementation-plan.md` | CORE-MVP-001의 정확한 파일·인터페이스·TDD·검증 순서 |
@@ -43,6 +45,7 @@ START_HERE.md
 - 구현 완료선: MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A / Ver 4.2 / save `mvp-039`
 - 프로젝트 코어: `CORE_RECORDED` / `CORE_STRESS_TESTED`
 - 구현·플레이 검증: `POC_PENDING` / `HOLD_UNTIL_PLAYER_EVIDENCE`
+- 가설 보드 합성 판정: `ADAPT / T6_AI_INFERENCE / HUMAN_NOT_RUN`
 - 현재 유일한 활성 구현 트랙: CORE-MVP-001
 - CORE-MVP-002~004와 UX-PD-001 2B·2C, MVP-044~046은 게이트 대기 또는 재매핑 상태
 
@@ -63,6 +66,7 @@ START_HERE.md
 | CORE-MVP-001 조사·전투 PoC | 통합 명세, 구현 계획, 스트레스 보고서 | 규칙 설명, 근거 배제, 전조 인과, 난수 공정성, 저장 비침범 |
 | 사건 작성 | 코어, 통합 명세, `urban-legend-investigation-case-authoring` | 전조·가설·지지·반박·미해결·위험 사례·포획 |
 | 가설 보드 근거·권장안 | 공정 추리 Evidence Pack, GDD, 사건 작성 Skill | 근거 관계 이유, 4→2 제거, 원문 복귀, 실패 복기 |
+| 가설 보드 합성 종료 이후 재개 | 합성 종료 기록, 합성 세션 실행, 사람 검증 Artifact | 원문/이유 필드 분리, first snapshot 불변성, H1/H2 정보 공정성, 사건 데이터 비변경 |
 | 가설 보드 사람 세션 준비·실행·판정 | 사람 검증 Artifact, 공정 추리 Evidence Pack, 저승역 사건 JSON | 실제 카드 문구, 관계 수정, 최종 증명, 미해결 보존, 자동 정답 오인 |
 | UI 정보 위계 | 통합 명세, GDD, 점진 공개 기획 | 전조·근거·대응 의도·직전 결과 우선 |
 | 포획·연구 | CORE-MVP-002 진입 뒤 | 영구 매뉴얼과 현장 이해도 분리 |
@@ -74,7 +78,7 @@ START_HERE.md
 
 - 코어 변경은 `PROJECT_CORE.md`, 통합 명세, 스트레스 보고서, GDD, 로드맵, 테스트를 함께 심사한다.
 - 구현 계획은 CORE-MVP 단위로 분리하고 후속 시스템을 선구현하지 않는다.
-- Evidence Pack과 사람 검증 Artifact는 정본·구현 완료·사람 검증 통과를 대신하지 않는다.
+- Evidence Pack·사람 검증 Artifact·합성 결과는 정본·구현 완료·사람 검증 통과를 대신하지 않는다.
 - 구현 완료와 사용자 승인 설계를 혼합하지 않는다.
 - 플레이 증거 없이 `PRODUCTION_READY`를 선언하지 않는다.
 - 외부 사례는 표면 기능이 아니라 현재 결정을 바꿀 원리만 기록한다.
