@@ -161,8 +161,8 @@ git diff --check
 
 ## BCA v8 기획·이미지·Sheet 운영
 
-- Base: `alsdmlals4-eng/Base@7072b9e2742a60d7548fd39df3328ad76a8dbad1`
+- Base: `alsdmlals4-eng/Base@c987647d01ad2baa028a16e03d85ddfc1572a727`
 - v8 통합 실행문 사용.
-- Sheet: `NOT_CONFIGURED`; `docs/PROJECT_GOOGLE_SHEET_WORKBOOK.md`
+- Sheet: `PROJECT_SHEET_CONFIGURED`; `docs/PROJECT_GOOGLE_SHEET_WORKBOOK.md`
 - GPT 이미지·검수: `docs/IMAGE_ASSET_WORKFLOW.md`
 - 적대적 검토: `docs/BCA_VISUAL_SHEET_ADOPTION_AUDIT.md`

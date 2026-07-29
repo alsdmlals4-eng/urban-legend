@@ -1,14 +1,12 @@
 from __future__ import annotations
 import json,unittest
 from pathlib import Path
-ROOT=Path(__file__).resolve().parents[1];BASE_SHA="7072b9e2742a60d7548fd39df3328ad76a8dbad1"
-class TestBCA(unittest.TestCase):
- def test_pin(self):
-  for p in ("README.md","AGENTS.md","docs/BASE_RULES_VERSION.md"):self.assertIn(BASE_SHA,(ROOT/p).read_text(encoding="utf-8"),p)
- def test_contracts(self):
-  s=(ROOT/"docs/PROJECT_GOOGLE_SHEET_WORKBOOK.md").read_text(encoding="utf-8");v=(ROOT/"docs/IMAGE_ASSET_WORKFLOW.md").read_text(encoding="utf-8")
-  for x in ("11_세계관","12_핵심루프","13_주요인물","14_조연_세력_관계","40_핵심시스템_메인콘텐츠","71_이미지기획_생성목록","72_이미지검수_승인로그","NOT_CONFIGURED"):self.assertIn(x,s)
-  for x in ("planning-visualization","final-visual-candidate","visual-qa-and-approval","PROJECT_ASSET_APPROVED","자동 최종 자산"):self.assertIn(x,v)
+ROOT=Path(__file__).resolve().parents[1]; BASE_SHA="c987647d01ad2baa028a16e03d85ddfc1572a727"; SHEET_ID="14xtlvd90iQTKjDLcZR_b-WS5fHnBwNf-OfBruPBS6ck"
+class BCAAdoptionTests(unittest.TestCase):
+ def test_contract(self):
+  for p in ("README.md","AGENTS.md","docs/BASE_RULES_VERSION.md"): self.assertIn(BASE_SHA,(ROOT/p).read_text(encoding="utf-8"),p)
+  s=(ROOT/"docs/PROJECT_GOOGLE_SHEET_WORKBOOK.md").read_text(encoding="utf-8")
+  for x in ("PROJECT_SHEET_CONFIGURED",SHEET_ID,"USER_FACING_GDD_WORKSPACE","PROPOSED_SHEET_CHANGE","05_GDD_요약","15_조작_게임규칙","51_미니게임","52_글쓰기_서사"): self.assertIn(x,s)
  def test_registry(self):
-  r=json.loads((ROOT/"skills/SKILL_REGISTRY.json").read_text(encoding="utf-8"));self.assertEqual(r["base"]["commit"],BASE_SHA);self.assertEqual(r["bca_visual_sheet"]["status"],"ADOPTED")
-if __name__=="__main__":unittest.main()
+  r=json.loads((ROOT/"skills/SKILL_REGISTRY.json").read_text(encoding="utf-8")); self.assertEqual(r["base"]["commit"],BASE_SHA); self.assertEqual(r["bca_visual_sheet"]["spreadsheet_id"],SHEET_ID); self.assertIn("51_미니게임",r["bca_visual_sheet"]["required_tabs"]); self.assertIn("52_글쓰기_서사",r["bca_visual_sheet"]["required_tabs"])
+if __name__=="__main__": unittest.main()
