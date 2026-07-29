@@ -42,3 +42,11 @@ description: Use for Urban Legend character, background, expression, cut-in, and
 ## Selective support
 
 프롬프트는 `designing-art-prompts-and-technique-cards`, UI 렌더는 `auditing-and-refining-ui-art`, 통합 증거는 `reviewing-and-validating-project-changes`.
+
+## BCA 이미지 Mode
+
+- `planning-visualization`: 세계관·인물·조사·미니게임·UI 탐색 이미지와 목업.
+- `final-visual-candidate`: Demo·상점·키아트·초상·기록 매뉴얼 후보.
+- `visual-qa-and-approval`: 실제 화면·구현·권리·오류·승인 상태 검수.
+
+생성 이미지는 자동 최종 자산이 아니다.

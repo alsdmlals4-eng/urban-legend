@@ -158,3 +158,11 @@ git diff --check
 4. 자동 계약·Godot 회귀·사람 눈 UI QA
 5. 육성→사건→연구 인과 플레이 검증
 6. `KEEP / CHANGE / RETEST / HOLD` 판정
+
+## BCA v8 기획·이미지·Sheet 운영
+
+- Base 버전 원본: `docs/BASE_RULES_VERSION.md`
+- v8 통합 실행문 사용.
+- Sheet: `PROJECT_SHEET_CONFIGURED`; `docs/PROJECT_GOOGLE_SHEET_WORKBOOK.md`
+- GPT 이미지·검수: `docs/IMAGE_ASSET_WORKFLOW.md`
+- 적대적 검토: `docs/BCA_VISUAL_SHEET_ADOPTION_AUDIT.md`

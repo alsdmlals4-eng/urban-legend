@@ -8,15 +8,15 @@
 |---|---|
 | Base 저장소 | `alsdmlals4-eng/Base` |
 | 기준 브랜치 | `main` |
-| 코어 Skill Registry 기준 커밋 | `41a20584dd2ee51d917e5c9d7cab6838e1ceba7e` |
-| 코어 Skill Registry blob | `14950c9361b3c939990560ae8cc683a936633e89` |
+| 코어 Skill Registry 기준 커밋 | `c987647d01ad2baa028a16e03d85ddfc1572a727` |
+| 코어 Skill Registry blob | `0f749dca51423ff3ea3e6db6a712a2b5bee800a8` |
 | 코어 활성 Base Skill | 25개 |
 | Base 기능 Coverage | 18개 책임 |
 | Base shared extension 기준 커밋 | `6a224e450f9420223c00921f3c56e051612f92ad` |
 | 채택 shared extension | `governing-legacy-retention-and-archives` |
 | 프로젝트 분야 Skill | 10개 |
 | 프로젝트 로컬 Skill | 1개 — `urban-legend-investigation-case-authoring` |
-| 확인일 | 2026-07-25 |
+| 확인일 | 2026-07-29 |
 | 적용 상태 | 고정 Base 코어 인덱스와 archive shared extension을 분리 채택; 프로젝트 코어 상태는 `docs/PROJECT_CORE.md`가 소유 |
 
 기계 원본은 다음과 같이 책임을 분리한다.
@@ -29,7 +29,7 @@
 ## 적용 구조
 
 ```text
-Base Registry 25개 @ 41a20584...
+Base Registry 코어 25개 + shared extension 2개 @ c987647d...
 → skills/BASE_SKILL_INDEX.json에서 코어 trigger·경계 선택
 → 선택한 Base SKILL.md와 reference만 코어 고정 커밋에서 읽기
 → Base shared extension @ 6a224e45...
@@ -98,3 +98,9 @@ python tools/docs/build_game_design_doc.py --check  # GDD 변경 시
 ```
 
 Godot 런타임·화면 파일을 변경하지 않은 운영 구조 변경에서는 Godot headless와 수동 플레이를 자동 PASS로 바꾸지 않고 `NOT_RUN`으로 기록한다.
+
+## BCA v8
+
+- Prompt: `templates/prompts/VERTICAL_SLICE_INTEGRATED_EXECUTION_PROMPT_v8.md`.
+- Sheet: `PROJECT_SHEET_CONFIGURED`.
+- 이미지 workflow: `docs/IMAGE_ASSET_WORKFLOW.md`.

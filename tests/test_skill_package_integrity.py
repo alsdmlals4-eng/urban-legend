@@ -7,7 +7,7 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-EXPECTED_BASE_INDEX_BLOB_SHA = "e227a227461a16162a9861ca858b5c4e267488cb"
+EXPECTED_BASE_INDEX_BLOB_SHA = "ccc78a366fb2f45226057de1ca1684310506e6f6"
 EXPECTED_BASE_IDS = {
     "managing-game-project-operating-system",
     "auditing-and-refining-ui-art",
