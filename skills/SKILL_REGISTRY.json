@@ -6,7 +6,7 @@
     "branch": "main",
     "commit": "c987647d01ad2baa028a16e03d85ddfc1572a727",
     "source_registry": "skills/SKILL_REGISTRY.json",
-    "source_registry_blob_sha": "14950c9361b3c939990560ae8cc683a936633e89",
+    "source_registry_blob_sha": "0f749dca51423ff3ea3e6db6a712a2b5bee800a8",
     "routing_index": "skills/BASE_SKILL_INDEX.json",
     "coverage_map": "skills/BASE_SKILL_COVERAGE.json",
     "source_type": "pinned-progressive-disclosure",
@@ -259,7 +259,6 @@
         "capture-evidence",
         "release-gate",
         "visual-qa",
-        "image-approval",
         "stale-prompt",
         "sheet-structure",
         "repository-wide-audit"
@@ -270,7 +269,8 @@
         "defect-triage",
         "release-gate",
         "visual-qa-and-approval",
-        "bca-adoption-audit"
+        "bca-adoption-audit",
+        "repository-wide-audit"
       ],
       "canonical_sources": [
         "TEST_CHECKLIST.md",

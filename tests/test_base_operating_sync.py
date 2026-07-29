@@ -5,8 +5,8 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-BASE_COMMIT = "41a20584dd2ee51d917e5c9d7cab6838e1ceba7e"
-BASE_REGISTRY_BLOB = "14950c9361b3c939990560ae8cc683a936633e89"
+BASE_COMMIT = "c987647d01ad2baa028a16e03d85ddfc1572a727"
+BASE_REGISTRY_BLOB = "0f749dca51423ff3ea3e6db6a712a2b5bee800a8"
 OLD_BASE_COMMIT = "ee265576da7f67d3278f8099dd97d4e714ef0651"
 REQUIRED_BASE_SKILLS = {
     "managing-game-project-operating-system", "auditing-and-refining-ui-art",

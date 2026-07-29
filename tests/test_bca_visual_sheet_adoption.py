@@ -4,7 +4,8 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]; BASE_SHA="c987647d01ad2baa028a16e03d85ddfc1572a727"; SHEET_ID="14xtlvd90iQTKjDLcZR_b-WS5fHnBwNf-OfBruPBS6ck"
 class BCAAdoptionTests(unittest.TestCase):
  def test_contract(self):
-  for p in ("README.md","AGENTS.md","docs/BASE_RULES_VERSION.md"): self.assertIn(BASE_SHA,(ROOT/p).read_text(encoding="utf-8"),p)
+  self.assertIn(BASE_SHA,(ROOT/"docs/BASE_RULES_VERSION.md").read_text(encoding="utf-8"))
+  for p in ("README.md","AGENTS.md"): self.assertIn("PROJECT_SHEET_CONFIGURED",(ROOT/p).read_text(encoding="utf-8"),p)
   s=(ROOT/"docs/PROJECT_GOOGLE_SHEET_WORKBOOK.md").read_text(encoding="utf-8")
   for x in ("PROJECT_SHEET_CONFIGURED",SHEET_ID,"USER_FACING_GDD_WORKSPACE","PROPOSED_SHEET_CHANGE","05_GDD_요약","15_조작_게임규칙","51_미니게임","52_글쓰기_서사"): self.assertIn(x,s)
  def test_registry(self):

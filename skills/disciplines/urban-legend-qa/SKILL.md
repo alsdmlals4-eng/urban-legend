@@ -16,7 +16,7 @@ description: Use for Urban Legend test planning, regression, defect triage, evid
 
 ## Modes
 
-`plan → execute → defect-triage → release-gate`
+`plan → execute → defect-triage → visual-qa-and-approval → repository-wide-audit → bca-adoption-audit → release-gate`
 
 ## Read first
 
