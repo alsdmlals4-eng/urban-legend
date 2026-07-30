@@ -12,6 +12,7 @@
 - 신규 시스템·핵심 규칙·콘텐츠 구조·UX 흐름의 Benchmark-first 원칙
 - 기존 근거 재사용 우선, 기본 3~5개 목적형 비교
 - 주요 변경·승인 결정은 동일 Decision ID로 GitHub 책임 원본과 연결 Google Sheet에 즉시 동기화
+- `D-2026-07-31-AFTERLIFE-TIMELINE-EVIDENCE` 시간순 증거 기준선
 - Codex는 기획·검수 최종 완료 뒤 마지막 단계
 
 ## 작성·검수 완료
@@ -22,11 +23,11 @@
 - Benchmark-first 프로젝트 정책
 - 저승역 가설 보드 목적형 벤치마크
 - 저승역 가설 보드 v2와 적대적 검토
-- Validation Cut 회수 encounter 초안
+- 저승역 시간순 증거 대사·획득 위치 승인
 - 결과·해결 등급·연구 환류 초안
 - 플레이테스트 계획 초안
 
-## 현재 검수 대상
+## 승인된 시간순 증거
 
 ### D-2026-07-31-AFTERLIFE-TIMELINE-EVIDENCE
 
@@ -36,50 +37,63 @@
 23:59:08 검은 승차권 최초 접촉 기록
 ```
 
-- 기록 A: 피해자 전송 실패 음성 메모
-- 기록 B: 개찰구 CCTV·관제 자동 로그
-- 획득: 피해자 휴대폰 → 검은 승차권 현장 → 역무원실 관제 기록
-- 공백 투사설: 지지
-- 승차권 최초 원인 주장: 반박
-- 승차권의 인식 고정·물리화 매개 역할: 미해결
+- 공백 투사설: `SUPPORTED`
+- 승차권 최초 원인 주장: `CONTRADICTED`
+- 승차권의 인식 고정·물리화 매개 역할: `UNRESOLVED`
+- 상태: `APPROVED_PLANNING_BASELINE`
 - 구현 권한: `NONE`
-- 상태: `DRAFT_REQUIRES_USER_REVIEW`
+- 사람 검증: `NOT_RUN`
 
-현행 책임 원본:
+책임 원본:
 
 - `docs/decisions/D-2026-07-31-AFTERLIFE-TIMELINE-EVIDENCE.md`
 
-## 현재 권장 설계
+## 현재 검수 대상
 
-### 원인 후보 4→2
+### D-2026-07-31-AFTERLIFE-RECOVERY-PATTERNS
+
+권장 구조:
 
 ```text
-공백 투사설
-검은 승차권 지정설
-숨은 단일 종착역설
-기기 오염설
+전조 관측
+→ 패턴 분류
+→ 관련 기록 연결
+→ 중립 현장 행동
+→ 현장 결과
+→ 추론 검증 결과
 ```
 
-관측 근거로 숨은 단일 종착역설과 기기 오염설을 제거한다.
-
-### 안전 운용 규칙
-
-개인화된 목적지 표기를 현실 경로 기준으로 신뢰하지 않고 공식 노선 식별 정보와 방송 종료 식별음을 사용한다.
-
-### Validation 회수 패턴
+Validation 패턴:
 
 1. 존재하지 않는 종착 안내
 2. 검은 승차권의 승객 각인
 
+권장 중립 행동:
+
+- 패턴 1: `스피커 회로를 분리한다 / 전광판이 가리키는 쪽으로 이동한다 / 방송에 현재 역명을 답한다`
+- 패턴 2: `투명 격리함으로 옮긴다 / 개찰기에 통과시킨다 / 보호 봉투에 넣어 요원이 소지한다`
+
+핵심 경계:
+
+- 행동 문구에 근거·정답 논리를 넣지 않는다.
+- 행동 성공과 공식 추론 검증을 분리한다.
+- 사건 원인 가설 네 개를 매 패턴에서 반복하지 않는다.
+- 자동 예측·동료 지원은 정답을 표시하지 않는다.
+- 상태: `DRAFT_REQUIRES_USER_REVIEW`
+- 구현 권한: `NONE`
+
+책임 원본:
+
+- `docs/decisions/D-2026-07-31-AFTERLIFE-RECOVERY-PATTERNS.md`
+
 ## 남은 P0 기획
 
-1. 시간순 증거의 대사·획득 위치 사용자 검수
-2. 회수 패턴의 중립 문구와 분류 후보 검수
-3. 원인 미검증 상태의 해결 등급 상한 검수
-4. 결과→연구·장비 환류 세부값 검수
-5. 플레이테스트 패키지 적대적 검토
-6. 사용자 최종 승인
-7. 승인 결정의 GitHub 정본·Sheet 상태 승격
+1. 회수 패턴 분류 후보·중립 행동 문구 사용자 검수
+2. 원인 미검증 상태의 해결 등급 상한 검수
+3. 결과→연구·장비 환류 세부값 검수
+4. 플레이테스트 패키지 적대적 검토
+5. 사용자 최종 승인
+6. 승인 결정의 GitHub 정본·Sheet 상태 승격
 
 ## 보류
 
@@ -100,8 +114,8 @@ benchmark_first_policy: APPROVED
 validation_cut_direction: APPROVED
 hypothesis_benchmark: PASSED
 hypothesis_design_v2: DRAFT_REQUIRES_USER_REVIEW
-timeline_evidence: DRAFT_REQUIRES_USER_REVIEW
-recovery_encounter: DRAFT_REQUIRES_REVIEW
+timeline_evidence: APPROVED_PLANNING_BASELINE
+recovery_patterns: DRAFT_REQUIRES_USER_REVIEW
 result_and_reward: DRAFT_REQUIRES_REVIEW
 playtest_plan: DRAFT_REQUIRES_REVIEW
 showcase_cut: HOLD_UNTIL_VALIDATION
