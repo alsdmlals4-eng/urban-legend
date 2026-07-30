@@ -24,10 +24,12 @@ Base 공용 운영체계를 urban-legend의 기존 구조와 프로젝트 코어
 → 요구·DoR·코어·보호 baseline
 → Benchmark Gate
 → 결과 단위·의존성·승인
+→ Decision ID 발급·확인
+→ GitHub 책임 원본·결정 기록·Google Sheet 즉시 동기화
 → 설계·구현·작성
 → 적대적 검토·비판 검증·최소 개선
 → 정본·참조·정적·런타임·회귀
-→ 상태·문서·PR·Handoff·Learning Log
+→ 상태·문서·PR·Handoff·Learning Log·Sheet 변경이력
 ```
 
 한 시점의 주 Work Mode는 하나다. 복합 작업은 `PLAN → BUILD → REVIEW`, 검증된 수정은 `REVIEW → BUILD → REVIEW`로 전환한다.
@@ -44,12 +46,16 @@ Base Skill 라우팅 → skills/BASE_SKILL_INDEX.json
 경로 변환 → skills/PROJECT_PATH_ADAPTER.json
 벤치마킹 필수 정책 → docs/BENCHMARK_FIRST_POLICY.md
 벤치마킹 사례·작성 형식 → docs/BENCHMARKING_REFERENCE_GUIDE.md
+즉시 정본·Sheet 동기화 → docs/PROJECT_UPDATE_PROTOCOL.md
+상세 결정 기록 → docs/decisions/
+승인 결정 인덱스 → docs/DECISION_LOG.md
 상세 설계 → docs/GAME_DESIGN_DOCUMENT.md
 로드맵 → MVP_ROADMAP.md
 검증 → TEST_CHECKLIST.md
+Google GDD 작업면 → 14xtlvd90iQTKjDLcZR_b-WS5fHnBwNf-OfBruPBS6ck
 ```
 
-같은 사실을 여러 현행 원본으로 복제하지 않는다.
+같은 사실을 여러 현행 원본으로 복제하지 않는다. GitHub는 상세 근거와 설계를 소유하고, Google Sheet는 승인 결정·계획 순서·상태·검증을 탐색하는 작업면으로 사용한다.
 
 ## Skill 운영
 
@@ -98,6 +104,48 @@ Base Skill 라우팅 → skills/BASE_SKILL_INDEX.json
 - `NOT_APPLICABLE`: 신규 설계가 아닌 정정·실행·회귀 작업임
 - `BLOCKED`: 필요한 근거가 없어 설계를 확정할 수 없음
 
+## 승인 결정 즉시 정본 동기화
+
+운영 결정 `D-2026-07-31-CANON-SHEET-SYNC`를 따른다.
+
+### 적용 시점
+
+다음 중 하나가 발생한 같은 작업 단위에서 동기화한다.
+
+- 사용자가 주요 기획 방향을 승인함
+- 초안이 승인 설계·현재 기준선·보류·폐기 상태로 바뀜
+- 구현·검증·병합·사람 QA 상태가 바뀜
+- 프로젝트 코어·시스템 책임·콘텐츠 구조·UX Gate가 바뀜
+- 다음 작업의 우선순위나 진입 조건이 바뀜
+
+### 필수 순서
+
+```text
+Decision ID
+→ GitHub 분야 책임 원본
+→ DECISION_LOG 또는 전용 결정 기록
+→ 관련 Sheet 계획 탭
+→ 02_현재_확정결정 또는 상태 탭
+→ 99_변경이력
+→ GitHub commit·Sheet 범위 재조회
+```
+
+### 브랜치 상태
+
+- 병합 전 동기화는 `BRANCH_SYNCED_PENDING_MAIN`으로 기록한다.
+- branch commit SHA와 Draft PR 번호를 남긴다.
+- `main Commit SHA`가 아직 없으면 `PENDING_MAIN_MERGE`를 사용한다.
+- 병합 뒤 같은 Decision ID를 merge commit 기준으로 재검증한다.
+
+### 보고 최소 단위
+
+- Decision ID
+- 변경한 GitHub 경로
+- GitHub commit SHA와 PR
+- 변경한 Sheet 탭·A1 범위
+- 동기화 상태
+- runtime·사람 QA·main 병합의 미검증 상태
+
 ## 프로젝트 코어와 변경 권한
 
 `docs/PROJECT_CORE.md`가 프로젝트 코어의 승인 상태와 재승인 경계를 단독 소유한다. 현재 상태는 `CORE_RECORDED / CORE_STRESS_TESTED`, 구현은 `POC_PENDING`, Production gate는 `HOLD_UNTIL_PLAYER_EVIDENCE`다. 일반 리팩토링으로 코어를 바꾸거나 플레이 증거 없이 구현 완료·제작 확대를 선언하지 않는다.
@@ -124,4 +172,4 @@ attack
 
 ## 검증과 보고
 
-변경 영향에 맞춰 benchmark gate, contract, reference freshness, static, runtime, accessibility, performance, regression, evidence를 선택한다. Skill·Registry·운영 문서 변경은 세 Python 계약 테스트를 실행한다. L1 이상 보고에는 실제 Work Mode·분야/로컬/Base Skill·Mode·이유·Benchmark Gate·변경·증거·미검증·롤백을 포함한다.
+변경 영향에 맞춰 benchmark gate, canon-sheet sync, contract, reference freshness, static, runtime, accessibility, performance, regression, evidence를 선택한다. Skill·Registry·운영 문서 변경은 세 Python 계약 테스트를 실행한다. L1 이상 보고에는 실제 Work Mode·분야/로컬/Base Skill·Mode·이유·Benchmark Gate·Decision ID·GitHub 경로·Sheet 범위·commit·동기화 상태·변경·증거·미검증·롤백을 포함한다.
