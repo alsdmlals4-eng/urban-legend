@@ -183,3 +183,74 @@
 - 사람 사용성 QA·신규 플레이어 검증: `NOT_RUN`
 - `POC_PASSED`, `annual_loop_passed`, 제작 확대: 계속 미선언.
 
+## D-2026-07-31-VERTICAL-SLICE-VALIDATION-CUT — Validation Cut 우선 검증
+
+- 상태: `APPROVED_PLANNING_DIRECTION`
+- 사용자 승인: 2026-07-31, “권장안대로 진행해”
+- 추적: Issue #121 / Draft PR #122
+- 결정:
+  - 첫 통합 검증은 35~50분 `Validation Cut`으로 수행한다.
+  - Validation Cut 통과 전 70~90분 `Showcase Cut`으로 직행하지 않는다.
+  - 순서는 `Validation Cut → 수정·재검증 → Showcase Cut 별도 승인`이다.
+- Validation Cut 범위:
+  - 저승역 콜드 오픈
+  - 기록국 브리핑
+  - 제한된 준비 결정 1회
+  - 저승역 핵심 조사
+  - 사건 수준 가설 보드
+  - 노선 복원 핵심 단계
+  - 회수 패턴 2개 이상
+  - 결과·매뉴얼 환류
+- 제외:
+  - 4주 전체 일정 반복
+  - 관계 체인 전체
+  - 연구·장비 전체 탐색 UI
+  - ANNUAL-MVP-003/004
+  - 모바일
+  - Codex 구현
+- 책임 원본: `docs/planning/VALIDATION_CUT_APPROVAL_2026-07-31.md`
+- 구현 권한: `NONE`
+- 사람 검증: `NOT_RUN`
+- Showcase 진입: Validation 사람 검증과 사용자 별도 승인 전 `NOT_APPROVED`
+
+## D-2026-07-31-BENCHMARK-FIRST — 신규 기획 Benchmark Gate
+
+- 상태: `APPROVED_PROJECT_WORKING_PRINCIPLE`
+- 사용자 승인: 2026-07-31
+- 결정: 새 시스템·핵심 규칙·콘텐츠 구조·UX 흐름은 설계 전에 반드시 벤치마킹한다.
+- 반복 조사 제한:
+  - 매 작업마다 대규모 조사를 반복하지 않는다.
+  - 같은 질문의 기존 근거가 유효하면 `REUSED`한다.
+  - 기본 비교 범위는 직접 관련 사례 3~5개다.
+  - 장르·시장·플랫폼·대규모 방향 전환일 때만 범위를 확장한다.
+- 필수 결론:
+  - 반드시 반영
+  - 조건부 반영
+  - 제외
+  - 위험
+  - 괴이기록국식 재해석
+- Gate 상태: `PASSED / REUSED / NOT_APPLICABLE / BLOCKED`
+- 금지: 필수 대상이 `PASSED` 또는 `REUSED`가 아닌 상태에서 `APPROVED_DESIGN_BASELINE`, `BUILD_READY`, Codex Goal로 진입.
+- 책임 원본: `docs/BENCHMARK_FIRST_POLICY.md`
+- 상세 사례 형식: `docs/BENCHMARKING_REFERENCE_GUIDE.md`
+
+## D-2026-07-31-AFTERLIFE-HYPOTHESIS-PLANNING — 저승역 4→2 가설 설계 착수
+
+- 상태: `BENCHMARK_GATE_PASSED / DRAFT_REQUIRES_REVIEW`
+- 추적: Issue #121 / Draft PR #122
+- Benchmark Gate: 기존 공정 추리 조사에서 직접 관련 사례 4개를 재선별해 `PASSED_FOR_PLANNING`.
+- 설계 초안:
+  - 공백 투사설
+  - 검은 승차권 지정설
+  - 숨은 단일 종착역설
+  - 전광판 전염설
+- 제거 초안:
+  - 숨은 단일 종착역설은 동시 목적지 불일치와 공식 운행 기록으로 제거
+  - 전광판 전염설은 방송 원본 공백과 전광판 외 매체의 독립 변화로 제거
+- 확인된 누락: 공백 투사설과 승차권 지정설을 공정하게 구분할 시간순 관측 기록 1개가 필요함.
+- 책임 문서:
+  - `docs/planning/HYPOTHESIS_BOARD_TARGETED_BENCHMARK_2026-07-31.md`
+  - `docs/planning/AFTERLIFE_STATION_HYPOTHESIS_DESIGN_DRAFT.md`
+- 구현 권한: `NONE`
+- 사용자 세부 승인: `NOT_YET_GRANTED`
+- 사람 검증: `NOT_RUN`
