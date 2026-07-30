@@ -333,20 +333,141 @@
       "source": "BASE_SHARED",
       "status": "ACTIVE",
       "target_route_id": "synchronizing-local-and-github-state"
+    },
+    "urban-legend-analytics-user-research": {
+      "route_id": "urban-legend-analytics-user-research",
+      "skill_id": "urban-legend-analytics-user-research",
+      "source": "PROJECT_LOCAL",
+      "status": "ACTIVE",
+      "target_route_id": "urban-legend-analytics-user-research"
+    },
+    "urban-legend-art": {
+      "route_id": "urban-legend-art",
+      "skill_id": "urban-legend-art",
+      "source": "PROJECT_LOCAL",
+      "status": "ACTIVE",
+      "target_route_id": "urban-legend-art"
+    },
+    "urban-legend-audio": {
+      "route_id": "urban-legend-audio",
+      "skill_id": "urban-legend-audio",
+      "source": "PROJECT_LOCAL",
+      "status": "ACTIVE",
+      "target_route_id": "urban-legend-audio"
+    },
+    "urban-legend-engineering": {
+      "route_id": "urban-legend-engineering",
+      "skill_id": "urban-legend-engineering",
+      "source": "PROJECT_LOCAL",
+      "status": "ACTIVE",
+      "target_route_id": "urban-legend-engineering"
+    },
+    "urban-legend-game-design": {
+      "route_id": "urban-legend-game-design",
+      "skill_id": "urban-legend-game-design",
+      "source": "PROJECT_LOCAL",
+      "status": "ACTIVE",
+      "target_route_id": "urban-legend-game-design"
+    },
+    "urban-legend-narrative": {
+      "route_id": "urban-legend-narrative",
+      "skill_id": "urban-legend-narrative",
+      "source": "PROJECT_LOCAL",
+      "status": "ACTIVE",
+      "target_route_id": "urban-legend-narrative"
+    },
+    "urban-legend-production-pm": {
+      "route_id": "urban-legend-production-pm",
+      "skill_id": "urban-legend-production-pm",
+      "source": "PROJECT_LOCAL",
+      "status": "ACTIVE",
+      "target_route_id": "urban-legend-production-pm"
+    },
+    "urban-legend-qa": {
+      "route_id": "urban-legend-qa",
+      "skill_id": "urban-legend-qa",
+      "source": "PROJECT_LOCAL",
+      "status": "ACTIVE",
+      "target_route_id": "urban-legend-qa"
+    },
+    "urban-legend-technical-art-pipeline": {
+      "route_id": "urban-legend-technical-art-pipeline",
+      "skill_id": "urban-legend-technical-art-pipeline",
+      "source": "PROJECT_LOCAL",
+      "status": "ACTIVE",
+      "target_route_id": "urban-legend-technical-art-pipeline"
+    },
+    "urban-legend-ux-ui-accessibility": {
+      "route_id": "urban-legend-ux-ui-accessibility",
+      "skill_id": "urban-legend-ux-ui-accessibility",
+      "source": "PROJECT_LOCAL",
+      "status": "ACTIVE",
+      "target_route_id": "urban-legend-ux-ui-accessibility"
     }
   },
   "generated": true,
   "inactive_routes": [],
   "project_registry": {
     "hash_definition": "RAW_FILE_BYTES_SHA256",
-    "path": "skills/SKILL_REGISTRY.json",
-    "sha256": "dc5bc0f76789c53b4aeda51e6b52732a8c0e70eb3f18fd21993dfa56fc2c9442"
+    "path": "skills/PROJECT_LOCAL_SKILL_REGISTRY.json",
+    "sha256": "f5623300a63a88e6d6294ae909de8b46be2b37a92656c9142d6983eb03e10a3c"
   },
-  "project_routes": [],
+  "project_routes": [
+    {
+      "route_id": "urban-legend-analytics-user-research",
+      "skill_id": "urban-legend-analytics-user-research",
+      "status": "ACTIVE"
+    },
+    {
+      "route_id": "urban-legend-art",
+      "skill_id": "urban-legend-art",
+      "status": "ACTIVE"
+    },
+    {
+      "route_id": "urban-legend-audio",
+      "skill_id": "urban-legend-audio",
+      "status": "ACTIVE"
+    },
+    {
+      "route_id": "urban-legend-engineering",
+      "skill_id": "urban-legend-engineering",
+      "status": "ACTIVE"
+    },
+    {
+      "route_id": "urban-legend-game-design",
+      "skill_id": "urban-legend-game-design",
+      "status": "ACTIVE"
+    },
+    {
+      "route_id": "urban-legend-narrative",
+      "skill_id": "urban-legend-narrative",
+      "status": "ACTIVE"
+    },
+    {
+      "route_id": "urban-legend-production-pm",
+      "skill_id": "urban-legend-production-pm",
+      "status": "ACTIVE"
+    },
+    {
+      "route_id": "urban-legend-qa",
+      "skill_id": "urban-legend-qa",
+      "status": "ACTIVE"
+    },
+    {
+      "route_id": "urban-legend-technical-art-pipeline",
+      "skill_id": "urban-legend-technical-art-pipeline",
+      "status": "ACTIVE"
+    },
+    {
+      "route_id": "urban-legend-ux-ui-accessibility",
+      "skill_id": "urban-legend-ux-ui-accessibility",
+      "status": "ACTIVE"
+    }
+  ],
   "schema_version": 1,
   "source_registry": {
     "hash_definition": "RAW_FILE_BYTES_SHA256",
     "path": "skills/PROJECT_BASE_ADAPTER.json",
-    "sha256": "731dd1b926e9b02ca1bed753bc406b2ccd19a1904585f849f3e6036f1c14a09d"
+    "sha256": "0cde543ee8783d258bd7aa1c3ea33e53af695fe2275e3bfdbd58d66842aa23a7"
   }
 }
