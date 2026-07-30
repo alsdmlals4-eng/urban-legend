@@ -101,3 +101,30 @@ main commit: PENDING
 - 상세 결정 기록: 이 문서
 - Sheet 승인 결정: `02_현재_확정결정`
 - Sheet 변경이력: `99_변경이력`
+
+## 9. 최초 적용 증거
+
+```yaml
+decision_id: D-2026-07-31-CANON-SHEET-SYNC
+github:
+  branch: plan/urban-legend-planning-audit
+  pull_request: 122
+  paths:
+    - docs/decisions/D-2026-07-31-CANON-SHEET-SYNC.md
+    - docs/PROJECT_UPDATE_PROTOCOL.md
+    - docs/OPERATING_MODEL.md
+  pre_sheet_commit: f6e2c7fa7c6d8928cb3100e69ca90c4c3a499b55
+sheet:
+  spreadsheet_id: 14xtlvd90iQTKjDLcZR_b-WS5fHnBwNf-OfBruPBS6ck
+  ranges:
+    - 01_작업순서!A6:J6
+    - 02_현재_확정결정!A6:J6
+    - 99_변경이력!A6:H6
+  status: BRANCH_SYNCED_PENDING_MAIN
+verification:
+  github_paths_reread: true
+  sheet_ranges_reread: true
+  main_merge: PENDING
+  runtime: NOT_RUN
+  human_qa: NOT_RUN
+```
