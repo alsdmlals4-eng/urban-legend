@@ -40,7 +40,7 @@
     "version": "9.1.0"
   },
   "canonical_source": "skills/PROJECT_BASE_ADAPTER.json",
-  "canonical_source_sha256": "731dd1b926e9b02ca1bed753bc406b2ccd19a1904585f849f3e6036f1c14a09d",
+  "canonical_source_sha256": "0cde543ee8783d258bd7aa1c3ea33e53af695fe2275e3bfdbd58d66842aa23a7",
   "generated": true,
   "hash_definition": "RAW_FILE_BYTES_SHA256",
   "legacy_source": "docs/archive/base-v9-legacy-inputs/PROJECT_PATH_ADAPTER.json",

@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "registry_role": "base-v9-1-project-local-skill-view",
+  "source_registry": "skills/SKILL_REGISTRY.json",
+  "source_section": "project_disciplines",
+  "project": {
+    "repository": "alsdmlals4-eng/urban-legend"
+  },
+  "skills": [
+    {"skill_id": "urban-legend-narrative", "path": "skills/disciplines/urban-legend-narrative/SKILL.md", "status": "ACTIVE"},
+    {"skill_id": "urban-legend-game-design", "path": "skills/disciplines/urban-legend-game-design/SKILL.md", "status": "ACTIVE"},
+    {"skill_id": "urban-legend-ux-ui-accessibility", "path": "skills/disciplines/urban-legend-ux-ui-accessibility/SKILL.md", "status": "ACTIVE"},
+    {"skill_id": "urban-legend-engineering", "path": "skills/disciplines/urban-legend-engineering/SKILL.md", "status": "ACTIVE"},
+    {"skill_id": "urban-legend-technical-art-pipeline", "path": "skills/disciplines/urban-legend-technical-art-pipeline/SKILL.md", "status": "ACTIVE"},
+    {"skill_id": "urban-legend-art", "path": "skills/disciplines/urban-legend-art/SKILL.md", "status": "ACTIVE"},
+    {"skill_id": "urban-legend-audio", "path": "skills/disciplines/urban-legend-audio/SKILL.md", "status": "ACTIVE"},
+    {"skill_id": "urban-legend-qa", "path": "skills/disciplines/urban-legend-qa/SKILL.md", "status": "ACTIVE"},
+    {"skill_id": "urban-legend-production-pm", "path": "skills/disciplines/urban-legend-production-pm/SKILL.md", "status": "ACTIVE"},
+    {"skill_id": "urban-legend-analytics-user-research", "path": "skills/disciplines/urban-legend-analytics-user-research/SKILL.md", "status": "ACTIVE"}
+  ]
+}
