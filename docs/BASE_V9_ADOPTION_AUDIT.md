@@ -14,7 +14,7 @@ hash, snapshot hash, and its project-specific Skill Registry.
 
 | Area | Result | Evidence / next action |
 | --- | --- | --- |
-| Base reference | `MIGRATION_REQUIRED` | Existing active adapter points to the prior `c987647d...` line; `skills/BASE_V9_ADAPTER.json` is the v9 migration authority. |
+| Base reference | `MIGRATED_V9_1` | `skills/PROJECT_BASE_ADAPTER.json` and generated `skills/PROJECT_SKILL_SNAPSHOT.json` are the v9.1 authority; `skills/BASE_V9_ADAPTER.json` is a generated compatibility view. |
 | Project-local Skills | `KEEP` | Ten discipline Skills and one investigation-case Skill remain project-owned. |
 | Legacy Base index | `KEEP_AS_LEGACY_REFERENCE` | `skills/BASE_SKILL_INDEX.json` is a v8 snapshot; it is not a copy of common Skill bodies and must not become a second v9 authority. |
 | GDD Sheet | `SHEET_GITHUB_CONFLICT` | `00_프로젝트_허브` reported `SYNCED` while `05_GDD_요약` reported `SHEET_UPDATE_PENDING_GITHUB`; preserve both until an approved comparison resolves them. |
