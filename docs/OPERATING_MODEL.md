@@ -42,6 +42,8 @@ Base 공용 운영체계를 urban-legend의 기존 구조와 프로젝트 코어
 Base Skill 라우팅 → skills/BASE_SKILL_INDEX.json
 공용 기능 무손실 → skills/BASE_SKILL_COVERAGE.json
 경로 변환 → skills/PROJECT_PATH_ADAPTER.json
+벤치마킹 필수 정책 → docs/BENCHMARK_FIRST_POLICY.md
+벤치마킹 사례·작성 형식 → docs/BENCHMARKING_REFERENCE_GUIDE.md
 상세 설계 → docs/GAME_DESIGN_DOCUMENT.md
 로드맵 → MVP_ROADMAP.md
 검증 → TEST_CHECKLIST.md
@@ -61,7 +63,7 @@ Base Skill 라우팅 → skills/BASE_SKILL_INDEX.json
 
 ## Benchmark-first 기획 Gate
 
-새 시스템, 핵심 규칙, 콘텐츠 구조, UX 흐름을 설계할 때는 설계안 작성 전에 벤치마킹을 수행한다. 상세 방법과 사례 형식은 `docs/BENCHMARKING_REFERENCE_GUIDE.md`가 책임진다.
+새 시스템, 핵심 규칙, 콘텐츠 구조, UX 흐름을 설계할 때는 설계안 작성 전에 벤치마킹을 수행한다. 필수 정책은 `docs/BENCHMARK_FIRST_POLICY.md`, 사례·작성 형식은 `docs/BENCHMARKING_REFERENCE_GUIDE.md`가 책임진다.
 
 ### 필수 적용 대상
 
