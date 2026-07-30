@@ -134,11 +134,42 @@
 4. 플레이어가 최초 원인과 현장 매개 역할을 구분할 수 있는가?
 5. 준비·동료가 핵심 증거를 잠그거나 결론을 대신하지 않는가?
 
-## 11. 다음 Gate
+## 11. 정본·Sheet 동기화 증거
+
+```yaml
+decision_id: D-2026-07-31-AFTERLIFE-TIMELINE-EVIDENCE
+github:
+  branch: plan/urban-legend-planning-audit
+  pull_request: 122
+  paths:
+    - docs/decisions/D-2026-07-31-AFTERLIFE-TIMELINE-EVIDENCE.md
+    - docs/planning/AFTERLIFE_STATION_TIMELINE_EVIDENCE_DRAFT.md
+    - docs/planning/PLANNING_PROGRESS_2026-07-31.md
+  pre_sheet_commit: 13fb845925d07ecf61628e6b73418c1533f842b6
+sheet:
+  spreadsheet_id: 14xtlvd90iQTKjDLcZR_b-WS5fHnBwNf-OfBruPBS6ck
+  ranges:
+    - 01_작업순서!A7:J7
+    - 04_누락_충돌_감사!A8:H8
+    - 50_메인콘텐츠!A6:J6
+    - 80_데모_버티컬슬라이스_플레이테스트!A5:J5
+    - 99_변경이력!A7:H7
+  status: BRANCH_SYNCED_PENDING_MAIN
+  approval_state: DRAFT_REQUIRES_USER_REVIEW
+verification:
+  github_paths_reread: true
+  sheet_ranges_reread: true
+  current_decision_sheet: NOT_WRITTEN_BEFORE_APPROVAL
+  main_merge: PENDING
+  runtime: NOT_RUN
+  human_qa: NOT_RUN
+```
+
+## 12. 다음 Gate
 
 ```text
 사용자 문구·획득 위치 검수
 → DRAFT_REQUIRES_USER_REVIEW 해제 여부 결정
-→ 같은 Decision ID로 Sheet·결정 상태 승격
+→ 같은 Decision ID로 02_현재_확정결정과 관련 Sheet 상태 승격
 → 회수 패턴 중립 문구·분류 후보 검수
 ```
