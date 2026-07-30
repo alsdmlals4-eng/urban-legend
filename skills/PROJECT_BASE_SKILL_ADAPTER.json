@@ -1,24 +1,18 @@
 {
-  "schema_version": 1,
   "adapter_role": "base-shared-skill-project-adapter",
+  "artifact_role": "GENERATED_COMPATIBILITY_VIEW",
   "base": {
+    "commit": "6a224e450f9420223c00921f3c56e051612f92ad",
+    "repository": "alsdmlals4-eng/Base"
+  },
+  "base_release": {
+    "release_commit": "3c158f52cfdad889970aef4d6ce6650a6fea0645",
+    "release_evidence_commit": "dd20ad3852e264d7e337e34d2cb963f71053a6cb",
     "repository": "alsdmlals4-eng/Base",
-    "commit": "6a224e450f9420223c00921f3c56e051612f92ad"
+    "version": "9.1.0"
   },
-  "project": {
-    "repository": "alsdmlals4-eng/urban-legend",
-    "layout_policy": "preserve-existing-canonical-paths"
-  },
-  "role_bindings": {
-    "project_agents": "AGENTS.md",
-    "documentation_map": "docs/DOCUMENTATION_MAP.md",
-    "active_context": "docs/CURRENT_STATUS.md",
-    "skill_registry": "skills/SKILL_REGISTRY.json",
-    "archive_root": "docs/archive",
-    "archive_readme": "docs/archive/README.md",
-    "archive_manifest": "docs/archive/MANIFEST.json",
-    "archive_retention_adapter": "docs/archive/ARCHIVE_RETENTION_ADAPTER.json"
-  },
+  "canonical_source": "skills/PROJECT_BASE_ADAPTER.json",
+  "canonical_source_sha256": "731dd1b926e9b02ca1bed753bc406b2ccd19a1904585f849f3e6036f1c14a09d",
   "canonical_sources": [
     "docs/PROJECT_CORE.md",
     "docs/GAME_DESIGN_DOCUMENT.md",
@@ -26,6 +20,27 @@
     "docs/CURRENT_STATUS.md",
     "docs/DOCUMENTATION_MAP.md"
   ],
+  "engine": {
+    "addon_root": "addons/",
+    "asset_roots": [
+      "assets/"
+    ],
+    "platforms": [
+      "Windows PC"
+    ],
+    "project_file": "project.godot"
+  },
+  "generated": true,
+  "hash_definition": "RAW_FILE_BYTES_SHA256",
+  "legacy_source": "docs/archive/base-v9-legacy-inputs/PROJECT_BASE_SKILL_ADAPTER.json",
+  "legacy_source_sha256": "7423f18e99d98f3c89711eeb35d576295585ed01675e5f50b92be786d4b64553",
+  "license_record": "docs/technical/THIRD_PARTY_LICENSES.md",
+  "lifecycle": "ONE_CYCLE",
+  "project": {
+    "engine": "Godot 4.7",
+    "repository": "alsdmlals4-eng/urban-legend",
+    "root": "."
+  },
   "protected_paths": [
     "data/",
     "scripts/",
@@ -34,22 +49,44 @@
     "addons/",
     "project.godot"
   ],
-  "engine": {
-    "project_file": "project.godot",
-    "addon_root": "addons/",
-    "asset_roots": ["assets/"],
-    "platforms": ["Windows PC"]
+  "role_bindings": {
+    "active_context": "docs/CURRENT_STATUS.md",
+    "archive_manifest": "docs/archive/MANIFEST.json",
+    "archive_readme": "docs/archive/README.md",
+    "archive_retention_adapter": "docs/archive/ARCHIVE_RETENTION_ADAPTER.json",
+    "archive_root": "docs/archive",
+    "documentation_map": "docs/DOCUMENTATION_MAP.md",
+    "project_agents": "AGENTS.md",
+    "skill_registry": "skills/SKILL_REGISTRY.json"
   },
-  "validators": [
-    "python tools/check_archive_governance.py",
-    "python -m unittest tests/test_archive_retention_governance.py",
-    "manual: registry and documentation-map reference check",
-    "manual: Godot project parse/runtime check",
-    "manual: episode JSON and save compatibility check"
-  ],
-  "third_party_inventory": "docs/technical/ADOPTED_ASSETS.md",
-  "license_record": "docs/technical/THIRD_PARTY_LICENSES.md",
+  "routing_precedence": "PROJECT_LOCAL_THEN_BASE_SHARED",
+  "schema_version": 1,
   "shared_skill_overrides": {
+    "analyzing-and-refining-game-concepts": {},
+    "auditing-and-refining-ui-art": {},
+    "auditing-canonical-reference-freshness": {},
+    "building-project-visual-dashboards": {},
+    "creating-user-learning-notes": {},
+    "designing-art-prompts-and-technique-cards": {},
+    "designing-vertical-slices": {},
+    "diagnosing-game-engine-runtime-failures": {},
+    "establishing-project-core": {},
+    "evaluating-godot-assets-and-plugins-before-creation": {
+      "core_systems_not_to_outsource": [
+        "investigation-record-recovery loop",
+        "case fairness rules",
+        "canonical episode data"
+      ],
+      "search_focus": [
+        "dialogue branching",
+        "localization",
+        "timeline",
+        "investigation log UI",
+        "audio events"
+      ]
+    },
+    "evolving-project-discipline-skills": {},
+    "governing-game-user-research-coverage": {},
     "governing-legacy-retention-and-archives": {
       "adapter": "docs/archive/ARCHIVE_RETENTION_ADAPTER.json",
       "current_canon_priority": [
@@ -60,19 +97,28 @@
       ],
       "existing_legacy_migration": "NOT_IN_THIS_ADOPTION"
     },
-    "evaluating-godot-assets-and-plugins-before-creation": {
-      "search_focus": [
-        "dialogue branching",
-        "localization",
-        "timeline",
-        "investigation log UI",
-        "audio events"
-      ],
-      "core_systems_not_to_outsource": [
-        "investigation-record-recovery loop",
-        "case fairness rules",
-        "canonical episode data"
-      ]
-    }
-  }
+    "identifying-project-core": {},
+    "maintaining-long-running-task-continuity": {},
+    "maintaining-project-context-and-handoff": {},
+    "managing-base-change-proposals": {},
+    "managing-design-documents": {},
+    "managing-game-project-operating-system": {},
+    "managing-project-intake-and-work-contract": {},
+    "orchestrating-deepseek-worktrees": {},
+    "pruning-stale-and-nonfunctional-material": {},
+    "refactoring-with-contract-preservation": {},
+    "reviewing-and-validating-project-changes": {},
+    "running-adversarial-review-and-refinement": {},
+    "simplifying-skill-bodies": {},
+    "synchronizing-local-and-github-state": {}
+  },
+  "third_party_inventory": "docs/technical/ADOPTED_ASSETS.md",
+  "validators": [
+    "python tools/check_archive_governance.py",
+    "python -m unittest tests/test_archive_retention_governance.py",
+    "manual: registry and documentation-map reference check",
+    "manual: Godot project parse/runtime check",
+    "manual: episode JSON and save compatibility check"
+  ],
+  "view_name": "PROJECT_BASE_SKILL_ADAPTER.json"
 }

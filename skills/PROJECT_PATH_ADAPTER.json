@@ -1,42 +1,10 @@
 {
-  "schema_version": 3,
   "adapter_role": "urban-legend-base-operating-path-adapter",
+  "artifact_role": "GENERATED_COMPATIBILITY_VIEW",
   "base": {
-    "repository": "alsdmlals4-eng/Base",
     "commit": "c987647d01ad2baa028a16e03d85ddfc1572a727",
+    "repository": "alsdmlals4-eng/Base",
     "version_authority": "docs/BASE_RULES_VERSION.md"
-  },
-  "project": {
-    "repository": "alsdmlals4-eng/urban-legend",
-    "layout_policy": "preserve-existing-canonical-paths",
-    "base_example_paths_are_authoritative": false
-  },
-  "role_bindings": {
-    "project_agents": "AGENTS.md",
-    "project_start_here": "START_HERE.md",
-    "operating_model": "docs/OPERATING_MODEL.md",
-    "work_mode_and_skill_routing": "docs/WORK_MODE_AND_SKILL_ROUTING.md",
-    "active_context": "docs/CURRENT_STATUS.md",
-    "project_core": "docs/PROJECT_CORE.md",
-    "handoff": "docs/CURRENT_HANDOFF.md",
-    "documentation_map": "docs/DOCUMENTATION_MAP.md",
-    "design_document_registry_equivalent": "docs/DOCUMENTATION_MAP.md",
-    "skill_registry": "skills/SKILL_REGISTRY.json",
-    "base_skill_index": "skills/BASE_SKILL_INDEX.json",
-    "base_skill_coverage": "skills/BASE_SKILL_COVERAGE.json",
-    "project_discipline_skill_root": "skills/disciplines",
-    "project_discipline_contract": "skills/disciplines/PROJECT_DISCIPLINE_CONTRACT.md",
-    "project_local_skill_root": "skills",
-    "legacy_skill_aliases": "skills/LEGACY_SKILL_ALIASES.md",
-    "skill_learning_log": "skills/SKILL_LEARNING_LOG.md",
-    "roadmap": "MVP_ROADMAP.md",
-    "validation_contract": "TEST_CHECKLIST.md",
-    "project_context": "docs/PROJECT_CONTEXT.md",
-    "game_design_source": "docs/GAME_DESIGN_DOCUMENT.md",
-    "game_design_docx_derivative": "docs/URBAN_LEGEND_GAME_DESIGN.docx",
-    "game_design_generator": "tools/docs/build_game_design_doc.py",
-    "base_version": "docs/BASE_RULES_VERSION.md",
-    "base_sync_audit": "docs/qa/BASE_SYNC_AUDIT_2026-07-22.md"
   },
   "base_path_overrides": [
     {
@@ -65,16 +33,23 @@
       "reason": "Registry skill_id와 디렉터리 1:1"
     }
   ],
-  "publication_compatibility": {
-    "current_model": "markdown-source-plus-untracked-derived-docx",
-    "source": "docs/GAME_DESIGN_DOCUMENT.md",
-    "docx": "docs/URBAN_LEGEND_GAME_DESIGN.docx",
-    "generator": "tools/docs/build_game_design_doc.py",
-    "validation": "python tools/docs/build_game_design_doc.py --build && python tools/docs/build_game_design_doc.py --check",
-    "derivative_tracking": "UNTRACKED_REGENERATE_ON_DEMAND",
-    "ignore_rule": "/docs/URBAN_LEGEND_GAME_DESIGN.docx",
-    "base_v3_registry_migration": "DEFERRED_REQUIRES_SEPARATE_APPROVAL",
-    "reason": "최신 main은 Markdown을 정본으로 두고 DOCX를 필요 시 결정적으로 재생성하는 비추적 파생본으로 관리한다."
+  "base_release": {
+    "release_commit": "3c158f52cfdad889970aef4d6ce6650a6fea0645",
+    "release_evidence_commit": "dd20ad3852e264d7e337e34d2cb963f71053a6cb",
+    "repository": "alsdmlals4-eng/Base",
+    "version": "9.1.0"
+  },
+  "canonical_source": "skills/PROJECT_BASE_ADAPTER.json",
+  "canonical_source_sha256": "731dd1b926e9b02ca1bed753bc406b2ccd19a1904585f849f3e6036f1c14a09d",
+  "generated": true,
+  "hash_definition": "RAW_FILE_BYTES_SHA256",
+  "legacy_source": "docs/archive/base-v9-legacy-inputs/PROJECT_PATH_ADAPTER.json",
+  "legacy_source_sha256": "6cedec6eef7ad53fb083f69f2fe43d024721e14dc48dc0cdf5b98c6dad533fce",
+  "lifecycle": "ONE_CYCLE",
+  "project": {
+    "engine": "Godot 4.7",
+    "repository": "alsdmlals4-eng/urban-legend",
+    "root": "."
   },
   "protected_paths": [
     "scripts/core/game_state.gd",
@@ -82,6 +57,46 @@
     "project.godot",
     "knowledge/base-pack/**"
   ],
+  "publication_compatibility": {
+    "base_v3_registry_migration": "DEFERRED_REQUIRES_SEPARATE_APPROVAL",
+    "current_model": "markdown-source-plus-untracked-derived-docx",
+    "derivative_tracking": "UNTRACKED_REGENERATE_ON_DEMAND",
+    "docx": "docs/URBAN_LEGEND_GAME_DESIGN.docx",
+    "generator": "tools/docs/build_game_design_doc.py",
+    "ignore_rule": "/docs/URBAN_LEGEND_GAME_DESIGN.docx",
+    "reason": "최신 main은 Markdown을 정본으로 두고 DOCX를 필요 시 결정적으로 재생성하는 비추적 파생본으로 관리한다.",
+    "source": "docs/GAME_DESIGN_DOCUMENT.md",
+    "validation": "python tools/docs/build_game_design_doc.py --build && python tools/docs/build_game_design_doc.py --check"
+  },
+  "role_bindings": {
+    "active_context": "docs/CURRENT_STATUS.md",
+    "base_skill_coverage": "skills/BASE_SKILL_COVERAGE.json",
+    "base_skill_index": "skills/BASE_SKILL_INDEX.json",
+    "base_sync_audit": "docs/qa/BASE_SYNC_AUDIT_2026-07-22.md",
+    "base_version": "docs/BASE_RULES_VERSION.md",
+    "design_document_registry_equivalent": "docs/DOCUMENTATION_MAP.md",
+    "documentation_map": "docs/DOCUMENTATION_MAP.md",
+    "game_design_docx_derivative": "docs/URBAN_LEGEND_GAME_DESIGN.docx",
+    "game_design_generator": "tools/docs/build_game_design_doc.py",
+    "game_design_source": "docs/GAME_DESIGN_DOCUMENT.md",
+    "handoff": "docs/CURRENT_HANDOFF.md",
+    "legacy_skill_aliases": "skills/LEGACY_SKILL_ALIASES.md",
+    "operating_model": "docs/OPERATING_MODEL.md",
+    "project_agents": "AGENTS.md",
+    "project_context": "docs/PROJECT_CONTEXT.md",
+    "project_core": "docs/PROJECT_CORE.md",
+    "project_discipline_contract": "skills/disciplines/PROJECT_DISCIPLINE_CONTRACT.md",
+    "project_discipline_skill_root": "skills/disciplines",
+    "project_local_skill_root": "skills",
+    "project_start_here": "START_HERE.md",
+    "roadmap": "MVP_ROADMAP.md",
+    "skill_learning_log": "skills/SKILL_LEARNING_LOG.md",
+    "skill_registry": "skills/SKILL_REGISTRY.json",
+    "validation_contract": "TEST_CHECKLIST.md",
+    "work_mode_and_skill_routing": "docs/WORK_MODE_AND_SKILL_ROUTING.md"
+  },
+  "routing_precedence": "PROJECT_LOCAL_THEN_BASE_SHARED",
+  "schema_version": 1,
   "validation": {
     "tests": [
       "tests/test_base_operating_sync.py",
@@ -89,5 +104,6 @@
       "tests/test_active_document_references.py"
     ],
     "workflow": ".github/workflows/validate-base-operating-sync.yml"
-  }
+  },
+  "view_name": "PROJECT_PATH_ADAPTER.json"
 }
