@@ -198,10 +198,9 @@ decision_id: D-2026-07-31-AFTERLIFE-RECOVERY-PATTERNS
 github:
   branch: plan/urban-legend-planning-audit
   pull_request: 122
-  paths:
-    - docs/decisions/D-2026-07-31-AFTERLIFE-RECOVERY-PATTERNS.md
-    - docs/planning/AFTERLIFE_STATION_RECOVERY_ENCOUNTER_DRAFT.md
-    - docs/planning/PLANNING_PROGRESS_2026-07-31.md
+  authority_path: docs/decisions/D-2026-07-31-AFTERLIFE-RECOVERY-PATTERNS.md
+  compatibility_stub: docs/planning/AFTERLIFE_STATION_RECOVERY_ENCOUNTER_DRAFT.md
+  progress_path: docs/planning/PLANNING_PROGRESS_2026-07-31.md
   pre_sheet_commit: d6a5f18df07522b315e9c7ba68e7c302a7f34f29
 sheet:
   spreadsheet_id: 14xtlvd90iQTKjDLcZR_b-WS5fHnBwNf-OfBruPBS6ck
@@ -216,6 +215,8 @@ sheet:
   status: BRANCH_SYNCED_PENDING_MAIN
   approval_state: DRAFT_REQUIRES_USER_REVIEW
 verification:
+  github_paths_reread: true
+  sheet_ranges_reread: true
   current_decision_sheet: NOT_WRITTEN_BEFORE_APPROVAL
   runtime: NOT_RUN
   human_qa: NOT_RUN
