@@ -325,7 +325,37 @@ screen_benchmark: REQUIRED_NEXT
 screen_situation_canon: BLOCKED_UNTIL_BENCHMARK
 recovery_pattern_approval: HOLD_FOR_SCREEN_AUTHORITY
 result_cap_review: HOLD
-sheet_sync: REVIEW_RECORD_PENDING
+sheet_sync: BRANCH_SYNCED_PENDING_MAIN
 product_files_changed: false
 codex: HOLD
+```
+
+## 10. GitHub·Sheet 동기화 증거
+
+```yaml
+review_id: R-2026-07-31-PLANNING-MIDPOINT-AUDIT
+github:
+  branch: plan/urban-legend-planning-audit
+  pull_request: 122
+  path: docs/planning/PLANNING_MIDPOINT_AUDIT_2026-07-31.md
+  pre_sheet_commit: 592d577b98e965beaf7c92475cf015b76f6a5517
+sheet:
+  spreadsheet_id: 14xtlvd90iQTKjDLcZR_b-WS5fHnBwNf-OfBruPBS6ck
+  ranges:
+    - 01_작업순서!A9:J9
+    - 04_누락_충돌_감사!A10:H10
+    - 60_UX_UI_접근성!A6:J6
+    - 99_변경이력!A9:H9
+  status: BRANCH_SYNCED_PENDING_MAIN
+approval:
+  new_approved_decisions: NONE
+  user_decisions_required:
+    - Validation Cut 시작 구조
+    - 준비 화면 제품 권위
+    - 회수 판단 권위
+verification:
+  product_files_changed: false
+  runtime: NOT_RUN
+  human_qa: NOT_RUN
+  main_merge: PENDING
 ```
