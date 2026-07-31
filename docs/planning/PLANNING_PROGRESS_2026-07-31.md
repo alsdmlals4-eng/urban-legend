@@ -13,6 +13,9 @@
 - 기존 근거 재사용 우선, 기본 3~5개 목적형 비교
 - 주요 변경·승인 결정은 동일 Decision ID로 GitHub 책임 원본과 연결 Google Sheet에 즉시 동기화
 - `D-2026-07-31-AFTERLIFE-TIMELINE-EVIDENCE` 시간순 증거 기준선
+- `D-2026-07-31-TEXT-NOVEL-CORE-PRESENTATION` 조사·일반 플레이 텍스트 노벨 화면 권위
+- `D-2026-07-31-VISUAL-ART-DIRECTION` 다크 현대 오컬트·세미리얼 애니 비주얼 기준
+- `D-2026-07-31-VALIDATION-SCREEN-AUTHORITY` Validation 시작·준비·추리·회수·결과 화면 책임
 - Codex는 기획·검수 최종 완료 뒤 마지막 단계
 
 ## 작성·검수 완료
@@ -21,11 +24,47 @@
 - 통합 Vertical Slice 경험 v3
 - 전체 기획 적대적 검토
 - Benchmark-first 프로젝트 정책
-- 저승역 가설 보드 목적형 벤치마크
+- 저승역 가설 보드 목적형 Benchmark
 - 저승역 가설 보드 v2와 적대적 검토
 - 저승역 시간순 증거 대사·획득 위치 승인
+- 기획 중간점검과 화면 권위 충돌 감사
+- 조사·일반 플레이 텍스트 노벨 표현 승인
+- 프로젝트 비주얼 아트 방향 승인
+- Validation 화면 권위 A~D 패키지 승인
 - 결과·해결 등급·연구 환류 초안
 - 플레이테스트 계획 초안
+
+## 승인된 Validation 화면 권위
+
+### D-2026-07-31-VALIDATION-SCREEN-AUTHORITY
+
+```text
+메인
+→ 저승역 콜드 오픈
+→ 기록국 브리핑
+→ 축약 준비
+→ 텍스트 노벨 조사
+→ 가설 보드
+→ 시간순 증거 비교
+→ 안전 노선 복원
+→ 회수 패턴 대응
+→ 결과·보고서
+→ preparation_scene 사후 정산
+```
+
+- `preparation_scene`을 Validation 제품 준비 화면으로 유지한다.
+- Validation에서는 요원·장비/지원·조사 우선순위만 다루는 축약 준비 모드를 사용한다.
+- 가설 보드는 사건 전체 원인, 회수 화면은 현재 패턴·관련 기록·중립 행동을 담당한다.
+- 결과 이후 보고서·괴이 매뉴얼을 갱신하고 사후 정산 모드로 복귀한다.
+- ANNUAL-MVP-002 전체 제품 통합은 Showcase Cut에서 별도 승인한다.
+- 상태: `APPROVED_PLANNING_BASELINE`
+- Benchmark Gate: `REUSED`
+- 구현 권한: `NONE`
+- 사람 검증: `NOT_RUN`
+
+책임 원본:
+
+- `docs/decisions/D-2026-07-31-VALIDATION-SCREEN-AUTHORITY.md`
 
 ## 승인된 시간순 증거
 
@@ -44,56 +83,40 @@
 - 구현 권한: `NONE`
 - 사람 검증: `NOT_RUN`
 
-책임 원본:
-
-- `docs/decisions/D-2026-07-31-AFTERLIFE-TIMELINE-EVIDENCE.md`
-
 ## 현재 검수 대상
+
+### 필수 기준 화면 4종 목적형 Benchmark
+
+대상:
+
+1. SCREEN-01 메인 화면
+2. SCREEN-02 텍스트 노벨 조사·핵심 플레이 화면
+3. SCREEN-03 축약 준비·자원 관리 화면
+4. SCREEN-04 결과·보고서·사후 정산 화면
+
+목적:
+
+- 현재 구현·승인 기획·신규 제안을 분리한다.
+- 각 화면의 정보 위계·상태 변형·전환·가독성을 검증한다.
+- 같은 대규모 조사를 반복하지 않고 기존 장르·가설 보드 Benchmark를 재사용하며 화면별 3~5개 직접 사례만 비교한다.
 
 ### D-2026-07-31-AFTERLIFE-RECOVERY-PATTERNS
 
-권장 구조:
+상태: `DRAFT_REQUIRES_USER_REVIEW / HOLD_UNTIL_SCREEN_SPEC`
 
-```text
-전조 관측
-→ 패턴 분류
-→ 관련 기록 연결
-→ 중립 현장 행동
-→ 현장 결과
-→ 추론 검증 결과
-```
-
-Validation 패턴:
-
-1. 존재하지 않는 종착 안내
-2. 검은 승차권의 승객 각인
-
-권장 중립 행동:
-
-- 패턴 1: `스피커 회로를 분리한다 / 전광판이 가리키는 쪽으로 이동한다 / 방송에 현재 역명을 답한다`
-- 패턴 2: `투명 격리함으로 옮긴다 / 개찰기에 통과시킨다 / 보호 봉투에 넣어 요원이 소지한다`
-
-핵심 경계:
-
-- 행동 문구에 근거·정답 논리를 넣지 않는다.
-- 행동 성공과 공식 추론 검증을 분리한다.
-- 사건 원인 가설 네 개를 매 패턴에서 반복하지 않는다.
-- 자동 예측·동료 지원은 정답을 표시하지 않는다.
-- 상태: `DRAFT_REQUIRES_USER_REVIEW`
-- 구현 권한: `NONE`
-
-책임 원본:
-
-- `docs/decisions/D-2026-07-31-AFTERLIFE-RECOVERY-PATTERNS.md`
+화면 권위는 승인됐으나, 행동 문구의 정답 편향과 실제 화면 상태를 SCREEN/SIT 명세에서 확인한 뒤 최종 승인한다.
 
 ## 남은 P0 기획
 
-1. 회수 패턴 분류 후보·중립 행동 문구 사용자 검수
-2. 원인 미검증 상태의 해결 등급 상한 검수
-3. 결과→연구·장비 환류 세부값 검수
-4. 플레이테스트 패키지 적대적 검토
-5. 사용자 최종 승인
-6. 승인 결정의 GitHub 정본·Sheet 상태 승격
+1. 필수 기준 화면 4종 목적형 Benchmark
+2. SCREEN-01~04 CURRENT / INFERRED / PROPOSED 명세와 상태 변형
+3. Validation SIT-001~008 화면 시퀀스와 전체 전환도
+4. 회수 패턴 분류 후보·중립 행동 최종 검수
+5. 원인 미검증 상태의 해결 등급 상한 검수
+6. 결과→연구·장비·다음 준비 환류 세부값 검수
+7. 플레이테스트 패키지 적대적 검토
+8. 사용자 최종 승인
+9. 승인 결정의 GitHub 정본·Sheet 상태 승격
 
 ## 보류
 
@@ -102,6 +125,7 @@ Validation 패턴:
 - Base v9.3 이관 구현
 - ANNUAL-MVP-003/004
 - Showcase Cut 구현
+- ANNUAL-MVP-002 전체 제품 통합
 - 사람 검증 전 제작 확대
 
 Google Sheet 쓰기는 승인·주요 변경 동기화 목적으로만 허용하며, 제품 데이터 구현을 의미하지 않는다.
@@ -112,10 +136,15 @@ Google Sheet 쓰기는 승인·주요 변경 동기화 목적으로만 허용하
 canon_sheet_sync_policy: APPROVED_AND_BRANCH_SYNCED
 benchmark_first_policy: APPROVED
 validation_cut_direction: APPROVED
+text_novel_core_presentation: APPROVED_PLANNING_BASELINE
+visual_art_direction: APPROVED_PLANNING_BASELINE
+validation_screen_authority: APPROVED_PLANNING_BASELINE
+screen_benchmark: NEXT_GATE
+screen_situation_canon: NOT_STARTED
 hypothesis_benchmark: PASSED
 hypothesis_design_v2: DRAFT_REQUIRES_USER_REVIEW
 timeline_evidence: APPROVED_PLANNING_BASELINE
-recovery_patterns: DRAFT_REQUIRES_USER_REVIEW
+recovery_patterns: HOLD_UNTIL_SCREEN_SPEC
 result_and_reward: DRAFT_REQUIRES_REVIEW
 playtest_plan: DRAFT_REQUIRES_REVIEW
 showcase_cut: HOLD_UNTIL_VALIDATION
