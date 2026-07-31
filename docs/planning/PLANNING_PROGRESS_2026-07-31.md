@@ -17,7 +17,7 @@
 - `D-2026-07-31-VISUAL-ART-DIRECTION` 다크 현대 오컬트·세미리얼 애니 비주얼 기준
 - `D-2026-07-31-VALIDATION-SCREEN-AUTHORITY` Validation 시작·준비·추리·회수·결과 화면 책임
 - `D-2026-07-31-EXTENDED-MANAGEMENT-SCREENS` 일정·연구·상점/보급 조달 화면 추가
-- `D-2026-07-31-MAIN-DAILY-SCHEDULE-PRESENTATION` 메인 무인 화면·하루 단위 일정 입력·다일 활동 연속 날짜 자동 점유
+- `D-2026-07-31-MAIN-DAILY-SCHEDULE-PRESENTATION` 메인 무인 화면·하루 단위 일정 입력·다일 활동 연속 날짜 자동 점유·주요 1개+일상 1개 슬롯
 - Codex는 기획·검수 최종 완료 뒤 마지막 단계
 
 ## 작성·검수 완료
@@ -36,6 +36,7 @@
 - 일정·연구·상점/보급 조달을 기준 화면 세트에 추가
 - 메인 화면 캐릭터 비노출과 하루 단위 일정 편성 승인
 - 2~3일 활동의 연속 날짜 자동 점유 승인
+- 하루 주요 활동 1개와 일상 활동 1개 슬롯 승인
 - 결과·해결 등급·연구 환류 초안
 - 플레이테스트 계획 초안
 
@@ -113,8 +114,9 @@
 
 ```text
 날짜 선택
-→ 해당 날짜 활동 선택
-→ 비용·피로·예상 변화 확인
+→ 주요 활동 1개 선택
+→ 일상 활동 1개 선택
+→ 비용·피로·예상 변화 통합 확인
 → 하루 일정 확정
 → 다음 날짜
 ```
@@ -122,9 +124,13 @@
 - 일정 입력과 확인의 기본 단위는 `1일`이다.
 - 4주×7일 달력은 전체 기간과 마감을 보여주는 개요다.
 - 주간 활동 묶음 선택을 기본값으로 두지 않는다.
-- 2~3일 활동은 시작 날짜에서 선택하면 필요한 연속 날짜를 자동 점유한다.
+- 하루에는 주요 활동 슬롯 1개와 일상 활동 슬롯 1개가 있다.
+- 주요 활동은 하루의 핵심 시간과 기회비용을 사용하며, 일상 활동은 병행 가능한 낮은 강도의 생활·관계·습관 행동이다.
+- 일상 활동은 주요 활동을 대체하거나 다일 활동을 단축하고 핵심 단서·정답·미관측 패턴을 생성할 수 없다.
+- 2~3일 주요 활동은 시작 날짜에서 선택하면 필요한 연속 날짜를 자동 점유한다.
+- 다일 주요 활동이 진행되는 동안에도 날짜별 일상 활동 슬롯은 독립적으로 유지한다.
 - 자동 점유 범위·완료 예정일·충돌을 확정 전에 미리 보여준다.
-- 다일 활동은 주차 경계를 넘지 않으며, 이동·취소·복사는 전체 일정 블록 단위로 처리한다.
+- 다일 활동은 주차 경계를 넘지 않으며, 이동·취소·복사는 전체 주요 활동 블록 단위로 처리한다.
 - 직전 7종 비주얼 보드는 메인 캐릭터 노출과 주간 묶음 일정 표현 때문에 `SUPERSEDED_PLACEHOLDER`다.
 - 상태: `APPROVED_PLANNING_BASELINE`
 - 구현 권한: `NONE`
@@ -170,7 +176,7 @@
 - 각 화면의 정보 위계·상태 변형·전환·가독성을 검증한다.
 - 같은 대규모 조사를 반복하지 않고 기존 장르·가설 보드·ANNUAL Benchmark를 재사용한다.
 - SCREEN-01은 무인 환경 중심 메인 화면으로 비교한다.
-- SCREEN-05는 하루 단위 입력과 다일 활동 연속 날짜 자동 점유를 전제로 비교한다.
+- SCREEN-05는 하루 단위 입력, 주요 1개+일상 1개 슬롯, 다일 주요 활동 연속 날짜 자동 점유를 전제로 비교한다.
 - 일정과 연구는 기존 근거를 `REUSED`하고, 상점·보급 조달은 정확한 UX를 위한 목적형 비교를 추가한다.
 - 최종 비주얼 보드는 핵심 플레이 4종과 운영·성장 3종을 두 장으로 분리해 판독성을 유지한다.
 
@@ -182,20 +188,21 @@
 
 ## 남은 P0 기획
 
-1. 하루 한 활동 또는 오전·오후 분할 규칙 확정
+1. 일상 활동 목록·효과 상한·반복 제한·기본 선택값 확정
 2. 미래 일정 수정 가능 시점 확정
-3. 돌발 출동과 다일 활동 충돌 처리 확정
-4. SCREEN-01 무인 메인 화면과 SCREEN-05 하루 일정 화면 상세 명세
-5. 기준 화면 7종 목적형 Benchmark
-6. SCREEN-01~07 CURRENT / INFERRED / PROPOSED 명세와 상태 변형
-7. 핵심 플레이 보드 A와 운영·성장 보드 B의 비주얼 콘셉트 재작성
-8. Validation SIT-001~008 화면 시퀀스와 전체 전환도
-9. 회수 패턴 분류 후보·중립 행동 최종 검수
-10. 원인 미검증 상태의 해결 등급 상한 검수
-11. 결과→연구·장비·조달·다음 준비 환류 세부값 검수
-12. 플레이테스트 패키지 적대적 검토
-13. 사용자 최종 승인
-14. 승인 결정의 GitHub 정본·Sheet 상태 승격
+3. 돌발 출동과 주요·일상 활동 충돌 처리 확정
+4. 다일 주요 활동의 효과 정산 시점 확정
+5. SCREEN-01 무인 메인 화면과 SCREEN-05 하루 일정 화면 상세 명세
+6. 기준 화면 7종 목적형 Benchmark
+7. SCREEN-01~07 CURRENT / INFERRED / PROPOSED 명세와 상태 변형
+8. 핵심 플레이 보드 A와 운영·성장 보드 B의 비주얼 콘셉트 재작성
+9. Validation SIT-001~008 화면 시퀀스와 전체 전환도
+10. 회수 패턴 분류 후보·중립 행동 최종 검수
+11. 원인 미검증 상태의 해결 등급 상한 검수
+12. 결과→연구·장비·조달·다음 준비 환류 세부값 검수
+13. 플레이테스트 패키지 적대적 검토
+14. 사용자 최종 승인
+15. 승인 결정의 GitHub 정본·Sheet 상태 승격
 
 ## 보류
 
@@ -223,9 +230,11 @@ extended_management_screens: APPROVED_PLANNING_BASELINE
 main_no_character: APPROVED_PLANNING_BASELINE
 daily_schedule_input: APPROVED_PLANNING_BASELINE
 multi_day_consecutive_reservation: APPROVED_PLANNING_BASELINE
-schedule_day_partition: USER_DECISION_REQUIRED
+schedule_day_partition: APPROVED_MAJOR_1_PLUS_DAILY_1
+schedule_daily_activity_catalog: USER_DECISION_REQUIRED
 schedule_future_edit_window: NOT_DECIDED
 schedule_interruption_rule: NOT_DECIDED
+schedule_multi_day_settlement: NOT_DECIDED
 screen_benchmark: NEXT_GATE_FOR_SCREEN_01_TO_07
 screen_05_schedule_benchmark: REUSED_WITH_DETAIL_REVIEW
 screen_06_research_benchmark: REUSED_WITH_TARGETED_LAYOUT_REVIEW
