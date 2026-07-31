@@ -16,6 +16,7 @@
 - `D-2026-07-31-TEXT-NOVEL-CORE-PRESENTATION` 조사·일반 플레이 텍스트 노벨 화면 권위
 - `D-2026-07-31-VISUAL-ART-DIRECTION` 다크 현대 오컬트·세미리얼 애니 비주얼 기준
 - `D-2026-07-31-VALIDATION-SCREEN-AUTHORITY` Validation 시작·준비·추리·회수·결과 화면 책임
+- `D-2026-07-31-EXTENDED-MANAGEMENT-SCREENS` 일정·연구·상점/보급 조달 화면 추가
 - Codex는 기획·검수 최종 완료 뒤 마지막 단계
 
 ## 작성·검수 완료
@@ -31,6 +32,7 @@
 - 조사·일반 플레이 텍스트 노벨 표현 승인
 - 프로젝트 비주얼 아트 방향 승인
 - Validation 화면 권위 A~D 패키지 승인
+- 일정·연구·상점/보급 조달을 기준 화면 세트에 추가
 - 결과·해결 등급·연구 환류 초안
 - 플레이테스트 계획 초안
 
@@ -66,6 +68,35 @@
 
 - `docs/decisions/D-2026-07-31-VALIDATION-SCREEN-AUTHORITY.md`
 
+## 승인된 확장 관리 화면
+
+### D-2026-07-31-EXTENDED-MANAGEMENT-SCREENS
+
+기준 화면 세트를 다음 7종으로 확장한다.
+
+1. SCREEN-01 메인
+2. SCREEN-02 텍스트 노벨 조사·핵심 플레이
+3. SCREEN-03 준비·자원 관리
+4. SCREEN-04 결과·보고서·사후 정산
+5. SCREEN-05 일정·운영
+6. SCREEN-06 연구
+7. SCREEN-07 상점·보급 조달
+
+핵심 경계:
+
+- SCREEN-05는 4주×7일 운영과 사건 징후·출동 시점 판단을 담당한다.
+- SCREEN-06은 사건 기록·잔향 자료가 질문·장비·모듈·지원으로 환류되는 과정을 담당한다.
+- SCREEN-07은 일반 소매 상점이 아니라 기록국 내부 조달·보급 화면이다.
+- 개인 돈·생활비·무한 구매/판매·내구도 경제는 별도 승인 전 제외한다.
+- 상점/보급 화면의 정확한 명칭과 정보 구조는 목적형 Benchmark 뒤 확정한다.
+- 상태: `APPROVED_PLANNING_BASELINE`
+- 구현 권한: `NONE`
+- 사람 검증: `NOT_RUN`
+
+책임 원본:
+
+- `docs/decisions/D-2026-07-31-EXTENDED-MANAGEMENT-SCREENS.md`
+
 ## 승인된 시간순 증거
 
 ### D-2026-07-31-AFTERLIFE-TIMELINE-EVIDENCE
@@ -85,7 +116,7 @@
 
 ## 현재 검수 대상
 
-### 필수 기준 화면 4종 목적형 Benchmark
+### 기준 화면 7종 목적형 Benchmark
 
 대상:
 
@@ -93,12 +124,17 @@
 2. SCREEN-02 텍스트 노벨 조사·핵심 플레이 화면
 3. SCREEN-03 축약 준비·자원 관리 화면
 4. SCREEN-04 결과·보고서·사후 정산 화면
+5. SCREEN-05 일정·운영 화면
+6. SCREEN-06 연구 화면
+7. SCREEN-07 상점·보급 조달 화면
 
 목적:
 
 - 현재 구현·승인 기획·신규 제안을 분리한다.
 - 각 화면의 정보 위계·상태 변형·전환·가독성을 검증한다.
-- 같은 대규모 조사를 반복하지 않고 기존 장르·가설 보드 Benchmark를 재사용하며 화면별 3~5개 직접 사례만 비교한다.
+- 같은 대규모 조사를 반복하지 않고 기존 장르·가설 보드·ANNUAL Benchmark를 재사용한다.
+- 일정과 연구는 기존 근거를 `REUSED`하고, 상점·보급 조달은 정확한 UX를 위한 목적형 비교를 추가한다.
+- 최종 비주얼 보드는 핵심 플레이 4종과 운영·성장 3종을 두 장으로 분리해 판독성을 유지한다.
 
 ### D-2026-07-31-AFTERLIFE-RECOVERY-PATTERNS
 
@@ -108,15 +144,16 @@
 
 ## 남은 P0 기획
 
-1. 필수 기준 화면 4종 목적형 Benchmark
-2. SCREEN-01~04 CURRENT / INFERRED / PROPOSED 명세와 상태 변형
-3. Validation SIT-001~008 화면 시퀀스와 전체 전환도
-4. 회수 패턴 분류 후보·중립 행동 최종 검수
-5. 원인 미검증 상태의 해결 등급 상한 검수
-6. 결과→연구·장비·다음 준비 환류 세부값 검수
-7. 플레이테스트 패키지 적대적 검토
-8. 사용자 최종 승인
-9. 승인 결정의 GitHub 정본·Sheet 상태 승격
+1. 기준 화면 7종 목적형 Benchmark
+2. SCREEN-01~07 CURRENT / INFERRED / PROPOSED 명세와 상태 변형
+3. 핵심 플레이 보드 A와 운영·성장 보드 B의 비주얼 콘셉트
+4. Validation SIT-001~008 화면 시퀀스와 전체 전환도
+5. 회수 패턴 분류 후보·중립 행동 최종 검수
+6. 원인 미검증 상태의 해결 등급 상한 검수
+7. 결과→연구·장비·조달·다음 준비 환류 세부값 검수
+8. 플레이테스트 패키지 적대적 검토
+9. 사용자 최종 승인
+10. 승인 결정의 GitHub 정본·Sheet 상태 승격
 
 ## 보류
 
@@ -126,6 +163,7 @@
 - ANNUAL-MVP-003/004
 - Showcase Cut 구현
 - ANNUAL-MVP-002 전체 제품 통합
+- 개인 화폐·반복 구매 판매·장비 내구도 경제
 - 사람 검증 전 제작 확대
 
 Google Sheet 쓰기는 승인·주요 변경 동기화 목적으로만 허용하며, 제품 데이터 구현을 의미하지 않는다.
@@ -139,7 +177,11 @@ validation_cut_direction: APPROVED
 text_novel_core_presentation: APPROVED_PLANNING_BASELINE
 visual_art_direction: APPROVED_PLANNING_BASELINE
 validation_screen_authority: APPROVED_PLANNING_BASELINE
-screen_benchmark: NEXT_GATE
+extended_management_screens: APPROVED_PLANNING_BASELINE
+screen_benchmark: NEXT_GATE_FOR_SCREEN_01_TO_07
+screen_05_schedule_benchmark: REUSED
+screen_06_research_benchmark: REUSED_WITH_TARGETED_LAYOUT_REVIEW
+screen_07_procurement_benchmark: TARGETED_REQUIRED
 screen_situation_canon: NOT_STARTED
 hypothesis_benchmark: PASSED
 hypothesis_design_v2: DRAFT_REQUIRES_USER_REVIEW
