@@ -1,11 +1,11 @@
 # 괴이기록국 기존 프로젝트 전체 적대적 감사 — 2026-08-01
 
-> Review ID: `R-2026-08-01-FULL-PROJECT-ADVERSARIAL-AUDIT`  
-> 상태: `REVIEW_COMPLETE / USER_DECISION_REQUIRED`  
-> 기준 main: `656846865eb88871d00842a0da527ce1b0722b77`  
-> 기획 브랜치: `plan/urban-legend-planning-audit`  
-> 추적: Issue #121 / Draft PR #122  
-> 구현 권한: `NONE`  
+> Review ID: `R-2026-08-01-FULL-PROJECT-ADVERSARIAL-AUDIT`
+> 상태: `REVIEW_COMPLETE / USER_DECISION_REQUIRED`
+> 기준 main: `656846865eb88871d00842a0da527ce1b0722b77`
+> 기획 브랜치: `plan/urban-legend-planning-audit`
+> 추적: Issue #121 / Draft PR #122
+> 구현 권한: `NONE`
 > Runtime / Human QA: `NOT_RUN`
 
 ## 1. 감사 목적
