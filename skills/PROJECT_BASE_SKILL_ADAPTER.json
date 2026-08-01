@@ -6,13 +6,13 @@
     "repository": "alsdmlals4-eng/Base"
   },
   "base_release": {
-    "release_commit": "3c158f52cfdad889970aef4d6ce6650a6fea0645",
-    "release_evidence_commit": "dd20ad3852e264d7e337e34d2cb963f71053a6cb",
+    "release_commit": "a728712cb776ec98f4875914a580fcf7d0156593",
+    "release_evidence_commit": "ef1fba11167e4da0b298123b0c85ebd268191a42",
     "repository": "alsdmlals4-eng/Base",
-    "version": "9.1.0"
+    "version": "9.4.0"
   },
   "canonical_source": "skills/PROJECT_BASE_ADAPTER.json",
-  "canonical_source_sha256": "ba10720c585241a62076ae7f7abfe6dce51abce91d5d00c15e48933e8cc26a88",
+  "canonical_source_sha256": "393adff2b4d40e7ecb68196ddb047eaa6d5271f67f544828f4f458ac84228861",
   "canonical_sources": [
     "docs/PROJECT_CORE.md",
     "docs/GAME_DESIGN_DOCUMENT.md",
@@ -110,7 +110,8 @@
     "reviewing-and-validating-project-changes": {},
     "running-adversarial-review-and-refinement": {},
     "simplifying-skill-bodies": {},
-    "synchronizing-local-and-github-state": {}
+    "synchronizing-local-and-github-state": {},
+    "optimizing-ai-model-and-prompt-costs": {}
   },
   "third_party_inventory": "docs/technical/ADOPTED_ASSETS.md",
   "validators": [

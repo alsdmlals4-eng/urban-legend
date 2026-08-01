@@ -230,3 +230,9 @@ PR #70의 4주 구조는 달력 월 보정과 위험 0/15/30의 근거로 유지
 5. 장비·동료가 사건 정답을 제공한다고 오인하지 않는지 확인
 6. `KEEP / AMPLIFY / CHANGE / RETEST / HOLD` 판정
 7. 별도 사용자 승인 전 ANNUAL-MVP-003과 제작 확대 시작 금지
+
+## Base v9.4 운영 계약
+
+- adapter에 Base `9.4.0` payload/evidence를 적용했다.
+- 제품 코드·에피소드 JSON·대사·Scene·자산·저장·Sheet는 변경하지 않는다.
+- 런타임·입력·사람·provider 검증은 `NOT_RUN` 또는 `HUMAN_NOT_RUN`이다.
