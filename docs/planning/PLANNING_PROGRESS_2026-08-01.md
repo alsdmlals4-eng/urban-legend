@@ -1,281 +1,196 @@
 # 괴이기록국 기획 진행 상태 — 2026-08-01
 
-> 상태: `PLANNING_IN_PROGRESS / SCREEN_SIT_PACKAGE_READY_FOR_USER_REVIEW`
+> 상태: `PLANNING_IN_PROGRESS / A_G_APPROVED / VISUALIZATION_IN_PROGRESS`
 > 추적: Issue #121 / Draft PR #122
+> 기준 main: `656846865eb88871d00842a0da527ce1b0722b77`
 > 구현 권한: `NONE`
 > Codex: `HOLD`
-> Runtime / Human QA: `NOT_RUN`
-> 이전 상태 문서: `docs/planning/PLANNING_PROGRESS_2026-07-31.md` — 역사 기록, 최신 상태로 사용하지 않음
+> Runtime / Visual / Human QA: `NOT_RUN`
+> 이전 상태: `docs/planning/PLANNING_PROGRESS_2026-07-31.md` — 역사 기록
 
-## 1. 승인 기준선
+## 1. 현재 승인 기준선
 
-- Validation Cut 35~50분 우선
-- 조사·일반 플레이는 텍스트 노벨 방식
-- 비주얼은 다크 현대 오컬트·세미리얼 애니
-- 메인 화면에는 캐릭터를 표시하지 않음
-- 기준 화면 7종: 메인 / 텍스트 조사 / 준비 / 결과 / 일정 / 연구 / 기록국 보급실
-- 일정은 하루 주요 활동 1개 + 자동 기본 휴식
-- 2~3일 주요 활동은 같은 주 연속 날짜 점유
-- 별도 일상 활동 카탈로그 없음
-- 기록국 보급실은 정규 조달, 소문시장은 선택 외부 접점
-- Validation 비핵심 기능은 비노출·무부작용
-- 저승역 시간순 증거: `23:57:42 개인 목적지 청취 < 23:59:08 검은 승차권 최초 접촉`
-- 주요 승인 변경은 GitHub·Sheet 동일 Decision ID로 동기화
-
-## 2. 2026-08-01 승인 결정
-
-### D-2026-08-01-SCHEDULE-REST-SEMANTICS
+### 제품 흐름
 
 ```text
-기본 휴식
-= 매일 자동 적용되는 소량 피로 회복
-
-전일 회복·치료
-= 하루 주요 활동을 소비하는 큰 회복
+SCREEN-01 무인 메인
+→ SIT-001 저승역 콜드 오픈
+→ SIT-002 기록국 브리핑
+→ SIT-003 축약 준비
+→ SIT-004 텍스트 노벨 조사
+→ SIT-005 사건 가설
+→ SIT-006 시간순 증거·안전 노선 복원
+→ SIT-007 회수 2패턴
+→ SIT-008 결과 4축·최소 환류
+→ SCREEN-01 메인 복귀
 ```
 
-### D-2026-08-01-PROVISIONING-AUTHORITY
+### 화면·상황
 
-```text
-기록국 보급실
-= 정규 준비·조달 권위
+- 기준 화면: SCREEN-01~07
+- 전문 절차: 사건 가설 / 시간순 증거 / 안전 노선 복원 / 회수 2패턴
+- 전문 절차는 SCREEN-02 아래의 제품 흐름으로 계산한다.
+- 일반 조사·일반 플레이는 텍스트 노벨 방식이다.
+- 메인 화면에는 캐릭터를 표시하지 않는다.
+- 일정은 하루 주요 활동 1개와 자동 기본 휴식을 사용한다.
+- 2~3일 활동은 같은 주 연속 날짜를 점유한다.
+- 다일 활동 중 강제 출동은 날짜 경계에서 중단하고 완료 일수와 남은 일수를 보존한다.
+- SCREEN-07은 기록국 보급실이 정식 권위를 소유한다.
+- Validation 비핵심 기능은 비노출이며 판정·난수·로그·자원·저장을 변경하지 않는다.
 
-소문시장
-= 선택적 외부 접점 콘텐츠
-```
+### 사건·회수·결과
 
-### D-2026-08-01-VALIDATION-SCOPE-FILTER
+- 시간순 증거: `23:57:42 개인 목적지 청취 < 23:59:08 검은 승차권 최초 접촉`
+- 회수: 전조 → 분류 → 기록 → 중립 행동 → 현장 결과 → 추론 검증
+- 회수 패턴당 첫 오대응 뒤 복구 1회
+- 결과 원시 축:
+  1. 현장 안정화
+  2. 피해자 구조
+  3. 규칙 검증
+  4. 괴이 핵·잔향 회수
+- 요약 단계: 미해결 / 임시 안정화 / 제한적 해결 / 완전 해결
+- 규칙 미검증 또는 반박 상태에서는 `임시 안정화`를 넘지 못한다.
 
-전면 노출:
+### 저장·복귀
 
-- 축약 준비
-- 텍스트 조사
-- 가설·시간순 증거
-- 안전 노선 복원
-- 회수 2패턴
-- 결과 4축·최소 환류
+- 기존 `mvp-039`는 Legacy 저장으로 보존한다.
+- Validation은 `flow_stage → checkpoint → return target → scene fallback` 우선순위를 사용한다.
+- 잘못된 가설은 수정·재제출할 수 있다.
+- 노선 실패는 재시도 또는 미해결 철수로 진행한다.
+- 중복 피해·보상·보고서 적용을 금지한다.
+- 원시 결과 축이 요약 등급보다 권위가 높다.
 
-비노출:
+## 2. 승인 Decision
 
-- 랜덤 이벤트
-- 세력 의뢰
-- 소문시장
-- 일상 에피소드
-- 전체 4주 운영
-- 복잡한 자동 행동·관계·시장 경제
-- 회수 패턴 3·4
+| Decision ID | 상태 | 책임 |
+|---|---|---|
+| `D-2026-07-31-TEXT-NOVEL-CORE-PRESENTATION` | APPROVED_PLANNING_BASELINE | 일반 조사 표현 |
+| `D-2026-07-31-VISUAL-ART-DIRECTION` | APPROVED_PLANNING_BASELINE | 다크 현대 오컬트·세미리얼 애니 |
+| `D-2026-07-31-VALIDATION-SCREEN-AUTHORITY` | APPROVED / SUPERSEDED_IN_PART | 시작·준비·가설/회수 책임 |
+| `D-2026-08-01-SCHEDULE-REST-SEMANTICS` | APPROVED_TARGET_NOT_IMPLEMENTED | 기본 휴식·전일 회복 |
+| `D-2026-08-01-PROVISIONING-AUTHORITY` | APPROVED_TARGET_NOT_IMPLEMENTED | 기록국 보급실·소문시장 분리 |
+| `D-2026-08-01-VALIDATION-SCOPE-FILTER` | APPROVED_TARGET_NOT_IMPLEMENTED | 핵심 노출·비핵심 무부작용 |
+| `D-2026-08-01-VALIDATION-SCREEN-SIT-PACKAGE` | APPROVED_PLANNING_BASELINE | A~G 화면·상황 계약 |
+| `D-2026-07-31-AFTERLIFE-RECOVERY-PATTERNS` | APPROVED_PLANNING_BASELINE | 회수 2패턴·복구 |
+| `D-2026-08-01-VALIDATION-RESULT-AXES` | APPROVED_PLANNING_BASELINE | 결과 4축·상한·환류 |
+| `D-2026-08-01-VALIDATION-SAVE-TEST-MIGRATION` | APPROVED_PLANNING_BASELINE | Legacy 병렬 저장·테스트 |
+| `D-2026-08-01-RECOMMENDED-BATCH-APPROVAL` | CURRENT_APPROVED_GOVERNANCE | 현재 작업 권장안 일괄 승인 |
 
-### D-2026-08-01-LEGACY-PR-DISPOSITION
-
-- PR #120: Draft / HOLD
-- PR #54: 유효 개념 기록 후 미병합 종료
-- PR #26: 유효 개념 기록 후 미병합 종료
-
-## 3. Canon Migration
+## 3. Base·프로젝트·Sheet 감사 결과
 
 책임 원본:
 
-- `docs/planning/CANON_MIGRATION_BUNDLE_2026-08-01.md`
+- `docs/planning/BASE_PROJECT_SHEET_OPERATING_AUDIT_2026-08-01.md`
 
-상태:
+확인 범위:
 
-```text
-CURRENT_IMPLEMENTATION_LEGACY
-APPROVED_TARGET_NOT_IMPLEMENTED
-HISTORICAL_EVIDENCE
-HOLD
-```
-
-상위 `PROJECT_CORE`·GDD·CURRENT_STATUS·DOCUMENTATION_MAP의 실제 내용 교체는 기획 최종 승인 뒤 단일 Canon Pass에서 진행한다.
-
-## 4. 이번 작업 산출물
-
-### SPEC-2026-08-01-VALIDATION-SCREEN-SIT
-
-경로:
-
-- `docs/superpowers/specs/2026-08-01-validation-screen-situation-design.md`
-
-포함:
-
-- SCREEN-01~07 책임
-- CURRENT / APPROVED / DRAFT / EXCLUDED 구분
-- 화면별 상태 변형
-- SIT-001~008
-- 전체 전환도
-- Godot 구조 경계
-- 저장 체크포인트
-- 테스트 마이그레이션 초안
-
-상태: `DRAFT_REQUIRES_USER_REVIEW`
-
-### D-2026-07-31-AFTERLIFE-RECOVERY-PATTERNS REV-2
-
-- 회수 패턴 2개만 Validation 노출
-- 분류·기록·행동 분리
-- 짧은 중립 행동 문구
-- 패턴당 첫 오대응 후 복구 1회
-- 행동 성공과 추론 검증 분리
-
-상태: `DRAFT_REQUIRES_USER_REVIEW`
-
-### D-2026-08-01-VALIDATION-RESULT-AXES
-
-- 현장 안정화
-- 피해자 구조
-- 규칙 검증
-- 괴이 핵·잔향 회수
-- 미해결 / 임시 안정화 / 제한적 해결 / 완전 해결
-- 규칙 미검증·반박 시 임시 안정화 상한
-- 연구 질문 1개·보급 후보 1개
-
-상태: `DRAFT_REQUIRES_USER_REVIEW`
-
-### DRAFT-2026-08-01-VALIDATION-SAVE-TEST-MIGRATION
-
-- Legacy / Validation 모드 분리
-- Validation은 `flow_stage`·checkpoint 우선 권장
-- Scene 경로는 호환 fallback
-- 기존 mvp-039 강제 변환 금지
-- 전문 절차 return target
-- 중복 효과 적용 금지
-- Legacy 테스트와 Validation 테스트 병렬 유지
-
-상태: `DRAFT_REQUIRES_USER_REVIEW`
-
-### R-2026-08-01-VALIDATION-SCREEN-SIT-ADVERSARIAL
+- Base START_HERE·AGENTS·운영 모델·Documentation Map·Registry·27개 활성 Skill
+- 프로젝트 START_HERE·AGENTS·CURRENT_STATUS·PROJECT_CORE·GDD·Roadmap·Skill Adapter
+- Google GDD Sheet 27개 탭 전체
+- 열린 PR #120·#122와 최근 병합 PR
+- 승인 Decision·실제 Scene/Script/JSON/테스트의 기존 감사 증거
 
 판정:
 
-- P1 전환·권위 충돌: 검토 단계에서 보정
-- P2 문구·과밀·보상 감정 위험: 사람·비주얼 검증 필요
-- 제품 구현: `BLOCKED`
-- 사용자 검수: `READY`
+- 프로젝트 현행 Base v9.1 Adapter 유지
+- Base v9.3 PR #120은 Draft/HOLD
+- PR #122 Canon Pass 전 병합·cherry-pick·새 migration PR 생성 금지
+- Canon Pass 뒤 최신 main을 기준으로 PR #120 재평가
+- CURRENT 구현과 APPROVED Target은 병렬 표기
+- 상위 정본의 Legacy 계약은 최종 기획 승인 뒤 단일 Canon Pass에서 교체
 
-## 5. 적대적 검토 보정 계약
+## 4. 현재 진행도
 
-### 기준 화면과 전문 절차
-
-기준 화면은 7개를 유지한다.
-
-```text
-SCREEN-02 텍스트 노벨 조사
-  ├─ 사건 가설
-  ├─ 시간순 증거
-  ├─ 안전 노선 복원
-  └─ 회수 2패턴
-```
-
-전문 절차는 구현상 독립 Scene일 수 있지만 별도 기준 화면으로 세지 않는다.
-
-### 실패·복구
-
-- 잘못된 가설: 수정·재제출 가능
-- 최종 미검증·반박 상태: 진행 가능, 결과 등급 상한
-- 노선 실패: 재시도 또는 미해결 철수
-- 최소 안전 노선 없이 회수 진입 금지
-- 회수 첫 오대응: 복구 1회
-- 두 번째 실패: 위험 사례 확정 후 다음 패턴 또는 결과
-
-### Validation 종료
-
-- 별도 8번째 완료 화면 없음
-- SCREEN-04에서 완료 처리
-- 사건 보고서 저장 후 메인 복귀
-- 전체 제품에서는 향후 SCREEN-05 다음 날짜로 연결
-
-## 6. 권장 사용자 검수 패키지 A~G
-
-### A. 화면·전문 절차
-
-- 기준 화면 7개 유지
-- 가설·시간순·노선·회수는 SCREEN-02 전문 절차
-
-### B. 텍스트 노벨 최소 HUD
-
-- 사건명 / 장소 / 기록 / 설정
-- 팀 상태는 Popover
-- 수집률·예측률·회수 퍼센트 상시 제외
-
-### C. 추천 편성
-
-- 권나래 고정
-- 오현·강이준 추천
-
-### D. 실패·복구
-
-- 가설 수정·재제출
-- 노선 재시도 또는 미해결 철수
-- 회수 패턴당 복구 1회
-
-### E. 결과
-
-- 네 원시 축
-- 4단계 요약 등급
-- 규칙 미검증·반박 시 임시 안정화 상한
-- 제한적 해결은 잔향 회수 실패 허용
-
-### F. 저장
-
-- Validation은 `flow_stage` 우선
-- mvp-039는 Legacy 유지
-- 전문 절차 return target 저장
-- 원시 결과 축이 요약 등급보다 우선
-
-### G. 종료·일정 충돌
-
-- Validation은 SCREEN-04에서 완료 후 메인 복귀
-- 다일 활동 중 강제 출동은 날짜 경계 중단
-- 완료 일수 보존·남은 일수 재배치
-- 반일 분할 금지
-
-## 7. 감사 Finding 상태
-
-| Finding | 상태 |
+| 단계 | 상태 |
 |---|---|
-| 정본 이중화 | Canon 권위 순서 설정 / 상위 내용 교체 대기 |
-| 일정 3중 계약 | 목표 책임 확정 / 구현 이관 대기 |
-| 기본 휴식·전일 회복 | RESOLVED_IN_PLANNING |
-| 기록국 보급실·소문시장 | RESOLVED_IN_PLANNING |
-| Validation 비핵심 기능 | RESOLVED_IN_PLANNING |
-| 구형 PR 처리 | RESOLVED_OPERATIONALLY |
-| SCREEN-01~07 정본 | DRAFT_READY_FOR_USER_REVIEW |
-| SIT-001~008 | DRAFT_READY_FOR_USER_REVIEW |
-| 회수 2패턴 문구 | REV-2_READY_FOR_USER_REVIEW |
-| 결과 4축·등급 상한 | DRAFT_READY_FOR_USER_REVIEW |
-| 저장·테스트 마이그레이션 | DRAFT_READY_FOR_USER_REVIEW |
-| 비주얼 화면 보드 | BLOCKED_BY_USER_REVIEW |
-| 사람 플레이 검증 | NOT_RUN |
+| A~G 사용자 승인 | COMPLETE |
+| 승인 Decision GitHub 정본 | COMPLETE |
+| Google Sheet 확정결정·관련 탭 | COMPLETE_PENDING_READBACK |
+| Base·프로젝트·Sheet 적대적 감사 | COMPLETE |
+| SCREEN/SIT 비주얼 브리프 | APPROVED |
+| SCREEN 보드 A | IN_PROGRESS |
+| SCREEN 보드 B | IN_PROGRESS |
+| SIT 보드 C1~C4 | IN_PROGRESS |
+| 이미지 적대적 중간점검 | NOT_RUN |
+| 플레이테스트 패키지 | PENDING_VISUAL_REVIEW |
+| 사용자 기획 최종 승인 기록 | PENDING |
+| 상위 정본 Canon Pass | BLOCKED_BY_VISUAL_AND_FINAL_APPROVAL |
+| writing-plans | HOLD |
+| Codex Goal | HOLD |
+| 제품 구현 | NOT_AUTHORIZED |
 
-## 8. 현재 Gate
+## 5. Visual Gate
 
-```yaml
-screen_01_to_07_spec: DRAFT_REQUIRES_USER_REVIEW
-sit_001_to_008_spec: DRAFT_REQUIRES_USER_REVIEW
-specialist_flow_count: FOUR_UNDER_SCREEN_02
-recovery_patterns: REV_2_DRAFT_REQUIRES_USER_REVIEW
-result_four_axis_contract: DRAFT_REQUIRES_USER_REVIEW
-save_test_migration: DRAFT_REQUIRES_USER_REVIEW
-adversarial_review: PASS_FOR_USER_REVIEW
-visual_boards: HOLD_UNTIL_USER_REVIEW
-upper_canon_content_rewrite: HOLD_UNTIL_FINAL_DESIGN_APPROVAL
-runtime: NOT_RUN
-human_validation: NOT_RUN
-production_expansion: NOT_APPROVED
-codex: HOLD
-```
+Image ID:
 
-## 9. 다음 Gate
+- `UL-IMG-007`
+
+산출물:
+
+- 보드 A: SCREEN-01~04
+- 보드 B: SCREEN-05~07
+- 보드 C1: SIT-001~002
+- 보드 C2: SIT-003~004
+- 보드 C3: SIT-005~006
+- 보드 C4: SIT-007~008
+
+규칙:
+
+- 화면·상황별 별도 16:9 보드
+- 직전 과밀 통합 보드 재사용 금지
+- `CURRENT_IMPLEMENTATION_LEGACY`와 `APPROVED_TARGET_NOT_IMPLEMENTED` 혼합 금지
+- 각 요소에 CURRENT / INFERRED / PROPOSED / PLACEHOLDER 태그
+- 다크 현대 오컬트·세미리얼 애니·기록국 문서형 UI
+- 제품 에셋·특정 IP·사용자 레퍼런스 이미지 복제 금지
+
+## 6. 이미지에서 재검토할 P2 위험
+
+1. 결과 4축·등급·환류를 한 번에 펼친 과밀
+2. 회수 행동 문구가 기록을 읽지 않아도 정답처럼 보이는 문제
+3. Legacy 이어하기와 Validation 이어하기의 구분
+4. 다일 활동 중단이 삭제·실패처럼 보이는 문제
+5. 전문 절차 4개가 별도 게임 4개처럼 분절되는 문제
+6. 팀 상태 Popover와 최소 HUD의 발견성
+
+## 7. Canon Migration 경계
+
+상위 정본 실제 내용 교체는 아직 수행하지 않는다.
+
+대상:
+
+- `docs/PROJECT_CORE.md`
+- `docs/GAME_DESIGN_DOCUMENT.md`
+- `docs/CURRENT_STATUS.md`
+- `docs/DOCUMENTATION_MAP.md`
+- `docs/planning/README.md`
+- `MVP_ROADMAP.md`
+- `TEST_CHECKLIST.md`
+- `docs/CURRENT_HANDOFF.md`
+
+순서:
 
 ```text
-사용자 A~G 검수
-→ 승인 Decision·Sheet 확정결정 동기화
-→ SCREEN-01~07 비주얼 보드 A/B
-→ SIT 상황 보드 C1~C4
+비주얼 보드
 → 이미지 중간점검
-→ 플레이테스트 패키지 최종 적대적 검토
-→ 사용자 기획 최종 승인
-→ 상위 정본 단일 Canon Pass
+→ 플레이테스트 패키지
+→ 사용자 기획 최종 승인 기록
+→ 단일 Canon Pass
+```
+
+기존 ANNUAL·CORE 구현·테스트·저장은 삭제하지 않고 `CURRENT_IMPLEMENTATION_LEGACY` 또는 `HISTORICAL_EVIDENCE`로 보존한다.
+
+## 8. 다음 Gate
+
+```text
+SCREEN 보드 A·B 생성
+→ SIT 보드 C1~C4 생성
+→ 이미지 적대적 중간점검
+→ UL-IMG-007 검수 로그
+→ Validation 플레이테스트 패키지
+→ 최종 기획 적대적 검토
+→ 사용자 기획 최종 승인 상태 기록
+→ 상위 정본 Canon Pass
+→ Base v9.3 PR #120 재평가
 → writing-plans
 → 마지막에 Codex Goal
 ```
