@@ -76,11 +76,12 @@ SCREEN-01 무인 메인
 | `D-2026-08-01-VALIDATION-SAVE-TEST-MIGRATION` | APPROVED_PLANNING_BASELINE | Legacy 병렬 저장·테스트 |
 | `D-2026-08-01-RECOMMENDED-BATCH-APPROVAL` | CURRENT_APPROVED_GOVERNANCE | 현재 작업 권장안 일괄 승인 |
 
-## 3. Base·프로젝트·Sheet 감사 결과
+## 3. Base·프로젝트·Sheet 감사·검증
 
 책임 원본:
 
 - `docs/planning/BASE_PROJECT_SHEET_OPERATING_AUDIT_2026-08-01.md`
+- `docs/planning/BASE_PROJECT_SHEET_OPERATING_VERIFY_2026-08-01.md`
 
 확인 범위:
 
@@ -99,21 +100,31 @@ SCREEN-01 무인 메인
 - CURRENT 구현과 APPROVED Target은 병렬 표기
 - 상위 정본의 Legacy 계약은 최종 기획 승인 뒤 단일 Canon Pass에서 교체
 
+검증 기준 HEAD `f7337149a6e9b4b80dd99c982a504e908e5acca5`:
+
+- 제품 보호 경로 diff: 0
+- 변경 파일: docs 전용
+- Documentation Contracts run #496: PASS
+- BCA Adoption run #102: PASS
+- PR #122 review threads: 0
+- Sheet 재조회: PASS_AFTER_ONE_CORRECTION
+
 ## 4. 현재 진행도
 
 | 단계 | 상태 |
 |---|---|
 | A~G 사용자 승인 | COMPLETE |
 | 승인 Decision GitHub 정본 | COMPLETE |
-| Google Sheet 확정결정·관련 탭 | COMPLETE_PENDING_READBACK |
+| Google Sheet 확정결정·관련 탭 | COMPLETE_AND_READ_BACK |
 | Base·프로젝트·Sheet 적대적 감사 | COMPLETE |
+| 운영 동기화 검증 기록 | COMPLETE |
 | SCREEN/SIT 비주얼 브리프 | APPROVED |
 | SCREEN 보드 A | IN_PROGRESS |
 | SCREEN 보드 B | IN_PROGRESS |
 | SIT 보드 C1~C4 | IN_PROGRESS |
 | 이미지 적대적 중간점검 | NOT_RUN |
 | 플레이테스트 패키지 | PENDING_VISUAL_REVIEW |
-| 사용자 기획 최종 승인 기록 | PENDING |
+| 사용자 기획 최종 승인 상태 기록 | PENDING |
 | 상위 정본 Canon Pass | BLOCKED_BY_VISUAL_AND_FINAL_APPROVAL |
 | writing-plans | HOLD |
 | Codex Goal | HOLD |
@@ -173,7 +184,7 @@ Image ID:
 비주얼 보드
 → 이미지 중간점검
 → 플레이테스트 패키지
-→ 사용자 기획 최종 승인 기록
+→ 사용자 기획 최종 승인 상태 기록
 → 단일 Canon Pass
 ```
 
