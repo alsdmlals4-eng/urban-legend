@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "artifact_role": "CURRENT_CANON_AUTHORITY_ADAPTER",
+  "status": "CURRENT",
+  "updated_at": "2026-08-01",
+  "tracking": {
+    "issue": 121,
+    "pull_request": 122,
+    "branch": "plan/urban-legend-planning-audit",
+    "base_main": "656846865eb88871d00842a0da527ce1b0722b77"
+  },
+  "authority_order": [
+    "latest_user_approval",
+    "docs/CURRENT_CONFIRMED_DECISIONS.md",
+    "docs/VALIDATION_TARGET_CANON.md",
+    "docs/decisions/**",
+    "docs/PROJECT_CORE.md:non_conflicting_long_term_identity",
+    "docs/GAME_DESIGN_DOCUMENT.md:non_conflicting_long_term_and_legacy",
+    "docs/CURRENT_STATUS.md:actual_implementation_status",
+    "actual_main_code_data_scenes_tests",
+    "legacy_and_historical_material"
+  ],
+  "current_sources": {
+    "confirmed_decisions": "docs/CURRENT_CONFIRMED_DECISIONS.md",
+    "validation_target": "docs/VALIDATION_TARGET_CANON.md",
+    "documentation_map": "docs/DOCUMENTATION_MAP_CURRENT.md",
+    "cold_start": "START_HERE.md",
+    "planning_handoff": "docs/planning/README.md",
+    "current_handoff": "docs/CURRENT_HANDOFF_VALIDATION_2026-08-01.md",
+    "implementation_roadmap": "docs/planning/VALIDATION_IMPLEMENTATION_ROADMAP_2026-08-01.md",
+    "playtest": "docs/validation/VALIDATION_SCREEN_SIT_PLAYTEST_PACKAGE_2026-08-01.md",
+    "visual_review": "docs/visual/UL_IMG_007_VISUAL_REVIEW_2026-08-01.md",
+    "final_review": "docs/planning/VALIDATION_PLANNING_FINAL_ADVERSARIAL_REVIEW_2026-08-01.md"
+  },
+  "current_decision": {
+    "id": "D-2026-08-01-VALIDATION-PLANNING-FINAL-APPROVAL",
+    "status": "APPROVED_FINAL_PLANNING_BASELINE",
+    "product_implementation_authority": "NONE",
+    "canon_pass": "AUTHORIZED"
+  },
+  "implementation": {
+    "status": "CURRENT_IMPLEMENTATION_LEGACY",
+    "source": "docs/CURRENT_STATUS.md",
+    "save": [
+      "mvp-039",
+      "mvp-038-migration",
+      "annual-mvp-001-save-v1"
+    ],
+    "protected_paths": [
+      "scripts/**",
+      "scenes/**",
+      "data/**",
+      "assets/**",
+      "addons/**",
+      "project.godot"
+    ]
+  },
+  "base": {
+    "current_adapter_version": "9.1.0",
+    "current_adapter": "skills/PROJECT_BASE_ADAPTER.json",
+    "v9_3_pr": 120,
+    "v9_3_status": "DRAFT_HOLD_UNTIL_CANON_PASS_VERIFIED"
+  },
+  "google_sheet": {
+    "id": "14xtlvd90iQTKjDLcZR_b-WS5fHnBwNf-OfBruPBS6ck",
+    "role": "USER_FACING_GDD_WORKSPACE",
+    "status": "SYNCED_PENDING_MAIN",
+    "decision_tab": "02_현재_확정결정",
+    "history_tab": "99_변경이력"
+  },
+  "validation": {
+    "planning": "APPROVED_FINAL_PLANNING_BASELINE",
+    "visual_planning": "APPROVED_PLANNING_VISUALIZATION_WITH_OPEN_P2",
+    "playtest_design": "APPROVED_TEST_DESIGN",
+    "documentation_ci": "REQUIRED",
+    "bca_ci": "REQUIRED",
+    "runtime": "NOT_RUN",
+    "human": "NOT_RUN",
+    "product_build_ready": false
+  },
+  "next_gate": [
+    "canon_reference_status_sheet_verification",
+    "writing_plans",
+    "codex_read_only_technical_plan",
+    "change_proposal_review",
+    "implementation_package_approval",
+    "codex_build_goal_last"
+  ]
+}
