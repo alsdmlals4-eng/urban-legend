@@ -19,6 +19,54 @@ jobs:
         with:
           python-version: "3.12"
       - run: python tools/apply_base_v9_4_adoption.py
+      - name: Preserve frozen core index and add release metadata
+        shell: bash
+        run: |
+          python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          root = Path('.')
+          frozen = 'c987647d01ad2baa028a16e03d85ddfc1572a727'
+          payload = 'a728712cb776ec98f4875914a580fcf7d0156593'
+          evidence = 'ef1fba11167e4da0b298123b0c85ebd268191a42'
+          finalization = '87a0b54c2847ce4b685879209205957c170cc1cd'
+          registry = '693a0dff3f054ecdd653079909e044211473838e73dd9aff07734d1ce5694c59'
+          adapter_sha = hashlib.sha256((root/'skills/PROJECT_BASE_ADAPTER.json').read_bytes()).hexdigest()
+
+          path = root/'skills/PROJECT_PATH_ADAPTER.json'
+          data = json.loads(path.read_text(encoding='utf-8'))
+          data['base'] = {
+              'commit': frozen,
+              'repository': 'alsdmlals4-eng/Base',
+              'version_authority': 'docs/BASE_RULES_VERSION.md',
+          }
+          data['base_release'] = {
+              'release_commit': payload,
+              'release_evidence_commit': evidence,
+              'finalization_commit': finalization,
+              'registry_sha256': registry,
+              'repository': 'alsdmlals4-eng/Base',
+              'version': '9.4.0',
+          }
+          data['canonical_source_sha256'] = adapter_sha
+          path.write_text(json.dumps(data, ensure_ascii=False, indent=2)+'\n', encoding='utf-8')
+
+          rules = root/'docs/BASE_RULES_VERSION.md'
+          text = rules.read_text(encoding='utf-8')
+          line = f'legacy_core_skill_index_commit: {frozen}\n'
+          if line not in text:
+              text = text.replace('base_registry_sha256:', line + 'base_registry_sha256:', 1)
+              rules.write_text(text, encoding='utf-8')
+
+          test = root/'tests/test_base_v94_ai_operations_adoption.py'
+          text = test.read_text(encoding='utf-8')
+          old = "self.assertEqual('a728712cb776ec98f4875914a580fcf7d0156593',p['base']['commit']); self.assertEqual(h,p['canonical_source_sha256'])"
+          new = "self.assertEqual('c987647d01ad2baa028a16e03d85ddfc1572a727',p['base']['commit']); self.assertEqual('a728712cb776ec98f4875914a580fcf7d0156593',p['base_release']['release_commit']); self.assertEqual(h,p['canonical_source_sha256'])"
+          if new not in text:
+              if old not in text:
+                  raise SystemExit('path-adapter test source missing')
+              test.write_text(text.replace(old, new, 1), encoding='utf-8')
+          PY
       - run: python -m unittest tests.test_base_operating_sync tests.test_skill_package_integrity tests.test_base_v94_ai_operations_adoption -v
       - shell: bash
         run: |
