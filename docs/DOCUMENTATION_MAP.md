@@ -178,3 +178,8 @@ CURRENT_STATUS.md
 - Base 전체 Skill 폴더
 
 현재 활성 설계·계획으로 명시된 `superpowers` 문서는 예외다.
+
+## Base v9.4 운영 계약
+
+- `docs/AI_WORKFLOW.md`: 모델 추천·지시 권위·Context 큐레이션·증거 상한.
+- `docs/reviews/2026-08-01_BASE_V9_4_ADOPTION_AUDIT.md`: payload·evidence·route·내러티브/저장 보호 감사.
