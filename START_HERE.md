@@ -24,14 +24,14 @@ Validation 기획 최종 승인
 → docs/VALIDATION_TARGET_CANON.md
 → docs/CURRENT_STATUS.md
 → docs/PROJECT_CORE.md
-→ docs/DOCUMENTATION_MAP.md
+→ docs/DOCUMENTATION_MAP_CURRENT.md
 → skills/SKILL_REGISTRY.json
 → 필요 시 skills/BASE_SKILL_INDEX.json
 → 선택된 프로젝트 분야/로컬/Base Skill 전문
 → 책임 원본·실제 코드·데이터·자산·테스트
 ```
 
-`전부 확인`은 모든 파일과 Skill을 기본 로드한다는 뜻이 아니다. Documentation Map·Registry·Coverage로 누락을 확인하고 현재 요청의 책임 원본·소비처·실제 파일을 추적한다.
+`전부 확인`은 모든 파일과 Skill을 기본 로드한다는 뜻이 아니다. Current Documentation Map·Registry·Coverage로 누락을 확인하고 현재 요청의 책임 원본·소비처·실제 파일을 추적한다.
 
 ## 권위 분리
 
@@ -132,7 +132,8 @@ Base v9.3 PR #120은 Canon Pass 전 `DRAFT_HOLD`다. 새 migration PR을 만들�
 - 승인 Validation Target: `docs/VALIDATION_TARGET_CANON.md`
 - 현재 구현·검증 상태: `docs/CURRENT_STATUS.md`
 - 프로젝트 코어·장기 정체성: `docs/PROJECT_CORE.md`
-- 문서 라우터: `docs/DOCUMENTATION_MAP.md`
+- 현재 문서 라우터: `docs/DOCUMENTATION_MAP_CURRENT.md`
+- Legacy 문서 라우터: `docs/DOCUMENTATION_MAP.md`
 - Base 버전: `docs/BASE_RULES_VERSION.md`
 - 프로젝트 Registry: `skills/SKILL_REGISTRY.json`
 - Base 라우팅: `skills/BASE_SKILL_INDEX.json`
