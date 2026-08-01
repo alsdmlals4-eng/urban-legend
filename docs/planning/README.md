@@ -20,6 +20,16 @@ Codex Build: HOLD
 
 현재 활성 트랙은 CORE-MVP 또는 ANNUAL 구현이 아니라 **승인 Validation Target의 Canon 정렬과 구현 계획 준비**다.
 
+### 현재 구현 Legacy 기준선
+
+```text
+MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A
+화면 버전: Ver 4.2
+저장 Schema: mvp-039
+```
+
+이 값은 현재 main 구현·회귀 기준선이며 승인 Validation Target을 뜻하지 않는다.
+
 ## 2. 권장 읽기 순서
 
 ```text
@@ -112,6 +122,7 @@ START_HERE.md
 
 다음은 삭제 대상이 아니라 `CURRENT_IMPLEMENTATION_LEGACY`다.
 
+- `MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A / Ver 4.2 / save mvp-039`
 - CORE-MVP-001 실제 구현
 - ANNUAL-MVP-001/002 PoC
 - preparation_scene 반일 구조
