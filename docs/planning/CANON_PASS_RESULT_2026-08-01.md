@@ -2,13 +2,15 @@
 
 > Canon Pass ID: `CANON-PASS-2026-08-01-VALIDATION`
 > Decision: `D-2026-08-01-VALIDATION-PLANNING-FINAL-APPROVAL`
-> 상태: `CANON_UPDATED / VERIFICATION_PENDING`
+> 상태: `CANON_PASS_COMPLETE / WRITING_PLANS_NEXT`
+> 검증 HEAD: `251ca8b0393ed321fd0e51bc23b5ddd5c54eb2ef`
 > 기준 main: `656846865eb88871d00842a0da527ce1b0722b77`
 > 제품 구현 권한: `NONE`
+> Runtime / Human QA: `NOT_RUN`
 
 ## 1. 목표
 
-승인된 Validation 기획을 대화·Draft 문서·Sheet 행에 분산된 상태에서 현재 작업자가 한 단계 안에 찾을 수 있는 단일 권위 구조로 승격한다.
+승인된 Validation 기획을 대화·Draft 문서·Sheet 행에 분산된 상태에서 현재 작업자가 한 단계 안에 찾을 수 있는 단일 권위 구조로 승격했다.
 
 ## 2. 설치한 현재 권위
 
@@ -81,18 +83,12 @@
 
 ## 6. Base 권위 정렬
 
-이전 충돌:
-
-- 사람용 `BASE_RULES_VERSION`: c987… / 25개 / v8 중심
-- canonical Adapter: Base v9.1 / 27 Base routes / 10 project routes
-- Base 원격: v9.3
-
 현재:
 
 - 프로젝트 운영 Adapter 권위: Base v9.1
 - c987…·v8: Legacy BCA compatibility input
 - Base v9.3 PR #120: Draft/HOLD
-- Canon Pass 검증 뒤 PR #120 재평가
+- Canon Pass 완료 뒤 최신 main 기준으로 재평가
 - stale generated Sheet field는 future generator 재생성 대상
 
 ## 7. Target/Implementation 분리
@@ -105,6 +101,7 @@
 ### 구현
 
 - `CURRENT_IMPLEMENTATION_LEGACY`
+- 기준: `MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A / Ver 4.2 / save mvp-039`
 - 상세: `CURRENT_STATUS.md`·실제 main 파일·테스트
 
 승인 Target은 구현 완료가 아니며 Legacy 구현은 폐기 대상이 아니다.
@@ -133,25 +130,67 @@
 - 기존 테스트 의미
 - Base generated Adapter
 
-## 10. 다음 검증
+## 10. 실제 검증
 
-- 새 파일 존재·참조 확인
-- Current Decisions→Target Canon→Map→Handoff 한 단계 발견성
-- JSON parse
-- Documentation Contracts
-- BCA Adoption
-- main 대비 제품 보호 경로 diff 0
-- PR review threads 0
-- Google Sheet Decision·경로·Commit 재조회
+검증 HEAD:
 
-## 11. 검증 뒤 상태
+`251ca8b0393ed321fd0e51bc23b5ddd5c54eb2ef`
 
-검증이 통과하면:
+| 항목 | 결과 |
+|---|---|
+| Documentation Contracts run #514 | PASS |
+| BCA Adoption run #120 | PASS |
+| main 대비 commits | 97 ahead / 0 behind |
+| 변경 범위 | docs 전용 |
+| 제품 보호 경로 diff | 0 |
+| PR #122 review threads | 0 |
+| Runtime | NOT_RUN |
+| Human validation | NOT_RUN |
 
-```text
-CANON_PASS_COMPLETE
-→ writing-plans
-→ Codex 읽기 전용 기술 Plan
+첫 Documentation run #513은 `planning/README.md`에서 Legacy 구현 기준선 토큰 세 개가 누락돼 실패했다.
+
+- `CORE-VALIDATION-001`
+- `Ver 4.2`
+- `UX-PD-001 2A`
+
+최소 수정:
+
+- 세 값을 `CURRENT_IMPLEMENTATION_LEGACY` 기준으로 복원
+- 승인 Validation Target 권위는 유지
+- 재실행 #514 PASS
+
+판정:
+
+`REGRESSION_FOUND_AND_FIXED`
+
+## 11. 완료 판정
+
+```yaml
+current_decision_authority: INSTALLED
+validation_target_canon: INSTALLED
+current_documentation_map: INSTALLED
+cold_start_route: UPDATED
+planning_handoff: UPDATED
+base_authority: RECONCILED
+legacy_preservation: PASS
+sheet_sync: PENDING_FINAL_READBACK
+product_protected_diff: ZERO
+ci: PASS
+review_threads: ZERO
+runtime: NOT_RUN
+human: NOT_RUN
+canon_pass: COMPLETE
+build_ready: NO
+next_gate: WRITING_PLANS
 ```
 
-검증 전에는 `CANON_PASS_COMPLETE`를 선언하지 않는다.
+## 12. 다음 단계
+
+```text
+Google Sheet Canon 경로·Commit 최종 동기화·재조회
+→ writing-plans
+→ Codex 읽기 전용 기술 Plan
+→ CHANGE_PROPOSAL 검수
+→ 구현 패키지 승인
+→ 마지막에 Codex Build Goal
+```
