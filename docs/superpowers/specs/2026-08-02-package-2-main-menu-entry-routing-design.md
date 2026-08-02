@@ -1,12 +1,15 @@
 # Package 2 메인 메뉴 진입·이어하기·라우팅 Design Spec
 
-> 상태: `APPROVED_DESIGN / SPEC_REVIEW_PENDING`
+> 상태: `APPROVED`
 > 작성일: 2026-08-02
+> 승인 시각: 2026-08-02 16:17 KST
 > 추적 PR: #129
+> Spec 승인: `D-2026-08-02-PACKAGE-2-DESIGN-SPEC-APPROVAL`
 > Design 승인: `D-2026-08-02-PACKAGE-2-DESIGN-APPROVAL`
 > 제품 위계 승인: `D-2026-08-02-PACKAGE-2-MAIN-MENU-MODE-HIERARCHY`
 > 영속 경계: `D-2026-08-02-VALIDATION-PERSISTENCE-BOUNDARY`
-> 구현 권한: `NOT_AUTHORIZED`
+> 구현 계획: `docs/superpowers/plans/2026-08-02-package-2-main-menu-entry-routing-implementation-plan.md`
+> 제품 구현 권한: `NOT_AUTHORIZED`
 
 ## 1. 목적
 
@@ -423,7 +426,7 @@ single-flight lock 획득
 → 허용 Scene 이동
 ```
 
-`load()` 결과가 성공이어도 mapper가 실패하면 Scene 이동을 하지 않는다. Session이 활성화된 채 메뉴에 남는 상태를 피하기 위해 coordinator가 명시적으로 deactivate 또는 안전한 rollback을 수행해야 한다. 구체적 rollback 순서는 implementation plan에서 테스트 우선으로 확정한다.
+`load()` 결과가 성공이어도 mapper가 실패하면 Scene 이동을 하지 않는다. Session이 활성화된 채 메뉴에 남는 상태를 피하기 위해 coordinator가 명시적으로 deactivate 또는 안전한 rollback을 수행한다. 구현 계획은 route preflight와 runtime rollback 순서를 테스트 우선으로 고정한다.
 
 ### 7.5 완료 기록 보기
 
@@ -645,7 +648,7 @@ human_qa: PASS_OR_EXPLICIT_NOT_RUN
 
 ### Placeholder scan
 
-- `TBD`, `TODO`, 미정 필드 없음
+- 미정 필드 없음
 - 구현 전 결정이 필요한 항목은 `NOT_AVAILABLE`·`NOT_AUTHORIZED`로 명시
 
 ### Internal consistency
@@ -671,6 +674,6 @@ human_qa: PASS_OR_EXPLICIT_NOT_RUN
 
 ## 16. 다음 Gate
 
-사용자가 이 Spec을 승인하면 `superpowers:writing-plans`로 세부 implementation plan을 작성한다.
+구현 계획은 `superpowers:writing-plans` 형식으로 작성·self-review 완료됐다.
 
-Spec 승인 전에는 제품 코드·Scene·JSON·Save Schema·workflow를 변경하지 않는다.
+제품 코드·Scene·JSON·Save Schema·workflow는 별도 제품 구현 승인 전 변경하지 않는다.
