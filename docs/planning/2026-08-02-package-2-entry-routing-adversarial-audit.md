@@ -46,70 +46,80 @@ Package 1에서 병합된 독립 `ValidationSession`·Validation 저장소를 SC
 
 기존 `새 캠페인 시작`을 Validation 시작 버튼으로 재사용하면 Legacy 저장 삭제가 발생한다.
 
-**판정:** MUST_FIX  
+**판정:** MUST_FIX
+
 **처리:** Validation 시작에서 `GameState.clear_save_file()` 호출 금지.
 
 ### P2-002 — 단일 이어하기의 모호성
 
 Legacy와 Validation 저장이 함께 존재할 수 있는데 `이어하기` 버튼 하나만 두면 어느 기록이 열리는지 예측할 수 없다.
 
-**판정:** RESOLVED_BY_USER_DECISION  
+**판정:** RESOLVED_BY_USER_DECISION
+
 **처리:** Legacy·Validation을 독립된 병렬 카드로 표시한다.
 
 ### P2-003 — 읽기와 불러오기 혼합
 
 `ValidationSession.load()`는 상태 조회가 아니라 restore다. 메뉴 렌더링 중 호출하면 GameState가 변한다.
 
-**판정:** AUTO_FIX_REQUIRED  
+**판정:** AUTO_FIX_REQUIRED
+
 **처리:** `inspect_persistence()` 또는 동등한 read-only facade를 Design 계약에 포함한다.
 
 ### P2-004 — EXACT lifecycle 구분
 
 EXACT payload도 `active`, `suspended`, `completed`로 나뉜다.
 
-**판정:** AUTO_FIX_REQUIRED  
+**판정:** AUTO_FIX_REQUIRED
+
 **처리:** active/suspended는 이어하기, completed는 완료 기록 보기, empty는 새 기록 시작으로 표시한다.
 
 ### P2-005 — 복구 가능 상태 자동 승격
 
 Package 1 계약은 backup/temp를 자동 승격하지 않는다.
 
-**판정:** AUTO_FIX_REQUIRED  
+**판정:** AUTO_FIX_REQUIRED
+
 **처리:** 복구 가능 상태를 표시하되 이어하기를 비활성화하고 자동 승격하지 않는다.
 
 ### P2-006 — 손상·호환 불가 덮어쓰기
 
 newer/corrupt 저장은 자동 삭제·덮어쓰기하면 안 된다.
 
-**판정:** AUTO_FIX_REQUIRED  
+**판정:** AUTO_FIX_REQUIRED
+
 **처리:** inspect-only 상태로 보존하고 Legacy 행동은 독립 유지한다.
 
 ### P2-007 — 기존 Validation 기록 교체
 
 새 시작은 기존 기록 삭제와 같으므로 확인 없는 단일 클릭이 될 수 없다.
 
-**판정:** AUTO_FIX_REQUIRED  
+**판정:** AUTO_FIX_REQUIRED
+
 **처리:** 사건명·단계·기록 상태를 표시한 명시적 교체 확인을 요구한다. corrupt/incompatible 기록은 교체 대상으로 처리하지 않는다.
 
 ### P2-008 — 저장된 scene_path 직접 라우팅
 
 허용하지 않은 Scene으로 이동할 수 있다.
 
-**판정:** AUTO_FIX_REQUIRED  
+**판정:** AUTO_FIX_REQUIRED
+
 **처리:** flow-stage allowlist mapper를 사용하고 알 수 없는 값은 메인에 남겨 오류를 표시한다.
 
 ### P2-009 — 중복 입력
 
 create/load/scene change 중 재입력하면 lifecycle 호출이 중복될 수 있다.
 
-**판정:** AUTO_FIX_REQUIRED  
+**판정:** AUTO_FIX_REQUIRED
+
 **처리:** mutation action에 single-flight lock을 적용한다.
 
 ### P2-010 — 1280×720 밀도
 
 기존 메뉴에 두 저장 카드와 오류 상태를 단순 추가하면 핵심 행동이 밀릴 수 있다.
 
-**판정:** DESIGN_AND_RUNTIME_VALIDATION_REQUIRED  
+**판정:** DESIGN_AND_RUNTIME_VALIDATION_REQUIRED
+
 **처리:** 상단 소개를 축약하고 행동 카드 우선 레이아웃을 설계한다. 세부 치수는 wireframe·런타임 검증에서 확정한다.
 
 ## 4. 승인된 메뉴 위계
@@ -162,6 +172,7 @@ menu_hierarchy: PARALLEL_INDEPENDENT_CARDS
 5. flow-stage route mapper
 6. 명시적 교체 확인 dialog
 7. 로딩·오류·접근성 상태
+8. Validation whitelist 전용 runtime initializer
 
 ### 상태 우선순위
 
@@ -178,10 +189,12 @@ EMPTY
 
 ### 라우팅 기본값
 
-- 새 Validation: Session create·activate → 안전 초기 stage → 허용 Scene
+- 새 Validation: read-only status → create/activate → hidden guard capture → whitelist runtime initialize → save → flow-stage mapper → 허용 Scene
 - 이어하기: read-only summary 확인 → load/restore → flow-stage mapper → 허용 Scene
 - completed: restore 없이 완료 summary 화면 또는 read-only record view
 - unknown/mismatch: SCREEN-01 유지 + 오류 문구
+
+기존 `restart_afterlife_station_flow()`와 `reset_run_state()`는 숨은 Legacy 상태를 초기화하므로 Validation 시작에서 재사용하지 않는다. 상세는 `docs/planning/2026-08-02-package-2-validation-initializer-adversarial-finding.md`가 소유한다.
 
 ## 7. 작업 이력 주의
 
