@@ -12,6 +12,8 @@
 → docs/WORK_MODE_AND_SKILL_ROUTING.md
 → docs/CURRENT_CONFIRMED_DECISIONS.md
 → docs/VALIDATION_TARGET_CANON.md  # Validation·제품 Target 관련일 때
+→ docs/decisions/D-2026-08-02-PACKAGE-1-PLANNING-APPROVAL.md  # Package 1 작업일 때
+→ docs/planning/2026-08-02-package-1-planning-adversarial-audit.md  # Package 1 작업일 때
 → docs/CURRENT_STATUS.md
 → docs/PROJECT_CORE.md
 → docs/DOCUMENTATION_MAP.md
@@ -66,14 +68,24 @@ Registry 행만 읽고 Skill을 실행했다고 보고하지 않는다.
 ```text
 Base v9.4 Canon·Sheet 재조정 = COMPLETE_ON_PR_125
 최신 main 읽기 전용 기술 검수 = COMPLETE
-CHANGE_PROPOSAL = READY_FOR_ADVERSARIAL_REVIEW
-→ Package 1 Session·Save isolation 범위 승인
-→ RED Legacy-byte safety
-→ 최소 구현·전체 회귀
-→ 다음 Package 재승인
+CHANGE_PROPOSAL = READY
+Package 1 기획·명세 작성 = APPROVED
+Package 1 적대적 감사 = COMPLETE
+→ D-2026-08-02-VALIDATION-PERSISTENCE-BOUNDARY Grill Me
+→ Package 1 Design Spec
+→ 사용자 Spec 승인
+→ writing-plans
+→ 별도 Package 1 구현 승인
 ```
 
 현재 제품 코드·Scene·JSON·Save Schema·에셋 변경과 Codex Build는 승인되지 않았다.
+
+Package 1 운영 규칙:
+
+- 상세 수치·기술 기본값은 `RECOMMENDED_DEFAULT` 또는 `TEST_VALUE`로 권장안을 사용한다.
+- 프로젝트 방향·저장 UX·완료 의미·정본 충돌만 Grill Me로 한 번에 하나씩 질문한다.
+- Legacy 파일과 숨은 campaign/economy/relationship 메모리를 모두 무변경으로 보호한다.
+- Design Spec 승인 전 구현 계획과 코드를 시작하지 않는다.
 
 ## 프로젝트 보호 범위
 
@@ -88,6 +100,8 @@ CHANGE_PROPOSAL = READY_FOR_ADVERSARIAL_REVIEW
 
 - 현재 승인 결정: `docs/CURRENT_CONFIRMED_DECISIONS.md`
 - Validation 상세 Target: `docs/VALIDATION_TARGET_CANON.md`
+- Package 1 기획 승인: `docs/decisions/D-2026-08-02-PACKAGE-1-PLANNING-APPROVAL.md`
+- Package 1 적대적 감사: `docs/planning/2026-08-02-package-1-planning-adversarial-audit.md`
 - Validation 현재 인수인계: `docs/CURRENT_HANDOFF_VALIDATION.md`
 - 실제 구현·검증 상태: `docs/CURRENT_STATUS.md`
 - 프로젝트 코어: `docs/PROJECT_CORE.md`
@@ -122,6 +136,6 @@ CHANGE_PROPOSAL = READY_FOR_ADVERSARIAL_REVIEW
 - 프로젝트 채택 main: `7277b9cececa56532f7b0d11c1a02fd3d5642750`
 - PR #120(Base v9.3): `CLOSED_UNMERGED / SUPERSEDED_BY_BASE_V9_4_MAIN`
 - PR #122: 승인 기획의 역사 source branch이며 그대로 병합하지 않는다.
-- Draft PR #125: 최신 main 기반 Canon·Audit·Technical Plan·Change Proposal
+- Draft PR #125: 최신 main 기반 Canon·Audit·Package 1 planning surface
 
 백업·완료 QA·과거 Goal은 현재 작업의 직접 근거가 있을 때만 읽는다. 실행하지 않은 검사·권한·사람 확인은 `NOT_RUN` 또는 `UNVERIFIED`다.
