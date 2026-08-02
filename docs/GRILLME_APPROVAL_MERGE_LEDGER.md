@@ -1,8 +1,8 @@
 # Grill Me 승인·병합 Ledger
 
 > 운영 Decision: `D-2026-08-02-GRILLME-10-MERGE-CADENCE`
-> 현재 미래 카운터: `8 / 10`
-> 마지막 조정: `YEAR_ONE_FOUR_CORE_CASES_AND_QUARTER_PLACEMENT`
+> 현재 미래 카운터: `9 / 10`
+> 마지막 조정: `YEAR_ONE_CASE_PLAY_DIFFERENTIATION_CONTRACT`
 > 갱신일: 2026-08-02
 
 ## 카운터 규칙
@@ -36,7 +36,7 @@ production_expansion: NOT_APPROVED
 ## GRILLME_BATCH_1 — 누적 중
 
 ```yaml
-counter: 8 / 10
+counter: 9 / 10
 automatic_batch_triggered: false
 package_2_separate_merge_authorized: true
 package_2_planning_pr: 129
@@ -46,7 +46,7 @@ package_2_implementation_merge: f8751e7fa7890f402c7377ea6aee64f79ef59911
 year_one_planning_pr: 135
 year_one_planning_pr_state: DRAFT_IN_PROGRESS
 year_one_implementation: NOT_AUTHORIZED
-next_counter: 8 / 10
+next_counter: 9 / 10
 ```
 
 ### 승인 Decision
@@ -93,6 +93,12 @@ next_counter: 8 / 10
    - 승인: 네 사건은 독립된 규칙과 안정화 결말을 가지며 동일 흑막으로 통합하지 않음
    - 승인: 분기별 대표 구출 문법을 순서·경로 / 대상·역할 / 보호 범위·반환 / 기록 비교·복구로 배치
    - 상태: `APPROVED_DESIGN_SECTION_4 / CONTENT_AND_HUMAN_VALIDATION_NOT_RUN`
+
+9. `D-2026-08-02-YEAR-ONE-CASE-PLAY-DIFFERENTIATION-CONTRACT`
+   - 승인: 공통 시스템·UI·행동군을 유지하고 사건별 대표 위협 문법을 조사부터 전투까지 관통
+   - 위협 문법: 저승역=순서, 빨간 우산=전이, 폐주파수=응답, 기록되지 않은 병동=기록 권위
+   - 승인: 능력·태그·판정은 객관적 진실을 바꾸지 않으며, 공격만으로 기본 승리할 수 없음
+   - 상태: `APPROVED_DESIGN_SECTION_5 / PLAYABILITY_VALIDATION_NOT_RUN`
 
 ### Package 2 후속 Gate — 카운트 제외
 
@@ -142,6 +148,7 @@ skill_cut_in_interruption: NOT_RUN
 year_one_minigame_first_30_seconds: NOT_RUN
 year_one_minigame_accessibility: NOT_RUN
 four_case_content_validation: NOT_RUN
+case_play_differentiation_validation: NOT_RUN
 unrecorded_ward_playability: NOT_RUN
 year_one_campaign_poc: NOT_DECLARED
 production_expansion: NOT_APPROVED
@@ -150,10 +157,11 @@ production_expansion: NOT_APPROVED
 ## 다음 Gate
 
 ```text
-현재 counter 8/10
-→ Design Section 5: 네 사건의 조사·괴이 매뉴얼·피해자 구출·회수 전투 차별화 계약
-→ Section 5 승인 뒤 분기 간 결과 환류·연도 결산 최종 검토
-→ 10/10 도달 시 적대적 batch audit와 별도 merge 승인
+현재 counter 9/10
+→ Design Section 6: 분기 간 결과 환류·연도 결산 계약
+→ Section 6 승인 시 counter 10/10
+→ 새 질문 진행보다 먼저 GitHub·Sheet·PR·CI 적대적 batch audit
+→ 별도 사용자 병합 승인 전 PR #135 병합 금지
 ```
 
 ## Future Batch Template
