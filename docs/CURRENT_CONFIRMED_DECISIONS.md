@@ -1,7 +1,7 @@
 # 괴이기록국 현재 확정 결정
 
 > 문서 역할: `CURRENT_CONFIRMED_DECISIONS`
-> 상태: `MAIN_PACKAGE_2_MERGED / YEAR_ONE_FOUR_CORE_CASES_APPROVED_ON_DRAFT_PR_135`
+> 상태: `MAIN_PACKAGE_2_MERGED / YEAR_ONE_SECTION_5_APPROVED_ON_DRAFT_PR_135`
 > 갱신일: 2026-08-02
 > Package 1 구현 merge: `80160218d05e79af5442bf27d8fdeb66bcf05723`
 > 병합 운영 정본 merge: `e15b9d25127170a530f66d5c3462340b806ad51d`
@@ -50,20 +50,27 @@ year_one_planning_priority: APPROVED
 year_one_design_section_1: APPROVED
 year_one_design_section_2: APPROVED
 year_one_design_section_3: APPROVED_DISTINCT_VICTIM_RESCUE_MINIGAMES
+year_one_design_section_4: APPROVED_FOUR_CORE_CASES_PLACED
+year_one_design_section_5: APPROVED_CASE_PLAY_DIFFERENTIATION
 main_content_authority: INVESTIGATION_RESCUE_RECOVERY
 schedule_role: SUPPORT_PREPARATION_FEEDBACK_LAYER
 core_gameplay_screen_presentation: APPROVED_PROVISIONAL_UX_BASELINE
-year_one_design_section_4: APPROVED_FOUR_CORE_CASES_PLACED
 year_one_core_case_spring: AFTERLIFE_STATION
 year_one_core_case_summer: RED_UMBRELLA_ALLEY
 year_one_core_case_autumn: DEAD_FREQUENCY_STATION
 year_one_core_case_winter: UNRECORDED_WARD
-grillme_counter: 8_OF_10
+year_one_threat_grammar_spring: ORDER_AND_MOVEMENT_TIMING
+year_one_threat_grammar_summer: TARGET_ROLE_TRANSFER
+year_one_threat_grammar_autumn: RESPONSE_AND_CHANNEL_STATE
+year_one_threat_grammar_winter: RECORD_AUTHORITY_AND_EXISTENCE_REPLACEMENT
+grillme_counter: 9_OF_10
 human_qa: NOT_RUN
 new_player_validation: NOT_RUN
 screen_01_visual_1280x720: NOT_RUN
 core_gameplay_screen_human_validation: NOT_RUN
 year_one_minigame_human_validation: NOT_RUN
+four_case_content_validation: NOT_RUN
+case_play_differentiation_validation: NOT_RUN
 poc_passed: NOT_DECLARED
 production_expansion: NOT_APPROVED
 ```
@@ -144,6 +151,39 @@ production_expansion: NOT_APPROVED
 
 네 사건은 동일 흑막이나 동일 괴이의 분신이 아니다. 약한 공통 질문은 인간의 기억·기록·대응 절차가 괴이의 경계와 행동을 바꿀 수 있는가로 제한한다.
 
+### 사건별 플레이 차별화 계약
+
+공통 시스템과 공통 UI·행동군을 유지하고, 각 사건은 조사부터 회수 전투까지 대표 위협 문법 하나를 일관되게 사용한다.
+
+| 분기 | 사건 | 대표 위협 문법 |
+|---|---|---|
+| 봄 | 저승역 | 순서와 이동 시점 |
+| 여름 | 비 오는 골목의 빨간 우산 | 대상과 역할의 전이 |
+| 가을 | 폐주파수 방송국 | 응답과 송수신 구간 |
+| 겨울 | 기록되지 않은 병동 | 기록 권위와 존재 대체 |
+
+조사는 `상황 설명 → 조건 표시 선택지 → 결과 문장 → 키워드 획득`으로 진행한다. 괴이 매뉴얼은 발생 조건·피해 연결 방식·금지 행동·피해자 구출 절차·회수 전투 대응을 구성하며, 키워드는 후보·확인·위험 사례·미해결 상태를 구분한다.
+
+능력·태그·판정은 사건의 객관적 진실을 바꾸지 않는다. 실패는 시간·위험도·우회 단서·부분 키워드·검증 비용·지원 기회를 변화시킨다.
+
+공통 회수 전투 승리 조건:
+
+```text
+피해자 구출 또는 보호 상태 확보
++ 대표 규칙 관찰
++ 사건 고유 대응 성공
++ 현현체·매개체 약화
++ 봉쇄 조건 달성
+= 안정화·잔향 회수
+```
+
+공격은 행동 중단·연결 약화·대응 틈·봉쇄 창을 만들지만, 관찰·대응 없이 공격만 반복해 기본 승리할 수 없다.
+
+책임 Decision:
+
+- `D-2026-08-02-YEAR-ONE-FOUR-CORE-CASES-AND-QUARTER-PLACEMENT`
+- `D-2026-08-02-YEAR-ONE-CASE-PLAY-DIFFERENTIATION-CONTRACT`
+
 ### 분기별 피해자 구출 미니게임
 
 각 분기는 서로 다른 피해자 구출 미니게임을 사용한다.
@@ -218,7 +258,7 @@ SCREEN-01 무인 메인
 → SCREEN-01 메인 복귀
 ```
 
-Package 2는 SCREEN-01에서 SIT-001·SIT-002·SIT-004의 현재 구현 Scene만 allowlist로 연다. SIT-003·SIT-005~008은 전용 Scene 구현 전 `NOT_AVAILABLE`로 fail-closed한다. 이번 UX 방향 승인은 기존 Validation 구현을 자동 변경하지 않으며, 후속 Spec·계획·구현 승인을 요구한다.
+Package 2는 SCREEN-01에서 SIT-001·SIT-002·SIT-004의 현재 구현 Scene만 allowlist로 연다. SIT-003·SIT-005~008은 전용 Scene 구현 전 `NOT_AVAILABLE`로 fail-closed한다. 이번 Design 승인은 기존 Validation 구현을 자동 변경하지 않으며, 후속 Spec·계획·구현 승인을 요구한다.
 
 ## 7. 현재 Decision 목록
 
@@ -247,6 +287,7 @@ Package 2는 SCREEN-01에서 SIT-001·SIT-002·SIT-004의 현재 구현 Scene만
 | `D-2026-08-02-MAIN-CONTENT-INVESTIGATION-RECOVERY-AUTHORITY` | CURRENT_APPROVED_PRODUCT_AUTHORITY | 메인 콘텐츠=괴이 사건 조사·구출·회수 | Decision·Design·Sheet |
 | `D-2026-08-02-CORE-GAMEPLAY-SCREEN-PRESENTATION-BASELINE` | APPROVED_PROVISIONAL_UX_BASELINE | 상황 설명→선택지 조사·괴이 매뉴얼·괴이 중심 전투·스킬 컷인 | Decision·Design·Sheet |
 | `D-2026-08-02-YEAR-ONE-FOUR-CORE-CASES-AND-QUARTER-PLACEMENT` | APPROVED_DESIGN_SECTION_4 | 봄 저승역·여름 빨간 우산·가을 폐주파수·겨울 기록되지 않은 병동 | Decision·Design·Sheet |
+| `D-2026-08-02-YEAR-ONE-CASE-PLAY-DIFFERENTIATION-CONTRACT` | APPROVED_DESIGN_SECTION_5 | 네 사건 대표 위협 문법·조사/매뉴얼/구출/전투 차별화·공통 승리 계약 | Decision·Design·Sheet |
 
 ## 8. Package 2 구현 계약과 결과
 
@@ -297,11 +338,12 @@ full_godot_regression: 58_OF_58_PASS
 year_one_design_automated_validation: NOT_RUN_CURRENT_HEAD
 year_one_human_validation: NOT_RUN
 core_gameplay_screen_human_validation: NOT_RUN
+case_play_differentiation_validation: NOT_RUN
 ```
 
 ## 10. Grill Me 운영
 
-- 현재 카운터: `8 / 10`
+- 현재 카운터: `9 / 10`
 - 카운트 Decision:
   1. `D-2026-08-02-PACKAGE-2-MAIN-MENU-MODE-HIERARCHY`
   2. `D-2026-08-02-YEAR-ONE-CAMPAIGN-MASTER-STRUCTURE-FIRST`
@@ -311,6 +353,7 @@ core_gameplay_screen_human_validation: NOT_RUN
   6. `D-2026-08-02-MAIN-CONTENT-INVESTIGATION-RECOVERY-AUTHORITY`
   7. `D-2026-08-02-CORE-GAMEPLAY-SCREEN-PRESENTATION-BASELINE`
   8. `D-2026-08-02-YEAR-ONE-FOUR-CORE-CASES-AND-QUARTER-PLACEMENT`
+  9. `D-2026-08-02-YEAR-ONE-CASE-PLAY-DIFFERENTIATION-CONTRACT`
 - Design·Spec·계획·구현·병합처럼 동일 질문의 후속 Gate는 새 질문이 아니면 추가 카운트하지 않는다.
 - 10개 도달 시 GitHub·Sheet·PR·CI를 다시 적대적으로 검토한 뒤 batch merge gate를 실행한다.
 
@@ -329,6 +372,7 @@ skill_cut_in_interruption: NOT_RUN
 year_one_minigame_first_30_seconds: NOT_RUN
 year_one_minigame_accessibility: NOT_RUN
 four_case_content_validation: NOT_RUN
+case_play_differentiation_validation: NOT_RUN
 unrecorded_ward_playability: NOT_RUN
 poc_passed: NOT_DECLARED
 production_expansion: NOT_APPROVED
@@ -337,9 +381,10 @@ production_expansion: NOT_APPROVED
 ## 12. 다음 Gate
 
 ```text
-Design Section 1·2·3·4 승인
-→ 메인 콘텐츠와 핵심 화면 표현 기준선 유지
-→ Design Section 5: 네 사건의 조사·괴이 매뉴얼·피해자 구출·회수 전투 차별화 계약
-→ Section 5 승인 뒤 분기 간 결과 환류와 연도 결산을 최종 검토
+Design Section 1·2·3·4·5 승인
+→ Design Section 6: 분기 간 결과 환류와 연도 결산 계약
+→ Section 6은 Grill Me Batch 1의 10번째 Decision 후보
+→ 승인 시 GitHub·Sheet·PR·검증 상태 적대적 batch audit
+→ 별도 사용자 병합 승인 전 PR #135 병합 금지
 → 전체 Design 승인 후 Design Spec 작성 여부 결정
 ```
