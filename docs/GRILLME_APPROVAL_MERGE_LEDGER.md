@@ -1,7 +1,7 @@
 # Grill Me 승인·병합 Ledger
 
 > 운영 Decision: `D-2026-08-02-GRILLME-10-MERGE-CADENCE`
-> 현재 미래 카운터: `0 / 10`
+> 현재 미래 카운터: `1 / 10`
 > 마지막 조정: `HISTORICAL_BATCH_0`
 > 갱신일: 2026-08-02
 
@@ -88,6 +88,25 @@ visual_1280x720_validation: NOT_RUN
 poc_passed: NOT_DECLARED
 production_expansion: NOT_APPROVED
 ```
+
+## GRILLME_BATCH_1 — 누적 중
+
+```yaml
+counter: 1 / 10
+merge_triggered: false
+canon_pr: 129
+implementation_pr: none
+```
+
+승인 Decision:
+
+1. `D-2026-08-02-PACKAGE-2-MAIN-MENU-MODE-HIERARCHY`
+   - 승인: Legacy·Validation 독립 병렬 카드
+   - 상태: `APPROVED_PENDING_BATCH_MERGE`
+   - 책임 원본: `docs/decisions/D-2026-08-02-PACKAGE-2-MAIN-MENU-MODE-HIERARCHY.md`
+   - 추적: Draft PR #129, Google Sheet 동일 Decision ID
+
+다음 batch 병합 Gate는 10번째 승인 Decision이 기록될 때 실행한다. 그 전에도 사용자가 별도 병합을 명시적으로 승인하면 해당 범위만 병합할 수 있다.
 
 ## Future Batch Template
 
