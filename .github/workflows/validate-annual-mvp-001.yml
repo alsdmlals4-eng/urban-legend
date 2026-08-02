@@ -10,7 +10,9 @@ on:
       - "scenes/poc/annual_mvp_001/**"
       - "scenes/poc/annual_mvp_002/**"
       - "scripts/poc/core_mvp_001/**"
+      - "scripts/core/validation_*.gd"
       - "scripts/ui/main_menu.gd"
+      - "project.godot"
       - "tests/**"
       - "TEST_CHECKLIST.md"
       - "MVP_ROADMAP.md"
@@ -52,6 +54,11 @@ jobs:
         run: |
           set -o pipefail
           godot --headless --path . --import 2>&1 | tee annual-import.log
+      - name: Run focused Validation Package 1 tests
+        env:
+          GODOT_BIN: godot
+          GODOT_TEST_TMP: ${{ runner.temp }}/validation-package-1-focused
+        run: bash tests/run_validation_package_1_tests.sh
       - name: Run focused CORE-MVP-001 tests
         env:
           GODOT_BIN: godot
@@ -79,6 +86,7 @@ jobs:
           name: annual-mvp-001-failure
           path: |
             annual-import.log
+            ${{ runner.temp }}/validation-package-1-focused/focused-logs
             ${{ runner.temp }}/annual-mvp-001-core/focused-logs
             ${{ runner.temp }}/annual-mvp-001-focused/focused-logs
             ${{ runner.temp }}/annual-mvp-002-focused/focused-logs

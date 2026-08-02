@@ -31,7 +31,7 @@ class AnnualMvp001StaticContractTests(unittest.TestCase):
         self.assertIn("CORE-MVP-001 조사→전조→포획 PoC", menu)
         self.assertIn("res://scenes/poc/core_mvp_001/core_mvp_001_scene.tscn", menu)
 
-    def test_regression_runner_registers_six_annual_tests(self) -> None:
+    def test_regression_runner_registers_annual_and_validation_tests(self) -> None:
         runner = (ROOT / "tests/run_godot_regression.sh").read_text(encoding="utf-8")
         for name in (
             "annual_mvp_001_data_test",
@@ -40,9 +40,13 @@ class AnnualMvp001StaticContractTests(unittest.TestCase):
             "annual_mvp_001_incident_adapter_test",
             "annual_mvp_001_save_data_test",
             "annual_mvp_001_scene_test",
+            "validation/validation_save_repository_test",
+            "validation/validation_session_test",
+            "validation/validation_game_state_adapter_test",
+            "validation/validation_save_isolation_test",
         ):
             self.assertIn(name, runner)
-        self.assertIn("49/49", runner)
+        self.assertIn("53/53", runner)
 
     def test_runtime_does_not_reference_protected_main_state(self) -> None:
         combined = "\n".join(
