@@ -1,14 +1,13 @@
 # 괴이기록국 Validation 현재 인수인계
 
-> 상태: `PACKAGE_1_MERGED / AUTOMATED_CI_VERIFIED / PACKAGE_2_PLANNING_NEXT`
+> 상태: `PACKAGE_2_SPEC_APPROVED / IMPLEMENTATION_PLAN_WRITTEN / PRODUCT_IMPLEMENTATION_APPROVAL_PENDING`
 > 갱신일: 2026-08-02
-> 작업 branch: `main`
-> Canon merge: PR #125 / `595d45454621900e858a903fef0598a03349b794`
-> Implementation merge: PR #126 / `80160218d05e79af5442bf27d8fdeb66bcf05723`
-> Governance reconciliation merge: PR #127 / `e15b9d25127170a530f66d5c3462340b806ad51d`
-> Grill Me future counter: `0 / 10`
+> 작업 branch: `agent/package-2-entry-routing-planning`
+> Package 2 planning PR: #129
+> Grill Me future counter: `1 / 10`
+> 제품 구현 권한: `NOT_AUTHORIZED`
 
-실제 최신 main SHA는 작업 시작 시 GitHub `main` ref에서 읽는다. 위 SHA는 역할이 고정된 병합 증거다.
+실제 최신 main SHA는 GitHub `main` ref에서 읽는다. Package 1 병합 SHA는 역할이 고정된 증거로만 사용한다.
 
 ## 읽기 순서
 
@@ -19,11 +18,14 @@ START_HERE.md
 → docs/CURRENT_CONFIRMED_DECISIONS.md
 → docs/VALIDATION_TARGET_CANON.md
 → docs/GRILLME_APPROVAL_MERGE_LEDGER.md
-→ docs/decisions/D-2026-08-02-VALIDATION-PERSISTENCE-BOUNDARY.md
-→ docs/superpowers/specs/2026-08-02-validation-session-save-isolation-design.md
-→ docs/superpowers/plans/2026-08-02-validation-session-save-isolation-implementation-plan.md
-→ docs/implementation/2026-08-02-package-1-session-save-isolation-evidence.md
-→ docs/implementation/2026-08-02-package-1-retarget-merge-gate.md
+→ docs/decisions/D-2026-08-02-PACKAGE-2-MAIN-MENU-MODE-HIERARCHY.md
+→ docs/decisions/D-2026-08-02-PACKAGE-2-DESIGN-APPROVAL.md
+→ docs/decisions/D-2026-08-02-PACKAGE-2-DESIGN-SPEC-APPROVAL.md
+→ docs/superpowers/specs/2026-08-02-package-2-main-menu-entry-routing-design.md
+→ docs/superpowers/plans/2026-08-02-package-2-main-menu-entry-routing-implementation-plan.md
+→ docs/planning/2026-08-02-package-2-entry-routing-adversarial-audit.md
+→ docs/planning/2026-08-02-package-2-validation-initializer-adversarial-finding.md
+→ Package 1 Design·Plan·evidence
 → 실제 main 코드·테스트
 ```
 
@@ -31,18 +33,17 @@ START_HERE.md
 
 ```yaml
 base: 9.4.0
-branch: main
-package_1_merge: 80160218d05e79af5442bf27d8fdeb66bcf05723
-governance_reconciliation_merge: e15b9d25127170a530f66d5c3462340b806ad51d
-canon: MERGED
-package_1_planning: APPROVED_AND_MERGED
-persistence_boundary: APPROVED_AND_IMPLEMENTED
-package_1_design: APPROVED_AND_EXECUTED
-package_1_implementation: MERGED
-package_1_ci: PASS
-validation_focused: 4_OF_4_PASS
-full_godot_regression: 53_OF_53_PASS
-package_2: NOT_PLANNED_YET
+branch: agent/package-2-entry-routing-planning
+package_1: MERGED_AND_AUTOMATED_CI_VERIFIED
+package_2_planning_audit: COMPLETE
+package_2_menu_hierarchy: APPROVED_PARALLEL_INDEPENDENT_CARDS
+package_2_design: APPROVED
+package_2_spec: APPROVED
+package_2_implementation_plan: WRITTEN_SELF_REVIEWED
+package_2_product_implementation: NOT_AUTHORIZED
+package_2_planning_merge: NOT_REQUESTED
+product_diff_on_pr_129: 0
+future_grillme_counter: 1_OF_10
 runtime_human_qa: NOT_RUN
 new_player_validation: NOT_RUN
 visual_1280x720_validation: NOT_RUN
@@ -52,78 +53,81 @@ platform: PC_16_9_MOUSE_KEYBOARD
 mobile: DEFERRED_AFTER_PC_VALIDATION
 ```
 
-## 승인 Target
+## Package 2 승인 구조
 
 ```text
-무인 메인
-→ 저승역 콜드 오픈
-→ 기록국 브리핑
-→ 축약 준비
-→ 텍스트 노벨 조사
-→ 가설·시간순 증거
-→ 안전 노선 복원
-→ 회수 2패턴
-→ 결과 4축·최소 환류
-→ 메인 복귀
+기존 진행 카드
+- 새 캠페인
+- 이어하기
+- Legacy 저장 상태
+
+Validation 기록 카드
+- 새 기록 시작
+- 이어하기
+- 완료 기록 보기
+- 오류·호환 상태
 ```
 
-상세는 `docs/VALIDATION_TARGET_CANON.md`가 소유한다.
+핵심 구성 요소:
 
-## Package 1에서 구현된 것
+1. `ValidationPersistenceSummary` — repository 결과를 메뉴용 read-only summary로 변환
+2. `ValidationRouteMapper` — SIT allowlist·unknown/not-available fail-closed
+3. `initialize_validation_runtime()` — Package 1 whitelist 필드만 초기화
+4. `ValidationEntryCoordinator` — 시작·교체·이어하기·완료 보기·rollback·single-flight
+5. SCREEN-01 독립 카드·status/replace/completed dialog·키보드 focus
 
-### ValidationSaveRepository
+## 구현 계획
 
-- `user://urban_legend_validation_save.json` 독립 namespace
-- Legacy 경로 접근 차단
-- temp write → readback → replace
-- 정상 backup 1세대
-- corrupt·schema·older/newer·interrupted·recoverable 판정
-- 명시적 quarantine
+경로:
 
-### ValidationSession
+`docs/superpowers/plans/2026-08-02-package-2-main-menu-entry-routing-implementation-plan.md`
 
-- create·activate·save·load·suspend·resume·complete·abandon·delete lifecycle
-- token·episode·lifecycle fail-closed
-- completion apply-once ID
-- hidden Legacy memory guard
+7개 검토 단위:
 
-### GameState adapter
+1. read-only persistence summary
+2. flow-stage route mapper
+3. whitelist runtime initializer
+4. coordinator start·replace·atomic cleanup
+5. coordinator continue·completed·rollback
+6. SCREEN-01 cards·dialogs·focus
+7. Package 2 focused 5/5·full regression 58/58·CI·evidence·merge gate
 
-- 기존 `scripts/core/game_state.gd` 본체를 직접 수정하지 않음
-- `validation_game_state.gd` 상속 wrapper
-- inactive 시 기존 save 유지
-- active valid 시 Validation save routing
-- active invalid 시 Validation·Legacy 양쪽 저장 차단
-- field-level runtime whitelist와 restore prevalidation
+실행 원칙:
 
-### Autoload·검증
+- `superpowers:using-git-worktrees`로 격리
+- `superpowers:subagent-driven-development` 권장
+- 각 Task RED → minimal GREEN → 회귀 → 커밋
+- planning PR에는 제품 코드 금지
+- implementation PR은 planning PR 위에 stacked Draft로 시작
+- planning 병합 후 implementation 재정렬·exact-head 재검증
+- 별도 구현 병합 승인 필요
 
-```text
-UrbanLegendState
-→ ValidationSession
-→ GameState(validation_game_state.gd)
-→ MCP helper
+## 필수 보호 계약
+
+- Validation 메뉴 조회에서 `load()` 호출 금지
+- Validation 시작에서 Legacy 저장 삭제 금지
+- `reset_run_state()`·`restart_afterlife_station_flow()` 재사용 금지
+- active·suspended·completed 행동 분리
+- blocked persistence code는 delete/create/load 금지
+- 기존 Validation 교체는 record identity 재검증 후 명시적 확인
+- 저장된 `scene_path` 직접 라우팅 금지
+- route 실패 시 GameState runtime rollback·Session abandon
+- 한쪽 오류가 다른 카드 행동을 막지 않음
+- 시작·이어하기 전후 Legacy file bytes와 hidden memory equality
+
+## 테스트 목표
+
+```yaml
+package_1_focused: 4_OF_4_PASS_REQUIRED
+package_2_focused: 5_OF_5_PASS_REQUIRED
+full_godot_regression: 58_OF_58_PASS_REQUIRED
+documentation_contracts: PASS_REQUIRED
+bca_adoption: PASS_REQUIRED
+core_workflow: PASS_REQUIRED
+annual_workflow: PASS_REQUIRED
+human_qa: PASS_OR_EXPLICIT_NOT_RUN
+visual_1280x720: PASS_OR_EXPLICIT_NOT_RUN
 ```
-
-- Documentation contracts PASS
-- BCA Adoption PASS
-- Godot 4.7.1 import PASS
-- Validation focused 4/4 PASS
-- CORE·ANNUAL focused PASS
-- full Godot regression 53/53 PASS
-
-## 아직 구현되지 않은 것
-
-- main-menu의 Legacy/Validation 시작·이어하기 구분
-- Validation 전용 축약 준비 Scene
-- Validation 전용 Reasoning Scene
-- Validation 전용 결과 Scene
-- 전체 SCREEN-01→SIT-008→메인 복귀 routing
-- 신규 플레이어 검증
-- 1280×720 시각·입력 검증
-- 모바일
-
-이 항목들은 Package 1 완료 주장에 포함하지 않는다.
 
 ## GitHub 상태
 
@@ -131,37 +135,31 @@ UrbanLegendState
 pr_125: MERGED
 pr_126: MERGED
 pr_127: MERGED
+pr_129: DRAFT_IMPLEMENTATION_APPROVAL_PENDING
 pr_122: CLOSED_SOURCE_DO_NOT_MERGE_AS_IS
-pr_120: CLOSED_SUPERSEDED
 issue_121: CLOSED_COMPLETED
 ```
 
-PR #122의 현재 유효한 승인 내용은 `CURRENT_CONFIRMED_DECISIONS`와 `VALIDATION_TARGET_CANON`으로 승계했다. source PR 자체는 stale·중복 권위를 되살리므로 병합하지 않는다.
-
 ## Grill Me 운영
 
-- 역사 승인분: `HISTORICAL_BATCH_0` 완료
-- 미래 카운터: `0 / 10`
-- 승인된 Grill Me Decision ID마다 +1
-- 10개 도달 시 GitHub·Sheet·PR·CI 최종 적대적 검토 후 병합
-- source-only·superseded·blocked PR은 제외
-- Canon과 구현은 별도 PR·별도 승인·별도 검증
-
-책임 원본:
-
-- `docs/decisions/D-2026-08-02-GRILLME-10-MERGE-CADENCE.md`
-- `docs/GRILLME_APPROVAL_MERGE_LEDGER.md`
+- 역사 batch: `HISTORICAL_BATCH_0` 완료
+- 현재 미래 카운터: `1 / 10`
+- 현재 카운트 Decision: `D-2026-08-02-PACKAGE-2-MAIN-MENU-MODE-HIERARCHY`
+- Design·Spec·계획 승인은 동일 질문의 후속 Gate이므로 추가 카운트하지 않는다.
+- 10개 도달 시 병합 직전 GitHub·Sheet·PR·CI 적대적 검토를 다시 수행한다.
 
 ## 다음 Gate
 
 ```text
-Package 2 범위 기획
-→ main-menu entry·continue UX
-→ Validation 생성·재개 routing
-→ Legacy 저장 비파괴 계약 유지
-→ 전용 준비·추론·결과 Scene의 최소 범위 확정
-→ 적대적 검토
-→ 사용자 구현 승인
+사용자 제품 구현 승인
+→ latest main·planning head 확인
+→ 격리 implementation branch
+→ TDD Task 1~7
+→ Draft implementation PR
+→ exact-head CI·적대적 리뷰
+→ 별도 병합 승인
+→ Package 2 종료
+→ 본격 게임 기획 전환
 ```
 
 ## 미검증 경계
