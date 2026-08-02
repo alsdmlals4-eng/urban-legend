@@ -10,6 +10,7 @@ mkdir -p "$LOG_ROOT"
 
 script_tests=(
   validation/validation_persistence_summary_test
+  validation/validation_route_mapper_test
 )
 
 for test_path in "${script_tests[@]}"; do
