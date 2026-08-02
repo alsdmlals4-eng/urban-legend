@@ -1,7 +1,7 @@
 # Grill Me Batch 2 Ledger
 
 > 상위 운영 Decision: `D-2026-08-02-GRILLME-10-MERGE-CADENCE`
-> 현재 카운터: `6 / 10`
+> 현재 카운터: `7 / 10`
 > 상태: `OPEN`
 > 갱신일: 2026-08-03
 > 누적 Draft PR: `#140`
@@ -142,6 +142,28 @@
 - `docs/planning/2026-08-02-investigation-system-design.md`
 - Google Sheet 동일 Decision ID
 
+## 7 / 10
+
+### `D-2026-08-03-CAMPAIGN-REWIND-UNLOCK-AND-BRANCH-SLOTS`
+
+- 캠페인 되감기는 첫 1년차 캠페인을 어떤 결과로든 완료한 뒤 해금
+- 첫 플레이 도중에는 캠페인 되감기 사용 불가
+- 해금에 S 랭크·특정 엔딩·특정 난이도·유료 상품 요구 금지
+- 횟수 제한과 게임 내 재화 비용 없음
+- 이후 캠페인을 새 정본에 맞춰 다시 진행하는 플레이 시간이 실제 비용
+- 최대 3개의 캠페인 분기 슬롯 제공
+- 첫 번째 완료 캠페인은 자동 보호 기록으로 보관
+- 분기별 캠페인 정본·피해자·관계·결과 패킷·연도 결산 분리
+- 최고 숙련 랭크·축별 최고 기록·업적·비필수 보상은 전 분기 공유
+- 되감기 전 폐기 범위 표시와 슬롯 삭제·덮어쓰기 재확인 필수
+- 구현·사람 검증 미승인
+
+책임 원본:
+
+- `docs/decisions/D-2026-08-03-CAMPAIGN-REWIND-UNLOCK-AND-BRANCH-SLOTS.md`
+- `docs/planning/2026-08-02-investigation-system-design.md`
+- Google Sheet 동일 Decision ID
+
 ## 다음 질문
 
-캠페인 되감기를 언제 해금하고, 몇 번 사용할 수 있으며, 별도 자원 비용·백업 슬롯·진행 제약을 둘 것인가.
+캠페인 정본을 실제로 바꾸는 되감기의 대상 단위를 사건 시작으로 제한할지, 조사·구출·전투의 주요 결정 지점까지 허용할지 결정한다.
