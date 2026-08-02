@@ -105,7 +105,7 @@ implementation_merge: NOT_AUTHORIZED
 
 1. `D-2026-08-02-PACKAGE-2-MAIN-MENU-MODE-HIERARCHY`
    - 승인: Legacy·Validation 독립 병렬 카드
-   - 상태: `APPROVED_IMPLEMENTED_PENDING_MERGE`
+   - 상태: `APPROVED_IMPLEMENTED_EXACT_HEAD_VERIFIED_PENDING_MERGE`
    - 책임 원본: `docs/decisions/D-2026-08-02-PACKAGE-2-MAIN-MENU-MODE-HIERARCHY.md`
    - 추적: Draft PR #129·#131, Google Sheet 동일 Decision ID
 
@@ -116,17 +116,20 @@ implementation_merge: NOT_AUTHORIZED
 - `D-2026-08-02-PACKAGE-2-IMPLEMENTATION-APPROVAL` — 제품 구현 승인
 - 구현 계획: `docs/superpowers/plans/2026-08-02-package-2-main-menu-entry-routing-implementation-plan.md`
 - 구현 증거: `docs/implementation/2026-08-02-package-2-main-menu-entry-routing-evidence.md`
-- 상태: `IMPLEMENTATION_COMPLETE_AUTOMATED_CODE_CI_PASS / MERGE_NOT_AUTHORIZED`
+- 상태: `IMPLEMENTATION_COMPLETE_LATEST_EXACT_HEAD_PASS / MERGE_NOT_AUTHORIZED`
 
-자동 코드 검증:
+최근 완료 exact-head 자동 검증:
 
 ```yaml
-code_head: e24aac73a81bfb1725c60dd640a26fa91527647a
-core_run_30741037647: PASS
-annual_run_30741037654: PASS
+documentation_run_30741361754: PASS
+bca_run_30741361726: PASS
+core_run_30741361717: PASS
+annual_run_30741361720: PASS
 package_1_focused: 4_OF_4_PASS
 package_2_focused: 5_OF_5_PASS
 full_godot_regression: 58_OF_58_PASS
+review_threads: 0
+submitted_reviews: 0
 ```
 
 후속 Gate들은 별도 Grill Me 질문이 아니므로 카운터는 `1 / 10`을 유지한다.
@@ -139,6 +142,7 @@ full_godot_regression: 58_OF_58_PASS
 PR #129 exact-head Docs·BCA·diff 감사
 → PR #129 planning 병합
 → PR #131 base를 main으로 retarget
+→ stacked BCA planning-base 허용 제거
 → PR #131 fresh exact-head Docs·BCA·CORE·ANNUAL
 → review thread·changed files·Sheet 적대적 감사
 → PR #131 구현 병합
