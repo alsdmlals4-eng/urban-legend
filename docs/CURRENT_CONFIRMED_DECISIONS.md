@@ -6,9 +6,11 @@
 > 추적: Issue #121 / Draft PR #125
 > 상세 Target 정본: `docs/VALIDATION_TARGET_CANON.md`
 > 운영 재조정: `docs/decisions/D-2026-08-02-BASE-V94-CANON-RECONCILIATION.md`
-> Package 1 승인: `docs/decisions/D-2026-08-02-PACKAGE-1-PLANNING-APPROVAL.md`
+> Package 1 기획 승인: `docs/decisions/D-2026-08-02-PACKAGE-1-PLANNING-APPROVAL.md`
 > 영속 경계: `docs/decisions/D-2026-08-02-VALIDATION-PERSISTENCE-BOUNDARY.md`
+> Design 승인: `docs/decisions/D-2026-08-02-PACKAGE-1-DESIGN-SPEC-APPROVAL.md`
 > Package 1 Design: `docs/superpowers/specs/2026-08-02-validation-session-save-isolation-design.md`
+> Package 1 Implementation Plan: `docs/superpowers/plans/2026-08-02-validation-session-save-isolation-implementation-plan.md`
 > Google GDD Sheet: `02_현재_확정결정`, `99_변경이력`
 > 제품 구현 권한: `PLANNING_AND_DOCUMENTATION_ONLY`
 
@@ -35,12 +37,13 @@
 - Decision: `D-2026-08-01-VALIDATION-PLANNING-FINAL-APPROVAL`
 - 상태: `APPROVED_FINAL_PLANNING_BASELINE`
 - Canon 복구: `D-2026-08-02-BASE-V94-CANON-RECONCILIATION`
-- Package 1: `D-2026-08-02-PACKAGE-1-PLANNING-APPROVAL`
+- Package 1 기획: `D-2026-08-02-PACKAGE-1-PLANNING-APPROVAL`
 - Persistence: `D-2026-08-02-VALIDATION-PERSISTENCE-BOUNDARY`
 - Persistence 관계: `VALIDATION_FULLY_INDEPENDENT_FROM_LEGACY`
-- Package 1 Design: `REVIEW_READY`
-- Package 1 권한: `PLANNING_ONLY / IMPLEMENTATION_NOT_AUTHORIZED`
-- Runtime / Human QA: `NOT_RUN`
+- Package 1 Design: `APPROVED`
+- Implementation Plan: `REVIEW_READY`
+- Package 1 구현 권한: `NOT_AUTHORIZED`
+- Runtime / CI / Human QA: `NOT_RUN`
 - 플랫폼: `PC / Steam / 16:9 / mouse+keyboard`
 - 모바일: `FUTURE_CONSIDERATION_NOT_IN_CURRENT_VALIDATION_SCOPE`
 
@@ -83,6 +86,7 @@ SCREEN-01 무인 메인
 | `D-2026-08-02-BASE-V94-CANON-RECONCILIATION` | CURRENT_APPROVED_GOVERNANCE | Base v9.4 현행화·PR #120 종료·PR #122 소스 격리·최신 main 정본 복구 | `docs/decisions/D-2026-08-02-BASE-V94-CANON-RECONCILIATION.md` |
 | `D-2026-08-02-PACKAGE-1-PLANNING-APPROVAL` | CURRENT_APPROVED_PLANNING_ONLY | Package 1은 기획·명세·적대적 검토부터 진행하고, 상세 수치·기술 기본값은 권장안, 중요 기획 충돌만 Grill Me | `docs/decisions/D-2026-08-02-PACKAGE-1-PLANNING-APPROVAL.md` |
 | `D-2026-08-02-VALIDATION-PERSISTENCE-BOUNDARY` | APPROVED_PLANNING_BASELINE | Validation 진행·완료 기록은 본편·Legacy와 완전 독립; 자동 공유·가져오기·공용 프로필 없음 | `docs/decisions/D-2026-08-02-VALIDATION-PERSISTENCE-BOUNDARY.md` |
+| `D-2026-08-02-PACKAGE-1-DESIGN-SPEC-APPROVAL` | CURRENT_APPROVED_DESIGN | Session·Save isolation Design을 구현 계획의 승인된 입력으로 채택하고 writing-plans를 허용 | `docs/decisions/D-2026-08-02-PACKAGE-1-DESIGN-SPEC-APPROVAL.md` |
 
 ## 4. 대체·보존 관계
 
@@ -119,22 +123,25 @@ SCREEN-01 무인 메인
 
 - PR #120: `SUPERSEDED_BY_BASE_V9_4_MAIN`
 - PR #122: `SUPERSEDED_SOURCE_BRANCH / DO_NOT_MERGE_AS_IS`
-- Draft PR #125: 현행 Canon·기획 감사·Package 1 설계 작업 surface
+- Draft PR #125: 현행 Canon·기획 감사·Package 1 Design·Implementation Plan 작업 surface
+- 제품 구현은 PR #125에 혼합하지 않는다.
 
-## 5. Package 1 기획 운영 규칙
+## 5. Package 1 운영 규칙
 
-- 구현보다 Design Spec을 먼저 작성한다.
-- 상세 데이터 수치·기술 기본값은 `RECOMMENDED_DEFAULT` 또는 `TEST_VALUE`로 GPT 권장안을 사용한다.
+- Design Spec은 승인됐다.
+- Implementation Plan은 `superpowers:writing-plans` 형식으로 작성하고 자기검수한다.
+- 상세 데이터 수치·기술 기본값은 `RECOMMENDED_DEFAULT` 또는 `TEST_VALUE`로 권장안을 사용한다.
 - 프로젝트 방향·저장 UX·완료 의미·정본 대체만 Grill Me로 질문한다.
-- 질문은 감사 뒤 한 번에 하나만 한다.
 - 승인 답변은 즉시 같은 Decision ID로 GitHub 정본·PR·Sheet에 동기화한다.
-- Design Spec 승인 전 writing-plans와 구현을 시작하지 않는다.
+- 구현은 별도 사용자 승인과 isolated worktree/branch 없이 시작하지 않는다.
+- 기본 실행 순서는 PR #125 병합→최신 main→독립 구현 Draft PR이다.
+- PR #125 병합 전 실행이 별도 승인되면 exact HEAD stacked PR만 허용한다.
 
-현재 적대적 감사:
+현재 기획·계획 원본:
 
 - `docs/planning/2026-08-02-package-1-planning-adversarial-audit.md`
-- `D-2026-08-02-VALIDATION-PERSISTENCE-BOUNDARY`: `APPROVED`
-- Package 1 Design: `docs/superpowers/specs/2026-08-02-validation-session-save-isolation-design.md`
+- `docs/superpowers/specs/2026-08-02-validation-session-save-isolation-design.md`
+- `docs/superpowers/plans/2026-08-02-validation-session-save-isolation-implementation-plan.md`
 
 ## 6. 시각·테스트 상태
 
@@ -142,6 +149,7 @@ SCREEN-01 무인 메인
 - 플레이테스트 설계: `PT-2026-08-01-VALIDATION-SCREEN-SIT`
 - 정적 시각 기획 검수: `COMPLETE`
 - Godot Runtime: `NOT_RUN`
+- CI: `NOT_RUN_FOR_PACKAGE_1_IMPLEMENTATION`
 - 신규 플레이어 검증: `NOT_RUN`
 - 사람 장시간 사용성: `NOT_RUN`
 - 1280×720 제품 화면: `NOT_RUN`
@@ -164,27 +172,30 @@ registry_sha256: 693a0dff3f054ecdd653079909e044211473838e73dd9aff07734d1ce5694c5
 ## 8. 다음 작업
 
 ```text
-Package 1 기획 적대적 감사 = COMPLETE
-→ D-2026-08-02-VALIDATION-PERSISTENCE-BOUNDARY = APPROVED
-→ Package 1 Design Spec = REVIEW_READY
-→ 사용자 Spec 검토·승인
-→ writing-plans
-→ 별도 Package 1 구현 승인
+Package 1 Design Spec = APPROVED
+→ Implementation Plan = REVIEW_READY
+→ 사용자 Package 1 구현 승인
+→ PR #125 병합 후 최신 main에서 isolated worktree/branch
+→ RED→GREEN Package 1 구현
+→ focused/CORE/ANNUAL/full regression
+→ 적대적 exact-head 재검토
+→ 구현 Decision 동기화
 ```
 
-Package 1 Design이 닫은 P0:
+Implementation Plan이 고정한 작업 단위:
 
-1. Validation 완료 기록과 본편/Legacy의 영속 관계
-2. Session activation·save routing fail-closed 계약
-3. field-level runtime snapshot whitelist
-4. corrupt·recoverable·incompatible·migration matrix
-5. session reset·abandon·delete·completion lifecycle 분리
-6. Legacy file·memory no-effect 수용 기준
+1. 별도 repository와 atomic persistence
+2. Session lifecycle·completion idempotency
+3. GameState field-level whitelist와 hidden guard
+4. Autoload·active-session fail-closed routing
+5. corrupt/version/interrupted/backup·양방향 no-effect matrix
+6. focused 4-entry·CORE·ANNUAL·full 53-entry 검증 배관
+7. exact-head evidence·rollback·Decision sync
 
 ## 9. 동기화 상태
 
 - GitHub `main`: `PENDING_PR_MERGE`
-- 최신 정본 브랜치: `PERSISTENCE_DECISION_AND_DESIGN_SYNC_IN_PROGRESS`
+- 최신 정본 브랜치: `SPEC_APPROVAL_AND_IMPLEMENTATION_PLAN_SYNC_IN_PROGRESS`
 - Google Sheet: 같은 Decision ID 반영 후 재조회 필요
 - 제품 파일: 변경 없음
-- Runtime / Human: `NOT_RUN`
+- Runtime / CI / Human: `NOT_RUN`
