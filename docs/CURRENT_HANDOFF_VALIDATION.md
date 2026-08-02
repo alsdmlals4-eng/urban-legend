@@ -8,6 +8,7 @@
 > Parent: `D-2026-08-02-BASE-V94-CANON-RECONCILIATION`
 > Proposal: `P-2026-08-02-VALIDATION-CHANGE-PROPOSAL`
 > 기준 main: `7277b9cececa56532f7b0d11c1a02fd3d5642750`
+> 계획 브랜치 HEAD: `df2e2fa13f7a4d65f047700b0b25aa7ced10b21f`
 > 제품 구현 권한: `NOT_AUTHORIZED`
 
 ## 현재 읽기 순서
@@ -166,6 +167,14 @@ PR #125 병합 전에 구현을 승인할 경우 exact HEAD 기반 stacked PR만
 - Package 2 이상 UI·콘텐츠 범위 혼입
 - stale regression entrypoint count
 
+## 계획 자기검수 결과
+
+- 승인 Spec 요구사항을 7개 Task에 전부 매핑했다.
+- repository·Session·GameState result/signature와 snapshot key를 일치시켰다.
+- 초기 계획에서 미정의 helper와 marker-scan 오탐 위험을 발견해 폐기하고 같은 경로의 완전한 단일 계획으로 교체했다.
+- 실제 `project.godot`, `game_state.gd`, 49-entry runner, CORE·ANNUAL workflow를 기준으로 경로와 명령을 작성했다.
+- 제품 경로 diff는 0이다.
+
 ## 다음 Gate
 
 ```text
@@ -190,6 +199,8 @@ Implementation Plan = REVIEW_READY
 - PR #122: `SOURCE_BRANCH / DO_NOT_MERGE_AS_IS`
 - Draft PR #125: Canon·Audit·Package 1 Design·Implementation Plan surface
 - 브랜치: `agent/v9-4-canon-reconciliation`
-- 제품 경로 diff: 0
+- 계획 HEAD: `df2e2fa13f7a4d65f047700b0b25aa7ced10b21f`
+- main 대비: `29 commits ahead / 0 behind`
+- 변경: `15 documentation files / product paths 0`
 - PR 병합: `NOT_REQUESTED`
-- Google Sheet: Design 승인 Decision과 Implementation Plan 상태를 같은 ID로 동기화 후 exact range 재조회 필요
+- Google Sheet: `D-2026-08-02-PACKAGE-1-DESIGN-SPEC-APPROVAL`과 계획 상태를 exact HEAD로 동기화 후 재조회 필요
