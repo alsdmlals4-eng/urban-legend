@@ -97,8 +97,8 @@ func continue_validation() -> Dictionary:
 		return _result(false, String(summary.get("repository_code", "INVALID_LIFECYCLE")), {"summary": summary})
 
 	_busy = true
-	var runtime_before := _game_state.export_validation_runtime_snapshot()
-	var hidden_before := _game_state.snapshot_hidden_legacy_state_for_test()
+	var runtime_before: Dictionary = _game_state.export_validation_runtime_snapshot()
+	var hidden_before: Dictionary = _game_state.snapshot_hidden_legacy_state_for_test()
 	var legacy_before := _legacy_snapshot()
 	var loaded: Dictionary = _session.load(_game_state)
 	if String(loaded.get("code", "")) != "OK":
@@ -142,8 +142,8 @@ func _start_from_empty() -> Dictionary:
 		return route
 
 	_busy = true
-	var runtime_before := _game_state.export_validation_runtime_snapshot()
-	var hidden_before := _game_state.snapshot_hidden_legacy_state_for_test()
+	var runtime_before: Dictionary = _game_state.export_validation_runtime_snapshot()
+	var hidden_before: Dictionary = _game_state.snapshot_hidden_legacy_state_for_test()
 	var legacy_before := _legacy_snapshot()
 	var created_persistence := false
 
