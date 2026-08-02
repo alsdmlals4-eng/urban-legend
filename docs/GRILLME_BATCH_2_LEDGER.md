@@ -1,7 +1,7 @@
 # Grill Me Batch 2 Ledger
 
 > 상위 운영 Decision: `D-2026-08-02-GRILLME-10-MERGE-CADENCE`
-> 현재 카운터: `5 / 10`
+> 현재 카운터: `6 / 10`
 > 상태: `OPEN`
 > 갱신일: 2026-08-03
 > 누적 Draft PR: `#140`
@@ -122,6 +122,26 @@
 - `docs/planning/2026-08-02-investigation-system-design.md`
 - Google Sheet 동일 Decision ID
 
+## 6 / 10
+
+### `D-2026-08-03-INCIDENT-CHECKPOINT-RETRY-AND-CANON-CONFIRMATION`
+
+- 조사 소단락·피해자 구출 시작·회수 전투 시작에 주요 체크포인트 제공
+- 결과 반영 뒤 선택 단위 자유 되감기와 턴 단위 자유 되감기는 기본 미지원
+- 피해자 구출 첫 실패와 회수 전투 패배는 짧은 구간에서 즉시 재시도 가능
+- 이미 본 텍스트 빠른 넘김과 중요 행동 실행 전 확인 제공
+- 사건 결과 보고서에서 명시적으로 `결과 확정`해야 캠페인 정본 생성
+- 결과 확정 전 사건당 1회 `출동 재개`로 마지막 주요 체크포인트 복귀 가능
+- 결과 확정 뒤에는 기록 재현 또는 캠페인 되감기 계약 적용
+- 접근성 완화는 일반 클리어를 막지 않으며 최고 랭크 처리는 후속 Spec에서 공개
+- 구현·사람 검증 미승인
+
+책임 원본:
+
+- `docs/decisions/D-2026-08-03-INCIDENT-CHECKPOINT-RETRY-AND-CANON-CONFIRMATION.md`
+- `docs/planning/2026-08-02-investigation-system-design.md`
+- Google Sheet 동일 Decision ID
+
 ## 다음 질문
 
-사건 결과 정본 확정 전에 조사 선택·피해자 구출·회수 전투를 어느 범위까지 즉시 재시도하거나 되감을 수 있게 할 것인가.
+캠페인 되감기를 언제 해금하고, 몇 번 사용할 수 있으며, 별도 자원 비용·백업 슬롯·진행 제약을 둘 것인가.
