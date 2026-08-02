@@ -1,9 +1,9 @@
 # Grill Me Batch 2 Ledger
 
 > 상위 운영 Decision: `D-2026-08-02-GRILLME-10-MERGE-CADENCE`
-> 현재 카운터: `2 / 10`
+> 현재 카운터: `3 / 10`
 > 상태: `OPEN`
-> 갱신일: 2026-08-02
+> 갱신일: 2026-08-03
 > 누적 Draft PR: `#140`
 
 이 문서는 Batch 2 진행 중 새 제품 Decision을 즉시 추적한다. Batch 종료 시 `docs/GRILLME_APPROVAL_MERGE_LEDGER.md`와 현재 권위 문서에 병합 정리한다.
@@ -67,6 +67,26 @@
 - `docs/planning/2026-08-02-investigation-system-design.md`
 - Google Sheet 동일 Decision ID
 
+## 3 / 10
+
+### `D-2026-08-03-INCIDENT-MULTIAXIS-GATED-RANKING`
+
+- 사건 결과를 조사 정확도·피해자 보호·현장 통제·기록 완성도 네 축으로 평가
+- 네 축 위에 관문형 종합 랭크를 제공
+- 단순 점수 합산·평균 금지
+- 치명적 실패는 다른 축의 고득점으로 상쇄할 수 없음
+- 피해자 사망·핵심 규칙 오판·기관 강제 봉쇄 등은 랭크 상한 설정 가능
+- 시간은 공통 핵심 평가축에서 제외하고 사건별 숙련 목표로만 제한 사용
+- 특수 업적은 종합 랭크와 분리 가능
+- 연도 결산은 사건 랭크 평균이 아닌 복합 요원 기록 유지
+- 구현·사람 검증 미승인
+
+책임 원본:
+
+- `docs/decisions/D-2026-08-03-INCIDENT-MULTIAXIS-GATED-RANKING.md`
+- `docs/planning/2026-08-02-investigation-system-design.md`
+- Google Sheet 동일 Decision ID
+
 ## 다음 질문
 
-사건 결과를 단일 랭크, 다축 보고서, 또는 다축 평가 기반 종합 랭크 중 어떤 구조로 표현할 것인가.
+종합 랭크와 축별 평가의 단계 수·명칭을 S/A/B 같은 게임식 등급, 기록국 세계관 용어, 또는 혼합 표시 중 어떤 구조로 사용할 것인가.
