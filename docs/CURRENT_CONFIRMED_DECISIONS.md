@@ -1,7 +1,7 @@
 # 괴이기록국 현재 확정 결정
 
 > 문서 역할: `CURRENT_CONFIRMED_DECISIONS`
-> 상태: `MAIN_PACKAGE_2_MERGED / YEAR_ONE_CORE_SCREEN_PRESENTATION_APPROVED_ON_DRAFT_PR_135`
+> 상태: `MAIN_PACKAGE_2_MERGED / YEAR_ONE_FOUR_CORE_CASES_APPROVED_ON_DRAFT_PR_135`
 > 갱신일: 2026-08-02
 > Package 1 구현 merge: `80160218d05e79af5442bf27d8fdeb66bcf05723`
 > 병합 운영 정본 merge: `e15b9d25127170a530f66d5c3462340b806ad51d`
@@ -53,8 +53,12 @@ year_one_design_section_3: APPROVED_DISTINCT_VICTIM_RESCUE_MINIGAMES
 main_content_authority: INVESTIGATION_RESCUE_RECOVERY
 schedule_role: SUPPORT_PREPARATION_FEEDBACK_LAYER
 core_gameplay_screen_presentation: APPROVED_PROVISIONAL_UX_BASELINE
-year_one_design_section_4: IN_REVIEW
-grillme_counter: 7_OF_10
+year_one_design_section_4: APPROVED_FOUR_CORE_CASES_PLACED
+year_one_core_case_spring: AFTERLIFE_STATION
+year_one_core_case_summer: RED_UMBRELLA_ALLEY
+year_one_core_case_autumn: DEAD_FREQUENCY_STATION
+year_one_core_case_winter: UNRECORDED_WARD
+grillme_counter: 8_OF_10
 human_qa: NOT_RUN
 new_player_validation: NOT_RUN
 screen_01_visual_1280x720: NOT_RUN
@@ -128,6 +132,17 @@ production_expansion: NOT_APPROVED
 | 여름 | 선택 사건 | 전문성·협업·준비 방식과 빈틈 선택 |
 | 가을 | 충돌 사건 | 규칙을 이해한 상태에서 책임의 대가 선택 |
 | 겨울 | 종합 사건 | 축적된 기록·관계·연구·실패 조합 |
+
+### 확정된 네 핵심 괴담
+
+| 분기 | 핵심 괴담 | 사건 기능 | 대표 피해자 구출 문법 |
+|---|---|---|---|
+| 봄 | 저승역 | 객관적 운행 기록과 종료 신호로 기본 조사·구출·회수·기록 학습 | 순서·경로 복원 |
+| 여름 | 비 오는 골목의 빨간 우산 | 선행 반사·우산·피해자 귀가 기억의 역할을 분리해 전문성·협업 선택 노출 | 대상·역할 배치 |
+| 가을 | 폐주파수 방송국 | 즉시 차단과 피해자 목소리 반환 사이의 책임 충돌 | 보호 범위·무음 구간·반환 대상 조절 |
+| 겨울 | 기록되지 않은 병동 | 과거 기록·기관 판단·관계·실패 사례를 조합하고 모순을 보존해 피해자 복구 | 과거 기록 비교·적용 |
+
+네 사건은 동일 흑막이나 동일 괴이의 분신이 아니다. 약한 공통 질문은 인간의 기억·기록·대응 절차가 괴이의 경계와 행동을 바꿀 수 있는가로 제한한다.
 
 ### 분기별 피해자 구출 미니게임
 
@@ -231,6 +246,7 @@ Package 2는 SCREEN-01에서 SIT-001·SIT-002·SIT-004의 현재 구현 Scene만
 | `D-2026-08-02-YEAR-ONE-QUARTERLY-SIMPLE-MINIGAME-VARIATION` | APPROVED_DESIGN_SECTION_3 | 분기별 서로 다른 초간단 피해자 구출 미니게임 | Decision·Design |
 | `D-2026-08-02-MAIN-CONTENT-INVESTIGATION-RECOVERY-AUTHORITY` | CURRENT_APPROVED_PRODUCT_AUTHORITY | 메인 콘텐츠=괴이 사건 조사·구출·회수 | Decision·Design·Sheet |
 | `D-2026-08-02-CORE-GAMEPLAY-SCREEN-PRESENTATION-BASELINE` | APPROVED_PROVISIONAL_UX_BASELINE | 상황 설명→선택지 조사·괴이 매뉴얼·괴이 중심 전투·스킬 컷인 | Decision·Design·Sheet |
+| `D-2026-08-02-YEAR-ONE-FOUR-CORE-CASES-AND-QUARTER-PLACEMENT` | APPROVED_DESIGN_SECTION_4 | 봄 저승역·여름 빨간 우산·가을 폐주파수·겨울 기록되지 않은 병동 | Decision·Design·Sheet |
 
 ## 8. Package 2 구현 계약과 결과
 
@@ -285,7 +301,7 @@ core_gameplay_screen_human_validation: NOT_RUN
 
 ## 10. Grill Me 운영
 
-- 현재 카운터: `7 / 10`
+- 현재 카운터: `8 / 10`
 - 카운트 Decision:
   1. `D-2026-08-02-PACKAGE-2-MAIN-MENU-MODE-HIERARCHY`
   2. `D-2026-08-02-YEAR-ONE-CAMPAIGN-MASTER-STRUCTURE-FIRST`
@@ -294,6 +310,7 @@ core_gameplay_screen_human_validation: NOT_RUN
   5. `D-2026-08-02-YEAR-ONE-QUARTERLY-SIMPLE-MINIGAME-VARIATION`
   6. `D-2026-08-02-MAIN-CONTENT-INVESTIGATION-RECOVERY-AUTHORITY`
   7. `D-2026-08-02-CORE-GAMEPLAY-SCREEN-PRESENTATION-BASELINE`
+  8. `D-2026-08-02-YEAR-ONE-FOUR-CORE-CASES-AND-QUARTER-PLACEMENT`
 - Design·Spec·계획·구현·병합처럼 동일 질문의 후속 Gate는 새 질문이 아니면 추가 카운트하지 않는다.
 - 10개 도달 시 GitHub·Sheet·PR·CI를 다시 적대적으로 검토한 뒤 batch merge gate를 실행한다.
 
@@ -311,6 +328,8 @@ battle_enemy_focus_readability: NOT_RUN
 skill_cut_in_interruption: NOT_RUN
 year_one_minigame_first_30_seconds: NOT_RUN
 year_one_minigame_accessibility: NOT_RUN
+four_case_content_validation: NOT_RUN
+unrecorded_ward_playability: NOT_RUN
 poc_passed: NOT_DECLARED
 production_expansion: NOT_APPROVED
 ```
@@ -318,10 +337,9 @@ production_expansion: NOT_APPROVED
 ## 12. 다음 Gate
 
 ```text
-Design Section 1·2·3 승인
-→ 메인 콘텐츠 조사·피해자 구출·회수 전투 권위 확정
-→ 핵심 게임 화면 표현 기준선 승인
-→ 기존 세 괴담과 신규 네 번째 후보를 동일 기준으로 적대적 검토
-→ Design Section 4: 1년차 네 핵심 괴담 선정과 분기 배치
+Design Section 1·2·3·4 승인
+→ 메인 콘텐츠와 핵심 화면 표현 기준선 유지
+→ Design Section 5: 네 사건의 조사·괴이 매뉴얼·피해자 구출·회수 전투 차별화 계약
+→ Section 5 승인 뒤 분기 간 결과 환류와 연도 결산을 최종 검토
 → 전체 Design 승인 후 Design Spec 작성 여부 결정
 ```
