@@ -1,6 +1,5 @@
 extends SceneTree
 
-const MainMenuScript = preload("res://scripts/ui/main_menu.gd")
 const Support = preload("res://tests/validation/validation_test_support.gd")
 const TEST_PRIMARY := "user://validation_package_2_main_menu_test.json"
 const LEGACY_PATH := "user://urban_legend_save.json"
@@ -15,7 +14,16 @@ func _run() -> void:
 	root.size = Vector2i(1280, 720)
 	Support.remove_path(TEST_PRIMARY)
 	Support.remove_path(LEGACY_PATH)
-	var menu = MainMenuScript.new()
+	var packed := load("res://scenes/main_menu.tscn") as PackedScene
+	_expect(packed != null, "main menu scene must load")
+	if packed == null:
+		_finish()
+		return
+	var menu := packed.instantiate()
+	_expect(menu != null, "main menu scene must instantiate")
+	if menu == null:
+		_finish()
+		return
 	root.add_child(menu)
 	await process_frame
 	await process_frame
@@ -39,9 +47,18 @@ func _run() -> void:
 	menu.refresh_entry_cards_for_test()
 	var badge := menu.find_child("ValidationBadgeLabel", true, false) as Label
 	var legacy_button := menu.find_child("LegacyContinueButton", true, false) as Button
+	var legacy_new_button := menu.find_child("LegacyNewCampaignButton", true, false) as Button
 	var validation_button := menu.find_child("ValidationPrimaryButton", true, false) as Button
 	var validation_secondary := menu.find_child("ValidationSecondaryButton", true, false) as Button
 	var validation_status := menu.find_child("ValidationStatusLabel", true, false) as Label
+	var db_button := menu.find_child("DatabaseButton", true, false) as Button
+	for required_control in [badge, legacy_button, legacy_new_button, validation_button, validation_secondary, validation_status, db_button]:
+		if required_control == null:
+			_expect(false, "all named controls must have expected types")
+			_cleanup(menu)
+			_finish()
+			return
+
 	_expect("별도 기록" in badge.text, "Validation badge must explain persistence separation")
 	_expect(legacy_button.focus_mode == Control.FOCUS_ALL, "Legacy primary must accept keyboard focus")
 	_expect(validation_button.focus_mode == Control.FOCUS_ALL, "Validation primary must accept keyboard focus")
@@ -67,9 +84,7 @@ func _run() -> void:
 	_expect(validation_button.text == "상태 상세", "corrupt record must expose status only")
 	_expect(not validation_secondary.visible, "corrupt record must not expose replacement")
 	_expect(not legacy_button.disabled, "corrupt Validation must preserve Legacy continue")
-
-	var db_button := menu.find_child("DatabaseButton", true, false) as Button
-	_expect(legacy_button.focus_neighbor_bottom == legacy_button.get_path_to(menu.find_child("LegacyNewCampaignButton", true, false)), "Legacy focus must move to new campaign")
+	_expect(legacy_button.focus_neighbor_bottom == legacy_button.get_path_to(legacy_new_button), "Legacy focus must move to new campaign")
 	_expect(db_button.focus_mode == Control.FOCUS_ALL, "Database must remain keyboard accessible")
 
 	_cleanup(menu)
