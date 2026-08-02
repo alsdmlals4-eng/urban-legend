@@ -1,8 +1,8 @@
 # Grill Me 승인·병합 Ledger
 
 > 운영 Decision: `D-2026-08-02-GRILLME-10-MERGE-CADENCE`
-> 현재 미래 카운터: `6 / 10`
-> 마지막 조정: `MAIN_CONTENT_INVESTIGATION_RECOVERY_AUTHORITY`
+> 현재 미래 카운터: `7 / 10`
+> 마지막 조정: `CORE_GAMEPLAY_SCREEN_PRESENTATION_BASELINE`
 > 갱신일: 2026-08-02
 
 ## 카운터 규칙
@@ -36,7 +36,7 @@ production_expansion: NOT_APPROVED
 ## GRILLME_BATCH_1 — 누적 중
 
 ```yaml
-counter: 6 / 10
+counter: 7 / 10
 automatic_batch_triggered: false
 package_2_separate_merge_authorized: true
 package_2_planning_pr: 129
@@ -46,7 +46,7 @@ package_2_implementation_merge: f8751e7fa7890f402c7377ea6aee64f79ef59911
 year_one_planning_pr: 135
 year_one_planning_pr_state: DRAFT_IN_PROGRESS
 year_one_implementation: NOT_AUTHORIZED
-next_counter: 6 / 10
+next_counter: 7 / 10
 ```
 
 ### 승인 Decision
@@ -73,14 +73,20 @@ next_counter: 6 / 10
    - 상태: `APPROVED_DESIGN_SECTION_2`
 
 5. `D-2026-08-02-YEAR-ONE-QUARTERLY-SIMPLE-MINIGAME-VARIATION`
-   - 승인: 분기마다 서로 다른 전용 미니게임
+   - 승인: 분기마다 서로 다른 초간단 피해자 구출 미니게임
    - 제한: 설명 30초·입력 1~2개·기본 1~3분·즉시 실패 이유·접근성 대체
    - 상태: `APPROVED_DESIGN_SECTION_3 / HUMAN_VALIDATION_NOT_RUN`
 
 6. `D-2026-08-02-MAIN-CONTENT-INVESTIGATION-RECOVERY-AUTHORITY`
-   - 승인: 메인 콘텐츠는 괴이 사건의 조사·회수
+   - 승인: 메인 콘텐츠는 괴이 사건의 조사·피해자 구출·회수 전투
    - 일정·육성·동료·장비·연구·기관은 지원·준비·환류 계층
    - 상태: `CURRENT_APPROVED_PRODUCT_AUTHORITY`
+
+7. `D-2026-08-02-CORE-GAMEPLAY-SCREEN-PRESENTATION-BASELINE`
+   - 승인: 조사=`상황 설명→조건 표시 선택지`, 플레이어 노출 패널=`괴이 매뉴얼`
+   - 승인: 구출 미니게임은 피해자 구출, 회수 전투는 괴이 단독 중심 전장
+   - 승인: 아군은 하단 HUD, 스킬 사용 시에만 짧은 하단 컷인
+   - 상태: `APPROVED_PROVISIONAL_UX_BASELINE / HUMAN_VALIDATION_NOT_RUN`
 
 ### Package 2 후속 Gate — 카운트 제외
 
@@ -122,6 +128,11 @@ local_runtime: NOT_RUN
 human_qa: NOT_RUN
 new_player_validation: NOT_RUN
 screen_01_visual_1280x720: NOT_RUN
+core_gameplay_screen_human_validation: NOT_RUN
+investigation_choice_readability: NOT_RUN
+manual_state_comprehension: NOT_RUN
+battle_enemy_focus_readability: NOT_RUN
+skill_cut_in_interruption: NOT_RUN
 year_one_minigame_first_30_seconds: NOT_RUN
 year_one_minigame_accessibility: NOT_RUN
 year_one_campaign_poc: NOT_DECLARED
@@ -131,8 +142,9 @@ production_expansion: NOT_APPROVED
 ## 다음 Gate
 
 ```text
-현재 counter 6/10
-→ Design Section 4: 봄 저승역 채택 여부와 나머지 분기 핵심 괴담 컨셉
+현재 counter 7/10
+→ 기존 세 괴담과 신규 네 번째 후보를 동일 핵심 구조로 적대적 검토
+→ Design Section 4: 네 핵심 괴담 선정과 분기 배치
 → 10/10 도달 시 적대적 batch audit와 별도 merge 승인
 ```
 
