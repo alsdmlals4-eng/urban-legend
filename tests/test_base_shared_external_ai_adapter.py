@@ -9,8 +9,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 ADAPTER_PATH = ROOT / "skills/PROJECT_BASE_ADAPTER.json"
 SKILL_ID = "orchestrating-deepseek-worktrees"
-BASE_RELEASE_COMMIT = "dd705d7f48a7919187bc0507610ba5fc5b43a658"
-BASE_RELEASE_EVIDENCE = "0c6cdd128bf1f5782e96b3a6240c9585f8d1ef6d"
+BASE_RELEASE_COMMIT = "7dd1a4f80388bc5faca767ff74a3eb32dc9d0ac8"
+BASE_RELEASE_EVIDENCE = "da33a350d61b8adc52df97fccc7001708a933370"
+BASE_RELEASE_FINALIZATION = "0b7c94f38d959efc0fc9442274c60b2e268a3c97"
 BASE_REGISTRY_SHA256 = "693a0dff3f054ecdd653079909e044211473838e73dd9aff07734d1ce5694c59"
 
 
@@ -29,9 +30,10 @@ def active_base_routes(adapter: dict) -> set[str]:
 class BaseSharedExternalAIAdapterTests(unittest.TestCase):
     def test_preserves_current_released_base_identity(self) -> None:
         adapter = load_adapter()
-        self.assertEqual("9.4.2", adapter["base_release"]["version"])
+        self.assertEqual("9.4.3", adapter["base_release"]["version"])
         self.assertEqual(BASE_RELEASE_COMMIT, adapter["base_release"]["release_commit"])
         self.assertEqual(BASE_RELEASE_EVIDENCE, adapter["base_release"]["release_evidence_commit"])
+        self.assertEqual(BASE_RELEASE_FINALIZATION, adapter["base_release"]["finalization_commit"])
         self.assertEqual(BASE_REGISTRY_SHA256, adapter["skill_registry"]["base"]["sha256"])
 
     def test_routes_external_ai_worktree_skill_without_copying_body(self) -> None:
