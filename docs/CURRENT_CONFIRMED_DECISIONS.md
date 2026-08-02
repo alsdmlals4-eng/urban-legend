@@ -1,7 +1,7 @@
 # 괴이기록국 현재 확정 결정
 
 > 문서 역할: `CURRENT_CONFIRMED_DECISIONS`
-> 상태: `CURRENT_ON_STACKED_IMPLEMENTATION_PR`
+> 상태: `CURRENT_ON_STACKED_IMPLEMENTATION_PR / LATEST_COMPLETED_EXACT_HEAD_PASS`
 > 갱신일: 2026-08-02
 > Package 1 구현 merge: `80160218d05e79af5442bf27d8fdeb66bcf05723`
 > 병합 운영 정본 merge: `e15b9d25127170a530f66d5c3462340b806ad51d`
@@ -11,7 +11,7 @@
 > 현재 인수인계: `docs/CURRENT_HANDOFF_VALIDATION.md`
 > Grill Me ledger: `docs/GRILLME_APPROVAL_MERGE_LEDGER.md`
 
-이 문서는 현재 유효한 사용자 승인 결정과 대체 관계를 소유한다. 실제 최신 main SHA는 GitHub `main` ref에서 읽고, 문서 안의 SHA는 역할이 고정된 병합·검증 증거로만 사용한다. 실행하지 않은 사람·시각 검증은 승인으로 간주하지 않는다.
+이 문서는 현재 유효한 사용자 승인 결정과 대체 관계를 소유한다. 실제 최신 main·PR SHA는 GitHub ref에서 읽고, 문서 안의 SHA와 run ID는 역할이 고정된 병합·검증 증거로만 사용한다. 실행하지 않은 사람·시각 검증은 승인으로 간주하지 않는다.
 
 ## 1. 권위 순서
 
@@ -49,6 +49,7 @@ package_2_product_implementation: COMPLETE_ON_PR_131
 package_2_automated_code_ci: PASS
 package_2_validation_focused: 5_OF_5_PASS
 full_godot_regression: 58_OF_58_PASS
+latest_completed_exact_head_verification: PASS
 package_2_planning_pr_merge: NOT_AUTHORIZED
 package_2_implementation_pr_merge: NOT_AUTHORIZED
 future_grillme_counter: 1_OF_10
@@ -59,7 +60,7 @@ poc_passed: NOT_DECLARED
 production_expansion: NOT_APPROVED
 ```
 
-Package 2의 제품 코드와 자동 테스트는 stacked Draft PR #131에서 완료됐다. 코드 검증 HEAD `e24aac73a81bfb1725c60dd640a26fa91527647a`에서 CORE·ANNUAL workflow가 Package 1 4/4, Package 2 5/5, 전체 58/58을 통과했다. planning·implementation 병합은 별도 사용자 승인 전 금지한다.
+Package 2의 제품 코드와 자동 테스트는 stacked Draft PR #131에서 완료됐다. 최근 완료 exact-head 검증에서 Documentation Contracts·BCA·CORE·ANNUAL이 모두 통과했고, CORE·ANNUAL은 Package 1 4/4, Package 2 5/5, 전체 58/58을 확인했다. planning·implementation 병합은 별도 사용자 승인 전 금지한다.
 
 ## 3. 승인 Validation 흐름
 
@@ -157,13 +158,13 @@ pr_129: DRAFT_PLANNING_APPROVED_NOT_MERGED
 pr_131: DRAFT_IMPLEMENTATION_COMPLETE_NOT_MERGED
 pr_122: CLOSED_SOURCE_DO_NOT_MERGE_AS_IS
 issue_121: CLOSED_COMPLETED
-code_verification_head: e24aac73a81bfb1725c60dd640a26fa91527647a
-core_run_30741037647: PASS
-annual_run_30741037654: PASS
+latest_completed_documentation_run_30741361754: PASS
+latest_completed_bca_run_30741361726: PASS
+latest_completed_core_run_30741361717: PASS
+latest_completed_annual_run_30741361720: PASS
 package_1_focused: 4_OF_4_PASS
 package_2_focused: 5_OF_5_PASS
 full_godot_regression: 58_OF_58_PASS
-final_exact_head_docs_bca_core_annual: PENDING
 merge_authorization: NOT_GRANTED
 ```
 
@@ -191,11 +192,12 @@ production_expansion: NOT_APPROVED
 ## 9. 다음 Gate
 
 ```text
-최종 implementation HEAD Docs·BCA·CORE·ANNUAL 재검증
-→ PR #129/#131 diff·review·Sheet 적대적 감사
+PR #129/#131 diff·review·Sheet 적대적 감사
 → 사용자 별도 병합 승인
 → PR #129 planning 병합
-→ PR #131 main retarget·fresh exact-head CI
+→ PR #131 main retarget
+→ stacked BCA branch 허용 제거
+→ fresh exact-head Docs·BCA·CORE·ANNUAL
 → PR #131 구현 병합
 → Package 2 종료
 → 본격 게임 기획 전환
