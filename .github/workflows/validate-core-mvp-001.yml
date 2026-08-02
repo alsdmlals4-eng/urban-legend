@@ -7,11 +7,13 @@ on:
       - "data/poc/core_mvp_001/**"
       - "scripts/poc/core_mvp_001/**"
       - "scripts/core/validation_*.gd"
+      - "scripts/ui/validation_entry_coordinator.gd"
       - "scenes/poc/core_mvp_001/**"
       - "scripts/ui/main_menu.gd"
       - "project.godot"
       - "tests/validation/**"
       - "tests/run_validation_package_1_tests.sh"
+      - "tests/run_validation_package_2_tests.sh"
       - "tests/test_core_mvp_001_data_contract.py"
       - "tests/test_core_mvp_001_static_contract.py"
       - "tests/core_mvp_001_*_test.gd"
@@ -53,6 +55,11 @@ jobs:
           GODOT_BIN: godot
           GODOT_TEST_TMP: ${{ runner.temp }}/validation-package-1-focused
         run: bash tests/run_validation_package_1_tests.sh
+      - name: Run focused Validation Package 2 tests
+        env:
+          GODOT_BIN: godot
+          GODOT_TEST_TMP: ${{ runner.temp }}/validation-package-2-focused
+        run: bash tests/run_validation_package_2_tests.sh
       - name: Run focused CORE-MVP-001 tests
         env:
           GODOT_BIN: godot
@@ -70,6 +77,7 @@ jobs:
           name: core-mvp-001-godot-failure-logs
           path: |
             ${{ runner.temp }}/validation-package-1-focused/focused-logs
+            ${{ runner.temp }}/validation-package-2-focused/focused-logs
             ${{ runner.temp }}/core-mvp-001-tests/focused-logs
             ${{ runner.temp }}/core-mvp-001-tests/logs
           if-no-files-found: warn
