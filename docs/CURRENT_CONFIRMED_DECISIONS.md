@@ -3,11 +3,12 @@
 > 문서 역할: `CURRENT_CONFIRMED_DECISIONS`
 > 상태: `CURRENT_PENDING_MAIN`
 > 갱신일: 2026-08-02
-> 추적: Issue #121 / Draft PR #122 / Base v9.4 PR #124
+> 추적: Issue #121 / Draft PR #125
 > 상세 Target 정본: `docs/VALIDATION_TARGET_CANON.md`
 > 운영 재조정: `docs/decisions/D-2026-08-02-BASE-V94-CANON-RECONCILIATION.md`
+> Package 1 승인: `docs/decisions/D-2026-08-02-PACKAGE-1-PLANNING-APPROVAL.md`
 > Google GDD Sheet: `02_현재_확정결정`, `99_변경이력`
-> 제품 구현 권한: `NONE`
+> 제품 구현 권한: `PLANNING_AND_DOCUMENTATION_ONLY`
 
 이 문서는 현재 유효한 사용자 승인 결정을 복원하는 단일 인덱스다. 구현 완료 여부는 `docs/CURRENT_STATUS.md`와 실제 `main` 코드·데이터·테스트가 소유한다.
 
@@ -32,7 +33,8 @@
 - Decision: `D-2026-08-01-VALIDATION-PLANNING-FINAL-APPROVAL`
 - 상태: `APPROVED_FINAL_PLANNING_BASELINE`
 - Canon 복구: `D-2026-08-02-BASE-V94-CANON-RECONCILIATION`
-- 제품 구현: `NOT_AUTHORIZED`
+- Package 1: `D-2026-08-02-PACKAGE-1-PLANNING-APPROVAL`
+- Package 1 권한: `PLANNING_ONLY / IMPLEMENTATION_NOT_AUTHORIZED`
 - Runtime / Human QA: `NOT_RUN`
 - 플랫폼: `PC / Steam / 16:9 / mouse+keyboard`
 - 모바일: `FUTURE_CONSIDERATION_NOT_IN_CURRENT_VALIDATION_SCOPE`
@@ -56,7 +58,7 @@ SCREEN-01 무인 메인
 
 | Decision ID | 상태 | 핵심 | 상세 책임 원본 |
 |---|---|---|---|
-| `D-2026-07-31-CANON-SHEET-SYNC` | CURRENT_APPROVED_GOVERNANCE | 승인된 주요 결정을 GitHub·Sheet에 같은 ID로 동기화 | 이 문서 §8, Base 동기화 정책 |
+| `D-2026-07-31-CANON-SHEET-SYNC` | CURRENT_APPROVED_GOVERNANCE | 승인된 주요 결정을 GitHub·Sheet에 같은 ID로 동기화 | 이 문서 §9, Base 동기화 정책 |
 | `D-2026-07-31-TEXT-NOVEL-CORE-PRESENTATION` | APPROVED_PLANNING_BASELINE | 일반 조사·일반 플레이는 텍스트 노벨 화면 | `VALIDATION_TARGET_CANON.md` §4·§5 |
 | `D-2026-07-31-VISUAL-ART-DIRECTION` | APPROVED_PLANNING_BASELINE | 다크 현대 오컬트·세미리얼 애니·기관 UI | `VALIDATION_TARGET_CANON.md` §9 |
 | `D-2026-07-31-VALIDATION-SCREEN-AUTHORITY` | SUPERSEDED_IN_PART | 시작·준비·조사·전문 절차 책임 분리; 사후 정산 복귀는 최종 Target이 대체 | `VALIDATION_TARGET_CANON.md` §3·§5 |
@@ -74,6 +76,7 @@ SCREEN-01 무인 메인
 | `D-2026-08-01-VALIDATION-PLANNING-FINAL-APPROVAL` | APPROVED_FINAL_PLANNING_BASELINE | 전체 Validation 기획 최종 승인 | `VALIDATION_TARGET_CANON.md` 전체 |
 | `D-2026-08-01-LEGACY-PR-DISPOSITION` | SUPERSEDED_IN_PART | 구형 PR 미병합 원칙 유지; PR #120 HOLD는 v9.4 채택으로 대체 | 아래 Decision |
 | `D-2026-08-02-BASE-V94-CANON-RECONCILIATION` | CURRENT_APPROVED_GOVERNANCE | Base v9.4 현행화·PR #120 종료·PR #122 소스 격리·최신 main 정본 복구 | `docs/decisions/D-2026-08-02-BASE-V94-CANON-RECONCILIATION.md` |
+| `D-2026-08-02-PACKAGE-1-PLANNING-APPROVAL` | CURRENT_APPROVED_PLANNING_ONLY | Package 1은 기획·명세·적대적 검토부터 진행하고, 상세 수치·기술 기본값은 권장안, 중요 기획 충돌만 Grill Me | `docs/decisions/D-2026-08-02-PACKAGE-1-PLANNING-APPROVAL.md` |
 
 ## 4. 대체·보존 관계
 
@@ -101,14 +104,29 @@ SCREEN-01 무인 메인
 - ANNUAL PoC 저장: 유지
 - Validation 저장: `APPROVED_TARGET_NOT_IMPLEMENTED`
 - 강제 변환·무통보 삭제: 금지
+- Package 1 안전 기준: Legacy 파일과 숨은 campaign/economy/relationship 메모리 모두 무변경
 
 ### GitHub 작업
 
 - PR #120: `SUPERSEDED_BY_BASE_V9_4_MAIN`
 - PR #122: `SUPERSEDED_SOURCE_BRANCH / DO_NOT_MERGE_AS_IS`
-- 최신 정본 브랜치: Base v9.4 `main`에서 새로 생성
+- Draft PR #125: 현행 Canon·기획 감사·Package 1 설계 작업 surface
 
-## 5. 시각·테스트 상태
+## 5. Package 1 기획 운영 규칙
+
+- 구현보다 Design Spec을 먼저 작성한다.
+- 상세 데이터 수치·기술 기본값은 `RECOMMENDED_DEFAULT` 또는 `TEST_VALUE`로 GPT 권장안을 사용한다.
+- 프로젝트 방향·저장 UX·완료 의미·정본 대체만 Grill Me로 질문한다.
+- 질문은 감사 뒤 한 번에 하나만 한다.
+- 승인 답변은 즉시 같은 Decision ID로 GitHub 정본·PR·Sheet에 동기화한다.
+- Design Spec 승인 전 writing-plans와 구현을 시작하지 않는다.
+
+현재 적대적 감사:
+
+- `docs/planning/2026-08-02-package-1-planning-adversarial-audit.md`
+- 첫 결정 공백: `D-2026-08-02-VALIDATION-PERSISTENCE-BOUNDARY` (`AWAITING_USER_DECISION`)
+
+## 6. 시각·테스트 상태
 
 - `UL-IMG-007`: `APPROVED_PLANNING_VISUALIZATION / NOT_PRODUCT_ASSET`
 - 플레이테스트 설계: `PT-2026-08-01-VALIDATION-SCREEN-SIT`
@@ -121,7 +139,7 @@ SCREEN-01 무인 메인
 - `POC_PASSED`: `NOT_DECLARED`
 - 제작 확대: `NOT_APPROVED`
 
-## 6. Base 채택
+## 7. Base 채택
 
 ```yaml
 base_version: 9.4.0
@@ -133,29 +151,31 @@ registry_sha256: 693a0dff3f054ecdd653079909e044211473838e73dd9aff07734d1ce5694c5
 
 `c987647d...`와 BCA v8는 Legacy compatibility input이다. 현행 작업 기준으로 사용하지 않는다.
 
-## 7. 다음 작업
+## 8. 다음 작업
 
 ```text
-D-2026-08-02 정본·Sheet 재조회
-→ 최신 main actual-file/signature/save-policy 읽기 전용 기술 Plan
-→ CHANGE_PROPOSAL 적대적 검토
-→ 구현 패키지 재승인
-→ 별도 승인 뒤 Codex Build Goal
-→ 자동·시각·사람 검증
+Package 1 기획 적대적 감사 = COMPLETE
+→ D-2026-08-02-VALIDATION-PERSISTENCE-BOUNDARY Grill Me
+→ 답변 즉시 정본·Sheet 동기화
+→ Package 1 Design Spec 작성·self-review
+→ 사용자 Spec 승인
+→ writing-plans
+→ 별도 Package 1 구현 승인
 ```
 
-우선 검수할 기술 위험:
+구현 전에 닫을 P0:
 
-1. 존재하지 않는 `scripts/core/game_bootstrap.gd` 전제 제거
-2. `main_menu.gd`의 Legacy/Validation 저장·이어하기 분리
-3. `result_scene.gd` 진입 시 보고서 기록의 중복 적용 방지
-4. `GameState`의 거대 저장 소유권을 침범하지 않는 격리 경계
-5. investigation/battle의 기존 가설·근거·회수 상태와 신규 flow state의 중복 권위 방지
+1. Validation 완료 기록과 본편/Legacy의 영속 관계
+2. Session activation·save routing fail-closed 계약
+3. field-level runtime snapshot whitelist
+4. corrupt·recoverable·incompatible·migration matrix
+5. session reset·abandon·delete·completion lifecycle 분리
+6. Legacy file·memory no-effect 수용 기준
 
-## 8. 동기화 상태
+## 9. 동기화 상태
 
 - GitHub `main`: `PENDING_PR_MERGE`
-- 최신 정본 브랜치: `BRANCH_SYNC_IN_PROGRESS`
-- Google Sheet: `D-2026-08-02`로 갱신 후 재조회
+- 최신 정본 브랜치: `PACKAGE_1_PLANNING_SYNC_IN_PROGRESS`
+- Google Sheet: 새 Decision ID 반영 후 재조회 필요
 - 제품 파일: 변경 없음
 - Runtime / Human: `NOT_RUN`
