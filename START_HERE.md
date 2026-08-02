@@ -10,6 +10,8 @@
 → AGENTS.md
 → docs/OPERATING_MODEL.md
 → docs/WORK_MODE_AND_SKILL_ROUTING.md
+→ docs/CURRENT_CONFIRMED_DECISIONS.md
+→ docs/VALIDATION_TARGET_CANON.md  # Validation·제품 Target 관련일 때
 → docs/CURRENT_STATUS.md
 → docs/PROJECT_CORE.md
 → docs/DOCUMENTATION_MAP.md
@@ -20,6 +22,15 @@
 ```
 
 `전부 확인`은 모든 파일과 Skill을 기본 로드한다는 뜻이 아니다. Documentation Map·Registry·Coverage로 누락을 확인한 뒤 현재 요청에 필요한 최소 책임 원본과 Skill만 읽는다.
+
+승인 Target과 실제 구현은 분리한다.
+
+```text
+docs/CURRENT_CONFIRMED_DECISIONS.md = 현재 승인 결정 인덱스
+docs/VALIDATION_TARGET_CANON.md = 승인된 Validation 상세 Target
+docs/CURRENT_STATUS.md = 실제 구현·검증 상태
+실제 main 코드·데이터·테스트 = 구현 사실
+```
 
 ## 자동 라우팅
 
@@ -50,6 +61,18 @@ Registry 행만 읽고 Skill을 실행했다고 보고하지 않는다.
 
 삭제·대량 이동·코어 변경·Schema 변경은 승인과 롤백 없이 수행하지 않는다.
 
+## 현재 Validation Gate
+
+```text
+Base v9.4 정본·Sheet 재검증
+→ 최신 main 읽기 전용 기술 Plan
+→ CHANGE_PROPOSAL 적대적 검토
+→ 구현 패키지 재승인
+→ 별도 승인 뒤 Codex Build Goal
+```
+
+현재 제품 코드·Scene·JSON·Save Schema·에셋 변경은 승인되지 않았다.
+
 ## 프로젝트 보호 범위
 
 - `scripts/core/game_state.gd`
@@ -61,7 +84,10 @@ Registry 행만 읽고 Skill을 실행했다고 보고하지 않는다.
 
 ## 핵심 위치
 
-- 현재 구현·계획: `docs/CURRENT_STATUS.md`
+- 현재 승인 결정: `docs/CURRENT_CONFIRMED_DECISIONS.md`
+- Validation 상세 Target: `docs/VALIDATION_TARGET_CANON.md`
+- Validation 현재 인수인계: `docs/CURRENT_HANDOFF_VALIDATION.md`
+- 실제 구현·검증 상태: `docs/CURRENT_STATUS.md`
 - 프로젝트 코어: `docs/PROJECT_CORE.md`
 - 문서 라우터: `docs/DOCUMENTATION_MAP.md`
 - Base 버전: `docs/BASE_RULES_VERSION.md`
@@ -71,5 +97,14 @@ Registry 행만 읽고 Skill을 실행했다고 보고하지 않는다.
 - 분야 공통 계약: `skills/disciplines/PROJECT_DISCIPLINE_CONTRACT.md`
 - 괴이 사건 작성: `skills/urban-legend-investigation-case-authoring/SKILL.md`
 - 검증 계약: `TEST_CHECKLIST.md`
+- 최신 정본 감사: `docs/planning/POST_V94_CANON_RECONCILIATION_AUDIT_2026-08-02.md`
+- 다음 기술 Plan: `docs/superpowers/plans/2026-08-02-validation-read-only-technical-plan.md`
+
+## Base 현재값
+
+- Base: `9.4.0`
+- 프로젝트 채택 main: `7277b9cececa56532f7b0d11c1a02fd3d5642750`
+- PR #120(Base v9.3): `SUPERSEDED_BY_BASE_V9_4_MAIN`
+- PR #122: 승인 기획의 역사 source branch이며 그대로 병합하지 않는다.
 
 백업·완료 QA·과거 Goal은 현재 작업의 직접 근거가 있을 때만 읽는다. 실행하지 않은 검사·권한·사람 확인은 `NOT_RUN` 또는 `UNVERIFIED`다.
