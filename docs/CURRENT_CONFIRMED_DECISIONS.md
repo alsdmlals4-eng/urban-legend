@@ -1,10 +1,11 @@
 # 괴이기록국 현재 확정 결정
 
 > 문서 역할: `CURRENT_CONFIRMED_DECISIONS`
-> 상태: `CURRENT_ON_MAIN`
+> 상태: `CURRENT_ON_PLANNING_PR`
 > 갱신일: 2026-08-02
 > Package 1 구현 merge: `80160218d05e79af5442bf27d8fdeb66bcf05723`
 > 병합 운영 정본 merge: `e15b9d25127170a530f66d5c3462340b806ad51d`
+> Package 2 planning PR: #129
 > 상세 Target: `docs/VALIDATION_TARGET_CANON.md`
 > 현재 인수인계: `docs/CURRENT_HANDOFF_VALIDATION.md`
 > Grill Me ledger: `docs/GRILLME_APPROVAL_MERGE_LEDGER.md`
@@ -33,7 +34,7 @@ source-only·superseded PR은 현재 권위가 아니다.
 
 ```yaml
 base_version: 9.4.0
-branch: main
+branch: agent/package-2-entry-routing-planning
 package_1_merge: 80160218d05e79af5442bf27d8fdeb66bcf05723
 governance_reconciliation_merge: e15b9d25127170a530f66d5c3462340b806ad51d
 platform: PC_16_9_MOUSE_KEYBOARD
@@ -42,6 +43,9 @@ validation_target: APPROVED_FINAL_PLANNING_BASELINE
 package_1_design: APPROVED
 package_1_implementation: MERGED
 package_1_automated_ci: PASS
+package_2_menu_hierarchy: APPROVED_PARALLEL_INDEPENDENT_CARDS
+package_2_design: REVIEW_PENDING
+package_2_implementation: NOT_AUTHORIZED
 validation_focused: 4_OF_4_PASS
 full_godot_regression: 53_OF_53_PASS
 human_qa: NOT_RUN
@@ -49,10 +53,10 @@ new_player_validation: NOT_RUN
 visual_1280x720_validation: NOT_RUN
 poc_passed: NOT_DECLARED
 production_expansion: NOT_APPROVED
-future_grillme_counter: 0_OF_10
+future_grillme_counter: 1_OF_10
 ```
 
-Package 1은 Session·Save isolation 기반만 구현했다. main-menu 진입, 전용 준비·추론·결과 Scene과 전체 플레이 흐름은 후속 Package다.
+Package 1은 Session·Save isolation 기반만 구현했다. Package 2는 main-menu 진입·이어하기와 안전한 routing을 설계 중이며 제품 코드는 아직 변경하지 않았다.
 
 ## 3. 승인 Validation 흐름
 
@@ -99,6 +103,7 @@ SCREEN-01 무인 메인
 | `D-2026-08-02-PACKAGE-1-IMPLEMENTATION-APPROVAL` | MERGED_AND_AUTOMATED_CI_VERIFIED | Package 1 구현·테스트 승인 | PR #126·implementation evidence |
 | `D-2026-08-02-PACKAGE-1-SEPARATE-MERGE-AUTHORIZATION` | EXECUTED | #125 병합→#126 retarget·재검증→별도 병합 | Merge gate·Sheet |
 | `D-2026-08-02-GRILLME-10-MERGE-CADENCE` | CURRENT_APPROVED_GOVERNANCE | 미래 Grill Me 승인 10개마다 적대적 병합 batch | Decision 문서·ledger |
+| `D-2026-08-02-PACKAGE-2-MAIN-MENU-MODE-HIERARCHY` | APPROVED_PENDING_BATCH_MERGE | Legacy·Validation을 독립 병렬 카드로 표시 | Decision 문서·PR #129 |
 
 ## 5. 영속·저장 경계
 
@@ -122,6 +127,14 @@ Package 1 main 구현:
 - GameState field whitelist wrapper
 - invalid active Session의 양쪽 저장 fail-closed
 
+Package 2 승인 UI 계약:
+
+- Legacy와 Validation을 별도 카드로 표시
+- Validation 진입에서 Legacy 저장 변경 금지
+- 한쪽 오류가 다른 쪽 행동을 차단하지 않음
+- read-only 상태 조회와 명시적 교체 확인
+- flow-stage allowlist routing
+
 ## 6. GitHub 병합·PR 상태
 
 ```yaml
@@ -131,6 +144,7 @@ pr_126: MERGED
 pr_126_merge: 80160218d05e79af5442bf27d8fdeb66bcf05723
 pr_127: MERGED
 pr_127_merge: e15b9d25127170a530f66d5c3462340b806ad51d
+pr_129: DRAFT_PLANNING
 pr_122: CLOSED_SOURCE_DO_NOT_MERGE_AS_IS
 pr_120: CLOSED_SUPERSEDED
 issue_121: CLOSED_COMPLETED
@@ -141,7 +155,8 @@ PR #122의 유효 승인 내용은 이 문서와 `VALIDATION_TARGET_CANON.md`로
 ## 7. Grill Me 병합 운영
 
 - 과거 승인분: `HISTORICAL_BATCH_0`으로 조정 완료
-- 미래 카운터: `0 / 10`
+- 미래 카운터: `1 / 10`
+- 현재 batch Decision: `D-2026-08-02-PACKAGE-2-MAIN-MENU-MODE-HIERARCHY`
 - 카운트: 승인된 Grill Me Decision ID만
 - 10개 도달: GitHub·Sheet·PR·CI 적대적 검토 후 병합
 - source-only·superseded·blocked PR: 숫자를 맞추기 위해 병합 금지
@@ -158,32 +173,33 @@ PR #122의 유효 승인 내용은 이 문서와 `VALIDATION_TARGET_CANON.md`로
 
 자동 검증:
 
-- Documentation contracts: PASS
-- BCA Adoption: PASS
-- Godot 4.7.1 import: PASS
-- Validation focused: 4/4 PASS
-- CORE focused: PASS
-- ANNUAL-001/002 focused: PASS
-- full Godot regression: 53/53 PASS
+- Documentation contracts: PASS — Package 1 merged evidence
+- BCA Adoption: PASS — Package 1 merged evidence
+- Godot 4.7.1 import: PASS — Package 1 merged evidence
+- Validation focused: 4/4 PASS — Package 1 merged evidence
+- CORE focused: PASS — Package 1 merged evidence
+- ANNUAL-001/002 focused: PASS — Package 1 merged evidence
+- full Godot regression: 53/53 PASS — Package 1 merged evidence
 
-미검증:
+Package 2:
 
 ```yaml
-local_runtime: NOT_RUN
+planning_audit: COMPLETE
+menu_hierarchy: APPROVED
+product_diff: 0
+implementation: NOT_AUTHORIZED
+runtime: NOT_RUN
 human_qa: NOT_RUN
-new_player_validation: NOT_RUN
 visual_1280x720_validation: NOT_RUN
-full_validation_product_flow: NOT_IMPLEMENTED
-poc_passed: NOT_DECLARED
-production_expansion: NOT_APPROVED
 ```
 
 ## 9. 다음 Gate
 
 ```text
-Package 2 기획
-→ main-menu에서 Legacy/Validation 저장을 명시적으로 구분
-→ Validation 진입 routing
-→ 전용 축약 준비·추론·결과 Scene 범위 확정
+Package 2 Design 제시
+→ 사용자 Design 승인
+→ Design Spec 작성·self-review
+→ 사용자 Spec 승인
+→ writing-plans
 → 별도 구현 승인
 ```
