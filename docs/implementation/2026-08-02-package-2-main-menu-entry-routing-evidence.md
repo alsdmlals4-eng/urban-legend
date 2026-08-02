@@ -1,6 +1,6 @@
 # Package 2 메인 메뉴 진입·이어하기·라우팅 구현 증거
 
-> 상태: `IMPLEMENTATION_COMPLETE / AUTOMATED_CODE_CI_VERIFIED / FINAL_EXACT_HEAD_AUDIT_PENDING`
+> 상태: `IMPLEMENTATION_COMPLETE / AUTOMATED_CODE_CI_VERIFIED / FINAL_EXACT_HEAD_VERIFICATION_TRIGGERED`
 > 구현 Decision: `D-2026-08-02-PACKAGE-2-IMPLEMENTATION-APPROVAL`
 > Planning PR: #129
 > Implementation PR: #131
@@ -173,8 +173,7 @@ production_expansion: NOT_APPROVED
 ## 8. 남은 Gate
 
 ```text
-current docs·Sheet 동기화
-→ 최종 implementation HEAD에서 Docs·BCA·CORE·ANNUAL 재검증
+최종 implementation HEAD에서 Docs·BCA·CORE·ANNUAL 재검증
 → PR diff·review thread·scope 적대적 감사
 → 사용자 별도 병합 승인
 → PR #129 planning 병합
@@ -183,3 +182,16 @@ current docs·Sheet 동기화
 ```
 
 병합 전에는 Package 2를 main 완료 상태로 주장하지 않는다.
+
+## 9. 최종 exact-head 검증 트리거
+
+current 결정·인수인계·ledger·구현 증거를 한 상태로 맞춘 뒤 이 문서 변경을 공통 workflow 트리거로 사용한다.
+
+최종 판정은 PR #131의 실제 최신 HEAD에서 다음 네 workflow가 모두 완료된 뒤 PR 댓글과 Google Sheet에 기록한다.
+
+```yaml
+documentation_contracts: REQUIRED_PASS
+bca_adoption: REQUIRED_PASS
+core_workflow: REQUIRED_PASS
+annual_workflow: REQUIRED_PASS
+```
