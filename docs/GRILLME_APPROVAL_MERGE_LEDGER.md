@@ -2,17 +2,18 @@
 
 > 운영 Decision: `D-2026-08-02-GRILLME-10-MERGE-CADENCE`
 > 현재 미래 카운터: `1 / 10`
-> 마지막 조정: `HISTORICAL_BATCH_0`
+> 마지막 조정: `PACKAGE_2_SEPARATE_APPROVED_MERGE`
 > 갱신일: 2026-08-02
 
 ## 카운터 규칙
 
 - 승인된 Grill Me Decision ID 한 개당 1을 더한다.
 - 질문·기각·보류·중복·대체 Decision은 더하지 않는다.
-- 이미 카운트된 Grill Me 질문의 Design·Spec·구현 후속 Gate는 새 질문이 아니므로 추가하지 않는다.
+- 이미 카운트된 Grill Me 질문의 Design·Spec·구현·병합 후속 Gate는 새 질문이 아니므로 추가하지 않는다.
 - 10개에 도달하면 새 질문 진행보다 먼저 merge batch gate를 실행한다.
 - batch가 완전히 처리되면 다음 카운터를 0에서 시작한다.
 - 병합 불가 Decision은 승인 이력을 삭제하지 않고 `BLOCKED`로 기록한다.
+- 사용자가 별도 병합을 명시적으로 승인한 경우 해당 범위만 10개 이전에 병합할 수 있으며, 카운터는 리셋하지 않는다.
 
 ## HISTORICAL_BATCH_0
 
@@ -94,62 +95,64 @@ production_expansion: NOT_APPROVED
 
 ```yaml
 counter: 1 / 10
-merge_triggered: false
+automatic_batch_triggered: false
+separate_merge_authorized: true
 canon_pr: 129
 implementation_pr: 131
-planning_merge: NOT_AUTHORIZED
-implementation_merge: NOT_AUTHORIZED
+planning_merge: b4d7bd0fb82968325bcf230f3e81b8d96e142402
+implementation_merge: f8751e7fa7890f402c7377ea6aee64f79ef59911
+next_counter: 1 / 10
 ```
 
 승인 Decision:
 
 1. `D-2026-08-02-PACKAGE-2-MAIN-MENU-MODE-HIERARCHY`
    - 승인: Legacy·Validation 독립 병렬 카드
-   - 상태: `APPROVED_IMPLEMENTED_EXACT_HEAD_VERIFIED_PENDING_MERGE`
+   - 상태: `MERGED_AND_IMPLEMENTED`
    - 책임 원본: `docs/decisions/D-2026-08-02-PACKAGE-2-MAIN-MENU-MODE-HIERARCHY.md`
-   - 추적: Draft PR #129·#131, Google Sheet 동일 Decision ID
+   - 추적: PR #129·#131, Google Sheet 동일 Decision ID
 
 같은 질문의 후속 Gate:
 
 - `D-2026-08-02-PACKAGE-2-DESIGN-APPROVAL` — 상세 Design 승인
 - `D-2026-08-02-PACKAGE-2-DESIGN-SPEC-APPROVAL` — Spec 승인·implementation plan 작성 허가
 - `D-2026-08-02-PACKAGE-2-IMPLEMENTATION-APPROVAL` — 제품 구현 승인
+- 사용자 `병합 승인` — planning·implementation 별도 병합 실행
 - 구현 계획: `docs/superpowers/plans/2026-08-02-package-2-main-menu-entry-routing-implementation-plan.md`
 - 구현 증거: `docs/implementation/2026-08-02-package-2-main-menu-entry-routing-evidence.md`
-- 상태: `IMPLEMENTATION_COMPLETE_LATEST_EXACT_HEAD_PASS / MERGE_NOT_AUTHORIZED`
+- 상태: `MERGED_AUTOMATED_CI_VERIFIED`
 
-최근 완료 exact-head 자동 검증:
+### 병합 이력
 
 ```yaml
-documentation_run_30741361754: PASS
-bca_run_30741361726: PASS
-core_run_30741361717: PASS
-annual_run_30741361720: PASS
+main_before_package_2: 13cf7f1814cd7435c77e99d97ea8b7b7658464e1
+main_to_planning_sync_pr: 132
+main_to_planning_sync_merge: 181dd690761af7caae3f162235485001b3aefa72
+planning_pr: 129
+planning_merge: b4d7bd0fb82968325bcf230f3e81b8d96e142402
+main_to_implementation_sync_pr: 133
+main_to_implementation_sync_merge: c7cbec06efa2b3487b2d8fe9e9cab3dd3177f9b6
+implementation_pr: 131
+implementation_verified_head: fdd55e367e21d9bc1c031ff2f0c4438289040665
+implementation_merge: f8751e7fa7890f402c7377ea6aee64f79ef59911
+```
+
+### 최종 exact-head 자동 검증
+
+```yaml
+documentation_run_30742092953: PASS
+bca_run_30742092954: PASS
+core_run_30742092974: PASS
+annual_run_30742092951: PASS
 package_1_focused: 4_OF_4_PASS
 package_2_focused: 5_OF_5_PASS
 full_godot_regression: 58_OF_58_PASS
 review_threads: 0
 submitted_reviews: 0
+changed_files: 21_SCOPED
 ```
 
-후속 Gate들은 별도 Grill Me 질문이 아니므로 카운터는 `1 / 10`을 유지한다.
-
-### Package 2 병합 조건
-
-10개 자동 batch 이전에도 사용자가 별도 병합을 승인하면 다음 순서로 이 범위만 병합할 수 있다.
-
-```text
-PR #129 exact-head Docs·BCA·diff 감사
-→ PR #129 planning 병합
-→ PR #131 base를 main으로 retarget
-→ stacked BCA planning-base 허용 제거
-→ PR #131 fresh exact-head Docs·BCA·CORE·ANNUAL
-→ review thread·changed files·Sheet 적대적 감사
-→ PR #131 구현 병합
-→ 같은 Decision ID와 merge SHA를 Sheet에 기록
-```
-
-현재는 병합 승인이 없으므로 두 PR 모두 Draft·unmerged로 유지한다.
+후속 Gate들은 별도 Grill Me 질문이 아니므로 카운터는 `1 / 10`을 유지한다. 다음 중요 승인 Decision이 기록되면 `2 / 10`이 된다.
 
 ## 미검증 경계
 
