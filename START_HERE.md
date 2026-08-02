@@ -64,14 +64,16 @@ Registry 행만 읽고 Skill을 실행했다고 보고하지 않는다.
 ## 현재 Validation Gate
 
 ```text
-Base v9.4 정본·Sheet 재검증
-→ 최신 main 읽기 전용 기술 Plan
-→ CHANGE_PROPOSAL 적대적 검토
-→ 구현 패키지 재승인
-→ 별도 승인 뒤 Codex Build Goal
+Base v9.4 Canon·Sheet 재조정 = COMPLETE_ON_PR_125
+최신 main 읽기 전용 기술 검수 = COMPLETE
+CHANGE_PROPOSAL = READY_FOR_ADVERSARIAL_REVIEW
+→ Package 1 Session·Save isolation 범위 승인
+→ RED Legacy-byte safety
+→ 최소 구현·전체 회귀
+→ 다음 Package 재승인
 ```
 
-현재 제품 코드·Scene·JSON·Save Schema·에셋 변경은 승인되지 않았다.
+현재 제품 코드·Scene·JSON·Save Schema·에셋 변경과 Codex Build는 승인되지 않았다.
 
 ## 프로젝트 보호 범위
 
@@ -98,13 +100,28 @@ Base v9.4 정본·Sheet 재검증
 - 괴이 사건 작성: `skills/urban-legend-investigation-case-authoring/SKILL.md`
 - 검증 계약: `TEST_CHECKLIST.md`
 - 최신 정본 감사: `docs/planning/POST_V94_CANON_RECONCILIATION_AUDIT_2026-08-02.md`
-- 다음 기술 Plan: `docs/superpowers/plans/2026-08-02-validation-read-only-technical-plan.md`
+- 읽기 전용 기술 Plan: `docs/superpowers/plans/2026-08-02-validation-read-only-technical-plan.md`
+- 현재 기술 제안: `docs/superpowers/plans/2026-08-02-validation-change-proposal.md`
 
-## Base 현재값
+## 현재 권장 기술 방향
+
+```text
+별도 ValidationSession Autoload
++ 별도 Validation save
++ 기존 dialogue/investigation/minigame/battle 전문 절차 재사용
++ 전용 축약 준비·Reasoning·결과 Scene
++ pure 4-axis result calculator
++ apply-once effect ledger
+```
+
+구형 계획의 범용 Text Novel Shell, Legacy preparation/result 단순 모드 분기, 전 도메인 상태를 소유하는 ValidationFlowState는 그대로 구현하지 않는다.
+
+## Base·PR 현재값
 
 - Base: `9.4.0`
 - 프로젝트 채택 main: `7277b9cececa56532f7b0d11c1a02fd3d5642750`
-- PR #120(Base v9.3): `SUPERSEDED_BY_BASE_V9_4_MAIN`
+- PR #120(Base v9.3): `CLOSED_UNMERGED / SUPERSEDED_BY_BASE_V9_4_MAIN`
 - PR #122: 승인 기획의 역사 source branch이며 그대로 병합하지 않는다.
+- Draft PR #125: 최신 main 기반 Canon·Audit·Technical Plan·Change Proposal
 
 백업·완료 QA·과거 Goal은 현재 작업의 직접 근거가 있을 때만 읽는다. 실행하지 않은 검사·권한·사람 확인은 `NOT_RUN` 또는 `UNVERIFIED`다.
