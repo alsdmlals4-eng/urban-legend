@@ -54,6 +54,7 @@
 - `tests/test_annual_mvp_001_static_contract.py`
 - `.github/workflows/validate-core-mvp-001.yml`
 - `.github/workflows/validate-annual-mvp-001.yml`
+- `.github/workflows/validate-bca-visual-sheet-adoption.yml`
 
 ## 3. TDD RED → GREEN 증거
 
@@ -108,6 +109,16 @@
 - SIT-003·005~008 → `NOT_AVAILABLE`
 - unknown → `UNKNOWN_FLOW_STAGE`
 - 실패 시 SCREEN-01 잔류·runtime rollback·Session abandon
+
+### E. stacked PR의 BCA branch filter
+
+BCA workflow는 원래 `main` base PR만 허용해 PR #131에서는 실행되지 않았다.
+
+보정:
+
+- stacked 검증 동안 `agent/package-2-entry-routing-planning` base를 명시적으로 허용
+- diff 기준을 고정 `origin/main`이 아니라 실제 `github.base_ref`로 변경
+- PR #129 병합 후 PR #131을 main으로 retarget할 때 planning branch 허용값을 제거하고 fresh BCA를 다시 실행
 
 ## 5. 코드 HEAD 자동 검증
 
@@ -195,3 +206,7 @@ bca_adoption: REQUIRED_PASS
 core_workflow: REQUIRED_PASS
 annual_workflow: REQUIRED_PASS
 ```
+
+## 10. stacked BCA 재검증 트리거
+
+BCA branch filter 보정 후 이 문서를 다시 변경해 Docs·BCA·CORE·ANNUAL이 동일한 최신 PR HEAD를 검증하도록 한다. 실행 결과와 실제 HEAD는 PR #131 댓글·Google Sheet가 소유한다.
