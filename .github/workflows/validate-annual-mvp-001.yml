@@ -11,6 +11,7 @@ on:
       - "scenes/poc/annual_mvp_002/**"
       - "scripts/poc/core_mvp_001/**"
       - "scripts/core/validation_*.gd"
+      - "scripts/ui/validation_entry_coordinator.gd"
       - "scripts/ui/main_menu.gd"
       - "project.godot"
       - "tests/**"
@@ -18,6 +19,10 @@ on:
       - "MVP_ROADMAP.md"
       - "docs/CURRENT_STATUS.md"
       - "docs/CURRENT_HANDOFF.md"
+      - "docs/CURRENT_CONFIRMED_DECISIONS.md"
+      - "docs/CURRENT_HANDOFF_VALIDATION.md"
+      - "docs/GRILLME_APPROVAL_MERGE_LEDGER.md"
+      - "docs/implementation/2026-08-02-package-2-main-menu-entry-routing-evidence.md"
       - ".github/workflows/validate-annual-mvp-001.yml"
   workflow_dispatch:
 
@@ -59,6 +64,11 @@ jobs:
           GODOT_BIN: godot
           GODOT_TEST_TMP: ${{ runner.temp }}/validation-package-1-focused
         run: bash tests/run_validation_package_1_tests.sh
+      - name: Run focused Validation Package 2 tests
+        env:
+          GODOT_BIN: godot
+          GODOT_TEST_TMP: ${{ runner.temp }}/validation-package-2-focused
+        run: bash tests/run_validation_package_2_tests.sh
       - name: Run focused CORE-MVP-001 tests
         env:
           GODOT_BIN: godot
@@ -87,9 +97,10 @@ jobs:
           path: |
             annual-import.log
             ${{ runner.temp }}/validation-package-1-focused/focused-logs
+            ${{ runner.temp }}/validation-package-2-focused/focused-logs
             ${{ runner.temp }}/annual-mvp-001-core/focused-logs
             ${{ runner.temp }}/annual-mvp-001-focused/focused-logs
             ${{ runner.temp }}/annual-mvp-002-focused/focused-logs
-            ${{ runner.temp }}/annual-mvp-001-regression/regression-logs
+            ${{ runner.temp }}/annual-mvp-001-regression/logs
           if-no-files-found: warn
           retention-days: 7

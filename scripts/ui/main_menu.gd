@@ -1,4 +1,4 @@
-# 시작 화면에서 프로젝트 소개와 데이터베이스 진입을 관리한다.
+# 시작 화면에서 프로젝트 소개, 독립 저장 진입과 데이터베이스 진입을 관리한다.
 extends Control
 
 const ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")
@@ -6,12 +6,30 @@ const Accessibility = preload("res://scripts/ui/accessibility_settings.gd")
 const AssetCatalog = preload("res://scripts/ui/ui_asset_catalog.gd")
 const LogGuideScript = preload("res://scripts/ui/log_guide.gd")
 const LogTutorialCatalog = preload("res://scripts/ui/log_tutorial_catalog.gd")
+const ValidationInspectorScript = preload("res://scripts/core/validation_persistence_inspector.gd")
+const ValidationEntryCoordinatorScript = preload("res://scripts/ui/validation_entry_coordinator.gd")
+const ValidationRouteMapperScript = preload("res://scripts/core/validation_route_mapper.gd")
 
 const GAME_VERSION := "Ver 4.2"
 
 var _start_episode_button: Button
 var _continue_button: Button
 var _save_status_label: Label
+var _legacy_new_campaign_button: Button
+var _legacy_continue_button: Button
+var _legacy_status_label: Label
+var _validation_primary_button: Button
+var _validation_secondary_button: Button
+var _validation_status_label: Label
+var _validation_badge_label: Label
+var _database_button: Button
+var _validation_status_dialog: AcceptDialog
+var _validation_replace_dialog: ConfirmationDialog
+var _validation_completed_dialog: AcceptDialog
+var _validation_inspector: Object
+var _validation_coordinator: Object
+var _validation_summary: Dictionary = {}
+var _last_validation_focus: Control
 var _dev_panel: Control
 var _accessibility := Accessibility.new()
 var _log_guide: LogGuide
@@ -23,9 +41,23 @@ func _ready() -> void:
 		GameState.load_episode()
 
 	GameState.set_current_scene_path("res://scenes/main_menu.tscn")
+	_validation_inspector = ValidationInspectorScript.new()
+	_validation_coordinator = _make_validation_coordinator()
 	set_process_input(true)
 	_build_ui()
-	_refresh_save_controls()
+	_refresh_entry_cards()
+	if _legacy_continue_button != null:
+		_legacy_continue_button.call_deferred("grab_focus")
+
+
+func _make_validation_coordinator() -> Object:
+	return ValidationEntryCoordinatorScript.new(
+		ValidationSession,
+		_validation_inspector,
+		GameState,
+		Callable(self, "_change_scene_for_validation"),
+		ValidationRouteMapperScript.new()
+	)
 
 
 func _build_ui() -> void:
@@ -44,9 +76,9 @@ func _build_ui() -> void:
 	var margin := MarginContainer.new()
 	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	margin.add_theme_constant_override("margin_left", 28)
-	margin.add_theme_constant_override("margin_top", 72)
+	margin.add_theme_constant_override("margin_top", 36)
 	margin.add_theme_constant_override("margin_right", 28)
-	margin.add_theme_constant_override("margin_bottom", 72)
+	margin.add_theme_constant_override("margin_bottom", 36)
 	add_child(margin)
 
 	var panel := PanelContainer.new()
@@ -88,7 +120,8 @@ func _build_ui() -> void:
 	content.add_child(subtitle)
 
 	var body := Label.new()
-	body.text = "인간의 마음과 기억에서 되살아나는 괴이의 규칙을 조사하고, 현재 출현을 안정화한 뒤 다음 피해를 막을 괴이 매뉴얼을 기록합니다."
+	body.text = "괴이의 규칙을 조사하고 현재 출현을 안정화한 뒤, 다음 피해를 막을 괴이 매뉴얼을 기록합니다."
+	body.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	content.add_child(body)
 
@@ -96,6 +129,8 @@ func _build_ui() -> void:
 	_log_guide.set_compact(true)
 	content.add_child(_log_guide)
 	_present_log_entry()
+
+	_build_entry_cards(content)
 
 	var columns := HBoxContainer.new()
 	columns.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -117,7 +152,7 @@ func _build_ui() -> void:
 
 	var case_image := TextureRect.new()
 	case_image.texture = AssetCatalog.new().get_texture("afterlife_platform")
-	case_image.custom_minimum_size = Vector2(0, 360)
+	case_image.custom_minimum_size = Vector2(0, 240)
 	case_image.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	case_image.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 	overview_column.add_child(case_image)
@@ -126,37 +161,17 @@ func _build_ui() -> void:
 	case_focus.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	overview_column.add_child(case_focus)
 
-	var action_content := _add_section(
+	var database_content := _add_section(
 		control_column,
-		"주요 행동",
-		"새 수사를 시작하거나 저장된 진행을 이어가고, 기록국 DB에서 확보한 정보를 다시 확인합니다."
+		"기록 열람",
+		"확보한 사건·요원·괴이 기록을 확인합니다."
 	)
-
-	_start_episode_button = Button.new()
-	_start_episode_button.text = "새 캠페인 시작"
-	_start_episode_button.pressed.connect(_start_afterlife_station)
-	action_content.add_child(_start_episode_button)
-
-	_continue_button = Button.new()
-	_continue_button.text = "이어하기"
-	_continue_button.pressed.connect(_continue_saved_game)
-	action_content.add_child(_continue_button)
-
-	var open_button := Button.new()
-	open_button.text = "기록국 DB"
-	open_button.pressed.connect(_open_database)
-	action_content.add_child(open_button)
-
-	var status_content := _add_section(
-		control_column,
-		"저장 상태",
-		"이어하기 가능 여부를 확인합니다."
-	)
-
-	_save_status_label = Label.new()
-	_save_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_save_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	status_content.add_child(_save_status_label)
+	_database_button = Button.new()
+	_database_button.name = "DatabaseButton"
+	_database_button.text = "기록국 DB"
+	_database_button.focus_mode = Control.FOCUS_ALL
+	_database_button.pressed.connect(_open_database)
+	database_content.add_child(_database_button)
 
 	_add_accessibility_panel(control_column)
 
@@ -203,6 +218,116 @@ func _build_ui() -> void:
 	_add_scene_button(dev_content, "회수 페이즈 열기", "res://scenes/battle_scene.tscn")
 	_add_scene_button(dev_content, "미니게임씬 열기", "res://scenes/minigame_scene.tscn")
 
+	_build_validation_dialogs()
+	_configure_entry_focus()
+
+
+func _build_entry_cards(parent: Control) -> void:
+	var entry_cards := HBoxContainer.new()
+	entry_cards.name = "EntryCards"
+	entry_cards.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	entry_cards.add_theme_constant_override("separation", 16)
+	parent.add_child(entry_cards)
+
+	var legacy_content := _add_section(
+		entry_cards,
+		"기존 진행",
+		"본편 캠페인 기록입니다. Validation 기록과 서로 영향을 주지 않습니다."
+	)
+	_legacy_status_label = Label.new()
+	_legacy_status_label.name = "LegacyStatusLabel"
+	_legacy_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_legacy_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	legacy_content.add_child(_legacy_status_label)
+
+	_legacy_continue_button = Button.new()
+	_legacy_continue_button.name = "LegacyContinueButton"
+	_legacy_continue_button.text = "이어하기"
+	_legacy_continue_button.focus_mode = Control.FOCUS_ALL
+	_legacy_continue_button.pressed.connect(_continue_saved_game)
+	legacy_content.add_child(_legacy_continue_button)
+
+	_legacy_new_campaign_button = Button.new()
+	_legacy_new_campaign_button.name = "LegacyNewCampaignButton"
+	_legacy_new_campaign_button.text = "새 캠페인 시작"
+	_legacy_new_campaign_button.focus_mode = Control.FOCUS_ALL
+	_legacy_new_campaign_button.pressed.connect(_start_afterlife_station)
+	legacy_content.add_child(_legacy_new_campaign_button)
+
+	_start_episode_button = _legacy_new_campaign_button
+	_continue_button = _legacy_continue_button
+	_save_status_label = _legacy_status_label
+
+	var validation_content := _add_section(
+		entry_cards,
+		"Validation 기록",
+		"저승역 검증 흐름을 위한 독립 기록입니다."
+	)
+	_validation_badge_label = Label.new()
+	_validation_badge_label.name = "ValidationBadgeLabel"
+	_validation_badge_label.text = "본편과 별도 기록"
+	_validation_badge_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	validation_content.add_child(_validation_badge_label)
+
+	_validation_status_label = Label.new()
+	_validation_status_label.name = "ValidationStatusLabel"
+	_validation_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_validation_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	validation_content.add_child(_validation_status_label)
+
+	_validation_primary_button = Button.new()
+	_validation_primary_button.name = "ValidationPrimaryButton"
+	_validation_primary_button.focus_mode = Control.FOCUS_ALL
+	_validation_primary_button.pressed.connect(_on_validation_primary_pressed)
+	validation_content.add_child(_validation_primary_button)
+
+	_validation_secondary_button = Button.new()
+	_validation_secondary_button.name = "ValidationSecondaryButton"
+	_validation_secondary_button.text = "새 기록 시작"
+	_validation_secondary_button.focus_mode = Control.FOCUS_ALL
+	_validation_secondary_button.pressed.connect(_on_validation_secondary_pressed)
+	validation_content.add_child(_validation_secondary_button)
+
+
+func _build_validation_dialogs() -> void:
+	_validation_status_dialog = AcceptDialog.new()
+	_validation_status_dialog.name = "ValidationStatusDialog"
+	_validation_status_dialog.title = "Validation 기록 상태"
+	_validation_status_dialog.get_ok_button().text = "확인"
+	_validation_status_dialog.confirmed.connect(_restore_validation_focus)
+	_validation_status_dialog.close_requested.connect(_restore_validation_focus)
+	add_child(_validation_status_dialog)
+
+	_validation_replace_dialog = ConfirmationDialog.new()
+	_validation_replace_dialog.name = "ValidationReplaceDialog"
+	_validation_replace_dialog.title = "Validation 기록 교체"
+	_validation_replace_dialog.get_ok_button().text = "새 기록 시작"
+	_validation_replace_dialog.get_cancel_button().text = "기록 유지"
+	_validation_replace_dialog.confirmed.connect(_on_validation_replace_confirmed)
+	_validation_replace_dialog.canceled.connect(_on_validation_replace_canceled)
+	add_child(_validation_replace_dialog)
+
+	_validation_completed_dialog = AcceptDialog.new()
+	_validation_completed_dialog.name = "ValidationCompletedDialog"
+	_validation_completed_dialog.title = "완료된 Validation 기록"
+	_validation_completed_dialog.get_ok_button().text = "닫기"
+	_validation_completed_dialog.confirmed.connect(_restore_validation_focus)
+	_validation_completed_dialog.close_requested.connect(_restore_validation_focus)
+	add_child(_validation_completed_dialog)
+
+
+func _configure_entry_focus() -> void:
+	if _legacy_continue_button == null or _legacy_new_campaign_button == null:
+		return
+	_legacy_continue_button.focus_neighbor_bottom = _legacy_continue_button.get_path_to(_legacy_new_campaign_button)
+	_legacy_new_campaign_button.focus_neighbor_top = _legacy_new_campaign_button.get_path_to(_legacy_continue_button)
+	_legacy_new_campaign_button.focus_neighbor_right = _legacy_new_campaign_button.get_path_to(_validation_primary_button)
+	_validation_primary_button.focus_neighbor_left = _validation_primary_button.get_path_to(_legacy_continue_button)
+	_validation_primary_button.focus_neighbor_bottom = _validation_primary_button.get_path_to(_validation_secondary_button)
+	_validation_secondary_button.focus_neighbor_top = _validation_secondary_button.get_path_to(_validation_primary_button)
+	_validation_secondary_button.focus_neighbor_bottom = _validation_secondary_button.get_path_to(_database_button)
+	_database_button.focus_neighbor_top = _database_button.get_path_to(_validation_primary_button)
+
 
 func _present_log_entry() -> void:
 	var persist_now := GameState.has_save_file()
@@ -223,6 +348,174 @@ func _input(event: InputEvent) -> void:
 	if key.pressed and not key.echo and key.keycode == KEY_F1 and _dev_panel != null:
 		_dev_panel.visible = not _dev_panel.visible
 		get_viewport().set_input_as_handled()
+
+
+func configure_validation_repository_path_for_test(path: String) -> void:
+	if _validation_inspector == null:
+		_validation_inspector = ValidationInspectorScript.new()
+	_validation_inspector.configure_repository_path_for_test(path)
+	if _validation_coordinator == null:
+		_validation_coordinator = _make_validation_coordinator()
+
+
+func refresh_entry_cards_for_test() -> void:
+	_refresh_entry_cards()
+
+
+func _refresh_entry_cards() -> void:
+	_refresh_save_controls()
+	if _validation_inspector == null:
+		_validation_summary = {
+			"repository_code": "READ_FAILED",
+			"status_label": "읽기 실패",
+			"status_message": "Validation 기록을 읽을 수 없습니다. 기존 캠페인은 계속 이용할 수 있습니다."
+		}
+	else:
+		_validation_summary = _validation_inspector.inspect_persistence()
+	_render_validation_summary(_validation_summary)
+
+
+func _render_validation_summary(summary: Dictionary) -> void:
+	if _validation_status_label == null or _validation_primary_button == null:
+		return
+	var label := String(summary.get("status_label", "상태 확인 필요"))
+	var message := String(summary.get("status_message", "Validation 기록 상태를 확인할 수 없습니다."))
+	_validation_status_label.text = "%s\n%s" % [label, message]
+	_validation_primary_button.disabled = false
+	_validation_secondary_button.visible = false
+	_validation_secondary_button.disabled = false
+
+	if bool(summary.get("can_start", false)):
+		_validation_primary_button.text = "새 기록 시작"
+	elif bool(summary.get("can_continue", false)):
+		_validation_primary_button.text = "이어하기"
+		_validation_secondary_button.text = "새 기록 시작"
+		_validation_secondary_button.visible = true
+	elif bool(summary.get("can_view_completed", false)):
+		_validation_primary_button.text = "완료 기록 보기"
+		_validation_secondary_button.text = "새 기록 시작"
+		_validation_secondary_button.visible = true
+	else:
+		_validation_primary_button.text = "상태 상세"
+
+
+func _on_validation_primary_pressed() -> void:
+	_remember_validation_focus(_validation_primary_button)
+	var summary: Dictionary = _validation_inspector.inspect_persistence()
+	_validation_summary = summary
+	if not bool(summary.get("can_start", false)) and not bool(summary.get("can_continue", false)) and not bool(summary.get("can_view_completed", false)):
+		_show_validation_status(summary)
+		return
+
+	_set_entry_mutation_enabled(false)
+	var result: Dictionary
+	if bool(summary.get("can_start", false)):
+		result = _validation_coordinator.start_new_validation()
+	elif bool(summary.get("can_continue", false)):
+		result = _validation_coordinator.continue_validation()
+	else:
+		result = _validation_coordinator.view_completed_validation()
+
+	if String(result.get("code", "")) == "OK":
+		if result.has("summary"):
+			_show_completed_validation(result.get("summary", {}) as Dictionary)
+		return
+	if String(result.get("code", "")) == "REPLACE_CONFIRMATION_REQUIRED":
+		_show_replace_confirmation(result.get("summary", {}) as Dictionary)
+		return
+	_refresh_entry_cards()
+	_show_validation_status(_validation_inspector.inspect_persistence(), String(result.get("code", "UNKNOWN")))
+
+
+func _on_validation_secondary_pressed() -> void:
+	_remember_validation_focus(_validation_secondary_button)
+	_set_entry_mutation_enabled(false)
+	var result: Dictionary = _validation_coordinator.start_new_validation()
+	if String(result.get("code", "")) == "OK":
+		return
+	if String(result.get("code", "")) == "REPLACE_CONFIRMATION_REQUIRED":
+		_show_replace_confirmation(result.get("summary", {}) as Dictionary)
+		return
+	_refresh_entry_cards()
+	_show_validation_status(_validation_inspector.inspect_persistence(), String(result.get("code", "UNKNOWN")))
+
+
+func _on_validation_replace_confirmed() -> void:
+	_set_entry_mutation_enabled(false)
+	var result: Dictionary = _validation_coordinator.confirm_replace_and_start()
+	if String(result.get("code", "")) == "OK":
+		return
+	_refresh_entry_cards()
+	_show_validation_status(_validation_inspector.inspect_persistence(), String(result.get("code", "UNKNOWN")))
+
+
+func _on_validation_replace_canceled() -> void:
+	_validation_coordinator.cancel_replace()
+	_refresh_entry_cards()
+	_restore_validation_focus()
+
+
+func _show_replace_confirmation(summary: Dictionary) -> void:
+	_refresh_entry_cards()
+	var episode := String(summary.get("episode_title", "Validation 기록"))
+	var stage := String(summary.get("flow_stage", summary.get("lifecycle", "")))
+	var updated := String(summary.get("updated_at_utc", "기록 시각 없음"))
+	_validation_replace_dialog.dialog_text = (
+		"현재 Validation 기록을 새 기록으로 교체합니다.\n\n"
+		+ "%s · %s\n마지막 저장: %s\n\n" % [episode, stage, updated]
+		+ "삭제되는 것은 Validation 기록뿐입니다.\n"
+		+ "기존 캠페인 기록은 변경되지 않습니다."
+	)
+	_validation_replace_dialog.popup_centered()
+	_validation_replace_dialog.get_cancel_button().call_deferred("grab_focus")
+
+
+func _show_validation_status(summary: Dictionary, override_code: String = "") -> void:
+	_refresh_entry_cards()
+	var title := String(summary.get("status_label", "상태 확인 필요"))
+	var message := String(summary.get("status_message", "Validation 기록 상태를 확인할 수 없습니다."))
+	if not override_code.is_empty():
+		message += "\n\n오류 코드: %s" % override_code
+	_validation_status_dialog.dialog_text = "%s\n\n%s" % [title, message]
+	_validation_status_dialog.popup_centered()
+
+
+func _show_completed_validation(summary: Dictionary) -> void:
+	_refresh_entry_cards()
+	var episode := String(summary.get("episode_title", "Validation 기록"))
+	var completed := String(summary.get("completed_at_utc", "완료 시각 없음"))
+	_validation_completed_dialog.dialog_text = (
+		"%s\n\n완료 시각: %s\n\n" % [episode, completed]
+		+ "이 화면은 읽기 전용 요약입니다. 본편 상태와 Validation 런타임을 불러오지 않았습니다."
+	)
+	_validation_completed_dialog.popup_centered()
+
+
+func _remember_validation_focus(control: Control) -> void:
+	_last_validation_focus = control
+
+
+func _restore_validation_focus() -> void:
+	_refresh_entry_cards()
+	if _last_validation_focus != null and is_instance_valid(_last_validation_focus) and _last_validation_focus.visible and not _last_validation_focus.disabled:
+		_last_validation_focus.call_deferred("grab_focus")
+	elif _validation_primary_button != null:
+		_validation_primary_button.call_deferred("grab_focus")
+
+
+func _set_entry_mutation_enabled(enabled: bool) -> void:
+	if _legacy_continue_button != null:
+		_legacy_continue_button.disabled = not enabled or not GameState.has_save_file()
+	if _legacy_new_campaign_button != null:
+		_legacy_new_campaign_button.disabled = not enabled
+	if _validation_primary_button != null:
+		_validation_primary_button.disabled = not enabled
+	if _validation_secondary_button != null:
+		_validation_secondary_button.disabled = not enabled
+
+
+func _change_scene_for_validation(scene_path: String) -> int:
+	return get_tree().change_scene_to_file(scene_path)
 
 
 func _add_accessibility_panel(parent: Control) -> void:
@@ -311,7 +604,7 @@ func _start_afterlife_station() -> void:
 
 func _continue_saved_game() -> void:
 	if not GameState.load_game():
-		_refresh_save_controls()
+		_refresh_entry_cards()
 		return
 
 	var scene_path := GameState.get_current_scene_path()
@@ -324,7 +617,7 @@ func _clear_saved_game() -> void:
 	GameState.clear_save_file()
 	GameState.reset_run_state()
 	GameState.set_current_scene_path("res://scenes/main_menu.tscn")
-	_refresh_save_controls()
+	_refresh_entry_cards()
 
 
 func _refresh_save_controls() -> void:
@@ -332,7 +625,10 @@ func _refresh_save_controls() -> void:
 	if _continue_button != null:
 		_continue_button.disabled = not has_save
 	if _save_status_label != null:
-		_save_status_label.text = "이어하기: %s" % ("있음" if has_save else "없음")
+		_save_status_label.text = (
+			"이어할 본편 기록이 있습니다." if has_save
+			else "저장된 본편 캠페인이 없습니다."
+		)
 
 
 func _add_scene_button(parent: Control, label: String, scene_path: String) -> void:

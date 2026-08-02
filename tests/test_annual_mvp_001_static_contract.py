@@ -44,9 +44,14 @@ class AnnualMvp001StaticContractTests(unittest.TestCase):
             "validation/validation_session_test",
             "validation/validation_game_state_adapter_test",
             "validation/validation_save_isolation_test",
+            "validation/validation_persistence_summary_test",
+            "validation/validation_route_mapper_test",
+            "validation/validation_runtime_initializer_test",
+            "validation/validation_entry_coordinator_test",
+            "validation/validation_main_menu_contract_test",
         ):
             self.assertIn(name, runner)
-        self.assertIn("53/53", runner)
+        self.assertIn("58/58", runner)
 
     def test_runtime_does_not_reference_protected_main_state(self) -> None:
         combined = "\n".join(

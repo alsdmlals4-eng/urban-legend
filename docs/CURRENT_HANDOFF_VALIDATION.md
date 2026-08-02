@@ -1,13 +1,15 @@
 # 괴이기록국 Validation 현재 인수인계
 
-> 상태: `PACKAGE_2_SPEC_APPROVED / IMPLEMENTATION_PLAN_WRITTEN / PRODUCT_IMPLEMENTATION_APPROVAL_PENDING`
+> 상태: `PACKAGE_2_IMPLEMENTATION_COMPLETE_ON_PR_131 / PLANNING_MERGED / MERGE_AUTHORIZED / FINAL_EXACT_HEAD_CI_PENDING`
 > 갱신일: 2026-08-02
-> 작업 branch: `agent/package-2-entry-routing-planning`
-> Package 2 planning PR: #129
+> planning branch: `agent/package-2-entry-routing-planning`
+> implementation branch: `agent/package-2-entry-routing-implementation`
+> Planning PR: #129
+> Implementation PR: #131
 > Grill Me future counter: `1 / 10`
-> 제품 구현 권한: `NOT_AUTHORIZED`
+> 병합 권한: `AUTHORIZED`
 
-실제 최신 main SHA는 GitHub `main` ref에서 읽는다. Package 1 병합 SHA는 역할이 고정된 증거로만 사용한다.
+실제 최신 main·PR SHA는 GitHub ref에서 읽는다. PR #129 planning 정본은 main에 병합됐고, PR #131 구현은 최신 main과 동기화한 뒤 최종 exact-head 검증을 수행 중이다. 최종 검증·감사·병합이 끝나기 전까지 Package 2를 main 완료 상태로 주장하지 않는다.
 
 ## 읽기 순서
 
@@ -21,39 +23,44 @@ START_HERE.md
 → docs/decisions/D-2026-08-02-PACKAGE-2-MAIN-MENU-MODE-HIERARCHY.md
 → docs/decisions/D-2026-08-02-PACKAGE-2-DESIGN-APPROVAL.md
 → docs/decisions/D-2026-08-02-PACKAGE-2-DESIGN-SPEC-APPROVAL.md
+→ docs/decisions/D-2026-08-02-PACKAGE-2-IMPLEMENTATION-APPROVAL.md
 → docs/superpowers/specs/2026-08-02-package-2-main-menu-entry-routing-design.md
 → docs/superpowers/plans/2026-08-02-package-2-main-menu-entry-routing-implementation-plan.md
+→ docs/implementation/2026-08-02-package-2-main-menu-entry-routing-evidence.md
 → docs/planning/2026-08-02-package-2-entry-routing-adversarial-audit.md
 → docs/planning/2026-08-02-package-2-validation-initializer-adversarial-finding.md
-→ Package 1 Design·Plan·evidence
-→ 실제 main 코드·테스트
+→ 실제 implementation branch 코드·테스트
 ```
 
 ## 현재 상태
 
 ```yaml
-base: 9.4.0
-branch: agent/package-2-entry-routing-planning
+base: 9.4.1
 package_1: MERGED_AND_AUTOMATED_CI_VERIFIED
 package_2_planning_audit: COMPLETE
 package_2_menu_hierarchy: APPROVED_PARALLEL_INDEPENDENT_CARDS
 package_2_design: APPROVED
 package_2_spec: APPROVED
-package_2_implementation_plan: WRITTEN_SELF_REVIEWED
-package_2_product_implementation: NOT_AUTHORIZED
-package_2_planning_merge: NOT_REQUESTED
-product_diff_on_pr_129: 0
+package_2_implementation_plan: APPROVED_AND_EXECUTED
+package_2_product_implementation: COMPLETE_ON_PR_131
+package_2_planning_merge: MERGED_PR_129
+package_2_implementation_merge: AUTHORIZED_FINAL_CI_PENDING
+package_2_latest_completed_exact_head: PASS
+package_1_focused: 4_OF_4_PASS
+package_2_focused: 5_OF_5_PASS
+full_godot_regression: 58_OF_58_PASS
 future_grillme_counter: 1_OF_10
-runtime_human_qa: NOT_RUN
+local_runtime: NOT_RUN
+human_qa: NOT_RUN
 new_player_validation: NOT_RUN
-visual_1280x720_validation: NOT_RUN
+screen_01_visual_1280x720: NOT_RUN
 poc_passed: NOT_DECLARED
 production_expansion: NOT_APPROVED
 platform: PC_16_9_MOUSE_KEYBOARD
 mobile: DEFERRED_AFTER_PC_VALIDATION
 ```
 
-## Package 2 승인 구조
+## 구현된 SCREEN-01 구조
 
 ```text
 기존 진행 카드
@@ -68,65 +75,82 @@ Validation 기록 카드
 - 오류·호환 상태
 ```
 
-핵심 구성 요소:
+Validation badge는 `본편과 별도 기록`을 명시한다. 한쪽 저장 오류는 다른 카드 행동을 차단하지 않는다.
 
-1. `ValidationPersistenceSummary` — repository 결과를 메뉴용 read-only summary로 변환
-2. `ValidationRouteMapper` — SIT allowlist·unknown/not-available fail-closed
-3. `initialize_validation_runtime()` — Package 1 whitelist 필드만 초기화
-4. `ValidationEntryCoordinator` — 시작·교체·이어하기·완료 보기·rollback·single-flight
-5. SCREEN-01 독립 카드·status/replace/completed dialog·키보드 focus
+## 구현 컴포넌트
 
-## 구현 계획
+1. `ValidationPersistenceSummary`
+   - repository code와 lifecycle을 UI 행동으로 변환
+   - payload 전체를 UI에 노출하지 않음
 
-경로:
+2. `ValidationPersistenceInspector`
+   - menu render용 read-only repository 조회
+   - Package 1 `ValidationSession` autoload 경계 유지
 
-`docs/superpowers/plans/2026-08-02-package-2-main-menu-entry-routing-implementation-plan.md`
+3. `ValidationRouteMapper`
+   - SIT-001·002 → dialogue
+   - SIT-004 → investigation
+   - SIT-003·005~008 → `NOT_AVAILABLE`
+   - unknown → `UNKNOWN_FLOW_STAGE`
 
-7개 검토 단위:
+4. `initialize_validation_runtime()`
+   - Validation runtime whitelist만 초기화
+   - campaign·관계·보상·경제·Legacy file 무변경
 
-1. read-only persistence summary
-2. flow-stage route mapper
-3. whitelist runtime initializer
-4. coordinator start·replace·atomic cleanup
-5. coordinator continue·completed·rollback
-6. SCREEN-01 cards·dialogs·focus
-7. Package 2 focused 5/5·full regression 58/58·CI·evidence·merge gate
+5. `ValidationEntryCoordinator`
+   - create·activate·guard·initialize·save·route
+   - record identity 재확인 후 교체
+   - active·suspended 이어하기
+   - completed read-only summary
+   - single-flight
+   - 실패 시 runtime rollback·Session abandon
 
-실행 원칙:
+6. SCREEN-01 UI
+   - 독립 카드
+   - status·replace·completed dialog
+   - 파괴적 교체 기본 포커스 취소
+   - keyboard focus neighbor
 
-- `superpowers:using-git-worktrees`로 격리
-- `superpowers:subagent-driven-development` 권장
-- 각 Task RED → minimal GREEN → 회귀 → 커밋
-- planning PR에는 제품 코드 금지
-- implementation PR은 planning PR 위에 stacked Draft로 시작
-- planning 병합 후 implementation 재정렬·exact-head 재검증
-- 별도 구현 병합 승인 필요
-
-## 필수 보호 계약
-
-- Validation 메뉴 조회에서 `load()` 호출 금지
-- Validation 시작에서 Legacy 저장 삭제 금지
-- `reset_run_state()`·`restart_afterlife_station_flow()` 재사용 금지
-- active·suspended·completed 행동 분리
-- blocked persistence code는 delete/create/load 금지
-- 기존 Validation 교체는 record identity 재검증 후 명시적 확인
-- 저장된 `scene_path` 직접 라우팅 금지
-- route 실패 시 GameState runtime rollback·Session abandon
-- 한쪽 오류가 다른 카드 행동을 막지 않음
-- 시작·이어하기 전후 Legacy file bytes와 hidden memory equality
-
-## 테스트 목표
+## 최근 완료 exact-head 자동 검증
 
 ```yaml
-package_1_focused: 4_OF_4_PASS_REQUIRED
-package_2_focused: 5_OF_5_PASS_REQUIRED
-full_godot_regression: 58_OF_58_PASS_REQUIRED
-documentation_contracts: PASS_REQUIRED
-bca_adoption: PASS_REQUIRED
-core_workflow: PASS_REQUIRED
-annual_workflow: PASS_REQUIRED
-human_qa: PASS_OR_EXPLICIT_NOT_RUN
-visual_1280x720: PASS_OR_EXPLICIT_NOT_RUN
+documentation_run_30741361754: PASS
+bca_run_30741361726: PASS
+core_run_30741361717: PASS
+annual_run_30741361720: PASS
+godot_import: PASS
+package_1_focused: 4_OF_4_PASS
+package_2_focused: 5_OF_5_PASS
+core_focused: PASS
+annual_001_focused: PASS
+annual_002_focused: PASS
+full_godot_regression: 58_OF_58_PASS
+review_threads: 0
+submitted_reviews: 0
+```
+
+위 실행은 직전 exact-head 증거다. 현재 main 동기화·BCA 임시 조건 제거·병합 승인 상태를 포함한 최신 PR #131 HEAD에서 Documentation·BCA·CORE·ANNUAL을 다시 실행하고, 그 결과만 최종 병합 근거로 사용한다.
+
+TDD RED·GREEN·적대적 보정 상세:
+
+`docs/implementation/2026-08-02-package-2-main-menu-entry-routing-evidence.md`
+
+## 필수 보호 계약 판정
+
+```yaml
+read_only_menu_inspection: PASS
+blocked_storage_no_mutation: PASS
+legacy_file_bytes_no_effect: PASS
+legacy_hidden_memory_no_effect: PASS
+whitelist_initializer: PASS
+flow_stage_allowlist: PASS
+unknown_route_fail_closed: PASS
+route_failure_runtime_rollback: PASS
+session_abandon_on_failure: PASS
+single_flight: PASS
+completed_view_read_only: PASS
+legacy_validation_independent_cards: PASS
+keyboard_focus_structure: PASS
 ```
 
 ## GitHub 상태
@@ -135,29 +159,30 @@ visual_1280x720: PASS_OR_EXPLICIT_NOT_RUN
 pr_125: MERGED
 pr_126: MERGED
 pr_127: MERGED
-pr_129: DRAFT_IMPLEMENTATION_APPROVAL_PENDING
+pr_129: MERGED
+pr_131: IMPLEMENTATION_COMPLETE_MERGE_AUTHORIZED_FINAL_CI_PENDING
+pr_132: MERGED_MAIN_TO_PLANNING_SYNC
+pr_133: MERGED_MAIN_TO_IMPLEMENTATION_SYNC
 pr_122: CLOSED_SOURCE_DO_NOT_MERGE_AS_IS
 issue_121: CLOSED_COMPLETED
 ```
 
+PR #131 changed files는 production·tests·CI·current evidence 범위다. 최종 병합 직전 changed files, unresolved review thread, submitted review, exact-head workflow와 Google Sheet를 다시 감사한다.
+
 ## Grill Me 운영
 
-- 역사 batch: `HISTORICAL_BATCH_0` 완료
 - 현재 미래 카운터: `1 / 10`
 - 현재 카운트 Decision: `D-2026-08-02-PACKAGE-2-MAIN-MENU-MODE-HIERARCHY`
-- Design·Spec·계획 승인은 동일 질문의 후속 Gate이므로 추가 카운트하지 않는다.
-- 10개 도달 시 병합 직전 GitHub·Sheet·PR·CI 적대적 검토를 다시 수행한다.
+- Design·Spec·계획·구현·병합 승인은 동일 질문의 후속 Gate이므로 추가 카운트하지 않는다.
+- 이번 별도 병합은 사용자 승인에 따라 10개 도달 전 Package 2 범위만 처리한다.
 
 ## 다음 Gate
 
 ```text
-사용자 제품 구현 승인
-→ latest main·planning head 확인
-→ 격리 implementation branch
-→ TDD Task 1~7
-→ Draft implementation PR
-→ exact-head CI·적대적 리뷰
-→ 별도 병합 승인
+PR #131 최신 HEAD에서 Docs·BCA·CORE·ANNUAL
+→ changed files·review·Sheet 적대적 감사
+→ expected-head SHA로 PR #131 병합
+→ post-merge current docs·Sheet에 merge SHA 동기화
 → Package 2 종료
 → 본격 게임 기획 전환
 ```
@@ -168,7 +193,9 @@ issue_121: CLOSED_COMPLETED
 local_runtime: NOT_RUN
 human_qa: NOT_RUN
 new_player_validation: NOT_RUN
-visual_1280x720_validation: NOT_RUN
+screen_01_visual_1280x720: NOT_RUN
+screen_01_mouse_manual: NOT_RUN
+screen_01_keyboard_manual: NOT_RUN
 poc_passed: NOT_DECLARED
 production_expansion: NOT_APPROVED
 ```

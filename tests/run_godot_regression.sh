@@ -56,6 +56,11 @@ script_tests=(
   validation/validation_session_test
   validation/validation_game_state_adapter_test
   validation/validation_save_isolation_test
+  validation/validation_persistence_summary_test
+  validation/validation_route_mapper_test
+  validation/validation_runtime_initializer_test
+  validation/validation_entry_coordinator_test
+  validation/validation_main_menu_contract_test
 )
 
 scene_tests=(
@@ -95,6 +100,12 @@ run_test() {
     echo "FAILED: $name" >&2
     exit 1
   fi
+  if grep -Eq 'SCRIPT ERROR:|Failed to load script|Parse Error:|Compile Error:' "$log_file"; then
+    cat "$log_file"
+    echo "::endgroup::"
+    echo "FAILED: $name emitted a script load/compile error" >&2
+    exit 1
+  fi
   tail -n 12 "$log_file"
   echo "::endgroup::"
 }
@@ -106,5 +117,5 @@ for test_name in "${scene_tests[@]}"; do
   run_test "$test_name" scene
 done
 
-echo "Godot regression suite: 53/53 test entrypoints passed"
+echo "Godot regression suite: 58/58 test entrypoints passed"
 echo "Logs: $LOG_ROOT"

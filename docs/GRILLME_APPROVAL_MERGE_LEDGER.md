@@ -96,27 +96,73 @@ production_expansion: NOT_APPROVED
 counter: 1 / 10
 merge_triggered: false
 canon_pr: 129
-implementation_pr: none
+implementation_pr: 131
+planning_merge: NOT_AUTHORIZED
+implementation_merge: NOT_AUTHORIZED
 ```
 
 승인 Decision:
 
 1. `D-2026-08-02-PACKAGE-2-MAIN-MENU-MODE-HIERARCHY`
    - 승인: Legacy·Validation 독립 병렬 카드
-   - 상태: `APPROVED_PENDING_BATCH_MERGE`
+   - 상태: `APPROVED_IMPLEMENTED_EXACT_HEAD_VERIFIED_PENDING_MERGE`
    - 책임 원본: `docs/decisions/D-2026-08-02-PACKAGE-2-MAIN-MENU-MODE-HIERARCHY.md`
-   - 추적: Draft PR #129, Google Sheet 동일 Decision ID
+   - 추적: Draft PR #129·#131, Google Sheet 동일 Decision ID
 
 같은 질문의 후속 Gate:
 
 - `D-2026-08-02-PACKAGE-2-DESIGN-APPROVAL` — 상세 Design 승인
 - `D-2026-08-02-PACKAGE-2-DESIGN-SPEC-APPROVAL` — Spec 승인·implementation plan 작성 허가
+- `D-2026-08-02-PACKAGE-2-IMPLEMENTATION-APPROVAL` — 제품 구현 승인
 - 구현 계획: `docs/superpowers/plans/2026-08-02-package-2-main-menu-entry-routing-implementation-plan.md`
-- 상태: `PLAN_WRITTEN_SELF_REVIEWED / PRODUCT_IMPLEMENTATION_NOT_AUTHORIZED`
+- 구현 증거: `docs/implementation/2026-08-02-package-2-main-menu-entry-routing-evidence.md`
+- 상태: `IMPLEMENTATION_COMPLETE_LATEST_EXACT_HEAD_PASS / MERGE_NOT_AUTHORIZED`
 
-이 후속 Gate들은 별도 Grill Me 질문이 아니므로 카운터는 `1 / 10`을 유지한다.
+최근 완료 exact-head 자동 검증:
 
-다음 batch 병합 Gate는 10번째 승인 Decision이 기록될 때 실행한다. 그 전에도 사용자가 별도 병합을 명시적으로 승인하면 해당 범위만 병합할 수 있다.
+```yaml
+documentation_run_30741361754: PASS
+bca_run_30741361726: PASS
+core_run_30741361717: PASS
+annual_run_30741361720: PASS
+package_1_focused: 4_OF_4_PASS
+package_2_focused: 5_OF_5_PASS
+full_godot_regression: 58_OF_58_PASS
+review_threads: 0
+submitted_reviews: 0
+```
+
+후속 Gate들은 별도 Grill Me 질문이 아니므로 카운터는 `1 / 10`을 유지한다.
+
+### Package 2 병합 조건
+
+10개 자동 batch 이전에도 사용자가 별도 병합을 승인하면 다음 순서로 이 범위만 병합할 수 있다.
+
+```text
+PR #129 exact-head Docs·BCA·diff 감사
+→ PR #129 planning 병합
+→ PR #131 base를 main으로 retarget
+→ stacked BCA planning-base 허용 제거
+→ PR #131 fresh exact-head Docs·BCA·CORE·ANNUAL
+→ review thread·changed files·Sheet 적대적 감사
+→ PR #131 구현 병합
+→ 같은 Decision ID와 merge SHA를 Sheet에 기록
+```
+
+현재는 병합 승인이 없으므로 두 PR 모두 Draft·unmerged로 유지한다.
+
+## 미검증 경계
+
+```yaml
+local_runtime: NOT_RUN
+human_qa: NOT_RUN
+new_player_validation: NOT_RUN
+screen_01_visual_1280x720: NOT_RUN
+screen_01_mouse_manual: NOT_RUN
+screen_01_keyboard_manual: NOT_RUN
+poc_passed: NOT_DECLARED
+production_expansion: NOT_APPROVED
+```
 
 ## Future Batch Template
 
