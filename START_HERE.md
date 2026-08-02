@@ -8,6 +8,7 @@
 최신 사용자 지시
 → START_HERE.md
 → AGENTS.md
+→ GitHub latest main ref
 → docs/OPERATING_MODEL.md
 → docs/WORK_MODE_AND_SKILL_ROUTING.md
 → docs/CURRENT_CONFIRMED_DECISIONS.md
@@ -25,6 +26,7 @@
 ## 현재 권위 구분
 
 ```text
+GitHub latest main ref = 현재 정확한 commit
 docs/CURRENT_CONFIRMED_DECISIONS.md = 사용자 승인·대체 관계
 docs/VALIDATION_TARGET_CANON.md = Validation 상세 Target
 docs/CURRENT_HANDOFF_VALIDATION.md = 현재 작업 상태·다음 Gate
@@ -33,7 +35,7 @@ docs/CURRENT_STATUS.md = 장기 프로젝트 구현·검증 이력
 Google Sheet = 동일 Decision ID의 계획·감사·변경 추적
 ```
 
-승인 Target과 실제 구현은 자동으로 동일시하지 않는다.
+Current 문서 안의 commit SHA는 역할이 고정된 병합 증거다. 문서 자신의 병합으로 main이 이동하므로 `현재 main`을 문서 속 상수로 고정하지 않는다.
 
 ## Work Mode·Skill 라우팅
 
@@ -50,9 +52,10 @@ Registry 항목만 읽고 Skill을 실행했다고 보고하지 않는다.
 
 ```yaml
 base: 9.4.0
-main: 80160218d05e79af5442bf27d8fdeb66bcf05723
-canon_pr_125: MERGED
-package_1_pr_126: MERGED
+branch: main
+canon_merge_pr_125: 595d45454621900e858a903fef0598a03349b794
+package_1_merge_pr_126: 80160218d05e79af5442bf27d8fdeb66bcf05723
+governance_merge_pr_127: e15b9d25127170a530f66d5c3462340b806ad51d
 package_1_automated_ci: PASS
 validation_focused: 4_OF_4_PASS
 full_godot_regression: 53_OF_53_PASS
@@ -123,8 +126,10 @@ source-only·superseded·blocked PR은 숫자를 맞추기 위해 병합하지 �
 
 - PR #125: `MERGED` — Canon·승인·Design·Plan
 - PR #126: `MERGED` — Package 1 구현
-- PR #122: `SOURCE / DO NOT MERGE AS-IS`
+- PR #127: `MERGED` — Batch 0·Grill Me 병합 운영
+- PR #122: `CLOSED SOURCE / DO NOT MERGE AS-IS`
 - PR #120: `CLOSED / SUPERSEDED`
+- Issue #121: `CLOSED / COMPLETED`
 
 PR #122의 유효 승인 내용은 current canon에 통합 승계했다.
 

@@ -3,18 +3,20 @@
 > 문서 역할: `CURRENT_CONFIRMED_DECISIONS`
 > 상태: `CURRENT_ON_MAIN`
 > 갱신일: 2026-08-02
-> 현재 main: `80160218d05e79af5442bf27d8fdeb66bcf05723`
+> Package 1 구현 merge: `80160218d05e79af5442bf27d8fdeb66bcf05723`
+> 병합 운영 정본 merge: `e15b9d25127170a530f66d5c3462340b806ad51d`
 > 상세 Target: `docs/VALIDATION_TARGET_CANON.md`
 > 현재 인수인계: `docs/CURRENT_HANDOFF_VALIDATION.md`
 > Grill Me ledger: `docs/GRILLME_APPROVAL_MERGE_LEDGER.md`
 > Google Sheet: `02_현재_확정결정`, `04_누락_충돌_감사`, `99_변경이력`
 
-이 문서는 현재 유효한 사용자 승인 결정과 대체 관계를 소유한다. 실제 구현 사실은 main 코드·테스트와 Package 1 구현 증거가 우선하며, 실행하지 않은 사람·시각 검증은 승인으로 간주하지 않는다.
+이 문서는 현재 유효한 사용자 승인 결정과 대체 관계를 소유한다. 실제 최신 main SHA는 GitHub `main` ref에서 읽고, 문서 안의 SHA는 역할이 고정된 병합 증거로만 사용한다. 실행하지 않은 사람·시각 검증은 승인으로 간주하지 않는다.
 
 ## 1. 권위 순서
 
 ```text
 최신 사용자 승인
+→ GitHub 최신 main ref
 → AGENTS.md 보호 규칙
 → 이 문서
 → docs/VALIDATION_TARGET_CANON.md
@@ -31,7 +33,9 @@ source-only·superseded PR은 현재 권위가 아니다.
 
 ```yaml
 base_version: 9.4.0
-main: 80160218d05e79af5442bf27d8fdeb66bcf05723
+branch: main
+package_1_merge: 80160218d05e79af5442bf27d8fdeb66bcf05723
+governance_reconciliation_merge: e15b9d25127170a530f66d5c3462340b806ad51d
 platform: PC_16_9_MOUSE_KEYBOARD
 mobile: DEFERRED_AFTER_PC_VALIDATION
 validation_target: APPROVED_FINAL_PLANNING_BASELINE
@@ -125,8 +129,11 @@ pr_125: MERGED
 pr_125_merge: 595d45454621900e858a903fef0598a03349b794
 pr_126: MERGED
 pr_126_merge: 80160218d05e79af5442bf27d8fdeb66bcf05723
-pr_122: SOURCE_DO_NOT_MERGE_AS_IS
+pr_127: MERGED
+pr_127_merge: e15b9d25127170a530f66d5c3462340b806ad51d
+pr_122: CLOSED_SOURCE_DO_NOT_MERGE_AS_IS
 pr_120: CLOSED_SUPERSEDED
+issue_121: CLOSED_COMPLETED
 ```
 
 PR #122의 유효 승인 내용은 이 문서와 `VALIDATION_TARGET_CANON.md`로 통합 승계했다. PR #122 자체를 병합하지 않는 것이 승인 누락이 아니라 중복·stale 권위 방지다.
