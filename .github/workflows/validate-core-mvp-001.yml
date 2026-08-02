@@ -19,6 +19,10 @@ on:
       - "tests/core_mvp_001_*_test.gd"
       - "tests/run_core_mvp_001_tests.sh"
       - "tests/run_godot_regression.sh"
+      - "docs/CURRENT_CONFIRMED_DECISIONS.md"
+      - "docs/CURRENT_HANDOFF_VALIDATION.md"
+      - "docs/GRILLME_APPROVAL_MERGE_LEDGER.md"
+      - "docs/implementation/2026-08-02-package-2-main-menu-entry-routing-evidence.md"
   workflow_dispatch:
 
 concurrency:
