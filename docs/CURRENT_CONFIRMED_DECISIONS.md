@@ -7,6 +7,8 @@
 > 상세 Target 정본: `docs/VALIDATION_TARGET_CANON.md`
 > 운영 재조정: `docs/decisions/D-2026-08-02-BASE-V94-CANON-RECONCILIATION.md`
 > Package 1 승인: `docs/decisions/D-2026-08-02-PACKAGE-1-PLANNING-APPROVAL.md`
+> 영속 경계: `docs/decisions/D-2026-08-02-VALIDATION-PERSISTENCE-BOUNDARY.md`
+> Package 1 Design: `docs/superpowers/specs/2026-08-02-validation-session-save-isolation-design.md`
 > Google GDD Sheet: `02_현재_확정결정`, `99_변경이력`
 > 제품 구현 권한: `PLANNING_AND_DOCUMENTATION_ONLY`
 
@@ -34,6 +36,9 @@
 - 상태: `APPROVED_FINAL_PLANNING_BASELINE`
 - Canon 복구: `D-2026-08-02-BASE-V94-CANON-RECONCILIATION`
 - Package 1: `D-2026-08-02-PACKAGE-1-PLANNING-APPROVAL`
+- Persistence: `D-2026-08-02-VALIDATION-PERSISTENCE-BOUNDARY`
+- Persistence 관계: `VALIDATION_FULLY_INDEPENDENT_FROM_LEGACY`
+- Package 1 Design: `REVIEW_READY`
 - Package 1 권한: `PLANNING_ONLY / IMPLEMENTATION_NOT_AUTHORIZED`
 - Runtime / Human QA: `NOT_RUN`
 - 플랫폼: `PC / Steam / 16:9 / mouse+keyboard`
@@ -77,6 +82,7 @@ SCREEN-01 무인 메인
 | `D-2026-08-01-LEGACY-PR-DISPOSITION` | SUPERSEDED_IN_PART | 구형 PR 미병합 원칙 유지; PR #120 HOLD는 v9.4 채택으로 대체 | 아래 Decision |
 | `D-2026-08-02-BASE-V94-CANON-RECONCILIATION` | CURRENT_APPROVED_GOVERNANCE | Base v9.4 현행화·PR #120 종료·PR #122 소스 격리·최신 main 정본 복구 | `docs/decisions/D-2026-08-02-BASE-V94-CANON-RECONCILIATION.md` |
 | `D-2026-08-02-PACKAGE-1-PLANNING-APPROVAL` | CURRENT_APPROVED_PLANNING_ONLY | Package 1은 기획·명세·적대적 검토부터 진행하고, 상세 수치·기술 기본값은 권장안, 중요 기획 충돌만 Grill Me | `docs/decisions/D-2026-08-02-PACKAGE-1-PLANNING-APPROVAL.md` |
+| `D-2026-08-02-VALIDATION-PERSISTENCE-BOUNDARY` | APPROVED_PLANNING_BASELINE | Validation 진행·완료 기록은 본편·Legacy와 완전 독립; 자동 공유·가져오기·공용 프로필 없음 | `docs/decisions/D-2026-08-02-VALIDATION-PERSISTENCE-BOUNDARY.md` |
 
 ## 4. 대체·보존 관계
 
@@ -103,6 +109,9 @@ SCREEN-01 무인 메인
 - `mvp-038` 이관 지원: 유지
 - ANNUAL PoC 저장: 유지
 - Validation 저장: `APPROVED_TARGET_NOT_IMPLEMENTED`
+- Validation 완료 기록: Validation 저장에만 유지
+- 본편 자동 공유·즉시 반영·공용 프로필: 금지
+- 향후 가져오기: 실제 근거와 별도 Decision 전까지 `DEFERRED`
 - 강제 변환·무통보 삭제: 금지
 - Package 1 안전 기준: Legacy 파일과 숨은 campaign/economy/relationship 메모리 모두 무변경
 
@@ -124,7 +133,8 @@ SCREEN-01 무인 메인
 현재 적대적 감사:
 
 - `docs/planning/2026-08-02-package-1-planning-adversarial-audit.md`
-- 첫 결정 공백: `D-2026-08-02-VALIDATION-PERSISTENCE-BOUNDARY` (`AWAITING_USER_DECISION`)
+- `D-2026-08-02-VALIDATION-PERSISTENCE-BOUNDARY`: `APPROVED`
+- Package 1 Design: `docs/superpowers/specs/2026-08-02-validation-session-save-isolation-design.md`
 
 ## 6. 시각·테스트 상태
 
@@ -155,15 +165,14 @@ registry_sha256: 693a0dff3f054ecdd653079909e044211473838e73dd9aff07734d1ce5694c5
 
 ```text
 Package 1 기획 적대적 감사 = COMPLETE
-→ D-2026-08-02-VALIDATION-PERSISTENCE-BOUNDARY Grill Me
-→ 답변 즉시 정본·Sheet 동기화
-→ Package 1 Design Spec 작성·self-review
-→ 사용자 Spec 승인
+→ D-2026-08-02-VALIDATION-PERSISTENCE-BOUNDARY = APPROVED
+→ Package 1 Design Spec = REVIEW_READY
+→ 사용자 Spec 검토·승인
 → writing-plans
 → 별도 Package 1 구현 승인
 ```
 
-구현 전에 닫을 P0:
+Package 1 Design이 닫은 P0:
 
 1. Validation 완료 기록과 본편/Legacy의 영속 관계
 2. Session activation·save routing fail-closed 계약
@@ -175,7 +184,7 @@ Package 1 기획 적대적 감사 = COMPLETE
 ## 9. 동기화 상태
 
 - GitHub `main`: `PENDING_PR_MERGE`
-- 최신 정본 브랜치: `PACKAGE_1_PLANNING_SYNC_IN_PROGRESS`
-- Google Sheet: 새 Decision ID 반영 후 재조회 필요
+- 최신 정본 브랜치: `PERSISTENCE_DECISION_AND_DESIGN_SYNC_IN_PROGRESS`
+- Google Sheet: 같은 Decision ID 반영 후 재조회 필요
 - 제품 파일: 변경 없음
 - Runtime / Human: `NOT_RUN`
