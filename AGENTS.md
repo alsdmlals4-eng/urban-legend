@@ -14,6 +14,7 @@
 → AGENTS.md
 → docs/OPERATING_MODEL.md
 → docs/WORK_MODE_AND_SKILL_ROUTING.md
+→ docs/CURRENT_CONFIRMED_DECISIONS.md
 → docs/CURRENT_STATUS.md
 → docs/DOCUMENTATION_MAP.md
 → skills/SKILL_REGISTRY.json
@@ -32,6 +33,8 @@
 → AGENTS.md
 → docs/OPERATING_MODEL.md
 → docs/WORK_MODE_AND_SKILL_ROUTING.md
+→ docs/CURRENT_CONFIRMED_DECISIONS.md
+→ docs/VALIDATION_TARGET_CANON.md  # Validation·제품 Target 관련일 때
 → docs/CURRENT_STATUS.md
 → docs/planning/README.md
 → docs/planning/PROJECT_DIRECTION.md
@@ -68,6 +71,7 @@
 - 시작 전에 목표, 플레이어 가치, 포함·제외 범위, 영향 파일, 저장/UI 위험, 완료 기준과 검증을 짧게 적는다.
 - 실제 `main`의 코드·데이터·테스트가 구현 사실의 우선 근거다.
 - 승인 계획과 전달 패키지는 구현 완료가 아니다. `docs/CURRENT_STATUS.md`의 상태 구분을 따른다.
+- 승인된 제품 Target은 `docs/CURRENT_CONFIRMED_DECISIONS.md`와 해당 분야 정본에서 읽고 실제 구현과 혼합하지 않는다.
 - 기획 작업은 `docs/planning/`의 책임 문서와 실제 파일을 함께 확인한다.
 - 가장 작은 end-to-end 변경을 구현하고 자동·수동 검증 뒤 `main`에 통합한다.
 - 사용자 변경과 dirty worktree를 보존한다.
@@ -86,7 +90,10 @@
 
 ## 문서 책임 원본
 
-- 현재 구현과 승인 계획: `docs/CURRENT_STATUS.md`
+- 현재 승인 결정: `docs/CURRENT_CONFIRMED_DECISIONS.md`
+- Validation 상세 Target: `docs/VALIDATION_TARGET_CANON.md`
+- 현재 구현과 검증 상태: `docs/CURRENT_STATUS.md`
+- Validation 현재 인수인계: `docs/CURRENT_HANDOFF_VALIDATION.md`
 - 기획 인수인계: `docs/planning/README.md`
 - 프로젝트 핵심 방향: `docs/planning/PROJECT_DIRECTION.md`
 - 서사·대화·관계: `docs/planning/NARRATIVE_CONTENT_PLAN.md`
@@ -122,6 +129,7 @@
 - 관계는 연애 호감도 숫자가 아니라 선택 기억과 대사·이벤트 변화로 표현한다.
 - 아트·표정·컷인·UI는 정보와 감정을 강화하되 게임 상태의 소유자가 아니다.
 - Godot 4.7 stable, GDScript, PC 16:9, 마우스·키보드가 기본이다. `.godot/`은 수정하지 않는다.
+- 모바일은 PC Validation 통과 뒤 별도 Decision 전까지 현행 범위에 포함하지 않는다.
 
 ## 조건부 문서
 
@@ -135,7 +143,7 @@
 - 외부 모델 위임: `docs/AI_DELEGATION_WORKFLOW.md`
 - 기존 사례 재사용: `docs/planning/REFERENCE_CASES.md`
 - 최신 외부 사례 비교: `docs/BENCHMARKING_REFERENCE_GUIDE.md`
-- 계정 교대·체크포인트: `docs/CURRENT_HANDOFF.md`, `docs/CODEX_ACCOUNT_HANDOFF.md`
+- 계정 교대·체크포인트: `docs/CURRENT_HANDOFF_VALIDATION.md`, `docs/CURRENT_HANDOFF.md`, `docs/CODEX_ACCOUNT_HANDOFF.md`
 - 공용 기획 방법 승격: Base `docs/knowledge/`, `docs/BASE_RULES_VERSION.md`
 
 작업 조건이 없으면 해당 문서를 읽지 않는다.
@@ -160,10 +168,13 @@ Base를 갱신한 뒤 프로젝트의 `docs/BASE_RULES_VERSION.md`에 기준 커
 - 큰 MVP 종료 시 `docs/CURRENT_STATUS.md`, `MVP_ROADMAP.md`, `TEST_CHECKLIST.md`, 해당 `docs/planning/` 문서를 갱신한다.
 - 5개 MVP마다 문서 중복·구문서·깨진 참조·불필요한 기본 읽기를 감사한다.
 
-## BCA Sheet·GPT 이미지 생성·검수
+## Base v9.4·Sheet·이미지 생성·검수
 
-- Base 기준은 `alsdmlals4-eng/Base@c987647d01ad2baa028a16e03d85ddfc1572a727`와 `VERTICAL_SLICE_INTEGRATED_EXECUTION_PROMPT_v8.md`다.
-- Sheet는 `PROJECT_SHEET_CONFIGURED`; URL 확인 전 신규 Sheet를 추정 생성하지 않는다.
+- 현행 Base 기준은 `docs/BASE_RULES_VERSION.md`의 Base `9.4.0` payload·trusted evidence·registry hash다.
+- 프로젝트 main 채택 커밋은 `7277b9cececa56532f7b0d11c1a02fd3d5642750`이다.
+- `c987647d01ad2baa028a16e03d85ddfc1572a727`와 `VERTICAL_SLICE_INTEGRATED_EXECUTION_PROMPT_v8.md`는 Legacy compatibility input이며 현행 Base 기준으로 사용하지 않는다.
+- Sheet는 `PROJECT_SHEET_CONFIGURED`지만 GitHub와 충돌할 때 `SHEET_GITHUB_CONFLICT / NO_AUTOMATIC_OVERWRITE`를 적용한다.
+- 승인된 주요 변경은 동일 Decision ID로 GitHub 책임 원본과 연결 Sheet에 기록하고 Commit·범위를 남긴다.
 - GPT는 기획 중 세계관·인물·에피소드·UI 목업과 기획 종료 Demo·상점 후보를 생성할 수 있다.
 - 생성 결과는 자동 최종 자산이 아니며 `docs/IMAGE_ASSET_WORKFLOW.md`의 검수·manifest·Godot 적용 Gate를 통과해야 한다.
 - 각 단계 뒤 `repository-wide-audit`로 stale 이미지·구형 Prompt·untouched 소비자를 검수한다.
