@@ -6,6 +6,8 @@ const GameStateScript = preload("res://scripts/core/validation_game_state.gd")
 const LEGACY_PATH := "user://urban_legend_save.json"
 
 var _failures: Array[String] = []
+var _created_session := false
+var _created_game_state := false
 
 
 func _init() -> void:
@@ -18,15 +20,24 @@ func _run() -> void:
 	_expect(session_path == "*res://scripts/core/validation_session.gd", "ValidationSession must be registered in project.godot")
 	_expect(game_state_path == "*res://scripts/core/validation_game_state.gd", "GameState must use the isolated wrapper")
 
-	# SceneTree --script does not instantiate project autoloads, so mount the same scripts and names.
+	# Godot may instantiate project autoloads before a SceneTree --script test runs.
+	# Reuse them when present; only mount equivalents when the runner did not create them.
 	var root := get_root()
-	var session = SessionScript.new()
-	session.name = "ValidationSession"
-	root.add_child(session)
-	var game_state = GameStateScript.new()
-	game_state.name = "GameState"
-	root.add_child(game_state)
+	var session = root.get_node_or_null("ValidationSession")
+	if session == null:
+		session = SessionScript.new()
+		session.name = "ValidationSession"
+		root.add_child(session)
+		_created_session = true
+	var game_state = root.get_node_or_null("GameState")
+	if game_state == null:
+		game_state = GameStateScript.new()
+		game_state.name = "GameState"
+		root.add_child(game_state)
+		_created_game_state = true
 
+	_expect(root.get_node_or_null("ValidationSession") == session, "test must use the production ValidationSession root node")
+	_expect(root.get_node_or_null("GameState") == game_state, "test must use the production GameState root node")
 	_expect(session.has_method("create"), "session must expose the approved create API")
 	_expect(session.has_method("invalidate_token_for_test"), "session must expose fail-closed test invalidation")
 	_expect(game_state.has_method("snapshot_hidden_legacy_state_for_test"), "GameState must expose hidden-state evidence")
@@ -38,6 +49,7 @@ func _run() -> void:
 	var paths: Dictionary = session.get_repository_paths()
 	Support.remove_repository_paths(paths)
 	Support.remove_path(LEGACY_PATH)
+	session.deactivate()
 	game_state.reset_run_state()
 	_expect(game_state.save_game(), "inactive Legacy save should succeed")
 	var legacy_before := Support.read_bytes(LEGACY_PATH)
@@ -80,8 +92,10 @@ func _run() -> void:
 func _cleanup(game_state: Node, session: Node, paths: Dictionary) -> void:
 	Support.remove_repository_paths(paths)
 	Support.remove_path(LEGACY_PATH)
-	game_state.queue_free()
-	session.queue_free()
+	if _created_game_state:
+		game_state.queue_free()
+	if _created_session:
+		session.queue_free()
 
 
 func _expect(condition: bool, message: String) -> void:
