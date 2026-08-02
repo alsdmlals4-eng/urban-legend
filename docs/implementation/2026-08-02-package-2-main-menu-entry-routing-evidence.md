@@ -1,10 +1,10 @@
 # Package 2 메인 메뉴 진입·이어하기·라우팅 구현 증거
 
-> 상태: `IMPLEMENTATION_COMPLETE / AUTOMATED_CODE_CI_VERIFIED / FINAL_EXACT_HEAD_VERIFICATION_TRIGGERED`
+> 상태: `IMPLEMENTATION_COMPLETE / LATEST_COMPLETED_EXACT_HEAD_PASS / FINAL_DOCUMENT_SYNC_TRIGGERED`
 > 구현 Decision: `D-2026-08-02-PACKAGE-2-IMPLEMENTATION-APPROVAL`
 > Planning PR: #129
 > Implementation PR: #131
-> 코드 검증 HEAD: `e24aac73a81bfb1725c60dd640a26fa91527647a`
+> 코드 검증 기준: GitHub PR #131 최신 HEAD
 > 병합 권한: `NOT_AUTHORIZED`
 
 ## 1. 구현 범위
@@ -184,21 +184,38 @@ production_expansion: NOT_APPROVED
 ## 8. 남은 Gate
 
 ```text
-최종 implementation HEAD에서 Docs·BCA·CORE·ANNUAL 재검증
-→ PR diff·review thread·scope 적대적 감사
+PR diff·review thread·Sheet 적대적 감사
 → 사용자 별도 병합 승인
 → PR #129 planning 병합
-→ PR #131 main retarget·fresh exact-head CI
+→ PR #131 main retarget
+→ stacked BCA planning-base 허용 제거
+→ fresh exact-head Docs·BCA·CORE·ANNUAL
 → PR #131 구현 병합
 ```
 
 병합 전에는 Package 2를 main 완료 상태로 주장하지 않는다.
 
-## 9. 최종 exact-head 검증 트리거
+## 9. 최근 완료 exact-head 판정
 
-current 결정·인수인계·ledger·구현 증거를 한 상태로 맞춘 뒤 이 문서 변경을 공통 workflow 트리거로 사용한다.
+current 결정·인수인계·ledger·구현 증거를 한 상태로 맞춘 직전 exact-head에서 다음 검증이 모두 완료됐다.
 
-최종 판정은 PR #131의 실제 최신 HEAD에서 다음 네 workflow가 모두 완료된 뒤 PR 댓글과 Google Sheet에 기록한다.
+```yaml
+documentation_run_30741361754: PASS
+bca_run_30741361726: PASS
+core_run_30741361717: PASS
+annual_run_30741361720: PASS
+package_1_focused: 4_OF_4_PASS
+package_2_focused: 5_OF_5_PASS
+full_godot_regression: 58_OF_58_PASS
+review_threads: 0
+submitted_reviews: 0
+```
+
+## 10. 최종 문서 동기화 트리거
+
+이 문서 갱신은 current 결정·인수인계·ledger에 최근 완료 판정을 반영한 뒤 수행하는 마지막 branch 파일 변경이다. 이 커밋의 실제 SHA는 GitHub PR #131 ref에서 읽으며 문서에 자기참조로 고정하지 않는다.
+
+이 변경 이후 branch 파일은 더 수정하지 않고, 동일 최종 HEAD에서 다음 검증을 다시 완료한 결과를 PR 댓글과 Google Sheet에 기록한다.
 
 ```yaml
 documentation_contracts: REQUIRED_PASS
@@ -206,7 +223,3 @@ bca_adoption: REQUIRED_PASS
 core_workflow: REQUIRED_PASS
 annual_workflow: REQUIRED_PASS
 ```
-
-## 10. stacked BCA 재검증 트리거
-
-BCA branch filter 보정 후 이 문서를 다시 변경해 Docs·BCA·CORE·ANNUAL이 동일한 최신 PR HEAD를 검증하도록 한다. 실행 결과와 실제 HEAD는 PR #131 댓글·Google Sheet가 소유한다.
