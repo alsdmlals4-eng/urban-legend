@@ -1,62 +1,49 @@
 # 괴이기록국 Validation 현재 인수인계
 
-> 상태: `PACKAGE_1_DESIGN_APPROVED / IMPLEMENTATION_PLAN_REVIEW_READY`
+> 상태: `PACKAGE_1_MERGED / AUTOMATED_CI_VERIFIED / PACKAGE_2_PLANNING_NEXT`
 > 갱신일: 2026-08-02
-> Package 1 기획 승인: `D-2026-08-02-PACKAGE-1-PLANNING-APPROVAL`
-> Persistence 승인: `D-2026-08-02-VALIDATION-PERSISTENCE-BOUNDARY`
-> Design 승인: `D-2026-08-02-PACKAGE-1-DESIGN-SPEC-APPROVAL`
-> Parent: `D-2026-08-02-BASE-V94-CANON-RECONCILIATION`
-> Proposal: `P-2026-08-02-VALIDATION-CHANGE-PROPOSAL`
-> 기준 main: `7277b9cececa56532f7b0d11c1a02fd3d5642750`
-> 계획 브랜치 기준점: `df2e2fa13f7a4d65f047700b0b25aa7ced10b21f`
-> 제품 구현 권한: `NOT_AUTHORIZED`
+> 현재 main: `80160218d05e79af5442bf27d8fdeb66bcf05723`
+> Canon merge: PR #125 / `595d45454621900e858a903fef0598a03349b794`
+> Implementation merge: PR #126 / `80160218d05e79af5442bf27d8fdeb66bcf05723`
+> Grill Me future counter: `0 / 10`
 
-## 현재 읽기 순서
+## 읽기 순서
 
 ```text
 START_HERE.md
 → AGENTS.md
 → docs/CURRENT_CONFIRMED_DECISIONS.md
 → docs/VALIDATION_TARGET_CANON.md
-→ docs/decisions/D-2026-08-02-PACKAGE-1-PLANNING-APPROVAL.md
+→ docs/GRILLME_APPROVAL_MERGE_LEDGER.md
 → docs/decisions/D-2026-08-02-VALIDATION-PERSISTENCE-BOUNDARY.md
-→ docs/decisions/D-2026-08-02-PACKAGE-1-DESIGN-SPEC-APPROVAL.md
-→ docs/planning/2026-08-02-package-1-planning-adversarial-audit.md
 → docs/superpowers/specs/2026-08-02-validation-session-save-isolation-design.md
 → docs/superpowers/plans/2026-08-02-validation-session-save-isolation-implementation-plan.md
-→ docs/superpowers/plans/2026-08-02-validation-change-proposal.md
-→ docs/CURRENT_STATUS.md
-→ 실제 main 코드·데이터·테스트
+→ docs/implementation/2026-08-02-package-1-session-save-isolation-evidence.md
+→ docs/implementation/2026-08-02-package-1-retarget-merge-gate.md
+→ 실제 main 코드·테스트
 ```
-
-읽기 전용 기술 Plan은 완료 증거로 보존한다.
-
-- `docs/superpowers/plans/2026-08-02-validation-read-only-technical-plan.md`
 
 ## 현재 상태
 
 ```yaml
 base: 9.4.0
-base_adoption_main: 7277b9cececa56532f7b0d11c1a02fd3d5642750
-planning: PACKAGE_1_PLANNING_APPROVED
-persistence_boundary: APPROVED_FULLY_INDEPENDENT
-package_1_design: APPROVED
-implementation_plan: REVIEW_READY
-planning_authority: SAFE_PLANNING_FIXES
-canon: RECONCILED_ON_BRANCH_PENDING_MAIN
-technical_readback: COMPLETE
-change_proposal: READY
-package_1_adversarial_audit: COMPLETE
-implementation: CURRENT_IMPLEMENTATION_LEGACY
-validation_build: NOT_AUTHORIZED
-ci: NOT_RUN_FOR_PACKAGE_1_IMPLEMENTATION
-runtime: NOT_RUN
-human_qa: NOT_RUN
+main: 80160218d05e79af5442bf27d8fdeb66bcf05723
+canon: MERGED
+package_1_planning: APPROVED_AND_MERGED
+persistence_boundary: APPROVED_AND_IMPLEMENTED
+package_1_design: APPROVED_AND_EXECUTED
+package_1_implementation: MERGED
+package_1_ci: PASS
+validation_focused: 4_OF_4_PASS
+full_godot_regression: 53_OF_53_PASS
+package_2: NOT_PLANNED_YET
+runtime_human_qa: NOT_RUN
 new_player_validation: NOT_RUN
+visual_1280x720_validation: NOT_RUN
 poc_passed: NOT_DECLARED
 production_expansion: NOT_APPROVED
 platform: PC_16_9_MOUSE_KEYBOARD
-mobile: FUTURE_CONSIDERATION_NOT_IN_CURRENT_SCOPE
+mobile: DEFERRED_AFTER_PC_VALIDATION
 ```
 
 ## 승인 Target
@@ -76,131 +63,106 @@ mobile: FUTURE_CONSIDERATION_NOT_IN_CURRENT_SCOPE
 
 상세는 `docs/VALIDATION_TARGET_CANON.md`가 소유한다.
 
-## 확정된 영속 관계
+## Package 1에서 구현된 것
 
-`D-2026-08-02-VALIDATION-PERSISTENCE-BOUNDARY`에서 권장안 A를 승인했다.
+### ValidationSaveRepository
+
+- `user://urban_legend_validation_save.json` 독립 namespace
+- Legacy 경로 접근 차단
+- temp write → readback → replace
+- 정상 backup 1세대
+- corrupt·schema·older/newer·interrupted·recoverable 판정
+- 명시적 quarantine
+
+### ValidationSession
+
+- create·activate·save·load·suspend·resume·complete·abandon·delete lifecycle
+- token·episode·lifecycle fail-closed
+- completion apply-once ID
+- hidden Legacy memory guard
+
+### GameState adapter
+
+- 기존 `scripts/core/game_state.gd` 본체를 직접 수정하지 않음
+- `validation_game_state.gd` 상속 wrapper
+- inactive 시 기존 save 유지
+- active valid 시 Validation save routing
+- active invalid 시 Validation·Legacy 양쪽 저장 차단
+- field-level runtime whitelist와 restore prevalidation
+
+### Autoload·검증
 
 ```text
-Validation 진행·완료 기록 = Validation 저장에만 유지
-Legacy·본편 campaign/economy/relationship/report/reward/unlock = 무변경
-본편 자동 공유 = 금지
-공용 프로필 = 생성하지 않음
-본편 가져오기 = 별도 Decision 전까지 보류
+UrbanLegendState
+→ ValidationSession
+→ GameState(validation_game_state.gd)
+→ MCP helper
 ```
 
-Validation 완료는 본편 진행 완료나 보상 획득을 뜻하지 않는다.
+- Documentation contracts PASS
+- BCA Adoption PASS
+- Godot 4.7.1 import PASS
+- Validation focused 4/4 PASS
+- CORE·ANNUAL focused PASS
+- full Godot regression 53/53 PASS
 
-## 승인된 Package 1 Design
+## 아직 구현되지 않은 것
 
-Design Spec:
+- main-menu의 Legacy/Validation 시작·이어하기 구분
+- Validation 전용 축약 준비 Scene
+- Validation 전용 Reasoning Scene
+- Validation 전용 결과 Scene
+- 전체 SCREEN-01→SIT-008→메인 복귀 routing
+- 신규 플레이어 검증
+- 1280×720 시각·입력 검증
+- 모바일
 
-- `docs/superpowers/specs/2026-08-02-validation-session-save-isolation-design.md`
+이 항목들은 Package 1 완료 주장에 포함하지 않는다.
 
-승인 Decision:
-
-- `docs/decisions/D-2026-08-02-PACKAGE-1-DESIGN-SPEC-APPROVAL.md`
-
-핵심 계약:
-
-1. Validation Session 활성은 explicit token·version·episode·lifecycle 검증으로만 성립한다.
-2. 유효하지 않은 active Session은 Legacy로 fallback하지 않고 양쪽 저장을 모두 금지한다.
-3. runtime snapshot은 denylist가 아니라 field-level whitelist로 구성한다.
-4. Legacy 파일 bytes와 campaign/economy/relationship/faction/market 메모리를 모두 무변경으로 보호한다.
-5. corrupt 저장은 자동 삭제하지 않고 격리 보존한다.
-6. exact/migratable/incompatible/corrupt/interrupted/recoverable 판정 Matrix를 사용한다.
-7. create·activate·save·load·suspend·resume·abandon·delete·complete·deactivate lifecycle을 분리한다.
-8. temp write→검증→replace와 정상 backup 1세대를 권장 기본값으로 둔다.
-9. Package 1은 Session·Save 계약까지만 담당하며 메뉴 표시 UX는 Package 2다.
-
-권장 기본값:
+## GitHub 상태
 
 ```yaml
-validation_slot_count: 1
-save_version: validation-save-v1
-normal_backup_generations: 1
-corrupt_save_policy: PRESERVE_AND_QUARANTINE_NO_AUTO_DELETE
-incompatible_newer_save_policy: INSPECT_ONLY_NO_DOWNGRADE
-activation_policy: EXPLICIT_FAIL_CLOSED
-hidden_state_contract: FILE_AND_MEMORY_NO_EFFECT
+pr_125: MERGED
+pr_126: MERGED
+pr_122: SOURCE_DO_NOT_MERGE_AS_IS
+pr_120: CLOSED_SUPERSEDED
 ```
 
-## Package 1 Implementation Plan
+PR #122의 현재 유효한 승인 내용은 `CURRENT_CONFIRMED_DECISIONS`와 `VALIDATION_TARGET_CANON`으로 승계했다. source PR 자체는 stale·중복 권위를 되살리므로 병합하지 않는다.
 
-계획 원본:
+## Grill Me 운영
 
-- `docs/superpowers/plans/2026-08-02-validation-session-save-isolation-implementation-plan.md`
+- 역사 승인분: `HISTORICAL_BATCH_0` 완료
+- 미래 카운터: `0 / 10`
+- 승인된 Grill Me Decision ID마다 +1
+- 10개 도달 시 GitHub·Sheet·PR·CI 최종 적대적 검토 후 병합
+- source-only·superseded·blocked PR은 제외
+- Canon과 구현은 별도 PR·별도 승인·별도 검증
 
-계획 상태: `REVIEW_READY`
+책임 원본:
 
-작업 단위:
-
-1. 별도 Validation repository와 atomic persistence
-2. Session lifecycle·completion idempotency
-3. GameState field-level whitelist와 hidden-state guard
-4. Autoload·active-session fail-closed save routing
-5. corrupt/version/interrupted/backup·양방향 no-effect 적대적 Matrix
-6. focused 4-entry·CORE·ANNUAL·full 53-entry 검증 배관
-7. exact-head evidence·rollback·동일 Decision ID 정본·Sheet 동기화
-
-실행 기본 경로:
-
-```text
-PR #125 문서 정본 병합
-→ 최신 main exact SHA 확인
-→ isolated worktree/branch agent/package-1-session-save-isolation
-→ RED→GREEN 구현
-→ 별도 Draft implementation PR
-```
-
-PR #125 병합 전에 구현을 승인할 경우 exact HEAD 기반 stacked PR만 허용하고, 문서 PR 병합 후 최신 main으로 rebase·retarget한다. PR #125 브랜치에 제품 코드를 혼합하지 않는다.
-
-## 적대적 검토로 차단한 실패
-
-- Validation repository의 Legacy path 접근
-- invalid active Session의 Legacy fallback
-- denylist 누락으로 campaign·경제·보고서가 저장되는 문제
-- 검증 전 부분 restore
-- 숨은 메모리 상태 drift
-- corrupt/newer 저장의 자동 삭제·덮어쓰기
-- Legacy clear의 Validation 파일 삭제
-- completion 중복 적용
-- Package 2 이상 UI·콘텐츠 범위 혼입
-- stale regression entrypoint count
-
-## 계획 자기검수 결과
-
-- 승인 Spec 요구사항을 7개 Task에 전부 매핑했다.
-- repository·Session·GameState result/signature와 snapshot key를 일치시켰다.
-- 초기 계획에서 미정의 helper와 marker-scan 오탐 위험을 발견해 폐기하고 같은 경로의 완전한 단일 계획으로 교체했다.
-- 실제 `project.godot`, `game_state.gd`, 49-entry runner, CORE·ANNUAL workflow를 기준으로 경로와 명령을 작성했다.
-- 제품 경로 diff는 0이다.
+- `docs/decisions/D-2026-08-02-GRILLME-10-MERGE-CADENCE.md`
+- `docs/GRILLME_APPROVAL_MERGE_LEDGER.md`
 
 ## 다음 Gate
 
 ```text
-Package 1 Design Spec = APPROVED
-Implementation Plan = REVIEW_READY
-→ 사용자 Package 1 구현 승인
-→ PR #125 병합 또는 stacked 실행 경계 확인
-→ isolated worktree/branch
-→ TDD 구현
+Package 2 범위 기획
+→ main-menu entry·continue UX
+→ ValidationSession 생성/재개 routing
+→ Legacy 저장 비파괴 계약 유지
+→ 전용 준비·추론·결과 Scene의 최소 범위 확정
+→ 적대적 검토
+→ 사용자 구현 승인
 ```
 
-현재 금지:
+## 미검증 경계
 
-- GDScript·project.godot·tests·workflow 구현
-- Codex 실행
-- Draft 해제·병합·auto-merge
-- Runtime·CI·Human PASS 주장
-
-## GitHub·Sheet 상태
-
-- PR #120: `CLOSED_UNMERGED / SUPERSEDED_BY_BASE_V9_4_MAIN`
-- PR #122: `SOURCE_BRANCH / DO_NOT_MERGE_AS_IS`
-- Draft PR #125: Canon·Audit·Package 1 Design·Implementation Plan surface
-- 브랜치: `agent/v9-4-canon-reconciliation`
-- 계획 기준점: `df2e2fa13f7a4d65f047700b0b25aa7ced10b21f`
-- 최종 exact HEAD는 PR #125 본문·댓글과 Sheet 변경이력이 소유한다.
-- 변경: `15 documentation files / product paths 0`
-- PR 병합: `NOT_REQUESTED`
-- Google Sheet: `D-2026-08-02-PACKAGE-1-DESIGN-SPEC-APPROVAL`과 Implementation Plan 상태를 exact HEAD로 재조회한다.
+```yaml
+local_runtime: NOT_RUN
+human_qa: NOT_RUN
+new_player_validation: NOT_RUN
+visual_1280x720_validation: NOT_RUN
+poc_passed: NOT_DECLARED
+production_expansion: NOT_APPROVED
+```
