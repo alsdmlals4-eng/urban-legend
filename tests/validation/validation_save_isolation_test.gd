@@ -9,6 +9,10 @@ var _failures: Array[String] = []
 
 
 func _init() -> void:
+	call_deferred("_run")
+
+
+func _run() -> void:
 	var session_path := String(ProjectSettings.get_setting("autoload/ValidationSession", ""))
 	var game_state_path := String(ProjectSettings.get_setting("autoload/GameState", ""))
 	_expect(session_path == "*res://scripts/core/validation_session.gd", "ValidationSession must be registered in project.godot")
