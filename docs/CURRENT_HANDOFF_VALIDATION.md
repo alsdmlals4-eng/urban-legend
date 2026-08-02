@@ -2,16 +2,20 @@
 
 > 상태: `PACKAGE_1_MERGED / AUTOMATED_CI_VERIFIED / PACKAGE_2_PLANNING_NEXT`
 > 갱신일: 2026-08-02
-> 현재 main: `80160218d05e79af5442bf27d8fdeb66bcf05723`
+> 작업 branch: `main`
 > Canon merge: PR #125 / `595d45454621900e858a903fef0598a03349b794`
 > Implementation merge: PR #126 / `80160218d05e79af5442bf27d8fdeb66bcf05723`
+> Governance reconciliation merge: PR #127 / `e15b9d25127170a530f66d5c3462340b806ad51d`
 > Grill Me future counter: `0 / 10`
+
+실제 최신 main SHA는 작업 시작 시 GitHub `main` ref에서 읽는다. 위 SHA는 역할이 고정된 병합 증거다.
 
 ## 읽기 순서
 
 ```text
 START_HERE.md
 → AGENTS.md
+→ GitHub latest main ref
 → docs/CURRENT_CONFIRMED_DECISIONS.md
 → docs/VALIDATION_TARGET_CANON.md
 → docs/GRILLME_APPROVAL_MERGE_LEDGER.md
@@ -27,7 +31,9 @@ START_HERE.md
 
 ```yaml
 base: 9.4.0
-main: 80160218d05e79af5442bf27d8fdeb66bcf05723
+branch: main
+package_1_merge: 80160218d05e79af5442bf27d8fdeb66bcf05723
+governance_reconciliation_merge: e15b9d25127170a530f66d5c3462340b806ad51d
 canon: MERGED
 package_1_planning: APPROVED_AND_MERGED
 persistence_boundary: APPROVED_AND_IMPLEMENTED
@@ -124,8 +130,10 @@ UrbanLegendState
 ```yaml
 pr_125: MERGED
 pr_126: MERGED
-pr_122: SOURCE_DO_NOT_MERGE_AS_IS
+pr_127: MERGED
+pr_122: CLOSED_SOURCE_DO_NOT_MERGE_AS_IS
 pr_120: CLOSED_SUPERSEDED
+issue_121: CLOSED_COMPLETED
 ```
 
 PR #122의 현재 유효한 승인 내용은 `CURRENT_CONFIRMED_DECISIONS`와 `VALIDATION_TARGET_CANON`으로 승계했다. source PR 자체는 stale·중복 권위를 되살리므로 병합하지 않는다.
@@ -149,7 +157,7 @@ PR #122의 현재 유효한 승인 내용은 `CURRENT_CONFIRMED_DECISIONS`와 `V
 ```text
 Package 2 범위 기획
 → main-menu entry·continue UX
-→ ValidationSession 생성/재개 routing
+→ Validation 생성·재개 routing
 → Legacy 저장 비파괴 계약 유지
 → 전용 준비·추론·결과 Scene의 최소 범위 확정
 → 적대적 검토
