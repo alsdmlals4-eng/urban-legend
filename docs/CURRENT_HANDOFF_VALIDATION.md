@@ -1,11 +1,12 @@
 # 괴이기록국 Validation 현재 인수인계
 
-> 상태: `CHANGE_PROPOSAL_READY_PENDING_IMPLEMENTATION_APPROVAL`
+> 상태: `PACKAGE_1_PLANNING_APPROVED / GRILL_ME_PENDING`
 > 갱신일: 2026-08-02
-> Decision: `D-2026-08-02-BASE-V94-CANON-RECONCILIATION`
+> Decision: `D-2026-08-02-PACKAGE-1-PLANNING-APPROVAL`
+> Parent: `D-2026-08-02-BASE-V94-CANON-RECONCILIATION`
 > Proposal: `P-2026-08-02-VALIDATION-CHANGE-PROPOSAL`
 > 기준 main: `7277b9cececa56532f7b0d11c1a02fd3d5642750`
-> 제품 구현 권한: `NONE`
+> 제품 구현 권한: `PLANNING_AND_DOCUMENTATION_ONLY`
 
 ## 현재 읽기 순서
 
@@ -14,10 +15,10 @@ START_HERE.md
 → AGENTS.md
 → docs/CURRENT_CONFIRMED_DECISIONS.md
 → docs/VALIDATION_TARGET_CANON.md
-→ docs/CURRENT_STATUS.md
-→ docs/PROJECT_CORE.md
-→ docs/planning/POST_V94_CANON_RECONCILIATION_AUDIT_2026-08-02.md
+→ docs/decisions/D-2026-08-02-PACKAGE-1-PLANNING-APPROVAL.md
+→ docs/planning/2026-08-02-package-1-planning-adversarial-audit.md
 → docs/superpowers/plans/2026-08-02-validation-change-proposal.md
+→ docs/CURRENT_STATUS.md
 → 실제 main 코드·데이터·테스트
 ```
 
@@ -30,10 +31,13 @@ START_HERE.md
 ```yaml
 base: 9.4.0
 base_adoption_main: 7277b9cececa56532f7b0d11c1a02fd3d5642750
-planning: APPROVED_FINAL_PLANNING_BASELINE
+planning: PACKAGE_1_PLANNING_APPROVED
+planning_authority: SAFE_PLANNING_FIXES
 canon: RECONCILED_ON_BRANCH_PENDING_MAIN
 technical_readback: COMPLETE
-change_proposal: READY_FOR_ADVERSARIAL_REVIEW
+change_proposal: READY
+package_1_adversarial_audit: COMPLETE
+first_grill_me: D-2026-08-02-VALIDATION-PERSISTENCE-BOUNDARY
 implementation: CURRENT_IMPLEMENTATION_LEGACY
 validation_build: NOT_AUTHORIZED
 runtime: NOT_RUN
@@ -61,6 +65,26 @@ mobile: FUTURE_CONSIDERATION_NOT_IN_CURRENT_SCOPE
 ```
 
 상세는 `docs/VALIDATION_TARGET_CANON.md`가 소유한다.
+
+## 이번 승인 해석
+
+사용자의 `Package 1 승인`은 최신 문장인 “기획 작성부터 진행”에 따라 **Package 1 설계·명세·적대적 감사 승인**으로 기록했다.
+
+허용:
+
+- Session·Save isolation 기획 작성
+- 상태·저장·복귀·손상·버전·롤백 계약 보완
+- 상세 수치·기술 기본값의 GPT 권장안 적용
+- 중요 제품 결정만 Grill Me
+- GitHub 정본·PR·Sheet 동기화
+
+금지:
+
+- GDScript·Scene·JSON·Schema·Workflow 구현
+- Codex Build Goal
+- Package 2 이상 구현
+- PR 병합
+- Runtime·Human·POC 통과 선언
 
 ## 기술 검수 결론
 
@@ -90,65 +114,63 @@ mobile: FUTURE_CONSIDERATION_NOT_IN_CURRENT_SCOPE
 
 `GameState`는 Legacy 도메인 runtime engine으로 유지하고, ValidationSession은 stage·checkpoint·return/focus·별도 저장·완료 요약·effect ledger만 소유한다.
 
-## 기존 계획 처리
+## Package 1 적대적 감사 보완
 
-- 별도 저장·Legacy 보존·RED 우선: 유지
-- `ValidationFlowState`의 전 도메인 상태 소유: 변경
-- 별도 범용 Text Novel Shell: 제거
-- Legacy preparation 단순 모드 숨김: 전용 축약 준비 Scene으로 대체
-- Legacy result 모드 분기: 전용 Validation 결과 Scene으로 대체
-- route/battle: 기존 검증된 전문 절차를 명시적 Validation adapter로 재사용
-- 구형 테스트 파일명: 실제 49-entry regression 기준으로 교체
+### 자동 반영할 P0
 
-상세 `KEEP / CHANGE / REPLACE` 표와 예상 파일·RED 테스트·롤백은 Change Proposal이 소유한다.
+1. Legacy 파일 bytes뿐 아니라 campaign·economy·relationship 런타임 메모리도 무변경
+2. Session 활성은 explicit token·version·episode 검증, 불일치 시 어느 저장에도 쓰지 않는 fail-closed
+3. runtime snapshot은 field-level whitelist와 기본값·제외 이유를 명시
+4. corrupt save는 자동 삭제하지 않고 격리 보존
+5. exact/migratable/newer-incompatible/corrupt 버전 matrix
+6. reset·abandon·delete·completion lifecycle 명령 분리
+7. temp write→검증→replace와 정상 백업 1세대
+8. Package 1은 headless Session·Save 계약까지만, 메뉴 표시 UX는 Package 2
 
-## 현재 P0 위험
+### 권장 기본값
 
-1. 기존 Scene의 자동 `save_game()`가 Validation 중 Legacy 파일을 덮어쓸 수 있음
-2. 준비 UI를 숨겨도 캠페인·일상·시장 상태가 초기화·변경될 수 있음
-3. Legacy 결과 Scene 재진입이 보고서·캠페인·보상을 다시 적용할 수 있음
-4. 신규 Flow state가 battle의 가설·근거·응답 상태를 중복 소유할 수 있음
-5. runtime route 문구 override와 JSON 정본이 충돌할 수 있음
-6. 사람 검증 없이 Build Ready·POC Passed로 오판할 수 있음
+```yaml
+validation_slot_count: 1
+save_version: validation-save-v1
+normal_backup_generations: 1
+corrupt_save_policy: PRESERVE_AND_QUARANTINE_NO_AUTO_DELETE
+incompatible_newer_save_policy: INSPECT_ONLY_NO_DOWNGRADE
+activation_policy: EXPLICIT_FAIL_CLOSED
+hidden_state_contract: FILE_AND_MEMORY_NO_EFFECT
+```
 
-## 다음 작업
+모두 `RECOMMENDED_DEFAULT` 또는 `TEST_VALUE`이며 실행·플레이테스트 증거에 따라 조정한다.
 
-현재 필요한 승인은 **Package 1 Session·Save isolation** 한정이다.
+## 현재 Grill Me
 
-승인 대상:
+Decision 후보: `D-2026-08-02-VALIDATION-PERSISTENCE-BOUNDARY`
 
-- `project.godot`에 ValidationSession Autoload 추가
-- 별도 `user://urban_legend_validation_save.json`
-- `GameState`의 최소 whitelist runtime adapter
-- Validation 활성 시 자동 save를 별도 저장으로 라우팅
-- Legacy save/load/clear의 비활성 mode 의미 보존
-- Legacy bytes 불변·corrupt 격리·full regression RED/GREEN 테스트
+질문: Validation 완료 기록과 본편/Legacy 진행은 어떤 영속 관계를 가져야 하는가.
 
-승인하지 않은 범위:
+- A: 완전 독립 Validation 기록
+- B: 완료 뒤 명시적 1회 가져오기
+- C: 공용 프로필에 일부 기록만 공유
 
-- main menu UI 변경
-- 새 준비·Reasoning·결과 Scene
-- episode JSON
-- 노선·회수 제품 변경
-- Codex Build 전체 패키지
-- PR 병합
+GPT 권장안: A. 현재 검증 목적·Legacy 보존·숨은 상태 무부작용에 가장 적합하고 향후 명시적 migration을 추가하기도 쉽다.
 
-다음 Gate:
+## 다음 Gate
 
 ```text
-Package 1 범위 승인
-→ RED Legacy-byte safety
-→ 최소 구현
-→ CORE/ANNUAL/49-entry full regression
-→ 독립 적대적 검토
-→ Package 2~4 승인 여부 재판정
+Grill Me 답변
+→ 동일 Decision ID 즉시 동기화
+→ Package 1 Design Spec 작성
+→ field-level snapshot·lifecycle·error·test matrix
+→ Spec self-review
+→ 사용자 Spec 승인
+→ writing-plans
+→ 별도 Package 1 구현 승인
 ```
 
 ## GitHub·Sheet 상태
 
 - PR #120: `CLOSED_UNMERGED / SUPERSEDED_BY_BASE_V9_4_MAIN`
 - PR #122: `SOURCE_BRANCH / DO_NOT_MERGE_AS_IS`
-- Draft PR #125: Canon·Audit·Technical Plan·Change Proposal
+- Draft PR #125: Canon·Audit·Package 1 planning surface
 - 브랜치: `agent/v9-4-canon-reconciliation`
 - 제품 경로 diff: 0
-- Google Sheet: 동일 Decision ID로 Proposal 상태까지 동기화·재조회
+- Google Sheet: `D-2026-08-02-PACKAGE-1-PLANNING-APPROVAL` 반영 후 재조회 필요
