@@ -1,39 +1,21 @@
 extends "res://scripts/core/game_state.gd"
 
-const VALIDATION_RUNTIME_KEYS := [
+const VALIDATION_EPISODE_ID := "episode_001_afterlife_station"
+const VALIDATION_REQUIRED_KEYS := [
+	"episode_id",
 	"episode_path",
-	"current_scene_path",
-	"current_dialogue_node_id",
-	"current_field_node_id",
-	"current_minigame_id",
+	"scene_path",
+	"dialogue_node_id",
+	"field_node_id",
+	"minigame_id",
 	"selected_agent_ids",
 	"flags",
-	"seen_hint_ids",
-	"seen_log_tutorial_ids",
-	"minigame_results",
-	"method_results",
-	"investigation_risk",
-	"case_understanding",
-	"victim_understanding",
-	"case_anomaly_stability",
-	"mental_stamina",
-	"prediction_success_streak",
-	"prediction_failure_streak",
-	"current_recovery_pattern_id",
-	"last_recovery_pattern_id",
-	"confirmed_recovery_pattern_id",
-	"seen_recovery_pattern_ids",
-	"recovery_pattern_learning",
-	"last_random_event_id",
-	"last_random_event_result",
-	"forced_recovery_phase",
 	"collected_clue_ids",
-	"selected_resolution_grade",
-	"selected_resolution_label",
-	"selected_resolution_rate",
-	"recovery_successful",
-	"recovery_result_status",
-	"recovery_result_stability",
+	"seen_hint_ids",
+	"method_results",
+	"minigame_results",
+	"resolution",
+	"recovery",
 	"agent_case_states",
 	"victim_state"
 ]
@@ -41,106 +23,99 @@ const VALIDATION_RUNTIME_KEYS := [
 
 func save_game() -> bool:
 	var session = get_node_or_null("/root/ValidationSession")
-	if session != null and session.has_method("is_routing_to_validation") and bool(session.is_routing_to_validation()):
-		if not session.has_method("is_active_contract_valid") or not bool(session.is_active_contract_valid()):
+	if session != null and session.has_method("requires_save_routing") and bool(session.requires_save_routing()):
+		if not session.has_method("is_active_and_valid") or not bool(session.is_active_and_valid()):
 			return false
-		if not session.has_method("save_active_session"):
+		if not session.has_method("save"):
 			return false
-		var result: Dictionary = session.save_active_session(self)
-		return bool(result.get("ok", false))
+		var result: Dictionary = session.save(self)
+		return String(result.get("code", "")) == "OK"
 	return super.save_game()
 
 
 func export_validation_runtime_snapshot() -> Dictionary:
 	return {
+		"episode_id": get_current_episode_id(),
 		"episode_path": current_episode_path,
-		"current_scene_path": current_scene_path,
-		"current_dialogue_node_id": current_dialogue_node_id,
-		"current_field_node_id": current_field_node_id,
-		"current_minigame_id": current_minigame_id,
+		"scene_path": current_scene_path,
+		"dialogue_node_id": current_dialogue_node_id,
+		"field_node_id": current_field_node_id,
+		"minigame_id": current_minigame_id,
 		"selected_agent_ids": selected_agent_ids.duplicate(),
 		"flags": flags.duplicate(),
-		"seen_hint_ids": seen_hint_ids.duplicate(),
-		"seen_log_tutorial_ids": seen_log_tutorial_ids.duplicate(),
-		"minigame_results": minigame_results.duplicate(true),
-		"method_results": method_results.duplicate(true),
-		"investigation_risk": investigation_risk,
-		"case_understanding": case_understanding,
-		"victim_understanding": victim_understanding,
-		"case_anomaly_stability": case_anomaly_stability,
-		"mental_stamina": mental_stamina,
-		"prediction_success_streak": prediction_success_streak,
-		"prediction_failure_streak": prediction_failure_streak,
-		"current_recovery_pattern_id": current_recovery_pattern_id,
-		"last_recovery_pattern_id": last_recovery_pattern_id,
-		"confirmed_recovery_pattern_id": confirmed_recovery_pattern_id,
-		"seen_recovery_pattern_ids": seen_recovery_pattern_ids.duplicate(),
-		"recovery_pattern_learning": recovery_pattern_learning.duplicate(true),
-		"last_random_event_id": last_random_event_id,
-		"last_random_event_result": last_random_event_result.duplicate(true),
-		"forced_recovery_phase": forced_recovery_phase,
 		"collected_clue_ids": get_collected_clue_ids(),
-		"selected_resolution_grade": selected_resolution_grade,
-		"selected_resolution_label": selected_resolution_label,
-		"selected_resolution_rate": selected_resolution_rate,
-		"recovery_successful": recovery_successful,
-		"recovery_result_status": recovery_result_status,
-		"recovery_result_stability": recovery_result_stability,
+		"seen_hint_ids": seen_hint_ids.duplicate(),
+		"method_results": method_results.duplicate(true),
+		"minigame_results": minigame_results.duplicate(true),
+		"resolution": {
+			"grade": selected_resolution_grade,
+			"label": selected_resolution_label,
+			"rate": selected_resolution_rate
+		},
+		"recovery": {
+			"successful": recovery_successful,
+			"result_status": recovery_result_status,
+			"stability": recovery_result_stability,
+			"current_pattern_id": current_recovery_pattern_id,
+			"last_pattern_id": last_recovery_pattern_id,
+			"confirmed_pattern_id": confirmed_recovery_pattern_id,
+			"seen_pattern_ids": seen_recovery_pattern_ids.duplicate(),
+			"pattern_learning": recovery_pattern_learning.duplicate(true)
+		},
 		"agent_case_states": agent_case_states.duplicate(true),
 		"victim_state": victim_state.duplicate(true)
 	}
 
 
 func restore_validation_runtime_snapshot(snapshot: Dictionary) -> Dictionary:
-	var validation := _validate_validation_snapshot(snapshot)
-	if not bool(validation.get("ok", false)):
-		return validation
+	var validated := _validate_validation_snapshot(snapshot)
+	if String(validated.get("code", "")) != "OK":
+		return validated
 
-	var episode_path := String(snapshot.get("episode_path", current_episode_path))
-	if episode_path != current_episode_path and not episode_path.is_empty():
-		if not load_episode(episode_path):
-			return {"ok": false, "code": "EPISODE_LOAD_FAILED"}
+	var selected_ids := (snapshot.get("selected_agent_ids") as Array).duplicate(true)
+	var restored_flags := (snapshot.get("flags") as Array).duplicate(true)
+	var clue_ids := (snapshot.get("collected_clue_ids") as Array).duplicate(true)
+	var restored_hints := (snapshot.get("seen_hint_ids") as Array).duplicate(true)
+	var restored_methods := (snapshot.get("method_results") as Dictionary).duplicate(true)
+	var restored_minigames := (snapshot.get("minigame_results") as Dictionary).duplicate(true)
+	var resolution := (snapshot.get("resolution") as Dictionary).duplicate(true)
+	var recovery := (snapshot.get("recovery") as Dictionary).duplicate(true)
+	var restored_agent_states := (snapshot.get("agent_case_states") as Dictionary).duplicate(true)
+	var restored_victim_state := (snapshot.get("victim_state") as Dictionary).duplicate(true)
 
-	current_scene_path = String(snapshot.get("current_scene_path", current_scene_path))
-	current_dialogue_node_id = String(snapshot.get("current_dialogue_node_id", current_dialogue_node_id))
-	current_field_node_id = String(snapshot.get("current_field_node_id", current_field_node_id))
-	current_minigame_id = String(snapshot.get("current_minigame_id", current_minigame_id))
-	selected_agent_ids = _validation_array(snapshot.get("selected_agent_ids", selected_agent_ids))
-	flags = _validation_array(snapshot.get("flags", flags))
-	seen_hint_ids = _validation_array(snapshot.get("seen_hint_ids", seen_hint_ids))
-	seen_log_tutorial_ids = _validation_array(snapshot.get("seen_log_tutorial_ids", seen_log_tutorial_ids))
-	minigame_results = _validation_dictionary(snapshot.get("minigame_results", minigame_results))
-	method_results = _validation_dictionary(snapshot.get("method_results", method_results))
-	investigation_risk = clampi(int(snapshot.get("investigation_risk", investigation_risk)), 0, 100)
-	case_understanding = clampi(int(snapshot.get("case_understanding", case_understanding)), 0, 100)
-	victim_understanding = clampi(int(snapshot.get("victim_understanding", victim_understanding)), 0, 100)
-	case_anomaly_stability = clampi(int(snapshot.get("case_anomaly_stability", case_anomaly_stability)), 0, 100)
-	mental_stamina = clampi(int(snapshot.get("mental_stamina", mental_stamina)), 0, 100)
-	prediction_success_streak = maxi(0, int(snapshot.get("prediction_success_streak", prediction_success_streak)))
-	prediction_failure_streak = maxi(0, int(snapshot.get("prediction_failure_streak", prediction_failure_streak)))
-	current_recovery_pattern_id = String(snapshot.get("current_recovery_pattern_id", current_recovery_pattern_id))
-	last_recovery_pattern_id = String(snapshot.get("last_recovery_pattern_id", last_recovery_pattern_id))
-	confirmed_recovery_pattern_id = String(snapshot.get("confirmed_recovery_pattern_id", confirmed_recovery_pattern_id))
-	seen_recovery_pattern_ids = _validation_array(snapshot.get("seen_recovery_pattern_ids", seen_recovery_pattern_ids))
-	recovery_pattern_learning = _validation_dictionary(snapshot.get("recovery_pattern_learning", recovery_pattern_learning))
-	last_random_event_id = String(snapshot.get("last_random_event_id", last_random_event_id))
-	last_random_event_result = _validation_dictionary(snapshot.get("last_random_event_result", last_random_event_result))
-	forced_recovery_phase = bool(snapshot.get("forced_recovery_phase", forced_recovery_phase))
-	_apply_collected_clue_ids(_validation_array(snapshot.get("collected_clue_ids", get_collected_clue_ids())))
-	selected_resolution_grade = String(snapshot.get("selected_resolution_grade", selected_resolution_grade))
-	selected_resolution_label = String(snapshot.get("selected_resolution_label", selected_resolution_label))
-	selected_resolution_rate = float(snapshot.get("selected_resolution_rate", selected_resolution_rate))
-	recovery_successful = bool(snapshot.get("recovery_successful", recovery_successful))
-	recovery_result_status = String(snapshot.get("recovery_result_status", recovery_result_status))
-	recovery_result_stability = clampi(int(snapshot.get("recovery_result_stability", recovery_result_stability)), 0, 100)
-	agent_case_states = _validation_dictionary(snapshot.get("agent_case_states", agent_case_states))
-	victim_state = _validation_dictionary(snapshot.get("victim_state", victim_state))
+	if not load_episode(DEFAULT_EPISODE_PATH):
+		return {"ok": false, "code": "INCOMPATIBLE_CONTENT"}
+
+	current_scene_path = String(snapshot.get("scene_path", SCENE_DIALOGUE))
+	current_dialogue_node_id = String(snapshot.get("dialogue_node_id", DEFAULT_DIALOGUE_NODE_ID))
+	current_field_node_id = String(snapshot.get("field_node_id", DEFAULT_FIELD_NODE_ID))
+	current_minigame_id = String(snapshot.get("minigame_id", DEFAULT_MINIGAME_ID))
+	selected_agent_ids = selected_ids
+	flags = restored_flags
+	_apply_collected_clue_ids(clue_ids)
+	seen_hint_ids = restored_hints
+	method_results = restored_methods
+	minigame_results = restored_minigames
+	selected_resolution_grade = String(resolution.get("grade", ""))
+	selected_resolution_label = String(resolution.get("label", ""))
+	selected_resolution_rate = float(resolution.get("rate", 0.0))
+	recovery_successful = bool(recovery.get("successful", false))
+	recovery_result_status = String(recovery.get("result_status", ""))
+	recovery_result_stability = clampi(int(recovery.get("stability", 100)), 0, 100)
+	current_recovery_pattern_id = String(recovery.get("current_pattern_id", ""))
+	last_recovery_pattern_id = String(recovery.get("last_pattern_id", ""))
+	confirmed_recovery_pattern_id = String(recovery.get("confirmed_pattern_id", ""))
+	seen_recovery_pattern_ids = (recovery.get("seen_pattern_ids") as Array).duplicate(true)
+	recovery_pattern_learning = (recovery.get("pattern_learning") as Dictionary).duplicate(true)
+	agent_case_states = restored_agent_states
+	victim_state = restored_victim_state
 	return {"ok": true, "code": "OK"}
 
 
-func capture_validation_hidden_state_guard() -> Dictionary:
+func snapshot_hidden_legacy_state_for_test() -> Dictionary:
 	return {
 		"campaign_state": campaign_state.to_save_data(),
+		"seen_log_tutorial_ids": seen_log_tutorial_ids.duplicate(),
 		"agent_trust": agent_trust.duplicate(true),
 		"agent_trust_changes": agent_trust_changes.duplicate(true),
 		"triggered_agent_event_ids": triggered_agent_event_ids.duplicate(),
@@ -167,32 +142,58 @@ func capture_validation_hidden_state_guard() -> Dictionary:
 	}
 
 
-func validation_hidden_state_matches(guard: Dictionary) -> bool:
-	return _validation_semantic_equal(capture_validation_hidden_state_guard(), guard)
-
-
 func _validate_validation_snapshot(snapshot: Dictionary) -> Dictionary:
+	for key in VALIDATION_REQUIRED_KEYS:
+		if not snapshot.has(key):
+			return {"ok": false, "code": "INVALID_PAYLOAD", "field": key}
 	for key in snapshot.keys():
-		if not VALIDATION_RUNTIME_KEYS.has(String(key)):
-			return {"ok": false, "code": "UNSUPPORTED_SNAPSHOT_KEY", "key": String(key)}
-	for key in ["selected_agent_ids", "flags", "seen_hint_ids", "seen_log_tutorial_ids", "seen_recovery_pattern_ids", "collected_clue_ids"]:
-		if snapshot.has(key) and typeof(snapshot[key]) != TYPE_ARRAY:
-			return {"ok": false, "code": "INVALID_ARRAY_FIELD", "key": key}
-	for key in ["minigame_results", "method_results", "recovery_pattern_learning", "last_random_event_result", "agent_case_states", "victim_state"]:
-		if snapshot.has(key) and typeof(snapshot[key]) != TYPE_DICTIONARY:
-			return {"ok": false, "code": "INVALID_DICTIONARY_FIELD", "key": key}
+		if not VALIDATION_REQUIRED_KEYS.has(String(key)):
+			return {"ok": false, "code": "INVALID_PAYLOAD", "field": String(key)}
+
+	if String(snapshot.get("episode_id", "")) != VALIDATION_EPISODE_ID:
+		return {"ok": false, "code": "INVALID_EPISODE"}
+	if String(snapshot.get("episode_path", "")) != DEFAULT_EPISODE_PATH:
+		return {"ok": false, "code": "INCOMPATIBLE_CONTENT"}
+	for key in ["scene_path", "dialogue_node_id", "field_node_id", "minigame_id"]:
+		if typeof(snapshot.get(key)) != TYPE_STRING:
+			return {"ok": false, "code": "INVALID_PAYLOAD", "field": key}
+	for key in ["selected_agent_ids", "flags", "collected_clue_ids", "seen_hint_ids"]:
+		if typeof(snapshot.get(key)) != TYPE_ARRAY:
+			return {"ok": false, "code": "INVALID_PAYLOAD", "field": key}
+	for key in ["method_results", "minigame_results", "resolution", "recovery", "agent_case_states", "victim_state"]:
+		if typeof(snapshot.get(key)) != TYPE_DICTIONARY:
+			return {"ok": false, "code": "INVALID_PAYLOAD", "field": key}
+
+	var resolution := snapshot.get("resolution") as Dictionary
+	if not resolution.has("grade") or not resolution.has("label") or not resolution.has("rate"):
+		return {"ok": false, "code": "INVALID_PAYLOAD", "field": "resolution"}
+	if typeof(resolution.get("grade")) != TYPE_STRING or typeof(resolution.get("label")) != TYPE_STRING or typeof(resolution.get("rate")) not in [TYPE_INT, TYPE_FLOAT]:
+		return {"ok": false, "code": "INVALID_PAYLOAD", "field": "resolution"}
+
+	var recovery := snapshot.get("recovery") as Dictionary
+	for key in ["successful", "result_status", "stability", "current_pattern_id", "last_pattern_id", "confirmed_pattern_id", "seen_pattern_ids", "pattern_learning"]:
+		if not recovery.has(key):
+			return {"ok": false, "code": "INVALID_PAYLOAD", "field": "recovery.%s" % key}
+	if typeof(recovery.get("successful")) != TYPE_BOOL or typeof(recovery.get("result_status")) != TYPE_STRING or typeof(recovery.get("stability")) not in [TYPE_INT, TYPE_FLOAT]:
+		return {"ok": false, "code": "INVALID_PAYLOAD", "field": "recovery"}
+	for key in ["current_pattern_id", "last_pattern_id", "confirmed_pattern_id"]:
+		if typeof(recovery.get(key)) != TYPE_STRING:
+			return {"ok": false, "code": "INVALID_PAYLOAD", "field": "recovery.%s" % key}
+	if typeof(recovery.get("seen_pattern_ids")) != TYPE_ARRAY or typeof(recovery.get("pattern_learning")) != TYPE_DICTIONARY:
+		return {"ok": false, "code": "INVALID_PAYLOAD", "field": "recovery"}
 	return {"ok": true, "code": "OK"}
 
 
-func _validation_array(value: Variant) -> Array:
-	return (value as Array).duplicate(true) if typeof(value) == TYPE_ARRAY else []
+# Compatibility aliases retained for evidence readers from the approved design phase.
+func capture_validation_hidden_state_guard() -> Dictionary:
+	return snapshot_hidden_legacy_state_for_test()
 
 
-func _validation_dictionary(value: Variant) -> Dictionary:
-	return (value as Dictionary).duplicate(true) if typeof(value) == TYPE_DICTIONARY else {}
+func validation_hidden_state_matches(guard: Dictionary) -> bool:
+	return _semantic_equal(snapshot_hidden_legacy_state_for_test(), guard)
 
 
-func _validation_semantic_equal(left: Variant, right: Variant) -> bool:
+func _semantic_equal(left: Variant, right: Variant) -> bool:
 	var left_type := typeof(left)
 	var right_type := typeof(right)
 	if left_type in [TYPE_INT, TYPE_FLOAT] and right_type in [TYPE_INT, TYPE_FLOAT]:
@@ -203,7 +204,7 @@ func _validation_semantic_equal(left: Variant, right: Variant) -> bool:
 		if left_dict.size() != right_dict.size():
 			return false
 		for key in left_dict.keys():
-			if not right_dict.has(key) or not _validation_semantic_equal(left_dict[key], right_dict[key]):
+			if not right_dict.has(key) or not _semantic_equal(left_dict[key], right_dict[key]):
 				return false
 		return true
 	if left_type == TYPE_ARRAY and right_type == TYPE_ARRAY:
@@ -212,7 +213,7 @@ func _validation_semantic_equal(left: Variant, right: Variant) -> bool:
 		if left_array.size() != right_array.size():
 			return false
 		for index in range(left_array.size()):
-			if not _validation_semantic_equal(left_array[index], right_array[index]):
+			if not _semantic_equal(left_array[index], right_array[index]):
 				return false
 		return true
 	return left == right
