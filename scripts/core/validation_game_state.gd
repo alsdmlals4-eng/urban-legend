@@ -33,6 +33,48 @@ func save_game() -> bool:
 	return super.save_game()
 
 
+func initialize_validation_runtime(episode_id: String, agent_ids: Array) -> Dictionary:
+	if episode_id != VALIDATION_EPISODE_ID:
+		return {"ok": false, "code": "INVALID_EPISODE"}
+	if agent_ids.is_empty() or agent_ids.size() > 3:
+		return {"ok": false, "code": "INVALID_AGENT_SELECTION"}
+	for agent_id in agent_ids:
+		if typeof(agent_id) != TYPE_STRING or String(agent_id).is_empty():
+			return {"ok": false, "code": "INVALID_AGENT_SELECTION"}
+
+	var hidden_before := snapshot_hidden_legacy_state_for_test()
+	if not load_episode(DEFAULT_EPISODE_PATH):
+		return {"ok": false, "code": "INCOMPATIBLE_CONTENT"}
+
+	current_scene_path = SCENE_DIALOGUE
+	current_dialogue_node_id = DEFAULT_DIALOGUE_NODE_ID
+	current_field_node_id = DEFAULT_FIELD_NODE_ID
+	current_minigame_id = DEFAULT_MINIGAME_ID
+	selected_agent_ids = agent_ids.duplicate(true)
+	flags.clear()
+	_apply_collected_clue_ids([])
+	seen_hint_ids.clear()
+	method_results.clear()
+	minigame_results.clear()
+	selected_resolution_grade = ""
+	selected_resolution_label = ""
+	selected_resolution_rate = 0.0
+	recovery_successful = false
+	recovery_result_status = ""
+	recovery_result_stability = 100
+	current_recovery_pattern_id = ""
+	last_recovery_pattern_id = ""
+	confirmed_recovery_pattern_id = ""
+	seen_recovery_pattern_ids.clear()
+	recovery_pattern_learning.clear()
+	agent_case_states.clear()
+	victim_state.clear()
+
+	if not _semantic_equal(hidden_before, snapshot_hidden_legacy_state_for_test()):
+		return {"ok": false, "code": "HIDDEN_STATE_GUARD_VIOLATION"}
+	return {"ok": true, "code": "OK"}
+
+
 func export_validation_runtime_snapshot() -> Dictionary:
 	return {
 		"episode_id": get_current_episode_id(),
