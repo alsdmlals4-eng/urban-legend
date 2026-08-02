@@ -13,14 +13,26 @@ func _init() -> void:
 	_expect(session_path == "*res://scripts/core/validation_session.gd", "ValidationSession must be registered before GameState")
 	_expect(game_state_path == "*res://scripts/core/validation_game_state.gd", "GameState autoload must use the isolated wrapper")
 
-	var root := get_root()
-	var session = root.get_node_or_null("ValidationSession")
-	var game_state = root.get_node_or_null("GameState")
-	_expect(session != null, "ValidationSession autoload must exist at runtime")
-	_expect(game_state != null, "GameState autoload must exist at runtime")
-	if session == null or game_state == null:
+	# SceneTree --script tests do not instantiate project autoload nodes.
+	# Mount the scripts with their production root names after checking project.godot.
+	var session_script: Script = load("res://scripts/core/validation_session.gd")
+	var game_state_script: Script = load("res://scripts/core/validation_game_state.gd")
+	_expect(session_script != null, "ValidationSession script must load")
+	_expect(game_state_script != null, "GameState wrapper script must load")
+	if session_script == null or game_state_script == null:
 		_finish()
 		return
+
+	var root := get_root()
+	var session = session_script.new()
+	session.name = "ValidationSession"
+	root.add_child(session)
+	var game_state = game_state_script.new()
+	game_state.name = "GameState"
+	root.add_child(game_state)
+
+	_expect(root.get_node_or_null("ValidationSession") == session, "ValidationSession must mount at the production root name")
+	_expect(root.get_node_or_null("GameState") == game_state, "GameState must mount at the production root name")
 
 	Support.delete_path(LEGACY_PATH)
 	Support.delete_path(VALIDATION_PATH)
@@ -54,6 +66,8 @@ func _init() -> void:
 	session.deactivate_session()
 	Support.delete_path(LEGACY_PATH)
 	Support.delete_path(VALIDATION_PATH)
+	game_state.queue_free()
+	session.queue_free()
 	_finish()
 
 
