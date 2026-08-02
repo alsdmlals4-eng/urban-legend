@@ -1,18 +1,20 @@
 # 괴이기록국 현재 인수인계
 
-> 상태: `PACKAGE_2_MERGED_AND_VERIFIED / YEAR_ONE_DESIGN_APPROVED_PENDING_BATCH_AUDIT`
+> 상태: `PACKAGE_2_MERGED_AND_VERIFIED / YEAR_ONE_DESIGN_MERGED_ON_MAIN / GRILLME_BATCH_2_OPEN`
 > 갱신일: 2026-08-02
 > Base: `9.4.3`
 > Package 2 Planning PR: #129
 > Package 2 Implementation PR: #131
 > Package 2 Planning merge: `b4d7bd0fb82968325bcf230f3e81b8d96e142402`
 > Package 2 Implementation merge: `f8751e7fa7890f402c7377ea6aee64f79ef59911`
-> Year-one campaign Draft PR: #135
+> Year-one campaign Design PR: #135
+> Year-one campaign Design merge: `7bddbce2ebd427154cdeb8e4bb9b7aec06e2ea5e`
+> Year-one verified head: `a009732ab6162bdfc018da792e7e0414c342e7f5`
 > main→planning sync PR: #138 / merge `cc25991ba6b74b3c3f552c84e90d40987595fa82`
-> Grill Me Batch 1: `10 / 10`
-> PR #135 병합 권한: `NOT_GRANTED`
+> Grill Me Batch 1: `COMPLETE / 10_OF_10 / MERGED`
+> Grill Me Batch 2: `0 / 10`
 
-실제 최신 main과 planning HEAD는 GitHub ref에서 읽는다. Package 2 planning과 implementation은 main에 병합됐고 자동 검증을 통과했다. 1년차 캠페인 Design은 Draft PR #135에서 승인됐지만 구현·사람 검증·Production 확대·main 병합 권한은 열리지 않았다.
+실제 최신 main SHA는 GitHub `main` ref에서 읽는다. Package 2 planning·implementation과 1년차 캠페인 Design은 main에 병합됐다. 문서 병합은 구현·사람 검증·POC·Production 확대 권한을 열지 않는다.
 
 ## 읽기 순서
 
@@ -49,12 +51,15 @@ package_2_final_exact_head: PASS
 package_1_focused: 4_OF_4_PASS
 package_2_focused: 5_OF_5_PASS
 full_godot_regression: 58_OF_58_PASS
-year_one_design_sections_1_to_6: APPROVED
-year_one_planning_pr: 135
-year_one_planning_pr_state: DRAFT_BATCH_AUDIT_IN_PROGRESS
+year_one_design_sections_1_to_6: MERGED_ON_MAIN
+year_one_design_pr: 135
+year_one_design_merge: 7bddbce2ebd427154cdeb8e4bb9b7aec06e2ea5e
+year_one_verified_head: a009732ab6162bdfc018da792e7e0414c342e7f5
 year_one_main_sync: MERGED_PR_138
+year_one_design_spec: NOT_WRITTEN
 year_one_implementation: NOT_AUTHORIZED
-grillme_batch_1: 10_OF_10
+grillme_batch_1: COMPLETE_MERGED
+grillme_batch_2: 0_OF_10
 local_runtime: NOT_RUN
 human_qa: NOT_RUN
 new_player_validation: NOT_RUN
@@ -121,7 +126,7 @@ Validation badge는 `본편과 별도 기록`을 명시한다. 한쪽 저장 오
    - 파괴적 교체 기본 포커스 취소
    - keyboard focus neighbor
 
-## 최종 exact-head 자동 검증
+## Package 2 최종 exact-head 자동 검증
 
 PR #131 최종 HEAD `fdd55e367e21d9bc1c031ff2f0c4438289040665`에서 다음을 확인한 뒤 expected-head SHA로 병합했다.
 
@@ -174,7 +179,7 @@ Package 2 책임 문서:
 - `docs/superpowers/plans/2026-08-02-package-2-main-menu-entry-routing-implementation-plan.md`
 - `docs/implementation/2026-08-02-package-2-main-menu-entry-routing-evidence.md`
 
-# Part B — 1년차 캠페인 기획 인수인계
+# Part B — 1년차 캠페인 Design 인수인계
 
 ## 현재 제품 권위
 
@@ -243,6 +248,22 @@ Package 2 책임 문서:
 8. `D-2026-08-02-YEAR-ONE-CASE-PLAY-DIFFERENTIATION-CONTRACT`
 9. `D-2026-08-02-YEAR-ONE-RESULT-FEEDBACK-AND-ANNUAL-REVIEW-CONTRACT`
 
+## 1년차 exact-head 검증·병합
+
+```yaml
+planning_pr: 135
+verified_head: a009732ab6162bdfc018da792e7e0414c342e7f5
+merge: 7bddbce2ebd427154cdeb8e4bb9b7aec06e2ea5e
+documentation_contracts_run_30750849552: PASS
+bca_adoption_run_30750849578: PASS
+core_mvp_run_30750849570: PASS
+annual_mvp_run_30750849589: PASS
+changed_files: 14_DOCS_ONLY
+review_threads: 0
+submitted_reviews: 0
+conversation_comments: 0
+```
+
 ## GitHub 상태
 
 ```yaml
@@ -254,28 +275,26 @@ pr_131: MERGED
 pr_132: MERGED_MAIN_TO_PLANNING_SYNC
 pr_133: MERGED_MAIN_TO_IMPLEMENTATION_SYNC
 pr_138: MERGED_MAIN_TO_YEAR_ONE_PLANNING_SYNC
+pr_135: MERGED_YEAR_ONE_DESIGN
 pr_122: CLOSED_SOURCE_DO_NOT_MERGE_AS_IS
 issue_121: CLOSED_COMPLETED
-pr_135: DRAFT_BATCH_AUDIT_IN_PROGRESS
 main_to_year_one_planning_sync_merge: cc25991ba6b74b3c3f552c84e90d40987595fa82
+year_one_design_merge: 7bddbce2ebd427154cdeb8e4bb9b7aec06e2ea5e
 ```
 
 ## Grill Me 운영
 
-- Batch 1 현재 카운터: `10 / 10`
-- 10번째 Decision: `D-2026-08-02-YEAR-ONE-RESULT-FEEDBACK-AND-ANNUAL-REVIEW-CONTRACT`
-- 적대적 batch audit 진행 중
-- audit 통과만으로 병합하지 않음
-- 사용자 별도 병합 승인 전 PR #135 병합 금지
+- Batch 1: `COMPLETE / 10_OF_10 / MERGED`
+- Batch 2: `0 / 10`
+- 동일 질문의 Design·Spec·구현·병합 후속 Gate는 새 질문이 아니면 Batch 2에 추가하지 않는다.
 
 ## 다음 Gate
 
 ```text
-최종 문서 정합성 수정
-→ 최신 HEAD CI 확인
-→ changed files·base/head·review thread·Sheet 재감사
-→ READY_FOR_SEPARATE_MERGE_APPROVAL / CHANGES_REQUIRED / BLOCKED 판정
-→ 사용자 별도 병합 승인
+GRILLME_BATCH_2 counter 0/10
+→ 다음 중요 제품 결정을 새 Decision ID로 기록
+→ Design Spec·개별 사건 Spec은 별도 사용자 승인 뒤 작성
+→ 구현 계획·코드·사람 검증·POC·Production 확대는 각각 별도 Gate
 ```
 
 ## 미검증 경계
