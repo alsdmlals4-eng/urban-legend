@@ -9,6 +9,7 @@
 
 - 승인된 Grill Me Decision ID 한 개당 1을 더한다.
 - 질문·기각·보류·중복·대체 Decision은 더하지 않는다.
+- 이미 카운트된 Grill Me 질문의 Design·Spec·구현 후속 Gate는 새 질문이 아니므로 추가하지 않는다.
 - 10개에 도달하면 새 질문 진행보다 먼저 merge batch gate를 실행한다.
 - batch가 완전히 처리되면 다음 카운터를 0에서 시작한다.
 - 병합 불가 Decision은 승인 이력을 삭제하지 않고 `BLOCKED`로 기록한다.
@@ -105,6 +106,12 @@ implementation_pr: none
    - 상태: `APPROVED_PENDING_BATCH_MERGE`
    - 책임 원본: `docs/decisions/D-2026-08-02-PACKAGE-2-MAIN-MENU-MODE-HIERARCHY.md`
    - 추적: Draft PR #129, Google Sheet 동일 Decision ID
+
+후속 Gate:
+
+- `D-2026-08-02-PACKAGE-2-DESIGN-APPROVAL`은 같은 Grill Me 질문의 상세 Design 승인이다.
+- 별도 Grill Me 질문이 아니므로 카운터는 `1 / 10`을 유지한다.
+- Design Spec 작성·self-review 완료, 사용자 Spec 검토 대기다.
 
 다음 batch 병합 Gate는 10번째 승인 Decision이 기록될 때 실행한다. 그 전에도 사용자가 별도 병합을 명시적으로 승인하면 해당 범위만 병합할 수 있다.
 
