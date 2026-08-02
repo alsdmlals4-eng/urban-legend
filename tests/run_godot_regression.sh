@@ -52,6 +52,10 @@ script_tests=(
   test_two_case_campaign_manual_qa
   ui_asset_catalog_test
   ui_layout_store_test
+  validation/validation_save_repository_test
+  validation/validation_session_test
+  validation/validation_game_state_adapter_test
+  validation/validation_save_isolation_test
 )
 
 scene_tests=(
@@ -66,8 +70,9 @@ scene_tests=(
 run_test() {
   local name="$1"
   local mode="$2"
-  local home_dir="$RUN_ROOT/home/$name"
-  local log_file="$LOG_ROOT/$name.log"
+  local safe_name="${name//\//_}"
+  local home_dir="$RUN_ROOT/home/$safe_name"
+  local log_file="$LOG_ROOT/$safe_name.log"
   local target
   rm -rf "$home_dir"
   mkdir -p "$home_dir"
@@ -101,5 +106,5 @@ for test_name in "${scene_tests[@]}"; do
   run_test "$test_name" scene
 done
 
-echo "Godot regression suite: 49/49 test entrypoints passed"
+echo "Godot regression suite: 53/53 test entrypoints passed"
 echo "Logs: $LOG_ROOT"
