@@ -1,176 +1,188 @@
 class_name ValidationSaveRepository
 extends RefCounted
 
-const SAVE_VERSION := "validation-save-v1"
 const PRIMARY_PATH := "user://urban_legend_validation_save.json"
-const BACKUP_PATH := "user://urban_legend_validation_save.backup.json"
-const TEMP_PATH := "user://urban_legend_validation_save.tmp"
-const LEGACY_PATH := "user://urban_legend_save.json"
+const LEGACY_FORBIDDEN_PATH := "user://urban_legend_save.json"
+const FORMAT_ID := "urban-legend-validation-save"
+const SAVE_VERSION := "validation-save-v1"
+const PAYLOAD_SCHEMA := 1
+
+var _primary_path: String
+var _backup_path: String
+var _temp_path: String
+var _quarantine_prefix: String
 
 
-func get_primary_path() -> String:
-	return PRIMARY_PATH
+func _init(primary_path: String = PRIMARY_PATH) -> void:
+	_primary_path = primary_path
+	var stem := primary_path.substr(0, primary_path.length() - 5) if primary_path.ends_with(".json") else primary_path
+	_backup_path = "%s.bak.json" % stem
+	_temp_path = "%s.tmp.json" % stem
+	_quarantine_prefix = "%s.corrupt." % stem
 
 
-func get_backup_path() -> String:
-	return BACKUP_PATH
-
-
-func get_temp_path() -> String:
-	return TEMP_PATH
-
-
-func inspect_primary() -> Dictionary:
-	return _inspect_path(PRIMARY_PATH)
-
-
-func write_payload(payload: Dictionary) -> Dictionary:
-	var validation := _validate_payload(payload)
-	if not bool(validation.get("ok", false)):
-		return validation
-
-	var write_error := _write_json(TEMP_PATH, payload)
-	if write_error != OK:
-		return {"ok": false, "code": "TEMP_WRITE_FAILED", "error": write_error}
-
-	var readback := _read_payload_from_path(TEMP_PATH)
-	if not bool(readback.get("ok", false)) or not _semantic_equal(readback.get("payload", {}), payload):
-		_remove_if_exists(TEMP_PATH)
-		return {"ok": false, "code": "TEMP_READBACK_FAILED"}
-
-	if FileAccess.file_exists(PRIMARY_PATH):
-		_remove_if_exists(BACKUP_PATH)
-		var backup_error := _copy_file(PRIMARY_PATH, BACKUP_PATH)
-		if backup_error != OK:
-			_remove_if_exists(TEMP_PATH)
-			return {"ok": false, "code": "BACKUP_WRITE_FAILED", "error": backup_error}
-
-	var absolute_primary := ProjectSettings.globalize_path(PRIMARY_PATH)
-	var absolute_temp := ProjectSettings.globalize_path(TEMP_PATH)
-	if FileAccess.file_exists(PRIMARY_PATH):
-		var remove_error := DirAccess.remove_absolute(absolute_primary)
-		if remove_error != OK:
-			_remove_if_exists(TEMP_PATH)
-			return {"ok": false, "code": "PRIMARY_REMOVE_FAILED", "error": remove_error}
-	var rename_error := DirAccess.rename_absolute(absolute_temp, absolute_primary)
-	if rename_error != OK:
-		_remove_if_exists(TEMP_PATH)
-		return {"ok": false, "code": "PRIMARY_REPLACE_FAILED", "error": rename_error}
-	return {"ok": true, "code": "OK"}
-
-
-func read_payload() -> Dictionary:
-	var inspection := inspect_primary()
-	if String(inspection.get("status", "")) != "EXACT":
-		return {
-			"ok": false,
-			"code": String(inspection.get("status", "MISSING")),
-			"inspection": inspection
-		}
+func get_paths() -> Dictionary:
 	return {
-		"ok": true,
-		"code": "OK",
-		"payload": inspection.get("payload", {}).duplicate(true)
+		"primary": _primary_path,
+		"backup": _backup_path,
+		"temp": _temp_path,
+		"quarantine_prefix": _quarantine_prefix,
+		"legacy_forbidden": LEGACY_FORBIDDEN_PATH
 	}
 
 
-func delete_validation_files() -> Dictionary:
-	for path in [PRIMARY_PATH, BACKUP_PATH, TEMP_PATH]:
-		var error := _remove_if_exists(path)
+func inspect() -> Dictionary:
+	if _primary_path == LEGACY_FORBIDDEN_PATH:
+		return _result(false, "LEGACY_GUARD_VIOLATION")
+	if not FileAccess.file_exists(_primary_path):
+		if FileAccess.file_exists(_temp_path):
+			return _result(false, "INTERRUPTED_WRITE")
+		if FileAccess.file_exists(_backup_path):
+			var backup_state := _inspect_path(_backup_path)
+			return _result(false, "RECOVERABLE_BACKUP", {
+				"backup_code": String(backup_state.get("code", "READ_FAILED")),
+				"backup_payload": backup_state.get("payload", {}).duplicate(true) if typeof(backup_state.get("payload")) == TYPE_DICTIONARY else {}
+			})
+		return _result(false, "EMPTY")
+	return _inspect_path(_primary_path)
+
+
+func read_payload() -> Dictionary:
+	return inspect()
+
+
+func write_payload(payload: Dictionary) -> Dictionary:
+	if _primary_path == LEGACY_FORBIDDEN_PATH:
+		return _result(false, "LEGACY_GUARD_VIOLATION")
+
+	var requested := _validate_payload(payload)
+	if String(requested.get("code", "")) != "EXACT":
+		return requested
+
+	var current := inspect()
+	var current_code := String(current.get("code", ""))
+	if current_code not in ["EMPTY", "EXACT"]:
+		return current
+
+	var temp_file := FileAccess.open(_temp_path, FileAccess.WRITE)
+	if temp_file == null:
+		return _result(false, "WRITE_FAILED", {"error": FileAccess.get_open_error()})
+	temp_file.store_string(JSON.stringify(payload, "\t", false))
+	temp_file.flush()
+	temp_file.close()
+
+	var temp_state := _inspect_path(_temp_path)
+	if String(temp_state.get("code", "")) != "EXACT":
+		return _result(false, "VERIFY_FAILED", {"temp_code": temp_state.get("code", "READ_FAILED")})
+
+	var primary_abs := ProjectSettings.globalize_path(_primary_path)
+	var backup_abs := ProjectSettings.globalize_path(_backup_path)
+	var temp_abs := ProjectSettings.globalize_path(_temp_path)
+	var moved_primary_to_backup := false
+
+	if FileAccess.file_exists(_primary_path):
+		if FileAccess.file_exists(_backup_path):
+			var remove_backup := DirAccess.remove_absolute(backup_abs)
+			if remove_backup != OK:
+				_remove_path(_temp_path)
+				return _result(false, "REPLACE_FAILED", {"error": remove_backup, "phase": "remove_backup"})
+		var backup_error := DirAccess.rename_absolute(primary_abs, backup_abs)
+		if backup_error != OK:
+			_remove_path(_temp_path)
+			return _result(false, "REPLACE_FAILED", {"error": backup_error, "phase": "backup_primary"})
+		moved_primary_to_backup = true
+
+	var replace_error := DirAccess.rename_absolute(temp_abs, primary_abs)
+	if replace_error != OK:
+		if moved_primary_to_backup and FileAccess.file_exists(_backup_path) and not FileAccess.file_exists(_primary_path):
+			DirAccess.rename_absolute(backup_abs, primary_abs)
+		_remove_path(_temp_path)
+		return _result(false, "REPLACE_FAILED", {"error": replace_error, "phase": "promote_temp"})
+
+	var final_state := _inspect_path(_primary_path)
+	if String(final_state.get("code", "")) != "EXACT":
+		_remove_path(_primary_path)
+		if moved_primary_to_backup and FileAccess.file_exists(_backup_path):
+			DirAccess.rename_absolute(backup_abs, primary_abs)
+		return _result(false, "VERIFY_FAILED", {"primary_code": final_state.get("code", "READ_FAILED")})
+
+	return _result(true, "OK", {"revision": int(payload.get("revision", 0))})
+
+
+func delete_persistence() -> Dictionary:
+	if _primary_path == LEGACY_FORBIDDEN_PATH:
+		return _result(false, "LEGACY_GUARD_VIOLATION")
+	for path in [_primary_path, _backup_path, _temp_path]:
+		var error := _remove_path(path)
 		if error != OK:
-			return {"ok": false, "code": "DELETE_FAILED", "path": path, "error": error}
-	return {"ok": true, "code": "OK"}
+			return _result(false, "DELETE_FAILED", {"path": path, "error": error})
+	return _result(true, "OK")
+
+
+func quarantine_primary(reason: String) -> Dictionary:
+	if _primary_path == LEGACY_FORBIDDEN_PATH:
+		return _result(false, "LEGACY_GUARD_VIOLATION")
+	var state := inspect()
+	if String(state.get("code", "")) not in ["CORRUPT_JSON", "CORRUPT_SCHEMA"]:
+		return _result(false, "INVALID_LIFECYCLE", {"current_code": state.get("code", "EMPTY")})
+	var stamp := Time.get_datetime_string_from_system(true, true).replace(":", "-")
+	var safe_reason := reason.validate_filename()
+	if safe_reason.is_empty():
+		safe_reason = "unspecified"
+	var path := "%s%s-%s.%s.json" % [_quarantine_prefix, stamp, str(Time.get_ticks_usec()), safe_reason]
+	var error := DirAccess.rename_absolute(
+		ProjectSettings.globalize_path(_primary_path),
+		ProjectSettings.globalize_path(path)
+	)
+	return _result(error == OK, "OK" if error == OK else "REPLACE_FAILED", {
+		"quarantine_path": path,
+		"error": error
+	})
 
 
 func _inspect_path(path: String) -> Dictionary:
-	if path == LEGACY_PATH:
-		return {"ok": false, "status": "FORBIDDEN_LEGACY_PATH"}
-	if not FileAccess.file_exists(path):
-		return {"ok": false, "status": "MISSING"}
 	var file := FileAccess.open(path, FileAccess.READ)
 	if file == null:
-		return {"ok": false, "status": "UNREADABLE", "error": FileAccess.get_open_error()}
+		return _result(false, "READ_FAILED", {"error": FileAccess.get_open_error()})
 	var parsed: Variant = JSON.parse_string(file.get_as_text())
 	file.close()
 	if typeof(parsed) != TYPE_DICTIONARY:
-		return {"ok": false, "status": "CORRUPT"}
-	var payload := _normalize_json_numbers(parsed) as Dictionary
-	var version := String(payload.get("save_version", ""))
-	if version == SAVE_VERSION:
-		var validation := _validate_payload(payload)
-		if bool(validation.get("ok", false)):
-			return {"ok": true, "status": "EXACT", "payload": payload}
-		return {"ok": false, "status": "CORRUPT", "code": validation.get("code", "INVALID_PAYLOAD")}
-	if version.begins_with("validation-save-v"):
-		var number_text := version.trim_prefix("validation-save-v")
-		if number_text.is_valid_int() and int(number_text) > 1:
-			return {"ok": false, "status": "INCOMPATIBLE_NEWER", "payload": payload}
-		if number_text.is_valid_int() and int(number_text) < 1:
-			return {"ok": false, "status": "MIGRATABLE_OLDER", "payload": payload}
-	return {"ok": false, "status": "INCOMPATIBLE", "payload": payload}
+		return _result(false, "CORRUPT_JSON")
+	var normalized: Variant = _normalize_json_numbers(parsed)
+	if typeof(normalized) != TYPE_DICTIONARY:
+		return _result(false, "CORRUPT_JSON")
+	return _validate_payload(normalized as Dictionary)
 
 
 func _validate_payload(payload: Dictionary) -> Dictionary:
-	if String(payload.get("save_version", "")) != SAVE_VERSION:
-		return {"ok": false, "code": "INVALID_SAVE_VERSION"}
-	var session_value: Variant = payload.get("session")
-	if typeof(session_value) != TYPE_DICTIONARY:
-		return {"ok": false, "code": "INVALID_SESSION"}
-	var session := session_value as Dictionary
-	if String(session.get("session_id", "")).is_empty():
-		return {"ok": false, "code": "MISSING_SESSION_ID"}
-	if String(session.get("episode_id", "")).is_empty():
-		return {"ok": false, "code": "MISSING_EPISODE_ID"}
-	if String(session.get("stage", "")).is_empty():
-		return {"ok": false, "code": "MISSING_STAGE"}
-	return {"ok": true, "code": "OK"}
+	if String(payload.get("format", "")) != FORMAT_ID:
+		return _result(false, "CORRUPT_SCHEMA")
+	var version_code := _classify_version(String(payload.get("version", "")))
+	if version_code != "EXACT":
+		return _result(false, version_code, {"payload": payload.duplicate(true)})
+	if int(payload.get("payload_schema", 0)) != PAYLOAD_SCHEMA:
+		return _result(false, "CORRUPT_SCHEMA", {"field": "payload_schema"})
+	if int(payload.get("revision", -1)) < 0:
+		return _result(false, "CORRUPT_SCHEMA", {"field": "revision"})
+	for key in ["session", "snapshots", "result", "timestamps", "integrity"]:
+		if typeof(payload.get(key)) != TYPE_DICTIONARY:
+			return _result(false, "CORRUPT_SCHEMA", {"field": key})
+	return _result(true, "EXACT", {"payload": payload.duplicate(true)})
 
 
-func _write_json(path: String, payload: Dictionary) -> Error:
-	if path == LEGACY_PATH:
-		return ERR_UNAUTHORIZED
-	var file := FileAccess.open(path, FileAccess.WRITE)
-	if file == null:
-		return FileAccess.get_open_error()
-	file.store_string(JSON.stringify(payload, "\t", false))
-	file.flush()
-	file.close()
-	return OK
+func _classify_version(version: String) -> String:
+	if version == SAVE_VERSION:
+		return "EXACT"
+	const PREFIX := "validation-save-v"
+	if not version.begins_with(PREFIX):
+		return "CORRUPT_SCHEMA"
+	var number_text := version.substr(PREFIX.length())
+	if not number_text.is_valid_int():
+		return "CORRUPT_SCHEMA"
+	return "INCOMPATIBLE_OLDER" if int(number_text) < 1 else "INCOMPATIBLE_NEWER"
 
 
-func _copy_file(source_path: String, target_path: String) -> Error:
-	if source_path == LEGACY_PATH or target_path == LEGACY_PATH:
-		return ERR_UNAUTHORIZED
-	var source := FileAccess.open(source_path, FileAccess.READ)
-	if source == null:
-		return FileAccess.get_open_error()
-	var bytes := source.get_buffer(source.get_length())
-	source.close()
-	var target := FileAccess.open(target_path, FileAccess.WRITE)
-	if target == null:
-		return FileAccess.get_open_error()
-	target.store_buffer(bytes)
-	target.flush()
-	target.close()
-	return OK
-
-
-func _read_payload_from_path(path: String) -> Dictionary:
-	if path == LEGACY_PATH or not FileAccess.file_exists(path):
-		return {"ok": false, "code": "MISSING_OR_FORBIDDEN"}
-	var file := FileAccess.open(path, FileAccess.READ)
-	if file == null:
-		return {"ok": false, "code": "UNREADABLE", "error": FileAccess.get_open_error()}
-	var parsed: Variant = JSON.parse_string(file.get_as_text())
-	file.close()
-	if typeof(parsed) != TYPE_DICTIONARY:
-		return {"ok": false, "code": "CORRUPT"}
-	return {"ok": true, "payload": _normalize_json_numbers(parsed)}
-
-
-func _remove_if_exists(path: String) -> Error:
-	if path == LEGACY_PATH:
-		return ERR_UNAUTHORIZED
+func _remove_path(path: String) -> Error:
 	if not FileAccess.file_exists(path):
 		return OK
 	return DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
@@ -196,27 +208,8 @@ func _normalize_json_numbers(value: Variant) -> Variant:
 	return value
 
 
-func _semantic_equal(left: Variant, right: Variant) -> bool:
-	var left_type := typeof(left)
-	var right_type := typeof(right)
-	if left_type in [TYPE_INT, TYPE_FLOAT] and right_type in [TYPE_INT, TYPE_FLOAT]:
-		return is_equal_approx(float(left), float(right))
-	if left_type == TYPE_DICTIONARY and right_type == TYPE_DICTIONARY:
-		var left_dict := left as Dictionary
-		var right_dict := right as Dictionary
-		if left_dict.size() != right_dict.size():
-			return false
-		for key in left_dict.keys():
-			if not right_dict.has(key) or not _semantic_equal(left_dict[key], right_dict[key]):
-				return false
-		return true
-	if left_type == TYPE_ARRAY and right_type == TYPE_ARRAY:
-		var left_array := left as Array
-		var right_array := right as Array
-		if left_array.size() != right_array.size():
-			return false
-		for index in range(left_array.size()):
-			if not _semantic_equal(left_array[index], right_array[index]):
-				return false
-		return true
-	return left == right
+func _result(ok: bool, code: String, details: Dictionary = {}) -> Dictionary:
+	var result := {"ok": ok, "code": code}
+	for key in details.keys():
+		result[key] = details[key]
+	return result
