@@ -78,7 +78,7 @@ result: MERGED
 PR #122 = SOURCE / DO NOT MERGE AS-IS
 ```
 
-PR #122는 과거 승인·감사·초안의 provenance를 보존하지만 Base·문서·상태가 누적된 source branch다. 현재 유효한 승인 내용은 #125의 current canon으로 승계했고, PR 자체는 병합 대상에서 제외한다.
+PR #122는 provenance를 보존하는 source branch이며 현재 정본이 아니다. 유효 승인 내용은 PR #125로 승계했고 PR 자체는 병합 대상에서 제외했다.
 
 ### 증거 한계
 
@@ -107,11 +107,14 @@ implementation_pr: none
    - 책임 원본: `docs/decisions/D-2026-08-02-PACKAGE-2-MAIN-MENU-MODE-HIERARCHY.md`
    - 추적: Draft PR #129, Google Sheet 동일 Decision ID
 
-후속 Gate:
+같은 질문의 후속 Gate:
 
-- `D-2026-08-02-PACKAGE-2-DESIGN-APPROVAL`은 같은 Grill Me 질문의 상세 Design 승인이다.
-- 별도 Grill Me 질문이 아니므로 카운터는 `1 / 10`을 유지한다.
-- Design Spec 작성·self-review 완료, 사용자 Spec 검토 대기다.
+- `D-2026-08-02-PACKAGE-2-DESIGN-APPROVAL` — 상세 Design 승인
+- `D-2026-08-02-PACKAGE-2-DESIGN-SPEC-APPROVAL` — Spec 승인·implementation plan 작성 허가
+- 구현 계획: `docs/superpowers/plans/2026-08-02-package-2-main-menu-entry-routing-implementation-plan.md`
+- 상태: `PLAN_WRITTEN_SELF_REVIEWED / PRODUCT_IMPLEMENTATION_NOT_AUTHORIZED`
+
+이 후속 Gate들은 별도 Grill Me 질문이 아니므로 카운터는 `1 / 10`을 유지한다.
 
 다음 batch 병합 Gate는 10번째 승인 Decision이 기록될 때 실행한다. 그 전에도 사용자가 별도 병합을 명시적으로 승인하면 해당 범위만 병합할 수 있다.
 
