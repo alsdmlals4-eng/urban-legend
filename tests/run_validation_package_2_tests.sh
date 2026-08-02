@@ -36,6 +36,12 @@ for test_path in "${script_tests[@]}"; do
     echo "FAILED: $test_path" >&2
     exit 1
   fi
+  if grep -Eq 'SCRIPT ERROR:|Failed to load script|Parse Error:|Compile Error:' "$log_file"; then
+    cat "$log_file"
+    echo "::endgroup::"
+    echo "FAILED: $test_path emitted a script load/compile error" >&2
+    exit 1
+  fi
   tail -n 12 "$log_file"
   echo "::endgroup::"
 done
