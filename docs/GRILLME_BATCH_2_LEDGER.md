@@ -1,7 +1,7 @@
 # Grill Me Batch 2 Ledger
 
 > 상위 운영 Decision: `D-2026-08-02-GRILLME-10-MERGE-CADENCE`
-> 현재 카운터: `3 / 10`
+> 현재 카운터: `4 / 10`
 > 상태: `OPEN`
 > 갱신일: 2026-08-03
 > 누적 Draft PR: `#140`
@@ -87,6 +87,26 @@
 - `docs/planning/2026-08-02-investigation-system-design.md`
 - Google Sheet 동일 Decision ID
 
+## 4 / 10
+
+### `D-2026-08-03-INCIDENT-RANK-STAGES-AND-LABELS`
+
+- 정상 종결 사건 종합 랭크는 `C 조건부 대응 / B 적정 대응 / A 우수 대응 / S 정밀 대응`
+- 최고 랭크 정식 표기는 `S — 정밀 대응`
+- 축별 평가는 `미달 / 충족 / 우수 / 정밀`로 통일
+- 사건 종결 상태와 종합 랭크를 별도로 표시
+- 출동 실패·정상 종결 전 철수·기관 강제 봉쇄에는 종합 랭크를 부여하지 않음
+- 랭크가 없어도 축별 결과·확보 기록·실패 이유·남은 책임은 보존
+- S+·SS·SSS 같은 랭크 인플레이션 금지
+- 연도 결산에서 문자 랭크 평균·총점 사용 금지
+- 구현·사람 검증 미승인
+
+책임 원본:
+
+- `docs/decisions/D-2026-08-03-INCIDENT-RANK-STAGES-AND-LABELS.md`
+- `docs/planning/2026-08-02-investigation-system-design.md`
+- Google Sheet 동일 Decision ID
+
 ## 다음 질문
 
-종합 랭크와 축별 평가의 단계 수·명칭을 S/A/B 같은 게임식 등급, 기록국 세계관 용어, 또는 혼합 표시 중 어떤 구조로 사용할 것인가.
+첫 클리어 뒤 최고 랭크·업적을 위한 재도전 결과가 피해자 상태·관계·분기 환류 등 캠페인 정본을 덮어쓸 것인가, 최초 결과를 보존한 별도 숙련 기록으로 관리할 것인가.
