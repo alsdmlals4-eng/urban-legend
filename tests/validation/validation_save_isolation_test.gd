@@ -1,8 +1,9 @@
 extends SceneTree
 
 const Support = preload("res://tests/validation/validation_test_support.gd")
+const SessionScript = preload("res://scripts/core/validation_session.gd")
+const GameStateScript = preload("res://scripts/core/validation_game_state.gd")
 const LEGACY_PATH := "user://urban_legend_save.json"
-const VALIDATION_PATH := "user://urban_legend_validation_save.json"
 
 var _failures: Array[String] = []
 
@@ -10,65 +11,73 @@ var _failures: Array[String] = []
 func _init() -> void:
 	var session_path := String(ProjectSettings.get_setting("autoload/ValidationSession", ""))
 	var game_state_path := String(ProjectSettings.get_setting("autoload/GameState", ""))
-	_expect(session_path == "*res://scripts/core/validation_session.gd", "ValidationSession must be registered before GameState")
-	_expect(game_state_path == "*res://scripts/core/validation_game_state.gd", "GameState autoload must use the isolated wrapper")
+	_expect(session_path == "*res://scripts/core/validation_session.gd", "ValidationSession must be registered in project.godot")
+	_expect(game_state_path == "*res://scripts/core/validation_game_state.gd", "GameState must use the isolated wrapper")
 
-	# SceneTree --script tests do not instantiate project autoload nodes.
-	# Mount the scripts with their production root names after checking project.godot.
-	var session_script: Script = load("res://scripts/core/validation_session.gd")
-	var game_state_script: Script = load("res://scripts/core/validation_game_state.gd")
-	_expect(session_script != null, "ValidationSession script must load")
-	_expect(game_state_script != null, "GameState wrapper script must load")
-	if session_script == null or game_state_script == null:
-		_finish()
-		return
-
+	# SceneTree --script does not instantiate project autoloads, so mount the same scripts and names.
 	var root := get_root()
-	var session = session_script.new()
+	var session = SessionScript.new()
 	session.name = "ValidationSession"
 	root.add_child(session)
-	var game_state = game_state_script.new()
+	var game_state = GameStateScript.new()
 	game_state.name = "GameState"
 	root.add_child(game_state)
 
-	_expect(root.get_node_or_null("ValidationSession") == session, "ValidationSession must mount at the production root name")
-	_expect(root.get_node_or_null("GameState") == game_state, "GameState must mount at the production root name")
+	_expect(session.has_method("create"), "session must expose the approved create API")
+	_expect(session.has_method("invalidate_token_for_test"), "session must expose fail-closed test invalidation")
+	_expect(game_state.has_method("snapshot_hidden_legacy_state_for_test"), "GameState must expose hidden-state evidence")
+	if not session.has_method("create") or not game_state.has_method("snapshot_hidden_legacy_state_for_test"):
+		_cleanup(game_state, session, {})
+		_finish()
+		return
 
-	Support.delete_path(LEGACY_PATH)
-	Support.delete_path(VALIDATION_PATH)
-	Support.write_text(LEGACY_PATH, "LEGACY-BYTES-MUST-NOT-CHANGE")
+	var paths: Dictionary = session.get_repository_paths()
+	Support.remove_repository_paths(paths)
+	Support.remove_path(LEGACY_PATH)
+	game_state.reset_run_state()
+	_expect(game_state.save_game(), "inactive Legacy save should succeed")
 	var legacy_before := Support.read_bytes(LEGACY_PATH)
-	var hidden_before: Dictionary = game_state.capture_validation_hidden_state_guard()
+	var hidden_before: Dictionary = game_state.snapshot_hidden_legacy_state_for_test()
 
-	var create_result: Dictionary = session.create_session(
-		"episode_001_afterlife_station",
-		"SIT-001",
-		game_state.export_validation_runtime_snapshot()
-	)
-	_expect(bool(create_result.get("ok", false)), "runtime session must be creatable")
-	var token := String(create_result.get("token", ""))
-	var activate_result: Dictionary = session.activate_session(token)
-	_expect(bool(activate_result.get("ok", false)), "runtime session must activate with its token")
-
-	var save_ok := bool(game_state.save_game())
-	_expect(save_ok, "active Validation save must route to the Validation repository")
-	_expect(FileAccess.file_exists(VALIDATION_PATH), "active Validation save must create only the Validation file")
+	var created: Dictionary = session.create("episode_001_afterlife_station")
+	var token := String(created.get("session_token", ""))
+	_expect(String(created.get("code", "")) == "OK", "session should create")
+	_expect(String(session.activate(token).get("code", "")) == "OK", "session should activate")
+	_expect(String(session.capture_legacy_guard(game_state).get("code", "")) == "OK", "session should capture hidden guard")
+	game_state.add_flag("validation:integration-save")
+	_expect(game_state.save_game(), "active save should route to Validation")
+	var validation_path := String(paths.get("primary", ""))
+	_expect(FileAccess.file_exists(validation_path), "Validation primary should exist")
 	_expect(Support.read_bytes(LEGACY_PATH) == legacy_before, "active Validation save must preserve Legacy bytes")
-	_expect(game_state.validation_hidden_state_matches(hidden_before), "active Validation save must preserve hidden Legacy memory")
+	_expect(Support.semantic_equal(game_state.snapshot_hidden_legacy_state_for_test(), hidden_before), "active Validation save must preserve hidden Legacy memory")
 
-	session.invalidate_active_contract_for_test()
-	var validation_before := Support.read_bytes(VALIDATION_PATH)
-	var invalid_save_ok := bool(game_state.save_game())
-	_expect(not invalid_save_ok, "invalid active Validation contract must fail closed")
-	_expect(Support.read_bytes(LEGACY_PATH) == legacy_before, "fail-closed save must not touch Legacy bytes")
-	_expect(Support.read_bytes(VALIDATION_PATH) == validation_before, "fail-closed save must not touch Validation bytes")
+	var validation_before_invalid := Support.read_bytes(validation_path)
+	session.invalidate_token_for_test()
+	_expect(not game_state.save_game(), "invalid active session must fail closed")
+	_expect(Support.read_bytes(LEGACY_PATH) == legacy_before, "invalid active session must not fall back to Legacy")
+	_expect(Support.read_bytes(validation_path) == validation_before_invalid, "invalid active session must not change Validation bytes")
 
-	session.deactivate_session()
-	Support.delete_path(LEGACY_PATH)
-	Support.delete_path(VALIDATION_PATH)
+	session.deactivate()
+	var validation_before_legacy_ops := Support.read_bytes(validation_path)
+	_expect(game_state.load_game(), "Legacy load should still succeed while Validation is inactive")
+	_expect(game_state.clear_save_file(), "Legacy clear should still succeed while Validation is inactive")
+	_expect(Support.read_bytes(validation_path) == validation_before_legacy_ops, "Legacy load/clear must preserve Validation bytes")
+
+	game_state.reset_run_state()
+	_expect(game_state.save_game(), "Legacy save should recreate for reverse isolation test")
+	var legacy_before_validation_delete := Support.read_bytes(LEGACY_PATH)
+	_expect(String(session.delete_persistence().get("code", "")) == "OK", "Validation persistence delete should succeed")
+	_expect(Support.read_bytes(LEGACY_PATH) == legacy_before_validation_delete, "Validation delete must preserve Legacy bytes")
+
+	_cleanup(game_state, session, paths)
+	_finish()
+
+
+func _cleanup(game_state: Node, session: Node, paths: Dictionary) -> void:
+	Support.remove_repository_paths(paths)
+	Support.remove_path(LEGACY_PATH)
 	game_state.queue_free()
 	session.queue_free()
-	_finish()
 
 
 func _expect(condition: bool, message: String) -> void:
