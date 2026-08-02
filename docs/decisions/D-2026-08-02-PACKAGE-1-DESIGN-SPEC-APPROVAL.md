@@ -97,7 +97,7 @@ Implementation Plan REVIEW_READY
 
 ```yaml
 spec_approval: APPROVED
-implementation_plan: IN_PROGRESS
+implementation_plan: REVIEW_READY
 product_diff: 0
 runtime: NOT_RUN
 ci: NOT_RUN
