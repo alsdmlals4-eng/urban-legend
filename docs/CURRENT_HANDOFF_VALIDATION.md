@@ -1,6 +1,6 @@
 # 괴이기록국 Validation 현재 인수인계
 
-> 상태: `PACKAGE_2_IMPLEMENTATION_COMPLETE_ON_PR_131 / AUTOMATED_CODE_CI_PASS / MERGE_NOT_AUTHORIZED`
+> 상태: `PACKAGE_2_IMPLEMENTATION_COMPLETE_ON_PR_131 / LATEST_COMPLETED_EXACT_HEAD_PASS / MERGE_NOT_AUTHORIZED`
 > 갱신일: 2026-08-02
 > planning branch: `agent/package-2-entry-routing-planning`
 > implementation branch: `agent/package-2-entry-routing-implementation`
@@ -9,7 +9,7 @@
 > Grill Me future counter: `1 / 10`
 > 병합 권한: `NOT_AUTHORIZED`
 
-실제 최신 main SHA는 GitHub `main` ref에서 읽는다. PR #131 구현은 자동 검증된 후보지만 main 병합 전까지 제품 완료 정본이 아니다.
+실제 최신 main·PR SHA는 GitHub ref에서 읽는다. PR #131 구현은 자동 검증된 후보지만 main 병합 전까지 제품 완료 정본이 아니다.
 
 ## 읽기 순서
 
@@ -43,7 +43,7 @@ package_2_design: APPROVED
 package_2_spec: APPROVED
 package_2_implementation_plan: APPROVED_AND_EXECUTED
 package_2_product_implementation: COMPLETE_ON_PR_131
-package_2_code_ci: PASS
+package_2_latest_completed_exact_head: PASS
 package_2_merge: NOT_AUTHORIZED
 package_1_focused: 4_OF_4_PASS
 package_2_focused: 5_OF_5_PASS
@@ -110,15 +110,13 @@ Validation badge는 `본편과 별도 기록`을 명시한다. 한쪽 저장 오
    - 파괴적 교체 기본 포커스 취소
    - keyboard focus neighbor
 
-## TDD·자동 검증
-
-코드 검증 HEAD:
-
-`e24aac73a81bfb1725c60dd640a26fa91527647a`
+## 최근 완료 exact-head 자동 검증
 
 ```yaml
-core_run_30741037647: PASS
-annual_run_30741037654: PASS
+documentation_run_30741361754: PASS
+bca_run_30741361726: PASS
+core_run_30741361717: PASS
+annual_run_30741361720: PASS
 godot_import: PASS
 package_1_focused: 4_OF_4_PASS
 package_2_focused: 5_OF_5_PASS
@@ -126,6 +124,8 @@ core_focused: PASS
 annual_001_focused: PASS
 annual_002_focused: PASS
 full_godot_regression: 58_OF_58_PASS
+review_threads: 0
+submitted_reviews: 0
 ```
 
 TDD RED·GREEN·적대적 보정 상세:
@@ -162,6 +162,8 @@ pr_122: CLOSED_SOURCE_DO_NOT_MERGE_AS_IS
 issue_121: CLOSED_COMPLETED
 ```
 
+PR #131 changed files는 production·tests·CI·current evidence 범위 21개다. unresolved review thread와 submitted review는 0이다.
+
 ## Grill Me 운영
 
 - 현재 미래 카운터: `1 / 10`
@@ -172,11 +174,12 @@ issue_121: CLOSED_COMPLETED
 ## 다음 Gate
 
 ```text
-최종 implementation HEAD Docs·BCA·CORE·ANNUAL 재검증
-→ PR #129/#131 changed files·review threads·Sheet 적대적 감사
+Google Sheet final implementation 상태 동기화
 → 사용자 별도 병합 승인
 → PR #129 병합
-→ PR #131 main retarget·fresh exact-head CI
+→ PR #131 main retarget
+→ stacked BCA planning-base 허용 제거
+→ fresh exact-head Docs·BCA·CORE·ANNUAL
 → PR #131 병합
 → Package 2 종료
 → 본격 게임 기획 전환
