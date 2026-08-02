@@ -1,11 +1,13 @@
 # Package 2 메인 메뉴 진입·이어하기·라우팅 구현 증거
 
-> 상태: `IMPLEMENTATION_COMPLETE / LATEST_COMPLETED_EXACT_HEAD_PASS / FINAL_DOCUMENT_SYNC_TRIGGERED`
+> 상태: `IMPLEMENTATION_MERGED / FINAL_EXACT_HEAD_PASS / POST_MERGE_SYNC`
 > 구현 Decision: `D-2026-08-02-PACKAGE-2-IMPLEMENTATION-APPROVAL`
 > Planning PR: #129
 > Implementation PR: #131
-> 코드 검증 기준: GitHub PR #131 최신 HEAD
-> 병합 권한: `NOT_AUTHORIZED`
+> Planning merge: `b4d7bd0fb82968325bcf230f3e81b8d96e142402`
+> Implementation verified HEAD: `fdd55e367e21d9bc1c031ff2f0c4438289040665`
+> Implementation merge: `f8751e7fa7890f402c7377ea6aee64f79ef59911`
+> 병합 권한: `EXECUTED`
 
 ## 1. 구현 범위
 
@@ -63,7 +65,7 @@
 | 1 read-only summary | `1a6cf9dc9c8bc51cef387488d98b0536df0d36d7` | `validation_persistence_summary.gd` 없음 | `544bf580dd9727b542bc27d494b89a124b6062d0`; Package 1 4/4·summary·CORE·53/53 PASS |
 | 2 route mapper | `e3395cb765cfae8b343b0a9d214a8caff9411977` | `validation_route_mapper.gd` 없음 | `31e56ab7f0a1b80242aad6263e74993d6602141c`; Package 2 2/2 PASS |
 | 3 whitelist initializer | `63bf6d283f13f16be108133552ce1564b48088bd` | `initialize_validation_runtime()` 없음 | `52f78b821282bd395e00542b0e48b7c1ca5a0b71`; Package 2 3/3 PASS |
-| 4·5 coordinator | `bc1b769f9df6473348b4b2bdb9cab0f7574aab67` | coordinator 없음 | compile/type 보정과 runner 강화 후 `c91690f41561e24f405c5944808b4eac83fd7534`에서 coordinator true PASS |
+| 4·5 coordinator | `bc1b769f9df6473348b4b2bdb9cab0f7574aab67` | coordinator 없음 | compile/type 보정과 runner 강화 후 `c91690f41561e24f405c5944808b4eac83fd7534`에서 실제 coordinator PASS |
 | 6 SCREEN-01 | `c91690f41561e24f405c5944808b4eac83fd7534` | 독립 카드·dialog·test facade 없음 | `45e022d6ab1bcbc32e698093de961917e2821894`; Package 1 4/4·Package 2 5/5·CORE·53/53 PASS |
 | 7 full registration | `e78d6e6f0d0d92f4ae99446729a13d9e9bf03edd` | 신규 5개가 regression runner에 없음 | `e24aac73a81bfb1725c60dd640a26fa91527647a`; CORE·ANNUAL 양쪽 58/58 PASS |
 
@@ -110,19 +112,50 @@
 - unknown → `UNKNOWN_FLOW_STAGE`
 - 실패 시 SCREEN-01 잔류·runtime rollback·Session abandon
 
-### E. stacked PR의 BCA branch filter
+### E. stacked PR BCA 조건
 
-BCA workflow는 원래 `main` base PR만 허용해 PR #131에서는 실행되지 않았다.
+BCA workflow는 처음에 `main` base PR만 허용해 stacked PR #131에서 실행되지 않았다.
 
 보정:
 
-- stacked 검증 동안 `agent/package-2-entry-routing-planning` base를 명시적으로 허용
-- diff 기준을 고정 `origin/main`이 아니라 실제 `github.base_ref`로 변경
-- PR #129 병합 후 PR #131을 main으로 retarget할 때 planning branch 허용값을 제거하고 fresh BCA를 다시 실행
+- stacked 검증 동안 planning base를 임시 허용
+- diff 기준을 실제 `github.base_ref`로 변경
+- PR #129 병합 후 PR #131을 main으로 retarget
+- 임시 planning-base 허용을 제거
+- 최종 HEAD에서 BCA를 다시 실행
 
-## 5. 코드 HEAD 자동 검증
+## 5. 병합 순서와 main 동기화
 
-### CORE run `30741037647`
+```yaml
+base_v9_4_1_main: 13cf7f1814cd7435c77e99d97ea8b7b7658464e1
+main_to_planning_sync_pr: 132
+main_to_planning_sync_merge: 181dd690761af7caae3f162235485001b3aefa72
+planning_pr: 129
+planning_merge: b4d7bd0fb82968325bcf230f3e81b8d96e142402
+main_to_implementation_sync_pr: 133
+main_to_implementation_sync_merge: c7cbec06efa2b3487b2d8fe9e9cab3dd3177f9b6
+implementation_pr: 131
+implementation_verified_head: fdd55e367e21d9bc1c031ff2f0c4438289040665
+implementation_merge: f8751e7fa7890f402c7377ea6aee64f79ef59911
+```
+
+PR #129은 최신 main을 병합한 후 Documentation·BCA를 새로 통과하고 병합했다. PR #131은 main으로 retarget하고 최신 main을 동기화한 뒤 임시 stacked BCA 조건을 제거했다.
+
+## 6. 최종 exact-head 자동 검증
+
+PR #131 HEAD `fdd55e367e21d9bc1c031ff2f0c4438289040665`에서 다음 검증을 완료한 뒤 expected-head SHA로 병합했다.
+
+### Documentation run `30742092953`
+
+- archive governance: PASS
+- Base·core·routing·active references·planning synchronization contracts: PASS
+
+### BCA run `30742092954`
+
+- BCA adoption unit tests: PASS
+- `git diff --check origin/main...HEAD`: PASS
+
+### CORE run `30742092974`
 
 - Python contracts: PASS
 - Godot 4.7.1 import: PASS
@@ -131,7 +164,7 @@ BCA workflow는 원래 `main` base PR만 허용해 PR #131에서는 실행되지
 - CORE focused: PASS
 - full Godot regression: 58/58 PASS
 
-### ANNUAL run `30741037654`
+### ANNUAL run `30742092951`
 
 - annual·active-document Python contracts: PASS
 - Godot 4.7.1 import: PASS
@@ -142,13 +175,19 @@ BCA workflow는 원래 `main` base PR만 허용해 PR #131에서는 실행되지
 - ANNUAL-MVP-002 focused: PASS
 - full Godot regression: 58/58 PASS
 
-### Visual capture run `30741037649`
+### 병합 직전 감사
 
-- workflow: PASS
-- artifact: `annual-mvp-001-002-visual-qa`
-- 이 artifact는 ANNUAL 화면 캡처이며 SCREEN-01 1280×720 사람 판독을 대체하지 않는다.
+```yaml
+changed_files: 21_SCOPED
+review_threads: 0
+submitted_reviews: 0
+main_moved_after_planning_merge: false
+sheet_same_decision_id: PASS
+merge_method: merge
+expected_head_sha: fdd55e367e21d9bc1c031ff2f0c4438289040665
+```
 
-## 6. 안전 계약 판정
+## 7. 안전 계약 판정
 
 ```yaml
 read_only_menu_inspection: PASS
@@ -166,7 +205,7 @@ legacy_validation_independent_cards: PASS
 keyboard_focus_structure: PASS
 ```
 
-## 7. 미검증 경계
+## 8. 미검증 경계
 
 ```yaml
 local_runtime: NOT_RUN
@@ -181,45 +220,14 @@ production_expansion: NOT_APPROVED
 
 구조 테스트와 자동 Scene 실행은 사람의 첫 시도 이해도·문구 판독·실제 시각 밀도를 증명하지 않는다.
 
-## 8. 남은 Gate
-
-```text
-PR diff·review thread·Sheet 적대적 감사
-→ 사용자 별도 병합 승인
-→ PR #129 planning 병합
-→ PR #131 main retarget
-→ stacked BCA planning-base 허용 제거
-→ fresh exact-head Docs·BCA·CORE·ANNUAL
-→ PR #131 구현 병합
-```
-
-병합 전에는 Package 2를 main 완료 상태로 주장하지 않는다.
-
-## 9. 최근 완료 exact-head 판정
-
-current 결정·인수인계·ledger·구현 증거를 한 상태로 맞춘 직전 exact-head에서 다음 검증이 모두 완료됐다.
+## 9. 최종 판정
 
 ```yaml
-documentation_run_30741361754: PASS
-bca_run_30741361726: PASS
-core_run_30741361717: PASS
-annual_run_30741361720: PASS
-package_1_focused: 4_OF_4_PASS
-package_2_focused: 5_OF_5_PASS
-full_godot_regression: 58_OF_58_PASS
-review_threads: 0
-submitted_reviews: 0
+package_2_planning: MERGED
+package_2_implementation: MERGED
+package_2_automated_verification: PASS
+package_2_human_validation: NOT_RUN
+package_2_status: COMPLETE_WITH_EXPLICIT_UNVERIFIED_BOUNDARIES
 ```
 
-## 10. 최종 문서 동기화 트리거
-
-이 문서 갱신은 current 결정·인수인계·ledger에 최근 완료 판정을 반영한 뒤 수행하는 마지막 branch 파일 변경이다. 이 커밋의 실제 SHA는 GitHub PR #131 ref에서 읽으며 문서에 자기참조로 고정하지 않는다.
-
-이 변경 이후 branch 파일은 더 수정하지 않고, 동일 최종 HEAD에서 다음 검증을 다시 완료한 결과를 PR 댓글과 Google Sheet에 기록한다.
-
-```yaml
-documentation_contracts: REQUIRED_PASS
-bca_adoption: REQUIRED_PASS
-core_workflow: REQUIRED_PASS
-annual_workflow: REQUIRED_PASS
-```
+Package 2는 main에 반영됐다. 다음 작업은 post-merge current docs·Google Sheet 동기화 완료 후 본격 게임 기획 전환이다.
