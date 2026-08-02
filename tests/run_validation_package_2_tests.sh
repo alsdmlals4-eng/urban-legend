@@ -13,6 +13,7 @@ script_tests=(
   validation/validation_route_mapper_test
   validation/validation_runtime_initializer_test
   validation/validation_entry_coordinator_test
+  validation/validation_main_menu_contract_test
 )
 
 for test_path in "${script_tests[@]}"; do
