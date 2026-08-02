@@ -1,7 +1,7 @@
 name: Validate Urban Legend BCA Adoption
 on:
   pull_request:
-    branches: [main, agent/package-2-entry-routing-planning]
+    branches: [main]
     paths: ["README.md","AGENTS.md","docs/**","skills/**","tests/test_bca_visual_sheet_adoption.py",".github/workflows/validate-bca-visual-sheet-adoption.yml"]
 permissions: {contents: read}
 concurrency:
