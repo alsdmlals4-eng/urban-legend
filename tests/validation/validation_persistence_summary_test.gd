@@ -1,7 +1,7 @@
 extends SceneTree
 
 const SummaryScript = preload("res://scripts/core/validation_persistence_summary.gd")
-const SessionScript = preload("res://scripts/core/validation_session_facade.gd")
+const InspectorScript = preload("res://scripts/core/validation_persistence_inspector.gd")
 const Support = preload("res://tests/validation/validation_test_support.gd")
 const TEST_PRIMARY := "user://validation_package_2_summary_test.json"
 
@@ -10,7 +10,7 @@ var _failures: Array[String] = []
 
 func _init() -> void:
 	_test_action_mapping()
-	_test_session_facade_is_read_only()
+	_test_inspector_is_read_only()
 	_finish()
 
 
@@ -54,26 +54,17 @@ func _test_action_mapping() -> void:
 	_expect(empty.get("repository_code") == "EMPTY", "EMPTY code must be preserved")
 
 
-func _test_session_facade_is_read_only() -> void:
-	var session = SessionScript.new()
-	_expect(session.has_method("inspect_persistence"), "session must expose inspect_persistence")
-	if not session.has_method("inspect_persistence"):
-		session.free()
-		return
-	session.configure_repository_path_for_test(TEST_PRIMARY)
-	var paths: Dictionary = session.get_repository_paths()
+func _test_inspector_is_read_only() -> void:
+	var inspector = InspectorScript.new()
+	inspector.configure_repository_path_for_test(TEST_PRIMARY)
+	var paths: Dictionary = inspector.get_repository_paths()
 	Support.remove_repository_paths(paths)
-	var revision_before := session.get_revision()
-	var routing_before := session.requires_save_routing()
-	var first: Dictionary = session.inspect_persistence()
-	var second: Dictionary = session.inspect_persistence()
+	var first: Dictionary = inspector.inspect_persistence()
+	var second: Dictionary = inspector.inspect_persistence()
 	_expect(first.get("repository_code") == "EMPTY", "empty repository must inspect as EMPTY")
 	_expect(second == first, "repeated inspection must be stable")
-	_expect(session.get_revision() == revision_before, "inspection must not change revision")
-	_expect(session.requires_save_routing() == routing_before, "inspection must not change mode")
 	_expect(not FileAccess.file_exists(TEST_PRIMARY), "inspection must not create persistence")
 	Support.remove_repository_paths(paths)
-	session.free()
 
 
 func _payload(lifecycle: String, flow_stage: String) -> Dictionary:
