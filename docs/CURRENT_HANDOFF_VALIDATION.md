@@ -8,7 +8,7 @@
 > Parent: `D-2026-08-02-BASE-V94-CANON-RECONCILIATION`
 > Proposal: `P-2026-08-02-VALIDATION-CHANGE-PROPOSAL`
 > 기준 main: `7277b9cececa56532f7b0d11c1a02fd3d5642750`
-> 계획 브랜치 HEAD: `df2e2fa13f7a4d65f047700b0b25aa7ced10b21f`
+> 계획 브랜치 기준점: `df2e2fa13f7a4d65f047700b0b25aa7ced10b21f`
 > 제품 구현 권한: `NOT_AUTHORIZED`
 
 ## 현재 읽기 순서
@@ -199,8 +199,8 @@ Implementation Plan = REVIEW_READY
 - PR #122: `SOURCE_BRANCH / DO_NOT_MERGE_AS_IS`
 - Draft PR #125: Canon·Audit·Package 1 Design·Implementation Plan surface
 - 브랜치: `agent/v9-4-canon-reconciliation`
-- 계획 HEAD: `df2e2fa13f7a4d65f047700b0b25aa7ced10b21f`
-- main 대비: `29 commits ahead / 0 behind`
+- 계획 기준점: `df2e2fa13f7a4d65f047700b0b25aa7ced10b21f`
+- 최종 exact HEAD는 PR #125 본문·댓글과 Sheet 변경이력이 소유한다.
 - 변경: `15 documentation files / product paths 0`
 - PR 병합: `NOT_REQUESTED`
-- Google Sheet: `D-2026-08-02-PACKAGE-1-DESIGN-SPEC-APPROVAL`과 계획 상태를 exact HEAD로 동기화 후 재조회 필요
+- Google Sheet: `D-2026-08-02-PACKAGE-1-DESIGN-SPEC-APPROVAL`과 Implementation Plan 상태를 exact HEAD로 재조회한다.
