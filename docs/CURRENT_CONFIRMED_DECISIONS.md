@@ -1,21 +1,22 @@
 # 괴이기록국 현재 확정 결정
 
 > 문서 역할: `CURRENT_CONFIRMED_DECISIONS`
-> 상태: `PACKAGE_2_MERGED_ON_MAIN / YEAR_ONE_DESIGN_APPROVED_PENDING_BATCH_AUDIT`
+> 상태: `PACKAGE_2_MERGED_ON_MAIN / YEAR_ONE_DESIGN_MERGED_ON_MAIN / GRILLME_BATCH_1_COMPLETE`
 > 갱신일: 2026-08-02
 > Base: `9.4.3`
 > Package 1 구현 merge: `80160218d05e79af5442bf27d8fdeb66bcf05723`
 > 병합 운영 정본 merge: `e15b9d25127170a530f66d5c3462340b806ad51d`
 > Package 2 planning merge: `b4d7bd0fb82968325bcf230f3e81b8d96e142402`
 > Package 2 implementation merge: `f8751e7fa7890f402c7377ea6aee64f79ef59911`
-> 1년차 캠페인 Draft PR: #135
+> 1년차 캠페인 Design PR: #135
+> 1년차 캠페인 Design merge: `7bddbce2ebd427154cdeb8e4bb9b7aec06e2ea5e`
 > main→planning sync PR: #138 / merge `cc25991ba6b74b3c3f552c84e90d40987595fa82`
 > 1년차 Design: `docs/planning/2026-08-02-year-one-campaign-master-structure-design.md`
 > 상세 Validation Target: `docs/VALIDATION_TARGET_CANON.md`
 > 현재 인수인계: `docs/CURRENT_HANDOFF_VALIDATION.md`
 > Grill Me ledger: `docs/GRILLME_APPROVAL_MERGE_LEDGER.md`
 
-이 문서는 현재 유효한 사용자 승인 결정과 대체 관계를 소유한다. 실제 최신 main과 planning HEAD는 GitHub ref에서 읽고, 문서 안의 SHA와 run ID는 역할이 고정된 병합·검증 증거로 사용한다. 실행하지 않은 사람·시각 검증은 승인으로 간주하지 않는다.
+이 문서는 현재 유효한 사용자 승인 결정과 대체 관계를 소유한다. 실제 최신 main SHA는 GitHub `main` ref에서 읽고, 문서 안의 SHA와 run ID는 역할이 고정된 병합·검증 증거로 사용한다. 실행하지 않은 사람·시각·콘텐츠 검증은 승인으로 간주하지 않는다.
 
 ## 1. 권위 순서
 
@@ -34,7 +35,7 @@
 → 과거 PR·대화·추정
 ```
 
-source-only·superseded PR은 현재 권위가 아니다. Package 2 planning과 implementation은 main에 병합됐다. 1년차 캠페인 Design은 Draft PR #135에서 승인됐지만 구현·Production 확대·main 병합 권한을 의미하지 않는다.
+source-only·superseded PR은 현재 권위가 아니다. Package 1·2와 1년차 캠페인 Design은 main에 병합됐다. Design 병합은 Design Spec·개별 사건 Spec·구현·사람 검증·POC·Production 확대 권한을 열지 않는다.
 
 ## 2. 현재 상태
 
@@ -53,31 +54,21 @@ package_2_product_implementation: MERGED_ON_MAIN
 package_2_automated_code_ci: PASS
 package_2_validation_focused: 5_OF_5_PASS
 full_godot_regression: 58_OF_58_PASS
-package_2_planning_pr_merge: MERGED
-package_2_implementation_pr_merge: MERGED
+year_one_design_sections_1_to_6: MERGED_ON_MAIN
+year_one_design_pr: 135
+year_one_design_merge: 7bddbce2ebd427154cdeb8e4bb9b7aec06e2ea5e
 year_one_planning_priority: APPROVED
-year_one_design_section_1: APPROVED
-year_one_design_section_2: APPROVED
-year_one_design_section_3: APPROVED_DISTINCT_VICTIM_RESCUE_MINIGAMES
-year_one_design_section_4: APPROVED_FOUR_CORE_CASES_PLACED
-year_one_design_section_5: APPROVED_CASE_PLAY_DIFFERENTIATION
-year_one_design_section_6: APPROVED_RESULT_FEEDBACK_AND_ANNUAL_REVIEW
-main_content_authority: INVESTIGATION_RESCUE_RECOVERY_BATTLE
-schedule_role: SUPPORT_PREPARATION_FEEDBACK_LAYER
-core_gameplay_screen_presentation: APPROVED_PROVISIONAL_UX_BASELINE
+year_one_main_content_authority: INVESTIGATION_RESCUE_RECOVERY_BATTLE
 year_one_core_case_spring: AFTERLIFE_STATION
 year_one_core_case_summer: RED_UMBRELLA_ALLEY
 year_one_core_case_autumn: DEAD_FREQUENCY_STATION
 year_one_core_case_winter: UNRECORDED_WARD
-year_one_threat_grammar_spring: ORDER_AND_MOVEMENT_TIMING
-year_one_threat_grammar_summer: TARGET_ROLE_TRANSFER
-year_one_threat_grammar_autumn: RESPONSE_AND_CHANNEL_STATE
-year_one_threat_grammar_winter: RECORD_AUTHORITY_AND_EXISTENCE_REPLACEMENT
 year_one_feedback_axes: KNOWLEDGE_RELATION_INSTITUTION_FIELD
 year_one_annual_review: COMPOSITE_AGENT_RECORD_NO_SINGLE_RANK
-grillme_batch_1_counter: 10_OF_10
-grillme_batch_1_audit: IN_PROGRESS
-pr_135: DRAFT_UNMERGED
+grillme_batch_1: COMPLETE_MERGED
+grillme_batch_2_counter: 0_OF_10
+design_spec: NOT_WRITTEN
+year_one_implementation: NOT_AUTHORIZED
 human_qa: NOT_RUN
 new_player_validation: NOT_RUN
 screen_01_visual_1280x720: NOT_RUN
@@ -181,36 +172,13 @@ production_expansion: NOT_APPROVED
 
 2년차 초반 직접 활성화는 지식 1개·관계/기관 1개·현장 1개·요원 성향 기록으로 제한하되 나머지 사건 기록과 책임은 삭제하지 않는다.
 
-책임 Decision:
-
-- `D-2026-08-02-YEAR-ONE-CAMPAIGN-MASTER-STRUCTURE-FIRST`
-- `D-2026-08-02-YEAR-ONE-CAMPAIGN-PURPOSE-AND-QUARTERLY-CASE`
-- `D-2026-08-02-YEAR-ONE-QUARTERLY-CASE-ROLE-AND-FEEDBACK`
-- `D-2026-08-02-YEAR-ONE-QUARTERLY-SIMPLE-MINIGAME-VARIATION`
-- `D-2026-08-02-YEAR-ONE-FOUR-CORE-CASES-AND-QUARTER-PLACEMENT`
-- `D-2026-08-02-YEAR-ONE-CASE-PLAY-DIFFERENTIATION-CONTRACT`
-- `D-2026-08-02-YEAR-ONE-RESULT-FEEDBACK-AND-ANNUAL-REVIEW-CONTRACT`
-
 ## 5. 핵심 게임 화면 표현 기준선
 
 상태: `APPROVED_PROVISIONAL_UX_BASELINE`
 
-### 조사 화면
-
-- 정보 위계: 상황 설명 → 조건이 표시된 선택지
-- 플레이어 노출 명칭: `괴이 매뉴얼`
-- 후보 규칙·확인된 규칙·위험 사례·미해결 항목 구분
-
-### 피해자 구출 화면
-
-- 구출 대상·조건·금지 행동·안전 행동 표시
-- 성공·부분 실패·지연을 회수 전투 시작 조건으로 전달
-
-### 회수 전투 화면
-
-- 메인 상단·중앙에는 괴이만 상시 표시
-- 아군은 하단 초상·상태·스킬 HUD
-- 전신은 스킬 사용 시 짧은 하단 컷인으로만 등장
+- 조사 화면: 상황 설명 → 조건이 표시된 선택지, 플레이어 노출 명칭 `괴이 매뉴얼`
+- 피해자 구출 화면: 구출 대상·조건·금지 행동·안전 행동 표시
+- 회수 전투 화면: 괴이 중심 전장, 아군 하단 HUD, 스킬 사용 시 짧은 컷인
 - 패널·크기·컷인 시간·단축키·애니메이션은 후속 UX와 사람 검증에서 수정 가능
 
 ## 6. 승인 Validation 흐름
@@ -228,66 +196,51 @@ SCREEN-01 무인 메인
 → SCREEN-01 메인 복귀
 ```
 
-Package 2는 SCREEN-01에서 SIT-001·SIT-002·SIT-004의 현재 구현 Scene만 allowlist로 연다. SIT-003·SIT-005~008은 전용 Scene 구현 전 `NOT_AVAILABLE`로 fail-closed한다. 이번 1년차 Design은 기존 Validation 구현을 자동 변경하지 않는다.
+Package 2는 SCREEN-01에서 SIT-001·SIT-002·SIT-004의 현재 구현 Scene만 allowlist로 연다. SIT-003·SIT-005~008은 전용 Scene 구현 전 `NOT_AVAILABLE`로 fail-closed한다. 1년차 Design 병합은 기존 Validation 구현을 자동 변경하지 않는다.
 
 ## 7. 현재 Decision 목록
 
-| Decision ID | 현재 상태 | 핵심 | 책임 원본 |
-|---|---|---|---|
-| `D-2026-07-31-CANON-SHEET-SYNC` | CURRENT_APPROVED_GOVERNANCE | 주요 승인을 GitHub·Sheet에 같은 ID로 동기화 | 이 문서·Sheet |
-| `D-2026-07-31-TEXT-NOVEL-CORE-PRESENTATION` | APPROVED_PLANNING_BASELINE | 일반 조사·플레이는 텍스트 노벨 화면 | `VALIDATION_TARGET_CANON.md` |
-| `D-2026-07-31-VISUAL-ART-DIRECTION` | APPROVED_PLANNING_BASELINE | 다크 현대 오컬트·세미리얼 애니·기관 UI | `VALIDATION_TARGET_CANON.md` |
-| `D-2026-07-31-VALIDATION-SCREEN-AUTHORITY` | SUPERSEDED_IN_PART | 화면 책임 분리 | `VALIDATION_TARGET_CANON.md` |
-| `D-2026-07-31-EXTENDED-MANAGEMENT-SCREENS` | APPROVED_LONG_TERM_TARGET | 일정·연구·보급 지원 화면 유지 | `VALIDATION_TARGET_CANON.md` |
-| `D-2026-07-31-MAIN-DAILY-SCHEDULE-PRESENTATION` | APPROVED_SUPPORT_LAYER_TARGET | 하루 주요 활동 1개·자동 기본 휴식 | `VALIDATION_TARGET_CANON.md` |
-| `D-2026-07-31-AFTERLIFE-TIMELINE-EVIDENCE` | APPROVED_PLANNING_BASELINE | 저승역 시간순 증거 | `VALIDATION_TARGET_CANON.md` |
-| `D-2026-07-31-AFTERLIFE-RECOVERY-PATTERNS` | APPROVED_PLANNING_BASELINE | 저승역 회수 2패턴 | `VALIDATION_TARGET_CANON.md` |
-| `D-2026-08-01-SCHEDULE-REST-SEMANTICS` | APPROVED_SUPPORT_LAYER_NOT_IMPLEMENTED | 기본 휴식 의미 | `VALIDATION_TARGET_CANON.md` |
-| `D-2026-08-01-PROVISIONING-AUTHORITY` | APPROVED_SUPPORT_LAYER_NOT_IMPLEMENTED | 기록국 보급실 | `VALIDATION_TARGET_CANON.md` |
-| `D-2026-08-01-VALIDATION-SCOPE-FILTER` | APPROVED_TARGET_NOT_IMPLEMENTED | 핵심만 노출 | `VALIDATION_TARGET_CANON.md` |
-| `D-2026-08-01-VALIDATION-SCREEN-SIT-PACKAGE` | APPROVED_PLANNING_BASELINE | SCREEN-01~07·SIT-001~008 | `VALIDATION_TARGET_CANON.md` |
-| `D-2026-08-01-VALIDATION-RESULT-AXES` | APPROVED_PLANNING_BASELINE | 결과 원시 4축 | `VALIDATION_TARGET_CANON.md` |
-| `D-2026-08-01-VALIDATION-SAVE-TEST-MIGRATION` | IMPLEMENTED_PACKAGE_1_AND_2_BOUNDARY | Legacy 병렬 저장·복귀·중복 방지 | Canon + Package evidence |
-| `D-2026-08-01-RECOMMENDED-BATCH-APPROVAL` | CURRENT_APPROVED_GOVERNANCE | 안전 권장안 일괄 승인 | 역사 reconciliation |
-| `D-2026-08-01-VALIDATION-PLANNING-FINAL-APPROVAL` | APPROVED_FINAL_PLANNING_BASELINE | Validation 기획 최종 승인 | `VALIDATION_TARGET_CANON.md` |
-| `D-2026-08-01-LEGACY-PR-DISPOSITION` | SUPERSEDED_IN_PART | 구형 PR 직접 병합 금지 | Base v9.4 reconciliation |
-| `D-2026-08-02-BASE-V94-CANON-RECONCILIATION` | MERGED_CURRENT_GOVERNANCE | Base v9.4 계열·source PR 격리·정본 복구 | PR #125 |
-| `D-2026-08-02-PACKAGE-1-PLANNING-APPROVAL` | MERGED_APPROVED_PLANNING | 기획·명세·검토 우선 | PR #125 |
-| `D-2026-08-02-VALIDATION-PERSISTENCE-BOUNDARY` | MERGED_AND_IMPLEMENTED | Validation 기록 완전 독립 | PR #126 |
-| `D-2026-08-02-PACKAGE-1-DESIGN-SPEC-APPROVAL` | MERGED_AND_EXECUTED | Session·Save isolation Design | PR #125 |
-| `D-2026-08-02-PACKAGE-1-IMPLEMENTATION-APPROVAL` | MERGED_AND_CI_VERIFIED | Package 1 구현·테스트 | PR #126 |
-| `D-2026-08-02-PACKAGE-1-SEPARATE-MERGE-AUTHORIZATION` | EXECUTED | 정본→재정렬→구현 별도 병합 | Merge gate·Sheet |
-| `D-2026-08-02-GRILLME-10-MERGE-CADENCE` | CURRENT_APPROVED_GOVERNANCE | 승인 10개마다 적대적 병합 batch | Decision·ledger |
-| `D-2026-08-02-PACKAGE-2-MAIN-MENU-MODE-HIERARCHY` | MERGED_AND_IMPLEMENTED | Legacy·Validation 독립 병렬 카드 | Decision·PR #129/#131 |
-| `D-2026-08-02-PACKAGE-2-DESIGN-APPROVAL` | MERGED_AND_EXECUTED | 상태·초기화·이어하기·라우팅 Design | Decision·Spec |
-| `D-2026-08-02-PACKAGE-2-DESIGN-SPEC-APPROVAL` | MERGED_AND_EXECUTED | Design Spec 승인·계획 작성 | Decision·Plan |
-| `D-2026-08-02-PACKAGE-2-IMPLEMENTATION-APPROVAL` | MERGED_AND_CI_VERIFIED | Package 2 구현·TDD·자동 검증·병합 | Decision·PR #131·evidence |
-| `D-2026-08-02-YEAR-ONE-CAMPAIGN-MASTER-STRUCTURE-FIRST` | APPROVED_PLANNING_PRIORITY | 개별 콘텐츠보다 4분기 마스터 구조 우선 | Decision·PR #135 |
-| `D-2026-08-02-YEAR-ONE-CAMPAIGN-PURPOSE-AND-QUARTERLY-CASE` | APPROVED_DESIGN_SECTION_1 | 성장 축·분기당 핵심 괴담 1개 | Decision·Design |
-| `D-2026-08-02-YEAR-ONE-QUARTERLY-CASE-ROLE-AND-FEEDBACK` | APPROVED_DESIGN_SECTION_2 | 독립 4사건·3축 환류·실패 전진 | Decision·Design |
-| `D-2026-08-02-YEAR-ONE-QUARTERLY-SIMPLE-MINIGAME-VARIATION` | APPROVED_DESIGN_SECTION_3 | 분기별 초간단 피해자 구출 미니게임 | Decision·Design |
-| `D-2026-08-02-MAIN-CONTENT-INVESTIGATION-RECOVERY-AUTHORITY` | CURRENT_APPROVED_PRODUCT_AUTHORITY | 메인 콘텐츠=조사·피해자 구출·회수 전투 | Decision·Design·Sheet |
-| `D-2026-08-02-CORE-GAMEPLAY-SCREEN-PRESENTATION-BASELINE` | APPROVED_PROVISIONAL_UX_BASELINE | 상황 설명→선택지·괴이 매뉴얼·괴이 중심 전투·스킬 컷인 | Decision·Design·Sheet |
-| `D-2026-08-02-YEAR-ONE-FOUR-CORE-CASES-AND-QUARTER-PLACEMENT` | APPROVED_DESIGN_SECTION_4 | 봄 저승역·여름 빨간 우산·가을 폐주파수·겨울 기록되지 않은 병동 | Decision·Design·Sheet |
-| `D-2026-08-02-YEAR-ONE-CASE-PLAY-DIFFERENTIATION-CONTRACT` | APPROVED_DESIGN_SECTION_5 | 순서·전이·응답·기록 권위 위협 문법과 공통 전투 승리 계약 | Decision·Design·Sheet |
-| `D-2026-08-02-YEAR-ONE-RESULT-FEEDBACK-AND-ANNUAL-REVIEW-CONTRACT` | APPROVED_DESIGN_SECTION_6 | 3축 결과 패킷·기관 강제 봉쇄·복합 연도 기록·2년차 계승 | Decision·Design·Sheet |
+| Decision ID | 현재 상태 | 핵심 |
+|---|---|---|
+| `D-2026-07-31-CANON-SHEET-SYNC` | CURRENT_APPROVED_GOVERNANCE | 주요 승인을 GitHub·Sheet에 같은 ID로 동기화 |
+| `D-2026-07-31-TEXT-NOVEL-CORE-PRESENTATION` | APPROVED_PLANNING_BASELINE | 일반 조사·플레이는 텍스트 노벨 화면 |
+| `D-2026-07-31-VISUAL-ART-DIRECTION` | APPROVED_PLANNING_BASELINE | 다크 현대 오컬트·세미리얼 애니·기관 UI |
+| `D-2026-07-31-VALIDATION-SCREEN-AUTHORITY` | SUPERSEDED_IN_PART | 화면 책임 분리 |
+| `D-2026-07-31-EXTENDED-MANAGEMENT-SCREENS` | APPROVED_LONG_TERM_TARGET | 일정·연구·보급 지원 화면 유지 |
+| `D-2026-07-31-MAIN-DAILY-SCHEDULE-PRESENTATION` | APPROVED_SUPPORT_LAYER_TARGET | 하루 주요 활동 1개·자동 기본 휴식 |
+| `D-2026-07-31-AFTERLIFE-TIMELINE-EVIDENCE` | APPROVED_PLANNING_BASELINE | 저승역 시간순 증거 |
+| `D-2026-07-31-AFTERLIFE-RECOVERY-PATTERNS` | APPROVED_PLANNING_BASELINE | 저승역 회수 2패턴 |
+| `D-2026-08-01-SCHEDULE-REST-SEMANTICS` | APPROVED_SUPPORT_LAYER_NOT_IMPLEMENTED | 기본 휴식 의미 |
+| `D-2026-08-01-PROVISIONING-AUTHORITY` | APPROVED_SUPPORT_LAYER_NOT_IMPLEMENTED | 기록국 보급실 |
+| `D-2026-08-01-VALIDATION-SCOPE-FILTER` | APPROVED_TARGET_NOT_IMPLEMENTED | 핵심만 노출 |
+| `D-2026-08-01-VALIDATION-SCREEN-SIT-PACKAGE` | APPROVED_PLANNING_BASELINE | SCREEN-01~07·SIT-001~008 |
+| `D-2026-08-01-VALIDATION-RESULT-AXES` | APPROVED_PLANNING_BASELINE | 결과 원시 4축 |
+| `D-2026-08-01-VALIDATION-SAVE-TEST-MIGRATION` | IMPLEMENTED_PACKAGE_1_AND_2_BOUNDARY | Legacy 병렬 저장·복귀·중복 방지 |
+| `D-2026-08-01-RECOMMENDED-BATCH-APPROVAL` | CURRENT_APPROVED_GOVERNANCE | 안전 권장안 일괄 승인 |
+| `D-2026-08-01-VALIDATION-PLANNING-FINAL-APPROVAL` | APPROVED_FINAL_PLANNING_BASELINE | Validation 기획 최종 승인 |
+| `D-2026-08-01-LEGACY-PR-DISPOSITION` | SUPERSEDED_IN_PART | 구형 PR 직접 병합 금지 |
+| `D-2026-08-02-BASE-V94-CANON-RECONCILIATION` | MERGED_CURRENT_GOVERNANCE | Base v9.4 계열·source PR 격리·정본 복구 |
+| `D-2026-08-02-PACKAGE-1-PLANNING-APPROVAL` | MERGED_APPROVED_PLANNING | 기획·명세·검토 우선 |
+| `D-2026-08-02-VALIDATION-PERSISTENCE-BOUNDARY` | MERGED_AND_IMPLEMENTED | Validation 기록 완전 독립 |
+| `D-2026-08-02-PACKAGE-1-DESIGN-SPEC-APPROVAL` | MERGED_AND_EXECUTED | Session·Save isolation Design |
+| `D-2026-08-02-PACKAGE-1-IMPLEMENTATION-APPROVAL` | MERGED_AND_CI_VERIFIED | Package 1 구현·테스트 |
+| `D-2026-08-02-PACKAGE-1-SEPARATE-MERGE-AUTHORIZATION` | EXECUTED | 정본→재정렬→구현 별도 병합 |
+| `D-2026-08-02-GRILLME-10-MERGE-CADENCE` | CURRENT_APPROVED_GOVERNANCE | 승인 10개마다 적대적 병합 batch |
+| `D-2026-08-02-PACKAGE-2-MAIN-MENU-MODE-HIERARCHY` | MERGED_AND_IMPLEMENTED | Legacy·Validation 독립 병렬 카드 |
+| `D-2026-08-02-PACKAGE-2-DESIGN-APPROVAL` | MERGED_AND_EXECUTED | 상태·초기화·이어하기·라우팅 Design |
+| `D-2026-08-02-PACKAGE-2-DESIGN-SPEC-APPROVAL` | MERGED_AND_EXECUTED | Design Spec 승인·계획 작성 |
+| `D-2026-08-02-PACKAGE-2-IMPLEMENTATION-APPROVAL` | MERGED_AND_CI_VERIFIED | Package 2 구현·TDD·자동 검증·병합 |
+| `D-2026-08-02-YEAR-ONE-CAMPAIGN-MASTER-STRUCTURE-FIRST` | MERGED_APPROVED_PLANNING_PRIORITY | 개별 콘텐츠보다 4분기 마스터 구조 우선 |
+| `D-2026-08-02-YEAR-ONE-CAMPAIGN-PURPOSE-AND-QUARTERLY-CASE` | MERGED_APPROVED_DESIGN_SECTION_1 | 성장 축·분기당 핵심 괴담 1개 |
+| `D-2026-08-02-YEAR-ONE-QUARTERLY-CASE-ROLE-AND-FEEDBACK` | MERGED_APPROVED_DESIGN_SECTION_2 | 독립 4사건·3축 환류·실패 전진 |
+| `D-2026-08-02-YEAR-ONE-QUARTERLY-SIMPLE-MINIGAME-VARIATION` | MERGED_APPROVED_DESIGN_SECTION_3 | 분기별 초간단 피해자 구출 미니게임 |
+| `D-2026-08-02-MAIN-CONTENT-INVESTIGATION-RECOVERY-AUTHORITY` | MERGED_CURRENT_PRODUCT_AUTHORITY | 메인 콘텐츠=조사·피해자 구출·회수 전투 |
+| `D-2026-08-02-CORE-GAMEPLAY-SCREEN-PRESENTATION-BASELINE` | MERGED_APPROVED_PROVISIONAL_UX_BASELINE | 선택지 조사·괴이 매뉴얼·괴이 중심 전투 |
+| `D-2026-08-02-YEAR-ONE-FOUR-CORE-CASES-AND-QUARTER-PLACEMENT` | MERGED_APPROVED_DESIGN_SECTION_4 | 봄 저승역·여름 빨간 우산·가을 폐주파수·겨울 기록되지 않은 병동 |
+| `D-2026-08-02-YEAR-ONE-CASE-PLAY-DIFFERENTIATION-CONTRACT` | MERGED_APPROVED_DESIGN_SECTION_5 | 순서·전이·응답·기록 권위 위협 문법 |
+| `D-2026-08-02-YEAR-ONE-RESULT-FEEDBACK-AND-ANNUAL-REVIEW-CONTRACT` | MERGED_APPROVED_DESIGN_SECTION_6 | 3축 결과 패킷·기관 강제 봉쇄·복합 연도 기록·2년차 계승 |
 
-## 8. Package 2 구현 계약과 결과
-
-```text
-Legacy 기존 진행 카드
-- 새 캠페인
-- 이어하기
-- Legacy 저장 상태
-
-Validation 기록 카드
-- 새 기록 시작
-- 이어하기
-- 완료 기록 보기
-- 오류·호환 상태
-```
-
-구현된 보호:
+## 8. Package 2 구현 보호 계약
 
 - 메뉴 조회는 독립 read-only inspector 사용
 - Validation 시작에서 Legacy 저장 삭제 금지
@@ -319,41 +272,37 @@ pr_131: MERGED
 pr_132: MERGED_MAIN_TO_PLANNING_SYNC
 pr_133: MERGED_MAIN_TO_IMPLEMENTATION_SYNC
 pr_138: MERGED_MAIN_TO_YEAR_ONE_PLANNING_SYNC
+pr_135: MERGED_YEAR_ONE_DESIGN
 pr_122: CLOSED_SOURCE_DO_NOT_MERGE_AS_IS
 issue_121: CLOSED_COMPLETED
-pr_135: DRAFT_BATCH_AUDIT_IN_PROGRESS
 package_2_planning_merge: b4d7bd0fb82968325bcf230f3e81b8d96e142402
 package_2_implementation_merge: f8751e7fa7890f402c7377ea6aee64f79ef59911
 main_to_year_one_planning_sync_merge: cc25991ba6b74b3c3f552c84e90d40987595fa82
-final_documentation_run_30742092953: PASS
-final_bca_run_30742092954: PASS
-final_core_run_30742092974: PASS
-final_annual_run_30742092951: PASS
+year_one_design_verified_head: a009732ab6162bdfc018da792e7e0414c342e7f5
+year_one_design_merge: 7bddbce2ebd427154cdeb8e4bb9b7aec06e2ea5e
+year_one_documentation_run_30750849552: PASS
+year_one_bca_run_30750849578: PASS
+year_one_core_run_30750849570: PASS
+year_one_annual_run_30750849589: PASS
 package_1_focused: 4_OF_4_PASS
 package_2_focused: 5_OF_5_PASS
 full_godot_regression: 58_OF_58_PASS
-year_one_latest_head_workflows: RERUN_REQUIRED_AFTER_FINAL_DOC_FIXES
 year_one_human_validation: NOT_RUN
-merge_authorization: NOT_GRANTED
+merge_authorization: EXECUTED
 ```
 
 ## 10. Grill Me 운영
 
-- 현재 Batch 1 카운터: `10 / 10`
-- 카운트 Decision:
-  1. `D-2026-08-02-PACKAGE-2-MAIN-MENU-MODE-HIERARCHY`
-  2. `D-2026-08-02-YEAR-ONE-CAMPAIGN-MASTER-STRUCTURE-FIRST`
-  3. `D-2026-08-02-YEAR-ONE-CAMPAIGN-PURPOSE-AND-QUARTERLY-CASE`
-  4. `D-2026-08-02-YEAR-ONE-QUARTERLY-CASE-ROLE-AND-FEEDBACK`
-  5. `D-2026-08-02-YEAR-ONE-QUARTERLY-SIMPLE-MINIGAME-VARIATION`
-  6. `D-2026-08-02-MAIN-CONTENT-INVESTIGATION-RECOVERY-AUTHORITY`
-  7. `D-2026-08-02-CORE-GAMEPLAY-SCREEN-PRESENTATION-BASELINE`
-  8. `D-2026-08-02-YEAR-ONE-FOUR-CORE-CASES-AND-QUARTER-PLACEMENT`
-  9. `D-2026-08-02-YEAR-ONE-CASE-PLAY-DIFFERENTIATION-CONTRACT`
-  10. `D-2026-08-02-YEAR-ONE-RESULT-FEEDBACK-AND-ANNUAL-REVIEW-CONTRACT`
-- 동일 질문의 Design·Spec·구현·병합 후속 Gate는 새 질문이 아니면 추가 카운트하지 않는다.
-- 10개 도달로 적대적 batch audit가 실행 중이다.
-- audit 통과만으로 병합하지 않으며 별도 사용자 병합 승인이 필요하다.
+```yaml
+batch_1: COMPLETE_MERGED
+batch_1_counter: 10_OF_10
+batch_1_design_pr: 135
+batch_1_verified_head: a009732ab6162bdfc018da792e7e0414c342e7f5
+batch_1_merge: 7bddbce2ebd427154cdeb8e4bb9b7aec06e2ea5e
+batch_2_counter: 0_OF_10
+```
+
+Batch 1의 10개 Decision은 `docs/GRILLME_APPROVAL_MERGE_LEDGER.md`에 보존한다. 동일 질문의 Design·Spec·구현·병합 후속 Gate는 새 질문이 아니면 새 Batch에 추가하지 않는다.
 
 ## 11. 미검증 경계
 
@@ -383,13 +332,8 @@ production_expansion: NOT_APPROVED
 ## 12. 다음 Gate
 
 ```text
-Grill Me Batch 1 10/10
-→ final GitHub·Sheet·PR·CI 적대적 감사
-→ READY_FOR_SEPARATE_MERGE_APPROVAL / CHANGES_REQUIRED / BLOCKED 판정
-→ 사용자 별도 병합 승인
-→ PR #135 main 병합
-→ post-merge GitHub·Sheet sync
-→ 다음 Batch 카운터 0/10 시작
+GRILLME_BATCH_2 counter 0/10
+→ 다음 중요 제품 결정은 새 Grill Me Decision으로 기록
+→ Design Spec·개별 사건 Spec 작성은 별도 사용자 승인 필요
+→ 구현 계획·코드·사람 검증·POC·Production 확대는 각각 별도 Gate 유지
 ```
-
-전체 Design 승인 뒤에도 Design Spec·개별 사건 Spec·구현 계획·코드는 별도 승인 Gate를 요구한다.
