@@ -15,6 +15,8 @@ DECISION_5 = ROOT / "docs/decisions/D-2026-08-04-INVESTIGATION-PAGE-LOCAL-CANDID
 SECTION_15 = ROOT / "docs/planning/2026-08-04-investigation-system-design-batch-3-section-15-candidate-pool.md"
 DECISION_6 = ROOT / "docs/decisions/D-2026-08-04-INVESTIGATION-THREE-TIER-MANUAL-CLEAR-AND-PRECISION-BOUNDARY.md"
 SECTION_16 = ROOT / "docs/planning/2026-08-04-investigation-system-design-batch-3-section-16-manual-clear-boundary.md"
+DECISION_7 = ROOT / "docs/decisions/D-2026-08-04-INVESTIGATION-PAGE-COMPLETION-GATE-AND-RESCUE-RISK-RETRY.md"
+SECTION_17 = ROOT / "docs/planning/2026-08-04-investigation-system-design-batch-3-section-17-page-gate-and-rescue-risk.md"
 
 
 class InvestigationCaseAuthoringFormulaTests(unittest.TestCase):
@@ -183,6 +185,51 @@ class InvestigationCaseAuthoringFormulaTests(unittest.TestCase):
             "이미지·아트",
             "Codex",
             "구현 승인 후",
+        ):
+            self.assertIn(token, text)
+
+    def test_investigation_ends_only_after_sequential_pages_have_no_blank_slots(self) -> None:
+        self.assertTrue(DECISION_7.is_file(), DECISION_7)
+        self.assertTrue(SECTION_17.is_file(), SECTION_17)
+        text = SKILL.read_text(encoding="utf-8") + WORKFLOW.read_text(encoding="utf-8")
+        for token in (
+            "빈칸이 많은 괴이 매뉴얼",
+            "후보 키워드",
+            "[변조] 후보",
+            "1장",
+            "페이지를 순서대로",
+            "최종장",
+            "모든 빈칸",
+            "조사 페이즈 종료",
+            "피해자 구출 미니게임",
+            "회수 페이즈",
+        ):
+            self.assertIn(token, text)
+
+    def test_page_completion_is_structural_not_truth_confirmation(self) -> None:
+        text = WORKFLOW.read_text(encoding="utf-8")
+        for token in (
+            "빈칸 없음",
+            "모든 키워드가 옳거나 확인됐다는 뜻이 아니다",
+            "[변조] 후보가 포함될 수 있다",
+            "조사 종료 Gate",
+            "실행 가능 상태",
+        ):
+            self.assertIn(token, text)
+
+    def test_rescue_failure_uses_staged_risk_and_meaningful_retry(self) -> None:
+        text = SKILL.read_text(encoding="utf-8") + WORKFLOW.read_text(encoding="utf-8")
+        for token in (
+            "안정 → 불안정 → 위험 → 임계",
+            "첫 실패",
+            "새로운 관찰 증거",
+            "동일 매뉴얼·도구·경로·순서",
+            "실질적 변경",
+            "숨겨진 확률",
+            "비가역 결과",
+            "매뉴얼 열람",
+            "접근성",
+            "위험도를 증가시키지 않는다",
         ):
             self.assertIn(token, text)
 
