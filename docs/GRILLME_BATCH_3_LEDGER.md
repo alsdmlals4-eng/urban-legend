@@ -1,7 +1,7 @@
 # Grill Me Batch 3 Ledger
 
 > 상위 운영 Decision: `D-2026-08-02-GRILLME-10-MERGE-CADENCE`
-> 현재 카운터: `3 / 10`
+> 현재 카운터: `4 / 10`
 > 상태: `ACTIVE_ACCUMULATION / APPROVED_PENDING_BATCH_MERGE`
 > 시작일: 2026-08-03
 > 누적 브랜치: `agent/grillme-batch-3-investigation-manual`
@@ -9,7 +9,7 @@
 > 구현: `NOT_AUTHORIZED`
 > 사람 검증: `NOT_RUN`
 
-Grill Me Batch 3의 제품 Decision 3개가 승인됐다. 최대 배치 크기는 10개이며, 고위험 충돌·세션 종료·정본 영향이 큰 경우·사용자의 명시적 요청에만 조기 체크포인트를 허용한다.
+Grill Me Batch 3의 제품 Decision 4개가 승인됐다. 최대 배치 크기는 10개이며, 고위험 충돌·세션 종료·정본 영향이 큰 경우·사용자의 명시적 요청에만 조기 체크포인트를 허용한다.
 
 ## 운영 계약
 
@@ -31,9 +31,8 @@ Grill Me Batch 3의 제품 Decision 3개가 승인됐다. 최대 배치 크기�
 
 ### 1 / 10 — `D-2026-08-03-INVESTIGATION-MANUAL-STRUCTURED-KEYWORD-ASSEMBLY`
 
-- 괴이 매뉴얼을 발생 조건·피해자 연결·금지 행동·구출 절차·회수 전투 대응의 5개 의미 슬롯으로 구성
-- 조사 키워드와 공통 관계자로 읽을 수 있는 추론문을 조립
-- 문장 표면형과 언어 중립 의미 구조 분리
+- 발생 조건·피해자 연결·금지 행동·구출 절차·회수 전투 대응의 5개 의미 슬롯
+- 읽을 수 있는 키워드 추론문과 언어 중립 의미 구조 분리
 - 자유 메모 비판정, 미획득 키워드 비노출, 출처 보존
 - 구출·회수 전투 자동 해결 금지
 
@@ -41,41 +40,30 @@ Grill Me Batch 3의 제품 Decision 3개가 승인됐다. 최대 배치 크기�
 
 - `docs/decisions/D-2026-08-03-INVESTIGATION-MANUAL-STRUCTURED-KEYWORD-ASSEMBLY.md`
 - `docs/planning/2026-08-03-investigation-system-design-batch-3.md`
-- Draft PR `#142`
-- Google Sheet 동일 Decision ID
 
 ### 2 / 10 — `D-2026-08-03-INVESTIGATION-HYPOTHESIS-STAGED-VALIDATION-AND-FEEDBACK`
 
-- 기본 캠페인은 단계형 가설 검증 사용
 - 작성 중 구조 오류만 차단하고 정답·오답 비공개
-- 조사 체크포인트에서 근거 상태 피드백
+- 조사 체크포인트에서 정답 위치가 아닌 근거 상태 피드백
 - 동일 제출 캐시, 새 증거·실질 의미 변경 때만 재평가
-- 구출·회수 전투 전 준비도 경고, 최소 실행 가능 매뉴얼이면 진행 허용
+- 최소 실행 가능 매뉴얼이면 위험 감수 후 구출·회수 진입 가능
 - 실행 결과는 새 증거가 되지만 매뉴얼 자동 수정 금지
-- 상세 복기는 사건 결과 보고서에서 제공
-- 지연 검증은 기록 재현 전용 선택 변칙으로 격리
+- 지연 검증은 기록 재현 전용 선택 변칙
 
 책임 문서:
 
 - `docs/decisions/D-2026-08-03-INVESTIGATION-HYPOTHESIS-STAGED-VALIDATION-AND-FEEDBACK.md`
 - `docs/planning/2026-08-03-investigation-system-design-batch-3.md`
-- Draft PR `#142`
-- Google Sheet 동일 Decision ID
 
 ### 3 / 10 — `D-2026-08-03-INVESTIGATION-CASE-AUTHORING-FORMULA-AND-CLUE-PIPELINE`
 
-- 사건은 실제 규칙과 완성 괴이 매뉴얼에서 조사 장면으로 역설계
-- 조사문은 사건당 2~3장, 장당 3~5개 키워드 슬롯
-- 원시 관찰 기록·사건 키워드·추론 키워드의 3계층 구분
-- 명확한 물증·증언은 즉시 사건 키워드, 불완전한 정보는 비교·모순·논리 연결로 정제
-- 모든 키워드에 출처·획득 행동·선행 조건·의미 주장·사용 슬롯·신뢰 상태·대체 경로 보존
-- 일반 명사보다 발견 장면이 기억나는 구체적 키워드 사용
-- 3장 표준 사건은 정답 9~12, 보조 4~6, 그럴듯한 오답 3~5, 추론 2~4의 약 18~24개를 제작 시작점으로 사용
-- 단간론파의 사용 가능한 단서 명확성과 역전검사의 논리 연결 진행감을 괴이 매뉴얼 구조에 맞게 변환
-- 오답은 쓰레기 카드가 아니라 후속 단서로 반증 가능한 합리적 초기 가설
-- 조사문이 피해자 구출·회수 전투의 대상·순서·타이밍 판단으로 연결
-- 새 스킬을 중복 생성하지 않고 기존 `urban-legend-investigation-case-authoring`을 확장
-- 작업구조·스킬·회귀 테스트를 RED→GREEN으로 검증
+- 실제 규칙·완성 괴이 매뉴얼에서 조사 장면으로 역설계
+- 조사문 2~3장, 장당 3~5개 키워드 슬롯
+- 원시 관찰 기록·사건 키워드·추론 키워드 구분
+- 직접 물증은 즉시 키워드, 불완전 정보는 비교·모순·논리 연결로 정제
+- 정상 키워드에 출처·획득 행동·사용 슬롯·신뢰 상태·대체 경로 보존
+- 그럴듯한 오답과 후속 반증 설계
+- 기존 `urban-legend-investigation-case-authoring` 스킬 확장
 
 책임 문서와 파일:
 
@@ -84,7 +72,29 @@ Grill Me Batch 3의 제품 Decision 3개가 승인됐다. 최대 배치 크기�
 - `docs/workflows/INVESTIGATION_CASE_AUTHORING_WORKFLOW.md`
 - `skills/urban-legend-investigation-case-authoring/SKILL.md`
 - `tests/test_investigation_case_authoring_formula.py`
-- `.github/workflows/validate-base-operating-sync.yml`
+
+### 4 / 10 — `D-2026-08-03-INVESTIGATION-MUTATED-KEYWORDS-AND-MANUAL-DRIVEN-EXECUTION`
+
+- 진짜 조사 단서는 같은 실제 규칙을 향해 일관성을 유지
+- `[변조]` 후보는 기존 정상 키워드의 횟수·시간·순서·방향·대상·주체·재질·조건 중 변수 하나만 변경
+- 변조 후보마다 별도 획득·생성 경로·독립 가짜 장면을 만들지 않음
+- 플레이어는 조사 기억·정상 키워드 원본 출처·완성 중인 매뉴얼 문맥으로 올바른 후보를 선택
+- 완성된 구출 절차를 피해자 구출 미니게임의 도구·순서·횟수·제한 시간·안전 지점 판단에 사용
+- 회수 전투 패턴은 고정 4턴이 아닌 가변 `N ≥ 2`, 전조 횟수는 `N - 1`
+- 첫 턴은 `[전조] → 선택 → 평상 진행`
+- 중간 턴은 `선택 → [전조] → 평상 진행`
+- 마지막 턴은 `대응 선택 → 패턴 발현 → 결과 산출 → 평상 진행`
+- 패턴 준비 완료·다음 턴 발현 안내·선공개 금지
+- 정확한 대응만 `[파훼]`와 `[취약]`을 만들고 유효 공격·연결 절단·잔향 노출 기회를 제공
+
+책임 문서와 파일:
+
+- `docs/decisions/D-2026-08-03-INVESTIGATION-MUTATED-KEYWORDS-AND-MANUAL-DRIVEN-EXECUTION.md`
+- `docs/planning/2026-08-03-investigation-system-design-batch-3-section-14-manual-driven-execution.md`
+- `docs/planning/2026-08-03-investigation-system-design-batch-3.md`
+- `docs/workflows/INVESTIGATION_CASE_AUTHORING_WORKFLOW.md`
+- `skills/urban-legend-investigation-case-authoring/SKILL.md`
+- `tests/test_investigation_case_authoring_formula.py`
 - Draft PR `#142`
 - Google Sheet 동일 Decision ID
 
@@ -111,17 +121,32 @@ Grill Me Batch 3의 제품 Decision 3개가 승인됐다. 최대 배치 크기�
 
 판정: `FIT_WITH_GUARDRAILS`
 
-1. **정답 끼워 맞추기** — 실제 규칙·완성 매뉴얼에서 장면으로 역설계한다.
-2. **정답 배급** — 모든 클릭이 완성 키워드를 주지 않게 혼합형 정제 파이프라인을 사용한다.
-3. **기계적 카드 결합** — 모든 단서를 두 카드 조합으로 만들지 않는다.
-4. **기억되지 않는 단서** — 키워드에 구체적 현상·출처·획득 행동을 보존한다.
-5. **쓰레기 오답** — 현재 근거로 합리적이며 후속 단서로 반증 가능한 후보만 사용한다.
-6. **단서 누락 진행 차단** — 핵심 단서에 재확인 또는 대체 획득 경로를 둔다.
-7. **조사와 실행 분리** — 조사문 규칙을 피해자 구출·회수 전투 판단에 실제 사용한다.
-8. **스킬 중복** — 기존 등록 스킬을 확장하고 책임이 겹치는 새 스킬을 생성하지 않는다.
-9. **검증 없는 스킬 변경** — 계약 테스트를 먼저 추가해 의도한 RED를 확인한 뒤 GREEN을 검증했다.
+1. 실제 규칙·완성 매뉴얼에서 장면으로 역설계한다.
+2. 모든 클릭이 완성 키워드를 지급하지 않게 혼합형 정제를 사용한다.
+3. 모든 단서를 두 카드 조합으로 만들지 않는다.
+4. 정상 키워드에 구체적 현상·출처·획득 행동을 보존한다.
+5. 핵심 단서에 재확인 또는 대체 획득 경로를 둔다.
+6. 조사 규칙을 피해자 구출·회수 전투 판단에 사용한다.
+7. 기존 등록 스킬을 확장하고 중복 스킬을 만들지 않는다.
+
+## 적대적 검토 — Decision 4
+
+판정: `FIT_WITH_GUARDRAILS`
+
+1. 정상 핵심 단서끼리 진위가 불명확한 경쟁을 만들지 않는다.
+2. `[변조]`는 정상 키워드의 변수 하나만 바꿔 원본과 비교 가능하게 한다.
+3. 변조마다 독립 가짜 단서와 장면을 만들지 않아 제작량·정보 피로를 억제한다.
+4. 변조 수가 과도해 모든 정보를 의심하게 만들지 않는다.
+5. 완성 매뉴얼은 구출·회수 행동을 알려 주되 자동 실행하지 않는다.
+6. 첫 전조만 선택 전에 표시하고 후속 전조는 선택 뒤 표시한다.
+7. 마지막 턴에는 플레이어가 먼저 대응을 선택하고 이후 패턴을 발현한다.
+8. 패턴 준비 완료·발현 경고가 매뉴얼 판단을 대체하지 않는다.
+9. 패턴은 가변 `N ≥ 2`이며 4턴은 예시일 뿐이다.
+10. 정확한 대응만 파훼·취약을 만들며 조기 대응은 비효율적이되 치명적 함정은 아니다.
 
 ## TDD형 스킬 검증
+
+### Decision 3
 
 ```text
 RED
@@ -137,17 +162,35 @@ BCA 30819350513 SUCCESS
 ANNUAL 30819350438 SUCCESS
 ```
 
-위 GREEN은 스킬·워크플로 작성 직후의 증거다. Decision·Ledger·PR·Sheet를 포함한 최종 누적 HEAD는 별도로 재검증한다.
+### Decision 4
+
+```text
+RED
+commit 04ef12dd8cac3ab21be87d9aa8bd8b29fbf07b05
+Documentation run 30824334510 FAILED
+결과: 72 tests / 3 failures
+원인: Decision 4·Section 14 부재, 변조·구출·가변 전조 계약 누락
+
+회귀 교정
+head 7ba59efd1fddb1e9021f481d8f810b899b967f71
+Documentation run 30824794701 FAILED
+결과: 72 tests / 1 failure
+원인: 기존 통합 계약 문구 `구출·회수 전투` 누락
+조치: 테스트를 완화하지 않고 워크플로 문구 복원
+
+GREEN
+최종 기능·정본 HEAD의 Documentation·BCA·ANNUAL 결과는 exact-head 검증 후 기록한다.
+```
 
 ## 현재 PR 체크 범위
 
 이번 누적에는 다음이 포함된다.
 
-- 조사 Design Decision·Section 13 보조 문서
+- 조사 Design Decision·Sections 11~14
 - 사건 제작 워크플로
-- 기존 프로젝트 로컬 스킬의 책임 확장
+- 기존 프로젝트 로컬 스킬 확장
 - 스킬 계약 회귀 테스트
-- Documentation CI의 신규 계약 테스트 등록
+- Documentation CI 등록
 
 다음은 변경하지 않는다.
 
@@ -162,19 +205,19 @@ ANNUAL 30819350438 SUCCESS
 
 ## 다음 Grill Me 질문
 
-질문 4는 상충 증거와 늦은 반증이 기존 `확인 규칙`을 어떻게 변경하고 과거 버전을 어떻게 보존할지 결정한다.
+질문 5는 `[변조]` 후보의 수·표시·검색·정렬과 사건별 난이도 곡선을 어떻게 제한할지 결정한다.
 
 확인할 핵심 충돌:
 
-- 확인 규칙의 신뢰감 대 새로운 증거로 뒤집히는 추리의 역동성
-- 즉시 강등의 명확성 대 플레이어가 속았다고 느끼는 문제
-- 과거 버전 보존의 복기 가치 대 기록 관리 피로
-- 피해가 발생한 오답을 위험 사례로 남기는 방식 대 정답 수정의 편의성
+- 충분한 후보 검증 재미 대 후보 목록 피로
+- 원본 출처 재확인 편의 대 변조 정답 노출
+- 초반 학습 지원 대 후반 추론 긴장
+- 변조 수량 고정 대 사건별 괴이 특성 반영
 
 ## 남은 Gate
 
 ```text
-Batch 3 Decision 4~10 또는 허용된 조기 체크포인트
+Batch 3 Decision 5~10 또는 허용된 조기 체크포인트
 → 전체 정본·PR·Sheet 적대적 감사
 → exact-head CI·behind·리뷰·댓글 확인
 → 사용자 별도 병합 승인
