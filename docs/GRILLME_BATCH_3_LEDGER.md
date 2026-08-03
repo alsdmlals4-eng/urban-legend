@@ -96,7 +96,14 @@ RED:
 - 페이지 완료 Gate·구출 위험도·재시도 계약 부재
 - BCA `30855089129`: `SUCCESS`
 
-GREEN 증거는 final exact HEAD 검증 후 이 문서와 PR에 기록한다.
+MINIMUM GREEN:
+
+- head `dc84552a8bcd61062515cd17d17c803cd23dc4df`
+- Documentation `30855618361`: `SUCCESS`
+- BCA `30855618366`: `SUCCESS`
+- ANNUAL/Godot regression `30855618372`: `SUCCESS`
+
+최종 exact HEAD 증거는 이 Ledger 기록 커밋의 세 CI를 재검증한 뒤 PR과 Sheet에 기록한다.
 
 ## 책임 파일
 
