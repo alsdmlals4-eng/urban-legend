@@ -1,6 +1,7 @@
 # 괴이기록국 조사 시스템 Design — Grill Me Batch 3 연속 설계
 
 > 상태: `ACTIVE_DESIGN_ACCUMULATION / GRILLME_BATCH_3_9_OF_10`
+> 이전 검증 체크포인트: `GRILLME_BATCH_3_8_OF_10`
 > 기준 Design: `docs/planning/2026-08-02-investigation-system-design.md`
 > 시작일: 2026-08-03
 > 누적 Draft PR: `#142`
