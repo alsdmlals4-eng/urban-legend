@@ -103,12 +103,12 @@ MINIMUM GREEN:
 - BCA `30855618366`: `SUCCESS`
 - ANNUAL/Godot regression `30855618372`: `SUCCESS`
 
-FINAL exact HEAD `a8d781237c4c681258432b767abc8be405aec55d`:
+FINAL exact HEAD `6ed98a416646dc0bfe04fae2d25a18c049039207`:
 
-- Documentation `30855809724`: `SUCCESS`
-- BCA `30855810108`: `SUCCESS`
-- ANNUAL/Godot regression `30855810006`: `SUCCESS`
-- main 대비 ahead `48`, behind `0`
+- Documentation `30855991359`: `SUCCESS`
+- BCA `30855991267`: `SUCCESS`
+- ANNUAL/Godot regression `30855991384`: `SUCCESS`
+- main 대비 ahead `49`, behind `0`
 - changed files `18`
 
 ## 책임 파일
