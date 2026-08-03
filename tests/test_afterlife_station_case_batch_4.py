@@ -9,6 +9,8 @@ DECISION = ROOT / "docs/decisions/D-2026-08-04-AFTERLIFE-STATION-PERSONAL-DESTIN
 SECTION = ROOT / "docs/planning/2026-08-04-afterlife-station-complete-case-batch-4-section-01-personal-destination-projection.md"
 DECISION_2 = ROOT / "docs/decisions/D-2026-08-04-AFTERLIFE-STATION-DESTINATION-BOUNDARY-RESET.md"
 SECTION_2 = ROOT / "docs/planning/2026-08-04-afterlife-station-complete-case-batch-4-section-02-destination-boundary-reset.md"
+DECISION_3 = ROOT / "docs/decisions/D-2026-08-04-AFTERLIFE-STATION-OFFICIAL-ROUTE-TICKET-AND-CORRECT-DISEMBARKATION.md"
+SECTION_3 = ROOT / "docs/planning/2026-08-04-afterlife-station-complete-case-batch-4-section-03-official-route-ticket-and-correct-disembarkation.md"
 BATCH = ROOT / "docs/planning/2026-08-04-afterlife-station-complete-case-batch-4.md"
 LEDGER = ROOT / "docs/GRILLME_BATCH_4_LEDGER.md"
 
@@ -124,6 +126,76 @@ class AfterlifeStationCaseBatch4Tests(unittest.TestCase):
             "1 / 10",
             "GRILLME_BATCH_4_1_OF_10",
             "D-2026-08-04-AFTERLIFE-STATION-DESTINATION-BOUNDARY-RESET",
+        ):
+            self.assertIn(token, text)
+
+    def test_third_decision_and_section_exist(self) -> None:
+        self.assertTrue(DECISION_3.is_file(), DECISION_3)
+        self.assertTrue(SECTION_3.is_file(), SECTION_3)
+
+    def test_rescue_uses_victim_specific_official_route_ticket_not_projected_desire(self) -> None:
+        text = DECISION_3.read_text(encoding="utf-8") + SECTION_3.read_text(encoding="utf-8")
+        for token in (
+            "자신에게 맞는 승차권",
+            "현실 귀환 경로",
+            "공식 운행 기록",
+            "승차권 색상",
+            "노선색",
+            "역 코드",
+            "개인의 바람에 맞는 표가 아니다",
+            "투영된 목적지와 구분",
+        ):
+            self.assertIn(token, text)
+
+    def test_ticket_match_is_not_color_only_and_has_accessible_redundancy(self) -> None:
+        text = SECTION_3.read_text(encoding="utf-8")
+        for token in (
+            "색상만으로 판별하지 않는다",
+            "노선명",
+            "역 코드",
+            "문양",
+            "텍스트",
+            "색각",
+            "[변조]",
+        ):
+            self.assertIn(token, text)
+
+    def test_rescue_sequence_requires_ticket_recovery_boarding_and_correct_disembarkation(self) -> None:
+        text = SECTION_3.read_text(encoding="utf-8")
+        for token in (
+            "안내 종료",
+            "공식 역 식별음",
+            "자신에게 맞는 승차권을 회수",
+            "피해자와 함께 탑승",
+            "승차권에 적힌 알맞은 역",
+            "하차",
+            "승차권을 끝까지 보관",
+        ):
+            self.assertIn(token, text)
+
+    def test_wrong_ticket_or_station_produces_observable_failure_not_hidden_randomness(self) -> None:
+        text = SECTION_3.read_text(encoding="utf-8")
+        for token in (
+            "잘못된 색상",
+            "잘못된 역 코드",
+            "잘못된 역에서 하차",
+            "피해자 위험도",
+            "관찰 기록",
+            "숨겨진 확률",
+            "즉시 사망이 아니다",
+        ):
+            self.assertIn(token, text)
+
+    def test_batch_ledger_tracks_three_of_ten_and_preserves_prior_checkpoints(self) -> None:
+        text = BATCH.read_text(encoding="utf-8") + LEDGER.read_text(encoding="utf-8")
+        for token in (
+            "3 / 10",
+            "GRILLME_BATCH_4_3_OF_10",
+            "2 / 10",
+            "GRILLME_BATCH_4_2_OF_10",
+            "1 / 10",
+            "GRILLME_BATCH_4_1_OF_10",
+            "D-2026-08-04-AFTERLIFE-STATION-OFFICIAL-ROUTE-TICKET-AND-CORRECT-DISEMBARKATION",
         ):
             self.assertIn(token, text)
 
