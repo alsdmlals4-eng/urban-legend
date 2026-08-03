@@ -9,6 +9,8 @@ ROOT = Path(__file__).resolve().parents[1]
 SKILL = ROOT / "skills/urban-legend-investigation-case-authoring/SKILL.md"
 WORKFLOW = ROOT / "docs/workflows/INVESTIGATION_CASE_AUTHORING_WORKFLOW.md"
 REGISTRY = ROOT / "skills/SKILL_REGISTRY.json"
+DECISION_4 = ROOT / "docs/decisions/D-2026-08-03-INVESTIGATION-MUTATED-KEYWORDS-AND-MANUAL-DRIVEN-EXECUTION.md"
+SECTION_14 = ROOT / "docs/planning/2026-08-03-investigation-system-design-batch-3-section-14-manual-driven-execution.md"
 
 
 class InvestigationCaseAuthoringFormulaTests(unittest.TestCase):
@@ -75,6 +77,48 @@ class InvestigationCaseAuthoringFormulaTests(unittest.TestCase):
             "정제 키워드",
         ):
             self.assertIn(token, text)
+
+    def test_mutated_keywords_are_derived_candidates_without_new_acquisition_paths(self) -> None:
+        self.assertTrue(DECISION_4.is_file(), DECISION_4)
+        self.assertTrue(SECTION_14.is_file(), SECTION_14)
+        skill_text = SKILL.read_text(encoding="utf-8")
+        workflow_text = WORKFLOW.read_text(encoding="utf-8")
+        for token in (
+            "[변조]",
+            "기존 정상 키워드",
+            "변수 하나",
+            "별도 획득·생성 경로를 만들지 않는다",
+            "조사 기억",
+            "완성 중인 괴이 매뉴얼",
+        ):
+            self.assertIn(token, skill_text + workflow_text)
+
+    def test_manual_drives_rescue_and_variable_length_recovery_patterns(self) -> None:
+        text = SKILL.read_text(encoding="utf-8") + WORKFLOW.read_text(encoding="utf-8")
+        for token in (
+            "피해자 구출 미니게임",
+            "최소 2턴",
+            "첫 턴",
+            "중간 턴",
+            "마지막 턴",
+            "대응 선택",
+            "패턴 발현",
+            "결과 산출",
+            "평상 진행",
+            "패턴 준비 완료 상태를 표시하지 않는다",
+            "[파훼]",
+            "[취약]",
+        ):
+            self.assertIn(token, text)
+
+    def test_recovery_turn_order_is_not_fixed_to_four_turns(self) -> None:
+        text = WORKFLOW.read_text(encoding="utf-8")
+        self.assertIn("N ≥ 2", text)
+        self.assertIn("전조 횟수 = N - 1", text)
+        self.assertIn("첫 턴: [전조] → 선택 → 평상 진행", text)
+        self.assertIn("중간 턴: 선택 → [전조] → 평상 진행", text)
+        self.assertIn("마지막 턴: 대응 선택 → 패턴 발현 → 결과 산출 → 평상 진행", text)
+        self.assertIn("4턴은 예시일 뿐", text)
 
 
 if __name__ == "__main__":
