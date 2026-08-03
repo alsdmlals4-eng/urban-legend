@@ -3,9 +3,9 @@
 - 기준 main: `830b0ac41f5f0f549d34cd703194db2a6e7e63b0`
 - 브랜치: `agent/grillme-batch-4-afterlife-station-complete-case`
 - Draft PR: `#143`
-- 현재 카운터: `2 / 10`
-- 현재 식별자: `GRILLME_BATCH_4_2_OF_10`
-- 이전 체크포인트: `1 / 10 / GRILLME_BATCH_4_1_OF_10`
+- 현재 카운터: `3 / 10`
+- 현재 식별자: `GRILLME_BATCH_4_3_OF_10`
+- 이전 체크포인트: `2 / 10 / GRILLME_BATCH_4_2_OF_10`, `1 / 10 / GRILLME_BATCH_4_1_OF_10`
 - 상태: `ACTIVE_ACCUMULATION / APPROVED_PENDING_BATCH_MERGE`
 - 구현: `IMPLEMENTATION_NOT_AUTHORIZED`
 - Human QA: `NOT_RUN`
@@ -36,7 +36,6 @@ Batch 3에서 확정한 괴이 매뉴얼·단서 `[기록]`·피해자 구출·�
 - 같은 순간 서로 다른 목적지가 관찰자와 장치마다 남는다.
 - 공식 운행 기록에는 추가 목적지와 추가 열차가 없다.
 - 네 기록을 교차검증해 `공백에 귀환 기억이 투영된다`를 추론한다.
-- 2장의 안내 종료 전 이동·위치 초기화와 3장의 구출 절차·회수 전투 대응은 이 단계에서 선공개하지 않는다.
 
 책임 Section:
 
@@ -49,14 +48,29 @@ Batch 3에서 확정한 괴이 매뉴얼·단서 `[기록]`·피해자 구출·�
 - 목적지 공백을 자신의 귀환 장소로 인식한 상태에서 발동한다.
 - 안내 종료 전 자신이 들은 목적지를 향해 승차선·계단·출구 경계를 넘으면 위치만 진입점으로 초기화된다.
 - 승강장 내부의 관찰·기록 수집·짧은 위치 이동은 안전하다.
-- 시간, 휴대전화 시각, 녹음 길이, 배터리, 소지품 위치와 요원의 기록은 유지된다.
-- 첫 초기화는 즉사나 사건 실패가 아니라 관찰 가능한 위험 사례다.
-- 반복 횟수가 늘수록 피해자 연결과 위험도가 심화된다.
-- 안내 종료 이후의 안전한 이동·구출·회수 절차는 3장에 남긴다.
+- 시간과 기록은 유지되고 첫 초기화는 관찰 가능한 위험 사례다.
 
 책임 Section:
 
 - `docs/planning/2026-08-04-afterlife-station-complete-case-batch-4-section-02-destination-boundary-reset.md`
+
+### 3. 현실 귀환 승차권 회수와 알맞은 역 하차
+
+`D-2026-08-04-AFTERLIFE-STATION-OFFICIAL-ROUTE-TICKET-AND-CORRECT-DISEMBARKATION`
+
+- 공식 운행 기록과 피해자의 교통 이용 흔적으로 현실 귀환 경로를 확인한다.
+- 자신에게 맞는 승차권은 개인의 바람에 맞는 표가 아니며 투영된 목적지와 구분한다.
+- 승차권 색상은 현실 노선의 노선색과 일치해야 한다.
+- 색상만으로 판별하지 않고 노선명·역 코드·문양·텍스트를 함께 확인한다.
+- 안내 종료 후 공식 역 식별음을 재생한다.
+- 노선색·노선명·역 코드가 맞는 승차권을 회수한다.
+- 피해자와 함께 공식 열차에 탑승하고 승차권을 끝까지 보관한다.
+- 승차권에 적힌 알맞은 역에서 함께 하차해야 구출이 완성된다.
+- 구출 성공은 회수 전투 진입 조건이며 사건을 자동 종결하지 않는다.
+
+책임 Section:
+
+- `docs/planning/2026-08-04-afterlife-station-complete-case-batch-4-section-03-official-route-ticket-and-correct-disembarkation.md`
 
 ## GPT 역할 경계
 
