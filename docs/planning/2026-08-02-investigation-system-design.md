@@ -1,8 +1,10 @@
 # 조사 시스템 Design
 
-> 상태: `SECTIONS_1_TO_10_APPROVED / GRILLME_BATCH_2_10_OF_10 / BATCH_AUDIT_REQUIRED`
+> 상태: `SECTIONS_1_TO_10_APPROVED / CONTENT_AUDIT_PASS / SEPARATE_MERGE_APPROVAL_REQUIRED`
 > 갱신일: 2026-08-03
 > Base: `9.4.3`
+> 책임 PR: `#140`
+> 책임 감사: `docs/audits/2026-08-03-grillme-batch-2-premerge-audit.md`
 > 구현: `NOT_AUTHORIZED`
 > 사람 검증: `NOT_RUN`
 
@@ -20,6 +22,8 @@
 → 회수 전투
 → 사건 결과 보고서와 정본 확정
 ```
+
+상세 보호 규칙과 적대적 검토 근거는 각 `docs/decisions/` 파일이 책임진다. 이 문서는 10개 승인 Decision의 통합 Design 정본이다.
 
 ## Grill Me·작업 운영 방식
 
@@ -113,6 +117,8 @@ S — 정밀 대응
 단순 점수 합산과 평균은 사용하지 않는다. 피해자 사망·회복 불능, 핵심 규칙 오판, 기관 강제 봉쇄, 중대한 현장 확산 등은 다른 축의 성과로 상쇄할 수 없으며 사건별 랭크 상한을 만든다.
 
 시간은 공통 핵심 평가축에서 제외한다. 사건 규칙과 직접 관련된 경우에만 별도 숙련 목표나 선택 업적으로 사용한다.
+
+연도 결산은 사건 랭크 평균이나 총점이 아니라 조사 성향·보호 원칙·기관 위치·남은 책임의 복합 기록을 유지한다.
 
 ---
 
@@ -307,9 +313,11 @@ S 랭크와 업적 보상은 캠페인 필수 전력·필수 서사와 분리한
 - 기록국 사무실 전시품
 - 괴이 매뉴얼 표지·문서 테마
 - 콘셉트 아트·사운드·연출 열람
-- 조사팀 논평·피해자 근황·기관 소수 의견·추가 가설 등 비필수 심층 부록
+- 조사팀 논평·기관 소수 의견·추가 가설 등 비필수 심층 부록
 
 필수 괴이 규칙, 메인 엔딩 이해에 필요한 진실, 필수 동료 서사의 결말, 다음 사건 정답은 숙련 보상으로 숨기지 않는다.
+
+피해자 근황·관계 변화·기관 책임처럼 캠페인 결과에 종속되는 후일담은 활성 캠페인 정본만 참조한다. 기록 재현의 대안 결과는 `기록 재현 / 가상 대응 기록 / 비정본 대안`으로 표시하며 실제 캠페인 상태를 덮어쓰지 않는다.
 
 ### 기록 재현 전용 확장
 
@@ -353,16 +361,19 @@ S 랭크와 업적 보상은 캠페인 필수 전력·필수 서사와 분리한
 - 판정 모델
 - 결과·출동 준비·정본/숙련 기록·확정 Gate·분기 슬롯·접근성·보상 화면의 세부 UX
 - 랭크 명칭·접근성 계약·재도전 보상의 실제 사람 검증
+- 저승역 버티컬 슬라이스 사건 Spec
 
-## Batch 2 종료 Gate
+## Batch 2 종료 상태
 
-Grill Me Batch 2의 제품 Decision 10개가 승인됐다. 새 제품 질문을 중지하고 다음을 완료한 뒤 별도 병합 승인을 받는다.
-
-```text
-PR #140 전체 변경 파일 인벤토리
-→ 승인 Decision 10개와 Design·Sheet 대조
-→ 기존 정본과 충돌·누락·과잉 확장 감사
-→ 구현·POC·사람 검증 혼입 여부 감사
-→ 리뷰·CI·정확한 HEAD 검증
-→ 별도 병합 승인
+```yaml
+grillme_batch_2: 10_OF_10
+content_audit: PASS_AFTER_CORRECTIONS
+sheet_decision_ids: 10_OF_10_MATCHED
+implementation: NOT_AUTHORIZED
+human_validation: NOT_RUN
+poc_passed: NOT_DECLARED
+production_expansion: NOT_APPROVED
+separate_merge_authorization: REQUIRED
 ```
+
+최종 exact-head CI·변경 파일·review blocker 증거는 PR #140과 Google Sheet 감사 행에 기록한다. 이 Design 감사 통과는 병합 승인이 아니며, 사용자의 명시적인 `병합 승인` 전에는 병합하지 않는다.
