@@ -83,7 +83,18 @@
 - first test commit: `a46a92266ba1ece06080700f1ed439761c2c9686`
 - counter-contract test commit: `9557454fbf4efb70daa45c9f5f99239438d63565`
 - workflow run: `30862621524`
-- 결과: Decision 2·Section 02·2/10 누적 계약 부재로 실패
+- 결과: `10 tests` 기준 Decision 2·Section 02·2/10 누적 계약 부재로 실패
+
+### GREEN 검증
+
+- 검증 콘텐츠 HEAD: `917f420bda54530b828a26a2f35c2bedbd8da6b8`
+- Afterlife Station contract: `30862749493` PASS
+- Documentation: `30862749487` PASS
+- BCA: `30862749506` PASS
+- ANNUAL/Godot: `30862749505` PASS
+- main 대비: ahead `12`, behind `0`
+- 변경 파일: `8`
+- 적대적 리뷰: `4849362701`
 
 ### 적대적 검토 Guardrail
 
