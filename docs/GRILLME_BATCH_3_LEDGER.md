@@ -1,7 +1,7 @@
 # Grill Me Batch 3 Ledger
 
 > 상위 운영 Decision: `D-2026-08-02-GRILLME-10-MERGE-CADENCE`
-> 현재 카운터: `7 / 10`
+> 현재 카운터: `8 / 10`
 > 상태: `ACTIVE_ACCUMULATION / APPROVED_PENDING_BATCH_MERGE`
 > 시작일: 2026-08-03
 > 누적 브랜치: `agent/grillme-batch-3-investigation-manual`
@@ -9,7 +9,7 @@
 > 구현: `NOT_AUTHORIZED`
 > 사람 검증: `NOT_RUN`
 
-Grill Me Batch 3의 제품 Decision 7개가 승인됐다. 최대 배치 크기는 10개이며 사용자의 별도 병합 승인 전에는 Draft를 해제하거나 병합하지 않는다.
+Grill Me Batch 3의 제품 Decision 8개가 승인됐다. 최대 배치 크기는 10개이며 사용자의 별도 병합 승인 전에는 Draft를 해제하거나 병합하지 않는다.
 
 ## 운영 계약
 
@@ -31,7 +31,8 @@ Grill Me Batch 3의 제품 Decision 7개가 승인됐다. 최대 배치 크기�
    - 5개 의미 슬롯과 읽을 수 있는 구조화 추론문
 
 2. `D-2026-08-03-INVESTIGATION-HYPOTHESIS-STAGED-VALIDATION-AND-FEEDBACK`
-   - 단계 검증·정보 비누설 피드백·실행 결과 증거화
+   - 구조·근거·상충·실행 준비도 피드백
+   - Decision 8에 의해 세션 중 확인 규칙 표시 제거
 
 3. `D-2026-08-03-INVESTIGATION-CASE-AUTHORING-FORMULA-AND-CLUE-PIPELINE`
    - 실제 규칙에서 조사 경험으로 역설계하는 사건 제작 공식
@@ -54,11 +55,34 @@ Grill Me Batch 3의 제품 Decision 7개가 승인됐다. 최대 배치 크기�
    - 최종장 완료 시 조사 페이즈 종료
    - 피해자 구출 미니게임 → 회수 페이즈
    - 단계형 피해자 위험도와 실질적 변경 재시도
-   - 숨은 확률·즉사·무비용 전수 대입 금지
 
-## Decision 7 정합성 교정
+8. `D-2026-08-04-INVESTIGATION-REVISION-EVIDENCE-REUSE-AND-POST-SESSION-TRUTH-REVEAL`
+   - 조사 중 이전 페이지 자유 수정
+   - 표시 가능한 후보의 임의 배치
+   - 비소모 증거 참조와 동일 키워드 재사용
+   - 단일 출처·사용 위치 목록 보존
+   - 단서 `[기록]` 기반 추론
+   - 실행 페이즈 읽기 전용
+   - 구출·회수 결과는 관찰 가능한 현상
+   - 세션 종료 뒤 슬롯별 정답 공개
 
-Decision 6의 기존 `일부 실행 핵심 슬롯만 채우면 현장 진입 가능` 해석은 폐기한다.
+## Decision 7·8 정합성
+
+```text
+빈칸이 많은 매뉴얼
+→ 조사와 단서 [기록] 획득
+→ 임의 후보 배치
+→ 페이지별 키워드 작성
+→ 이전 페이지 자유 수정
+→ 최종장 모든 빈칸 완료
+→ 최종 진입 확인
+→ 조사 페이즈 종료
+→ 피해자 구출
+→ 회수 전투
+→ 현상으로 직접 검증
+→ 사건 결과 확정
+→ 세션 종료 정답 비교
+```
 
 현재 정본:
 
@@ -66,75 +90,52 @@ Decision 6의 기존 `일부 실행 핵심 슬롯만 채우면 현장 진입 가
 현장 진입 가능
 = 모든 페이지·모든 빈칸 완료
 + 실행 가능한 문장 구조
-+ 이미 판명된 치명적 상충 없음
++ 최종 진입 확인
 ```
 
-근거 확실성, 후보 진실성, `[변조]` 판별은 불완전할 수 있다. 페이지에 빈칸을 남길 수는 없다.
+근거 확실성, 후보 진실성, `[변조]` 판별은 불완전할 수 있다. 페이지 완료는 잠금이나 정답 확인이 아니다.
 
-## 핵심 게임 흐름
-
-```text
-빈칸이 많은 매뉴얼
-→ 조사와 후보 획득
-→ 페이지별 키워드 배치
-→ 최종장 완료
-→ 조사 페이즈 종료
-→ 피해자 구출
-→ 회수 전투
-→ 일반 클리어
-→ 기록 복기·S 랭크 정밀화
-```
-
-## Decision 7 TDD
+## Decision 8 TDD
 
 RED:
 
-- commit `0686f56691604e5b6f2b0d626db27185f46a4e6f`
-- Documentation `30855089136`: `FAILED`
-- `79 tests / 3 failures`
-- Decision 7·Section 17 부재
-- 페이지 완료 Gate·구출 위험도·재시도 계약 부재
-- BCA `30855089129`: `SUCCESS`
+- test commit `5cb317f1cab57278a6ecfafdf5783fd11e73316d`
+- CI wiring commit `99554f1b286d0f87cde9b7a81f5a4c0f87efdd97`
+- Documentation `30857411127`: `FAILED`
+- `85 tests / 4 failures / 2 errors`
+- Decision 8·Section 18 부재
+- 임의 후보 배치·이전 페이지 수정 계약 부재
+- 비소모 증거 재사용 계약 부재
+- Decision 2의 세션 중 `확인 규칙` 표시 충돌
 
-MINIMUM GREEN:
-
-- head `dc84552a8bcd61062515cd17d17c803cd23dc4df`
-- Documentation `30855618361`: `SUCCESS`
-- BCA `30855618366`: `SUCCESS`
-- ANNUAL/Godot regression `30855618372`: `SUCCESS`
-
-VERIFIED CONTENT HEAD `6ed98a416646dc0bfe04fae2d25a18c049039207`:
-
-- Documentation `30855991359`: `SUCCESS`
-- BCA `30855991267`: `SUCCESS`
-- ANNUAL/Godot regression `30855991384`: `SUCCESS`
-- main 대비 ahead `49`, behind `0`
-- changed files `18`
-
-Ledger 기록 커밋으로 생성되는 최종 브랜치 HEAD와 그 CI는 PR·Google Sheet exact-head 증거에 기록한다. Ledger 안에 자기 자신의 커밋 SHA를 반복 기입하지 않는다.
+GREEN exact HEAD와 CI는 PR·Google Sheet exact-head 증거에 기록한다. Ledger 안에 자기 자신의 커밋 SHA를 반복 기입하지 않는다.
 
 ## 책임 파일
 
-- `docs/decisions/D-2026-08-04-INVESTIGATION-PAGE-COMPLETION-GATE-AND-RESCUE-RISK-RETRY.md`
-- `docs/decisions/D-2026-08-04-INVESTIGATION-THREE-TIER-MANUAL-CLEAR-AND-PRECISION-BOUNDARY.md`
-- `docs/planning/2026-08-04-investigation-system-design-batch-3-section-17-page-gate-and-rescue-risk.md`
+- `docs/decisions/D-2026-08-04-INVESTIGATION-REVISION-EVIDENCE-REUSE-AND-POST-SESSION-TRUTH-REVEAL.md`
+- `docs/decisions/D-2026-08-03-INVESTIGATION-HYPOTHESIS-STAGED-VALIDATION-AND-FEEDBACK.md`
+- `docs/planning/2026-08-04-investigation-system-design-batch-3-section-18-revision-and-truth-reveal.md`
 - `docs/planning/2026-08-03-investigation-system-design-batch-3.md`
 - `docs/workflows/INVESTIGATION_CASE_AUTHORING_WORKFLOW.md`
 - `skills/urban-legend-investigation-case-authoring/SKILL.md`
-- `tests/test_investigation_case_authoring_formula.py`
+- `tests/test_investigation_session_truth_reveal.py`
+- `.github/workflows/validate-base-operating-sync.yml`
 
 ## 적대적 누적 감사
 
-- 매뉴얼 빈칸이 남은 채 피해자 구출로 넘어갈 수 없어야 한다.
-- 페이지 완료는 정답 확인과 분리돼야 한다.
-- 잘못 판별한 `[변조]` 후보를 넣은 구조적 완성은 가능해야 한다.
-- 첫 구출 실패는 즉시 피해자 상실이나 전체 재시작이 아니어야 한다.
-- 실패는 관찰 증거를 주되 정답을 직접 공개하지 않아야 한다.
-- 동일 의미 상태를 반복해 모든 선택지를 전수 대입할 수 없어야 한다.
-- 임계 결과는 숨은 확률이 아니라 명확히 예고돼야 한다.
-- 매뉴얼 열람·접근성 기능은 위험도를 높이지 않아야 한다.
-- 조사 후퇴는 위험도·위험 사례를 삭제하는 리셋이 아니어야 한다.
-- 구출 성공 뒤 같은 매뉴얼이 회수 전투 판단에 이어져야 한다.
+- 페이지 완료가 정답 확인이나 페이지 잠금으로 오인되지 않아야 한다.
+- 조사 중 이전 페이지를 자유롭게 수정할 수 있어야 한다.
+- 표시 가능한 후보를 정답 적합도로 차단하지 않아야 한다.
+- 키워드는 소모되지 않고 단일 출처와 여러 사용 위치를 유지해야 한다.
+- 동일 키워드 재사용 횟수가 정답을 누설하지 않아야 한다.
+- 단서 [기록]은 관찰 사실을 제공하되 정답 라벨을 숨겨야 한다.
+- 세션 중 정답·오답·정답 근접도·성공률을 표시하지 않아야 한다.
+- 구출·회수 결과는 현상과 기록이지 자동 정오 판정이 아니어야 한다.
+- 실행 페이즈의 매뉴얼은 읽기 전용이어야 한다.
+- 조사 후퇴는 피해자 위험도·위험 사례를 삭제하지 않아야 한다.
+- 저장·메뉴 이탈로 정답 보고서를 조기 해금하지 않아야 한다.
+- 사건 결과 확정 뒤 현재 사건의 슬롯별 정답 비교가 가능해야 한다.
+- 접근성 기능은 정보량·정답 공개 시점·위험도를 바꾸지 않아야 한다.
 
 ## 역할 경계
 
@@ -144,6 +145,6 @@ Ledger 기록 커밋으로 생성되는 최종 브랜치 HEAD와 그 CI는 PR·G
 
 ## 다음 Gate
 
-Grill Me Batch 3 질문 8/10:
+Grill Me Batch 3 질문 9/10:
 
-`페이지를 완료한 뒤 이전 페이지를 자유롭게 수정할 수 있는가, 그리고 동일 키워드를 여러 슬롯·페이지에서 재사용할 수 있는가?`
+`정답을 본 뒤 재도전하면 S 랭크·보상·정본 결과를 어디까지 허용할 것인가?`
