@@ -15,6 +15,7 @@ on:
       - "tools/check_archive_governance.py"
       - "tests/test_base_operating_sync.py"
       - "tests/test_skill_package_integrity.py"
+      - "tests/test_investigation_case_authoring_formula.py"
       - "tests/test_active_document_references.py"
       - "tests/test_archive_retention_governance.py"
       - "tests/test_annual_mvp_001_document_contract.py"
@@ -44,13 +45,14 @@ jobs:
         run: python -m py_compile tools/check_archive_governance.py tests/test_archive_retention_governance.py
       - name: Validate archive governance
         run: python tools/check_archive_governance.py
-      - name: Validate Base, core, routing, local Skill, archive, active references, planning synchronization, expansion baseline, benchmark recommendations, and ANNUAL-MVP-002 implementation records
+      - name: Validate Base, core, routing, local Skill, case-authoring formula, archive, active references, planning synchronization, expansion baseline, benchmark recommendations, and ANNUAL-MVP-002 implementation records
         shell: bash
         run: |
           set +e
           python -m unittest \
             tests/test_base_operating_sync.py \
             tests/test_skill_package_integrity.py \
+            tests/test_investigation_case_authoring_formula.py \
             tests/test_active_document_references.py \
             tests/test_archive_retention_governance.py \
             tests/test_annual_mvp_001_document_contract.py \
