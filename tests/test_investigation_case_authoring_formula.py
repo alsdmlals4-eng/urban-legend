@@ -11,6 +11,8 @@ WORKFLOW = ROOT / "docs/workflows/INVESTIGATION_CASE_AUTHORING_WORKFLOW.md"
 REGISTRY = ROOT / "skills/SKILL_REGISTRY.json"
 DECISION_4 = ROOT / "docs/decisions/D-2026-08-03-INVESTIGATION-MUTATED-KEYWORDS-AND-MANUAL-DRIVEN-EXECUTION.md"
 SECTION_14 = ROOT / "docs/planning/2026-08-03-investigation-system-design-batch-3-section-14-manual-driven-execution.md"
+DECISION_5 = ROOT / "docs/decisions/D-2026-08-04-INVESTIGATION-PAGE-LOCAL-CANDIDATE-POOL-AND-DIFFICULTY-CURVE.md"
+SECTION_15 = ROOT / "docs/planning/2026-08-04-investigation-system-design-batch-3-section-15-candidate-pool.md"
 
 
 class InvestigationCaseAuthoringFormulaTests(unittest.TestCase):
@@ -119,6 +121,37 @@ class InvestigationCaseAuthoringFormulaTests(unittest.TestCase):
         self.assertIn("중간 턴: 선택 → [전조] → 평상 진행", text)
         self.assertIn("마지막 턴: 대응 선택 → 패턴 발현 → 결과 산출 → 평상 진행", text)
         self.assertIn("4턴은 예시일 뿐", text)
+
+    def test_page_local_candidate_pool_has_progressive_budgets(self) -> None:
+        self.assertTrue(DECISION_5.is_file(), DECISION_5)
+        self.assertTrue(SECTION_15.is_file(), SECTION_15)
+        text = SKILL.read_text(encoding="utf-8") + WORKFLOW.read_text(encoding="utf-8")
+        for token in (
+            "장별 후보 풀",
+            "현재 조사문",
+            "초반 사건",
+            "5~6개",
+            "표준 사건",
+            "7~10개",
+            "핵심 사건",
+            "9~12개",
+        ):
+            self.assertIn(token, text)
+
+    def test_candidate_search_and_sort_never_reveal_answer_fitness(self) -> None:
+        text = WORKFLOW.read_text(encoding="utf-8")
+        for token in (
+            "키워드 이름",
+            "원본 출처",
+            "획득 순서",
+            "가나다순",
+            "정상·변조 여부",
+            "정답 적합도",
+            "이 슬롯에 들어갈 수 있는 후보만 보기",
+            "제공하지 않는다",
+            "미획득 키워드",
+        ):
+            self.assertIn(token, text)
 
 
 if __name__ == "__main__":
