@@ -1,10 +1,10 @@
 # Grill Me 승인·병합 Ledger
 
 > 운영 Decision: `D-2026-08-02-GRILLME-10-MERGE-CADENCE`
-> 현재 Batch: `GRILLME_BATCH_2`
+> 현재 Batch: `GRILLME_BATCH_3`
 > 현재 카운터: `0 / 10`
-> 마지막 조정: `GRILLME_BATCH_1_MERGED_AND_CLOSED`
-> 갱신일: 2026-08-02
+> 마지막 조정: `GRILLME_BATCH_2_MERGED_AND_CLOSED`
+> 갱신일: 2026-08-03
 
 ## 카운터 규칙
 
@@ -159,7 +159,7 @@ next_counter: 0 / 10
    - 상태: `MERGED_APPROVED_DESIGN_SECTION_4 / CONTENT_AND_HUMAN_VALIDATION_NOT_RUN`
 
 9. `D-2026-08-02-YEAR-ONE-CASE-PLAY-DIFFERENTIATION-CONTRACT`
-   - 승인: 저승역=순서, 빨간 우산=전이, 폐주파수=응답, 기록되지 않은 병동=기록 권위
+   - 승인: 저승역=순서, 빨간 우산=전이, 폐주파수 방송국=응답, 기록되지 않은 병동=기록 권위
    - 승인: 객관적 진실 고정·구출 결과 전투 반영·공격 반복 승리 금지
    - 상태: `MERGED_APPROVED_DESIGN_SECTION_5 / PLAYABILITY_VALIDATION_NOT_RUN`
 
@@ -245,7 +245,121 @@ merge: 7bddbce2ebd427154cdeb8e4bb9b7aec06e2ea5e
 result: MERGED
 ```
 
-## GRILLME_BATCH_2 — OPEN
+## GRILLME_BATCH_2 — COMPLETE / MERGED
+
+```yaml
+counter: 10 / 10
+automatic_batch_triggered: true
+batch_audit: PASS_AFTER_CORRECTIONS
+separate_merge_authorized: true
+planning_pr: 140
+verified_head: 3a532a9127126757fc75bf533eef6a65bbc2fc36
+merge: 3344ac4ca6ef4c755c269b863c1bdeb8cdb8d722
+changed_files: 14_DOCS_ONLY
+main_behind_at_merge: 0
+review_threads: 0
+submitted_reviews: 0
+conversation_comments: 0
+documentation_run_30774862515: PASS
+bca_run_30774862512: PASS
+core_workflow: NOT_TRIGGERED_BY_PATH_FILTER
+annual_workflow: NOT_TRIGGERED_BY_PATH_FILTER
+implementation_authority: NOT_INFERRED
+human_validation: NOT_RUN
+poc_passed: NOT_DECLARED
+production_expansion: NOT_APPROVED
+next_batch: GRILLME_BATCH_3
+next_counter: 0 / 10
+```
+
+### 승인 Decision
+
+1. `D-2026-08-02-INVESTIGATION-CORE-TRUTH-AND-RANK-GATING`
+   - 승인: 일반 클리어의 필수 진실은 비판정 또는 확정 우회 경로로 획득
+   - 승인: 능력·태그·판정은 비용·근거·위험·구출·전투 정보 우위와 S 랭크 가능성을 변경
+   - 상태: `MERGED_APPROVED_DESIGN_SECTION_1 / IMPLEMENTATION_NOT_AUTHORIZED`
+
+2. `D-2026-08-02-INVESTIGATION-RANK-CONDITION-DISCLOSURE`
+   - 승인: 요구 능력·태그와 수치는 출동 전 공개
+   - 승인: 정확한 사용 지점·정답·최적 순서는 비공개, 첫 클리어 뒤 상세 피드백 공개
+   - 상태: `MERGED_APPROVED_DESIGN_SECTION_2 / IMPLEMENTATION_NOT_AUTHORIZED`
+
+3. `D-2026-08-03-INCIDENT-MULTIAXIS-GATED-RANKING`
+   - 승인: 조사 정확도·피해자 보호·현장 통제·기록 완성도 네 축
+   - 승인: 단순 합산이 아닌 관문형 종합 랭크, 치명적 실패 상쇄 금지
+   - 상태: `MERGED_APPROVED_DESIGN_SECTION_3 / IMPLEMENTATION_NOT_AUTHORIZED`
+
+4. `D-2026-08-03-INCIDENT-RANK-STAGES-AND-LABELS`
+   - 승인: `C 조건부 대응 / B 적정 대응 / A 우수 대응 / S 정밀 대응`
+   - 승인: 축별 `미달 / 충족 / 우수 / 정밀`, 정상 종결 실패에는 종합 랭크 없음
+   - 상태: `MERGED_APPROVED_DESIGN_SECTION_4 / HUMAN_VALIDATION_NOT_RUN`
+
+5. `D-2026-08-03-INCIDENT-REPLAY-CANON-AND-MASTERY-RECORDS`
+   - 승인: 일반 재도전은 숙련 기록만 갱신하는 기록 재현
+   - 승인: 실제 서사 변경은 이후 진행 폐기형 캠페인 되감기만 허용
+   - 상태: `MERGED_APPROVED_DESIGN_SECTION_5 / IMPLEMENTATION_NOT_AUTHORIZED`
+
+6. `D-2026-08-03-INCIDENT-CHECKPOINT-RETRY-AND-CANON-CONFIRMATION`
+   - 승인: 조사 소단락·구출 시작·전투 시작 체크포인트
+   - 승인: 결과 보고서에서 정본 확정, 확정 전 사건당 1회 출동 재개
+   - 상태: `MERGED_APPROVED_DESIGN_SECTION_6 / IMPLEMENTATION_NOT_AUTHORIZED`
+
+7. `D-2026-08-03-CAMPAIGN-REWIND-UNLOCK-AND-BRANCH-SLOTS`
+   - 승인: 첫 1년차 완료 뒤 무료·무제한 해금
+   - 승인: 최대 3개 분기 슬롯, 최초 완료 캠페인 자동 보호, 분기별 정본 분리·숙련 공유
+   - 상태: `MERGED_APPROVED_DESIGN_SECTION_7 / IMPLEMENTATION_NOT_AUTHORIZED`
+
+8. `D-2026-08-03-CAMPAIGN-REWIND-CANON-ANCHOR-SCOPE`
+   - 승인: 지속 결과 사건마다 출동 준비 확정 직전 정본 앵커
+   - 승인: 당시 보유 범위에서 준비 재구성, 이후 성장 소급 반입 금지, 사건 전체 재진행
+   - 상태: `MERGED_APPROVED_DESIGN_SECTION_8 / IMPLEMENTATION_NOT_AUTHORIZED`
+
+9. `D-2026-08-03-ACCESSIBILITY-EQUIVALENCE-AND-MASTERY-GATES`
+   - 승인: 판단 보존 접근성 기능은 모든 랭크·업적에 중립
+   - 승인: 판단 자동 해결은 해당 숙련 관문만 등가 과제로 대체, 대체 불가 감각·운동 과제는 S 필수 조건 제외
+   - 상태: `MERGED_APPROVED_DESIGN_SECTION_9 / HUMAN_ACCESSIBILITY_VALIDATION_NOT_RUN`
+
+10. `D-2026-08-03-MASTERY-REWARD-SCOPE-AND-CAMPAIGN-NEUTRALITY`
+   - 승인: 숙련 보상은 캠페인 필수 전력·필수 서사와 분리
+   - 승인: 인장·칭호·코스메틱·전시품·문서 테마·비필수 부록 중심, 게임플레이 확장은 기록 재현 전용 변칙으로 제한
+   - 승인: 캠페인 종속 후일담은 활성 정본만 참조하고 기록 재현 대안은 비정본 표시
+   - 상태: `MERGED_APPROVED_DESIGN_SECTION_10 / REWARD_MOTIVATION_NOT_VALIDATED`
+
+### 적대적 병합 감사
+
+책임 원본:
+
+- `docs/audits/2026-08-03-grillme-batch-2-premerge-audit.md`
+
+발견·보완:
+
+- `PROJECT_CORE.md`의 구형 이중 코어·조작형 위험 검증·공격 누락 표현
+- 숙련 부록과 캠페인 정본 후일담 혼합 위험
+- 첫 교정에서 훼손된 PROJECT_CORE 고정 상태 문자열과 CORE-MVP-001 설계·구현계획 참조
+- Markdown 후행 공백과 `git diff --check` 실패
+- CORE·ANNUAL workflow 미실행을 PASS로 오표기할 위험
+
+최종 판정:
+
+```yaml
+content_audit: PASS_AFTER_CORRECTIONS
+scope_audit: PASS_DOCS_ONLY
+canon_conflict: RESOLVED
+sheet_decision_ids: 10_OF_10_MATCHED
+implementation_boundary: PRESERVED
+user_merge_authorization: GRANTED
+result: MERGED
+```
+
+### 책임 원본
+
+- `docs/GRILLME_BATCH_2_LEDGER.md`
+- `docs/planning/2026-08-02-investigation-system-design.md`
+- Batch 2 Decision 10개
+- `docs/audits/2026-08-03-grillme-batch-2-premerge-audit.md`
+- Google Sheet 동일 Decision ID 10개
+
+## GRILLME_BATCH_3 — OPEN
 
 ```yaml
 counter: 0 / 10
@@ -255,7 +369,7 @@ automatic_batch_triggered: false
 implementation_authority: NOT_INFERRED
 ```
 
-다음 중요 제품 결정부터 새 Decision ID와 함께 `1/10`으로 기록한다. Batch 1의 후속 Spec·구현·병합은 새로운 제품 질문이 아닌 한 Batch 2 카운터에 포함하지 않는다.
+다음 중요 제품 결정부터 새 Decision ID와 함께 `1/10`으로 기록한다. Batch 2의 Design Spec·구현·병합 후속은 새로운 제품 질문이 아닌 한 Batch 3 카운터에 포함하지 않는다.
 
 ## 현재 미검증 경계
 
@@ -278,6 +392,10 @@ case_play_differentiation_validation: NOT_RUN
 result_feedback_playability: NOT_RUN
 annual_review_comprehension: NOT_RUN
 unrecorded_ward_playability: NOT_RUN
+investigation_rank_playability: NOT_RUN
+replay_rewind_comprehension: NOT_RUN
+accessibility_equivalence_human_validation: NOT_RUN
+mastery_reward_motivation: NOT_RUN
 year_one_campaign_poc: NOT_DECLARED
 production_expansion: NOT_APPROVED
 ```
@@ -285,9 +403,10 @@ production_expansion: NOT_APPROVED
 ## 다음 Gate
 
 ```text
-GRILLME_BATCH_2 counter 0/10
+GRILLME_BATCH_3 counter 0/10
 → 다음 중요 제품 결정을 새 Decision ID로 기록
-→ Design Spec·개별 사건 Spec·구현 계획·코드는 별도 승인 Gate 유지
+→ Batch 2 Design Spec·사건별 랭크 관문·저장 스키마·접근성 등가 과제는 별도 승인 Gate 유지
+→ 개별 사건 Spec·구현 계획·코드는 별도 승인 Gate 유지
 → 사람 검증·POC·Production 확대는 미승인 상태 유지
 ```
 
