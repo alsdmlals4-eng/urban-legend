@@ -103,7 +103,13 @@ MINIMUM GREEN:
 - BCA `30855618366`: `SUCCESS`
 - ANNUAL/Godot regression `30855618372`: `SUCCESS`
 
-최종 exact HEAD 증거는 이 Ledger 기록 커밋의 세 CI를 재검증한 뒤 PR과 Sheet에 기록한다.
+FINAL exact HEAD `a8d781237c4c681258432b767abc8be405aec55d`:
+
+- Documentation `30855809724`: `SUCCESS`
+- BCA `30855810108`: `SUCCESS`
+- ANNUAL/Godot regression `30855810006`: `SUCCESS`
+- main 대비 ahead `48`, behind `0`
+- changed files `18`
 
 ## 책임 파일
 
