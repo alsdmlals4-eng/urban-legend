@@ -103,13 +103,15 @@ MINIMUM GREEN:
 - BCA `30855618366`: `SUCCESS`
 - ANNUAL/Godot regression `30855618372`: `SUCCESS`
 
-FINAL exact HEAD `6ed98a416646dc0bfe04fae2d25a18c049039207`:
+VERIFIED CONTENT HEAD `6ed98a416646dc0bfe04fae2d25a18c049039207`:
 
 - Documentation `30855991359`: `SUCCESS`
 - BCA `30855991267`: `SUCCESS`
 - ANNUAL/Godot regression `30855991384`: `SUCCESS`
 - main 대비 ahead `49`, behind `0`
 - changed files `18`
+
+Ledger 기록 커밋으로 생성되는 최종 브랜치 HEAD와 그 CI는 PR·Google Sheet exact-head 증거에 기록한다. Ledger 안에 자기 자신의 커밋 SHA를 반복 기입하지 않는다.
 
 ## 책임 파일
 
