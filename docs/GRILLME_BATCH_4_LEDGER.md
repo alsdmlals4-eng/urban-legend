@@ -124,6 +124,17 @@
 - 결과: `16 tests / 2 failures / 4 errors`
 - 의도한 원인: Decision 3·Section 03·3/10 누적 계약 부재
 
+### GREEN 검증
+
+- 검증 콘텐츠 HEAD: `c9ab2be6c129360759ddeecae6e85a04b7d7a4af`
+- Afterlife Station contract: `30863653025` PASS
+- Documentation: `30863653016` PASS
+- BCA: `30863653024` PASS
+- ANNUAL/Godot: `30863653008` PASS
+- main 대비: ahead `18`, behind `0`
+- 변경 파일: `10`
+- 적대적 리뷰: `4849427514`
+
 ### 적대적 검토 Guardrail
 
 - 개인이 돌아가고 싶어 하는 장소를 정답 하차 역으로 사용하지 않는다.
