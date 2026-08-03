@@ -7,6 +7,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 DECISION = ROOT / "docs/decisions/D-2026-08-04-AFTERLIFE-STATION-PERSONAL-DESTINATION-PROJECTION.md"
 SECTION = ROOT / "docs/planning/2026-08-04-afterlife-station-complete-case-batch-4-section-01-personal-destination-projection.md"
+DECISION_2 = ROOT / "docs/decisions/D-2026-08-04-AFTERLIFE-STATION-DESTINATION-BOUNDARY-RESET.md"
+SECTION_2 = ROOT / "docs/planning/2026-08-04-afterlife-station-complete-case-batch-4-section-02-destination-boundary-reset.md"
 BATCH = ROOT / "docs/planning/2026-08-04-afterlife-station-complete-case-batch-4.md"
 LEDGER = ROOT / "docs/GRILLME_BATCH_4_LEDGER.md"
 
@@ -64,6 +66,52 @@ class AfterlifeStationCaseBatch4Tests(unittest.TestCase):
             "D-2026-08-04-AFTERLIFE-STATION-PERSONAL-DESTINATION-PROJECTION",
             "IMPLEMENTATION_NOT_AUTHORIZED",
             "게임 코드·Scene·사건 데이터·자산",
+        ):
+            self.assertIn(token, text)
+
+    def test_second_decision_and_section_exist(self) -> None:
+        self.assertTrue(DECISION_2.is_file(), DECISION_2)
+        self.assertTrue(SECTION_2.is_file(), SECTION_2)
+
+    def test_reset_requires_projected_destination_boundary_crossing_before_announcement_ends(self) -> None:
+        text = DECISION_2.read_text(encoding="utf-8") + SECTION_2.read_text(encoding="utf-8")
+        for token in (
+            "안내 종료 전",
+            "자신이 들은 목적지",
+            "승차선·계단·출구 경계",
+            "경계를 넘으면",
+            "위치만 초기화",
+            "승강장 내부의 관찰·기록 수집·짧은 위치 이동은 안전",
+        ):
+            self.assertIn(token, text)
+        self.assertIn("조금이라도 이동하면 초기화되는 규칙이 아니다", text)
+        self.assertIn("검은 승차권 접촉이 발동 조건이 아니다", text)
+
+    def test_reset_preserves_time_and_accumulates_traceable_evidence(self) -> None:
+        text = SECTION_2.read_text(encoding="utf-8")
+        for token in (
+            "시간은 되돌아가지 않는다",
+            "휴대전화 시각",
+            "녹음 길이",
+            "배터리",
+            "소지품 위치",
+            "요원의 기록",
+            "시간은 흘렀지만 위치만 돌아왔다",
+        ):
+            self.assertIn(token, text)
+
+    def test_first_reset_is_a_risk_case_and_safe_movement_remains_for_chapter_three(self) -> None:
+        text = SECTION_2.read_text(encoding="utf-8")
+        for token in (
+            "첫 초기화",
+            "즉사나 사건 실패가 아니다",
+            "관찰 가능한 위험 사례",
+            "반복 횟수",
+            "피해자 연결",
+            "위험도",
+            "안내 종료까지 기다리면",
+            "3장",
+            "안전한 이동 절차",
         ):
             self.assertIn(token, text)
 
