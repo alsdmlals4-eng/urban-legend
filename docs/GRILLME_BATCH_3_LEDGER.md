@@ -1,7 +1,7 @@
 # Grill Me Batch 3 Ledger
 
 > 상위 운영 Decision: `D-2026-08-02-GRILLME-10-MERGE-CADENCE`
-> 현재 카운터: `4 / 10`
+> 현재 카운터: `5 / 10`
 > 상태: `ACTIVE_ACCUMULATION / APPROVED_PENDING_BATCH_MERGE`
 > 시작일: 2026-08-03
 > 누적 브랜치: `agent/grillme-batch-3-investigation-manual`
@@ -9,7 +9,7 @@
 > 구현: `NOT_AUTHORIZED`
 > 사람 검증: `NOT_RUN`
 
-Grill Me Batch 3의 제품 Decision 4개가 승인됐다. 최대 배치 크기는 10개이며, 고위험 충돌·세션 종료·정본 영향이 큰 경우·사용자의 명시적 요청에만 조기 체크포인트를 허용한다.
+Grill Me Batch 3의 제품 Decision 5개가 승인됐다. 최대 배치 크기는 10개이며, 고위험 충돌·세션 종료·정본 영향이 큰 경우·사용자의 명시적 요청에만 조기 체크포인트를 허용한다.
 
 ## 운영 계약
 
@@ -98,6 +98,30 @@ Grill Me Batch 3의 제품 Decision 4개가 승인됐다. 최대 배치 크기�
 - Draft PR `#142`
 - Google Sheet 동일 Decision ID
 
+### 5 / 10 — `D-2026-08-04-INVESTIGATION-PAGE-LOCAL-CANDIDATE-POOL-AND-DIFFICULTY-CURVE`
+
+- 후보 목록의 기본 단위를 사건 전체 또는 슬롯 전용이 아닌 `장별 후보 풀`로 확정
+- 현재 조사문과 관련되고 이미 획득·해금된 정상·보조·합리적 오답·`[변조]`·명시적 교차 페이지 후보만 표시
+- 초반 사건은 3슬롯·5~6개 후보, 표준 사건은 4~5슬롯·7~10개 후보, 핵심 사건은 4~5슬롯·9~12개 후보를 제작 시작점으로 사용
+- `[변조]` 시작점은 초반 0~1개, 표준 1~2개, 핵심 2~3개이며 한 장 후보 풀의 다수를 차지하지 않음
+- `키워드 이름`·`원본 출처` 검색 허용
+- `획득 순서`·`원본 출처`·`가나다순`/locale 정렬 허용
+- 정상·변조·정답·오답·정답 적합도·슬롯 호환도·성공 확률·추천 순위 검색/정렬 금지
+- `이 슬롯에 들어갈 수 있는 후보만 보기`와 슬롯 선택 시 후보 자동 축소 금지
+- 미획득 키워드는 검색·후보 목록·개수로 노출하지 않음
+- 난이도는 무관한 카드 수가 아니라 의미가 가까운 후보·교차 페이지 관계·구출/회수 실행 위험으로 상승
+
+책임 문서와 파일:
+
+- `docs/decisions/D-2026-08-04-INVESTIGATION-PAGE-LOCAL-CANDIDATE-POOL-AND-DIFFICULTY-CURVE.md`
+- `docs/planning/2026-08-04-investigation-system-design-batch-3-section-15-candidate-pool.md`
+- `docs/planning/2026-08-03-investigation-system-design-batch-3.md`
+- `docs/workflows/INVESTIGATION_CASE_AUTHORING_WORKFLOW.md`
+- `skills/urban-legend-investigation-case-authoring/SKILL.md`
+- `tests/test_investigation_case_authoring_formula.py`
+- Draft PR `#142`
+- Google Sheet 동일 Decision ID
+
 ## 적대적 검토 — Decision 1
 
 판정: `FIT_WITH_GUARDRAILS`
@@ -144,6 +168,21 @@ Grill Me Batch 3의 제품 Decision 4개가 승인됐다. 최대 배치 크기�
 9. 패턴은 가변 `N ≥ 2`이며 4턴은 예시일 뿐이다.
 10. 정확한 대응만 파훼·취약을 만들며 조기 대응은 비효율적이되 치명적 함정은 아니다.
 
+## 적대적 검토 — Decision 5
+
+판정: `FIT_WITH_GUARDRAILS`
+
+1. 사건 전체 후보 목록은 스크롤·검색 피로가 추론보다 커지므로 기본 표시로 사용하지 않는다.
+2. 슬롯 전용 후보 축소는 의미 타입과 정답 Schema를 노출하므로 금지한다.
+3. 장별 후보 풀은 작업 기억 범위를 줄이면서 장 전체 문맥 비교를 유지한다.
+4. 검색은 이름·원본 출처·획득 맥락만 다루고 정답 적합도를 계산하지 않는다.
+5. 정렬은 획득 순서·출처·locale 순으로 제한한다.
+6. 미획득 키워드를 검색 결과·후보 수·빈자리로 노출하지 않는다.
+7. 난이도 상승을 위해 무관한 쓰레기 카드를 추가하지 않는다.
+8. `[변조]` 후보는 한 장 후보 풀의 다수가 되지 않는다.
+9. 권장 상한을 넘기면 후보 추가보다 장 분리와 문장 재설계를 우선한다.
+10. 검색·정렬 접근성은 같은 후보 정보 해상도를 유지하며 랭크 불이익을 만들지 않는다.
+
 ## TDD형 스킬 검증
 
 ### Decision 3
@@ -179,14 +218,34 @@ Documentation run 30824794701 FAILED
 조치: 테스트를 완화하지 않고 워크플로 문구 복원
 
 GREEN
-최종 기능·정본 HEAD의 Documentation·BCA·ANNUAL 결과는 exact-head 검증 후 기록한다.
+head 57a93ba0fdb18cd72a17ad88cb754702c84d36d8
+Documentation 30825394598 SUCCESS
+BCA 30825396937 SUCCESS
+ANNUAL 30825393212 SUCCESS
+```
+
+### Decision 5
+
+```text
+RED
+commit 811f836baa0681d3678ea09e156dd91a2a699790
+Documentation run 30826204248 FAILED
+결과: 74 tests / 2 failures
+원인: Decision 5·Section 15 부재, 후보 검색·정렬 계약 누락
+BCA 30826205974 SUCCESS
+
+MINIMUM GREEN
+head 390627f78e2b7e62d81819189f5c211680d6ba39
+Documentation 30826692467 SUCCESS
+
+최종 정본·Ledger·PR·Sheet를 포함한 exact-head 전체 검증은 별도로 기록한다.
 ```
 
 ## 현재 PR 체크 범위
 
 이번 누적에는 다음이 포함된다.
 
-- 조사 Design Decision·Sections 11~14
+- 조사 Design Decision·Sections 11~15
 - 사건 제작 워크플로
 - 기존 프로젝트 로컬 스킬 확장
 - 스킬 계약 회귀 테스트
@@ -205,19 +264,19 @@ GREEN
 
 ## 다음 Grill Me 질문
 
-질문 5는 `[변조]` 후보의 수·표시·검색·정렬과 사건별 난이도 곡선을 어떻게 제한할지 결정한다.
+질문 6은 **일반 클리어용 최소 실행 가능 매뉴얼과 S 랭크용 정밀 매뉴얼의 데이터 경계**를 결정한다.
 
 확인할 핵심 충돌:
 
-- 충분한 후보 검증 재미 대 후보 목록 피로
-- 원본 출처 재확인 편의 대 변조 정답 노출
-- 초반 학습 지원 대 후반 추론 긴장
-- 변조 수량 고정 대 사건별 괴이 특성 반영
+- 캠페인 진행 접근성 대 괴이 규칙 완전 규명 보상
+- 최소 실행 가능 규칙 대 위험한 불완전 지식
+- S 랭크 정밀 기록 대 필수 반복 조사
+- 미확정·위험 사례 보존 대 완성도 판정의 명확성
 
 ## 남은 Gate
 
 ```text
-Batch 3 Decision 5~10 또는 허용된 조기 체크포인트
+Batch 3 Decision 6~10 또는 허용된 조기 체크포인트
 → 전체 정본·PR·Sheet 적대적 감사
 → exact-head CI·behind·리뷰·댓글 확인
 → 사용자 별도 병합 승인
