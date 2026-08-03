@@ -115,6 +115,18 @@ class AfterlifeStationCaseBatch4Tests(unittest.TestCase):
         ):
             self.assertIn(token, text)
 
+    def test_batch_ledger_tracks_two_of_ten_and_preserves_first_checkpoint(self) -> None:
+        text = BATCH.read_text(encoding="utf-8") + LEDGER.read_text(encoding="utf-8")
+        for token in (
+            "2 / 10",
+            "GRILLME_BATCH_4_2_OF_10",
+            "이전 체크포인트",
+            "1 / 10",
+            "GRILLME_BATCH_4_1_OF_10",
+            "D-2026-08-04-AFTERLIFE-STATION-DESTINATION-BOUNDARY-RESET",
+        ):
+            self.assertIn(token, text)
+
 
 if __name__ == "__main__":
     unittest.main()
