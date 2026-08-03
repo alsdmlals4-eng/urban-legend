@@ -5,7 +5,8 @@
 > 상태: `ACTIVE_ACCUMULATION / APPROVED_PENDING_BATCH_MERGE`
 > 시작일: 2026-08-03
 > 누적 브랜치: `agent/grillme-batch-3-investigation-manual`
-> 누적 Draft PR: 생성 후 갱신
+> 누적 Draft PR: `#142`
+> 현재 PR HEAD: `6ef0834774a9b4443b9c2f2f32943b7b263373e3` 이후 PR 포인터 동기화 커밋
 > 구현: `NOT_AUTHORIZED`
 > 사람 검증: `NOT_RUN`
 
@@ -45,6 +46,7 @@ Grill Me Batch 3의 첫 제품 Decision이 승인됐다. 최대 배치 크기는
 
 - `docs/decisions/D-2026-08-03-INVESTIGATION-MANUAL-STRUCTURED-KEYWORD-ASSEMBLY.md`
 - `docs/planning/2026-08-03-investigation-system-design-batch-3.md`
+- Draft PR `#142`
 - Google Sheet 동일 Decision ID
 
 ## 적대적 검토 — Decision 1
