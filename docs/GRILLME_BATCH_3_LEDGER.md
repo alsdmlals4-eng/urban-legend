@@ -208,7 +208,10 @@ Documentation 30828000110 FAILED
 BCA 30828000106 SUCCESS
 
 GREEN
-최종 exact HEAD의 Documentation·BCA·ANNUAL 결과는 검증 후 PR·Sheet와 함께 기록한다.
+validated head e09085a9378ea554f4e5532e31985345593afd2c
+Documentation 30828773459 SUCCESS
+BCA 30828774380 SUCCESS
+ANNUAL/Godot regression 30828773462 SUCCESS
 ```
 
 ## 현재 PR 체크 범위
