@@ -1,0 +1,25 @@
+name: Validate Afterlife Station Case Batch 4
+
+on:
+  pull_request:
+    paths:
+      - "docs/decisions/D-2026-08-04-AFTERLIFE-STATION-*.md"
+      - "docs/planning/2026-08-04-afterlife-station-complete-case-batch-4*.md"
+      - "docs/GRILLME_BATCH_4_LEDGER.md"
+      - "tests/test_afterlife_station_case_batch_4.py"
+      - ".github/workflows/validate-afterlife-station-case-batch-4.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-afterlife-station-case:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate Afterlife Station Batch 4 contracts
+        run: python -m unittest tests/test_afterlife_station_case_batch_4.py
