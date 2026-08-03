@@ -13,6 +13,8 @@ DECISION_4 = ROOT / "docs/decisions/D-2026-08-03-INVESTIGATION-MUTATED-KEYWORDS-
 SECTION_14 = ROOT / "docs/planning/2026-08-03-investigation-system-design-batch-3-section-14-manual-driven-execution.md"
 DECISION_5 = ROOT / "docs/decisions/D-2026-08-04-INVESTIGATION-PAGE-LOCAL-CANDIDATE-POOL-AND-DIFFICULTY-CURVE.md"
 SECTION_15 = ROOT / "docs/planning/2026-08-04-investigation-system-design-batch-3-section-15-candidate-pool.md"
+DECISION_6 = ROOT / "docs/decisions/D-2026-08-04-INVESTIGATION-THREE-TIER-MANUAL-CLEAR-AND-PRECISION-BOUNDARY.md"
+SECTION_16 = ROOT / "docs/planning/2026-08-04-investigation-system-design-batch-3-section-16-manual-clear-boundary.md"
 
 
 class InvestigationCaseAuthoringFormulaTests(unittest.TestCase):
@@ -150,6 +152,37 @@ class InvestigationCaseAuthoringFormulaTests(unittest.TestCase):
             "이 슬롯에 들어갈 수 있는 후보만 보기",
             "제공하지 않는다",
             "미획득 키워드",
+        ):
+            self.assertIn(token, text)
+
+    def test_manual_has_entry_clear_and_s_rank_precision_boundaries(self) -> None:
+        self.assertTrue(DECISION_6.is_file(), DECISION_6)
+        self.assertTrue(SECTION_16.is_file(), SECTION_16)
+        text = SKILL.read_text(encoding="utf-8") + WORKFLOW.read_text(encoding="utf-8")
+        for token in (
+            "현장 진입 가능",
+            "일반 클리어",
+            "S 랭크 정밀 매뉴얼",
+            "금지 행동",
+            "구출 절차",
+            "회수 전투 대응",
+            "치명적 상충",
+            "실행 성공만으로 모든 슬롯을 자동",
+            "선택적 미스터리",
+            "접근성 기능",
+            "검증 요청 횟수",
+        ):
+            self.assertIn(token, text)
+
+    def test_gpt_and_codex_roles_remain_separated(self) -> None:
+        text = SKILL.read_text(encoding="utf-8") + WORKFLOW.read_text(encoding="utf-8")
+        for token in (
+            "GPT",
+            "핵심 재미",
+            "콘텐츠 기획",
+            "이미지·아트",
+            "Codex",
+            "구현 승인 후",
         ):
             self.assertIn(token, text)
 
