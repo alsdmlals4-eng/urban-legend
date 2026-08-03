@@ -18,6 +18,7 @@ on:
       - "tests/test_investigation_case_authoring_formula.py"
       - "tests/test_investigation_session_truth_reveal.py"
       - "tests/test_investigation_first_run_and_replay_mastery.py"
+      - "tests/test_investigation_outcome_scoped_truth_reveal.py"
       - "tests/test_active_document_references.py"
       - "tests/test_archive_retention_governance.py"
       - "tests/test_annual_mvp_001_document_contract.py"
@@ -57,6 +58,7 @@ jobs:
             tests/test_investigation_case_authoring_formula.py \
             tests/test_investigation_session_truth_reveal.py \
             tests/test_investigation_first_run_and_replay_mastery.py \
+            tests/test_investigation_outcome_scoped_truth_reveal.py \
             tests/test_active_document_references.py \
             tests/test_archive_retention_governance.py \
             tests/test_annual_mvp_001_document_contract.py \
