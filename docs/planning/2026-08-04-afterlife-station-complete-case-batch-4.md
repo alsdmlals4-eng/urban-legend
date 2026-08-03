@@ -3,8 +3,9 @@
 - 기준 main: `830b0ac41f5f0f549d34cd703194db2a6e7e63b0`
 - 브랜치: `agent/grillme-batch-4-afterlife-station-complete-case`
 - Draft PR: `#143`
-- 현재 카운터: `1 / 10`
-- 현재 식별자: `GRILLME_BATCH_4_1_OF_10`
+- 현재 카운터: `2 / 10`
+- 현재 식별자: `GRILLME_BATCH_4_2_OF_10`
+- 이전 체크포인트: `1 / 10 / GRILLME_BATCH_4_1_OF_10`
 - 상태: `ACTIVE_ACCUMULATION / APPROVED_PENDING_BATCH_MERGE`
 - 구현: `IMPLEMENTATION_NOT_AUTHORIZED`
 - Human QA: `NOT_RUN`
@@ -35,11 +36,27 @@ Batch 3에서 확정한 괴이 매뉴얼·단서 `[기록]`·피해자 구출·�
 - 같은 순간 서로 다른 목적지가 관찰자와 장치마다 남는다.
 - 공식 운행 기록에는 추가 목적지와 추가 열차가 없다.
 - 네 기록을 교차검증해 `공백에 귀환 기억이 투영된다`를 추론한다.
-- 2장의 안내 종료 전 이동·위치 초기화와 3장의 구출 절차·회수 전투 대응은 아직 확정하지 않는다.
+- 2장의 안내 종료 전 이동·위치 초기화와 3장의 구출 절차·회수 전투 대응은 이 단계에서 선공개하지 않는다.
 
 책임 Section:
 
 - `docs/planning/2026-08-04-afterlife-station-complete-case-batch-4-section-01-personal-destination-projection.md`
+
+### 2. 투영 목적지 경계 통과와 위치 초기화
+
+`D-2026-08-04-AFTERLIFE-STATION-DESTINATION-BOUNDARY-RESET`
+
+- 목적지 공백을 자신의 귀환 장소로 인식한 상태에서 발동한다.
+- 안내 종료 전 자신이 들은 목적지를 향해 승차선·계단·출구 경계를 넘으면 위치만 진입점으로 초기화된다.
+- 승강장 내부의 관찰·기록 수집·짧은 위치 이동은 안전하다.
+- 시간, 휴대전화 시각, 녹음 길이, 배터리, 소지품 위치와 요원의 기록은 유지된다.
+- 첫 초기화는 즉사나 사건 실패가 아니라 관찰 가능한 위험 사례다.
+- 반복 횟수가 늘수록 피해자 연결과 위험도가 심화된다.
+- 안내 종료 이후의 안전한 이동·구출·회수 절차는 3장에 남긴다.
+
+책임 Section:
+
+- `docs/planning/2026-08-04-afterlife-station-complete-case-batch-4-section-02-destination-boundary-reset.md`
 
 ## GPT 역할 경계
 
