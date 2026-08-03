@@ -1,14 +1,16 @@
 # 괴이기록국 조사 시스템 Design — Grill Me Batch 3 연속 설계
 
-> 상태: `ACTIVE_DESIGN_ACCUMULATION / GRILLME_BATCH_3_9_OF_10`
-> 이전 검증 체크포인트: `GRILLME_BATCH_3_8_OF_10`
+> 상태: `BATCH_COMPLETE / GRILLME_BATCH_3_10_OF_10 / PENDING_EXPLICIT_MERGE_APPROVAL`
+> 이전 검증 체크포인트: `GRILLME_BATCH_3_9_OF_10`, `GRILLME_BATCH_3_8_OF_10`
+> 이전 카운터: `9 / 10`, `8 / 10`
 > 기준 Design: `docs/planning/2026-08-02-investigation-system-design.md`
 > 시작일: 2026-08-03
+> 완료일: 2026-08-04
 > 누적 Draft PR: `#142`
 > 구현: `NOT_AUTHORIZED`
 > 사람 검증: `NOT_RUN`
 
-Batch 2에서 병합된 조사 시스템 Design Sections 1~10을 변경하지 않고, Batch 3 승인 Decision을 Section 11부터 누적한다. 10개 승인 또는 허용된 조기 체크포인트 전까지 Draft PR을 유지한다.
+Batch 2에서 병합된 조사 시스템 Design Sections 1~10을 변경하지 않고, Batch 3 승인 Decision 10개를 Section 11~20에 누적했다. Batch는 완료됐지만 사용자의 별도 `병합 승인` 전에는 Draft를 해제하거나 병합하지 않는다.
 
 ## 승인 Decision 색인
 
@@ -76,7 +78,7 @@ Batch 2에서 병합된 조사 시스템 Design Sections 1~10을 변경하지 �
 - 단서 `[기록]`으로 후보를 추론
 - 구출·회수 실행 중 매뉴얼 읽기 전용
 - 실행 결과는 관찰 가능한 현상이며 자동 정오 판정 금지
-- 사건 결과 확정 뒤 세션 종료 보고서에서 슬롯별 정답 공개
+- 사건 결과 확정 뒤 결과 보고서에서 정답 비교
 - 책임 문서: `docs/planning/2026-08-04-investigation-system-design-batch-3-section-18-revision-and-truth-reveal.md`
 
 ### Section 19 — 최초 조사 정본과 기록 재현 숙련 분리
@@ -84,14 +86,28 @@ Batch 2에서 병합된 조사 시스템 Design Sections 1~10을 변경하지 �
 - Decision: `D-2026-08-04-INVESTIGATION-FIRST-RUN-CANON-AND-REPLAY-MASTERY-SEPARATION`
 - 정답 비공개 상태의 `최초 조사 기록`이 최초 조사 등급·최초 조사 S 랭크·캠페인 정본을 소유
 - 피해자 상태·세력 반응·위험 사례·기본 성장 보상은 최초 사건 결과 확정 시 기록
-- 정답 공개 후에는 `answer_viewed / 비정본 재현`
+- 전체 정답 공개 후에는 `answer_viewed / 비정본 재현`
 - 별도 `재현 숙련 등급`을 제공하되 최초 조사 S·캠페인 정본·피해자 상태·세력 반응을 덮어쓰지 않음
 - 재현 보상은 사건당 1회 선택적 기록·외형 보상이며 반복 성장 파밍 금지
 - 정답 보고서가 열리기 전 체크포인트 재개는 같은 최초 조사 세션
 - 접근성 기능은 최초 조사 자격과 정답 공개 상태에 영향을 주지 않음
 - 책임 문서: `docs/planning/2026-08-04-investigation-system-design-batch-3-section-19-first-run-and-replay-mastery.md`
 
-## Batch 3 현재 핵심 흐름
+### Section 20 — 결과 범위 정답 공개와 선택적 전체 공개
+
+- Decision: `D-2026-08-04-INVESTIGATION-OUTCOME-SCOPED-TRUTH-REVEAL-AND-OPT-IN-FULL-DISCLOSURE`
+- 정상 클리어는 현재 사건 다섯 의미 슬롯의 전체 정답 자동 공개
+- 실패·승인 철수는 검증된 슬롯·직접 관찰된 현상·실패 행동·위험 사례만 공개
+- 미검증 슬롯은 숨기고 정답 근접도·교체 답·추천 후보를 제공하지 않음
+- 제한 보고서는 `partial_truth_revealed`이며 `answer_viewed`가 아님
+- 정답 비공개 후속 재조사에서 최초 실패·위험 사례를 보존하고 후속 결과를 추가 기록
+- `공식 정답 전체 공개`를 명시적 선택하면 사전 경고 뒤 `answer_viewed`로 전환
+- 전체 공개 뒤에는 비정본 재현·재현 숙련 등급
+- 필수 안전 정보·접근성 등가 선택 제공
+- 정답 공개 자체 보상·유료화·시간 잠금 금지
+- 책임 문서: `docs/planning/2026-08-04-investigation-system-design-batch-3-section-20-outcome-scoped-truth-reveal.md`
+
+## Batch 3 완성 핵심 흐름
 
 ```text
 빈칸이 많은 괴이 매뉴얼 보유
@@ -109,10 +125,19 @@ Batch 2에서 병합된 조사 시스템 Design Sections 1~10을 변경하지 �
 → 필요 시 위험 이력을 유지하고 조사로 후퇴
 → 최초 사건 결과 확정
 → 최초 조사 기록·캠페인 정본·기본 성장 보상 확정
-→ 세션 종료 후 슬롯별 정답 비교
+
+정상 클리어
+→ 전체 정답 자동 공개
 → answer_viewed
-→ 정답 공개 후 기록 재현
-→ 비정본 재현과 재현 숙련 등급
+→ 비정본 기록 재현 / 재현 숙련 등급
+
+실패·승인 철수
+→ 검증 범위 제한 공개
+→ partial_truth_revealed
+→ 정답 비공개 후속 재조사
+   또는 공식 정답 전체 공개 명시적 선택
+→ answer_viewed
+→ 비정본 기록 재현 / 재현 숙련 등급
 ```
 
 `모든 빈칸 완료`는 구조적 실행 Gate이며 모든 후보가 옳거나 확인됐다는 뜻은 아니다. 세션 중에는 어떤 키워드도 정답·오답으로 표시하지 않는다.
@@ -122,15 +147,18 @@ Batch 2에서 병합된 조사 시스템 Design Sections 1~10을 변경하지 �
 - Decision 1의 5개 의미 슬롯을 Decision 3 사건 제작 공식이 역설계한다.
 - Decision 4의 `[변조]`와 구출·회수 실행을 Decision 5의 장별 후보 풀이 노출한다.
 - Decision 6의 판정 경계는 Decision 7의 페이지 완료 Gate에 맞춰 교정됐다.
-- Decision 8은 Decision 2의 세션 중 `확인 규칙` 표시를 폐기하고 정답 공개를 사건 결과 보고서로 이동한다.
-- Decision 9는 Decision 8의 정답 공개 이후 상태를 `answer_viewed / replay_mastery`로 분리한다.
+- Decision 8은 Decision 2의 세션 중 `확인 규칙` 표시를 폐기하고 정답 판정을 사건 결과 보고서로 이동한다.
+- Decision 9는 전체 정답 공개 이후 상태를 `answer_viewed / replay_mastery`로 분리한다.
+- Decision 10은 Decision 8의 정답 공개를 결과별 범위로 세분화하고, Decision 9의 answer_viewed 전환 시점을 전체 답 실제 공개로 고정한다.
 - 빈칸이 남은 매뉴얼로 구출에 진입할 수 없다.
 - 잘못된 후보를 채운 구조적 완성은 가능하며 구출·회수 결과가 관찰 증거가 된다.
 - 페이지 완료는 잠금이 아니며 조사 종료 전 이전 페이지를 수정할 수 있다.
 - 키워드는 소모되지 않으며 단일 출처에서 여러 사용 위치로 참조된다.
 - 구출 실패는 즉사보다 단계형 위험과 관찰 증거를 제공한다.
 - 일시정지·저장·메뉴 이탈은 세션 종료나 정답 보고서 해금이 아니다.
-- 정답 공개 뒤 재현은 최초 조사 S 랭크·캠페인 정본·피해자 상태·세력 반응을 덮어쓰지 않는다.
+- 실패·철수 제한 보고서는 answer_viewed가 아니며 후속 재조사를 허용한다.
+- 후속 재조사는 최초 실패·피해자 결과·위험 사례를 삭제하지 않고 후속 결과를 추가한다.
+- 전체 공개 뒤 재현은 최초 조사 S 랭크·캠페인 정본·피해자 상태·세력 반응을 덮어쓰지 않는다.
 - 재현 숙련은 선택적 성취이며 성장 경제와 캠페인 진행의 필수 Gate가 아니다.
 
 ## GPT·Codex 역할
@@ -141,7 +169,8 @@ Batch 2에서 병합된 조사 시스템 Design Sections 1~10을 변경하지 �
 
 ## 현재 Gate
 
-- Grill Me Batch 3: `9 / 10`
+- Grill Me Batch 3: `10 / 10`
+- 상태: `BATCH_COMPLETE / PENDING_EXPLICIT_MERGE_APPROVAL`
 - Draft PR #142 유지
+- 전체 누적 적대적 검토와 exact HEAD 검증 후에도 별도 `병합 승인` 전 병합 금지
 - 구현·Human QA·Design Spec·이미지·Codex 미승인
-- 다음 질문은 실패·철수 종결에서 공개할 정답 범위와 마지막 Batch 3 Decision
