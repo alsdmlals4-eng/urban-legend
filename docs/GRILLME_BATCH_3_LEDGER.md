@@ -2,6 +2,7 @@
 
 > 상위 운영 Decision: `D-2026-08-02-GRILLME-10-MERGE-CADENCE`
 > 현재 카운터: `9 / 10`
+> 이전 카운터: `8 / 10`
 > 현재 식별자: `GRILLME_BATCH_3_9_OF_10`
 > 이전 검증 체크포인트: `GRILLME_BATCH_3_8_OF_10`
 > 상태: `ACTIVE_ACCUMULATION / APPROVED_PENDING_BATCH_MERGE`
