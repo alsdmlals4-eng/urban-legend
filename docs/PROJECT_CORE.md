@@ -1,14 +1,18 @@
 # 괴이 기록국 프로젝트 코어
 
-> 상태: `CORE_RECORDED / INVESTIGATION_RESCUE_RECOVERY_AUTHORITY_RECONCILED`  
-> 사용자 승인: 2026-07-23 - 기존 사건 코어 승인  
-> 최신 정합성 교정: 2026-08-03 - Grill Me Batch 2 승인 계약 반영  
-> 검토 상태: `CORE_STRESS_TESTED / BATCH_2_PREMERGE_AUDIT_PENDING`  
-> 구현 상태: `POC_PENDING` — 기존 거버넌스 호환 표기이며, CORE-MVP-001 실제 구현은 `POC_BUILD_READY`다. Batch 2 조사·랭크·재도전 계약은 `NOT_IMPLEMENTED`다.  
-> Production gate: `HOLD_UNTIL_PLAYER_EVIDENCE`  
-> 연도제 설계 상태: `APPROVED_DESIGN_BASELINE / ANNUAL_DESIGN_BASELINE_APPROVED`  
-> 연도제 구현: `ANNUAL-MVP-001 SEVEN_DAY_SCHEDULING_MERGED / AUTOMATED_QA_PASSED` — Issue #75 / PR #76 / commit `57c1f3d92e0fdae658826a23e5c2326fe9efe478`  
-> 현재 구현 기준: `MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A / Ver 4.2 / save mvp-039`  
+> 상태: `CORE_RECORDED`
+> 사용자 승인: 2026-07-23 - 기존 사건 코어 승인
+> 최신 정합성: `INVESTIGATION_RESCUE_RECOVERY_AUTHORITY_RECONCILED`
+> 최신 정합성 교정: 2026-08-03 - Grill Me Batch 2 승인 계약 반영
+> 검토 상태: `CORE_STRESS_TESTED`
+> Batch 2 감사 상태: `PREMERGE_AUDIT_IN_PROGRESS`
+> 구현 상태: `POC_PENDING`
+> CORE-MVP-001 구현 상태: `POC_BUILD_READY`
+> Batch 2 조사·랭크·재도전 구현: `NOT_IMPLEMENTED / NOT_AUTHORIZED`
+> Production gate: `HOLD_UNTIL_PLAYER_EVIDENCE`
+> 연도제 설계 상태: `APPROVED_DESIGN_BASELINE / ANNUAL_DESIGN_BASELINE_APPROVED`
+> 연도제 구현: `ANNUAL-MVP-001 SEVEN_DAY_SCHEDULING_MERGED / AUTOMATED_QA_PASSED` — Issue #75 / PR #76 / commit `57c1f3d92e0fdae658826a23e5c2326fe9efe478`
+> 현재 구현 기준: `MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A / Ver 4.2 / save mvp-039`
 > POC_PASSED: `NOT_DECLARED`
 
 이 문서는 바뀌면 다른 게임이 되는 최소 제품 정체성 계약이다. 기존 사건 코어를 폐기하지 않고 권나래의 연도제 육성과 텍스트 노벨 서사 안에 배치한다. 최신 제품 권위는 **사건 조사 → 피해자 구출 → 회수 전투**이며 일정·육성·동료·장비·연구·기관은 준비·지원·환류 계층이다.
@@ -72,37 +76,37 @@
 
 ## 최소 정체성 계약
 
-1. **권나래 고정 기반 성장형 주인공**  
+1. **권나래 고정 기반 성장형 주인공**
    과거·기본 성격·말투·핵심 욕구는 고정하고, 플레이어는 어떤 요원으로 성장하는지를 결정한다.
 
-2. **1년 4분기와 주간 계획 + 중요 반일 선택**  
+2. **1년 4분기와 주간 계획 + 중요 반일 선택**
    첫 완성 캠페인은 봄·여름·가을·겨울 4분기이며, 반복 일정은 주간 계획으로 압축한다.
 
-3. **사건 플레이 메인 코어 + 육성·준비 지원 순환**  
+3. **사건 플레이 메인 코어 + 육성·준비 지원 순환**
    메인 콘텐츠는 조사·피해자 구출·회수 전투다. 육성·준비는 선택 폭과 위험 관리를 지원하고 사건 결과는 다음 육성의 입력이 된다. 지원 계층이 사건을 자동 해결하지 않는다.
 
-4. **관측 가능한 페어플레이 정보**  
+4. **관측 가능한 페어플레이 정보**
    핵심 단서와 모순은 플레이어가 확인 가능한 정보로 판정한다. 일반 클리어에 필요한 필수 진실에는 비판정 또는 확정 우회 경로가 존재한다.
 
-5. **플레이어 구성형 괴이 매뉴얼**  
+5. **플레이어 구성형 괴이 매뉴얼**
    후보 규칙에 지지 근거·반박 근거·미해결 질문을 연결하고 후보·확인·위험 사례·미해결 상태를 구분한다.
 
-6. **조사 규칙을 적용하는 피해자 구출**  
+6. **조사 규칙을 적용하는 피해자 구출**
    미니게임의 목적은 규칙을 위해 위험을 만드는 것이 아니라 피해자를 괴이 현상에서 분리하는 것이다. 사건별로 경로·순서·타이밍·대상·금지 행동을 서로 다른 간단한 문법으로 적용한다.
 
-7. **조사 지식의 구출·전투 정보 우위 변환**  
+7. **조사 지식의 구출·전투 정보 우위 변환**
    현장 이해도는 공격력이나 정답 자동 공개가 아니라 구출 시작 조건과 전조의 행동명·대상·범위·조건을 읽는 정보 우위가 된다.
 
-8. **패턴 대응형 회수와 잔향 회수**  
+8. **패턴 대응형 회수와 잔향 회수**
    괴이는 HP 0으로 처치하지 않는다. 공격은 현현·매개체를 약화해 대응·봉쇄 기회를 만드는 제한적 행동이며, 공격 반복만으로 기본 승리할 수 없다.
 
-9. **성공·실패의 영구 기록과 실패 전진**  
+9. **성공·실패의 영구 기록과 실패 전진**
    성공은 공식 규칙으로, 실패는 위험 사례와 후속 조건으로 남는다. 낮은 랭크도 유효한 캠페인 결과이며 필수 진행을 막지 않는다.
 
-10. **연구·기본 장비·모듈·동료 자동 지원**  
+10. **연구·기본 장비·모듈·동료 자동 지원**
     연구는 전문성·모듈·공용 보조 스킬을 해금하며 동료는 직접 명령하지 않는다. 지원은 판단을 보강하지만 정답과 사건 종결을 대신하지 않는다.
 
-11. **최종 엔딩이 아닌 연도 결산과 다음 연도 계승**  
+11. **최종 엔딩이 아닌 연도 결산과 다음 연도 계승**
     연말은 단일 점수나 도덕 등급이 아니라 조사 성향·보호 원칙·기관 내 위치·남은 책임을 정리하는 중간 결과다.
 
 ## 기존 사건 코어 보존 규칙
@@ -223,11 +227,24 @@
 - 선택지·단서·패턴·전투 턴 수
 - UI 배치와 미니게임 표현 방식
 
+## REQUIRES_REAPPROVAL
+
+다음은 별도 사용자 승인 없이 변경하거나 구현하지 않는다.
+
+- 조사·피해자 구출·회수 전투의 메인 콘텐츠 권위
+- 괴이를 HP 0 처치 대상으로 바꾸는 것
+- 지원 계층이 사건을 자동 해결하게 하는 것
+- 일반 클리어에 필요한 필수 진실을 특정 빌드·확률에 영구 잠그는 것
+- S 랭크·업적에 필수 전력·필수 서사·접근성·기본 편의를 독점시키는 것
+- Batch 2 Design의 상세 Spec·구현·사람 검증·POC 통과·Production 확대
+
 ## TECHNICAL_FOUNDATION
 
 - Godot 4.7.1 / GDScript / PC 16:9 / 마우스·키보드
 - 저장 `mvp-039`와 `mvp-038` 이관 지원 보호
 - 기존 ID·저장 키·`selected_agent_ids` 호환 보호
 - 보호 경로: `scripts/core/game_state.gd`, `data/episodes/**`, `project.godot`, `knowledge/base-pack/**`
+- CORE-MVP-001 상세 설계: `docs/superpowers/specs/2026-07-23-project-core-integrated-spec.md`
+- CORE-MVP-001 구현 계획: `docs/superpowers/plans/2026-07-23-core-mvp-001-implementation-plan.md`
 - 기존 조사·회수 장면은 별도 승인 없이 직접 개조하지 않는다.
 - ANNUAL-MVP-001은 독립 PoC 경로에서 검증한다.
