@@ -1,7 +1,7 @@
 # 괴이기록국 현재 인수인계
 
-> 상태: `PACKAGE_2_MERGED_AND_VERIFIED / YEAR_ONE_DESIGN_MERGED_ON_MAIN / GRILLME_BATCH_2_OPEN`
-> 갱신일: 2026-08-02
+> 상태: `PACKAGE_2_MERGED_AND_VERIFIED / YEAR_ONE_DESIGN_MERGED_ON_MAIN / GRILLME_BATCH_2_MERGED / GRILLME_BATCH_3_OPEN`
+> 갱신일: 2026-08-03
 > Base: `9.4.3`
 > Package 2 Planning PR: #129
 > Package 2 Implementation PR: #131
@@ -11,10 +11,14 @@
 > Year-one campaign Design merge: `7bddbce2ebd427154cdeb8e4bb9b7aec06e2ea5e`
 > Year-one verified head: `a009732ab6162bdfc018da792e7e0414c342e7f5`
 > main→planning sync PR: #138 / merge `cc25991ba6b74b3c3f552c84e90d40987595fa82`
+> Grill Me Batch 2 Design PR: #140
+> Grill Me Batch 2 verified head: `3a532a9127126757fc75bf533eef6a65bbc2fc36`
+> Grill Me Batch 2 merge: `3344ac4ca6ef4c755c269b863c1bdeb8cdb8d722`
 > Grill Me Batch 1: `COMPLETE / 10_OF_10 / MERGED`
-> Grill Me Batch 2: `0 / 10`
+> Grill Me Batch 2: `COMPLETE / 10_OF_10 / MERGED`
+> Grill Me Batch 3: `0 / 10 / OPEN`
 
-실제 최신 main SHA는 GitHub `main` ref에서 읽는다. Package 2 planning·implementation과 1년차 캠페인 Design은 main에 병합됐다. 문서 병합은 구현·사람 검증·POC·Production 확대 권한을 열지 않는다.
+실제 최신 main SHA는 GitHub `main` ref에서 읽는다. Package 2 planning·implementation, 1년차 캠페인 Design, Grill Me Batch 2 조사 시스템 Design은 main에 병합됐다. 문서 병합은 Design Spec·구현·사람 검증·POC·Production 확대 권한을 열지 않는다.
 
 ## 읽기 순서
 
@@ -28,8 +32,11 @@ START_HERE.md
 → docs/VALIDATION_TARGET_CANON.md
 → docs/GRILLME_APPROVAL_MERGE_LEDGER.md
 → docs/planning/2026-08-02-year-one-campaign-master-structure-design.md
+→ docs/planning/2026-08-02-investigation-system-design.md
 → 1년차 승인 Decision 9개
+→ Grill Me Batch 2 승인 Decision 10개
 → docs/audits/2026-08-02-grillme-batch-1-premerge-audit.md
+→ docs/audits/2026-08-03-grillme-batch-2-premerge-audit.md
 → Package 2 Design·Plan·Evidence
 → 실제 main 코드·테스트
 ```
@@ -59,7 +66,13 @@ year_one_main_sync: MERGED_PR_138
 year_one_design_spec: NOT_WRITTEN
 year_one_implementation: NOT_AUTHORIZED
 grillme_batch_1: COMPLETE_MERGED
-grillme_batch_2: 0_OF_10
+grillme_batch_2: COMPLETE_MERGED
+grillme_batch_2_design_sections_1_to_10: MERGED_ON_MAIN
+grillme_batch_2_verified_head: 3a532a9127126757fc75bf533eef6a65bbc2fc36
+grillme_batch_2_merge: 3344ac4ca6ef4c755c269b863c1bdeb8cdb8d722
+grillme_batch_3: 0_OF_10
+investigation_design_spec: NOT_WRITTEN
+investigation_implementation: NOT_AUTHORIZED
 local_runtime: NOT_RUN
 human_qa: NOT_RUN
 new_player_validation: NOT_RUN
@@ -67,6 +80,10 @@ screen_01_visual_1280x720: NOT_RUN
 core_gameplay_screen_human_validation: NOT_RUN
 four_case_content_validation: NOT_RUN
 result_feedback_validation: NOT_RUN
+investigation_rank_validation: NOT_RUN
+replay_rewind_validation: NOT_RUN
+accessibility_equivalence_validation: NOT_RUN
+mastery_reward_motivation_validation: NOT_RUN
 poc_passed: NOT_DECLARED
 production_expansion: NOT_APPROVED
 platform: PC_16_9_MOUSE_KEYBOARD
@@ -264,6 +281,55 @@ submitted_reviews: 0
 conversation_comments: 0
 ```
 
+# Part C — Grill Me Batch 2 조사 시스템 Design 인수인계
+
+## 승인 계약
+
+1. 필수 진실은 비판정 또는 확정 우회 경로로 획득한다.
+2. 최고 랭크 준비 조건은 출동 전에 공개하되 해법과 사용 지점은 공개하지 않는다.
+3. 조사 정확도·피해자 보호·현장 통제·기록 완성도 네 축과 관문형 종합 랭크를 사용한다.
+4. 정상 종결 랭크는 `C 조건부 대응 / B 적정 대응 / A 우수 대응 / S 정밀 대응`이다.
+5. 일반 재도전은 숙련 기록만 갱신하는 `기록 재현`으로 처리한다.
+6. 결과 보고서에서 정본을 명시적으로 확정하고, 확정 전에는 구간 체크포인트와 제한 재개를 제공한다.
+7. 첫 1년차 완료 뒤 캠페인 되감기와 최대 3개 분기 슬롯을 해금한다.
+8. 캠페인 되감기는 출동 준비 확정 직전 정본 앵커로 돌아가 사건 전체를 재진행한다.
+9. 판단을 보존하는 접근성 등가 기능은 랭크·업적에 중립이다.
+10. 숙련 보상은 캠페인 필수 전력·필수 서사와 분리하고 기록 재현 전용 변칙을 캠페인에 반입하지 않는다.
+
+캠페인 종속 피해자 후일담·관계·기관 상태는 활성 캠페인 정본만 참조한다. 기록 재현에서 달성한 대안 결과는 `기록 재현 / 가상 대응 기록 / 비정본 대안`으로 표시한다.
+
+## 책임 원본
+
+- `docs/planning/2026-08-02-investigation-system-design.md`
+- `docs/GRILLME_BATCH_2_LEDGER.md`
+- `docs/audits/2026-08-03-grillme-batch-2-premerge-audit.md`
+- Batch 2 승인 Decision 10개
+- Google Sheet 동일 Decision ID 10개
+
+## 적대적 감사와 병합 증거
+
+```yaml
+planning_pr: 140
+verified_head: 3a532a9127126757fc75bf533eef6a65bbc2fc36
+merge: 3344ac4ca6ef4c755c269b863c1bdeb8cdb8d722
+changed_files: 14_DOCS_ONLY
+main_behind_at_merge: 0
+review_threads: 0
+submitted_reviews: 0
+conversation_comments: 0
+content_audit: PASS_AFTER_CORRECTIONS
+documentation_contracts_run_30774862515: PASS
+bca_adoption_run_30774862512: PASS
+core_workflow: NOT_TRIGGERED_BY_PATH_FILTER
+annual_workflow: NOT_TRIGGERED_BY_PATH_FILTER
+implementation: NOT_AUTHORIZED
+human_validation: NOT_RUN
+poc_passed: NOT_DECLARED
+production_expansion: NOT_APPROVED
+```
+
+감사에서 `PROJECT_CORE.md`의 구형 이중 코어·조작형 위험 검증·공격 누락 표현과 숙련 후일담의 캠페인 정본 혼합 위험을 교정했다. 첫 교정 뒤 드러난 고정 문서 계약 누락과 후행 공백도 복원·제거한 뒤 exact-head 검증을 다시 통과했다.
+
 ## GitHub 상태
 
 ```yaml
@@ -276,24 +342,29 @@ pr_132: MERGED_MAIN_TO_PLANNING_SYNC
 pr_133: MERGED_MAIN_TO_IMPLEMENTATION_SYNC
 pr_138: MERGED_MAIN_TO_YEAR_ONE_PLANNING_SYNC
 pr_135: MERGED_YEAR_ONE_DESIGN
+pr_140: MERGED_GRILLME_BATCH_2_DESIGN
 pr_122: CLOSED_SOURCE_DO_NOT_MERGE_AS_IS
 issue_121: CLOSED_COMPLETED
 main_to_year_one_planning_sync_merge: cc25991ba6b74b3c3f552c84e90d40987595fa82
 year_one_design_merge: 7bddbce2ebd427154cdeb8e4bb9b7aec06e2ea5e
+batch_2_verified_head: 3a532a9127126757fc75bf533eef6a65bbc2fc36
+batch_2_merge: 3344ac4ca6ef4c755c269b863c1bdeb8cdb8d722
 ```
 
 ## Grill Me 운영
 
 - Batch 1: `COMPLETE / 10_OF_10 / MERGED`
-- Batch 2: `0 / 10`
-- 동일 질문의 Design·Spec·구현·병합 후속 Gate는 새 질문이 아니면 Batch 2에 추가하지 않는다.
+- Batch 2: `COMPLETE / 10_OF_10 / MERGED`
+- Batch 3: `0 / 10 / OPEN`
+- 동일 질문의 Design·Spec·구현·병합 후속 Gate는 새 제품 결정이 아니면 Batch 3에 추가하지 않는다.
 
 ## 다음 Gate
 
 ```text
-GRILLME_BATCH_2 counter 0/10
+GRILLME_BATCH_3 counter 0/10
 → 다음 중요 제품 결정을 새 Decision ID로 기록
-→ Design Spec·개별 사건 Spec은 별도 사용자 승인 뒤 작성
+→ Batch 2 Design Spec·사건별 랭크 관문·저장 스키마·접근성 등가 과제는 별도 사용자 승인 뒤 작성
+→ 개별 사건 Spec은 별도 사용자 승인 뒤 작성
 → 구현 계획·코드·사람 검증·POC·Production 확대는 각각 별도 Gate
 ```
 
@@ -318,6 +389,10 @@ case_play_differentiation_validation: NOT_RUN
 result_feedback_playability: NOT_RUN
 annual_review_comprehension: NOT_RUN
 unrecorded_ward_playability: NOT_RUN
+investigation_rank_playability: NOT_RUN
+replay_rewind_comprehension: NOT_RUN
+accessibility_equivalence_human_validation: NOT_RUN
+mastery_reward_motivation: NOT_RUN
 poc_passed: NOT_DECLARED
 production_expansion: NOT_APPROVED
 ```
