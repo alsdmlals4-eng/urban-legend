@@ -3,9 +3,9 @@
 - 기준 main: `830b0ac41f5f0f549d34cd703194db2a6e7e63b0`
 - 브랜치: `agent/grillme-batch-4-afterlife-station-complete-case`
 - Draft PR: `#143`
-- 현재 카운터: `4 / 10`
-- 현재 식별자: `GRILLME_BATCH_4_4_OF_10`
-- 이전 체크포인트: `3 / 10 / GRILLME_BATCH_4_3_OF_10`, `2 / 10 / GRILLME_BATCH_4_2_OF_10`, `1 / 10 / GRILLME_BATCH_4_1_OF_10`
+- 현재 카운터: `5 / 10`
+- 현재 식별자: `GRILLME_BATCH_4_5_OF_10`
+- 이전 체크포인트: `4 / 10 / GRILLME_BATCH_4_4_OF_10`, `3 / 10 / GRILLME_BATCH_4_3_OF_10`, `2 / 10 / GRILLME_BATCH_4_2_OF_10`, `1 / 10 / GRILLME_BATCH_4_1_OF_10`
 - 상태: `ACTIVE_ACCUMULATION / APPROVED_PENDING_BATCH_MERGE`
 - 구현: `IMPLEMENTATION_NOT_AUTHORIZED`
 - Human QA: `NOT_RUN`
@@ -88,6 +88,22 @@ Batch 3에서 확정한 괴이 매뉴얼·단서 `[기록]`·피해자 구출·�
 책임 Section:
 
 - `docs/planning/2026-08-04-afterlife-station-complete-case-batch-4-section-04-nonstop-farewell-ticket-counter.md`
+
+### 5. `[회귀 승강장]` 지속 흔적 기반 잔향 고정
+
+`D-2026-08-04-AFTERLIFE-STATION-RECURRING-PLATFORM-PERSISTENT-TRACE-ANCHOR`
+
+- 두 번째 대표 회수 패턴은 위치 초기화와 시간·기록·흔적 유지의 비대칭을 사용한다.
+- 승차권을 파훼 수단으로 사용하지 않는다.
+- 최소 2개 초기화 주기와 2종 독립 지속 흔적을 교차 비교한다.
+- 소지품 위치·공식 검표 흔적·연속 녹음 시간·요원 좌표 로그·누적 잔향 자국을 근거로 사용할 수 있다.
+- 최종 턴에 `지속 흔적 고정`으로 실제 잔향 좌표를 지정한다.
+- 정확한 고정은 전체 위치 초기화를 막고 `[파훼]`, 잔향 노출, 괴이 `[취약]`을 만든다.
+- 매뉴얼과 접근성 기능은 실제 잔향이나 정답 좌표를 자동 표시·선택하지 않는다.
+
+책임 Section:
+
+- `docs/planning/2026-08-04-afterlife-station-complete-case-batch-4-section-05-recurring-platform-persistent-trace-anchor.md`
 
 ## GPT 역할 경계
 
