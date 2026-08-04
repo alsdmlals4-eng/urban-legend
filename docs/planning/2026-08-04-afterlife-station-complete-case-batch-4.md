@@ -3,124 +3,127 @@
 - 기준 main: `830b0ac41f5f0f549d34cd703194db2a6e7e63b0`
 - 브랜치: `agent/grillme-batch-4-afterlife-station-complete-case`
 - Draft PR: `#143`
-- 현재 카운터: `5 / 10`
-- 현재 식별자: `GRILLME_BATCH_4_5_OF_10`
-- 이전 체크포인트: `4 / 10 / GRILLME_BATCH_4_4_OF_10`, `3 / 10 / GRILLME_BATCH_4_3_OF_10`, `2 / 10 / GRILLME_BATCH_4_2_OF_10`, `1 / 10 / GRILLME_BATCH_4_1_OF_10`
-- 상태: `ACTIVE_ACCUMULATION / APPROVED_PENDING_BATCH_MERGE`
+- 현재 카운터: `10 / 10`
+- 현재 식별자: `GRILLME_BATCH_4_10_OF_10`
+- 이전 체크포인트: `5 / 10 / GRILLME_BATCH_4_5_OF_10`, `4 / 10 / GRILLME_BATCH_4_4_OF_10`, `3 / 10 / GRILLME_BATCH_4_3_OF_10`, `2 / 10 / GRILLME_BATCH_4_2_OF_10`, `1 / 10 / GRILLME_BATCH_4_1_OF_10`
+- 상태: `BATCH_COMPLETE_PENDING_EXPLICIT_MERGE_APPROVAL`
 - 구현: `IMPLEMENTATION_NOT_AUTHORIZED`
 - Human QA: `NOT_RUN`
 
 ## 목적
 
-Batch 3에서 확정한 괴이 매뉴얼·단서 `[기록]`·피해자 구출·전조형 회수 전투 계약을 저승역 대표 사건 한 건에 실제 콘텐츠로 적용한다.
+Batch 3의 괴이 매뉴얼·단서 `[기록]`·구출·전조형 회수 전투 계약을 저승역 대표 사건에 적용해 핵심 재미가 실제 콘텐츠로 연결되는지 검증한다.
 
 ```text
-저승역 실제 규칙
-→ 3장 괴이 매뉴얼
-→ 장별 단서 [기록]과 후보 키워드
-→ 정상·보조·오답·[변조] 후보
+빈칸이 많은 3장 괴이 매뉴얼
+→ 단서 [기록] 조사와 후보·[변조] 키워드 배치
+→ 최종장 모든 빈칸 완료
 → 피해자 구출 미니게임
-→ 회수 전투 패턴
-→ 정상 클리어·실패·승인 철수
-→ 결과 범위 정답 공개·후속 재조사·기록 재현
+→ 전조형 회수 전투
+→ 사건 결과·정답 공개·후속 재조사·기록 재현
 ```
 
-## 승인 Decision
+## 승인 Decision 1~5
 
-### 1. 개인 목적지 투영과 1장 교차검증
+1. `D-2026-08-04-AFTERLIFE-STATION-PERSONAL-DESTINATION-PROJECTION`
+   - 공백에 듣는 사람의 귀환 기억이 투영된다.
+2. `D-2026-08-04-AFTERLIFE-STATION-DESTINATION-BOUNDARY-RESET`
+   - 안내 종료 전 투영 목적지 방향 경계를 넘으면 시간·기록은 유지되고 위치만 초기화된다.
+3. `D-2026-08-04-AFTERLIFE-STATION-OFFICIAL-ROUTE-TICKET-AND-CORRECT-DISEMBARKATION`
+   - 현실 귀환 승차권을 회수하고 피해자와 지정 역에서 함께 하차한다.
+4. `D-2026-08-04-AFTERLIFE-STATION-NONSTOP-FAREWELL-TICKET-COUNTER`
+   - `[무정차 환송]`: 공식 승차권으로 투영 노선을 파훼한다.
+5. `D-2026-08-04-AFTERLIFE-STATION-RECURRING-PLATFORM-PERSISTENT-TRACE-ANCHOR`
+   - `[회귀 승강장]`: 복수 주기의 지속 흔적으로 실제 잔향 좌표를 고정한다.
 
-`D-2026-08-04-AFTERLIFE-STATION-PERSONAL-DESTINATION-PROJECTION`
+## 승인 Decision 6~10
 
-- 안내방송 원본의 목적지 구간은 비어 있다.
-- 피해자는 자신의 귀환 장소를 목적지로 들었다고 기록한다.
-- 같은 순간 서로 다른 목적지가 관찰자와 장치마다 남는다.
-- 공식 운행 기록에는 추가 목적지와 추가 열차가 없다.
-- 네 기록을 교차검증해 `공백에 귀환 기억이 투영된다`를 추론한다.
+### 6. `[목적지 합창]` 공통 무음 구간 파훼
 
-책임 Section:
+`D-2026-08-04-AFTERLIFE-STATION-DESTINATION-CHORUS-SILENCE-COUNTER`
 
-- `docs/planning/2026-08-04-afterlife-station-complete-case-batch-4-section-01-personal-destination-projection.md`
+- 서로 다른 목적지 자막에서 공통 무음 구간을 찾는다.
+- 최종 턴에 공식 역 식별음을 공백에 삽입한다.
+- 개인 목적지 투영을 붕괴시켜 `[파훼]`·기억 매듭 노출·괴이 `[취약]`을 만든다.
+- 승차권·지속 좌표 패턴과 중복되지 않는다.
 
-### 2. 투영 목적지 경계 통과와 위치 초기화
+책임 Section: `section-06-destination-chorus-silence-counter.md`
 
-`D-2026-08-04-AFTERLIFE-STATION-DESTINATION-BOUNDARY-RESET`
+### 7. 3장 매뉴얼과 후보 풀
 
-- 목적지 공백을 자신의 귀환 장소로 인식한 상태에서 발동한다.
-- 안내 종료 전 자신이 들은 목적지를 향해 승차선·계단·출구 경계를 넘으면 위치만 진입점으로 초기화된다.
-- 승강장 내부의 관찰·기록 수집·짧은 위치 이동은 안전하다.
-- 시간과 기록은 유지되고 첫 초기화는 관찰 가능한 위험 사례다.
+`D-2026-08-04-AFTERLIFE-STATION-THREE-CHAPTER-MANUAL-AND-CANDIDATE-POOLS`
 
-책임 Section:
+- 1장 `누가 목적지를 만드는가`: 4개 슬롯, 후보 8개
+- 2장 `무엇이 반복을 일으키는가`: 5개 슬롯, 후보 9개
+- 3장 `어떻게 현실로 데리고 나오는가`: 5개 슬롯, 후보 10개
+- 모든 빈칸 완료는 정답 확정이 아니며 세션 중 정답 힌트를 표시하지 않는다.
 
-- `docs/planning/2026-08-04-afterlife-station-complete-case-batch-4-section-02-destination-boundary-reset.md`
+책임 Section: `section-07-three-chapter-manual-and-candidate-pools.md`
 
-### 3. 현실 귀환 승차권 회수와 알맞은 역 하차
+### 8. 첫 10분 조사 흐름
 
-`D-2026-08-04-AFTERLIFE-STATION-OFFICIAL-ROUTE-TICKET-AND-CORRECT-DISEMBARKATION`
+`D-2026-08-04-AFTERLIFE-STATION-FIRST-TEN-MINUTES-INVESTIGATION-PACING`
 
-- 공식 운행 기록과 피해자의 교통 이용 흔적으로 현실 귀환 경로를 확인한다.
-- 자신에게 맞는 승차권은 개인의 바람에 맞는 표가 아니며 투영된 목적지와 구분한다.
-- 승차권 색상은 현실 노선의 노선색과 일치해야 한다.
-- 색상만으로 판별하지 않고 노선명·역 코드·문양·텍스트를 함께 확인한다.
-- 안내 종료 후 공식 역 식별음을 재생한다.
-- 노선색·노선명·역 코드가 맞는 승차권을 회수한다.
-- 피해자와 함께 공식 열차에 탑승하고 승차권을 끝까지 보관한다.
-- 승차권에 적힌 알맞은 역에서 함께 하차해야 구출이 완성된다.
-- 구출 성공은 회수 전투 진입 조건이며 사건을 자동 종결하지 않는다.
+- 피해자 이하린과 철거된 옛집의 후회를 감정 앵커로 사용한다.
+- 10분 내 기록 비교·후보 배치·오답 가설 반증·위치 초기화 질문을 경험한다.
+- 첫 초기화는 강제 실패가 아니며 예방 시 CCTV·연속 녹음 대체 경로를 제공한다.
 
-책임 Section:
+책임 Section: `section-08-first-ten-minutes-investigation-pacing.md`
 
-- `docs/planning/2026-08-04-afterlife-station-complete-case-batch-4-section-03-official-route-ticket-and-correct-disembarkation.md`
+### 9. 결과·등급·후속 재조사
 
-### 4. `[무정차 환송]` 공식 승차권 파훼
+`D-2026-08-04-AFTERLIFE-STATION-OUTCOME-GRADE-AND-REINVESTIGATION`
 
-`D-2026-08-04-AFTERLIFE-STATION-NONSTOP-FAREWELL-TICKET-COUNTER`
+- 일반 클리어는 피해자 구출과 잔향 회수 모두 필요하다.
+- S 랭크는 필수 슬롯·근거망·핵심 변조 반증·제시 패턴 파훼를 요구한다.
+- 구출 후 회수 중단은 승인 철수이며 괴이는 미회수로 남는다.
+- 최초 조사 정본과 후속 재조사·비정본 기록 재현을 분리한다.
 
-- 첫 대표 회수 패턴은 존재하지 않는 투영 노선의 무정차 열차를 불러오는 `[무정차 환송]`이다.
-- 패턴 길이는 고정하지 않으며 `N ≥ 2`, `N-1개의 전조` 계약을 따른다.
-- 최종 턴은 `대응 선택 → 패턴 발현 → 결과 산출 → 평상 진행` 순서다.
-- 구출 단계에서 끝까지 보관한 공식 승차권을 최종 턴에 개찰기에 제시한다.
-- 노선색·노선명·역 코드가 맞으면 투영 노선을 무효화해 `[파훼]`, 괴이 `[취약]`, 유효 공격 기회를 만든다.
-- 승차권은 소모되지 않고 공식 검표 흔적이 추가된다.
-- 방어는 피해만 줄이고 취약을 만들지 않으며, 공격·잘못된 표·조기 사용은 서로 다른 결정적 실패를 만든다.
-- 모든 회수 전투 패턴을 승차권으로 해결하지 않는다.
+책임 Section: `section-09-outcome-grade-and-reinvestigation.md`
 
-책임 Section:
+### 10. 시각·아트·정보 언어
 
-- `docs/planning/2026-08-04-afterlife-station-complete-case-batch-4-section-04-nonstop-farewell-ticket-counter.md`
+`D-2026-08-04-AFTERLIFE-STATION-VISUAL-ART-AND-INFORMATION-LANGUAGE`
 
-### 5. `[회귀 승강장]` 지속 흔적 기반 잔향 고정
+- 심야 도시철도 현실감
+- 개인 기억의 미세한 침입
+- 공식 교통 정보 문법
+- 공간 반복 공포
+- 기록국 현장 문서
 
-`D-2026-08-04-AFTERLIFE-STATION-RECURRING-PLATFORM-PERSISTENT-TRACE-ANCHOR`
+승차권·후보·전투 전조는 색상·음향 단독 정보에 의존하지 않는다. 이미지 생성과 자산 제작은 후속 승인이다.
 
-- 두 번째 대표 회수 패턴은 위치 초기화와 시간·기록·흔적 유지의 비대칭을 사용한다.
-- 승차권을 파훼 수단으로 사용하지 않는다.
-- 최소 2개 초기화 주기와 2종 독립 지속 흔적을 교차 비교한다.
-- 소지품 위치·공식 검표 흔적·연속 녹음 시간·요원 좌표 로그·누적 잔향 자국을 근거로 사용할 수 있다.
-- 최종 턴에 `지속 흔적 고정`으로 실제 잔향 좌표를 지정한다.
-- 정확한 고정은 전체 위치 초기화를 막고 `[파훼]`, 잔향 노출, 괴이 `[취약]`을 만든다.
-- 매뉴얼과 접근성 기능은 실제 잔향이나 정답 좌표를 자동 표시·선택하지 않는다.
+책임 Section: `section-10-visual-art-and-information-language.md`
 
-책임 Section:
+## 핵심 재미 적합성
 
-- `docs/planning/2026-08-04-afterlife-station-complete-case-batch-4-section-05-recurring-platform-persistent-trace-anchor.md`
+저승역은 같은 규칙을 조사·구출·전투에서 다른 방식으로 반복 사용한다.
+
+```text
+조사에서 규칙을 추론
+→ 매뉴얼에 자신의 가설을 작성
+→ 구출에서 절차를 실행
+→ 전투 전조를 읽고 미래 대응을 사전 선택
+→ 결과로 가설을 직접 검증
+```
+
+세 대표 패턴은 각각 다른 정보 처리 능력을 요구한다.
+
+- 노선·승차권 일치
+- 시간·좌표·지속 흔적 비교
+- 서로 다른 증언에서 공통 공백 찾기
 
 ## GPT 역할 경계
 
-이번 Batch에서 GPT는 다음을 담당한다.
+GPT는 핵심 재미·콘텐츠·사건 인과·후보 키워드·구출·전투 패턴·이미지/아트 브리프·적대적 검토를 담당한다.
 
-- 저승역의 핵심 재미와 사건 인과
-- 장별 조사 콘텐츠와 단서 기록
-- 후보·오답·[변조] 키워드
-- 피해자 구출과 회수 전투의 콘텐츠 설계
-- 이미지·아트 방향의 후속 논의
-- 벤치마킹과 적대적 검토
+게임 코드·Scene·사건 데이터·자산·UI 구현·저장 Schema·자동화는 Codex 구현 승인 이후에만 다룬다.
 
-게임 코드·Scene·사건 데이터·자산, UI 구현, 저장 Schema, 자동화 구현은 전체 기획과 별도 승인을 마친 뒤 Codex 단계에서 다룬다.
+## 완료 Gate
 
-## 누적 Gate
-
-- 한 번에 하나의 고레버리지 질문만 승인한다.
-- 승인 Decision은 같은 ID로 Decision·Section·Ledger·Google Sheet에 동기화한다.
-- 10개 Decision 완료 전 Draft PR을 병합하지 않는다.
-- Batch 완료 뒤에도 별도의 명시적 병합 승인이 필요하다.
+- 10개 제품 Decision 완료
+- 계약 테스트 GREEN 필요
+- 구형 자료 상태 분류·정본 Source Map 필요
+- PR 전체 적대적 감사 필요
+- Google Sheet 동일 Decision ID 동기화 필요
+- 별도의 명시적 병합 승인 뒤에만 병합
