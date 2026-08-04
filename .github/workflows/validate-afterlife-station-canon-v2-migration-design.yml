@@ -1,0 +1,24 @@
+name: Validate Afterlife Station Canon v2 Migration Design
+
+on:
+  pull_request:
+    paths:
+      - "docs/superpowers/specs/2026-08-05-afterlife-station-canon-v2-migration-design.md"
+      - "docs/planning/2026-08-05-afterlife-station-id-migration-matrix.md"
+      - "tests/test_afterlife_station_canon_v2_migration_design.py"
+      - ".github/workflows/validate-afterlife-station-canon-v2-migration-design.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-migration-design:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate migration design contracts
+        run: python -m unittest tests/test_afterlife_station_canon_v2_migration_design.py
