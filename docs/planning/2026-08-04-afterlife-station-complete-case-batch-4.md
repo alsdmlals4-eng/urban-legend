@@ -3,9 +3,9 @@
 - 기준 main: `830b0ac41f5f0f549d34cd703194db2a6e7e63b0`
 - 브랜치: `agent/grillme-batch-4-afterlife-station-complete-case`
 - Draft PR: `#143`
-- 현재 카운터: `3 / 10`
-- 현재 식별자: `GRILLME_BATCH_4_3_OF_10`
-- 이전 체크포인트: `2 / 10 / GRILLME_BATCH_4_2_OF_10`, `1 / 10 / GRILLME_BATCH_4_1_OF_10`
+- 현재 카운터: `4 / 10`
+- 현재 식별자: `GRILLME_BATCH_4_4_OF_10`
+- 이전 체크포인트: `3 / 10 / GRILLME_BATCH_4_3_OF_10`, `2 / 10 / GRILLME_BATCH_4_2_OF_10`, `1 / 10 / GRILLME_BATCH_4_1_OF_10`
 - 상태: `ACTIVE_ACCUMULATION / APPROVED_PENDING_BATCH_MERGE`
 - 구현: `IMPLEMENTATION_NOT_AUTHORIZED`
 - Human QA: `NOT_RUN`
@@ -71,6 +71,23 @@ Batch 3에서 확정한 괴이 매뉴얼·단서 `[기록]`·피해자 구출·�
 책임 Section:
 
 - `docs/planning/2026-08-04-afterlife-station-complete-case-batch-4-section-03-official-route-ticket-and-correct-disembarkation.md`
+
+### 4. `[무정차 환송]` 공식 승차권 파훼
+
+`D-2026-08-04-AFTERLIFE-STATION-NONSTOP-FAREWELL-TICKET-COUNTER`
+
+- 첫 대표 회수 패턴은 존재하지 않는 투영 노선의 무정차 열차를 불러오는 `[무정차 환송]`이다.
+- 패턴 길이는 고정하지 않으며 `N ≥ 2`, `N-1개의 전조` 계약을 따른다.
+- 최종 턴은 `대응 선택 → 패턴 발현 → 결과 산출 → 평상 진행` 순서다.
+- 구출 단계에서 끝까지 보관한 공식 승차권을 최종 턴에 개찰기에 제시한다.
+- 노선색·노선명·역 코드가 맞으면 투영 노선을 무효화해 `[파훼]`, 괴이 `[취약]`, 유효 공격 기회를 만든다.
+- 승차권은 소모되지 않고 공식 검표 흔적이 추가된다.
+- 방어는 피해만 줄이고 취약을 만들지 않으며, 공격·잘못된 표·조기 사용은 서로 다른 결정적 실패를 만든다.
+- 모든 회수 전투 패턴을 승차권으로 해결하지 않는다.
+
+책임 Section:
+
+- `docs/planning/2026-08-04-afterlife-station-complete-case-batch-4-section-04-nonstop-farewell-ticket-counter.md`
 
 ## GPT 역할 경계
 
