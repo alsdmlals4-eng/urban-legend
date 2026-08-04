@@ -2,9 +2,9 @@
 
 - 상위 운영 Decision: `D-2026-08-02-GRILLME-10-MERGE-CADENCE`
 - 주제: 저승역 대표 사건 완전 설계
-- 현재 카운터: `4 / 10`
-- 현재 식별자: `GRILLME_BATCH_4_4_OF_10`
-- 이전 체크포인트: `3 / 10 / GRILLME_BATCH_4_3_OF_10`, `2 / 10 / GRILLME_BATCH_4_2_OF_10`, `1 / 10 / GRILLME_BATCH_4_1_OF_10`
+- 현재 카운터: `5 / 10`
+- 현재 식별자: `GRILLME_BATCH_4_5_OF_10`
+- 이전 체크포인트: `4 / 10 / GRILLME_BATCH_4_4_OF_10`, `3 / 10 / GRILLME_BATCH_4_3_OF_10`, `2 / 10 / GRILLME_BATCH_4_2_OF_10`, `1 / 10 / GRILLME_BATCH_4_1_OF_10`
 - 상태: `ACTIVE_ACCUMULATION / APPROVED_PENDING_BATCH_MERGE`
 - 기준 main: `830b0ac41f5f0f549d34cd703194db2a6e7e63b0`
 - 누적 브랜치: `agent/grillme-batch-4-afterlife-station-complete-case`
@@ -166,7 +166,6 @@
 - test commit: `5d20ba2b4284a1578808e6596f0b322d126b7996`
 - workflow run: `30864878227`
 - 결과: `23 tests / 2 failures / 5 errors`
-- 의도한 원인: Decision 4·Section 04·4/10 누적 계약 부재
 
 ### 적대적 검토 Guardrail
 
@@ -179,10 +178,57 @@
 - 색상·음향 단독 신호에 의존하지 않는다.
 - 모든 후속 회수 패턴을 승차권으로 반복하지 않는다.
 
+## 승인 Decision 5
+
+`D-2026-08-04-AFTERLIFE-STATION-RECURRING-PLATFORM-PERSISTENT-TRACE-ANCHOR`
+
+### 제품 결론
+
+```text
+위치는 반복해서 초기화
++ 시간·기록·흔적은 유지
++ 복수 초기화 주기의 지속 흔적을 교차 비교
+→ 실제 잔향 좌표 지정
+→ 지속 흔적 고정
+→ 전체 위치 초기화 실패
+→ [파훼]·잔향 노출·괴이 [취약]
+```
+
+- 두 번째 대표 회수 패턴은 `[회귀 승강장]`이다.
+- 승차권을 파훼 수단으로 사용하지 않는다.
+- 공식 검표 흔적은 선택적 근거이며 필수 선행 조건이 아니다.
+- 최소 2개 초기화 주기와 2종 독립 지속 흔적을 제공한다.
+- 매뉴얼·접근성 기능은 실제 잔향이나 정답 좌표를 자동 표시·선택하지 않는다.
+
+### 책임 파일
+
+- `docs/decisions/D-2026-08-04-AFTERLIFE-STATION-RECURRING-PLATFORM-PERSISTENT-TRACE-ANCHOR.md`
+- `docs/planning/2026-08-04-afterlife-station-complete-case-batch-4-section-05-recurring-platform-persistent-trace-anchor.md`
+- `docs/planning/2026-08-04-afterlife-station-complete-case-batch-4.md`
+- `tests/test_afterlife_station_case_batch_4.py`
+- `.github/workflows/validate-afterlife-station-case-batch-4.yml`
+
+### TDD RED
+
+- test commit: `cbc571f0d51ad5420949abc5df15e55eb288ac25`
+- workflow run: `30865611630`
+- 결과: `31 tests / 2 failures / 6 errors`
+- 의도한 원인: Decision 5·Section 05·5/10 누적 계약 부재
+
+### 적대적 검토 Guardrail
+
+- 승차권 제시를 두 번째 패턴에서도 반복하지 않는다.
+- 공식 검표 흔적이 없어도 다른 지속 흔적으로 해결 가능하게 한다.
+- 단일 빛나는 흔적 클릭이나 허상 밝기 비교로 축소하지 않는다.
+- 복수 주기와 복수 출처 기록을 비교해야 한다.
+- 매뉴얼이 실제 잔향을 자동 표시하거나 정답 좌표를 선택하지 않는다.
+- 화면·음향 효과만으로 판단하게 하지 않는다.
+- 조기 시도는 행동 손실만 주며 즉사·영구 실패를 만들지 않는다.
+
 ## 범위 경계
 
-이번 누적은 설계 문서·계약 테스트·CI만 변경한다. 게임 코드·Scene·사건 데이터·자산은 변경하지 않는다. 구현·Codex·Human QA·이미지 생성·POC·Production은 승인하지 않는다.
+이번 누적은 설계 문서·계약 테스트·CI만 변경한다. 게임 코드·Scene·사건 데이터·전투 데이터·자산은 변경하지 않는다. 구현·Codex·Human QA·이미지 생성·POC·Production은 승인하지 않는다.
 
 ## 다음 Gate
 
-Grill Me Batch 4 질문 5/10. 별도 병합 승인 전 PR #143은 Draft·미병합 상태를 유지한다.
+Grill Me Batch 4 질문 6/10. 별도 병합 승인 전 PR #143은 Draft·미병합 상태를 유지한다.
