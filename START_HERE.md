@@ -132,7 +132,7 @@ source-only·superseded·blocked PR은 숫자를 맞추기 위해 병합하지 �
 - PR #126: `MERGED` — Package 1 구현
 - PR #127: `MERGED` — Batch 0·Grill Me 병합 운영
 - PR #142: `MERGED` — 조사 시스템 Batch 3
-- PR #143: `BATCH 4 COMPLETE / PENDING FINAL AUDIT AND MERGE` — 저승역 완전 사건 설계
+- PR #143: `MERGED` — 저승역 완전 사건 설계·정본 Source Map·적대적 감사, merge `5c1f298db43275391bf7ce4c7b1acad841daf295`
 - PR #122: `CLOSED SOURCE / DO NOT MERGE AS-IS`
 - PR #120: `CLOSED / SUPERSEDED`
 - Issue #121: `CLOSED / COMPLETED`
@@ -155,6 +155,7 @@ PR #122의 유효 승인 내용은 current canon에 통합 승계했다.
 - 저승역 현재 정본: `docs/CURRENT_AFTERLIFE_STATION_CANON.md`
 - 저승역 Source Map: `docs/planning/2026-08-04-afterlife-station-canonical-source-map-and-legacy-disposition.md`
 - 저승역 적대적 감사: `docs/audits/2026-08-04-afterlife-station-batch-4-canonicalization-audit.md`
+- 저승역 병합 증거: `docs/implementation/2026-08-04-afterlife-station-batch-4-merge-evidence.md`
 - 현재 Validation 인수인계: `docs/CURRENT_HANDOFF_VALIDATION.md`
 - Validation Target: `docs/VALIDATION_TARGET_CANON.md`
 - Package 1 Design: `docs/superpowers/specs/2026-08-02-validation-session-save-isolation-design.md`
