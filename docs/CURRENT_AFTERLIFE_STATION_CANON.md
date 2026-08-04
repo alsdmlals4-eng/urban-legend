@@ -1,12 +1,17 @@
 # 저승역 현재 정본
 
 > 문서 역할: `CURRENT_AFTERLIFE_STATION_CANON`
-> 상태: `BATCH_4_COMPLETE / PR_143_PENDING_MERGE / IMPLEMENTATION_NOT_AUTHORIZED`
-> 기준 main: `830b0ac41f5f0f549d34cd703194db2a6e7e63b0`
+> 상태: `MERGED_CANON / IMPLEMENTATION_NOT_AUTHORIZED`
+> 병합 PR: `#143`
+> 검증된 제품 HEAD: `a500778897541125d5ff5fb0a68e73f66ce8167b`
+> main 병합 커밋: `5c1f298db43275391bf7ce4c7b1acad841daf295`
 > 정본 Source Map: `docs/planning/2026-08-04-afterlife-station-canonical-source-map-and-legacy-disposition.md`
 > 적대적 감사: `docs/audits/2026-08-04-afterlife-station-batch-4-canonicalization-audit.md`
+> 병합 증거: `docs/implementation/2026-08-04-afterlife-station-batch-4-merge-evidence.md`
 
 저승역 관련 기획·콘텐츠·아트 논의는 이 문서에서 시작한다. `docs/CURRENT_CONFIRMED_DECISIONS.md`, `docs/CURRENT_HANDOFF_VALIDATION.md`, 구형 Episode·PoC·CORE-VALIDATION 문서가 이 문서와 충돌하면 이 문서와 Source Map의 상태 분류를 우선한다.
+
+Batch 4 PR #143은 2026-08-04에 merge commit `5c1f298db43275391bf7ce4c7b1acad841daf295`로 main에 통합됐다. 검증된 제품 HEAD와 병합 커밋 사이의 파일 차이는 0개다.
 
 ## 현재 제품 흐름
 
@@ -65,11 +70,15 @@
 - 검은 승차권 접촉·파괴 중심 해법: `[폐기]`
 - 기존 PoC Scene·스크립트·테스트: `[보류]` 이관 전 삭제 금지
 
+Batch·Ledger·Audit 안에 남아 있는 `BATCH_COMPLETE_PENDING_EXPLICIT_MERGE_APPROVAL` 또는 `READY_FOR_EXPLICITLY_AUTHORIZED_MERGE` 문구는 병합 전 역사 상태다. 현재 상태는 이 문서의 `MERGED_CANON`이 우선한다.
+
 ## 다음 Gate
 
-1. exact-head 계약·Documentation·BCA·ANNUAL/Godot PASS
-2. PR #143 전체 적대적 감사·미해결 스레드 0
-3. Google Sheet Decision 1~10·감사 상태 동기화
-4. 사용자 승인에 따라 PR #143 병합
-5. 실제 merge SHA로 이 문서와 Sheet 사후 동기화
-6. 구현은 별도 Codex 승인 전 `NOT_AUTHORIZED`
+1. 구현 이관 Design Spec 작성
+2. 구형 ID → 새 매뉴얼·기록·패턴 ID migration matrix
+3. save `mvp-039`·Validation 저장 호환 정책
+4. 실제 패턴 수·수치·UI·전투 인지 부하 결정
+5. 첫 10분·접근성·공정성 Human QA 계획
+6. 별도 사용자 승인 뒤 Codex 구현
+
+구현·Human QA·이미지 생성·게임 자산 제작은 계속 `NOT_AUTHORIZED / NOT_RUN / NOT_STARTED`다.
