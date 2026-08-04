@@ -2,12 +2,14 @@
 
 - 기준 main: `830b0ac41f5f0f549d34cd703194db2a6e7e63b0`
 - 브랜치: `agent/grillme-batch-4-afterlife-station-complete-case`
-- Draft PR: `#143`
+- 병합 PR: `#143`
+- 검증된 제품 HEAD: `a500778897541125d5ff5fb0a68e73f66ce8167b`
+- main 병합 커밋: `5c1f298db43275391bf7ce4c7b1acad841daf295`
 - 현재 카운터: `10 / 10`
 - 현재 식별자: `GRILLME_BATCH_4_10_OF_10`
 - 이전 체크포인트: `5 / 10 / GRILLME_BATCH_4_5_OF_10`, `4 / 10 / GRILLME_BATCH_4_4_OF_10`, `3 / 10 / GRILLME_BATCH_4_3_OF_10`, `2 / 10 / GRILLME_BATCH_4_2_OF_10`, `1 / 10 / GRILLME_BATCH_4_1_OF_10`
-- 상태: `BATCH_COMPLETE_PENDING_EXPLICIT_MERGE_APPROVAL`
-- 구현: `IMPLEMENTATION_NOT_AUTHORIZED`
+- 병합 전 상태: `BATCH_COMPLETE_PENDING_EXPLICIT_MERGE_APPROVAL`
+- 현재 상태: `MERGED_CANON / IMPLEMENTATION_NOT_AUTHORIZED`
 - Human QA: `NOT_RUN`
 
 ## 목적
@@ -119,11 +121,20 @@ GPT는 핵심 재미·콘텐츠·사건 인과·후보 키워드·구출·전투
 
 게임 코드·Scene·사건 데이터·자산·UI 구현·저장 Schema·자동화는 Codex 구현 승인 이후에만 다룬다.
 
-## 완료 Gate
+## 병합 결과
 
-- 10개 제품 Decision 완료
-- 계약 테스트 GREEN 필요
-- 구형 자료 상태 분류·정본 Source Map 필요
-- PR 전체 적대적 감사 필요
-- Google Sheet 동일 Decision ID 동기화 필요
-- 별도의 명시적 병합 승인 뒤에만 병합
+- PR #143: `MERGED`
+- merge commit: `5c1f298db43275391bf7ce4c7b1acad841daf295`
+- 검증된 HEAD와 merge commit의 파일 차이: `0`
+- exact-head CI: Afterlife `30868118227`, Documentation `30868118221`, BCA `30868118242`, ANNUAL/Godot `30868118207` PASS
+- 적대적 감사 리뷰: `4849764822`
+- 구형 자료 분류·Source Map·Google Sheet 동기화 완료
+
+## 다음 Gate
+
+- 구현 이관 Design Spec
+- 구형 ID migration matrix
+- 저장 호환 정책
+- 수치·UI·패턴 수 결정
+- Human QA 계획
+- 사용자 별도 승인 뒤 Codex 구현
