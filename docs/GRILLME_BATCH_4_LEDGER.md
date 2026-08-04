@@ -2,9 +2,9 @@
 
 - 상위 운영 Decision: `D-2026-08-02-GRILLME-10-MERGE-CADENCE`
 - 주제: 저승역 대표 사건 완전 설계
-- 현재 카운터: `3 / 10`
-- 현재 식별자: `GRILLME_BATCH_4_3_OF_10`
-- 이전 체크포인트: `2 / 10 / GRILLME_BATCH_4_2_OF_10`, `1 / 10 / GRILLME_BATCH_4_1_OF_10`
+- 현재 카운터: `4 / 10`
+- 현재 식별자: `GRILLME_BATCH_4_4_OF_10`
+- 이전 체크포인트: `3 / 10 / GRILLME_BATCH_4_3_OF_10`, `2 / 10 / GRILLME_BATCH_4_2_OF_10`, `1 / 10 / GRILLME_BATCH_4_1_OF_10`
 - 상태: `ACTIVE_ACCUMULATION / APPROVED_PENDING_BATCH_MERGE`
 - 기준 main: `830b0ac41f5f0f549d34cd703194db2a6e7e63b0`
 - 누적 브랜치: `agent/grillme-batch-4-afterlife-station-complete-case`
@@ -113,27 +113,12 @@
 
 - `docs/decisions/D-2026-08-04-AFTERLIFE-STATION-OFFICIAL-ROUTE-TICKET-AND-CORRECT-DISEMBARKATION.md`
 - `docs/planning/2026-08-04-afterlife-station-complete-case-batch-4-section-03-official-route-ticket-and-correct-disembarkation.md`
-- `docs/planning/2026-08-04-afterlife-station-complete-case-batch-4.md`
-- `tests/test_afterlife_station_case_batch_4.py`
-- `.github/workflows/validate-afterlife-station-case-batch-4.yml`
 
 ### TDD RED
 
 - test commit: `d963d77eec8acfdb1544818f7ec9c22ffbefdff4`
 - workflow run: `30863502236`
 - 결과: `16 tests / 2 failures / 4 errors`
-- 의도한 원인: Decision 3·Section 03·3/10 누적 계약 부재
-
-### GREEN 검증
-
-- 검증 콘텐츠 HEAD: `c9ab2be6c129360759ddeecae6e85a04b7d7a4af`
-- Afterlife Station contract: `30863653025` PASS
-- Documentation: `30863653016` PASS
-- BCA: `30863653024` PASS
-- ANNUAL/Godot: `30863653008` PASS
-- main 대비: ahead `18`, behind `0`
-- 변경 파일: `10`
-- 적대적 리뷰: `4849427514`
 
 ### 적대적 검토 Guardrail
 
@@ -145,10 +130,59 @@
 - 매뉴얼이 승차권·열차·하차 역을 자동 선택하지 않는다.
 - 구출 성공과 괴이 회수 전투를 분리한다.
 
+## 승인 Decision 4
+
+`D-2026-08-04-AFTERLIFE-STATION-NONSTOP-FAREWELL-TICKET-COUNTER`
+
+### 제품 결론
+
+```text
+목적지 없는 전광판과 잘못된 노선 전조
+→ 최종 턴 사전 대응
+→ 구출 단계에서 보관한 공식 승차권을 개찰기에 제시
+→ 투영 노선 무효화
+→ [파훼]
+→ 괴이 [취약]
+→ 유효 공격 기회
+```
+
+- 패턴 길이는 고정하지 않고 `N ≥ 2`, `N-1개의 전조` 계약을 따른다.
+- 최종 턴은 `대응 선택 → 패턴 발현 → 결과 산출 → 평상 진행` 순서다.
+- 공식 승차권은 소모되지 않으며 공식 검표 흔적이 추가된다.
+- 방어는 피해만 감소시키고 취약을 만들지 않는다.
+- 공격·잘못된 승차권·조기 사용은 서로 다른 결정적 결과를 만든다.
+- 모든 회수 전투 패턴을 승차권으로 해결하지 않는다.
+
+### 책임 파일
+
+- `docs/decisions/D-2026-08-04-AFTERLIFE-STATION-NONSTOP-FAREWELL-TICKET-COUNTER.md`
+- `docs/planning/2026-08-04-afterlife-station-complete-case-batch-4-section-04-nonstop-farewell-ticket-counter.md`
+- `docs/planning/2026-08-04-afterlife-station-complete-case-batch-4.md`
+- `tests/test_afterlife_station_case_batch_4.py`
+- `.github/workflows/validate-afterlife-station-case-batch-4.yml`
+
+### TDD RED
+
+- test commit: `5d20ba2b4284a1578808e6596f0b322d126b7996`
+- workflow run: `30864878227`
+- 결과: `23 tests / 2 failures / 5 errors`
+- 의도한 원인: Decision 4·Section 04·4/10 누적 계약 부재
+
+### 적대적 검토 Guardrail
+
+- 단순한 방송 횟수 카운트·방어 퍼즐로 축소하지 않는다.
+- 열차 발현 뒤 정답을 누르는 반응형 QTE로 만들지 않는다.
+- 공식 승차권을 소모하거나 파괴하지 않는다.
+- 방어와 정확한 파훼에 같은 보상을 주지 않는다.
+- 공격만으로 전조를 무시하고 취약을 만들지 못하게 한다.
+- 잘못된 승차권 결과를 숨겨진 확률로 판정하지 않는다.
+- 색상·음향 단독 신호에 의존하지 않는다.
+- 모든 후속 회수 패턴을 승차권으로 반복하지 않는다.
+
 ## 범위 경계
 
 이번 누적은 설계 문서·계약 테스트·CI만 변경한다. 게임 코드·Scene·사건 데이터·자산은 변경하지 않는다. 구현·Codex·Human QA·이미지 생성·POC·Production은 승인하지 않는다.
 
 ## 다음 Gate
 
-Grill Me Batch 4 질문 4/10. 별도 병합 승인 전 PR #143은 Draft·미병합 상태를 유지한다.
+Grill Me Batch 4 질문 5/10. 별도 병합 승인 전 PR #143은 Draft·미병합 상태를 유지한다.
