@@ -58,3 +58,8 @@ jobs:
           HOME: ${{ runner.temp }}/afterlife-id-registry-home
           XDG_DATA_HOME: ${{ runner.temp }}/afterlife-id-registry-xdg
         run: godot --headless --path . --script res://tests/afterlife_migration/afterlife_id_migration_registry_test.gd
+      - name: Run legacy save inspector contract
+        env:
+          HOME: ${{ runner.temp }}/afterlife-save-inspector-home
+          XDG_DATA_HOME: ${{ runner.temp }}/afterlife-save-inspector-xdg
+        run: godot --headless --path . --script res://tests/afterlife_migration/afterlife_legacy_save_inspector_test.gd
