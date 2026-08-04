@@ -17,8 +17,8 @@ config/features=PackedStringArray("4.7")
 [autoload]
 
 UrbanLegendState="*res://scripts/core/urban_legend_state.gd"
-ValidationSession="*res://scripts/core/validation_session.gd"
-GameState="*res://scripts/core/validation_game_state.gd"
+ValidationSession="*res://scripts/core/afterlife_migrating_validation_session.gd"
+GameState="*res://scripts/core/afterlife_migrating_game_state.gd"
 _mcp_game_helper="*res://addons/godot_ai/runtime/game_helper.gd"
 
 [display]
