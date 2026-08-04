@@ -10,6 +10,7 @@ SPEC = ROOT / "docs/superpowers/specs/2026-08-05-afterlife-station-canon-v2-migr
 DECISION = ROOT / "docs/decisions/D-2026-08-05-AFTERLIFE-STATION-CANON-V2-MIGRATION-DESIGN.md"
 POLICY = ROOT / "docs/decisions/D-2026-08-05-WORKFLOW-BENCHMARK-TDD-AND-CHECKPOINT-POLICY.md"
 PLAN = ROOT / "docs/superpowers/plans/2026-08-05-afterlife-station-canon-v2-migration-implementation-plan.md"
+ADDENDUM = ROOT / "docs/superpowers/plans/2026-08-05-afterlife-station-canon-v2-migration-plan-adversarial-review-addendum.md"
 
 
 def read(path: Path) -> str:
@@ -17,11 +18,12 @@ def read(path: Path) -> str:
 
 
 class AfterlifeStationCanonV2ImplementationPlanTests(unittest.TestCase):
-    def test_approved_spec_policy_and_plan_exist(self) -> None:
+    def test_approved_spec_policy_plan_and_addendum_exist(self) -> None:
         self.assertTrue(SPEC.is_file(), SPEC)
         self.assertTrue(DECISION.is_file(), DECISION)
         self.assertTrue(POLICY.is_file(), POLICY)
         self.assertTrue(PLAN.is_file(), PLAN)
+        self.assertTrue(ADDENDUM.is_file(), ADDENDUM)
 
     def test_document_approval_updates_existing_authority_without_authorizing_implementation(self) -> None:
         text = read(SPEC) + "\n" + read(DECISION)
@@ -133,7 +135,7 @@ class AfterlifeStationCanonV2ImplementationPlanTests(unittest.TestCase):
             self.assertIn(token, text)
 
     def test_plan_preserves_adversarial_guards_and_approval_gates(self) -> None:
-        text = read(PLAN)
+        text = read(PLAN) + "\n" + read(ADDENDUM)
         for token in (
             "migrated_unverified",
             "LEGACY_CASE_RESTART_REQUIRED",
@@ -147,8 +149,25 @@ class AfterlifeStationCanonV2ImplementationPlanTests(unittest.TestCase):
         ):
             self.assertIn(token, text)
 
+    def test_addendum_fixes_computed_provenance_and_two_phase_rollback(self) -> None:
+        text = read(ADDENDUM)
+        for token in (
+            "implementation plan Task 1·2·7·8을 이 문서가 보정",
+            "loaded_layers는 loader가 계산",
+            "sidecar의 self-declared loaded_layers를 신뢰하지 않는다",
+            "PREPARED",
+            "COMMITTED_PENDING_RUNTIME_APPLY",
+            "FINALIZED",
+            "rollback_last_commit",
+            "runtime apply 실패 시 파일과 메모리 모두 복원",
+            "source_checksum",
+            "backup",
+            "조기 체크포인트",
+        ):
+            self.assertIn(token, text)
+
     def test_plan_has_no_placeholders_or_fake_completion_claims(self) -> None:
-        text = read(PLAN)
+        text = read(PLAN) + "\n" + read(ADDENDUM)
         forbidden = (
             "TBD",
             "TODO",
