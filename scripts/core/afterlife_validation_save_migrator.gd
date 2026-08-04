@@ -111,9 +111,22 @@ func migrate(inspected: Dictionary, registry: Object) -> Dictionary:
 
 	var migrated_runtime := _dictionary_copy(snapshots.get("runtime"))
 	if stage != "VALIDATION_COMPLETED":
-		migrated_runtime["current_scene_path"] = SAFE_RETURN_TARGET
-		migrated_runtime["current_recovery_pattern_id"] = ""
-		migrated_runtime["forced_recovery_phase"] = false
+		migrated_runtime["scene_path"] = SAFE_RETURN_TARGET
+		migrated_runtime["dialogue_node_id"] = String(migrated_runtime.get("dialogue_node_id", "dialogue_intro"))
+		migrated_runtime["field_node_id"] = String(migrated_runtime.get("field_node_id", "dialogue_intro"))
+		migrated_runtime["minigame_id"] = String(migrated_runtime.get("minigame_id", "minigame_frequency_sync"))
+		migrated_runtime["episode_id"] = String(migrated_runtime.get("episode_id", "episode_001_afterlife_station"))
+		migrated_runtime["episode_path"] = String(migrated_runtime.get("episode_path", "res://data/episodes/episode_001_afterlife_station.json"))
+		migrated_runtime["selected_agent_ids"] = _array_copy(migrated_runtime.get("selected_agent_ids"))
+		migrated_runtime["flags"] = _array_copy(migrated_runtime.get("flags"))
+		migrated_runtime["collected_clue_ids"] = _array_copy(migrated_runtime.get("collected_clue_ids"))
+		migrated_runtime["seen_hint_ids"] = _array_copy(migrated_runtime.get("seen_hint_ids"))
+		migrated_runtime["method_results"] = _dictionary_copy(migrated_runtime.get("method_results"))
+		migrated_runtime["minigame_results"] = _dictionary_copy(migrated_runtime.get("minigame_results"))
+		migrated_runtime["resolution"] = _normalized_resolution(migrated_runtime.get("resolution"))
+		migrated_runtime["recovery"] = _safe_runtime_recovery(migrated_runtime.get("recovery"))
+		migrated_runtime["agent_case_states"] = _dictionary_copy(migrated_runtime.get("agent_case_states"))
+		migrated_runtime["victim_state"] = _dictionary_copy(migrated_runtime.get("victim_state"))
 
 	snapshots["runtime"] = migrated_runtime
 	snapshots["reasoning"] = {
@@ -176,6 +189,8 @@ func _validate_target(payload: Dictionary, stage: String) -> bool:
 	var snapshots := _dictionary_copy(payload.get("snapshots"))
 	if not _dictionary_copy(snapshots.get("route")).is_empty() or not _dictionary_copy(snapshots.get("recovery")).is_empty():
 		return false
+	if stage != "VALIDATION_COMPLETED" and not _runtime_snapshot_is_restorable(_dictionary_copy(snapshots.get("runtime"))):
+		return false
 	var manual := _dictionary_copy(_dictionary_copy(payload.get("afterlife_canon_v2")).get("manual"))
 	if not _dictionary_copy(manual.get("filled_slots")).is_empty():
 		return false
@@ -185,6 +200,46 @@ func _validate_target(payload: Dictionary, stage: String) -> bool:
 	var result_block := _dictionary_copy(payload.get("result"))
 	var effects := _dictionary_copy(result_block.get("applied_effect_ids"))
 	return not effects.has("validation:afterlife:completion:v2")
+
+
+func _runtime_snapshot_is_restorable(runtime: Dictionary) -> bool:
+	for key in ["episode_id", "episode_path", "scene_path", "dialogue_node_id", "field_node_id", "minigame_id"]:
+		if typeof(runtime.get(key)) != TYPE_STRING:
+			return false
+	for key in ["selected_agent_ids", "flags", "collected_clue_ids", "seen_hint_ids"]:
+		if typeof(runtime.get(key)) != TYPE_ARRAY:
+			return false
+	for key in ["method_results", "minigame_results", "resolution", "recovery", "agent_case_states", "victim_state"]:
+		if typeof(runtime.get(key)) != TYPE_DICTIONARY:
+			return false
+	var recovery_runtime := _dictionary_copy(runtime.get("recovery"))
+	for key in ["successful", "result_status", "stability", "current_pattern_id", "last_pattern_id", "confirmed_pattern_id", "seen_pattern_ids", "pattern_learning"]:
+		if not recovery_runtime.has(key):
+			return false
+	return true
+
+
+func _normalized_resolution(value: Variant) -> Dictionary:
+	var resolution := _dictionary_copy(value)
+	return {
+		"grade": String(resolution.get("grade", "")),
+		"label": String(resolution.get("label", "")),
+		"rate": float(resolution.get("rate", 0.0))
+	}
+
+
+func _safe_runtime_recovery(value: Variant) -> Dictionary:
+	var recovery_runtime := _dictionary_copy(value)
+	return {
+		"successful": false,
+		"result_status": "",
+		"stability": clampi(int(recovery_runtime.get("stability", 100)), 0, 100),
+		"current_pattern_id": "",
+		"last_pattern_id": "",
+		"confirmed_pattern_id": "",
+		"seen_pattern_ids": [],
+		"pattern_learning": {}
+	}
 
 
 func _note_from_mapping(mapped: Dictionary, source_location: String, raw_value: Variant) -> Dictionary:
