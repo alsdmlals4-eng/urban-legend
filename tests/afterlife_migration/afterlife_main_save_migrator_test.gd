@@ -30,8 +30,8 @@ func _init() -> void:
 
 func _test_pre_run(migrator: Object) -> void:
 	var source := _base_payload("mvp-039", "res://scenes/preparation_scene.tscn")
-	var protected_before := _protected_snapshot(source)
 	var inspected := _inspect(source)
+	var protected_before := _protected_snapshot(inspected.get("payload", {}) as Dictionary)
 	var result: Dictionary = migrator.migrate(inspected, _registry)
 	_expect(String(result.get("code", "")) == "MIGRATED_FROM_MVP_039", "pre-run migration code mismatch")
 	var payload := result.get("payload", {}) as Dictionary
@@ -53,8 +53,9 @@ func _test_investigation(migrator: Object) -> void:
 	]
 	source["unlocked_records"] = ["clue_last_message"]
 	var source_copy := source.duplicate(true)
-	var protected_before := _protected_snapshot(source)
-	var result: Dictionary = migrator.migrate(_inspect(source), _registry)
+	var inspected := _inspect(source)
+	var protected_before := _protected_snapshot(inspected.get("payload", {}) as Dictionary)
+	var result: Dictionary = migrator.migrate(inspected, _registry)
 	_expect(String(result.get("code", "")) == "MIGRATED_FROM_MVP_039", "investigation migration code mismatch")
 	var payload := result.get("payload", {}) as Dictionary
 	var manual := _manual(payload)
@@ -79,8 +80,9 @@ func _test_investigation(migrator: Object) -> void:
 func _test_recovery_restart(migrator: Object) -> void:
 	var source := _base_payload("mvp-039", "res://scenes/battle_scene.tscn")
 	source["current_recovery_pattern_id"] = "pattern_station_ticket_imprint"
-	var protected_before := _protected_snapshot(source)
-	var result: Dictionary = migrator.migrate(_inspect(source), _registry)
+	var inspected := _inspect(source)
+	var protected_before := _protected_snapshot(inspected.get("payload", {}) as Dictionary)
+	var result: Dictionary = migrator.migrate(inspected, _registry)
 	_expect(String(result.get("code", "")) == "LEGACY_CASE_RESTART_REQUIRED", "legacy recovery did not require restart")
 	var payload := result.get("payload", {}) as Dictionary
 	var v2 := payload.get("afterlife_canon_v2", {}) as Dictionary
@@ -100,9 +102,11 @@ func _test_completed_history(migrator: Object) -> void:
 	source["selected_resolution_grade"] = "A"
 	source["completed_case_reports"] = [{"episode_id": EPISODE_ID, "grade": "A", "content_contract_id": "afterlife-station-legacy-v1"}]
 	source["granted_reward_ids"] = ["reward:legacy:afterlife:A"]
-	var reward_before := (source.get("granted_reward_ids", []) as Array).duplicate(true)
-	var report_before := (source.get("completed_case_reports", []) as Array).duplicate(true)
-	var result: Dictionary = migrator.migrate(_inspect(source), _registry)
+	var inspected := _inspect(source)
+	var inspected_payload := inspected.get("payload", {}) as Dictionary
+	var reward_before := (inspected_payload.get("granted_reward_ids", []) as Array).duplicate(true)
+	var report_before := (inspected_payload.get("completed_case_reports", []) as Array).duplicate(true)
+	var result: Dictionary = migrator.migrate(inspected, _registry)
 	_expect(String(result.get("code", "")) == "MIGRATED_FROM_MVP_039", "completed migration code mismatch")
 	var payload := result.get("payload", {}) as Dictionary
 	var snapshot := payload.get("legacy_resolution_snapshot", {}) as Dictionary
