@@ -251,9 +251,10 @@ func _read_bytes(path: String) -> PackedByteArray:
 func _remove(path: String) -> void:
 	if FileAccess.file_exists(path):
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
-	var stem := path.trim_suffix(".json") if path.ends_with(".json") else path
-	for suffix in [".migration.tmp.json", ".migration.bak.json", ".migration.old.json", ".migration.journal.json", ".tmp.json", ".bak.json"]:
-		var artifact := stem + suffix
+	var stem: String = path.trim_suffix(".json") if path.ends_with(".json") else path
+	for suffix_value in [".migration.tmp.json", ".migration.bak.json", ".migration.old.json", ".migration.journal.json", ".tmp.json", ".bak.json"]:
+		var suffix := String(suffix_value)
+		var artifact: String = stem + suffix
 		if FileAccess.file_exists(artifact):
 			DirAccess.remove_absolute(ProjectSettings.globalize_path(artifact))
 
