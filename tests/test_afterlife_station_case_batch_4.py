@@ -13,6 +13,8 @@ DECISION_3 = ROOT / "docs/decisions/D-2026-08-04-AFTERLIFE-STATION-OFFICIAL-ROUT
 SECTION_3 = ROOT / "docs/planning/2026-08-04-afterlife-station-complete-case-batch-4-section-03-official-route-ticket-and-correct-disembarkation.md"
 DECISION_4 = ROOT / "docs/decisions/D-2026-08-04-AFTERLIFE-STATION-NONSTOP-FAREWELL-TICKET-COUNTER.md"
 SECTION_4 = ROOT / "docs/planning/2026-08-04-afterlife-station-complete-case-batch-4-section-04-nonstop-farewell-ticket-counter.md"
+DECISION_5 = ROOT / "docs/decisions/D-2026-08-04-AFTERLIFE-STATION-RECURRING-PLATFORM-PERSISTENT-TRACE-ANCHOR.md"
+SECTION_5 = ROOT / "docs/planning/2026-08-04-afterlife-station-complete-case-batch-4-section-05-recurring-platform-persistent-trace-anchor.md"
 BATCH = ROOT / "docs/planning/2026-08-04-afterlife-station-complete-case-batch-4.md"
 LEDGER = ROOT / "docs/GRILLME_BATCH_4_LEDGER.md"
 
@@ -289,6 +291,104 @@ class AfterlifeStationCaseBatch4Tests(unittest.TestCase):
             "1 / 10",
             "GRILLME_BATCH_4_1_OF_10",
             "D-2026-08-04-AFTERLIFE-STATION-NONSTOP-FAREWELL-TICKET-COUNTER",
+        ):
+            self.assertIn(token, text)
+
+    def test_fifth_decision_and_section_exist(self) -> None:
+        self.assertTrue(DECISION_5.is_file(), DECISION_5)
+        self.assertTrue(SECTION_5.is_file(), SECTION_5)
+
+    def test_recurring_platform_reuses_position_time_asymmetry_without_ticket_counter(self) -> None:
+        text = DECISION_5.read_text(encoding="utf-8") + SECTION_5.read_text(encoding="utf-8")
+        for token in (
+            "[회귀 승강장]",
+            "위치는 초기화",
+            "시간·기록·흔적은 유지",
+            "승차권을 파훼 수단으로 사용하지 않는다",
+            "실제 잔향 좌표",
+        ):
+            self.assertIn(token, text)
+
+    def test_pattern_requires_cross_cycle_comparison_of_persistent_traces(self) -> None:
+        text = SECTION_5.read_text(encoding="utf-8")
+        for token in (
+            "소지품 위치",
+            "공식 검표 흔적",
+            "연속 녹음의 시간 지점",
+            "요원 로그의 좌표",
+            "누적된 잔향 자국",
+            "복수 초기화 주기",
+            "교차 비교",
+        ):
+            self.assertIn(token, text)
+
+    def test_persistent_trace_anchor_breaks_global_reset_and_exposes_residue(self) -> None:
+        text = SECTION_5.read_text(encoding="utf-8")
+        for token in (
+            "지속 흔적 고정",
+            "최종 턴",
+            "실제 잔향 좌표 확인",
+            "잔향 고정",
+            "전체 위치 초기화 실패",
+            "[파훼]",
+            "잔향 노출",
+            "괴이 [취약]",
+        ):
+            self.assertIn(token, text)
+
+    def test_recurring_platform_alternative_responses_are_deterministic_and_distinct(self) -> None:
+        text = SECTION_5.read_text(encoding="utf-8")
+        for token in (
+            "초기화된 괴이 허상 공격",
+            "빗나감",
+            "반격",
+            "방어",
+            "초기화 피해 감소",
+            "[취약]은 발생하지 않는다",
+            "이미 사라진 흔적",
+            "잘못된 좌표",
+            "위치 초기화",
+            "흔적이 충분히 쌓이기 전",
+            "행동만 소비",
+            "숨겨진 확률",
+        ):
+            self.assertIn(token, text)
+
+    def test_pattern_does_not_auto_reveal_or_select_the_true_residue(self) -> None:
+        text = DECISION_5.read_text(encoding="utf-8") + SECTION_5.read_text(encoding="utf-8")
+        for token in (
+            "매뉴얼이 실제 잔향을 자동 표시하지 않는다",
+            "정답 좌표를 자동 선택하지 않는다",
+            "플레이어가 기록을 비교",
+        ):
+            self.assertIn(token, text)
+
+    def test_persistent_trace_cues_are_accessible_and_not_visual_only(self) -> None:
+        text = SECTION_5.read_text(encoding="utf-8")
+        for token in (
+            "타임스탬프",
+            "좌표",
+            "텍스트 로그",
+            "잔향 자국의 형태 설명",
+            "화면 효과만으로 판별하지 않는다",
+            "음향만으로 판별하지 않는다",
+        ):
+            self.assertIn(token, text)
+
+    def test_batch_ledger_tracks_five_of_ten_and_preserves_prior_checkpoints(self) -> None:
+        text = BATCH.read_text(encoding="utf-8") + LEDGER.read_text(encoding="utf-8")
+        for token in (
+            "5 / 10",
+            "GRILLME_BATCH_4_5_OF_10",
+            "4 / 10",
+            "GRILLME_BATCH_4_4_OF_10",
+            "3 / 10",
+            "GRILLME_BATCH_4_3_OF_10",
+            "2 / 10",
+            "GRILLME_BATCH_4_2_OF_10",
+            "1 / 10",
+            "GRILLME_BATCH_4_1_OF_10",
+            "D-2026-08-04-AFTERLIFE-STATION-RECURRING-PLATFORM-PERSISTENT-TRACE-ANCHOR",
         ):
             self.assertIn(token, text)
 
