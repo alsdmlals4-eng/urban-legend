@@ -11,6 +11,7 @@ on:
       - "scripts/core/game_state.gd"
       - "scripts/core/validation_save_repository.gd"
       - "scripts/core/validation_session.gd"
+      - "project.godot"
       - "tests/afterlife_migration/**"
       - "tests/run_afterlife_canon_v2_migration_tests.sh"
       - "docs/decisions/D-2026-08-05-AFTERLIFE-STATION-CANON-V2-MIGRATION-DESIGN.md"
@@ -78,3 +79,8 @@ jobs:
           HOME: ${{ runner.temp }}/afterlife-transaction-home
           XDG_DATA_HOME: ${{ runner.temp }}/afterlife-transaction-xdg
         run: godot --headless --path . --script res://tests/afterlife_migration/afterlife_migration_transaction_test.gd
+      - name: Run main and Validation migration integration contract
+        env:
+          HOME: ${{ runner.temp }}/afterlife-integration-home
+          XDG_DATA_HOME: ${{ runner.temp }}/afterlife-integration-xdg
+        run: godot --headless --path . --script res://tests/afterlife_migration/afterlife_migration_integration_test.gd
