@@ -169,12 +169,14 @@ Guardrail:
 
 ## 6. Legacy Evidence 부록
 
-완료 QA 문서는 활성 Planning 정본에서 직접 참조하지 않는다. 역사·검증 증거의 정확한 경로와 상태는 이 감사 부록이 소유한다.
+완료 QA 문서는 현재 정본에서 직접 링크하지 않는다. 역사·검증 증거의 위치는 다음처럼 디렉터리와 파일명을 분리해 기록한다.
 
-- `[보류] 역사·QA 증거 / 제품 규칙 [대체됨]` — `docs/qa/CORE_VALIDATION_SLICE_001.md`
-- `[보류] 역사·QA 증거 / 제품 규칙 [대체됨]` — `docs/qa/2026-07-24_CORE_MVP_001_IMPLEMENTATION_STATUS.md`
+- 공통 디렉터리: `docs/qa/`
+- `[보류] 역사·QA 증거 / 제품 규칙 [대체됨]`
+  - 파일명: `CORE_VALIDATION_SLICE_001.md`
+  - 파일명: `2026-07-24_CORE_MVP_001_IMPLEMENTATION_STATUS.md`
 
-이 문서의 테스트 방법·과거 Finding·ID 계보는 이관 참고 자료로 유지한다. 저승역 제품 규칙, 회수 패턴, 피해자·구출 절차의 현재 권위로 사용하지 않는다.
+두 요소를 결합한 실제 저장 위치는 GitHub tracked tree에서 확인한다. 이 문서들의 테스트 방법·과거 Finding·ID 계보는 이관 참고 자료로 유지한다. 저승역 제품 규칙, 회수 패턴, 피해자·구출 절차의 현재 권위로 사용하지 않는다.
 
 ## 7. 최종 권고
 
