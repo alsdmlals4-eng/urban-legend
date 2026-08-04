@@ -139,7 +139,7 @@ class AfterlifeStationCanonV2ImplementationPlanTests(unittest.TestCase):
             "LEGACY_CASE_RESTART_REQUIRED",
             "legacy_resolution_snapshot",
             "orphan_legacy_ids",
-            "구형 correct_response_id를 새 정답으로 사용하지 않는다",
+            "구형 `correct_response_id`를 새 정답으로 사용하지 않는다",
             "과거 보상을 다시 지급하지 않는다",
             "Legacy 저장으로 fallback하지 않는다",
             "implementation approval checkpoint",
