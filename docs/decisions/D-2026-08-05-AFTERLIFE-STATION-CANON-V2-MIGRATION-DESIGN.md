@@ -1,11 +1,27 @@
 # D-2026-08-05-AFTERLIFE-STATION-CANON-V2-MIGRATION-DESIGN
 
 - 제목: 저승역 Canon v2 콘텐츠·ID·저장 이관 아키텍처
-- 상태: `APPROVED_DESIGN_DIRECTION / SPEC_REVIEW_READY / IMPLEMENTATION_NOT_AUTHORIZED`
-- 사용자 승인: `2026-08-05 00:04 KST`
+- 상태: `APPROVED_SPEC / IMPLEMENTATION_PLAN_READY / IMPLEMENTATION_NOT_AUTHORIZED`
+- 설계 방향 승인: `2026-08-05 00:04 KST`
+- 문서 승인: `2026-08-05 00:28 KST`
 - 기준 main: `55721e905bf24fc3deb0de061a529ecb992aee80`
 - Draft PR: `#145`
 - Human QA: `NOT_RUN`
+- Runtime implementation: `NOT_RUN`
+
+## 승인 전이
+
+사용자가 작성된 Design Spec과 ID Migration Matrix를 검토하고 `문서승인`했다.
+
+기존 Spec 머리말의 `REVIEW_READY / DESIGN_ONLY`는 문서 승인 전 역사 상태다. 현재 권위 상태는 이 Decision의 다음 값이 우선한다.
+
+```text
+APPROVED_SPEC
+/ IMPLEMENTATION_PLAN_READY
+/ IMPLEMENTATION_NOT_AUTHORIZED
+```
+
+문서 승인은 implementation plan 작성을 허가하지만 게임 코드·Scene·JSON·저장 Schema 변경을 허가하지 않는다. 실제 구현은 별도 구현 승인, PR 통합은 별도 병합 승인을 요구한다.
 
 ## 결정
 
@@ -63,16 +79,38 @@
 
 진행 중 구형 구출·회수 전투는 직접 의미 변환하지 않고 `LEGACY_CASE_RESTART_REQUIRED`로 안전 조사 checkpoint에서 무페널티 재시작한다.
 
+## 현업 비교 반영
+
+구현 계획에는 다음 비교 결론을 반영한다.
+
+- Godot: 프로젝트별 저장과 단계적 복원
+- Unreal Engine: 책임별 SaveGame·slot 분리
+- Unity Cloud Save: write lock과 충돌 감지
+- Flyway: versioned migration·checksum·history·apply-once
+
+프로젝트 채택안은 기존 `effect_id / backup-first`에 `source_checksum`, `migration_history`, `atomic replace` 검증을 추가하는 것이다.
+
 ## 책임 문서
 
-- `docs/superpowers/specs/2026-08-05-afterlife-station-canon-v2-migration-design.md`
-- `docs/planning/2026-08-05-afterlife-station-id-migration-matrix.md`
+- Design Spec: `docs/superpowers/specs/2026-08-05-afterlife-station-canon-v2-migration-design.md`
+- ID Matrix: `docs/planning/2026-08-05-afterlife-station-id-migration-matrix.md`
+- Implementation Plan: `docs/superpowers/plans/2026-08-05-afterlife-station-canon-v2-migration-implementation-plan.md`
+- 운영 정책: `docs/decisions/D-2026-08-05-WORKFLOW-BENCHMARK-TDD-AND-CHECKPOINT-POLICY.md`
 
-## Gate
+## TDD Gate
 
-이번 승인은 설계 방향 승인이다. 작성된 Spec과 Matrix는 `REVIEW_READY`이며 사용자 문서 검토 승인이 별도로 필요하다.
+구현 계획 작성 자체도 문서 계약 테스트를 먼저 작성하고 RED를 확인한 뒤 GREEN으로 전환한다. 실제 제품 구현의 각 Task 역시 독립 RED·최소 구현·GREEN·focused·회귀·커밋으로 닫는다.
 
-문서 검토 승인 뒤에만 implementation plan을 작성한다. 구현 계획 승인과 Codex 실행 승인은 다시 별도로 받아야 한다.
+## 다음 Gate
+
+1. 구현 계획 문서 작성과 적대적 검토
+2. 사용자 구현 계획 검토
+3. 별도 구현 승인
+4. 승인 후 Codex TDD 구현
+5. 구현 결과 승인
+6. 별도 병합 승인
+
+별도 구현 승인 전에는 제품 코드·JSON·Schema를 변경하지 않는다. 별도 병합 승인 전에는 Draft 해제·auto-merge·merge를 수행하지 않는다.
 
 ## 변경 금지 범위
 
