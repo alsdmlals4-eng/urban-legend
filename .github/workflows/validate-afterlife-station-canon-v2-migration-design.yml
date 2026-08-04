@@ -48,8 +48,13 @@ jobs:
           include-templates: false
       - name: Import project
         run: godot --headless --path . --import
-      - name: Run Canon v2 focused contract
+      - name: Run Canon v2 loader contract
         env:
-          HOME: ${{ runner.temp }}/afterlife-canon-v2-home
-          XDG_DATA_HOME: ${{ runner.temp }}/afterlife-canon-v2-xdg
+          HOME: ${{ runner.temp }}/afterlife-canon-v2-loader-home
+          XDG_DATA_HOME: ${{ runner.temp }}/afterlife-canon-v2-loader-xdg
         run: godot --headless --path . --script res://tests/afterlife_migration/afterlife_canon_v2_loader_test.gd
+      - name: Run ID migration registry contract
+        env:
+          HOME: ${{ runner.temp }}/afterlife-id-registry-home
+          XDG_DATA_HOME: ${{ runner.temp }}/afterlife-id-registry-xdg
+        run: godot --headless --path . --script res://tests/afterlife_migration/afterlife_id_migration_registry_test.gd
