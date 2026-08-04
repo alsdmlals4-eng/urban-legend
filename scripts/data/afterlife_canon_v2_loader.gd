@@ -123,8 +123,19 @@ func _read_layer(path: String, layer_name: String) -> Dictionary:
 		"ok": true,
 		"code": "OK",
 		"data": parsed as Dictionary,
-		"checksum": HashingContext.hash(HashingContext.HASH_SHA256, bytes).hex_encode()
+		"checksum": _sha256(bytes)
 	}
+
+
+func _sha256(bytes: PackedByteArray) -> String:
+	var context := HashingContext.new()
+	var started := context.start(HashingContext.HASH_SHA256)
+	if started != OK:
+		return ""
+	var updated := context.update(bytes)
+	if updated != OK:
+		return ""
+	return context.finish().hex_encode()
 
 
 func _overlay_path(base_path: String) -> String:
