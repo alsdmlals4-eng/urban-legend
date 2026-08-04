@@ -73,3 +73,8 @@ jobs:
           HOME: ${{ runner.temp }}/afterlife-validation-migrator-home
           XDG_DATA_HOME: ${{ runner.temp }}/afterlife-validation-migrator-xdg
         run: godot --headless --path . --script res://tests/afterlife_migration/afterlife_validation_save_migrator_test.gd
+      - name: Run two-phase migration transaction contract
+        env:
+          HOME: ${{ runner.temp }}/afterlife-transaction-home
+          XDG_DATA_HOME: ${{ runner.temp }}/afterlife-transaction-xdg
+        run: godot --headless --path . --script res://tests/afterlife_migration/afterlife_migration_transaction_test.gd
