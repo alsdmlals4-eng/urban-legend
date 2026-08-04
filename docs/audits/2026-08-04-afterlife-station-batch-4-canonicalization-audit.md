@@ -167,7 +167,16 @@ Guardrail:
 - Source Map과 구형 파일 경로 일치
 - Sheet Decision 1~10과 감사 상태 재조회
 
-## 6. 최종 권고
+## 6. Legacy Evidence 부록
+
+완료 QA 문서는 활성 Planning 정본에서 직접 참조하지 않는다. 역사·검증 증거의 정확한 경로와 상태는 이 감사 부록이 소유한다.
+
+- `[보류] 역사·QA 증거 / 제품 규칙 [대체됨]` — `docs/qa/CORE_VALIDATION_SLICE_001.md`
+- `[보류] 역사·QA 증거 / 제품 규칙 [대체됨]` — `docs/qa/2026-07-24_CORE_MVP_001_IMPLEMENTATION_STATUS.md`
+
+이 문서의 테스트 방법·과거 Finding·ID 계보는 이관 참고 자료로 유지한다. 저승역 제품 규칙, 회수 패턴, 피해자·구출 절차의 현재 권위로 사용하지 않는다.
+
+## 7. 최종 권고
 
 `KEEP / AMPLIFY`
 
