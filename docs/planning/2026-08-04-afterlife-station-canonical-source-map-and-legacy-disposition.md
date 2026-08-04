@@ -128,8 +128,10 @@
 
 ### `[대체됨] 제품 규칙 / [보류] 역사·QA 증거`
 
-- `docs/qa/CORE_VALIDATION_SLICE_001.md`
-- `docs/qa/2026-07-24_CORE_MVP_001_IMPLEMENTATION_STATUS.md`
+완료된 QA 문서의 정확한 경로는 활성 Planning 문서에서 직접 링크하지 않고, `docs/audits/2026-08-04-afterlife-station-batch-4-canonicalization-audit.md`의 Legacy Evidence 부록이 소유한다.
+
+다음 역사적 기획·연구 Artifact는 제품 규칙이 `[대체됨]`이며 이관 근거로 `[보류]`한다.
+
 - `docs/superpowers/plans/2026-07-23-core-mvp-001-implementation-plan.md`
 - `docs/superpowers/plans/2026-07-23-project-core-mvp-rebase.md`
 - `docs/superpowers/specs/2026-07-23-project-core-finalization-design.md`
