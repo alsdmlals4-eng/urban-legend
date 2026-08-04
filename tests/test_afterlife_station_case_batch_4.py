@@ -11,6 +11,8 @@ DECISION_2 = ROOT / "docs/decisions/D-2026-08-04-AFTERLIFE-STATION-DESTINATION-B
 SECTION_2 = ROOT / "docs/planning/2026-08-04-afterlife-station-complete-case-batch-4-section-02-destination-boundary-reset.md"
 DECISION_3 = ROOT / "docs/decisions/D-2026-08-04-AFTERLIFE-STATION-OFFICIAL-ROUTE-TICKET-AND-CORRECT-DISEMBARKATION.md"
 SECTION_3 = ROOT / "docs/planning/2026-08-04-afterlife-station-complete-case-batch-4-section-03-official-route-ticket-and-correct-disembarkation.md"
+DECISION_4 = ROOT / "docs/decisions/D-2026-08-04-AFTERLIFE-STATION-NONSTOP-FAREWELL-TICKET-COUNTER.md"
+SECTION_4 = ROOT / "docs/planning/2026-08-04-afterlife-station-complete-case-batch-4-section-04-nonstop-farewell-ticket-counter.md"
 BATCH = ROOT / "docs/planning/2026-08-04-afterlife-station-complete-case-batch-4.md"
 LEDGER = ROOT / "docs/GRILLME_BATCH_4_LEDGER.md"
 
@@ -196,6 +198,97 @@ class AfterlifeStationCaseBatch4Tests(unittest.TestCase):
             "1 / 10",
             "GRILLME_BATCH_4_1_OF_10",
             "D-2026-08-04-AFTERLIFE-STATION-OFFICIAL-ROUTE-TICKET-AND-CORRECT-DISEMBARKATION",
+        ):
+            self.assertIn(token, text)
+
+    def test_fourth_decision_and_section_exist(self) -> None:
+        self.assertTrue(DECISION_4.is_file(), DECISION_4)
+        self.assertTrue(SECTION_4.is_file(), SECTION_4)
+
+    def test_nonstop_farewell_uses_variable_telegraph_and_final_turn_precommit(self) -> None:
+        text = DECISION_4.read_text(encoding="utf-8") + SECTION_4.read_text(encoding="utf-8")
+        for token in (
+            "[무정차 환송]",
+            "N ≥ 2",
+            "N-1개의 전조",
+            "1턴 전조",
+            "플레이어의 평상 행동 전에",
+            "2턴부터 N-1턴",
+            "플레이어의 행동이 먼저 해결",
+            "대응 선택 → 패턴 발현 → 결과 산출 → 평상 진행",
+        ):
+            self.assertIn(token, text)
+        self.assertIn("패턴 준비 완료", text)
+        self.assertIn("다음 턴 발현", text)
+        self.assertIn("표시하지 않는다", text)
+
+    def test_official_ticket_counter_creates_break_and_vulnerability_without_consuming_ticket(self) -> None:
+        text = SECTION_4.read_text(encoding="utf-8")
+        for token in (
+            "구출 단계에서 끝까지 보관한 공식 승차권",
+            "최종 턴",
+            "개찰기에 제시",
+            "노선색·노선명·역 코드",
+            "투영 노선 무효화",
+            "[파훼]",
+            "[취약]",
+            "유효 공격 기회",
+            "승차권은 소모되지 않는다",
+            "공식 검표 흔적",
+        ):
+            self.assertIn(token, text)
+
+    def test_alternative_responses_have_distinct_deterministic_results(self) -> None:
+        text = SECTION_4.read_text(encoding="utf-8")
+        for token in (
+            "방어",
+            "피해 감소",
+            "[취약]은 발생하지 않는다",
+            "공격",
+            "강한 피해",
+            "잘못된 승차권",
+            "노선 불일치",
+            "위치 초기화",
+            "너무 일찍",
+            "행동이나 자원만 소비",
+            "파훼 효과 없음",
+            "숨겨진 확률",
+        ):
+            self.assertIn(token, text)
+
+    def test_pattern_cues_are_traceable_and_not_color_or_audio_only(self) -> None:
+        text = SECTION_4.read_text(encoding="utf-8")
+        for token in (
+            "목적지 없는 전광판",
+            "잘못된 노선색",
+            "역 코드",
+            "노선 문양",
+            "선로 진동",
+            "무정차 열차 접근 기록",
+            "색상만으로",
+            "음향만으로",
+            "텍스트 로그",
+        ):
+            self.assertIn(token, text)
+
+    def test_first_pattern_does_not_make_every_recovery_pattern_ticket_based(self) -> None:
+        text = DECISION_4.read_text(encoding="utf-8") + SECTION_4.read_text(encoding="utf-8")
+        self.assertIn("첫 대표 회수 패턴", text)
+        self.assertIn("모든 회수 전투 패턴을 승차권으로 해결하지 않는다", text)
+        self.assertIn("패턴 길이는 고정하지 않는다", text)
+
+    def test_batch_ledger_tracks_four_of_ten_and_preserves_prior_checkpoints(self) -> None:
+        text = BATCH.read_text(encoding="utf-8") + LEDGER.read_text(encoding="utf-8")
+        for token in (
+            "4 / 10",
+            "GRILLME_BATCH_4_4_OF_10",
+            "3 / 10",
+            "GRILLME_BATCH_4_3_OF_10",
+            "2 / 10",
+            "GRILLME_BATCH_4_2_OF_10",
+            "1 / 10",
+            "GRILLME_BATCH_4_1_OF_10",
+            "D-2026-08-04-AFTERLIFE-STATION-NONSTOP-FAREWELL-TICKET-COUNTER",
         ):
             self.assertIn(token, text)
 
