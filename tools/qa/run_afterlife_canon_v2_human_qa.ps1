@@ -68,7 +68,7 @@ function Test-SamePath {
         [Parameter(Mandatory = $true)][string]$Left,
         [Parameter(Mandatory = $true)][string]$Right
     )
-    $comparison = if ($IsWindows -or $env:OS -eq 'Windows_NT') {
+    $comparison = if ($env:OS -eq 'Windows_NT') {
         [System.StringComparison]::OrdinalIgnoreCase
     }
     else {
