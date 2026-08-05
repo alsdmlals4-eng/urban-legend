@@ -124,5 +124,5 @@ for test_name in "${scene_tests[@]}"; do
   run_test "$test_name" scene
 done
 
-echo "Godot regression suite: 58 legacy + 7 Canon v2 focused entrypoints passed"
+echo "Godot regression suite: 58/58 legacy entrypoints + 7/7 Canon v2 focused entrypoints passed"
 echo "Logs: $LOG_ROOT"
