@@ -27,6 +27,13 @@ func configure_migration_runtime_failure_for_test(enabled: bool) -> void:
 	_inject_runtime_failure = enabled
 
 
+func activate_afterlife_content_contract_for_migration(contract_id: String) -> bool:
+	if contract_id != AFTERLIFE_CONTRACT_ID:
+		return false
+	_afterlife_content_contract_id = contract_id
+	return true
+
+
 func get_last_migration_result() -> Dictionary:
 	return _last_migration_result.duplicate(true)
 
