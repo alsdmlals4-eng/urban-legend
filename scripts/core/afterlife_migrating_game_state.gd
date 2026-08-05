@@ -136,7 +136,9 @@ func load_game() -> bool:
 
 
 func save_game() -> bool:
-	var session = get_node_or_null("/root/ValidationSession")
+	var session: Node = null
+	if is_inside_tree():
+		session = get_node_or_null("/root/ValidationSession")
 	if session != null and session.has_method("requires_save_routing") and bool(session.requires_save_routing()):
 		if not session.has_method("is_active_and_valid") or not bool(session.is_active_and_valid()):
 			return false
@@ -146,17 +148,18 @@ func save_game() -> bool:
 		return String(validation_result.get("code", "")) == "OK"
 	if current_episode_data.is_empty() and not load_episode(DEFAULT_EPISODE_PATH):
 		return false
+	if get_current_episode_id() != AFTERLIFE_EPISODE_ID:
+		return super.save_game()
 	var payload := _make_save_data()
 	payload["save_version"] = MAIN_TARGET_VERSION
-	if get_current_episode_id() == AFTERLIFE_EPISODE_ID:
-		payload["content_contract_id"] = AFTERLIFE_CONTRACT_ID
-		payload["afterlife_canon_v2"] = _afterlife_v2_state.duplicate(true)
-		payload["migration_history"] = _afterlife_migration_history.duplicate(true)
-		payload["orphan_legacy_ids"] = _afterlife_orphan_legacy_ids.duplicate(true)
-		payload["legacy_migration_notes"] = _afterlife_legacy_migration_notes.duplicate(true)
-		payload["legacy_resolution_snapshot"] = _afterlife_legacy_resolution_snapshot.duplicate(true)
-		payload["first_v2_investigation"] = _afterlife_first_v2_investigation.duplicate(true)
-		payload["applied_migration_effect_ids"] = _afterlife_applied_migration_effect_ids.duplicate(true)
+	payload["content_contract_id"] = AFTERLIFE_CONTRACT_ID
+	payload["afterlife_canon_v2"] = _afterlife_v2_state.duplicate(true)
+	payload["migration_history"] = _afterlife_migration_history.duplicate(true)
+	payload["orphan_legacy_ids"] = _afterlife_orphan_legacy_ids.duplicate(true)
+	payload["legacy_migration_notes"] = _afterlife_legacy_migration_notes.duplicate(true)
+	payload["legacy_resolution_snapshot"] = _afterlife_legacy_resolution_snapshot.duplicate(true)
+	payload["first_v2_investigation"] = _afterlife_first_v2_investigation.duplicate(true)
+	payload["applied_migration_effect_ids"] = _afterlife_applied_migration_effect_ids.duplicate(true)
 	return _write_current_main_payload(payload)
 
 
