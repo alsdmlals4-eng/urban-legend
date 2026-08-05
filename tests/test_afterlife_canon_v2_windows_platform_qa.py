@@ -10,11 +10,12 @@ HARNESS = ROOT / "tests/windows/run_afterlife_canon_v2_windows_platform_prefligh
 PHASE_TEST = ROOT / "tests/afterlife_migration/afterlife_windows_platform_phase_test.gd"
 LOCK_TEST = ROOT / "tests/afterlife_migration/afterlife_windows_locked_file_test.gd"
 EVIDENCE = ROOT / "docs/qa/2026-08-05-afterlife-canon-v2-windows-platform-preflight-evidence.md"
+DECISION = ROOT / "docs/decisions/D-2026-08-05-AFTERLIFE-STATION-CANON-V2-MIGRATION-DESIGN.md"
 
 
 class AfterlifeCanonV2WindowsPlatformQaTests(unittest.TestCase):
     def test_required_windows_preflight_files_exist(self) -> None:
-        for path in (WORKFLOW, HARNESS, PHASE_TEST, LOCK_TEST, EVIDENCE):
+        for path in (WORKFLOW, HARNESS, PHASE_TEST, LOCK_TEST, EVIDENCE, DECISION):
             self.assertTrue(path.is_file(), path)
 
     def test_workflow_uses_windows_runner_and_isolated_appdata(self) -> None:
@@ -76,13 +77,42 @@ class AfterlifeCanonV2WindowsPlatformQaTests(unittest.TestCase):
         text = EVIDENCE.read_text(encoding="utf-8")
         for token in (
             "WINDOWS_PLATFORM_PREFLIGHT",
-            "AUTOMATED_PLATFORM_PREFLIGHT",
+            "AUTOMATED_WINDOWS_PLATFORM_PREFLIGHT_GREEN",
             "HUMAN_QA_NOT_RUN",
             "ACTUAL_USER_SAVE_NOT_AVAILABLE",
             "MERGE_NOT_AUTHORIZED",
             "Windows 10",
             "Windows 11",
             "UI_ACCESSIBILITY_NOT_RUN",
+        ):
+            self.assertIn(token, text)
+
+    def test_green_evidence_records_exact_validated_runs_and_boundaries(self) -> None:
+        text = EVIDENCE.read_text(encoding="utf-8")
+        for token in (
+            "55fec577ed43573087c23e6eab0df04e0ee9346e",
+            "31004882572",
+            "31004882698",
+            "31004882551",
+            "31004882625",
+            "Windows Server 2025",
+            "FileShare.None",
+            "expected access denied",
+            "failure artifact: not created because the GREEN run had no failure",
+        ):
+            self.assertIn(token, text)
+
+    def test_decision_records_windows_preflight_without_promoting_human_qa_or_merge(self) -> None:
+        text = DECISION.read_text(encoding="utf-8")
+        for token in (
+            "AUTOMATED_WINDOWS_PLATFORM_PREFLIGHT_GREEN",
+            "ACTUAL_USER_SAVE_NOT_AVAILABLE",
+            "HUMAN_QA_NOT_RUN",
+            "UI_ACCESSIBILITY_NOT_RUN",
+            "MERGE_NOT_AUTHORIZED",
+            "PR: `#148`",
+            "31004882572",
+            "31004882698",
         ):
             self.assertIn(token, text)
 
