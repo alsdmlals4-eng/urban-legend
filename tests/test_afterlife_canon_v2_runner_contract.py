@@ -18,20 +18,21 @@ EXPECTED_ENTRYPOINTS = (
     "res://tests/afterlife_migration/afterlife_validation_save_migrator_test.gd",
     "res://tests/afterlife_migration/afterlife_migration_transaction_test.gd",
     "res://tests/afterlife_migration/afterlife_migration_integration_test.gd",
+    "res://tests/afterlife_migration/afterlife_runtime_projection_test.gd",
 )
 
 
 class AfterlifeCanonV2RunnerContractTests(unittest.TestCase):
-    def test_focused_runner_exists_and_has_exact_seven_planned_entrypoints(self) -> None:
+    def test_focused_runner_exists_and_has_exact_eight_planned_entrypoints(self) -> None:
         self.assertTrue(RUNNER.is_file(), RUNNER)
         text = RUNNER.read_text(encoding="utf-8")
         for entrypoint in EXPECTED_ENTRYPOINTS:
             self.assertIn(entrypoint, text)
-        self.assertEqual(text.count("res://tests/afterlife_migration/"), 7)
+        self.assertEqual(text.count("res://tests/afterlife_migration/"), 8)
         self.assertIn("set -euo pipefail", text)
         self.assertIn("GODOT_TEST_TMP", text)
         self.assertIn("XDG_DATA_HOME", text)
-        self.assertIn("Afterlife canon v2 migration: 7/7 entrypoints passed", text)
+        self.assertIn("Afterlife canon v2 migration: 8/8 entrypoints passed", text)
 
     def test_full_regression_and_ci_call_the_focused_runner(self) -> None:
         for path in (REGRESSION, DEDICATED_WORKFLOW, ANNUAL_WORKFLOW):
