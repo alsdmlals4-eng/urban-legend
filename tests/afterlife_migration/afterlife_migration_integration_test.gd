@@ -47,7 +47,27 @@ func _test_main_success(game_script: Script) -> void:
 	_expect((manual.get("filled_slots", {}) as Dictionary).is_empty(), "runtime migration auto-filled answer slots")
 	var episode: Dictionary = game_state.get_current_episode()
 	_expect(typeof(episode.get("recovery_encounters")) == TYPE_DICTIONARY, "Canon v2 episode block not active")
-	_expect(not episode.has("recovery_patterns"), "legacy and v2 patterns mixed at runtime")
+	_expect(String(episode.get("recovery_pattern_source", "")) == "canonical_v2_projection", "runtime recovery provenance missing")
+	_expect(String(episode.get("clue_source", "")) == "canonical_v2_projection", "runtime record provenance missing")
+	var patterns_value: Variant = episode.get("recovery_patterns")
+	_expect(typeof(patterns_value) == TYPE_ARRAY, "Canon v2 runtime recovery projection missing")
+	if typeof(patterns_value) == TYPE_ARRAY:
+		for pattern_value in patterns_value as Array:
+			_expect(typeof(pattern_value) == TYPE_DICTIONARY, "runtime recovery projection item must be Dictionary")
+			if typeof(pattern_value) != TYPE_DICTIONARY:
+				continue
+			var pattern_id := String((pattern_value as Dictionary).get("id", ""))
+			_expect(pattern_id.begins_with("pattern_afterlife_"), "legacy recovery pattern entered Canon v2 runtime: %s" % pattern_id)
+			_expect(not pattern_id.begins_with("pattern_station_"), "legacy and v2 patterns mixed at runtime")
+	var clues_value: Variant = episode.get("clues")
+	_expect(typeof(clues_value) == TYPE_ARRAY, "Canon v2 runtime record projection missing")
+	if typeof(clues_value) == TYPE_ARRAY:
+		for clue_value in clues_value as Array:
+			_expect(typeof(clue_value) == TYPE_DICTIONARY, "runtime record projection item must be Dictionary")
+			if typeof(clue_value) != TYPE_DICTIONARY:
+				continue
+			var clue_id := String((clue_value as Dictionary).get("id", ""))
+			_expect(clue_id.begins_with("record_afterlife_"), "legacy clue entered Canon v2 runtime: %s" % clue_id)
 	_expect(game_state.save_game(), "mvp-040 save failed")
 	_expect(String(_read_json(MAIN_PATH).get("save_version", "")) == "mvp-040", "new write regressed from mvp-040")
 	game_state.free()
@@ -82,6 +102,9 @@ func _test_validation_success(game_script: Script, session_script: Script) -> vo
 	_expect((stored.get("snapshots", {}) as Dictionary).get("recovery", {}) == {}, "Validation legacy recovery remained active")
 	var resume: Dictionary = session.resume(game_state)
 	_expect(String(resume.get("code", "")) == "OK", "migrated Validation session could not resume")
+	var resumed_episode: Dictionary = game_state.get_current_episode()
+	_expect(String(resumed_episode.get("recovery_pattern_source", "")) == "canonical_v2_projection", "Validation resume lost canonical recovery projection")
+	_expect(String(resumed_episode.get("clue_source", "")) == "canonical_v2_projection", "Validation resume lost canonical record projection")
 	var saved: Dictionary = session.save(game_state)
 	_expect(String(saved.get("code", "")) == "OK", "migrated Validation session could not write v2")
 	_expect(String(_read_json(VALIDATION_PATH).get("version", "")) == "validation-save-v2", "Validation save regressed to v1")
