@@ -31,6 +31,7 @@ on:
       - "tests/test_rescue_minigame_retrieval_rule_coverage_planning_contract.py"
       - "tests/test_recovery_pattern_authority_correction_contract.py"
       - "tests/test_recovery_pattern_pool_selection_and_judgment_planning_contract.py"
+      - "tests/test_recovery_outcome_states_and_result_packet_planning_contract.py"
   workflow_dispatch:
 
 concurrency:
@@ -76,6 +77,7 @@ jobs:
             tests/test_rescue_minigame_retrieval_rule_coverage_planning_contract.py \
             tests/test_recovery_pattern_authority_correction_contract.py \
             tests/test_recovery_pattern_pool_selection_and_judgment_planning_contract.py \
+            tests/test_recovery_outcome_states_and_result_packet_planning_contract.py \
             2>&1 | tee documentation-validation.log
           status=${PIPESTATUS[0]}
           echo "$status" > documentation-validation-exit-code.txt
