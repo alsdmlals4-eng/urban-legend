@@ -21,6 +21,7 @@ on:
       - "tests/test_afterlife_canon_v2_implementation_evidence.py"
       - "tests/test_afterlife_canon_v2_human_qa_plan.py"
       - "docs/qa/2026-08-05-afterlife-canon-v2-human-qa-plan.md"
+      - "docs/qa/2026-08-05-afterlife-canon-v2-automated-fixture-preflight-evidence.md"
       - "docs/qa/templates/afterlife-canon-v2-human-qa-evidence-template.md"
       - "docs/decisions/D-2026-08-05-AFTERLIFE-STATION-CANON-V2-MIGRATION-DESIGN.md"
       - "docs/decisions/D-2026-08-05-WORKFLOW-BENCHMARK-TDD-AND-CHECKPOINT-POLICY.md"
