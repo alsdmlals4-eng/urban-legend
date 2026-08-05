@@ -103,11 +103,12 @@ class RecoveryPatternPoolSelectionAndJudgmentPlanningContractTests(unittest.Test
         ):
             self.assertIn(required, audit)
 
-    def test_batch_records_fourth_real_approval_and_keeps_retraction_non_counting(self) -> None:
+    def test_batch_preserves_fourth_approval_and_allows_later_valid_approvals(self) -> None:
         batch = BATCH.read_text(encoding="utf-8")
         counter = re.search(r"OPEN / (\d+)_OF_10", batch)
         self.assertIsNotNone(counter)
-        self.assertEqual(int(counter.group(1)), 4)
+        self.assertGreaterEqual(int(counter.group(1)), 4)
+        self.assertIn(f"| 4 | `{DECISION_ID}`", batch)
         self.assertIn(DECISION_ID, batch)
         self.assertIn("APPROVED", batch)
         self.assertIn("DEC-20260806-118-CANON-V2-FOUR-TURN-TELEGRAPH-PATTERN-CYCLE", batch)
