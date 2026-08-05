@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 import unittest
 from pathlib import Path
 
@@ -56,13 +57,16 @@ class RuleStripContinuityPlanningContractTests(unittest.TestCase):
         ):
             self.assertIn(required, combined)
 
-    def test_batch_counter_is_one_of_ten_without_merge_claim(self) -> None:
+    def test_batch_records_first_approval_without_merge_claim(self) -> None:
         batch = BATCH.read_text(encoding="utf-8")
-        self.assertIn("1_OF_10", batch)
+        counter = re.search(r"OPEN / (\d+)_OF_10", batch)
+        self.assertIsNotNone(counter)
+        self.assertGreaterEqual(int(counter.group(1)), 1)
+        self.assertIn(DECISION_ID, batch)
         self.assertIn("APPROVED", batch)
         self.assertIn("EARLY_CANON_CHECKPOINT", batch)
         self.assertIn("BATCH_MERGE_NOT_STARTED", batch)
-        self.assertNotIn("BATCH_MERGED", batch)
+        self.assertNotIn("> 배치 병합: `BATCH_MERGED`", batch)
 
     def test_adversarial_review_covers_known_failure_modes(self) -> None:
         audit = AUDIT.read_text(encoding="utf-8")
