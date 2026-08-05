@@ -63,22 +63,34 @@ function Read-JsonFile {
     return Get-Content -LiteralPath $Path -Raw | ConvertFrom-Json
 }
 
+function Get-PathComparison {
+    if ($env:OS -eq 'Windows_NT') {
+        return [System.StringComparison]::OrdinalIgnoreCase
+    }
+    return [System.StringComparison]::Ordinal
+}
+
 function Test-SamePath {
     param(
         [Parameter(Mandatory = $true)][string]$Left,
         [Parameter(Mandatory = $true)][string]$Right
     )
-    $comparison = if ($env:OS -eq 'Windows_NT') {
-        [System.StringComparison]::OrdinalIgnoreCase
-    }
-    else {
-        [System.StringComparison]::Ordinal
-    }
     return [string]::Equals(
         (Resolve-FullPath -Path $Left -AllowMissing),
         (Resolve-FullPath -Path $Right -AllowMissing),
-        $comparison
+        (Get-PathComparison)
     )
+}
+
+function Test-PathWithin {
+    param(
+        [Parameter(Mandatory = $true)][string]$Candidate,
+        [Parameter(Mandatory = $true)][string]$Parent
+    )
+    $candidateFull = (Resolve-FullPath -Path $Candidate -AllowMissing).TrimEnd('\', '/')
+    $parentFull = (Resolve-FullPath -Path $Parent -AllowMissing).TrimEnd('\', '/')
+    $separator = [System.IO.Path]::DirectorySeparatorChar
+    return $candidateFull.StartsWith("$parentFull$separator", (Get-PathComparison))
 }
 
 function Get-DefaultQaRoot {
@@ -118,13 +130,17 @@ function Get-Layout {
 function Assert-SourcePath {
     param(
         [Parameter(Mandatory = $true)][string]$Source,
-        [Parameter(Mandatory = $true)][string]$Destination
+        [Parameter(Mandatory = $true)][string]$Destination,
+        [Parameter(Mandatory = $true)][string]$Root
     )
     if (-not (Test-Path -LiteralPath $Source -PathType Leaf)) {
         throw "SOURCE_SAVE_NOT_FOUND: $Source"
     }
     if (Test-SamePath -Left $Source -Right $Destination) {
         throw "SOURCE_AND_QA_PATH_COLLISION"
+    }
+    if (Test-PathWithin -Candidate $Source -Parent $Root) {
+        throw "SOURCE_INSIDE_QA_ROOT"
     }
 }
 
@@ -138,7 +154,7 @@ function Prepare-QaCopy {
     New-Item -ItemType Directory -Force -Path $layout.user_dir, $layout.evidence, $layout.logs, $layout.control | Out-Null
 
     $mainSourceFull = Resolve-FullPath -Path $SourceMain
-    Assert-SourcePath -Source $mainSourceFull -Destination $layout.qa_main
+    Assert-SourcePath -Source $mainSourceFull -Destination $layout.qa_main -Root $layout.root
     $mainSourceHash = Get-Sha256 -Path $mainSourceFull
     Copy-Item -LiteralPath $mainSourceFull -Destination $layout.qa_main -Force
     $mainCopyHash = Get-Sha256 -Path $layout.qa_main
@@ -150,7 +166,7 @@ function Prepare-QaCopy {
     $validationControl = $null
     if (-not [string]::IsNullOrWhiteSpace($SourceValidation)) {
         $validationSourceFull = Resolve-FullPath -Path $SourceValidation
-        Assert-SourcePath -Source $validationSourceFull -Destination $layout.qa_validation
+        Assert-SourcePath -Source $validationSourceFull -Destination $layout.qa_validation -Root $layout.root
         $validationSourceHash = Get-Sha256 -Path $validationSourceFull
         Copy-Item -LiteralPath $validationSourceFull -Destination $layout.qa_validation -Force
         $validationCopyHash = Get-Sha256 -Path $layout.qa_validation
@@ -175,8 +191,7 @@ function Prepare-QaCopy {
         status = "PREPARED"
         created_at_utc = [DateTime]::UtcNow.ToString("o")
         privacy_boundary = $ContentBoundary
-        qa_root = $layout.root
-        qa_appdata = $layout.app_data
+        qa_layout = "AppData/Roaming/Godot/app_userdata/$ProjectName"
         main = [ordered]@{
             anonymous_id = Get-AnonymousId -Prefix "main" -Hash $mainSourceHash
             sha256 = $mainSourceHash
@@ -194,6 +209,7 @@ function Prepare-QaCopy {
     $control = [ordered]@{
         warning = "LOCAL_PRIVATE_DO_NOT_UPLOAD"
         qa_root = $layout.root
+        qa_appdata = $layout.app_data
         main = [ordered]@{
             source_path = $mainSourceFull
             source_sha256 = $mainSourceHash
@@ -233,7 +249,8 @@ function Launch-QaGame {
     $env:APPDATA = $layout.app_data
     try {
         $process = Start-Process -FilePath $GodotBinary `
-            -ArgumentList @("--editor", "--path", $resolvedRepo, "--verbose") `
+            -ArgumentList @("--editor", "--path", ".", "--verbose") `
+            -WorkingDirectory $resolvedRepo `
             -RedirectStandardOutput $stdout -RedirectStandardError $stderr -PassThru
         $process.Id | Set-Content -LiteralPath (Join-Path $layout.evidence "godot-process-id.txt") -Encoding UTF8
         if ($WaitForExit) {
