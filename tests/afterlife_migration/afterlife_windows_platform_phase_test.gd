@@ -26,7 +26,9 @@ func _init() -> void:
 		"source_changed":
 			_source_changed(primary)
 		"write_failed":
-			_write_failed(primary)
+			_write_failed(primary, true)
+		"write_acl":
+			_write_failed(primary, false)
 		_:
 			_failures.append("unknown mode: %s" % mode)
 	_finish()
@@ -93,9 +95,10 @@ func _source_changed(primary: String) -> void:
 	_expect(String(result.get("code", "")) == "SOURCE_CHANGED", "source race was accepted")
 
 
-func _write_failed(primary: String) -> void:
+func _write_failed(primary: String, inject_failure: bool) -> void:
 	var transaction = TransactionScript.new()
-	transaction.configure_failure_for_test("write_temp")
+	if inject_failure:
+		transaction.configure_failure_for_test("write_temp")
 	var result: Dictionary = transaction.prepare(
 		primary,
 		{"source_checksum": _sha256(FileAccess.get_file_as_bytes(primary))},
