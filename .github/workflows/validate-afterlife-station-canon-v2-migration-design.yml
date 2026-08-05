@@ -14,6 +14,7 @@ on:
       - "project.godot"
       - "tests/afterlife_migration/**"
       - "tests/run_afterlife_canon_v2_migration_tests.sh"
+      - "tests/run_godot_regression.sh"
       - "tests/test_afterlife_canon_v2_runner_contract.py"
       - "docs/decisions/D-2026-08-05-AFTERLIFE-STATION-CANON-V2-MIGRATION-DESIGN.md"
       - "docs/decisions/D-2026-08-05-WORKFLOW-BENCHMARK-TDD-AND-CHECKPOINT-POLICY.md"
@@ -32,7 +33,7 @@ permissions:
 jobs:
   validate-migration:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -50,44 +51,33 @@ jobs:
           use-dotnet: false
           include-templates: false
       - name: Import project
-        run: godot --headless --path . --import
-      - name: Run Canon v2 loader contract
-        env:
-          HOME: ${{ runner.temp }}/afterlife-canon-v2-loader-home
-          XDG_DATA_HOME: ${{ runner.temp }}/afterlife-canon-v2-loader-xdg
-        run: godot --headless --path . --script res://tests/afterlife_migration/afterlife_canon_v2_loader_test.gd
-      - name: Run ID migration registry contract
-        env:
-          HOME: ${{ runner.temp }}/afterlife-id-registry-home
-          XDG_DATA_HOME: ${{ runner.temp }}/afterlife-id-registry-xdg
-        run: godot --headless --path . --script res://tests/afterlife_migration/afterlife_id_migration_registry_test.gd
-      - name: Run legacy save inspector contract
-        env:
-          HOME: ${{ runner.temp }}/afterlife-save-inspector-home
-          XDG_DATA_HOME: ${{ runner.temp }}/afterlife-save-inspector-xdg
-        run: godot --headless --path . --script res://tests/afterlife_migration/afterlife_legacy_save_inspector_test.gd
-      - name: Run main save migrator contract
-        env:
-          HOME: ${{ runner.temp }}/afterlife-main-migrator-home
-          XDG_DATA_HOME: ${{ runner.temp }}/afterlife-main-migrator-xdg
-        run: godot --headless --path . --script res://tests/afterlife_migration/afterlife_main_save_migrator_test.gd
-      - name: Run Validation save migrator contract
-        env:
-          HOME: ${{ runner.temp }}/afterlife-validation-migrator-home
-          XDG_DATA_HOME: ${{ runner.temp }}/afterlife-validation-migrator-xdg
-        run: godot --headless --path . --script res://tests/afterlife_migration/afterlife_validation_save_migrator_test.gd
-      - name: Run two-phase migration transaction contract
-        env:
-          HOME: ${{ runner.temp }}/afterlife-transaction-home
-          XDG_DATA_HOME: ${{ runner.temp }}/afterlife-transaction-xdg
-        run: godot --headless --path . --script res://tests/afterlife_migration/afterlife_migration_transaction_test.gd
+        run: |
+          set -o pipefail
+          godot --headless --path . --import 2>&1 | tee afterlife-canon-v2-import.log
       - name: Run Validation Canon v2 activation contract
         env:
           HOME: ${{ runner.temp }}/afterlife-validation-canon-home
           XDG_DATA_HOME: ${{ runner.temp }}/afterlife-validation-canon-xdg
         run: godot --headless --path . --script res://tests/afterlife_migration/afterlife_validation_canon_activation_test.gd
-      - name: Run main and Validation migration integration contract
+      - name: Run focused Canon v2 migration suite
         env:
-          HOME: ${{ runner.temp }}/afterlife-integration-home
-          XDG_DATA_HOME: ${{ runner.temp }}/afterlife-integration-xdg
-        run: godot --headless --path . --script res://tests/afterlife_migration/afterlife_migration_integration_test.gd
+          GODOT_BIN: godot
+          GODOT_TEST_TMP: ${{ runner.temp }}/afterlife-canon-v2-focused
+        run: bash tests/run_afterlife_canon_v2_migration_tests.sh
+      - name: Run full Godot regression
+        env:
+          GODOT_BIN: godot
+          GODOT_TEST_TMP: ${{ runner.temp }}/afterlife-canon-v2-regression
+          SKIP_AFTERLIFE_CANON_V2_FOCUSED: "1"
+        run: bash tests/run_godot_regression.sh
+      - name: Preserve failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: afterlife-canon-v2-migration-failure
+          path: |
+            afterlife-canon-v2-import.log
+            ${{ runner.temp }}/afterlife-canon-v2-focused/afterlife-canon-v2-logs
+            ${{ runner.temp }}/afterlife-canon-v2-regression/logs
+          if-no-files-found: warn
+          retention-days: 7
