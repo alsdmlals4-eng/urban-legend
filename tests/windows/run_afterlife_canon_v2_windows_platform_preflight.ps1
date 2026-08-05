@@ -53,13 +53,18 @@ function Invoke-GodotScript {
         $arguments += "--"
         $arguments += $UserArgs
     }
-    $output = & $GodotBinary @arguments 2>&1
-    $exitCode = $LASTEXITCODE
-    $output | Set-Content -LiteralPath (Join-Path $LogDir "$LogName.log") -Encoding UTF8
-    if ($exitCode -ne 0) {
-        throw "Godot script failed ($exitCode): $Script / $LogName"
+    $stdoutPath = Join-Path $LogDir "$LogName.stdout.log"
+    $stderrPath = Join-Path $LogDir "$LogName.stderr.log"
+    $process = Start-Process -FilePath $GodotBinary -ArgumentList $arguments -Wait -PassThru `
+        -RedirectStandardOutput $stdoutPath -RedirectStandardError $stderrPath
+    $stdout = Get-Content -LiteralPath $stdoutPath -Raw -ErrorAction SilentlyContinue
+    $stderr = Get-Content -LiteralPath $stderrPath -Raw -ErrorAction SilentlyContinue
+    $combined = @($stdout, $stderr) -join "`n"
+    $combined | Set-Content -LiteralPath (Join-Path $LogDir "$LogName.log") -Encoding UTF8
+    if ($process.ExitCode -ne 0) {
+        throw "Godot script failed ($($process.ExitCode)): $Script / $LogName"
     }
-    return ($output -join "`n")
+    return $combined
 }
 
 function Wait-TransactionState {
