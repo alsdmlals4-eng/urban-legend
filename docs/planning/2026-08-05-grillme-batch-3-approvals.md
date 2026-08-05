@@ -1,6 +1,6 @@
 # GrillMe Batch 3 승인 원장
 
-> 상태: `OPEN / 5_OF_10 / EARLY_CANON_CHECKPOINT`
+> 상태: `OPEN / 6_OF_10 / EARLY_CANON_CHECKPOINT`
 > 배치 병합: `BATCH_MERGE_NOT_STARTED`
 > 구현: `IMPLEMENTATION_NOT_AUTHORIZED`
 > 사람 검증: `HUMAN_QA_NOT_RUN`
@@ -21,7 +21,8 @@
 | 철회 | `DEC-20260806-118-CANON-V2-FOUR-TURN-TELEGRAPH-PATTERN-CYCLE` | 예시를 고정 4턴 규칙으로 잘못 승격 | 사용자 정정: `4턴 확정이 아님` | `RETRACTED / NON_COUNTING` | 활성 정본·Sheet 결정에서 제거 |
 | 4 | `DEC-20260806-119-CANON-V2-RECOVERY-PATTERN-POOL-SELECTION-AND-JUDGMENT` | 괴이별 패턴 풀의 첫 노출·반복 선택·전조·판단 불변성 | `권장안대로 진행` | `APPROVED` | GitHub·Google Sheet 동기화 완료 |
 | 5 | `DEC-20260806-120-CANON-V2-RECOVERY-OUTCOME-STATES-AND-INDEPENDENT-RESULT-PACKET` | 회수 대표 결과 6종·승인 철수 경계·독립 결과 패킷 | `권장안대로 진행` | `APPROVED` | GitHub·Google Sheet 동기화 완료 |
-| 6–10 | — | 후속 GrillMe | — | `NOT_ASKED` | 미반영 |
+| 6 | `DEC-20260806-121-CANON-V2-RESCUE-RESULT-HANDOFF-TO-RECOVERY-INITIAL-CONDITIONS-AND-ACTION-CONSTRAINTS` | 불변 구출 스냅샷·회수 초기 조건·보호 의무·행동 제약 | `권장안대로 진행` | `APPROVED` | GitHub 동기화 완료 / Google Sheet 동기화 대상 |
+| 7–10 | — | 후속 GrillMe | — | `NOT_ASKED` | 미반영 |
 
 ## 1번 승인 — 규칙 정보 연속성
 
@@ -111,9 +112,43 @@
 - `docs/audits/2026-08-06-recovery-outcome-states-and-result-packet-adversarial-review.md`
 - `docs/superpowers/plans/2026-08-06-recovery-outcome-states-and-result-packet.md`
 
+## 6번 승인 — 구출 결과의 회수 인계와 보호 의무
+
+```text
+구출 종료
+→ rescue_outcome_snapshot 확정
+→ recovery_handoff_state 도출
+→ active_protection_obligations 생성
+→ 회수 행동 전 책임 결과 공개
+→ protection_history에 이행·위반·악화 기록
+→ 구출 당시 사실과 회수 중 변화를 나란히 보고
+```
+
+- `rescue_outcome_snapshot`은 구출 종료 당시 사실이며 불변이다.
+- `recovery_handoff_state`는 회수 시작용 의미 상태를 한 번만 도출한다.
+- `active_protection_obligations`는 출처·대상·긴급도·영향 행동·이행 조건·위반 결과를 가진다.
+- `protection_history`는 의무의 생성·이행·부분 이행·위반·악화·완료 인과를 보존한다.
+- 생존·안정, 생존·위중, 피해자 상실, 생존 불명·실종을 구분한다.
+- 완전 분리, 부분 분리, 분리 실패, 비가역 연결을 구분한다.
+- 구출 결과가 회수 대표 결과를 자동 결정하지 않으며 구출 실패가 회수 실패를 자동으로 만들지 않는다.
+- 기본적으로 행동을 잠그지 않고 선택 전에 충돌 의무·예상 결과·위험 대상·대안을 표시한다.
+- hard lock은 물리적으로 실행 불가능하거나 확인된 괴이 규칙을 직접 위반하는 경우만 허용한다.
+- 인계는 `pattern_id`, `correct_response_id`, 전조의 객관적 의미를 변경하지 않는다.
+- 같은 구출 퍼즐을 회수에서 반복하지 않으며 전역 고정 턴 수를 추가하지 않는다.
+- 현행 수치 보정은 `LEGACY_NUMERIC_HANDOFF`이며 숨은 보정·단일 등급 일괄 보정·죽음의 나선을 금지한다.
+- 저장·이관은 원자적·rollback-safe·idempotent해야 하며 legacy bool에서 완전 구출을 추정하지 않는다.
+- 모순·필수 필드 누락·출처 불명은 `handoff_validation_failed`로 중단·기록한다.
+
+상세 Decision·설계·감사·구현 계획:
+
+- `docs/decisions/DEC-20260806-121-CANON-V2-RESCUE-RESULT-HANDOFF-TO-RECOVERY-INITIAL-CONDITIONS-AND-ACTION-CONSTRAINTS.md`
+- `docs/planning/2026-08-06-canon-v2-rescue-result-handoff-to-recovery-initial-conditions-and-action-constraints-design.md`
+- `docs/audits/2026-08-06-rescue-result-handoff-to-recovery-adversarial-review.md`
+- `docs/superpowers/plans/2026-08-06-rescue-result-handoff-to-recovery.md`
+
 ## 배치 운영 경계
 
-- 현재 카운터: `5_OF_10`.
+- 현재 카운터: `6_OF_10`.
 - Decision 118은 계속 `RETRACTED / NON_COUNTING`이다.
 - 현재 PR은 조기 기획 체크포인트일 뿐 배치 병합 완료가 아니다.
 - PR #149의 실제 저장·UI·접근성 QA 상태는 변경하지 않는다.
@@ -121,4 +156,4 @@
 
 ## 다음 질문 후보
 
-다음 GrillMe 6/10은 구출 결과 패킷의 생존·분리·후유증·보호 의무가 회수 초기 조건과 행동 제약에 어떻게 연결되는지를 다룬다.
+다음 GrillMe 7/10은 보호 의무가 회수 행동 비용·우선순위·종결 자격에 어느 범위까지 영향을 주는지를 다룬다.
