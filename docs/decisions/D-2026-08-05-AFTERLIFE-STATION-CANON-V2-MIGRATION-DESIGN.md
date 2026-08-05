@@ -1,27 +1,43 @@
 # D-2026-08-05-AFTERLIFE-STATION-CANON-V2-MIGRATION-DESIGN
 
 - 제목: 저승역 Canon v2 콘텐츠·ID·저장 이관 아키텍처
-- 상태: `APPROVED_SPEC / IMPLEMENTATION_PLAN_READY / IMPLEMENTATION_NOT_AUTHORIZED`
+- 상태: `APPROVED_SPEC / IMPLEMENTATION_AUTHORIZED / IMPLEMENTATION_COMPLETE / AUTOMATED_QA_GREEN / HUMAN_QA_NOT_RUN / MERGE_NOT_AUTHORIZED`
 - 설계 방향 승인: `2026-08-05 00:04 KST`
 - 문서 승인: `2026-08-05 00:28 KST`
+- 구현 승인: `2026-08-05 KST / 사용자 명시 승인`
 - 기준 main: `55721e905bf24fc3deb0de061a529ecb992aee80`
-- Draft PR: `#145`
-- Human QA: `NOT_RUN`
-- Runtime implementation: `NOT_RUN`
+- Design·Plan Draft PR: `#145`
+- Draft PR: `#146`
+- 검증된 제품 구현 HEAD: `1e2473889b68b4a714300133da180f1eb1a08414`
+- Human QA: `HUMAN_QA_NOT_RUN`
+- Runtime implementation: `IMPLEMENTATION_COMPLETE / AUTOMATED_QA_GREEN`
+- Merge: `MERGE_NOT_AUTHORIZED`
 
 ## 승인 전이
 
-사용자가 작성된 Design Spec과 ID Migration Matrix를 검토하고 `문서승인`했다.
+사용자는 Design Spec·ID Migration Matrix에 `문서승인`을 부여한 뒤, 9개 Task 구현 계획과 적대적 Addendum에도 별도 `승인`을 부여했다.
 
-기존 Spec 머리말의 `REVIEW_READY / DESIGN_ONLY`는 문서 승인 전 역사 상태다. 현재 권위 상태는 이 Decision의 다음 값이 우선한다.
+이전 상태는 다음과 같이 역사화한다.
+
+```text
+REVIEW_READY / DESIGN_ONLY
+→ APPROVED_SPEC / IMPLEMENTATION_PLAN_READY / IMPLEMENTATION_NOT_AUTHORIZED
+→ IMPLEMENTATION_AUTHORIZED
+→ IMPLEMENTATION_COMPLETE / AUTOMATED_QA_GREEN
+```
+
+현재 권위 상태는 다음과 같다.
 
 ```text
 APPROVED_SPEC
-/ IMPLEMENTATION_PLAN_READY
-/ IMPLEMENTATION_NOT_AUTHORIZED
+/ IMPLEMENTATION_AUTHORIZED
+/ IMPLEMENTATION_COMPLETE
+/ AUTOMATED_QA_GREEN
+/ HUMAN_QA_NOT_RUN
+/ MERGE_NOT_AUTHORIZED
 ```
 
-문서 승인은 implementation plan 작성을 허가하지만 게임 코드·Scene·JSON·저장 Schema 변경을 허가하지 않는다. 실제 구현은 별도 구현 승인, PR 통합은 별도 병합 승인을 요구한다.
+구현 승인은 제품 코드·JSON·저장 이관 작업을 TDD로 수행하도록 허가했다. 자동 검증 통과는 Human QA나 PR 병합 승인으로 해석하지 않는다.
 
 ## 결정
 
@@ -49,13 +65,17 @@ APPROVED_SPEC
 
 - `content_contract_id: afterlife-station-canon-v2`
 - `content_schema: 2`
-- 예정 sidecar: `data/episodes/episode_001_afterlife_station_canon_v2.json`
-- 활성화는 manifest·명시적 loader 요청으로만 수행
-- 구형 `recovery_patterns`와 Canon v2 패턴 혼합 금지
+- 권위 sidecar: `data/episodes/episode_001_afterlife_station_canon_v2.json`
+- 활성화는 명시적 loader 요청으로만 수행
+- 권위 Canon v2 구조: `investigation_manual`, `rescue_protocol`, `recovery_encounters`, `result_contract`
+- 기존 전투 UI용 `clues`·`recovery_patterns`는 Canon v2 ID에서만 생성한 `canonical_v2_projection`
+- projected IDs: `record_afterlife_*`, `pattern_afterlife_*`, `response_afterlife_*`
+- 구형 `pattern_station_*`·`clue_*` 실행 혼합 금지
+- 구형 Core Validation 내용은 `legacy_content_snapshot`에만 보존
 
 ### ID 이관
 
-구형 ID는 다음 분류 중 하나를 가져야 한다.
+구형 ID는 다음 분류 중 하나를 가진다.
 
 - `KEEP_ID`
 - `ALIAS`
@@ -72,52 +92,61 @@ APPROVED_SPEC
 - 본편 new write: `mvp-040`
 - Validation readable: `validation-save-v1`
 - Validation new write: `validation-save-v2`
-- 원본 파일 bytes를 먼저 backup
-- 실패 시 파일과 메모리 모두 롤백
+- 원본 bytes backup-first
+- inspect·commit 직전 `source_checksum` 비교
+- temp write·readback·validator·backup·promote 분리
+- 파일 교체 후 runtime apply가 성공해야 `FINALIZED`
+- 실패 시 파일과 메모리 모두 rollback
 - Legacy 저장 fallback 금지
-- 동일 migration 재적용 시 중복 효과 금지
+- 동일 migration·effect 재적용 시 중복 효과 금지
 
 진행 중 구형 구출·회수 전투는 직접 의미 변환하지 않고 `LEGACY_CASE_RESTART_REQUIRED`로 안전 조사 checkpoint에서 무페널티 재시작한다.
 
 ## 현업 비교 반영
-
-구현 계획에는 다음 비교 결론을 반영한다.
 
 - Godot: 프로젝트별 저장과 단계적 복원
 - Unreal Engine: 책임별 SaveGame·slot 분리
 - Unity Cloud Save: write lock과 충돌 감지
 - Flyway: versioned migration·checksum·history·apply-once
 
-프로젝트 채택안은 기존 `effect_id / backup-first`에 `source_checksum`, `migration_history`, `atomic replace` 검증을 추가하는 것이다.
+프로젝트 채택안은 `effect_id / backup-first / source_checksum / migration_history / two-phase atomic replace`다.
 
-## 책임 문서
+## 구현·검증 증거
 
+- Implementation evidence: `docs/implementation/2026-08-05-afterlife-station-canon-v2-migration-implementation-evidence.md`
 - Design Spec: `docs/superpowers/specs/2026-08-05-afterlife-station-canon-v2-migration-design.md`
 - ID Matrix: `docs/planning/2026-08-05-afterlife-station-id-migration-matrix.md`
 - Implementation Plan: `docs/superpowers/plans/2026-08-05-afterlife-station-canon-v2-migration-implementation-plan.md`
+- Adversarial Addendum: `docs/superpowers/plans/2026-08-05-afterlife-station-canon-v2-migration-plan-adversarial-review-addendum.md`
 - 운영 정책: `docs/decisions/D-2026-08-05-WORKFLOW-BENCHMARK-TDD-AND-CHECKPOINT-POLICY.md`
+
+검증된 제품 구현 HEAD `1e2473889b68b4a714300133da180f1eb1a08414`:
+
+- Canon v2 Migration `30973078497`: SUCCESS
+- CORE-MVP-001 `30973078429`: SUCCESS
+- ANNUAL-MVP-001 `30973078408`: SUCCESS
+- Canon v2 focused `8/8`: PASS
+- full Godot regression: PASS
 
 ## TDD Gate
 
-구현 계획 작성 자체도 문서 계약 테스트를 먼저 작성하고 RED를 확인한 뒤 GREEN으로 전환한다. 실제 제품 구현의 각 Task 역시 독립 RED·최소 구현·GREEN·focused·회귀·커밋으로 닫는다.
+Task 1~9는 각각 RED → 최소 구현 → GREEN → focused 검증 → 전체 회귀 순서로 진행했다. 고위험 런타임 호환 충돌도 먼저 실패 계약을 추가한 뒤 Canon v2 전용 projection으로 GREEN 전환했다.
 
 ## 다음 Gate
 
-1. 구현 계획 문서 작성과 적대적 검토
-2. 사용자 구현 계획 검토
-3. 별도 구현 승인
-4. 승인 후 Codex TDD 구현
-5. 구현 결과 승인
-6. 별도 병합 승인
+1. 구현 결과 적대적 PR 검토
+2. Google Sheet exact HEAD 동기화
+3. 사용자 구현 결과 검토
+4. Human QA 별도 승인·실행
+5. PR #145·#146 통합 순서 확정
+6. 별도 merge approval
 
-별도 구현 승인 전에는 제품 코드·JSON·Schema를 변경하지 않는다. 별도 병합 승인 전에는 Draft 해제·auto-merge·merge를 수행하지 않는다.
+`AUTOMATED_QA_GREEN`은 출시·Human QA·병합 완료를 의미하지 않는다. 별도 병합 승인 전 Draft 해제·auto-merge·merge를 수행하지 않는다.
 
-## 변경 금지 범위
+## 변경하지 않은 범위
 
-- 게임 코드
-- Scene
-- Episode·PoC·Core Validation JSON
-- 실제 저장 Schema
+- Scene 구조
 - 이미지·게임 자산
-- Human QA 상태
+- 기존 Episode·PoC·Core Validation 파일 삭제
+- Human QA 판정
 - PR 병합
