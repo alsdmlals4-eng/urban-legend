@@ -1,6 +1,6 @@
 # GrillMe Batch 3 승인 원장
 
-> 상태: `OPEN / 6_OF_10 / EARLY_CANON_CHECKPOINT`
+> 상태: `OPEN / 7_OF_10 / EARLY_CANON_CHECKPOINT`
 > 배치 병합: `BATCH_MERGE_NOT_STARTED`
 > 구현: `IMPLEMENTATION_NOT_AUTHORIZED`
 > 사람 검증: `HUMAN_QA_NOT_RUN`
@@ -22,7 +22,8 @@
 | 4 | `DEC-20260806-119-CANON-V2-RECOVERY-PATTERN-POOL-SELECTION-AND-JUDGMENT` | 괴이별 패턴 풀의 첫 노출·반복 선택·전조·판단 불변성 | `권장안대로 진행` | `APPROVED` | GitHub·Google Sheet 동기화 완료 |
 | 5 | `DEC-20260806-120-CANON-V2-RECOVERY-OUTCOME-STATES-AND-INDEPENDENT-RESULT-PACKET` | 회수 대표 결과 6종·승인 철수 경계·독립 결과 패킷 | `권장안대로 진행` | `APPROVED` | GitHub·Google Sheet 동기화 완료 |
 | 6 | `DEC-20260806-121-CANON-V2-RESCUE-RESULT-HANDOFF-TO-RECOVERY-INITIAL-CONDITIONS-AND-ACTION-CONSTRAINTS` | 불변 구출 스냅샷·회수 초기 조건·보호 의무·행동 제약 | `권장안대로 진행` | `APPROVED` | GitHub·Google Sheet 동기화 완료 |
-| 7–10 | — | 후속 GrillMe | — | `NOT_ASKED` | 미반영 |
+| 7 | `DEC-20260806-122-CANON-V2-PROTECTION-OBLIGATION-COST-PRIORITY-AND-RECOVERY-TERMINATION-ELIGIBILITY` | 보호 의무 행동 비용·표시 우선순위·회수 종결 자격 | `권장안대로 진행` | `APPROVED` | GitHub 동기화 완료 / Google Sheet 동기화 대상 |
+| 8–10 | — | 후속 GrillMe | — | `NOT_ASKED` | 미반영 |
 
 ## 1번 승인 — 규칙 정보 연속성
 
@@ -146,9 +147,43 @@
 - `docs/audits/2026-08-06-rescue-result-handoff-to-recovery-adversarial-review.md`
 - `docs/superpowers/plans/2026-08-06-rescue-result-handoff-to-recovery.md`
 
+## 7번 승인 — 보호 의무의 비용·우선순위·종결 자격
+
+```text
+active_protection_obligations
+→ 관련 행동 비용 계산
+→ critical / urgent / watch 표시 정렬
+→ 행동·종결 확정 전 결과 미리보기
+→ 플레이어 선택
+→ 비용·이행·위반을 한 번만 적용
+→ 현상 통제 축과 보호 축을 독립 보고
+```
+
+- 행동 비용, 표시 우선순위, 종결 자격은 서로 분리한다.
+- 비용은 `obligation_id`, `affected_action`, `source_reason`이 있는 관련 행동에만 적용한다.
+- `base cost`와 `additional cost`를 확정 전에 표시한다.
+- 전역 비용 인상, 새로운 책임 화폐, 모든 의미 있는 행동의 봉쇄를 금지한다.
+- 관찰·괴이 매뉴얼·결과 미리보기와 접근성 대체 입력에는 비용을 부과하지 않는다.
+- `priority_class`는 `critical`, `urgent`, `watch`이며 정보 정렬이지 자동 행동이나 강제 대상 선택이 아니다.
+- 동일 우선순위는 `created_order`, 그다음 `obligation_id`로 결정적 정렬한다.
+- 미완료 보호 의무만으로 `residue_recovered`, `containment_complete`, `stabilization_complete`, `emergency_containment`를 자동 강등하지 않는다.
+- `completed`, 유효한 `transferred`, 유효한 `deferred_with_owner`는 승인 철수 책임 조건을 충족할 수 있다.
+- 중대 `unresolved` 의무가 책임 있게 인계되지 않으면 `approved_withdrawal` 자격이 없지만 후퇴 선택은 잠그지 않는다.
+- 종결 미리보기는 `termination_candidate`, `eligible`, `blocking_reasons`, `non_blocking_consequences`, `accountable_transfer`를 표시한다.
+- 같은 `cost_adjustment_id`는 한 번만 적용하며 저장·재개는 원자적·rollback-safe·idempotent하다.
+- `LEGACY_NUMERIC_HANDOFF`를 새 보호 의무 비용으로 소급 해석하지 않는다.
+- `pattern_id`, `correct_response_id`, 전조의 객관적 의미와 접근성 성과는 바꾸지 않는다.
+
+상세 Decision·설계·감사·구현 계획:
+
+- `docs/decisions/DEC-20260806-122-CANON-V2-PROTECTION-OBLIGATION-COST-PRIORITY-AND-RECOVERY-TERMINATION-ELIGIBILITY.md`
+- `docs/planning/2026-08-06-canon-v2-protection-obligation-cost-priority-and-recovery-termination-eligibility-design.md`
+- `docs/audits/2026-08-06-protection-obligation-cost-priority-and-termination-eligibility-adversarial-review.md`
+- `docs/superpowers/plans/2026-08-06-protection-obligation-cost-priority-and-termination-eligibility.md`
+
 ## 배치 운영 경계
 
-- 현재 카운터: `6_OF_10`.
+- 현재 카운터: `7_OF_10`.
 - Decision 118은 계속 `RETRACTED / NON_COUNTING`이다.
 - 현재 PR은 조기 기획 체크포인트일 뿐 배치 병합 완료가 아니다.
 - PR #149의 실제 저장·UI·접근성 QA 상태는 변경하지 않는다.
@@ -156,4 +191,4 @@
 
 ## 다음 질문 후보
 
-다음 GrillMe 7/10은 보호 의무가 회수 행동 비용·우선순위·종결 자격에 어느 범위까지 영향을 주는지를 다룬다.
+다음 GrillMe 8/10은 보호 의무의 완료·책임 이관·연기·위반을 후속 조사·재진입·보상·평가에 연결하는 범위와 한계를 다룬다.
