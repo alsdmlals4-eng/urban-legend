@@ -1,6 +1,6 @@
 # 괴이 기록국 플랫폼 출시·에셋 권리 Profile
 
-> Base 정본: `alsdmlals4-eng/Base/docs/knowledge/game-development/PLATFORM_REVIEW_ASSET_RIGHTS_AND_REFERENCE_PRODUCTION_GUIDE.md`  
+> Base 정본: `alsdmlals4-eng/Base/docs/knowledge/game-development/PLATFORM_REVIEW_ASSET_RIGHTS_AND_REFERENCE_PRODUCTION_GUIDE.md`
 > 기준 main: `55721e905bf24fc3deb0de061a529ecb992aee80`
 
 ## 전략
