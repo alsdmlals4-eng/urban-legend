@@ -56,13 +56,12 @@ AUTOMATED_LOCAL_HUMAN_QA_RUNNER_PREFLIGHT_GREEN
 - Human QA PASS
 - 병합 승인
 
-## 권위 파일
+## 권위와 증거 연결
 
-- Runner: `tools/qa/run_afterlife_canon_v2_human_qa.ps1`
-- Guide: `docs/qa/2026-08-05-afterlife-canon-v2-local-human-qa-runner.md`
-- Evidence: `docs/qa/2026-08-05-afterlife-canon-v2-local-human-qa-runner-evidence.md`
-- Contract: `tests/test_afterlife_canon_v2_local_human_qa_runner.py`
-- Parent Human QA Plan: `docs/qa/2026-08-05-afterlife-canon-v2-human-qa-plan.md`
+- 구현·실행 가이드·자동 계약·증거 문서는 Draft PR `#149`의 변경 집합으로 관리한다.
+- 현재 Decision은 완료 QA 파일 경로를 직접 참조하지 않고 PR 번호, exact HEAD, workflow run ID와 적대적 review ID만 권위 증거로 사용한다.
+- 최종 GREEN 전환 시 이 Addendum에는 exact HEAD와 run ID만 기록한다.
+- 실제 사용자 저장 본문, 로컬 절대 경로, `.control` 파일은 권위 문서나 CI artifact에 기록하지 않는다.
 
 ## 유지하는 상태 경계
 
