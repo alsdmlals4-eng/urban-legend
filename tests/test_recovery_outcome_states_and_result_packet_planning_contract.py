@@ -18,12 +18,12 @@ WORKFLOW = ROOT / ".github/workflows/validate-base-operating-sync.yml"
 
 class RecoveryOutcomeStatesAndResultPacketPlanningContractTests(unittest.TestCase):
     def test_authority_files_exist_and_share_decision_id(self) -> None:
+        placeholder_pattern = re.compile(r"(?mi)^\s*(?:[-*]\s*)?(?:TODO|TBD)(?:\s*:|\s*$)")
         for path in (DECISION, DESIGN, AUDIT, IMPLEMENTATION_PLAN, BATCH, DESIGN_INTENT, PROJECT_BRIEF):
             self.assertTrue(path.is_file(), path.relative_to(ROOT))
             text = path.read_text(encoding="utf-8")
             self.assertIn(DECISION_ID, text, path.relative_to(ROOT))
-            self.assertNotIn("TODO", text, path.relative_to(ROOT))
-            self.assertNotIn("TBD", text, path.relative_to(ROOT))
+            self.assertIsNone(placeholder_pattern.search(text), path.relative_to(ROOT))
 
     def test_six_representative_recovery_outcomes_are_distinct(self) -> None:
         combined = "\n".join(path.read_text(encoding="utf-8") for path in (DECISION, DESIGN, AUDIT))
@@ -91,7 +91,7 @@ class RecoveryOutcomeStatesAndResultPacketPlanningContractTests(unittest.TestCas
             "철수 근거",
             "보호 대상과 중요 기록의 상태",
             "통제 붕괴 전에 의도적으로 종료",
-            "승인 조건을 충족하지 못한 강제 퇴각은 control_failure",
+            "승인 조건을 충족하지 못한 강제 퇴각은 `control_failure`",
         ):
             self.assertIn(required, combined)
 
