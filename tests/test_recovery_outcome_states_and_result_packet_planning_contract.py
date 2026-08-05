@@ -122,11 +122,11 @@ class RecoveryOutcomeStatesAndResultPacketPlanningContractTests(unittest.TestCas
         ):
             self.assertIn(required, plan)
 
-    def test_batch_records_fifth_real_approval_and_keeps_retraction_non_counting(self) -> None:
+    def test_batch_keeps_fifth_approval_and_allows_later_approved_entries(self) -> None:
         batch = BATCH.read_text(encoding="utf-8")
         counter = re.search(r"OPEN / (\d+)_OF_10", batch)
         self.assertIsNotNone(counter)
-        self.assertEqual(int(counter.group(1)), 5)
+        self.assertGreaterEqual(int(counter.group(1)), 5)
         self.assertIn(DECISION_ID, batch)
         self.assertIn("APPROVED", batch)
         self.assertIn("DEC-20260806-118-CANON-V2-FOUR-TURN-TELEGRAPH-PATTERN-CYCLE", batch)
