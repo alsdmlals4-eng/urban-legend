@@ -3,8 +3,12 @@
 - Parent Decision: `D-2026-08-05-AFTERLIFE-STATION-CANON-V2-MIGRATION-DESIGN`
 - 사용자 승인: `2026-08-05 21:37 KST / 실제 사용자 저장 기반 Human QA 진행 승인`
 - Draft PR: `#149`
-- 현재 상태: `AUTOMATED_LOCAL_HUMAN_QA_RUNNER_PREFLIGHT_PENDING / ACTUAL_USER_SAVE_NOT_AVAILABLE / HUMAN_QA_NOT_RUN / UI_ACCESSIBILITY_NOT_RUN / MERGE_NOT_AUTHORIZED`
-- exact-head CI 통과 후 허용 상태: `AUTOMATED_LOCAL_HUMAN_QA_RUNNER_PREFLIGHT_GREEN`
+- 현재 상태: `AUTOMATED_LOCAL_HUMAN_QA_RUNNER_PREFLIGHT_GREEN / ACTUAL_USER_SAVE_NOT_AVAILABLE / HUMAN_QA_NOT_RUN / UI_ACCESSIBILITY_NOT_RUN / MERGE_NOT_AUTHORIZED`
+- 검증된 구현 HEAD: `652efecbb9e4dfbd7a388bc894983cd8f0cc08a9`
+- Documentation: `31008696028 / SUCCESS`
+- Independent Windows: `31008696020 / SUCCESS`
+- Migration Ubuntu+Windows: `31008696047 / SUCCESS`
+- ANNUAL/Godot: `31008696037 / SUCCESS`
 
 ## 결정
 
@@ -21,6 +25,7 @@ Prepare → Launch → Collect
 - QA APPDATA 아래로 `Copy-Item`만 수행한다.
 - 원본과 복사본 SHA-256이 다르면 실패 폐쇄한다.
 - source와 QA destination이 같은 경로면 실패한다.
+- source가 QA root 안에 있으면 실패한다.
 - 공유 manifest에는 저장 본문과 원본 절대 경로를 기록하지 않는다.
 - 원본 절대 경로는 로컬 전용 `.control` 파일에만 기록한다.
 
@@ -37,9 +42,24 @@ Prepare → Launch → Collect
 - QA 저장과 transaction artifact의 이름·크기·SHA-256만 수집한다.
 - 상태는 `EVIDENCE_COLLECTED / HUMAN_REVIEW_REQUIRED`로 끝난다.
 
-## 자동 검증
+## 자동 검증 결과
 
-GitHub-hosted Windows runner에서는 repository 대표 fixture로 `Prepare → Collect`만 실행한다. 이 자동 결과는 runner 안전 계약만 검증한다.
+검증된 구현 HEAD `652efecbb9e4dfbd7a388bc894983cd8f0cc08a9`에서 다음이 통과했다.
+
+- Documentation `31008696028`
+- Independent Windows `31008696020`
+- Migration Ubuntu+Windows `31008696047`
+- ANNUAL/Godot `31008696037`
+
+GitHub-hosted Windows runner에서 repository 대표 fixture로 `Prepare → Collect`를 실제 실행하고 다음을 확인했다.
+
+- `PREPARED`
+- `EVIDENCE_COLLECTED`
+- source SHA-256 불변
+- 익명 manifest privacy boundary `ACTUAL_USER_SAVE_CONTENT_NOT_RECORDED`
+- `LOCAL HUMAN QA RUNNER PREFLIGHT: PASS`
+- 기존 Windows 파일 잠금·강제 종료·ACL 테스트 유지
+- full Godot regression 유지
 
 자동 GREEN 상태:
 
@@ -60,7 +80,6 @@ AUTOMATED_LOCAL_HUMAN_QA_RUNNER_PREFLIGHT_GREEN
 
 - 구현·실행 가이드·자동 계약·증거 문서는 Draft PR `#149`의 변경 집합으로 관리한다.
 - 현재 Decision은 완료 QA 파일 경로를 직접 참조하지 않고 PR 번호, exact HEAD, workflow run ID와 적대적 review ID만 권위 증거로 사용한다.
-- 최종 GREEN 전환 시 이 Addendum에는 exact HEAD와 run ID만 기록한다.
 - 실제 사용자 저장 본문, 로컬 절대 경로, `.control` 파일은 권위 문서나 CI artifact에 기록하지 않는다.
 
 ## 유지하는 상태 경계
