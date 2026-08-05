@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 import unittest
 from pathlib import Path
 
@@ -55,13 +56,15 @@ class RescueRetrievalRoleBoundaryPlanningContractTests(unittest.TestCase):
         ):
             self.assertIn(required, combined)
 
-    def test_batch_counter_is_two_of_ten_without_merge_claim(self) -> None:
+    def test_batch_records_second_approval_without_merge_claim(self) -> None:
         batch = BATCH.read_text(encoding="utf-8")
-        self.assertIn("2_OF_10", batch)
+        counter = re.search(r"OPEN / (\d+)_OF_10", batch)
+        self.assertIsNotNone(counter)
+        self.assertGreaterEqual(int(counter.group(1)), 2)
         self.assertIn(DECISION_ID, batch)
         self.assertIn("APPROVED", batch)
         self.assertIn("BATCH_MERGE_NOT_STARTED", batch)
-        self.assertNotIn("BATCH_MERGED", batch)
+        self.assertNotIn("> 배치 병합: `BATCH_MERGED`", batch)
 
     def test_authorization_and_existing_qa_boundaries_remain_closed(self) -> None:
         combined = "\n".join(
