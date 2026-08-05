@@ -1,14 +1,18 @@
 # DESIGN_INTENT — 위치 안내
 
 > 문서 위치: `DESIGN_INTENT.md` | 현행 기획 의도: `docs/GAME_DESIGN_DOCUMENT.md` | 과거 원문 백업: `docs/archive/backup/2026-07-16/PROJECT_STATUS_AND_ROADMAP_BACKUP.md`
-> 최신 승인 오버레이: `DEC-20260806-120-CANON-V2-RECOVERY-OUTCOME-STATES-AND-INDEPENDENT-RESULT-PACKET`
+> 최신 승인 오버레이: `DEC-20260806-121-CANON-V2-RESCUE-RESULT-HANDOFF-TO-RECOVERY-INITIAL-CONDITIONS-AND-ACTION-CONSTRAINTS`
 
 이 파일은 기존 링크를 보존하기 위한 리디렉션이며 더 이상 기본 읽기 대상이나 설계 원본이 아니다.
 
 - 게임의 핵심 의도·플레이어 경험·금지 방향: `docs/GAME_DESIGN_DOCUMENT.md`
 - 공식 용어·표현·호환성: `docs/PROJECT_CONTEXT.md`
 - 현재 구현과 다음 계획: `docs/CURRENT_STATUS.md`
-- 최신 사용자 승인 정본: `docs/decisions/DEC-20260806-120-CANON-V2-RECOVERY-OUTCOME-STATES-AND-INDEPENDENT-RESULT-PACKET.md`
+- 최신 사용자 승인 정본: `docs/decisions/DEC-20260806-121-CANON-V2-RESCUE-RESULT-HANDOFF-TO-RECOVERY-INITIAL-CONDITIONS-AND-ACTION-CONSTRAINTS.md`
+- 구출 결과 인계 설계: `docs/planning/2026-08-06-canon-v2-rescue-result-handoff-to-recovery-initial-conditions-and-action-constraints-design.md`
+- 구출 결과 인계 적대적 검토: `docs/audits/2026-08-06-rescue-result-handoff-to-recovery-adversarial-review.md`
+- 구출 결과 인계 TDD 구현 계획: `docs/superpowers/plans/2026-08-06-rescue-result-handoff-to-recovery.md`
+- 회수 결과 상태 정본: `docs/decisions/DEC-20260806-120-CANON-V2-RECOVERY-OUTCOME-STATES-AND-INDEPENDENT-RESULT-PACKET.md`
 - 회수 결과 상태·독립 패킷 설계: `docs/planning/2026-08-06-canon-v2-recovery-outcome-states-and-independent-result-packet-design.md`
 - 회수 결과 적대적 검토: `docs/audits/2026-08-06-recovery-outcome-states-and-result-packet-adversarial-review.md`
 - 회수 결과 TDD 구현 계획: `docs/superpowers/plans/2026-08-06-recovery-outcome-states-and-result-packet.md`
