@@ -1,6 +1,6 @@
 # GrillMe Batch 3 승인 원장
 
-> 상태: `OPEN / 4_OF_10 / EARLY_CANON_CHECKPOINT`
+> 상태: `OPEN / 5_OF_10 / EARLY_CANON_CHECKPOINT`
 > 배치 병합: `BATCH_MERGE_NOT_STARTED`
 > 구현: `IMPLEMENTATION_NOT_AUTHORIZED`
 > 사람 검증: `HUMAN_QA_NOT_RUN`
@@ -19,8 +19,9 @@
 | 2 | `DEC-20260805-116-CANON-V2-RESCUE-RETRIEVAL-ROLE-BOUNDARY` | 피해자 구출과 회수 전투의 역할 경계 | `권장안대로 진행` | `APPROVED` | GitHub·Google Sheet 동기화 완료 |
 | 3 | `DEC-20260805-117-CANON-V2-RESCUE-MINIGAME-AND-RETRIEVAL-RULE-COVERAGE` | 공통 구출 문법·사건별 변주·회수 규칙 범위 | `권장안대로 진행` | `APPROVED` | GitHub·Google Sheet 동기화 완료 |
 | 철회 | `DEC-20260806-118-CANON-V2-FOUR-TURN-TELEGRAPH-PATTERN-CYCLE` | 예시를 고정 4턴 규칙으로 잘못 승격 | 사용자 정정: `4턴 확정이 아님` | `RETRACTED / NON_COUNTING` | 활성 정본·Sheet 결정에서 제거 |
-| 4 | `DEC-20260806-119-CANON-V2-RECOVERY-PATTERN-POOL-SELECTION-AND-JUDGMENT` | 괴이별 패턴 풀의 첫 노출·반복 선택·전조·판단 불변성 | `권장안대로 진행` | `APPROVED` | GitHub·Google Sheet 동기화 대상 |
-| 5–10 | — | 후속 GrillMe | — | `NOT_ASKED` | 미반영 |
+| 4 | `DEC-20260806-119-CANON-V2-RECOVERY-PATTERN-POOL-SELECTION-AND-JUDGMENT` | 괴이별 패턴 풀의 첫 노출·반복 선택·전조·판단 불변성 | `권장안대로 진행` | `APPROVED` | GitHub·Google Sheet 동기화 완료 |
+| 5 | `DEC-20260806-120-CANON-V2-RECOVERY-OUTCOME-STATES-AND-INDEPENDENT-RESULT-PACKET` | 회수 대표 결과 6종·승인 철수 경계·독립 결과 패킷 | `권장안대로 진행` | `APPROVED` | GitHub·Google Sheet 동기화 대상 |
+| 6–10 | — | 후속 GrillMe | — | `NOT_ASKED` | 미반영 |
 
 ## 1번 승인 — 규칙 정보 연속성
 
@@ -82,15 +83,37 @@
 - 같은 패턴 재등장 시 같은 규칙과 정답을 유지하며, 다른 정답은 별도 variant pattern ID로 저작한다.
 - 고정 전역 턴 수·`cycle_turn`·`ordered_telegraphs`를 요구하지 않는다.
 
-상세 Decision·설계·감사:
+## 5번 승인 — 회수 결과 상태와 독립 결과 패킷
 
-- `docs/decisions/DEC-20260806-119-CANON-V2-RECOVERY-PATTERN-POOL-SELECTION-AND-JUDGMENT.md`
-- `docs/planning/2026-08-06-canon-v2-recovery-pattern-pool-selection-and-judgment-design.md`
-- `docs/audits/2026-08-06-recovery-pattern-pool-selection-and-judgment-adversarial-review.md`
+대표 회수 결과:
+
+| 결과 | 클래스 | 의미 |
+|---|---|---|
+| `residue_recovered` / 잔향 회수 완료 | `FULL_SUCCESS` | 현상·확산 경로 통제와 잔향 확보 |
+| `containment_complete` / 봉쇄 완료 | `CONTROL_SUCCESS` | 지속 봉쇄, 잔향 미회수 가능 |
+| `stabilization_complete` / 안정화 완료 | `PROVISIONAL_SUCCESS` | 현재 발현 정지, 재발 가능성과 후속 의무 |
+| `emergency_containment` / 긴급 봉쇄 | `PARTIAL_SUCCESS` | 참사 방지, 임시 봉쇄와 높은 잔여 위험 |
+| `approved_withdrawal` / 승인 철수 | `STRATEGIC_EXIT` | 책임 조건을 갖춘 전략적 종료 |
+| `control_failure` / 통제 실패 | `FAILURE` | 통제·안전 종결·승인 철수 불성립 |
+
+- 긴급 봉쇄는 부분 성공이다.
+- 승인 철수는 실패가 아니며 안전 철수 경로·철수 근거·보호 대상/중요 기록 상태·통제 붕괴 전 종료·후속 책임이 필요하다.
+- 승인 조건 없는 강제 퇴각은 통제 실패다.
+- 피해자 결과와 회수 결과는 서로 덮어쓰지 않는다.
+- 대표 결과 외에 보호 의무·요원/장비·현장/노출·증거/기록·후속 의무·인과 이력을 독립 저장한다.
+- `core_recovered`는 `LEGACY_SINGLE_OUTCOME`, `recovery_successful`과 `capture_success`는 `LEGACY_COMPAT_ONLY`다.
+- 결과 화면은 피해자 결과와 회수 결과를 동등한 헤드라인으로 표시하고 단일 임무 성공/실패 배너를 사용하지 않는다.
+
+상세 Decision·설계·감사·구현 계획:
+
+- `docs/decisions/DEC-20260806-120-CANON-V2-RECOVERY-OUTCOME-STATES-AND-INDEPENDENT-RESULT-PACKET.md`
+- `docs/planning/2026-08-06-canon-v2-recovery-outcome-states-and-independent-result-packet-design.md`
+- `docs/audits/2026-08-06-recovery-outcome-states-and-result-packet-adversarial-review.md`
+- `docs/superpowers/plans/2026-08-06-recovery-outcome-states-and-result-packet.md`
 
 ## 배치 운영 경계
 
-- 현재 카운터: `4_OF_10`.
+- 현재 카운터: `5_OF_10`.
 - Decision 118은 계속 `RETRACTED / NON_COUNTING`이다.
 - 현재 PR은 조기 기획 체크포인트일 뿐 배치 병합 완료가 아니다.
 - PR #149의 실제 저장·UI·접근성 QA 상태는 변경하지 않는다.
@@ -98,4 +121,4 @@
 
 ## 다음 질문 후보
 
-다음 GrillMe 5/10은 `core_recovered` 단일 종결을 대체할 회수 결과 상태와 성공·부분 성공·승인 철수·실패의 판정 경계를 다룬다.
+다음 GrillMe 6/10은 구출 결과 패킷의 생존·분리·후유증·보호 의무가 회수 초기 조건과 행동 제약에 어떻게 연결되는지를 다룬다.
