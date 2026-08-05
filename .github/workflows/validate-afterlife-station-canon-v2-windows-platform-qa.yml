@@ -7,11 +7,16 @@ on:
       - ".github/workflows/validate-afterlife-station-canon-v2-migration-design.yml"
       - "scripts/core/afterlife_*.gd"
       - "scripts/data/afterlife_*.gd"
+      - "tools/qa/run_afterlife_canon_v2_human_qa.ps1"
       - "tests/afterlife_migration/afterlife_windows_*.gd"
       - "tests/windows/**"
       - "tests/fixtures/afterlife_migration/**"
       - "tests/test_afterlife_canon_v2_windows_platform_qa.py"
+      - "tests/test_afterlife_canon_v2_local_human_qa_runner.py"
       - "docs/qa/2026-08-05-afterlife-canon-v2-windows-platform-preflight-evidence.md"
+      - "docs/qa/2026-08-05-afterlife-canon-v2-local-human-qa-runner.md"
+      - "docs/qa/2026-08-05-afterlife-canon-v2-local-human-qa-runner-evidence.md"
+      - "docs/decisions/D-2026-08-05-AFTERLIFE-STATION-CANON-V2-MIGRATION-DESIGN-LOCAL-HUMAN-QA-RUNNER-ADDENDUM.md"
   workflow_dispatch:
 
 permissions:
@@ -28,9 +33,26 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Validate Windows platform QA contract
+      - name: Run local Human QA runner Prepare and Collect preflight
         shell: pwsh
-        run: python -m unittest tests/test_afterlife_canon_v2_windows_platform_qa.py
+        run: |
+          $qaRoot = Join-Path $env:RUNNER_TEMP "afterlife-local-human-qa-runner"
+          $source = Join-Path $env:GITHUB_WORKSPACE "tests\fixtures\afterlife_migration\main_mvp039_recovery.json"
+          $before = (Get-FileHash -LiteralPath $source -Algorithm SHA256).Hash
+          ./tools/qa/run_afterlife_canon_v2_human_qa.ps1 -Stage Prepare -SourceMain $source -QaRoot $qaRoot
+          ./tools/qa/run_afterlife_canon_v2_human_qa.ps1 -Stage Collect -QaRoot $qaRoot
+          $after = (Get-FileHash -LiteralPath $source -Algorithm SHA256).Hash
+          if ($before -ne $after) { throw "SOURCE_MUTATED_BY_LOCAL_RUNNER_PREFLIGHT" }
+          $manifest = Get-Content -LiteralPath (Join-Path $qaRoot "evidence\manifest.json") -Raw | ConvertFrom-Json
+          if ([string]$manifest.status -ne "EVIDENCE_COLLECTED") { throw "RUNNER_MANIFEST_STATUS_MISMATCH" }
+          if ([string]$manifest.privacy_boundary -ne "ACTUAL_USER_SAVE_CONTENT_NOT_RECORDED") { throw "RUNNER_PRIVACY_BOUNDARY_MISMATCH" }
+          if ([string]$manifest.automated_classification -ne "AUTOMATED_LOCAL_HUMAN_QA_RUNNER_PREFLIGHT_GREEN") { throw "RUNNER_CLASSIFICATION_MISMATCH" }
+          Write-Host "LOCAL HUMAN QA RUNNER PREFLIGHT: PASS"
+      - name: Validate Windows platform QA contracts
+        shell: pwsh
+        run: |
+          python -m unittest tests/test_afterlife_canon_v2_windows_platform_qa.py
+          python -m unittest tests/test_afterlife_canon_v2_local_human_qa_runner.py
       - name: Setup Godot 4.7.1
         uses: chickensoft-games/setup-godot@v2
         with:
@@ -57,5 +79,7 @@ jobs:
           path: |
             afterlife-windows-import.log
             ${{ env.AFTERLIFE_QA_APPDATA }}/logs
+            ${{ runner.temp }}/afterlife-local-human-qa-runner/evidence
+            ${{ runner.temp }}/afterlife-local-human-qa-runner/logs
           if-no-files-found: warn
           retention-days: 7
