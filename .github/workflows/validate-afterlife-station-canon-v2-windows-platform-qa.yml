@@ -22,7 +22,7 @@ jobs:
     runs-on: windows-latest
     timeout-minutes: 45
     env:
-      AFTERLIFE_QA_APPDATA: ${{ runner.temp }}\afterlife-windows-appdata
+      AFTERLIFE_QA_APPDATA: ${{ github.workspace }}/.qa-appdata
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -56,6 +56,6 @@ jobs:
           name: afterlife-windows-platform-failure
           path: |
             afterlife-windows-import.log
-            ${{ env.AFTERLIFE_QA_APPDATA }}\logs
+            ${{ env.AFTERLIFE_QA_APPDATA }}/logs
           if-no-files-found: warn
           retention-days: 7
