@@ -1,6 +1,6 @@
 # GrillMe Batch 3 승인 원장
 
-> 상태: `OPEN / 3_OF_10 / EARLY_CANON_CHECKPOINT`
+> 상태: `OPEN / 4_OF_10 / EARLY_CANON_CHECKPOINT`
 > 배치 병합: `BATCH_MERGE_NOT_STARTED`
 > 구현: `IMPLEMENTATION_NOT_AUTHORIZED`
 > 사람 검증: `HUMAN_QA_NOT_RUN`
@@ -19,7 +19,8 @@
 | 2 | `DEC-20260805-116-CANON-V2-RESCUE-RETRIEVAL-ROLE-BOUNDARY` | 피해자 구출과 회수 전투의 역할 경계 | `권장안대로 진행` | `APPROVED` | GitHub·Google Sheet 동기화 완료 |
 | 3 | `DEC-20260805-117-CANON-V2-RESCUE-MINIGAME-AND-RETRIEVAL-RULE-COVERAGE` | 공통 구출 문법·사건별 변주·회수 규칙 범위 | `권장안대로 진행` | `APPROVED` | GitHub·Google Sheet 동기화 완료 |
 | 철회 | `DEC-20260806-118-CANON-V2-FOUR-TURN-TELEGRAPH-PATTERN-CYCLE` | 예시를 고정 4턴 규칙으로 잘못 승격 | 사용자 정정: `4턴 확정이 아님` | `RETRACTED / NON_COUNTING` | 활성 정본·Sheet 결정에서 제거 |
-| 4–10 | — | 후속 GrillMe | — | `NOT_ASKED` | 미반영 |
+| 4 | `DEC-20260806-119-CANON-V2-RECOVERY-PATTERN-POOL-SELECTION-AND-JUDGMENT` | 괴이별 패턴 풀의 첫 노출·반복 선택·전조·판단 불변성 | `권장안대로 진행` | `APPROVED` | GitHub·Google Sheet 동기화 대상 |
+| 5–10 | — | 후속 GrillMe | — | `NOT_ASKED` | 미반영 |
 
 ## 1번 승인 — 규칙 정보 연속성
 
@@ -57,17 +58,44 @@
 
 사건과 괴이가 저작한 패턴 수에 따라 회수 길이가 달라진다. 고정 4턴·전조 세 개 누적·4턴 전용 대응은 활성 권위가 아니다.
 
-상세 재감사:
-`docs/audits/2026-08-06-recovery-pattern-authority-project-wide-reaudit.md`
+## 4번 승인 — 괴이별 패턴 풀의 선택·판단
+
+```text
+괴이별 패턴 풀
+→ 유효 후보 계산
+→ 완성된 패턴 하나 선택
+→ 단일 전조 공개
+→ 가설·근거·대응
+→ 즉시 정오 판정
+→ 안정도 또는 피해
+→ 선택 이유와 결과 인과 기록
+→ 다음 패턴 또는 회수 종결
+```
+
+- 미관측 패턴을 저작 순서로 우선한다.
+- 모든 패턴을 확인한 뒤에는 유효 후보를 다시 계산한다.
+- 후보가 둘 이상이면 직전 패턴을 제외해 즉시 반복을 피한다.
+- 남은 후보는 사건별 가중치로 선택하며 가중치 미지정은 동일 기본값이다.
+- 유효 후보가 하나뿐이면 반복을 허용하고 이유를 기록한다.
+- 첫 노출 완전 무작위와 전체 확인 뒤 순수 고정 순환을 모두 금지한다.
+- 전조 공개 전에 `pattern_id`와 `correct_response_id`를 확정하고 판정 종료까지 바꾸지 않는다.
+- 같은 패턴 재등장 시 같은 규칙과 정답을 유지하며, 다른 정답은 별도 variant pattern ID로 저작한다.
+- 고정 전역 턴 수·`cycle_turn`·`ordered_telegraphs`를 요구하지 않는다.
+
+상세 Decision·설계·감사:
+
+- `docs/decisions/DEC-20260806-119-CANON-V2-RECOVERY-PATTERN-POOL-SELECTION-AND-JUDGMENT.md`
+- `docs/planning/2026-08-06-canon-v2-recovery-pattern-pool-selection-and-judgment-design.md`
+- `docs/audits/2026-08-06-recovery-pattern-pool-selection-and-judgment-adversarial-review.md`
 
 ## 배치 운영 경계
 
-- 현재 카운터: `3_OF_10`.
-- Decision 118은 `RETRACTED / NON_COUNTING`이다.
+- 현재 카운터: `4_OF_10`.
+- Decision 118은 계속 `RETRACTED / NON_COUNTING`이다.
 - 현재 PR은 조기 기획 체크포인트일 뿐 배치 병합 완료가 아니다.
 - PR #149의 실제 저장·UI·접근성 QA 상태는 변경하지 않는다.
 - PR #151의 제품 구현과 병합은 승인하지 않는다.
 
 ## 다음 질문 후보
 
-다음 GrillMe는 회수 페이즈의 패턴 선택·전조·판단 구조를 실제 프로젝트 기준으로 다시 확인한 뒤, 괴이별 패턴 풀이 언제·어떻게 선택되고 반복되는지를 다룬다.
+다음 GrillMe 5/10은 `core_recovered` 단일 종결을 대체할 회수 결과 상태와 성공·부분 성공·승인 철수·실패의 판정 경계를 다룬다.
