@@ -165,7 +165,7 @@ func _apply_and_restore_v2(
 	if String(applied.get("code", "")) != "OK":
 		_restore_memory_state(previous_state)
 		if transaction != null:
-			var rollback_apply := transaction.rollback_last_commit(committed_handle)
+			var rollback_apply: Dictionary = transaction.rollback_last_commit(committed_handle)
 			_last_migration_result = rollback_apply.duplicate(true)
 		return applied
 	if game_state.has_method("activate_afterlife_content_contract_for_migration"):
@@ -174,14 +174,14 @@ func _apply_and_restore_v2(
 	if String(restored.get("code", "")) != "OK":
 		_restore_memory_state(previous_state)
 		if transaction != null:
-			var rollback_restore := transaction.rollback_last_commit(committed_handle)
+			var rollback_restore: Dictionary = transaction.rollback_last_commit(committed_handle)
 			_last_migration_result = rollback_restore.duplicate(true)
 		return _result(false, "RESTORE_FAILED", {"restore_code": restored.get("code", "UNKNOWN")})
 	var hidden_after: Dictionary = game_state.snapshot_hidden_legacy_state_for_test()
 	if not _semantic_equal(hidden_before, hidden_after):
 		_restore_memory_state(previous_state)
 		if transaction != null:
-			var rollback_hidden := transaction.rollback_last_commit(committed_handle)
+			var rollback_hidden: Dictionary = transaction.rollback_last_commit(committed_handle)
 			_last_migration_result = rollback_hidden.duplicate(true)
 		return _result(false, "HIDDEN_STATE_GUARD_VIOLATION")
 	_legacy_guard_snapshot = hidden_after.duplicate(true)
