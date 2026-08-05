@@ -3,9 +3,10 @@ extends SceneTree
 const EpisodeLoaderScript := preload("res://scripts/data/episode_loader.gd")
 const BASE_EPISODE := "res://data/episodes/episode_001_afterlife_station.json"
 const SIDECAR := "res://data/episodes/episode_001_afterlife_station_canon_v2.json"
+const RUNTIME_PROJECTION := "res://data/episodes/episode_001_afterlife_station_canon_v2_runtime_projection.json"
 const LOADER_SCRIPT := "res://scripts/data/afterlife_canon_v2_loader.gd"
 const CONTRACT_ID := "afterlife-station-canon-v2"
-const MALICIOUS_SIDECAR := "user://afterlife_canon_v2_self_declared_layers.json"
+const FORGED_SIDECAR := "user://afterlife_canon_v2_self_declared_layers.json"
 
 var _failures: Array[String] = []
 
@@ -18,6 +19,7 @@ func _init() -> void:
 
 func _test_data_contract() -> void:
 	_expect(FileAccess.file_exists(SIDECAR), "Canon v2 sidecar missing")
+	_expect(FileAccess.file_exists(RUNTIME_PROJECTION), "Canon v2 runtime projection missing")
 	if not FileAccess.file_exists(SIDECAR):
 		return
 	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(SIDECAR))
@@ -54,7 +56,11 @@ func _test_explicit_loader_and_computed_provenance() -> void:
 		_expect(String(v2.get("content_contract_id", "")) == CONTRACT_ID, "explicit Canon v2 load failed")
 		_expect(v2.get("loaded_layers", []) == ["base_episode", "legacy_core_validation", "canonical_v2"], "computed layer provenance mismatch")
 		_expect(typeof(v2.get("layer_checksums")) == TYPE_DICTIONARY, "layer checksums missing")
-		_expect(not v2.has("recovery_patterns"), "legacy and Canon v2 recovery patterns mixed")
+		_expect(not String(v2.get("runtime_projection_checksum", "")).is_empty(), "runtime projection checksum missing")
+		_expect(String(v2.get("recovery_pattern_source", "")) == "canonical_v2_projection", "canonical recovery projection provenance missing")
+		_expect(String(v2.get("clue_source", "")) == "canonical_v2_projection", "canonical record projection provenance missing")
+		_expect(typeof(v2.get("recovery_patterns")) == TYPE_ARRAY, "Canon v2 runtime recovery projection missing")
+		_expect(typeof(v2.get("clues")) == TYPE_ARRAY, "Canon v2 runtime record projection missing")
 		_expect(typeof(v2.get("recovery_encounters")) == TYPE_DICTIONARY, "Canon v2 recovery block missing")
 
 	_expect(FileAccess.file_exists(LOADER_SCRIPT), "AfterlifeCanonV2Loader script missing")
@@ -63,21 +69,21 @@ func _test_explicit_loader_and_computed_provenance() -> void:
 	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(SIDECAR))
 	if typeof(parsed) != TYPE_DICTIONARY:
 		return
-	var malicious := (parsed as Dictionary).duplicate(true)
-	malicious["loaded_layers"] = ["base_episode", "canonical_v2"]
-	_write_json(MALICIOUS_SIDECAR, malicious)
+	var forged := (parsed as Dictionary).duplicate(true)
+	forged["loaded_layers"] = ["base_episode", "canonical_v2"]
+	_write_json(FORGED_SIDECAR, forged)
 	var script_value: Variant = load(LOADER_SCRIPT)
 	_expect(script_value is Script, "AfterlifeCanonV2Loader failed to load")
 	if script_value is Script:
 		var loader = (script_value as Script).new()
-		var result: Dictionary = loader.load_contract(BASE_EPISODE, CONTRACT_ID, MALICIOUS_SIDECAR)
+		var result: Dictionary = loader.load_contract(BASE_EPISODE, CONTRACT_ID, FORGED_SIDECAR)
 		_expect(String(result.get("code", "")) == "DISALLOWED_SELF_DECLARED_PROVENANCE", "sidecar forged provenance")
-	_remove_path(MALICIOUS_SIDECAR)
+	_remove_path(FORGED_SIDECAR)
 
 
 func _write_json(path: String, value: Dictionary) -> void:
 	var file := FileAccess.open(path, FileAccess.WRITE)
-	_expect(file != null, "failed to open malicious fixture")
+	_expect(file != null, "failed to open forged fixture")
 	if file != null:
 		file.store_string(JSON.stringify(value))
 		file.close()
@@ -110,7 +116,7 @@ func _expect(condition: bool, message: String) -> void:
 
 
 func _finish() -> void:
-	_remove_path(MALICIOUS_SIDECAR)
+	_remove_path(FORGED_SIDECAR)
 	if _failures.is_empty():
 		print("AFTERLIFE CANON V2 LOADER: PASS")
 		quit(0)
