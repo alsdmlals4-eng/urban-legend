@@ -20,6 +20,7 @@ on:
       - "scripts/ui/main_menu.gd"
       - "project.godot"
       - "tests/**"
+      - "tests/fixtures/afterlife_migration/**"
       - "tests/run_afterlife_canon_v2_migration_tests.sh"
       - "TEST_CHECKLIST.md"
       - "MVP_ROADMAP.md"
