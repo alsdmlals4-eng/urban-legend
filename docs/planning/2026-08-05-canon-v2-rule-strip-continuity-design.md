@@ -8,6 +8,7 @@
 > 사람 검증: `HUMAN_QA_NOT_RUN`
 > 병합: `MERGE_NOT_AUTHORIZED`
 > 기반 작업: PR #149의 Human QA runner와 논리·변경 범위를 분리한 Draft PR #151
+> 후속 역할 경계: `DEC-20260805-116-CANON-V2-RESCUE-RETRIEVAL-ROLE-BOUNDARY / APPROVED`
 
 ## 1. 문제 정의
 
@@ -93,7 +94,7 @@
 - 동일 Decision ID를 가진 Decision·계획·Batch ledger·적대적 감사
 - 단일 상태와 단계별 표현 계약
 - 접근성·승인 경계
-- Batch 3 `1_OF_10` 상태
+- Batch 3의 첫 승인 상태
 - 알려진 실패 모드
 
 ### Green
@@ -105,6 +106,7 @@
 - 중복 문구는 Decision을 권위로 두고 계획·감사는 역할별 요약만 유지한다.
 - 제품 코드·Scene·JSON·자산은 변경하지 않는다.
 - PR #149의 저장·Human QA 상태를 변경하지 않는다.
+- 후속 승인 누적에도 첫 승인 계약이 유지되도록 카운터 검사를 append-safe로 유지한다.
 
 ## 7. 검증 항목
 
@@ -130,7 +132,7 @@
 
 이번 승인은 정보 구조와 단계 연속성만 고정한다. 다음은 별도 승인 전 변경하지 않는다.
 
-- 구출과 회수의 상세 역할 경계
+- 구출과 회수의 구체 조작·수치·턴 구조
 - 정확한 패널 폭·위치·비율
 - 스트립 최대 항목 수
 - 구체 단축키
@@ -139,4 +141,12 @@
 - 제품 구현
 - PR #149 또는 PR #151 병합
 
-최종 상태는 `IMPLEMENTATION_NOT_AUTHORIZED / HUMAN_QA_NOT_RUN / MERGE_NOT_AUTHORIZED`다.
+## 9. 후속 승인 상태
+
+구출과 회수의 역할 경계는 `DEC-20260805-116-CANON-V2-RESCUE-RETRIEVAL-ROLE-BOUNDARY`에서 다음과 같이 승인됐다.
+
+- 구출은 피해자 분리·보호, 생존, 분리, 후유증 최소화를 소유한다.
+- 회수는 현상 통제, 안정화, 봉쇄, 잔향 회수 또는 승인 철수를 소유한다.
+- 두 단계는 같은 규칙 스트립을 사용하지만 같은 성공 조건과 같은 퍼즐을 반복하지 않는다.
+
+구체 조작·수치·제품 구현과 사람 검증은 계속 미승인이다. 최종 상태는 `IMPLEMENTATION_NOT_AUTHORIZED / HUMAN_QA_NOT_RUN / MERGE_NOT_AUTHORIZED`다.
