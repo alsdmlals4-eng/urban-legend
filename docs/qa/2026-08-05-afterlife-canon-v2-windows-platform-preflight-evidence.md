@@ -2,7 +2,7 @@
 
 - Decision: `D-2026-08-05-AFTERLIFE-STATION-CANON-V2-MIGRATION-DESIGN`
 - Gate: `WINDOWS_PLATFORM_PREFLIGHT`
-- 자동 분류: `AUTOMATED_PLATFORM_PREFLIGHT_PENDING`
+- 자동 분류: `AUTOMATED_WINDOWS_PLATFORM_PREFLIGHT_GREEN`
 - 실제 사용자 저장: `ACTUAL_USER_SAVE_NOT_AVAILABLE`
 - 실제 Human QA: `HUMAN_QA_NOT_RUN`
 - UI·접근성: `UI_ACCESSIBILITY_NOT_RUN`
@@ -29,7 +29,7 @@ GitHub-hosted `windows-latest`에서 Godot의 Windows `user://` 저장 위치를
 
 ## 자동 검증과 Human QA 경계
 
-`AUTOMATED_PLATFORM_PREFLIGHT`은 GitHub-hosted Windows runner의 합성 fixture 검증이다. 다음을 증명하지 않는다.
+`AUTOMATED_WINDOWS_PLATFORM_PREFLIGHT_GREEN`은 GitHub-hosted Windows runner의 합성 fixture 검증이다. 다음을 증명하지 않는다.
 
 - 실제 장기간 사용자 저장의 호환성
 - Windows 10 실제 사용자 PC
@@ -51,7 +51,7 @@ ACTUAL_USER_SAVE_NOT_AVAILABLE
 
 ## TDD 증거
 
-### RED
+### RED 1 — Windows 산출물 부재
 
 - PR #148 초기 HEAD: `56f21e6044d8c6e1e31bcd333a16903c0d568b70`
 - Migration run: `31003493733`
@@ -59,32 +59,64 @@ ACTUAL_USER_SAVE_NOT_AVAILABLE
 - Windows platform contract: `1 failure / 5 errors`
 - 실패 원인: Windows workflow·PowerShell harness·phase test·locked-file test·evidence 부재
 
-### GREEN
+### RED 2 — 결과 상태 부재
 
-현재 상태: `AUTOMATED_PLATFORM_PREFLIGHT_PENDING`
+- 상태 계약 HEAD: `0031bd1a8fe744345e82ef2b0060143e44b23d01`
+- Migration run: `31005214355`
+- Windows harness 구현 계약은 존재했으나 evidence·Decision이 PENDING/기존 상태여서 `3 failures`
+- 제품 코드·transaction 동작의 실패가 아니라 정본 결과 상태 부재만 검출
 
-GREEN 확정 시 다음을 기록한다.
+### GREEN — Windows 플랫폼 자동 사전검증
 
-- exact HEAD
-- Windows workflow run ID
-- Migration·ANNUAL 회귀 run ID
-- SHA-256 원본·복구 일치
-- 독점 잠금 결과 코드
-- PREPARED 복구 결과
-- COMMITTED_PENDING_RUNTIME_APPLY 복구 결과 `ROLLBACK_RESTORED`
-- source race 결과 `SOURCE_CHANGED`
-- 쓰기 실패 결과 `WRITE_FAILED`
-- failure artifact 보존 여부
+검증된 Windows 구현 HEAD: `55fec577ed43573087c23e6eab0df04e0ee9346e`
+
+- 독립 Windows workflow `31004882572`: SUCCESS
+- Migration Ubuntu+Windows workflow `31004882698`: SUCCESS
+- ANNUAL/Godot 전체 회귀 `31004882551`: SUCCESS
+- Documentation `31004882625`: SUCCESS
+- Windows job 환경: `Windows Server 2025`, build `10.0.26100`, image `windows-2025-vs2026`
+- Godot `4.7.1`: import PASS
+- Windows contract 6 tests: PASS
+
+검증 결과:
+
+- 독점 잠금: `FileShare.None`; source SHA-256 불변
+- `PREPARED` 강제 종료: 다음 프로세스에서 `ABORTED`; source SHA-256 불변
+- `COMMITTED_PENDING_RUNTIME_APPLY` 강제 종료: 다음 프로세스에서 `ROLLBACK_RESTORED`; source SHA-256 불변
+- source checksum 외부 변경: `SOURCE_CHANGED`
+- deterministic write failure: `WRITE_FAILED`
+- Windows ACL 쓰기 거부: expected access denied, `WRITE_FAILED`, source SHA-256 불변
+- transaction journal·temp·backup 잔여 없음
+- failure artifact: not created because the GREEN run had no failure
+
+로그의 최종 증거 마커:
+
+```text
+PREPARED
+COMMITTED_PENDING_RUNTIME_APPLY
+ROLLBACK_RESTORED
+SOURCE_CHANGED
+WRITE_FAILED
+AFTERLIFE WINDOWS PLATFORM PREFLIGHT: PASS
+```
 
 ## 플랫폼 행렬
 
 | 대상 | 상태 | 판정 |
 |---|---|---|
-| GitHub-hosted Windows runner | `PENDING` | 자동 플랫폼 사전검증 |
+| GitHub-hosted Windows Server 2025 runner | `GREEN` | 자동 Windows 플랫폼 사전검증 |
 | Windows 10 실제 PC | `NOT_RUN` | Human QA 필요 |
 | Windows 11 실제 PC | `NOT_RUN` | Human QA 필요 |
 | 실제 사용자 저장 복사본 | `NOT_AVAILABLE` | 사용자 파일 필요 |
 | UI·접근성 | `NOT_RUN` | 실제 플레이 필요 |
+
+## 적대적 검토
+
+- 첫 PowerShell 시도는 strict mode에서 `$LASTEXITCODE`가 함수 범위에 생성되지 않아 실패했다.
+- 동기 Godot 호출을 `Start-Process -Wait -PassThru`와 명시적 `ExitCode`로 교체했다.
+- workflow 예약 불확실성을 제거하기 위해 격리 APPDATA를 workspace 기준으로 정규화했다.
+- ACL 테스트에서 출력된 access denied는 의도적으로 생성한 장애이며 job은 source 무결성 확인 후 PASS했다.
+- Windows CI는 Windows 10/11 실제 PC, 장기간 사용자 저장, 화면·조작 검증의 대체물이 아니다.
 
 ## 금지 범위
 
