@@ -11,6 +11,13 @@ EVIDENCE = ROOT / "docs/qa/2026-08-05-afterlife-canon-v2-local-human-qa-runner-e
 ADDENDUM = ROOT / "docs/decisions/D-2026-08-05-AFTERLIFE-STATION-CANON-V2-MIGRATION-DESIGN-LOCAL-HUMAN-QA-RUNNER-ADDENDUM.md"
 WINDOWS_WORKFLOW = ROOT / ".github/workflows/validate-afterlife-station-canon-v2-windows-platform-qa.yml"
 MIGRATION_WORKFLOW = ROOT / ".github/workflows/validate-afterlife-station-canon-v2-migration-design.yml"
+VALIDATED_IMPLEMENTATION_HEAD = "652efecbb9e4dfbd7a388bc894983cd8f0cc08a9"
+VALIDATED_RUNS = (
+    "31008696028",  # Documentation
+    "31008696020",  # Independent Windows
+    "31008696047",  # Migration Ubuntu + Windows
+    "31008696037",  # ANNUAL / Godot
+)
 
 
 class AfterlifeCanonV2LocalHumanQaRunnerTests(unittest.TestCase):
@@ -107,6 +114,23 @@ class AfterlifeCanonV2LocalHumanQaRunnerTests(unittest.TestCase):
                 "main_mvp039_recovery.json",
             ):
                 self.assertIn(token, text)
+
+    def test_green_evidence_records_validated_head_and_runs(self) -> None:
+        evidence = EVIDENCE.read_text(encoding="utf-8")
+        addendum = ADDENDUM.read_text(encoding="utf-8")
+        for text in (evidence, addendum):
+            self.assertIn(VALIDATED_IMPLEMENTATION_HEAD, text)
+            for run_id in VALIDATED_RUNS:
+                self.assertIn(run_id, text)
+            self.assertIn("AUTOMATED_LOCAL_HUMAN_QA_RUNNER_PREFLIGHT_GREEN", text)
+            self.assertNotIn("AUTOMATED_LOCAL_HUMAN_QA_RUNNER_PREFLIGHT_PENDING", text)
+        for token in (
+            "PREPARED",
+            "EVIDENCE_COLLECTED",
+            "ACTUAL_USER_SAVE_CONTENT_NOT_RECORDED",
+            "LOCAL HUMAN QA RUNNER PREFLIGHT: PASS",
+        ):
+            self.assertIn(token, evidence)
 
 
 if __name__ == "__main__":
