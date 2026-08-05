@@ -14,10 +14,14 @@ on:
       - "scripts/core/validation_session.gd"
       - "project.godot"
       - "tests/afterlife_migration/**"
+      - "tests/fixtures/afterlife_migration/**"
       - "tests/run_afterlife_canon_v2_migration_tests.sh"
       - "tests/run_godot_regression.sh"
       - "tests/test_afterlife_canon_v2_runner_contract.py"
       - "tests/test_afterlife_canon_v2_implementation_evidence.py"
+      - "tests/test_afterlife_canon_v2_human_qa_plan.py"
+      - "docs/qa/2026-08-05-afterlife-canon-v2-human-qa-plan.md"
+      - "docs/qa/templates/afterlife-canon-v2-human-qa-evidence-template.md"
       - "docs/decisions/D-2026-08-05-AFTERLIFE-STATION-CANON-V2-MIGRATION-DESIGN.md"
       - "docs/decisions/D-2026-08-05-WORKFLOW-BENCHMARK-TDD-AND-CHECKPOINT-POLICY.md"
       - "docs/implementation/2026-08-05-afterlife-station-canon-v2-migration-implementation-evidence.md"
@@ -42,12 +46,13 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Validate migration design, plan, evidence, and runner contracts
+      - name: Validate migration design, plan, evidence, QA, and runner contracts
         run: |
           python -m unittest tests/test_afterlife_station_canon_v2_migration_design.py
           python -m unittest tests/test_afterlife_station_canon_v2_implementation_plan.py
           python -m unittest tests/test_afterlife_canon_v2_runner_contract.py
           python -m unittest tests/test_afterlife_canon_v2_implementation_evidence.py
+          python -m unittest tests/test_afterlife_canon_v2_human_qa_plan.py
       - name: Setup Godot 4.7.1
         uses: chickensoft-games/setup-godot@v2
         with:
