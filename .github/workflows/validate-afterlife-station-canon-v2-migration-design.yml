@@ -79,6 +79,11 @@ jobs:
           HOME: ${{ runner.temp }}/afterlife-transaction-home
           XDG_DATA_HOME: ${{ runner.temp }}/afterlife-transaction-xdg
         run: godot --headless --path . --script res://tests/afterlife_migration/afterlife_migration_transaction_test.gd
+      - name: Run Validation Canon v2 activation contract
+        env:
+          HOME: ${{ runner.temp }}/afterlife-validation-canon-home
+          XDG_DATA_HOME: ${{ runner.temp }}/afterlife-validation-canon-xdg
+        run: godot --headless --path . --script res://tests/afterlife_migration/afterlife_validation_canon_activation_test.gd
       - name: Run main and Validation migration integration contract
         env:
           HOME: ${{ runner.temp }}/afterlife-integration-home
