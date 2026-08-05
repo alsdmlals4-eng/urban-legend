@@ -178,3 +178,15 @@ Base를 갱신한 뒤 프로젝트의 `docs/BASE_RULES_VERSION.md`에 기준 커
 - GPT는 기획 중 세계관·인물·에피소드·UI 목업과 기획 종료 Demo·상점 후보를 생성할 수 있다.
 - 생성 결과는 자동 최종 자산이 아니며 `docs/IMAGE_ASSET_WORKFLOW.md`의 검수·manifest·Godot 적용 Gate를 통과해야 한다.
 - 각 단계 뒤 `repository-wide-audit`로 stale 이미지·구형 Prompt·untouched 소비자를 검수한다.
+
+## 플랫폼 출시·에셋 권리
+
+출시·외부 자산·AI·외주·참조 기반 독립 제작 작업은 다음 프로젝트 증거를 읽는다.
+
+- `docs/PLATFORM_RELEASE_AND_ASSET_RIGHTS_PROFILE.md`
+- `docs/ASSET_RIGHTS_AND_PROVENANCE_RECORD.md`
+- `docs/GAME_RELEASE_COMPLIANCE_EVIDENCE_PACK.md`
+
+PC/Steam 우선, STOVE 비교 후보로 검토하며 모바일은 PC Validation 뒤 별도 Decision 전까지 범위 밖이다. 공포·괴이의 핵심 경험을 숨겨 등급을 낮추지 않는다. 원본을 조금 수정하거나 AI로 변환했다는 이유만으로 독립 자산으로 보지 않고 `reference_brief`, `forbidden_expression`, 별도 `final_asset_record`, 유사성 검토를 요구한다.
+
+필수 권리·계약·약관 버전·플랫폼 답변·build/store/trailer 일치가 미확인이면 `RELEASE_BLOCKED_UNVERIFIED`다. 자동 테스트와 Template은 실제 자산 감사·법률 검토·플랫폼 제출·최종 등급을 대체하지 않는다.
