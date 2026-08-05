@@ -4,7 +4,8 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-RETRACTED_DECISION = ROOT / "docs/decisions/DEC-20260806-118-CANON-V2-FOUR-TURN-TELEGRAPH-PATTERN-CYCLE.md"
+RETRACTED_ID = "DEC-20260806-118-CANON-V2-FOUR-TURN-TELEGRAPH-PATTERN-CYCLE"
+RETRACTED_DECISION = ROOT / f"docs/decisions/{RETRACTED_ID}.md"
 REAUDIT = ROOT / "docs/audits/2026-08-06-recovery-pattern-authority-project-wide-reaudit.md"
 BATCH = ROOT / "docs/planning/2026-08-05-grillme-batch-3-approvals.md"
 DESIGN_INTENT = ROOT / "DESIGN_INTENT.md"
@@ -59,25 +60,41 @@ class RecoveryPatternAuthorityCorrectionContractTests(unittest.TestCase):
         ):
             self.assertIn(heading, text)
 
-    def test_batch_counter_returns_to_three_and_retraction_does_not_count(self):
+    def test_retraction_remains_non_counting_as_valid_batch_approvals_advance(self):
         text = BATCH.read_text(encoding="utf-8")
         counter = re.search(r"상태: `OPEN / (\d+)_OF_10", text)
         self.assertIsNotNone(counter)
-        self.assertEqual(int(counter.group(1)), 3)
-        self.assertIn("DEC-20260806-118-CANON-V2-FOUR-TURN-TELEGRAPH-PATTERN-CYCLE", text)
+        approved_rows = re.findall(
+            r"^\|\s*\d+\s*\|\s*`(DEC-[^`]+)`\s*\|.*\|\s*`APPROVED`\s*\|",
+            text,
+            re.MULTILINE,
+        )
+        self.assertEqual(int(counter.group(1)), len(approved_rows))
+        self.assertGreaterEqual(len(approved_rows), 3)
+        self.assertNotIn(RETRACTED_ID, approved_rows)
+        self.assertIn(RETRACTED_ID, text)
         self.assertIn("RETRACTED / NON_COUNTING", text)
-        self.assertIn("다음 GrillMe는 회수 페이즈의 패턴 선택·전조·판단 구조", text)
 
-    def test_active_pointers_return_to_decision_117(self):
+    def test_active_pointers_never_return_to_retracted_decision(self):
+        batch = BATCH.read_text(encoding="utf-8")
+        approved_ids = set(
+            re.findall(
+                r"^\|\s*\d+\s*\|\s*`(DEC-[^`]+)`\s*\|.*\|\s*`APPROVED`\s*\|",
+                batch,
+                re.MULTILINE,
+            )
+        )
         for path in (DESIGN_INTENT, PROJECT_BRIEF):
             text = path.read_text(encoding="utf-8")
-            self.assertIn(
-                "최신 승인 오버레이: `DEC-20260805-117-CANON-V2-RESCUE-MINIGAME-AND-RETRIEVAL-RULE-COVERAGE`",
-                text,
-            )
+            pointer = re.search(r"최신 승인 오버레이: `([^`]+)`", text)
+            self.assertIsNotNone(pointer, path.relative_to(ROOT))
+            active_id = pointer.group(1)
+            self.assertIn(active_id, approved_ids, path.relative_to(ROOT))
+            self.assertNotEqual(active_id, RETRACTED_ID, path.relative_to(ROOT))
             self.assertNotIn(
-                "최신 승인 오버레이: `DEC-20260806-118-CANON-V2-FOUR-TURN-TELEGRAPH-PATTERN-CYCLE`",
+                f"최신 승인 오버레이: `{RETRACTED_ID}`",
                 text,
+                path.relative_to(ROOT),
             )
 
     def test_no_universal_fixed_turn_contract_is_asserted(self):
