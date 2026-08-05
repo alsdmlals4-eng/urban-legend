@@ -21,6 +21,7 @@
 - 실제 사용자 저장이 없으면 `ACTUAL_USER_SAVE_NOT_AVAILABLE`을 유지한다.
 - 실제 UI·접근성·Windows 10/11 판정은 `HUMAN_QA_NOT_RUN`을 유지한다.
 - 별도 승인 전 stacked PR은 Draft·미병합 상태를 유지한다.
+- current 계획·Decision은 완료 QA 파일 경로를 직접 링크하지 않고 Draft PR 번호와 run evidence로 연결한다.
 
 ---
 
@@ -50,7 +51,7 @@
 - [ ] **Step 2: Run test to verify it fails**
 
 Run: `python -m unittest tests/test_afterlife_canon_v2_local_human_qa_runner.py`
-Expected: runner·evidence 문서 부재로 FAIL.
+Expected: runner·runner 증거 패키지 부재로 FAIL.
 
 - [ ] **Step 3: Commit RED**
 
@@ -63,8 +64,8 @@ git commit -m "test: define local Human QA runner contract"
 
 **Files:**
 - Create: `tools/qa/run_afterlife_canon_v2_human_qa.ps1`
-- Create: `docs/qa/2026-08-05-afterlife-canon-v2-local-human-qa-runner-evidence.md`
-- Modify: `docs/qa/2026-08-05-afterlife-canon-v2-human-qa-plan.md`
+- Create: 로컬 runner 실행 가이드와 전용 증거 문서 — Draft PR `#149` 변경 집합에서 관리
+- Create: Parent Decision에 연결되는 runner Addendum — Draft PR `#149` 변경 집합에서 관리
 
 **Interfaces:**
 - Consumes: source save paths and optional QA root.
@@ -130,7 +131,7 @@ Expected:
 ### Task 4: Canon and Sheet Synchronization
 
 **Files:**
-- Modify: `docs/decisions/D-2026-08-05-AFTERLIFE-STATION-CANON-V2-MIGRATION-DESIGN.md`
+- Modify: Parent Decision에 연결되는 runner Addendum — current authority는 PR·HEAD·run ID만 기록
 - Modify: PR body
 - Update linked Google Sheet with the same Decision ID.
 
