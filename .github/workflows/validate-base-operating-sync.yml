@@ -33,6 +33,7 @@ on:
       - "tests/test_recovery_pattern_pool_selection_and_judgment_planning_contract.py"
       - "tests/test_recovery_outcome_states_and_result_packet_planning_contract.py"
       - "tests/test_rescue_result_handoff_to_recovery_planning_contract.py"
+      - "tests/test_protection_obligation_cost_priority_and_termination_eligibility_planning_contract.py"
   workflow_dispatch:
 
 concurrency:
@@ -80,6 +81,7 @@ jobs:
             tests/test_recovery_pattern_pool_selection_and_judgment_planning_contract.py \
             tests/test_recovery_outcome_states_and_result_packet_planning_contract.py \
             tests/test_rescue_result_handoff_to_recovery_planning_contract.py \
+            tests/test_protection_obligation_cost_priority_and_termination_eligibility_planning_contract.py \
             2>&1 | tee documentation-validation.log
           status=${PIPESTATUS[0]}
           echo "$status" > documentation-validation-exit-code.txt
