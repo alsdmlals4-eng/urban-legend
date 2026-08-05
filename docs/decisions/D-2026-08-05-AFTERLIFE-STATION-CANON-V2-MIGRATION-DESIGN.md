@@ -124,9 +124,7 @@ APPROVED_SPEC
 - ID Matrix: `docs/planning/2026-08-05-afterlife-station-id-migration-matrix.md`
 - Implementation Plan: `docs/superpowers/plans/2026-08-05-afterlife-station-canon-v2-migration-implementation-plan.md`
 - Adversarial Addendum: `docs/superpowers/plans/2026-08-05-afterlife-station-canon-v2-migration-plan-adversarial-review-addendum.md`
-- Human QA Plan: `docs/qa/2026-08-05-afterlife-canon-v2-human-qa-plan.md`
-- Automated fixture evidence: `docs/qa/2026-08-05-afterlife-canon-v2-automated-fixture-preflight-evidence.md`
-- Human QA evidence template: `docs/qa/templates/afterlife-canon-v2-human-qa-evidence-template.md`
+- Human QA package: Draft PR `#147`
 - 운영 정책: `docs/decisions/D-2026-08-05-WORKFLOW-BENCHMARK-TDD-AND-CHECKPOINT-POLICY.md`
 
 검증된 구현 HEAD `e8d48024de0c335d5856dbaf9b2a0ac892d1a3b4`:
