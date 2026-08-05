@@ -6,16 +6,16 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 RUNNER = ROOT / "tools/qa/run_afterlife_canon_v2_human_qa.ps1"
-PLAN = ROOT / "docs/qa/2026-08-05-afterlife-canon-v2-human-qa-plan.md"
+GUIDE = ROOT / "docs/qa/2026-08-05-afterlife-canon-v2-local-human-qa-runner.md"
 EVIDENCE = ROOT / "docs/qa/2026-08-05-afterlife-canon-v2-local-human-qa-runner-evidence.md"
-DECISION = ROOT / "docs/decisions/D-2026-08-05-AFTERLIFE-STATION-CANON-V2-MIGRATION-DESIGN.md"
+ADDENDUM = ROOT / "docs/decisions/D-2026-08-05-AFTERLIFE-STATION-CANON-V2-MIGRATION-DESIGN-LOCAL-HUMAN-QA-RUNNER-ADDENDUM.md"
 WINDOWS_WORKFLOW = ROOT / ".github/workflows/validate-afterlife-station-canon-v2-windows-platform-qa.yml"
 MIGRATION_WORKFLOW = ROOT / ".github/workflows/validate-afterlife-station-canon-v2-migration-design.yml"
 
 
 class AfterlifeCanonV2LocalHumanQaRunnerTests(unittest.TestCase):
     def test_required_runner_files_exist(self) -> None:
-        for path in (RUNNER, PLAN, EVIDENCE, DECISION, WINDOWS_WORKFLOW, MIGRATION_WORKFLOW):
+        for path in (RUNNER, GUIDE, EVIDENCE, ADDENDUM, WINDOWS_WORKFLOW, MIGRATION_WORKFLOW):
             self.assertTrue(path.is_file(), path)
 
     def test_runner_has_three_explicit_stages_and_inputs(self) -> None:
@@ -52,6 +52,7 @@ class AfterlifeCanonV2LocalHumanQaRunnerTests(unittest.TestCase):
         text = RUNNER.read_text(encoding="utf-8")
         for token in (
             "$PreviousAppData = $env:APPDATA",
+            "$QaAppData = $layout.app_data",
             "$env:APPDATA = $QaAppData",
             "try {",
             "finally {",
@@ -75,10 +76,10 @@ class AfterlifeCanonV2LocalHumanQaRunnerTests(unittest.TestCase):
         self.assertNotIn("HUMAN_QA_PASS", text)
 
     def test_docs_keep_real_save_and_automation_boundaries_separate(self) -> None:
-        plan = PLAN.read_text(encoding="utf-8")
+        guide = GUIDE.read_text(encoding="utf-8")
         evidence = EVIDENCE.read_text(encoding="utf-8")
-        decision = DECISION.read_text(encoding="utf-8")
-        for text in (plan, evidence, decision):
+        addendum = ADDENDUM.read_text(encoding="utf-8")
+        for text in (guide, evidence, addendum):
             for token in (
                 "AUTOMATED_LOCAL_HUMAN_QA_RUNNER_PREFLIGHT_GREEN",
                 "ACTUAL_USER_SAVE_NOT_AVAILABLE",
@@ -93,7 +94,8 @@ class AfterlifeCanonV2LocalHumanQaRunnerTests(unittest.TestCase):
             "-Stage Launch",
             "-Stage Collect",
         ):
-            self.assertIn(token, plan)
+            self.assertIn(token, guide)
+        self.assertIn("D-2026-08-05-AFTERLIFE-STATION-CANON-V2-MIGRATION-DESIGN", addendum)
 
     def test_windows_workflows_execute_runner_preflight(self) -> None:
         for workflow in (WINDOWS_WORKFLOW, MIGRATION_WORKFLOW):
