@@ -8,6 +8,13 @@ RUN_ROOT="${GODOT_TEST_TMP:-$(mktemp -d)}"
 LOG_ROOT="$RUN_ROOT/logs"
 mkdir -p "$LOG_ROOT"
 
+if [[ "${SKIP_AFTERLIFE_CANON_V2_FOCUSED:-0}" != "1" ]]; then
+  GODOT_BIN="$GODOT_BIN" \
+    GODOT_TEST_TIMEOUT="$GODOT_TEST_TIMEOUT" \
+    GODOT_TEST_TMP="$RUN_ROOT/afterlife-canon-v2-focused" \
+    bash tests/run_afterlife_canon_v2_migration_tests.sh
+fi
+
 script_tests=(
   annual_mvp_001_data_test
   annual_mvp_001_state_test
@@ -117,5 +124,5 @@ for test_name in "${scene_tests[@]}"; do
   run_test "$test_name" scene
 done
 
-echo "Godot regression suite: 58/58 test entrypoints passed"
+echo "Godot regression suite: 58 legacy + 7 Canon v2 focused entrypoints passed"
 echo "Logs: $LOG_ROOT"
