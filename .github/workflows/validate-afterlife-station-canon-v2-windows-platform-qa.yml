@@ -1,0 +1,61 @@
+name: Validate Afterlife Station Canon v2 Windows Platform QA
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/validate-afterlife-station-canon-v2-windows-platform-qa.yml"
+      - ".github/workflows/validate-afterlife-station-canon-v2-migration-design.yml"
+      - "scripts/core/afterlife_*.gd"
+      - "scripts/data/afterlife_*.gd"
+      - "tests/afterlife_migration/afterlife_windows_*.gd"
+      - "tests/windows/**"
+      - "tests/fixtures/afterlife_migration/**"
+      - "tests/test_afterlife_canon_v2_windows_platform_qa.py"
+      - "docs/qa/2026-08-05-afterlife-canon-v2-windows-platform-preflight-evidence.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows-platform-preflight:
+    runs-on: windows-latest
+    timeout-minutes: 45
+    env:
+      AFTERLIFE_QA_APPDATA: ${{ runner.temp }}\afterlife-windows-appdata
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate Windows platform QA contract
+        shell: pwsh
+        run: python -m unittest tests/test_afterlife_canon_v2_windows_platform_qa.py
+      - name: Setup Godot 4.7.1
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.1
+          use-dotnet: false
+          include-templates: false
+      - name: Import project in isolated APPDATA
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path $env:AFTERLIFE_QA_APPDATA | Out-Null
+          $env:APPDATA = $env:AFTERLIFE_QA_APPDATA
+          $output = & godot --headless --path . --import 2>&1
+          $exitCode = $LASTEXITCODE
+          $output | Set-Content -LiteralPath afterlife-windows-import.log -Encoding UTF8
+          if ($exitCode -ne 0) { exit $exitCode }
+      - name: Run Windows file lock, crash recovery, source race, and write failure preflight
+        shell: pwsh
+        run: ./tests/windows/run_afterlife_canon_v2_windows_platform_preflight.ps1 -GodotBinary godot
+      - name: Preserve Windows failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: afterlife-windows-platform-failure
+          path: |
+            afterlife-windows-import.log
+            ${{ env.AFTERLIFE_QA_APPDATA }}\logs
+          if-no-files-found: warn
+          retention-days: 7
