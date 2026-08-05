@@ -26,6 +26,8 @@ on:
       - "tests/test_annual_expansion_planning_contract.py"
       - "tests/test_genre_benchmark_contract.py"
       - "tests/test_annual_mvp_002_implementation_contract.py"
+      - "tests/test_rule_strip_continuity_planning_contract.py"
+      - "tests/test_rescue_retrieval_role_boundary_planning_contract.py"
   workflow_dispatch:
 
 concurrency:
@@ -48,7 +50,7 @@ jobs:
         run: python -m py_compile tools/check_archive_governance.py tests/test_archive_retention_governance.py
       - name: Validate archive governance
         run: python tools/check_archive_governance.py
-      - name: Validate Base, core, routing, local Skill, investigation contracts, archive, active references, planning synchronization, expansion baseline, benchmark recommendations, and ANNUAL-MVP-002 implementation records
+      - name: Validate Base, core, routing, local Skill, investigation contracts, archive, active references, planning synchronization, expansion baseline, benchmark recommendations, ANNUAL-MVP-002 implementation records, and GrillMe Batch 3 planning contracts
         shell: bash
         run: |
           set +e
@@ -66,6 +68,8 @@ jobs:
             tests/test_annual_expansion_planning_contract.py \
             tests/test_genre_benchmark_contract.py \
             tests/test_annual_mvp_002_implementation_contract.py \
+            tests/test_rule_strip_continuity_planning_contract.py \
+            tests/test_rescue_retrieval_role_boundary_planning_contract.py \
             2>&1 | tee documentation-validation.log
           status=${PIPESTATUS[0]}
           echo "$status" > documentation-validation-exit-code.txt
