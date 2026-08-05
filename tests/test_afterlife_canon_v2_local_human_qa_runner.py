@@ -52,8 +52,7 @@ class AfterlifeCanonV2LocalHumanQaRunnerTests(unittest.TestCase):
         text = RUNNER.read_text(encoding="utf-8")
         for token in (
             "$PreviousAppData = $env:APPDATA",
-            "$QaAppData = $layout.app_data",
-            "$env:APPDATA = $QaAppData",
+            "$env:APPDATA = $layout.app_data",
             "try {",
             "finally {",
             "$env:APPDATA = $PreviousAppData",
