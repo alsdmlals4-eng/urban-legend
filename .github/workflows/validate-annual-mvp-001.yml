@@ -11,10 +11,16 @@ on:
       - "scenes/poc/annual_mvp_002/**"
       - "scripts/poc/core_mvp_001/**"
       - "scripts/core/validation_*.gd"
+      - "data/episodes/episode_001_afterlife_station_canon_v2.json"
+      - "data/migrations/afterlife_station_canon_v2_id_migration.json"
+      - "scripts/data/afterlife_*.gd"
+      - "scripts/core/afterlife_*.gd"
+      - "scripts/data/episode_loader.gd"
       - "scripts/ui/validation_entry_coordinator.gd"
       - "scripts/ui/main_menu.gd"
       - "project.godot"
       - "tests/**"
+      - "tests/run_afterlife_canon_v2_migration_tests.sh"
       - "TEST_CHECKLIST.md"
       - "MVP_ROADMAP.md"
       - "docs/CURRENT_STATUS.md"
@@ -84,10 +90,16 @@ jobs:
           GODOT_BIN: godot
           GODOT_TEST_TMP: ${{ runner.temp }}/annual-mvp-002-focused
         run: bash tests/run_annual_mvp_002_tests.sh
+      - name: Run focused Canon v2 migration suite
+        env:
+          GODOT_BIN: godot
+          GODOT_TEST_TMP: ${{ runner.temp }}/afterlife-canon-v2-focused
+        run: bash tests/run_afterlife_canon_v2_migration_tests.sh
       - name: Run full Godot regression
         env:
           GODOT_BIN: godot
           GODOT_TEST_TMP: ${{ runner.temp }}/annual-mvp-001-regression
+          SKIP_AFTERLIFE_CANON_V2_FOCUSED: "1"
         run: bash tests/run_godot_regression.sh
       - name: Preserve failure evidence
         if: failure()
@@ -101,6 +113,7 @@ jobs:
             ${{ runner.temp }}/annual-mvp-001-core/focused-logs
             ${{ runner.temp }}/annual-mvp-001-focused/focused-logs
             ${{ runner.temp }}/annual-mvp-002-focused/focused-logs
+            ${{ runner.temp }}/afterlife-canon-v2-focused/afterlife-canon-v2-logs
             ${{ runner.temp }}/annual-mvp-001-regression/logs
           if-no-files-found: warn
           retention-days: 7
