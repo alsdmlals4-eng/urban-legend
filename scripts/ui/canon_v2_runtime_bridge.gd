@@ -1,4 +1,3 @@
-class_name CanonV2RuntimeBridge
 extends Node
 
 const OperationOverlayScript := preload("res://scripts/ui/canon_v2_operation_overlay.gd")
