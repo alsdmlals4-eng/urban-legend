@@ -4,6 +4,7 @@ const OperationOverlayScript := preload("res://scripts/ui/canon_v2_operation_ove
 const AfterlifeRescueResultAdapterScript := preload("res://scripts/data/afterlife_rescue_result_adapter.gd")
 
 const SYNC_INTERVAL_SECONDS := 0.25
+const FREE_INFORMATION_CHANNELS := ["observe", "open_manual", "preview_result"]
 
 var _elapsed := 0.0
 var _mounted_scene_instance_id := 0
@@ -36,8 +37,105 @@ func classify_scene_path(scene_path: String) -> String:
 	return ""
 
 
+func classify_recovery_action_id(action_id: String) -> String:
+	var normalized := action_id.to_lower()
+	match normalized:
+		"response_afterlife_present_official_ticket", "response_afterlife_insert_official_identifier":
+			return "seal"
+		"response_afterlife_anchor_persistent_trace":
+			return "observe"
+	if normalized.contains("observe") or normalized.contains("trace") or normalized.contains("evidence"):
+		return "observe"
+	if normalized.contains("manual"):
+		return "open_manual"
+	if normalized.contains("protect") or normalized.contains("guard") or normalized.contains("shield"):
+		return "protect"
+	if normalized.contains("seal") or normalized.contains("contain") or normalized.contains("official_ticket") or normalized.contains("official_identifier"):
+		return "seal"
+	if normalized.contains("attack") or normalized.contains("suppress") or normalized.contains("strike"):
+		return "attack"
+	if normalized.contains("withdraw") or normalized.contains("retreat"):
+		return "withdraw"
+	return ""
+
+
+func request_action_gate(action_id: String, continuation: Callable) -> bool:
+	var scene_tree := get_tree()
+	if scene_tree == null or scene_tree.current_scene == null:
+		return false
+	if classify_scene_path(scene_tree.current_scene.scene_file_path) != "recovery":
+		return false
+	var overlay := scene_tree.current_scene.get_node_or_null("CanonV2OperationOverlay")
+	var game_state := get_node_or_null("/root/GameState")
+	return _request_action_gate(action_id, continuation, overlay, game_state)
+
+
+func request_action_gate_for_test(
+	action_id: String,
+	continuation: Callable,
+	overlay: Node,
+	game_state: Node
+) -> bool:
+	return _request_action_gate(action_id, continuation, overlay, game_state)
+
+
 func mount_overlay_for_test(host: Node, runtime_state: Dictionary, mode: String) -> Node:
 	return _mount_overlay(host, runtime_state, mode)
+
+
+func _request_action_gate(
+	action_id: String,
+	continuation: Callable,
+	overlay: Node,
+	game_state: Node
+) -> bool:
+	var semantic_channel := classify_recovery_action_id(action_id)
+	if semantic_channel.is_empty() or semantic_channel in FREE_INFORMATION_CHANNELS:
+		return false
+	if overlay == null or not overlay.has_method("request_action_confirmation"):
+		return false
+	if game_state == null or not game_state.has_method("preview_canon_v2_recovery_action"):
+		return false
+	var preview: Dictionary = game_state.preview_canon_v2_recovery_action({
+		"action_id": semantic_channel,
+		"source_action_id": action_id,
+		"base_cost": _base_cost_for_channel(semantic_channel)
+	}, {
+		"safe_route": true,
+		"available_supports": []
+	})
+	if not bool(preview.get("allowed", true)):
+		overlay.request_action_confirmation(preview, Callable(), Callable())
+		return true
+	var requires_gate := not _array_copy(preview.get("risk_changes")).is_empty()
+	requires_gate = requires_gate or not _array_copy(preview.get("cost_adjustments")).is_empty()
+	requires_gate = requires_gate or not _array_copy(preview.get("validation_errors")).is_empty()
+	if not requires_gate:
+		return false
+	var preview_id := String(preview.get("preview_id", ""))
+	var confirm_callback := Callable(self, "_confirm_gated_action").bind(
+		game_state,
+		preview_id,
+		continuation
+	)
+	overlay.request_action_confirmation(preview, confirm_callback, Callable())
+	return true
+
+
+func _confirm_gated_action(game_state: Node, preview_id: String, continuation: Callable) -> void:
+	if game_state == null or not game_state.has_method("commit_canon_v2_recovery_action"):
+		return
+	var committed: Dictionary = game_state.commit_canon_v2_recovery_action(preview_id)
+	if not bool(committed.get("committed", false)):
+		return
+	if continuation.is_valid():
+		continuation.call()
+
+
+func _base_cost_for_channel(channel: String) -> int:
+	if channel in FREE_INFORMATION_CHANNELS:
+		return 0
+	return 1
 
 
 func _sync_current_scene() -> void:
