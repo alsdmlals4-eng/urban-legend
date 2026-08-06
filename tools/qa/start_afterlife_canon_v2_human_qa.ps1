@@ -75,11 +75,14 @@ function Resolve-ExecutablePath {
     }
     try {
         $command = Get-Command $Candidate -ErrorAction Stop | Select-Object -First 1
-        $resolved = [string]$command.Source
+        $resolved = [string]$command.Path
+        if ([string]::IsNullOrWhiteSpace($resolved)) {
+            $resolved = [string]$command.Source
+        }
         if ([string]::IsNullOrWhiteSpace($resolved)) {
             $resolved = [string]$command.Definition
         }
-        if (Test-Path -LiteralPath $resolved -PathType Leaf) {
+        if (-not [string]::IsNullOrWhiteSpace($resolved)) {
             return [System.IO.Path]::GetFullPath($resolved)
         }
     }
