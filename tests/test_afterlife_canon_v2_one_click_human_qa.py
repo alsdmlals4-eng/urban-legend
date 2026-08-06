@@ -69,7 +69,7 @@ class AfterlifeCanonV2OneClickHumanQaTests(unittest.TestCase):
             self.assertIn(token, joined)
 
     def test_orchestrator_declares_expected_inputs_and_functions(self) -> None:
-        text = ORCHESTRATOR.read_text(encoding="utf-8")
+        text = ORCHESTRATOR.read_text(encoding="utf-8-sig")
         for token in (
             "$GodotBinary",
             "$SourceMain",
@@ -89,8 +89,16 @@ class AfterlifeCanonV2OneClickHumanQaTests(unittest.TestCase):
         ):
             self.assertIn(token, text)
 
+    def test_orchestrator_is_windows_powershell_51_utf8_safe(self) -> None:
+        raw = ORCHESTRATOR.read_bytes()
+        self.assertTrue(raw.startswith(b"\xef\xbb\xbf"), "PowerShell 5.1 requires a UTF-8 BOM for non-ASCII source")
+        text = raw.decode("utf-8-sig")
+        self.assertIn("System.Text.UTF8Encoding", text)
+        self.assertIn("System.IO.File]::ReadAllText", text)
+        self.assertNotIn("Get-Content -LiteralPath $ChecklistPath -Raw", text)
+
     def test_orchestrator_delegates_to_existing_runner(self) -> None:
-        text = ORCHESTRATOR.read_text(encoding="utf-8")
+        text = ORCHESTRATOR.read_text(encoding="utf-8-sig")
         for token in (
             "run_afterlife_canon_v2_human_qa.ps1",
             "-Stage Prepare",
@@ -103,7 +111,7 @@ class AfterlifeCanonV2OneClickHumanQaTests(unittest.TestCase):
         self.assertNotIn("SOURCE_COPY_HASH_MISMATCH", text)
 
     def test_godot_discovery_is_bounded_and_version_checked(self) -> None:
-        text = ORCHESTRATOR.read_text(encoding="utf-8")
+        text = ORCHESTRATOR.read_text(encoding="utf-8-sig")
         for token in (
             "GODOT_BINARY",
             "Get-Command",
@@ -128,7 +136,7 @@ class AfterlifeCanonV2OneClickHumanQaTests(unittest.TestCase):
             self.assertNotIn(forbidden, text)
 
     def test_state_machine_and_classifications_are_explicit(self) -> None:
-        text = ORCHESTRATOR.read_text(encoding="utf-8")
+        text = ORCHESTRATOR.read_text(encoding="utf-8-sig")
         for token in (
             "PREFLIGHT",
             "READY",
@@ -152,7 +160,7 @@ class AfterlifeCanonV2OneClickHumanQaTests(unittest.TestCase):
             self.assertIn(token, text)
 
     def test_shareable_summary_keeps_private_boundaries(self) -> None:
-        text = ORCHESTRATOR.read_text(encoding="utf-8")
+        text = ORCHESTRATOR.read_text(encoding="utf-8-sig")
         for token in (
             "human-qa-summary.json",
             "HUMAN_QA_SUMMARY.md",
