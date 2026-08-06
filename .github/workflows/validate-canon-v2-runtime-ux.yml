@@ -9,6 +9,7 @@ on:
       - "scripts/core/recovery_outcome_policy.gd"
       - "scripts/core/protection_follow_up_policy.gd"
       - "scripts/core/afterlife_migrating_game_state.gd"
+      - "scripts/data/afterlife_rescue_result_adapter.gd"
       - "scripts/ui/canon_v2_operation_overlay.gd"
       - "scripts/ui/canon_v2_runtime_bridge.gd"
       - "scripts/scenes/minigame_scene.gd"
