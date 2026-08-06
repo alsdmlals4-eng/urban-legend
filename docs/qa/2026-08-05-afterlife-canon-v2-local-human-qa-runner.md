@@ -1,5 +1,17 @@
 # 저승역 Canon v2 로컬 Human QA Runner
 
+## 일반 사용자는 원클릭 경로 사용
+
+`main`을 pull한 뒤 저장소 루트의 `START_HUMAN_QA.cmd`를 실행한다. 이 진입점은 Godot과 저장을 자동 탐색하고 아래의 전문가용 `-Stage Prepare`, `-Stage Launch`, `-Stage Collect` 절차를 안전하게 연결한다.
+
+자세한 일반 사용자 문서:
+
+```text
+docs/qa/2026-08-06-one-click-human-qa-package.md
+```
+
+아래 내용은 자동 탐색 실패, 재현 조사, 단계별 복구처럼 세 단계를 직접 제어해야 할 때 사용하는 전문가 경로다.
+
 - Parent Decision: `D-2026-08-05-AFTERLIFE-STATION-CANON-V2-MIGRATION-DESIGN`
 - 자동 runner 목표 상태: `AUTOMATED_LOCAL_HUMAN_QA_RUNNER_PREFLIGHT_GREEN`
 - 실제 사용자 저장 업로드 상태: `ACTUAL_USER_SAVE_NOT_AVAILABLE`
