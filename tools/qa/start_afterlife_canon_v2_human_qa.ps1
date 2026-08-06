@@ -446,6 +446,9 @@ if (-not (Test-Path -LiteralPath $Runner -PathType Leaf)) {
 if ($SkipLaunch -and -not $NonInteractive) {
     throw 'SKIP_LAUNCH_REQUIRES_NON_INTERACTIVE'
 }
+if ($NonInteractive -and $DefaultChecklistStatus -eq 'PASS') {
+    throw 'NON_INTERACTIVE_PASS_FORBIDDEN'
+}
 
 $resolvedQaRoot = if ([string]::IsNullOrWhiteSpace($QaRoot)) { Get-DefaultQaRoot } else { [System.IO.Path]::GetFullPath($QaRoot) }
 New-Item -ItemType Directory -Force -Path $resolvedQaRoot | Out-Null
