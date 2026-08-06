@@ -23,7 +23,7 @@
 | 5 | `DEC-20260806-120-CANON-V2-RECOVERY-OUTCOME-STATES-AND-INDEPENDENT-RESULT-PACKET` | 회수 대표 결과 6종·승인 철수 경계·독립 결과 패킷 | `권장안대로 진행` | `APPROVED` | GitHub·Google Sheet 동기화 완료 |
 | 6 | `DEC-20260806-121-CANON-V2-RESCUE-RESULT-HANDOFF-TO-RECOVERY-INITIAL-CONDITIONS-AND-ACTION-CONSTRAINTS` | 불변 구출 스냅샷·회수 초기 조건·보호 의무·행동 제약 | `권장안대로 진행` | `APPROVED` | GitHub·Google Sheet 동기화 완료 |
 | 7 | `DEC-20260806-122-CANON-V2-PROTECTION-OBLIGATION-COST-PRIORITY-AND-RECOVERY-TERMINATION-ELIGIBILITY` | 보호 의무 행동 비용·표시 우선순위·회수 종결 자격 | `권장안대로 진행` | `APPROVED` | GitHub·Google Sheet 동기화 완료 |
-| 8 | `DEC-20260806-123-CANON-V2-PROTECTION-OBLIGATION-FOLLOW-UP-REENTRY-REWARD-AND-EVALUATION-LINKAGE` | 보호 의무 상태의 후속 조사·재진입·보상·평가 연결 | `권장안대로 진행` | `APPROVED` | GitHub 동기화 완료 / Google Sheet 동기화 대상 |
+| 8 | `DEC-20260806-123-CANON-V2-PROTECTION-OBLIGATION-FOLLOW-UP-REENTRY-REWARD-AND-EVALUATION-LINKAGE` | 보호 의무 상태의 후속 조사·재진입·보상·평가 연결 | `권장안대로 진행` | `APPROVED` | GitHub·Google Sheet 동기화 완료 |
 | 9–10 | — | 후속 GrillMe | — | `NOT_ASKED` | 미반영 |
 
 ## 1번 승인 — 규칙 정보 연속성
