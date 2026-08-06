@@ -11,6 +11,8 @@ GODOT_ARCHIVE_SHA256 = "c7ff14fd28472c8d4f193043de30278dcf7e5241a1dcf7566b02e27a
 DESCRIPTOR = ROOT / ".godot-live-editor/project-pilot.json"
 ADOPTION_DOC = ROOT / "docs/GODOT_LIVE_EDITOR_ADOPTION.md"
 WORKFLOW = ROOT / ".github/workflows/validate-godot-live-editor-pilot.yml"
+VALIDATION_SESSION_WRAPPER = ROOT / "scripts/core/afterlife_migrating_validation_session.gd"
+GAME_STATE_WRAPPER = ROOT / "scripts/core/afterlife_migrating_game_state.gd"
 ALLOWED_PATHS = {
     ".godot-live-editor/project-pilot.json",
     "docs/GODOT_LIVE_EDITOR_ADOPTION.md",
@@ -87,8 +89,19 @@ def test_source_authorities_and_main_scene_remain_installed() -> None:
     project = (ROOT / "project.godot").read_text(encoding="utf-8")
     assert 'run/main_scene="res://scenes/main_menu.tscn"' in project
     assert 'UrbanLegendState="*res://scripts/core/urban_legend_state.gd"' in project
-    assert 'ValidationSession="*res://scripts/core/validation_session.gd"' in project
-    assert 'GameState="*res://scripts/core/validation_game_state.gd"' in project
+    assert (
+        'ValidationSession="*res://scripts/core/afterlife_migrating_validation_session.gd"'
+        in project
+    )
+    assert 'GameState="*res://scripts/core/afterlife_migrating_game_state.gd"' in project
+    assert (
+        'extends "res://scripts/core/validation_session.gd"'
+        in _required_text(VALIDATION_SESSION_WRAPPER)
+    )
+    assert (
+        'extends "res://scripts/core/validation_game_state.gd"'
+        in _required_text(GAME_STATE_WRAPPER)
+    )
     assert '_mcp_game_helper="*res://addons/godot_ai/runtime/game_helper.gd"' in project
     assert 'enabled=PackedStringArray("res://addons/godot_ai/plugin.cfg")' in project
     assert (ROOT / "addons/godot_ai/plugin.cfg").is_file()
