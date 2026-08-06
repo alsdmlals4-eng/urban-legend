@@ -171,6 +171,7 @@ function Resolve-GodotBinary {
     $boundedRoots = @(
         (Join-Path $RepoRoot '.tools\godot'),
         $(if ($env:LOCALAPPDATA) { Join-Path $env:LOCALAPPDATA 'Programs' } else { $null }),
+        $(if ($env:USERPROFILE) { Join-Path $env:USERPROFILE 'godot' } else { $null }),
         $(if ($env:USERPROFILE) { Join-Path $env:USERPROFILE 'Downloads' } else { $null }),
         $(if ($env:USERPROFILE) { Join-Path $env:USERPROFILE 'Desktop' } else { $null })
     )
