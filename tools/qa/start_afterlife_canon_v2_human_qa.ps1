@@ -14,26 +14,16 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
+# Existing runner delegation contract: -Stage Prepare / -Stage Launch / -Stage Collect / -WaitForExit
 $ProjectName = 'urban-legend'
 $ExpectedGodotVersion = '4.7.1'
 $PrivacyBoundary = 'ACTUAL_USER_SAVE_CONTENT_NOT_RECORDED'
 $KnownStates = @(
-    'PREFLIGHT',
-    'READY',
-    'PREPARED',
-    'LAUNCHED',
-    'HUMAN_REVIEW_RECORDED',
-    'EVIDENCE_COLLECTED',
-    'COMPLETE',
-    'BLOCKED_NO_MAIN_SAVE',
-    'BLOCKED_GODOT_NOT_FOUND',
-    'BLOCKED_GODOT_VERSION',
-    'PREPARE_FAILED',
-    'LAUNCH_FAILED',
-    'SOURCE_MUTATED',
-    'COLLECT_FAILED',
-    'USER_CANCELLED',
-    'AUTOMATED_EVIDENCE_COLLECTION_FAILED'
+    'PREFLIGHT', 'READY', 'PREPARED', 'LAUNCHED',
+    'HUMAN_REVIEW_RECORDED', 'EVIDENCE_COLLECTED', 'COMPLETE',
+    'BLOCKED_NO_MAIN_SAVE', 'BLOCKED_GODOT_NOT_FOUND', 'BLOCKED_GODOT_VERSION',
+    'PREPARE_FAILED', 'LAUNCH_FAILED', 'SOURCE_MUTATED', 'COLLECT_FAILED',
+    'USER_CANCELLED', 'AUTOMATED_EVIDENCE_COLLECTION_FAILED'
 )
 
 $RepoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\..'))
@@ -75,22 +65,37 @@ function Get-DefaultQaRoot {
     return Join-Path $desktop ("urban-legend-qa\{0}" -f (Get-Date -Format 'yyyyMMdd-HHmmss'))
 }
 
+function Resolve-ExecutablePath {
+    param([string]$Candidate)
+    if ([string]::IsNullOrWhiteSpace($Candidate)) {
+        return $null
+    }
+    if (Test-Path -LiteralPath $Candidate -PathType Leaf) {
+        return [System.IO.Path]::GetFullPath($Candidate)
+    }
+    try {
+        $command = Get-Command $Candidate -ErrorAction Stop | Select-Object -First 1
+        $resolved = [string]$command.Source
+        if ([string]::IsNullOrWhiteSpace($resolved)) {
+            $resolved = [string]$command.Definition
+        }
+        if (Test-Path -LiteralPath $resolved -PathType Leaf) {
+            return [System.IO.Path]::GetFullPath($resolved)
+        }
+    }
+    catch {
+    }
+    return $null
+}
+
 function Add-GodotCandidate {
     param(
         [Parameter(Mandatory = $true)][System.Collections.ArrayList]$List,
         [string]$Path,
         [int]$Priority
     )
-    if ([string]::IsNullOrWhiteSpace($Path)) {
-        return
-    }
-    try {
-        $full = [System.IO.Path]::GetFullPath($Path)
-    }
-    catch {
-        return
-    }
-    if (-not (Test-Path -LiteralPath $full -PathType Leaf)) {
+    $full = Resolve-ExecutablePath -Candidate $Path
+    if ([string]::IsNullOrWhiteSpace($full)) {
         return
     }
     foreach ($item in $List) {
@@ -108,8 +113,7 @@ function Get-BoundedGodotFiles {
         return $results
     }
     $results += Get-ChildItem -LiteralPath $Root -Filter 'Godot*.exe' -File -ErrorAction SilentlyContinue
-    $children = Get-ChildItem -LiteralPath $Root -Directory -ErrorAction SilentlyContinue
-    foreach ($child in $children) {
+    foreach ($child in (Get-ChildItem -LiteralPath $Root -Directory -ErrorAction SilentlyContinue)) {
         $results += Get-ChildItem -LiteralPath $child.FullName -Filter 'Godot*.exe' -File -ErrorAction SilentlyContinue
     }
     return $results
@@ -118,15 +122,18 @@ function Get-BoundedGodotFiles {
 function Test-GodotVersion {
     param([Parameter(Mandatory = $true)][string]$Path)
     $rawOutput = & $Path --version 2>&1
-    $exitCode = $LASTEXITCODE
-    if ($exitCode -ne 0) {
+    if ($LASTEXITCODE -ne 0) {
         return [ordered]@{ path = $Path; raw = ''; semantic = ''; accepted = $false }
     }
     $raw = ([string]($rawOutput | Select-Object -First 1)).Trim()
     $match = [regex]::Match($raw, '(?<!\d)(\d+\.\d+\.\d+)')
     $semantic = if ($match.Success) { $match.Groups[1].Value } else { '' }
-    $accepted = $semantic -eq $ExpectedGodotVersion
-    return [ordered]@{ path = $Path; raw = $raw; semantic = $semantic; accepted = $accepted }
+    return [ordered]@{
+        path = $Path
+        raw = $raw
+        semantic = $semantic
+        accepted = ($semantic -eq $ExpectedGodotVersion)
+    }
 }
 
 function Resolve-GodotBinary {
@@ -137,21 +144,20 @@ function Resolve-GodotBinary {
     Add-GodotCandidate -List $candidates -Path $env:GODOT_BINARY -Priority 2
 
     foreach ($name in @('godot', 'godot4', 'Godot')) {
-        $command = Get-Command $name -ErrorAction SilentlyContinue | Select-Object -First 1
-        if ($null -ne $command) {
-            $commandPath = if ($command.Path) { $command.Path } else { $command.Source }
-            Add-GodotCandidate -List $candidates -Path $commandPath -Priority 3
-        }
+        Add-GodotCandidate -List $candidates -Path $name -Priority 3
     }
 
-    # Windows App Paths registry is checked without modifying registry state.
+    # Windows App Paths registry is read-only discovery.
     foreach ($registryKey in @(
         'HKCU:\Software\Microsoft\Windows\CurrentVersion\App Paths\Godot.exe',
         'HKLM:\Software\Microsoft\Windows\CurrentVersion\App Paths\Godot.exe'
     )) {
         try {
             $property = Get-ItemProperty -LiteralPath $registryKey -ErrorAction Stop
-            Add-GodotCandidate -List $candidates -Path ([string]$property.'(default)') -Priority 4
+            $defaultProperty = $property.PSObject.Properties['(default)']
+            if ($null -ne $defaultProperty) {
+                Add-GodotCandidate -List $candidates -Path ([string]$defaultProperty.Value) -Priority 4
+            }
         }
         catch {
         }
@@ -231,7 +237,10 @@ function Resolve-SourceSaves {
     if (-not [string]::IsNullOrWhiteSpace($validation) -and -not (Test-Path -LiteralPath $validation -PathType Leaf)) {
         $validation = $null
     }
-    return [ordered]@{ main = [System.IO.Path]::GetFullPath($main); validation = $validation }
+    return [ordered]@{
+        main = [System.IO.Path]::GetFullPath($main)
+        validation = $(if ([string]::IsNullOrWhiteSpace($validation)) { $null } else { [System.IO.Path]::GetFullPath($validation) })
+    }
 }
 
 function Read-Checklist {
@@ -276,6 +285,7 @@ function Show-HumanQaChecklist {
 function Read-HumanQaResults {
     param([Parameter(Mandatory = $true)][object]$Checklist)
     $results = @()
+    $privateNotes = @()
     foreach ($item in $Checklist.items) {
         if ($NonInteractive) {
             $status = $DefaultChecklistStatus
@@ -284,12 +294,7 @@ function Read-HumanQaResults {
         else {
             do {
                 $raw = Read-Host ("[{0}] PASS / FAIL / BLOCKED / NOT_RUN (빈 값=NOT_RUN)" -f $item.id)
-                if ([string]::IsNullOrWhiteSpace($raw)) {
-                    $status = 'NOT_RUN'
-                }
-                else {
-                    $status = $raw.Trim().ToUpperInvariant()
-                }
+                $status = if ([string]::IsNullOrWhiteSpace($raw)) { 'NOT_RUN' } else { $raw.Trim().ToUpperInvariant() }
                 $valid = @('PASS', 'FAIL', 'BLOCKED', 'NOT_RUN') -contains $status
             } until ($valid)
             $note = Read-Host '선택 메모 (개인정보·저장 내용·절대 경로 입력 금지, Enter=없음)'
@@ -303,10 +308,12 @@ function Read-HumanQaResults {
             category = [string]$item.category
             title_ko = [string]$item.title_ko
             status = $status
-            note = $note
+        }
+        if (-not [string]::IsNullOrWhiteSpace($note)) {
+            $privateNotes += [ordered]@{ id = [string]$item.id; note = $note }
         }
     }
-    return $results
+    return [ordered]@{ results = $results; private_notes = $privateNotes }
 }
 
 function Write-LauncherState {
@@ -318,8 +325,7 @@ function Write-LauncherState {
     if (-not ($KnownStates -contains $State)) {
         throw "UNKNOWN_LAUNCHER_STATE: $State"
     }
-    $statePath = Join-Path $Root '.control\launcher-state.local.json'
-    Write-JsonFile -Path $statePath -Value ([ordered]@{
+    Write-JsonFile -Path (Join-Path $Root '.control\launcher-state.local.json') -Value ([ordered]@{
         state = $State
         updated_at_utc = [DateTime]::UtcNow.ToString('o')
         error_code = $ErrorCode
@@ -330,7 +336,8 @@ function Get-ResultCounts {
     param([Parameter(Mandatory = $true)][object[]]$Results)
     $counts = [ordered]@{ PASS = 0; FAIL = 0; BLOCKED = 0; NOT_RUN = 0 }
     foreach ($result in $Results) {
-        $counts[[string]$result.status] = [int]$counts[[string]$result.status] + 1
+        $status = [string]$result.status
+        $counts[$status] = [int]$counts[$status] + 1
     }
     return $counts
 }
@@ -378,30 +385,27 @@ function Write-HumanQaSummary {
     $lines = @(
         '# Human QA Summary',
         '',
-        "- Classification: `$classification`",
-        "- Repository head: `$($summary.repository_head)`",
-        "- Godot version: `$($summary.godot_version)`",
-        "- Original main save unchanged: `$($summary.source_main_unchanged)`",
-        "- PASS / FAIL / BLOCKED / NOT_RUN: $($counts.PASS) / $($counts.FAIL) / $($counts.BLOCKED) / $($counts.NOT_RUN)",
-        "- Privacy boundary: `$PrivacyBoundary`",
+        ('- Classification: `{0}`' -f $classification),
+        ('- Repository head: `{0}`' -f $summary.repository_head),
+        ('- Godot version: `{0}`' -f $summary.godot_version),
+        ('- Original main save unchanged: `{0}`' -f $summary.source_main_unchanged),
+        ('- PASS / FAIL / BLOCKED / NOT_RUN: {0} / {1} / {2} / {3}' -f $counts.PASS, $counts.FAIL, $counts.BLOCKED, $counts.NOT_RUN),
+        ('- Privacy boundary: `{0}`' -f $PrivacyBoundary),
         '- Logs must be manually reviewed for personal information before sharing.',
         '- This result does not authorize merge or release.',
         '',
         '## Checklist'
     )
     foreach ($result in $Results) {
-        $lines += "- [$($result.status)] $($result.id): $($result.title_ko)"
+        $lines += ('- [{0}] {1}: {2}' -f $result.status, $result.id, $result.title_ko)
     }
     $lines | Set-Content -LiteralPath (Join-Path $evidence 'HUMAN_QA_SUMMARY.md') -Encoding UTF8
     return $summary
 }
 
 function Invoke-ExistingRunner {
-    param([Parameter(Mandatory = $true)][object]$Arguments)
+    param([Parameter(Mandatory = $true)][hashtable]$Arguments)
     & $Runner @Arguments
-    if ($LASTEXITCODE -ne 0) {
-        throw "RUNNER_STAGE_FAILED: $LASTEXITCODE"
-    }
 }
 
 if (-not (Test-Path -LiteralPath (Join-Path $RepoRoot 'project.godot') -PathType Leaf)) {
@@ -428,9 +432,9 @@ try {
         Write-Warning '작업 트리에 변경이 있습니다. 이 도구는 정리하거나 삭제하지 않지만 결과 해석 시 주의하세요.'
     }
 
-    Write-Host "Repository HEAD: $(Get-RepositoryHead)"
-    Write-Host "Godot: $($godot.raw)"
-    Write-Host "QA evidence root prepared. Original save content will not be printed."
+    Write-Host ("Repository HEAD: {0}" -f (Get-RepositoryHead))
+    Write-Host ("Godot: {0}" -f $godot.raw)
+    Write-Host 'QA root를 준비했습니다. 원본 저장 내용과 절대 경로는 출력하지 않습니다.'
     Show-HumanQaChecklist -Checklist $checklist
 
     if (-not $NonInteractive) {
@@ -443,11 +447,7 @@ try {
     }
 
     Write-LauncherState -Root $resolvedQaRoot -State 'READY'
-    $prepareArguments = @{
-        Stage = 'Prepare'
-        SourceMain = $saves.main
-        QaRoot = $resolvedQaRoot
-    }
+    $prepareArguments = @{ Stage = 'Prepare'; SourceMain = $saves.main; QaRoot = $resolvedQaRoot }
     if (-not [string]::IsNullOrWhiteSpace([string]$saves.validation)) {
         $prepareArguments.SourceValidation = $saves.validation
     }
@@ -477,7 +477,8 @@ try {
         Write-LauncherState -Root $resolvedQaRoot -State 'LAUNCHED'
     }
 
-    $results = @(Read-HumanQaResults -Checklist $checklist)
+    $review = Read-HumanQaResults -Checklist $checklist
+    Write-JsonFile -Path (Join-Path $resolvedQaRoot '.control\human-notes.local.json') -Value $review.private_notes
     Write-LauncherState -Root $resolvedQaRoot -State 'HUMAN_REVIEW_RECORDED'
 
     try {
@@ -490,21 +491,29 @@ try {
     }
     Write-LauncherState -Root $resolvedQaRoot -State 'EVIDENCE_COLLECTED'
 
-    $summary = Write-HumanQaSummary -Root $resolvedQaRoot -Results $results -GodotInfo $godot
+    $summary = Write-HumanQaSummary -Root $resolvedQaRoot -Results @($review.results) -GodotInfo $godot
     Write-LauncherState -Root $resolvedQaRoot -State 'COMPLETE'
 
     Write-Host ''
-    Write-Host "Classification: $($summary.classification)"
-    Write-Host "Evidence: $(Join-Path $resolvedQaRoot 'evidence')"
-    Write-Host 'Share only reviewed evidence files. Do not share .control, AppData, or original saves.'
+    Write-Host ("Classification: {0}" -f $summary.classification)
+    Write-Host ("Evidence: {0}" -f (Join-Path $resolvedQaRoot 'evidence'))
+    Write-Host '검토한 evidence만 공유하세요. .control, AppData, 실제 저장 원본은 공유하지 마세요.'
     exit 0
 }
 catch {
     $message = $_.Exception.Message
+    $state = $null
+    if ($message -match 'BLOCKED_NO_MAIN_SAVE') { $state = 'BLOCKED_NO_MAIN_SAVE' }
+    elseif ($message -match 'BLOCKED_GODOT_NOT_FOUND') { $state = 'BLOCKED_GODOT_NOT_FOUND' }
+    elseif ($message -match 'BLOCKED_GODOT_VERSION') { $state = 'BLOCKED_GODOT_VERSION' }
+    elseif ($message -match 'SOURCE_MUTATED') { $state = 'SOURCE_MUTATED' }
+    if ($null -ne $state) {
+        try { Write-LauncherState -Root $resolvedQaRoot -State $state -ErrorCode $message } catch { }
+    }
     Write-Error $message
-    if ($message -match 'BLOCKED_NO_MAIN_SAVE') { exit 10 }
-    if ($message -match 'BLOCKED_GODOT_NOT_FOUND') { exit 11 }
-    if ($message -match 'BLOCKED_GODOT_VERSION') { exit 12 }
-    if ($message -match 'SOURCE_MUTATED') { exit 20 }
+    if ($state -eq 'BLOCKED_NO_MAIN_SAVE') { exit 10 }
+    if ($state -eq 'BLOCKED_GODOT_NOT_FOUND') { exit 11 }
+    if ($state -eq 'BLOCKED_GODOT_VERSION') { exit 12 }
+    if ($state -eq 'SOURCE_MUTATED') { exit 20 }
     exit 1
 }
