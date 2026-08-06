@@ -93,11 +93,12 @@ The parser must:
 
 - inspect only the `[editor_plugins]` section
 - extract quoted resource paths from the `enabled` value
-- require both `res://addons/godot_ai/plugin.cfg` and `res://addons/gut/plugin.cfg`
-- fail when either required authority is absent
+- require exactly `res://addons/godot_ai/plugin.cfg` and `res://addons/gut/plugin.cfg`
+- reject a missing required plugin, a duplicate entry, or any unapproved additional plugin
+- treat plugin order as non-authoritative
 - avoid accepting an unrelated occurrence elsewhere in `project.godot`
 
-The test may permit additional future plugins only when the authority contract does not prohibit them. This correction does not authorize any new plugin; it only recognizes the two already approved and installed plugins.
+Adding another editor plugin requires a separate authority decision and an explicit contract update. This correction recognizes only the two already approved and installed plugins.
 
 ## 5. Validation Architecture
 
