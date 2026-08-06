@@ -109,13 +109,15 @@ func _test_legacy_recovery_finalization() -> void:
 		"evaluation_packet": {},
 		"reward_claims": {}
 	})
-	var finalized: Dictionary = state.finalize_canon_v2_incident_end_from_legacy_recovery()
+	var bridge = BridgeScript.new()
+	var finalized: Dictionary = bridge.finalize_legacy_recovery_for_test(state)
 	_expect(bool(finalized.get("ok", false)), "legacy recovery result was not finalized into Canon v2 packet")
 	var runtime: Dictionary = state.get_canon_v2_runtime_state()
 	_expect(String(runtime.get("representative_outcome", "")) == "residue_recovered", "core_recovered did not map to residue_recovered")
 	var packet := runtime.get("incident_end_packet", {}) as Dictionary
 	_expect(String(packet.get("protection_status", "")) == "unresolved", "protection axis disappeared from incident-end packet")
 	_expect(int(packet.get("legacy_recovery_stability", 0)) == 82, "legacy stability provenance missing")
+	bridge.free()
 
 
 func _expect(condition: bool, message: String) -> void:
