@@ -1,6 +1,7 @@
 extends SceneTree
 
-const RuntimeGameStateScript := preload("res://scripts/core/canon_v2_runtime_game_state.gd")
+const RuntimeGameStateScript := preload("res://scripts/core/afterlife_migrating_game_state.gd")
+const AfterlifeRescueResultAdapterScript := preload("res://scripts/data/afterlife_rescue_result_adapter.gd")
 
 var _failures: Array[String] = []
 
@@ -20,14 +21,15 @@ func _test_authored_route_restore_bootstrap() -> void:
 		"effect_summary": "안전 노선 검증 기록 확보",
 		"move_count": 9
 	}
-	var bootstrapped: Dictionary = state.bootstrap_canon_v2_rescue_snapshot_from_minigame("minigame_frequency_sync")
+	var adapter = AfterlifeRescueResultAdapterScript.new()
+	var bootstrapped: Dictionary = adapter.bootstrap(state, "minigame_frequency_sync")
 	_expect(bool(bootstrapped.get("ok", false)), "authored route-restore adapter failed")
 	var snapshot := (state.get_canon_v2_runtime_state().get("rescue_outcome_snapshot", {}) as Dictionary)
 	_expect(String(snapshot.get("survival_state", "")) == "alive_stable", "route-restore adapter did not preserve verified victim survival")
 	_expect(String(snapshot.get("separation_state", "")) == "partial", "route-restore success was incorrectly promoted to complete separation")
 	var provenance := snapshot.get("provenance", {}) as Dictionary
 	_expect(String(provenance.get("adapter_id", "")) == "AUTHORED_AFTERLIFE_ROUTE_RESTORE_ADAPTER_V1", "route-restore adapter provenance missing")
-	var bootstrapped_again: Dictionary = state.bootstrap_canon_v2_rescue_snapshot_from_minigame("minigame_frequency_sync")
+	var bootstrapped_again: Dictionary = adapter.bootstrap(state, "minigame_frequency_sync")
 	_expect(bool(bootstrapped_again.get("reused_existing_snapshot", false)), "route-restore snapshot was duplicated")
 
 
