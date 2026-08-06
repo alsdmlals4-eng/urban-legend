@@ -19,30 +19,6 @@ if (-not (Test-Path -LiteralPath $orchestrator -PathType Leaf)) {
     throw "ONE_CLICK_ORCHESTRATOR_MISSING"
 }
 
-Write-Host "=== GODOT DISCOVERY DIAGNOSTICS ==="
-Write-Host "Requested=$GodotBinary"
-$command = Get-Command $GodotBinary -ErrorAction SilentlyContinue | Select-Object -First 1
-if ($null -eq $command) {
-    Write-Host "GetCommand=NOT_FOUND"
-}
-else {
-    Write-Host "CommandType=$($command.CommandType)"
-    Write-Host "CommandPath=$([string]$command.Path)"
-    Write-Host "CommandSource=$([string]$command.Source)"
-    Write-Host "CommandDefinition=$([string]$command.Definition)"
-}
-$knownRoot = Join-Path $env:USERPROFILE 'godot'
-Write-Host "KnownRootExists=$(Test-Path -LiteralPath $knownRoot -PathType Container)"
-$knownExecutables = @(Get-ChildItem -LiteralPath $knownRoot -Filter 'Godot*.exe' -File -ErrorAction SilentlyContinue)
-Write-Host "KnownExecutableCount=$($knownExecutables.Count)"
-foreach ($candidate in $knownExecutables) {
-    Write-Host "KnownExecutable=$($candidate.FullName)"
-    $versionOutput = & $candidate.FullName --version 2>&1
-    Write-Host "KnownVersion=$([string]($versionOutput | Select-Object -First 1))"
-    Write-Host "KnownVersionExit=$LASTEXITCODE"
-}
-Write-Host "=== END GODOT DISCOVERY DIAGNOSTICS ==="
-
 $before = (Get-FileHash -LiteralPath $source -Algorithm SHA256).Hash
 & $orchestrator `
     -GodotBinary $GodotBinary `
