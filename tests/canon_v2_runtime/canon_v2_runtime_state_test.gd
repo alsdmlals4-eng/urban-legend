@@ -1,6 +1,6 @@
 extends SceneTree
 
-const RuntimeGameStateScript := preload("res://scripts/core/afterlife_migrating_game_state.gd")
+const RuntimeGameStateScript := preload("res://scripts/core/canon_v2_runtime_game_state.gd")
 
 var _failures: Array[String] = []
 
