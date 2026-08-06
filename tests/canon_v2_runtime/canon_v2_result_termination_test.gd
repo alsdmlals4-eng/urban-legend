@@ -1,6 +1,7 @@
 extends SceneTree
 
 const BridgeScript := preload("res://scripts/ui/canon_v2_runtime_bridge.gd")
+const ResultAxesBridgeScript := preload("res://scripts/ui/canon_v2_result_axes_bridge.gd")
 const OverlayScript := preload("res://scripts/ui/canon_v2_operation_overlay.gd")
 const RuntimeGameStateScript := preload("res://scripts/core/afterlife_migrating_game_state.gd")
 
@@ -61,27 +62,35 @@ func _test_recovery_termination_preview() -> void:
 
 
 func _test_result_axes_overlay() -> void:
+	_expect(ProjectSettings.has_setting("autoload/CanonV2ResultAxesBridge"), "CanonV2ResultAxesBridge autoload is not registered")
 	var overlay = OverlayScript.new()
 	root.add_child(overlay)
+	var evaluation_packet := {
+		"control_axis": {"status": "residue_recovered"},
+		"protection_responsibility_axis": {"incident_end": "breached", "current": "breached"},
+		"evidence_integrity_axis": {"status": "preserved"},
+		"follow_up_execution_axis": {"current": "mitigated"},
+		"mastery_axis": {"ceiling_applied": false}
+	}
 	overlay.configure_for_test({
 		"manual_state": {"pages": [], "active_rule_ids": []},
 		"active_protection_obligations": [],
 		"termination_preview": {},
 		"follow_up_records": [],
-		"evaluation_packet": {
-			"control_axis": {"status": "residue_recovered"},
-			"protection_responsibility_axis": {"incident_end": "breached", "current": "breached"},
-			"evidence_integrity_axis": {"status": "preserved"},
-			"follow_up_execution_axis": {"current": "mitigated"},
-			"mastery_axis": {"ceiling_applied": false}
-		}
+		"evaluation_packet": evaluation_packet
 	}, "result")
+	var axes_bridge = ResultAxesBridgeScript.new()
+	root.add_child(axes_bridge)
+	var attached := axes_bridge.attach_result_axes_for_test(overlay, evaluation_packet)
 	await process_frame
 	var panel := overlay.get_node_or_null("SafeArea/RootLayout/DetailStack/ResultAxesPanel") as PanelContainer
+	_expect(attached == panel, "result axes bridge returned a different panel")
 	_expect(panel != null and panel.visible, "result axes panel is missing or hidden")
 	var label := overlay.get_node_or_null("SafeArea/RootLayout/DetailStack/ResultAxesPanel/ResultAxesContent/ResultAxesLabel") as Label
 	_expect(label != null and label.text.contains("현상 통제"), "result axes omitted control outcome")
 	_expect(label != null and label.text.contains("보호 책임"), "result axes omitted protection responsibility")
+	_expect(label != null and label.focus_mode == Control.FOCUS_ALL, "result axes lacks keyboard/gamepad focus")
+	axes_bridge.queue_free()
 	overlay.queue_free()
 	await process_frame
 
