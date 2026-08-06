@@ -14,6 +14,14 @@ var _termination_title_label: Label
 var _termination_detail_label: Label
 var _follow_up_label: Label
 var _mode_label: Label
+var _confirmation_layer: CenterContainer
+var _confirmation_panel: PanelContainer
+var _confirmation_detail_label: Label
+var _confirm_button: Button
+var _cancel_button: Button
+var _pending_confirm: Callable
+var _pending_cancel: Callable
+var _previous_focus: Control
 
 
 func _ready() -> void:
@@ -30,6 +38,26 @@ func configure(runtime_state: Dictionary, mode: String) -> void:
 	_mode = mode
 	_ensure_ui()
 	_refresh()
+
+
+func request_action_confirmation(
+	preview: Dictionary,
+	on_confirm: Callable,
+	on_cancel: Callable = Callable()
+) -> void:
+	_ensure_ui()
+	_pending_confirm = on_confirm
+	_pending_cancel = on_cancel
+	_previous_focus = get_viewport().gui_get_focus_owner()
+	_confirmation_detail_label.text = _build_confirmation_text(preview)
+	_confirmation_layer.visible = true
+	_confirmation_panel.visible = true
+	_confirm_button.disabled = not bool(preview.get("allowed", true))
+	_confirm_button.grab_focus()
+
+
+func close_action_confirmation() -> void:
+	_hide_confirmation(true)
 
 
 func _ensure_ui() -> void:
@@ -162,6 +190,68 @@ func _ensure_ui() -> void:
 	_follow_up_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	follow_up_content.add_child(_follow_up_label)
 
+	_build_confirmation_layer()
+
+
+func _build_confirmation_layer() -> void:
+	_confirmation_layer = CenterContainer.new()
+	_confirmation_layer.name = "ConfirmationLayer"
+	_confirmation_layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_confirmation_layer.mouse_filter = Control.MOUSE_FILTER_STOP
+	_confirmation_layer.visible = false
+	_confirmation_layer.z_index = 200
+	add_child(_confirmation_layer)
+
+	var backdrop := ColorRect.new()
+	backdrop.name = "Backdrop"
+	backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	backdrop.color = Color(0.0, 0.0, 0.0, 0.72)
+	backdrop.mouse_filter = Control.MOUSE_FILTER_STOP
+	_confirmation_layer.add_child(backdrop)
+
+	_confirmation_panel = PanelContainer.new()
+	_confirmation_panel.name = "ConfirmationPanel"
+	_confirmation_panel.custom_minimum_size = Vector2(520, 0)
+	_confirmation_panel.add_theme_stylebox_override("panel", _panel_style(Color(0.055, 0.06, 0.075, 0.99), Color(0.82, 0.55, 0.38, 0.98)))
+	_confirmation_layer.add_child(_confirmation_panel)
+
+	var content := VBoxContainer.new()
+	content.name = "ConfirmationContent"
+	content.add_theme_constant_override("separation", 10)
+	_confirmation_panel.add_child(content)
+
+	var title := Label.new()
+	title.name = "ConfirmationTitleLabel"
+	title.text = "보호 의무 결과 확인"
+	title.add_theme_font_size_override("font_size", 19)
+	content.add_child(title)
+
+	_confirmation_detail_label = Label.new()
+	_confirmation_detail_label.name = "ConfirmationDetailLabel"
+	_confirmation_detail_label.custom_minimum_size = Vector2(0, 130)
+	_confirmation_detail_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	content.add_child(_confirmation_detail_label)
+
+	var buttons := HBoxContainer.new()
+	buttons.name = "ConfirmationButtons"
+	buttons.alignment = BoxContainer.ALIGNMENT_END
+	buttons.add_theme_constant_override("separation", 8)
+	content.add_child(buttons)
+
+	_cancel_button = Button.new()
+	_cancel_button.name = "CancelButton"
+	_cancel_button.text = "취소"
+	_cancel_button.focus_mode = Control.FOCUS_ALL
+	_cancel_button.pressed.connect(_on_confirmation_cancelled)
+	buttons.add_child(_cancel_button)
+
+	_confirm_button = Button.new()
+	_confirm_button.name = "ConfirmButton"
+	_confirm_button.text = "결과를 확인하고 실행"
+	_confirm_button.focus_mode = Control.FOCUS_ALL
+	_confirm_button.pressed.connect(_on_confirmation_confirmed)
+	buttons.add_child(_confirm_button)
+
 
 func _refresh() -> void:
 	if _rule_summary_label == null:
@@ -203,8 +293,7 @@ func _refresh_obligations() -> void:
 		_obligation_list_label.text = "현재 확인된 보호 책임이 없습니다."
 		return
 	var first := obligations[0] as Dictionary
-	var highest_priority := String(first.get("priority_class", "watch"))
-	_priority_label.text = "보호 의무 · %s" % highest_priority
+	_priority_label.text = "보호 의무 · %s" % String(first.get("priority_class", "watch"))
 	var lines: Array[String] = []
 	for obligation_value in obligations:
 		var obligation := obligation_value as Dictionary
@@ -256,22 +345,68 @@ func _refresh_follow_up() -> void:
 
 func _apply_mode_visibility() -> void:
 	var detail_stack := get_node("SafeArea/RootLayout/DetailStack") as VBoxContainer
-	var obligation_panel := detail_stack.get_node("ObligationPanel") as PanelContainer
-	var termination_panel := detail_stack.get_node("TerminationPreviewPanel") as PanelContainer
-	var follow_up_panel := detail_stack.get_node("FollowUpPanel") as PanelContainer
-	obligation_panel.visible = _mode in ["rescue", "recovery", "result"]
-	termination_panel.visible = _mode in ["recovery", "result"]
-	follow_up_panel.visible = _mode == "result" or not _array_copy(_runtime_state.get("follow_up_records")).is_empty()
+	(detail_stack.get_node("ObligationPanel") as PanelContainer).visible = _mode in ["rescue", "recovery", "result"]
+	(detail_stack.get_node("TerminationPreviewPanel") as PanelContainer).visible = _mode in ["recovery", "result"]
+	(detail_stack.get_node("FollowUpPanel") as PanelContainer).visible = _mode == "result" or not _array_copy(_runtime_state.get("follow_up_records")).is_empty()
 
 
 func _toggle_manual_detail() -> void:
 	_manual_detail_panel.visible = not _manual_detail_panel.visible
 	_manual_toggle_button.text = "괴이 매뉴얼 닫기" if _manual_detail_panel.visible else "괴이 매뉴얼 열기"
 	if _manual_detail_panel.visible:
-		var manual_text := _manual_detail_panel.get_node("ManualText") as RichTextLabel
-		manual_text.grab_focus()
+		(_manual_detail_panel.get_node("ManualText") as RichTextLabel).grab_focus()
 	else:
 		_manual_toggle_button.grab_focus()
+
+
+func _on_confirmation_confirmed() -> void:
+	var callback := _pending_confirm
+	_hide_confirmation(false)
+	if callback.is_valid():
+		callback.call()
+
+
+func _on_confirmation_cancelled() -> void:
+	var callback := _pending_cancel
+	_hide_confirmation(true)
+	if callback.is_valid():
+		callback.call()
+
+
+func _hide_confirmation(restore_focus: bool) -> void:
+	_confirmation_layer.visible = false
+	_confirmation_panel.visible = false
+	_pending_confirm = Callable()
+	_pending_cancel = Callable()
+	if restore_focus and is_instance_valid(_previous_focus):
+		_previous_focus.grab_focus()
+	_previous_focus = null
+
+
+func _build_confirmation_text(preview: Dictionary) -> String:
+	var lines: Array[String] = []
+	var preview_text := String(preview.get("preview_text", ""))
+	if not preview_text.is_empty():
+		lines.append(preview_text)
+	for risk_value in _array_copy(preview.get("risk_changes")):
+		if typeof(risk_value) != TYPE_DICTIONARY:
+			continue
+		var risk := risk_value as Dictionary
+		var target := String(risk.get("target", "보호 대상"))
+		var consequence := String(risk.get("consequence", "보호 의무가 악화될 수 있습니다."))
+		lines.append("예상 피해·위험 — %s: %s" % [target, consequence])
+	var alternatives := _array_copy(preview.get("alternatives"))
+	if not alternatives.is_empty():
+		var labels: Array[String] = []
+		for alternative_value in alternatives:
+			if typeof(alternative_value) == TYPE_DICTIONARY:
+				labels.append(String((alternative_value as Dictionary).get("label", (alternative_value as Dictionary).get("action_id", "대안"))))
+			else:
+				labels.append(String(alternative_value))
+		lines.append("대안 — %s" % " / ".join(labels))
+	if lines.is_empty():
+		lines.append("이 행동의 보호 의무 결과를 확인한 뒤 실행합니다.")
+	return "\n".join(lines)
 
 
 func _make_rule_summary() -> String:
