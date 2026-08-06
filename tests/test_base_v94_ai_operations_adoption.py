@@ -2,12 +2,14 @@ from __future__ import annotations
 
 import hashlib
 import json
+import subprocess
 import unittest
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
 CANONICAL_ADAPTER = ROOT / "skills/PROJECT_BASE_ADAPTER.json"
+CANONICAL_ADAPTER_REPO_PATH = "skills/PROJECT_BASE_ADAPTER.json"
 GENERATED_VIEWS = (
     ROOT / "skills/BASE_V9_ADAPTER.json",
     ROOT / "skills/PROJECT_BASE_SKILL_ADAPTER.json",
@@ -23,6 +25,15 @@ EXPECTED_BASE_RELEASE = {
 
 def _load_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _git_blob_bytes(repo_path: str) -> bytes:
+    return subprocess.run(
+        ["git", "show", f"HEAD:{repo_path}"],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+    ).stdout
 
 
 class TestBaseV94Urban(unittest.TestCase):
@@ -51,7 +62,9 @@ class TestBaseV94Urban(unittest.TestCase):
 
     def test_generated_views_follow_canonical_release(self) -> None:
         adapter = _load_json(CANONICAL_ADAPTER)
-        canonical_hash = hashlib.sha256(CANONICAL_ADAPTER.read_bytes()).hexdigest()
+        canonical_hash = hashlib.sha256(
+            _git_blob_bytes(CANONICAL_ADAPTER_REPO_PATH)
+        ).hexdigest()
         snapshot = _load_json(ROOT / "skills/PROJECT_SKILL_SNAPSHOT.json")
         self.assertEqual(canonical_hash, snapshot["source_registry"]["sha256"])
 
