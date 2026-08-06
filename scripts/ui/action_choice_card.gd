@@ -50,4 +50,16 @@ func configure(data: Dictionary) -> bool:
 
 
 func _on_action_pressed() -> void:
+	var runtime_bridge := get_node_or_null("/root/CanonV2RuntimeBridge")
+	if runtime_bridge != null and runtime_bridge.has_method("request_action_gate"):
+		var handled := bool(runtime_bridge.request_action_gate(
+			_action_id,
+			Callable(self, "_emit_action_requested")
+		))
+		if handled:
+			return
+	_emit_action_requested()
+
+
+func _emit_action_requested() -> void:
 	action_requested.emit(_action_id)

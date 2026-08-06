@@ -1,8 +1,8 @@
 extends SceneTree
 
 const Support = preload("res://tests/validation/validation_test_support.gd")
-const SessionScript = preload("res://scripts/core/validation_session.gd")
-const GameStateScript = preload("res://scripts/core/validation_game_state.gd")
+const SessionScript = preload("res://scripts/core/afterlife_migrating_validation_session.gd")
+const GameStateScript = preload("res://scripts/core/afterlife_migrating_game_state.gd")
 const LEGACY_PATH := "user://urban_legend_save.json"
 
 var _failures: Array[String] = []
@@ -17,11 +17,11 @@ func _init() -> void:
 func _run() -> void:
 	var session_path := String(ProjectSettings.get_setting("autoload/ValidationSession", ""))
 	var game_state_path := String(ProjectSettings.get_setting("autoload/GameState", ""))
-	_expect(session_path == "*res://scripts/core/validation_session.gd", "ValidationSession must be registered in project.godot")
-	_expect(game_state_path == "*res://scripts/core/validation_game_state.gd", "GameState must use the isolated wrapper")
+	_expect(session_path == "*res://scripts/core/afterlife_migrating_validation_session.gd", "ValidationSession must use the Canon v2 migration wrapper")
+	_expect(game_state_path == "*res://scripts/core/afterlife_migrating_game_state.gd", "GameState must use the Canon v2 migration wrapper")
 
 	# Godot may instantiate project autoloads before a SceneTree --script test runs.
-	# Reuse them when present; only mount equivalents when the runner did not create them.
+	# Reuse them when present; only mount production-equivalent wrappers when the runner did not create them.
 	var root := get_root()
 	var session = root.get_node_or_null("ValidationSession")
 	if session == null:
@@ -40,7 +40,9 @@ func _run() -> void:
 	_expect(root.get_node_or_null("GameState") == game_state, "test must use the production GameState root node")
 	_expect(session.has_method("create"), "session must expose the approved create API")
 	_expect(session.has_method("invalidate_token_for_test"), "session must expose fail-closed test invalidation")
+	_expect(session.has_method("get_last_migration_result"), "session wrapper must expose migration evidence")
 	_expect(game_state.has_method("snapshot_hidden_legacy_state_for_test"), "GameState must expose hidden-state evidence")
+	_expect(game_state.has_method("get_afterlife_content_contract_id"), "GameState wrapper must expose Canon v2 contract evidence")
 	if not session.has_method("create") or not game_state.has_method("snapshot_hidden_legacy_state_for_test"):
 		_cleanup(game_state, session, {})
 		_finish()

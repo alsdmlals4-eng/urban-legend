@@ -1,0 +1,166 @@
+name: Validate Afterlife Station Canon v2 Migration
+
+on:
+  pull_request:
+    paths:
+      - "data/episodes/episode_001_afterlife_station_canon_v2.json"
+      - "data/episodes/episode_001_afterlife_station_canon_v2_runtime_projection.json"
+      - "data/migrations/afterlife_station_canon_v2_id_migration.json"
+      - "scripts/data/afterlife_*.gd"
+      - "scripts/core/afterlife_*.gd"
+      - "scripts/data/episode_loader.gd"
+      - "scripts/core/game_state.gd"
+      - "scripts/core/validation_save_repository.gd"
+      - "scripts/core/validation_session.gd"
+      - "tools/qa/run_afterlife_canon_v2_human_qa.ps1"
+      - "project.godot"
+      - "tests/afterlife_migration/**"
+      - "tests/fixtures/afterlife_migration/**"
+      - "tests/windows/**"
+      - "tests/run_afterlife_canon_v2_migration_tests.sh"
+      - "tests/run_godot_regression.sh"
+      - "tests/test_afterlife_canon_v2_runner_contract.py"
+      - "tests/test_afterlife_canon_v2_implementation_evidence.py"
+      - "tests/test_afterlife_canon_v2_human_qa_plan.py"
+      - "tests/test_afterlife_canon_v2_windows_platform_qa.py"
+      - "tests/test_afterlife_canon_v2_local_human_qa_runner.py"
+      - "docs/qa/2026-08-05-afterlife-canon-v2-human-qa-plan.md"
+      - "docs/qa/2026-08-05-afterlife-canon-v2-automated-fixture-preflight-evidence.md"
+      - "docs/qa/2026-08-05-afterlife-canon-v2-windows-platform-preflight-evidence.md"
+      - "docs/qa/2026-08-05-afterlife-canon-v2-local-human-qa-runner.md"
+      - "docs/qa/2026-08-05-afterlife-canon-v2-local-human-qa-runner-evidence.md"
+      - "docs/qa/templates/afterlife-canon-v2-human-qa-evidence-template.md"
+      - "docs/decisions/D-2026-08-05-AFTERLIFE-STATION-CANON-V2-MIGRATION-DESIGN.md"
+      - "docs/decisions/D-2026-08-05-AFTERLIFE-STATION-CANON-V2-MIGRATION-DESIGN-LOCAL-HUMAN-QA-RUNNER-ADDENDUM.md"
+      - "docs/decisions/D-2026-08-05-WORKFLOW-BENCHMARK-TDD-AND-CHECKPOINT-POLICY.md"
+      - "docs/implementation/2026-08-05-afterlife-station-canon-v2-migration-implementation-evidence.md"
+      - "docs/superpowers/specs/2026-08-05-afterlife-station-canon-v2-migration-design.md"
+      - "docs/superpowers/plans/2026-08-05-afterlife-station-canon-v2-migration-implementation-plan.md"
+      - "docs/superpowers/plans/2026-08-05-afterlife-station-canon-v2-migration-plan-adversarial-review-addendum.md"
+      - "docs/superpowers/plans/2026-08-05-afterlife-canon-v2-local-human-qa-runner.md"
+      - "docs/planning/2026-08-05-afterlife-station-id-migration-matrix.md"
+      - "tests/test_afterlife_station_canon_v2_migration_design.py"
+      - "tests/test_afterlife_station_canon_v2_implementation_plan.py"
+      - ".github/workflows/validate-afterlife-station-canon-v2-migration-design.yml"
+      - ".github/workflows/validate-afterlife-station-canon-v2-windows-platform-qa.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-migration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate migration design, plan, evidence, QA, and runner contracts
+        run: |
+          python -m unittest tests/test_afterlife_station_canon_v2_migration_design.py
+          python -m unittest tests/test_afterlife_station_canon_v2_implementation_plan.py
+          python -m unittest tests/test_afterlife_canon_v2_runner_contract.py
+          python -m unittest tests/test_afterlife_canon_v2_implementation_evidence.py
+          python -m unittest tests/test_afterlife_canon_v2_human_qa_plan.py
+          python -m unittest tests/test_afterlife_canon_v2_windows_platform_qa.py
+          python -m unittest tests/test_afterlife_canon_v2_local_human_qa_runner.py
+      - name: Setup Godot 4.7.1
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.1
+          use-dotnet: false
+          include-templates: false
+      - name: Import project
+        run: |
+          set -o pipefail
+          godot --headless --path . --import 2>&1 | tee afterlife-canon-v2-import.log
+      - name: Run Validation Canon v2 activation contract
+        env:
+          HOME: ${{ runner.temp }}/afterlife-validation-canon-home
+          XDG_DATA_HOME: ${{ runner.temp }}/afterlife-validation-canon-xdg
+        run: godot --headless --path . --script res://tests/afterlife_migration/afterlife_validation_canon_activation_test.gd
+      - name: Run focused Canon v2 migration suite
+        env:
+          GODOT_BIN: godot
+          GODOT_TEST_TMP: ${{ runner.temp }}/afterlife-canon-v2-focused
+        run: bash tests/run_afterlife_canon_v2_migration_tests.sh
+      - name: Run full Godot regression
+        env:
+          GODOT_BIN: godot
+          GODOT_TEST_TMP: ${{ runner.temp }}/afterlife-canon-v2-regression
+          SKIP_AFTERLIFE_CANON_V2_FOCUSED: "1"
+        run: bash tests/run_godot_regression.sh
+      - name: Preserve failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: afterlife-canon-v2-migration-failure
+          path: |
+            afterlife-canon-v2-import.log
+            ${{ runner.temp }}/afterlife-canon-v2-focused/afterlife-canon-v2-logs
+            ${{ runner.temp }}/afterlife-canon-v2-regression/logs
+          if-no-files-found: warn
+          retention-days: 7
+
+  windows-platform-preflight:
+    runs-on: windows-latest
+    timeout-minutes: 45
+    env:
+      AFTERLIFE_QA_APPDATA: ${{ github.workspace }}/.qa-appdata
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run local Human QA runner Prepare and Collect preflight
+        shell: pwsh
+        run: |
+          $qaRoot = Join-Path $env:RUNNER_TEMP "afterlife-local-human-qa-runner"
+          $source = Join-Path $env:GITHUB_WORKSPACE "tests\fixtures\afterlife_migration\main_mvp039_recovery.json"
+          $before = (Get-FileHash -LiteralPath $source -Algorithm SHA256).Hash
+          ./tools/qa/run_afterlife_canon_v2_human_qa.ps1 -Stage Prepare -SourceMain $source -QaRoot $qaRoot
+          ./tools/qa/run_afterlife_canon_v2_human_qa.ps1 -Stage Collect -QaRoot $qaRoot
+          $after = (Get-FileHash -LiteralPath $source -Algorithm SHA256).Hash
+          if ($before -ne $after) { throw "SOURCE_MUTATED_BY_LOCAL_RUNNER_PREFLIGHT" }
+          $manifest = Get-Content -LiteralPath (Join-Path $qaRoot "evidence\manifest.json") -Raw | ConvertFrom-Json
+          if ([string]$manifest.status -ne "EVIDENCE_COLLECTED") { throw "RUNNER_MANIFEST_STATUS_MISMATCH" }
+          if ([string]$manifest.privacy_boundary -ne "ACTUAL_USER_SAVE_CONTENT_NOT_RECORDED") { throw "RUNNER_PRIVACY_BOUNDARY_MISMATCH" }
+          if ([string]$manifest.automated_classification -ne "AUTOMATED_LOCAL_HUMAN_QA_RUNNER_PREFLIGHT_GREEN") { throw "RUNNER_CLASSIFICATION_MISMATCH" }
+          Write-Host "LOCAL HUMAN QA RUNNER PREFLIGHT: PASS"
+      - name: Validate Windows platform QA contracts
+        shell: pwsh
+        run: |
+          python -m unittest tests/test_afterlife_canon_v2_windows_platform_qa.py
+          python -m unittest tests/test_afterlife_canon_v2_local_human_qa_runner.py
+      - name: Setup Godot 4.7.1
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.1
+          use-dotnet: false
+          include-templates: false
+      - name: Import project in isolated APPDATA
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path $env:AFTERLIFE_QA_APPDATA | Out-Null
+          $env:APPDATA = $env:AFTERLIFE_QA_APPDATA
+          $output = & godot --headless --path . --import 2>&1
+          $exitCode = $LASTEXITCODE
+          $output | Set-Content -LiteralPath afterlife-windows-import.log -Encoding UTF8
+          if ($exitCode -ne 0) { exit $exitCode }
+      - name: Run Windows file lock, crash recovery, source race, and write failure preflight
+        shell: pwsh
+        run: ./tests/windows/run_afterlife_canon_v2_windows_platform_preflight.ps1 -GodotBinary godot
+      - name: Preserve Windows failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: afterlife-windows-platform-failure
+          path: |
+            afterlife-windows-import.log
+            ${{ env.AFTERLIFE_QA_APPDATA }}/logs
+            ${{ runner.temp }}/afterlife-local-human-qa-runner/evidence
+            ${{ runner.temp }}/afterlife-local-human-qa-runner/logs
+          if-no-files-found: warn
+          retention-days: 7

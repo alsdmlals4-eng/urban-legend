@@ -1,0 +1,415 @@
+{
+  "migration_id": "afterlife-station-canon-v2-001",
+  "source_contracts": [
+    "afterlife-station-legacy-v1",
+    "afterlife-station-poc-v1"
+  ],
+  "target_contract": "afterlife-station-canon-v2",
+  "entries": [
+    {
+      "legacy_id": "episode_001_afterlife_station",
+      "disposition": "KEEP_ID",
+      "target_ids": ["episode_001_afterlife_station"],
+      "source_contract": "afterlife-station-legacy-v1",
+      "target_contract": "afterlife-station-canon-v2",
+      "runtime_apply": true,
+      "preserve_in_history": true,
+      "effect_id": "migration:afterlife:v2:identity:episode",
+      "reason": "사건·보고서·캠페인의 stable identity를 유지한다."
+    },
+    {
+      "legacy_id": "victim_afterlife_station_001",
+      "disposition": "KEEP_ID",
+      "target_ids": ["victim_afterlife_station_001"],
+      "source_contract": "afterlife-station-legacy-v1",
+      "target_contract": "afterlife-station-canon-v2",
+      "runtime_apply": true,
+      "preserve_in_history": true,
+      "effect_id": "migration:afterlife:v2:identity:victim-profile",
+      "reason": "피해자 stable ID를 유지하고 표시 정본만 이하린으로 갱신한다."
+    },
+    {
+      "legacy_id": "clue_repeating_announcement",
+      "disposition": "SPLIT",
+      "target_ids": [
+        "record_afterlife_r1_broadcast_original",
+        "record_afterlife_r1_concurrent_destination_mismatch"
+      ],
+      "source_contract": "afterlife-station-legacy-v1",
+      "target_contract": "afterlife-station-canon-v2",
+      "runtime_apply": true,
+      "preserve_in_history": true,
+      "effect_id": "migration:afterlife:v2:clue:repeating-announcement",
+      "reason": "방송 원본 공백과 관찰자별 목적지 불일치를 분리하며 둘 다 검증 전 기록으로 만든다."
+    },
+    {
+      "legacy_id": "clue_missing_terminal_sign",
+      "disposition": "ALIAS",
+      "target_ids": ["record_afterlife_r1_concurrent_destination_mismatch"],
+      "source_contract": "afterlife-station-legacy-v1",
+      "target_contract": "afterlife-station-canon-v2",
+      "runtime_apply": true,
+      "preserve_in_history": true,
+      "effect_id": "migration:afterlife:v2:clue:terminal-sign",
+      "reason": "동시간대 목적지 표시 불일치의 출처로만 이관한다."
+    },
+    {
+      "legacy_id": "clue_staff_room_log",
+      "disposition": "ALIAS",
+      "target_ids": ["record_afterlife_official_operation_log"],
+      "source_contract": "afterlife-station-legacy-v1",
+      "target_contract": "afterlife-station-canon-v2",
+      "runtime_apply": true,
+      "preserve_in_history": true,
+      "effect_id": "migration:afterlife:v2:clue:staff-room-log",
+      "reason": "공식 운행 기록의 출처로 이관한다."
+    },
+    {
+      "legacy_id": "clue_last_message",
+      "disposition": "SPLIT",
+      "target_ids": [
+        "record_afterlife_r1_victim_phone_destination",
+        "record_afterlife_r2_phone_time_battery"
+      ],
+      "source_contract": "afterlife-station-legacy-v1",
+      "target_contract": "afterlife-station-canon-v2",
+      "runtime_apply": true,
+      "preserve_in_history": true,
+      "effect_id": "migration:afterlife:v2:clue:last-message",
+      "reason": "귀환 목적지 증언과 시간·배터리 지속 기록을 분리한다."
+    },
+    {
+      "legacy_id": "clue_black_ticket",
+      "disposition": "HISTORICAL_ONLY",
+      "target_ids": [],
+      "source_contract": "afterlife-station-legacy-v1",
+      "target_contract": "afterlife-station-canon-v2",
+      "runtime_apply": false,
+      "preserve_in_history": true,
+      "effect_id": "migration:afterlife:v2:clue:black-ticket",
+      "reason": "검은 승차권은 잔향 각인 계보로만 보존하고 공식 승차권 정답으로 승격하지 않는다."
+    },
+    {
+      "legacy_id": "pattern_station_false_terminal",
+      "disposition": "ALIAS",
+      "target_ids": ["pattern_afterlife_destination_chorus"],
+      "source_contract": "afterlife-station-legacy-v1",
+      "target_contract": "afterlife-station-canon-v2",
+      "runtime_apply": true,
+      "preserve_in_history": true,
+      "effect_id": "migration:afterlife:v2:pattern:false-terminal",
+      "reason": "목적지 충돌 계보만 연결하고 구형 대응 정답은 가져오지 않는다."
+    },
+    {
+      "legacy_id": "pattern_station_boundary_collapse",
+      "disposition": "ALIAS",
+      "target_ids": ["pattern_afterlife_recurring_platform"],
+      "source_contract": "afterlife-station-legacy-v1",
+      "target_contract": "afterlife-station-canon-v2",
+      "runtime_apply": true,
+      "preserve_in_history": true,
+      "effect_id": "migration:afterlife:v2:pattern:boundary-collapse",
+      "reason": "경계 반복 계보만 연결하고 시간·좌표 증거는 재검증한다."
+    },
+    {
+      "legacy_id": "pattern_station_ticket_imprint",
+      "disposition": "DISCARD_SEMANTICS",
+      "target_ids": [],
+      "source_contract": "afterlife-station-legacy-v1",
+      "target_contract": "afterlife-station-canon-v2",
+      "runtime_apply": false,
+      "preserve_in_history": true,
+      "effect_id": "migration:afterlife:v2:pattern:ticket-imprint",
+      "reason": "검은 승차권 접촉·격리 해법의 현재 의미를 폐기한다."
+    },
+    {
+      "legacy_id": "pattern_station_gaze_lure",
+      "disposition": "HISTORICAL_ONLY",
+      "target_ids": [],
+      "source_contract": "afterlife-station-legacy-v1",
+      "target_contract": "afterlife-station-canon-v2",
+      "runtime_apply": false,
+      "preserve_in_history": true,
+      "effect_id": "migration:afterlife:v2:pattern:gaze-lure",
+      "reason": "과거 전투·QA 기록에만 보존한다."
+    },
+    {
+      "legacy_id": "cut_false_broadcast",
+      "disposition": "HISTORICAL_ONLY",
+      "target_ids": [],
+      "source_contract": "afterlife-station-legacy-v1",
+      "target_contract": "afterlife-station-canon-v2",
+      "runtime_apply": false,
+      "preserve_in_history": true,
+      "effect_id": "migration:afterlife:v2:response:cut-false-broadcast",
+      "reason": "과거 대응 이력으로만 보존한다."
+    },
+    {
+      "legacy_id": "follow_terminal",
+      "disposition": "HISTORICAL_ONLY",
+      "target_ids": [],
+      "source_contract": "afterlife-station-legacy-v1",
+      "target_contract": "afterlife-station-canon-v2",
+      "runtime_apply": false,
+      "preserve_in_history": true,
+      "effect_id": "migration:afterlife:v2:response:follow-terminal",
+      "reason": "과거 오답 선택 이력으로만 보존한다."
+    },
+    {
+      "legacy_id": "answer_broadcast",
+      "disposition": "HISTORICAL_ONLY",
+      "target_ids": [],
+      "source_contract": "afterlife-station-legacy-v1",
+      "target_contract": "afterlife-station-canon-v2",
+      "runtime_apply": false,
+      "preserve_in_history": true,
+      "effect_id": "migration:afterlife:v2:response:answer-broadcast",
+      "reason": "과거 오답 선택 이력으로만 보존한다."
+    },
+    {
+      "legacy_id": "restore_platform_boundary",
+      "disposition": "HISTORICAL_ONLY",
+      "target_ids": [],
+      "source_contract": "afterlife-station-legacy-v1",
+      "target_contract": "afterlife-station-canon-v2",
+      "runtime_apply": false,
+      "preserve_in_history": true,
+      "effect_id": "migration:afterlife:v2:response:restore-platform-boundary",
+      "reason": "새 지속 흔적 고정과 의미가 달라 자동 변환하지 않는다."
+    },
+    {
+      "legacy_id": "isolate_ticket",
+      "disposition": "DISCARD_SEMANTICS",
+      "target_ids": [],
+      "source_contract": "afterlife-station-legacy-v1",
+      "target_contract": "afterlife-station-canon-v2",
+      "runtime_apply": false,
+      "preserve_in_history": true,
+      "effect_id": "migration:afterlife:v2:response:isolate-ticket",
+      "reason": "검은 승차권 격리 해법의 현재 의미를 폐기한다."
+    },
+    {
+      "legacy_id": "punch_ticket",
+      "disposition": "DISCARD_SEMANTICS",
+      "target_ids": [],
+      "source_contract": "afterlife-station-legacy-v1",
+      "target_contract": "afterlife-station-canon-v2",
+      "runtime_apply": false,
+      "preserve_in_history": true,
+      "effect_id": "migration:afterlife:v2:response:punch-ticket",
+      "reason": "검은 승차권 개찰 해법의 현재 의미를 폐기한다."
+    },
+    {
+      "legacy_id": "carry_ticket",
+      "disposition": "DISCARD_SEMANTICS",
+      "target_ids": [],
+      "source_contract": "afterlife-station-legacy-v1",
+      "target_contract": "afterlife-station-canon-v2",
+      "runtime_apply": false,
+      "preserve_in_history": true,
+      "effect_id": "migration:afterlife:v2:response:carry-ticket",
+      "reason": "검은 승차권 직접 소지 해법의 현재 의미를 폐기한다."
+    },
+    {
+      "legacy_id": "poc001_clue_broadcast_blank",
+      "disposition": "ALIAS",
+      "target_ids": ["record_afterlife_r1_broadcast_original"],
+      "source_contract": "afterlife-station-poc-v1",
+      "target_contract": "afterlife-station-canon-v2",
+      "runtime_apply": true,
+      "preserve_in_history": true,
+      "effect_id": "migration:afterlife:v2:poc:clue:broadcast-blank",
+      "reason": "방송 원본의 목적지 공백 출처로 보수적으로 이관한다."
+    },
+    {
+      "legacy_id": "poc001_clue_reset_timing",
+      "disposition": "DISCARD_SEMANTICS",
+      "target_ids": [],
+      "source_contract": "afterlife-station-poc-v1",
+      "target_contract": "afterlife-station-canon-v2",
+      "runtime_apply": false,
+      "preserve_in_history": true,
+      "effect_id": "migration:afterlife:v2:poc:clue:reset-timing",
+      "reason": "같은 시각으로 되돌아간다는 의미를 폐기하고 위치만 초기화되는 정본을 보호한다."
+    },
+    {
+      "legacy_id": "poc001_clue_official_identifier",
+      "disposition": "ALIAS",
+      "target_ids": ["record_afterlife_r3_station_identifier"],
+      "source_contract": "afterlife-station-poc-v1",
+      "target_contract": "afterlife-station-canon-v2",
+      "runtime_apply": true,
+      "preserve_in_history": true,
+      "effect_id": "migration:afterlife:v2:poc:clue:official-identifier",
+      "reason": "공식 역 식별음 출처로 이관한다."
+    },
+    {
+      "legacy_id": "poc001_clue_display_mismatch",
+      "disposition": "ALIAS",
+      "target_ids": ["record_afterlife_r1_concurrent_destination_mismatch"],
+      "source_contract": "afterlife-station-poc-v1",
+      "target_contract": "afterlife-station-canon-v2",
+      "runtime_apply": true,
+      "preserve_in_history": true,
+      "effect_id": "migration:afterlife:v2:poc:clue:display-mismatch",
+      "reason": "동시간대 목적지 불일치 기록으로 이관한다."
+    },
+    {
+      "legacy_id": "poc001_clue_passenger_count",
+      "disposition": "HISTORICAL_ONLY",
+      "target_ids": [],
+      "source_contract": "afterlife-station-poc-v1",
+      "target_contract": "afterlife-station-canon-v2",
+      "runtime_apply": false,
+      "preserve_in_history": true,
+      "effect_id": "migration:afterlife:v2:poc:clue:passenger-count",
+      "reason": "구형 가설 반증 계보로만 보존한다."
+    },
+    {
+      "legacy_id": "poc001_question_ticket_trigger",
+      "disposition": "DISCARD_SEMANTICS",
+      "target_ids": [],
+      "source_contract": "afterlife-station-poc-v1",
+      "target_contract": "afterlife-station-canon-v2",
+      "runtime_apply": false,
+      "preserve_in_history": true,
+      "effect_id": "migration:afterlife:v2:poc:question:ticket-trigger",
+      "reason": "검은 승차권 접촉 조건을 사건 핵심 미해결로 취급하지 않는다."
+    },
+    {
+      "legacy_id": "poc001_manual_early_movement_reset",
+      "disposition": "SPLIT",
+      "target_ids": [
+        "record_afterlife_r2_continuous_recording",
+        "record_afterlife_r2_directional_boundary_test"
+      ],
+      "source_contract": "afterlife-station-poc-v1",
+      "target_contract": "afterlife-station-canon-v2",
+      "runtime_apply": true,
+      "preserve_in_history": true,
+      "effect_id": "migration:afterlife:v2:poc:manual:early-movement-reset",
+      "reason": "시간 지속과 투영 방향 경계 통과를 분리해 재검증한다."
+    },
+    {
+      "legacy_id": "poc001_manual_personal_destination",
+      "disposition": "ALIAS",
+      "target_ids": ["record_afterlife_r1_concurrent_destination_mismatch"],
+      "source_contract": "afterlife-station-poc-v1",
+      "target_contract": "afterlife-station-canon-v2",
+      "runtime_apply": true,
+      "preserve_in_history": true,
+      "effect_id": "migration:afterlife:v2:poc:manual:personal-destination",
+      "reason": "개인별 목적지 불일치 근거로만 이관한다."
+    },
+    {
+      "legacy_id": "poc001_manual_ticket_contact_danger",
+      "disposition": "DISCARD_SEMANTICS",
+      "target_ids": [],
+      "source_contract": "afterlife-station-poc-v1",
+      "target_contract": "afterlife-station-canon-v2",
+      "runtime_apply": false,
+      "preserve_in_history": true,
+      "effect_id": "migration:afterlife:v2:poc:manual:ticket-contact-danger",
+      "reason": "검은 승차권 접촉 위험을 핵심 금지 행동으로 재사용하지 않는다."
+    },
+    {
+      "legacy_id": "poc001_hypothesis_display_route",
+      "disposition": "HISTORICAL_ONLY",
+      "target_ids": [],
+      "source_contract": "afterlife-station-poc-v1",
+      "target_contract": "afterlife-station-canon-v2",
+      "runtime_apply": false,
+      "preserve_in_history": true,
+      "effect_id": "migration:afterlife:v2:poc:hypothesis:display-route",
+      "reason": "과거 오답 가설로 보존한다."
+    },
+    {
+      "legacy_id": "poc001_hypothesis_broadcast_blank",
+      "disposition": "HISTORICAL_ONLY",
+      "target_ids": [],
+      "source_contract": "afterlife-station-poc-v1",
+      "target_contract": "afterlife-station-canon-v2",
+      "runtime_apply": false,
+      "preserve_in_history": true,
+      "effect_id": "migration:afterlife:v2:poc:hypothesis:broadcast-blank",
+      "reason": "일부 근거와 별개로 구형 가설 자체는 완성 규칙으로 승격하지 않는다."
+    },
+    {
+      "legacy_id": "poc001_pattern_false_terminal",
+      "disposition": "HISTORICAL_ONLY",
+      "target_ids": [],
+      "source_contract": "afterlife-station-poc-v1",
+      "target_contract": "afterlife-station-canon-v2",
+      "runtime_apply": false,
+      "preserve_in_history": true,
+      "effect_id": "migration:afterlife:v2:poc:pattern:false-terminal",
+      "reason": "구형 고정 시퀀스와 action 조건을 재사용하지 않는다."
+    },
+    {
+      "legacy_id": "poc001_pattern_boundary_fold",
+      "disposition": "HISTORICAL_ONLY",
+      "target_ids": [],
+      "source_contract": "afterlife-station-poc-v1",
+      "target_contract": "afterlife-station-canon-v2",
+      "runtime_apply": false,
+      "preserve_in_history": true,
+      "effect_id": "migration:afterlife:v2:poc:pattern:boundary-fold",
+      "reason": "과거 패턴 계보로만 보존한다."
+    },
+    {
+      "legacy_id": "poc001_pattern_ticket_imprint",
+      "disposition": "DISCARD_SEMANTICS",
+      "target_ids": [],
+      "source_contract": "afterlife-station-poc-v1",
+      "target_contract": "afterlife-station-canon-v2",
+      "runtime_apply": false,
+      "preserve_in_history": true,
+      "effect_id": "migration:afterlife:v2:poc:pattern:ticket-imprint",
+      "reason": "검은 승차권 접촉·각인 대응의 현재 의미를 폐기한다."
+    },
+    {
+      "legacy_id": "poc001_action_hold_position",
+      "disposition": "HISTORICAL_ONLY",
+      "target_ids": [],
+      "source_contract": "afterlife-station-poc-v1",
+      "target_contract": "afterlife-station-canon-v2",
+      "runtime_apply": false,
+      "preserve_in_history": true,
+      "effect_id": "migration:afterlife:v2:poc:action:hold-position",
+      "reason": "모든 이동 정지 해법으로 승격하지 않는다."
+    },
+    {
+      "legacy_id": "poc001_action_fix_boundary",
+      "disposition": "HISTORICAL_ONLY",
+      "target_ids": [],
+      "source_contract": "afterlife-station-poc-v1",
+      "target_contract": "afterlife-station-canon-v2",
+      "runtime_apply": false,
+      "preserve_in_history": true,
+      "effect_id": "migration:afterlife:v2:poc:action:fix-boundary",
+      "reason": "새 지속 흔적 좌표 고정과 의미가 달라 자동 매핑하지 않는다."
+    },
+    {
+      "legacy_id": "poc001_action_isolate_ticket",
+      "disposition": "DISCARD_SEMANTICS",
+      "target_ids": [],
+      "source_contract": "afterlife-station-poc-v1",
+      "target_contract": "afterlife-station-canon-v2",
+      "runtime_apply": false,
+      "preserve_in_history": true,
+      "effect_id": "migration:afterlife:v2:poc:action:isolate-ticket",
+      "reason": "검은 승차권 접촉 차단 정답 의미를 폐기한다."
+    },
+    {
+      "legacy_id": "poc001_action_capture",
+      "disposition": "HISTORICAL_ONLY",
+      "target_ids": [],
+      "source_contract": "afterlife-station-poc-v1",
+      "target_contract": "afterlife-station-canon-v2",
+      "runtime_apply": false,
+      "preserve_in_history": true,
+      "effect_id": "migration:afterlife:v2:poc:action:capture",
+      "reason": "범용 회수 action 계보로만 보존한다."
+    }
+  ]
+}

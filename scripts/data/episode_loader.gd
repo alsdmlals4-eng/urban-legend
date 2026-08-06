@@ -3,6 +3,7 @@ class_name EpisodeLoader
 extends RefCounted
 
 
+const AfterlifeCanonV2LoaderScript := preload("res://scripts/data/afterlife_canon_v2_loader.gd")
 const CORE_VALIDATION_OVERLAY_SUFFIX := "_core_validation.json"
 
 
@@ -13,6 +14,19 @@ func load_episode(file_path: String) -> Dictionary:
 		return {}
 
 	return _apply_optional_core_validation_overlay(file_path, parsed_data)
+
+
+## Loads an explicitly requested content contract. The legacy default path never activates Canon v2 implicitly.
+func load_episode_contract(file_path: String, content_contract_id: String) -> Dictionary:
+	var result: Dictionary = AfterlifeCanonV2LoaderScript.new().load_contract(file_path, content_contract_id)
+	if not bool(result.get("ok", false)):
+		push_error("Episode content contract load failed: %s" % String(result.get("code", "UNKNOWN")))
+		return {}
+	var episode_value: Variant = result.get("episode")
+	if typeof(episode_value) != TYPE_DICTIONARY:
+		push_error("Episode content contract result must contain a Dictionary episode")
+		return {}
+	return (episode_value as Dictionary).duplicate(true)
 
 
 func _read_dictionary(file_path: String, label: String) -> Dictionary:
