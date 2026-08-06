@@ -73,12 +73,12 @@ func _run() -> void:
 	_expect(bridge.classify_recovery_action_id("response_afterlife_insert_official_identifier") == "seal", "official identifier response was not classified as seal")
 	_expect(bridge.classify_recovery_action_id("response_afterlife_anchor_persistent_trace") == "observe", "trace-anchor response was not classified as observation")
 
-	var handled := bridge.request_action_gate_for_test(
+	var handled: bool = bool(bridge.request_action_gate_for_test(
 		"response_afterlife_present_official_ticket",
 		Callable(self, "_continue_action"),
 		overlay,
 		fake_state
-	)
+	))
 	_expect(handled, "risk-bearing recovery response bypassed the action gate")
 	_expect((fake_state.preview_channels as Array[String]) == ["seal"], "action gate previewed the wrong semantic channel")
 	var confirmation_panel := overlay.get_node_or_null("ConfirmationLayer/ConfirmationPanel") as PanelContainer
@@ -93,12 +93,12 @@ func _run() -> void:
 	_expect(_continuation_count == 1, "confirmed action did not continue exactly once")
 	_expect((fake_state.committed_preview_ids as Array[String]) == ["preview-1"], "confirmed preview was not committed")
 
-	var observe_handled := bridge.request_action_gate_for_test(
+	var observe_handled: bool = bool(bridge.request_action_gate_for_test(
 		"response_afterlife_anchor_persistent_trace",
 		Callable(self, "_continue_action"),
 		overlay,
 		fake_state
-	)
+	))
 	_expect(not observe_handled, "free observation response was unnecessarily gated")
 	_expect(_continuation_count == 1, "ungated observation should be continued by the caller, not the bridge")
 
