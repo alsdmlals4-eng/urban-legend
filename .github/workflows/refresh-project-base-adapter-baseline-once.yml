@@ -1,0 +1,84 @@
+name: Refresh Project Base Adapter Baseline Once
+
+on:
+  push:
+    branches:
+      - agent/canon-v2-main-baseline-refresh-20260806
+    paths:
+      - .github/workflows/refresh-project-base-adapter-baseline-once.yml
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out refresh branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/canon-v2-main-baseline-refresh-20260806
+          fetch-depth: 0
+
+      - name: Check out pinned Base validator
+        uses: actions/checkout@v4
+        with:
+          repository: alsdmlals4-eng/Base
+          ref: bfdc9e44d4a6920dc085eaa3f9d19d31b1acd2a1
+          path: .base-contract
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install validator dependencies
+        run: python -m pip install -r .base-contract/.github/validation-requirements.txt
+
+      - name: Refresh exact main baseline and generated views
+        env:
+          ACCEPTED_MAIN_SHA: 12e72612a389a9a42e9a43b0707203a0ca06036c
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          path = Path("skills/PROJECT_BASE_ADAPTER.json")
+          payload = json.loads(path.read_text(encoding="utf-8"))
+          payload["protected_baseline"]["commit"] = os.environ["ACCEPTED_MAIN_SHA"]
+          path.write_text(
+              json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+          PY
+
+          python .base-contract/tools/build_project_operating_artifacts.py \
+            --project-root . \
+            --base-repository .base-contract \
+            --protected-base "$ACCEPTED_MAIN_SHA" \
+            --write
+
+          rm .github/workflows/refresh-project-base-adapter-baseline-once.yml
+          rm -rf .base-contract
+
+      - name: Commit generated baseline refresh
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            skills/PROJECT_BASE_ADAPTER.json \
+            skills/PROJECT_SKILL_SNAPSHOT.json \
+            skills/BASE_V9_ADAPTER.json \
+            skills/PROJECT_BASE_SKILL_ADAPTER.json \
+            skills/PROJECT_PATH_ADAPTER.json \
+            docs/PROJECT_OPERATING_DASHBOARD.html \
+            .agents/skills/base-project-router/SKILL.md \
+            .github/workflows/refresh-project-base-adapter-baseline-once.yml
+          git diff --cached --check
+          git commit -m "chore: refresh project adapter baseline after Canon v2 main merge"
+          git push origin HEAD:agent/canon-v2-main-baseline-refresh-20260806
