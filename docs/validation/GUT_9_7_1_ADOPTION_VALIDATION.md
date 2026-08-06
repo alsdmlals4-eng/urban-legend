@@ -15,14 +15,14 @@ recorded_preceding_head: 22ac24db211a5d474efcc49a73c2a5369698c1a7
 current_head_binding: EXTERNAL_GITHUB_ACTIONS_AND_SHEET
 adoption_state: ADOPTED_ACTIVE
 promotion_to_adopted_active: APPROVED_BY_MERGED_MAIN_READBACK
-promotion_pr_merge: PENDING
+promotion_pr_merge: EXTERNAL_GITHUB_AND_SHEET
 local_windows_validation: PRECEDING_LOCAL_EVIDENCE_ONLY_NOT_CURRENT_PROMOTION_HEAD
 android_device_export_validation: NOT_RUN
 human_qa: NOT_RUN
 ui_accessibility_qa: NOT_RUN
 ```
 
-A tracked file cannot embed the SHA of the commit containing itself without changing that SHA. Therefore this document records the preceding validated `main` head. Current exact-head authority remains the GitHub pull-request or merged-main head plus Actions runs bound to that SHA and the synchronized Google Sheet state.
+A tracked file cannot embed the SHA or merge state of the commit containing itself without changing that commit. Therefore this document records the preceding validated `main` head. Current exact-head and merge authority remain the GitHub pull-request or merged-main head plus Actions runs bound to that SHA and the synchronized Google Sheet state.
 
 ## Merged-main promotion evidence
 
@@ -256,5 +256,5 @@ LOCAL_WINDOWS_VALIDATION_NOT_RUN_ON_CURRENT_PROMOTION_HEAD
 ANDROID_DEVICE_EXPORT_NOT_RUN
 HUMAN_QA_NOT_RUN
 UI_ACCESSIBILITY_QA_NOT_RUN
-PROMOTION_PR_MERGE_PENDING
+PROMOTION_PR_MERGE_STATE_EXTERNAL
 ```
