@@ -6,10 +6,15 @@ const AfterlifeRegistryScript := preload("res://scripts/data/afterlife_id_migrat
 const AfterlifeMainMigratorScript := preload("res://scripts/core/afterlife_main_save_migrator.gd")
 const AfterlifeTransactionScript := preload("res://scripts/core/afterlife_migration_transaction.gd")
 const AfterlifeEpisodeLoaderScript := preload("res://scripts/data/episode_loader.gd")
+const RescueRecoveryHandoffPolicyScript := preload("res://scripts/core/rescue_recovery_handoff_policy.gd")
+const ProtectionObligationPolicyScript := preload("res://scripts/core/protection_obligation_policy.gd")
+const RecoveryOutcomePolicyScript := preload("res://scripts/core/recovery_outcome_policy.gd")
+const ProtectionFollowUpPolicyScript := preload("res://scripts/core/protection_follow_up_policy.gd")
 const AFTERLIFE_REGISTRY_PATH := "res://data/migrations/afterlife_station_canon_v2_id_migration.json"
 const AFTERLIFE_EPISODE_ID := "episode_001_afterlife_station"
 const AFTERLIFE_CONTRACT_ID := "afterlife-station-canon-v2"
 const MAIN_TARGET_VERSION := "mvp-040"
+const CANON_V2_RUNTIME_SCHEMA_VERSION := 1
 
 var _afterlife_content_contract_id := ""
 var _afterlife_v2_state: Dictionary = {}
@@ -19,6 +24,9 @@ var _afterlife_legacy_migration_notes: Array = []
 var _afterlife_legacy_resolution_snapshot: Dictionary = {}
 var _afterlife_first_v2_investigation: Dictionary = {}
 var _afterlife_applied_migration_effect_ids: Dictionary = {}
+var _canon_v2_runtime_state: Dictionary = {}
+var _canon_v2_pending_action_previews: Dictionary = {}
+var _canon_v2_preview_sequence := 0
 var _last_migration_result: Dictionary = {}
 var _inject_runtime_failure := false
 
@@ -45,6 +53,204 @@ func get_afterlife_content_contract_id() -> String:
 func get_afterlife_manual_state() -> Dictionary:
 	var manual_value: Variant = _afterlife_v2_state.get("manual")
 	return (manual_value as Dictionary).duplicate(true) if typeof(manual_value) == TYPE_DICTIONARY else {}
+
+
+func apply_canon_v2_runtime_state(candidate: Dictionary) -> Dictionary:
+	var normalized := _normalize_canon_v2_runtime_state(candidate)
+	var validation := _validate_canon_v2_runtime_state(normalized)
+	if not bool(validation.get("ok", false)):
+		return validation
+	_canon_v2_runtime_state = normalized.duplicate(true)
+	_canon_v2_pending_action_previews.clear()
+	_canon_v2_preview_sequence = 0
+	return {"ok": true, "state": get_canon_v2_runtime_state()}
+
+
+func get_canon_v2_runtime_state() -> Dictionary:
+	_ensure_canon_v2_runtime_state()
+	return _canon_v2_runtime_state.duplicate(true)
+
+
+func finalize_canon_v2_rescue_outcome_snapshot(snapshot: Dictionary) -> Dictionary:
+	_ensure_canon_v2_runtime_state()
+	if not _dictionary_copy(_canon_v2_runtime_state.get("rescue_outcome_snapshot")).is_empty():
+		return {"ok": false, "reason": "snapshot_already_finalized"}
+	var validation := RescueRecoveryHandoffPolicyScript.new().validate_snapshot(snapshot)
+	if not bool(validation.get("ok", false)):
+		return validation
+	var candidate := _canon_v2_runtime_state.duplicate(true)
+	candidate["rescue_outcome_snapshot"] = snapshot.duplicate(true)
+	candidate["recovery_handoff_state"] = {}
+	candidate["active_protection_obligations"] = []
+	candidate["protection_history"] = [{
+		"event": "rescue_outcome_snapshot_finalized",
+		"snapshot_id": String(snapshot.get("snapshot_id", ""))
+	}]
+	return _commit_canon_v2_runtime_candidate(candidate, "rescue_snapshot_finalized")
+
+
+func ensure_canon_v2_recovery_handoff_initialized(adapter: Dictionary = {}) -> Dictionary:
+	_ensure_canon_v2_runtime_state()
+	var existing_handoff := _dictionary_copy(_canon_v2_runtime_state.get("recovery_handoff_state"))
+	if not existing_handoff.is_empty():
+		return {
+			"ok": true,
+			"reused_existing_handoff": true,
+			"recovery_handoff_state": existing_handoff,
+			"active_protection_obligations": get_active_protection_obligations()
+		}
+	var snapshot := _dictionary_copy(_canon_v2_runtime_state.get("rescue_outcome_snapshot"))
+	if snapshot.is_empty():
+		return {"ok": false, "error": "handoff_validation_failed", "reason": "rescue_snapshot_missing"}
+	var derived: Dictionary = RescueRecoveryHandoffPolicyScript.new().derive_handoff(snapshot, adapter)
+	if not bool(derived.get("ok", false)):
+		return derived
+	var candidate := _canon_v2_runtime_state.duplicate(true)
+	candidate["recovery_handoff_state"] = _dictionary_copy(derived.get("recovery_handoff_state"))
+	candidate["active_protection_obligations"] = _array_copy(derived.get("active_protection_obligations"))
+	var history := _array_copy(candidate.get("protection_history"))
+	history.append({
+		"event": "recovery_handoff_initialized",
+		"source_snapshot_id": String(snapshot.get("snapshot_id", "")),
+		"obligation_count": (candidate["active_protection_obligations"] as Array).size()
+	})
+	candidate["protection_history"] = history
+	var committed := _commit_canon_v2_runtime_candidate(candidate, "recovery_handoff_initialized")
+	if not bool(committed.get("ok", false)):
+		return committed
+	return {
+		"ok": true,
+		"reused_existing_handoff": false,
+		"recovery_handoff_state": _dictionary_copy(candidate.get("recovery_handoff_state")),
+		"active_protection_obligations": _array_copy(candidate.get("active_protection_obligations"))
+	}
+
+
+func get_active_protection_obligations() -> Array:
+	_ensure_canon_v2_runtime_state()
+	return _array_copy(_canon_v2_runtime_state.get("active_protection_obligations"))
+
+
+func get_protection_history() -> Array:
+	_ensure_canon_v2_runtime_state()
+	return _array_copy(_canon_v2_runtime_state.get("protection_history"))
+
+
+func preview_canon_v2_recovery_action(action: Dictionary, context: Dictionary = {}) -> Dictionary:
+	_ensure_canon_v2_runtime_state()
+	var preview: Dictionary = ProtectionObligationPolicyScript.new().evaluate_action(
+		get_active_protection_obligations(),
+		action,
+		context
+	)
+	_canon_v2_preview_sequence += 1
+	var preview_id := "canon-v2-preview-%06d" % _canon_v2_preview_sequence
+	preview["preview_id"] = preview_id
+	preview["created_order"] = _canon_v2_preview_sequence
+	_canon_v2_pending_action_previews[preview_id] = preview.duplicate(true)
+	return preview
+
+
+func commit_canon_v2_recovery_action(preview_id: String) -> Dictionary:
+	_ensure_canon_v2_runtime_state()
+	if preview_id.is_empty() or not _canon_v2_pending_action_previews.has(preview_id):
+		return {"committed": false, "error": "preview_not_found_or_already_committed"}
+	var preview := _dictionary_copy(_canon_v2_pending_action_previews.get(preview_id))
+	var candidate := _canon_v2_runtime_state.duplicate(true)
+	var applied_ids := _dictionary_copy(candidate.get("applied_cost_adjustment_ids"))
+	for adjustment_value in _array_copy(preview.get("cost_adjustments")):
+		if typeof(adjustment_value) != TYPE_DICTIONARY:
+			continue
+		var adjustment := adjustment_value as Dictionary
+		var adjustment_id := String(adjustment.get("cost_adjustment_id", ""))
+		if adjustment_id.is_empty():
+			return {"committed": false, "error": "missing_cost_adjustment_id"}
+		if applied_ids.has(adjustment_id):
+			return {"committed": false, "error": "cost_adjustment_already_applied"}
+		applied_ids[adjustment_id] = true
+	candidate["applied_cost_adjustment_ids"] = applied_ids
+
+	var history := _array_copy(candidate.get("protection_history"))
+	history.append({
+		"event": "recovery_action_committed",
+		"preview_id": preview_id,
+		"action_id": String(preview.get("action_id", "")),
+		"base_cost": int(preview.get("base_cost", 0)),
+		"additional_cost": int(preview.get("additional_cost", 0)),
+		"risk_changes": _array_copy(preview.get("risk_changes")),
+		"cost_adjustment_ids": _string_keys_from_adjustments(preview.get("cost_adjustments", []))
+	})
+	candidate["protection_history"] = history
+	var committed := _commit_canon_v2_runtime_candidate(candidate, "recovery_action_committed")
+	if not bool(committed.get("ok", false)):
+		return {"committed": false, "error": String(committed.get("error", "runtime_state_commit_failed"))}
+	_canon_v2_pending_action_previews.erase(preview_id)
+	return {"committed": true, "preview": preview, "state": get_canon_v2_runtime_state()}
+
+
+func evaluate_canon_v2_recovery_termination(candidate: String, context: Dictionary = {}) -> Dictionary:
+	var merged_context := context.duplicate(true)
+	merged_context["obligations"] = get_active_protection_obligations()
+	var result: Dictionary = RecoveryOutcomePolicyScript.new().evaluate_termination_candidate(candidate, merged_context)
+	_ensure_canon_v2_runtime_state()
+	var runtime_candidate := _canon_v2_runtime_state.duplicate(true)
+	runtime_candidate["termination_preview"] = result.duplicate(true)
+	_commit_canon_v2_runtime_candidate(runtime_candidate, "termination_preview_updated")
+	return result
+
+
+func rebuild_canon_v2_follow_up_records(authoring_rules: Dictionary = {}) -> Dictionary:
+	_ensure_canon_v2_runtime_state()
+	var incident_packet := _dictionary_copy(_canon_v2_runtime_state.get("incident_end_packet"))
+	if incident_packet.is_empty():
+		incident_packet = {
+			"case_canon_reference": "%s:incident_end" % AFTERLIFE_EPISODE_ID,
+			"representative_outcome": String(_canon_v2_runtime_state.get("representative_outcome", "unknown")),
+			"protection_status": _derive_protection_status(get_active_protection_obligations())
+		}
+	var built: Dictionary = ProtectionFollowUpPolicyScript.new().build_follow_up_records(
+		AFTERLIFE_EPISODE_ID,
+		"campaign_primary",
+		get_active_protection_obligations(),
+		incident_packet,
+		authoring_rules
+	)
+	if not bool(built.get("ok", false)):
+		return built
+	var candidate := _canon_v2_runtime_state.duplicate(true)
+	candidate["incident_end_packet"] = incident_packet.duplicate(true)
+	candidate["follow_up_records"] = _array_copy(built.get("records"))
+	candidate["evaluation_packet"] = ProtectionFollowUpPolicyScript.new().build_evaluation_packet(
+		incident_packet,
+		_array_copy(built.get("records")),
+		_dictionary_copy(authoring_rules.get("mastery_rules"))
+	)
+	var committed := _commit_canon_v2_runtime_candidate(candidate, "follow_up_records_rebuilt")
+	if not bool(committed.get("ok", false)):
+		return committed
+	return {
+		"ok": true,
+		"records": _array_copy(candidate.get("follow_up_records")),
+		"evaluation_packet": _dictionary_copy(candidate.get("evaluation_packet"))
+	}
+
+
+func claim_canon_v2_follow_up_reward(follow_up_id: String, reward: Dictionary) -> Dictionary:
+	_ensure_canon_v2_runtime_state()
+	if follow_up_id.is_empty():
+		return {"granted": false, "reason": "missing_follow_up_id"}
+	if _reward_contains_campaign_power(reward):
+		return {"granted": false, "reason": "campaign_power_reward_forbidden"}
+	var candidate := _canon_v2_runtime_state.duplicate(true)
+	var claims := _dictionary_copy(candidate.get("reward_claims"))
+	if claims.has(follow_up_id):
+		return {"granted": false, "reason": "already_claimed"}
+	claims[follow_up_id] = reward.duplicate(true)
+	candidate["reward_claims"] = claims
+	var committed := _commit_canon_v2_runtime_candidate(candidate, "follow_up_reward_claimed")
+	if not bool(committed.get("ok", false)):
+		return {"granted": false, "reason": "runtime_state_commit_failed"}
+	return {"granted": true, "reward": reward.duplicate(true)}
 
 
 func load_episode(file_path: String = DEFAULT_EPISODE_PATH) -> bool:
@@ -150,6 +356,7 @@ func save_game() -> bool:
 		return false
 	if get_current_episode_id() != AFTERLIFE_EPISODE_ID:
 		return super.save_game()
+	_ensure_canon_v2_runtime_state()
 	var payload := _make_save_data()
 	payload["save_version"] = MAIN_TARGET_VERSION
 	payload["content_contract_id"] = AFTERLIFE_CONTRACT_ID
@@ -160,6 +367,7 @@ func save_game() -> bool:
 	payload["legacy_resolution_snapshot"] = _afterlife_legacy_resolution_snapshot.duplicate(true)
 	payload["first_v2_investigation"] = _afterlife_first_v2_investigation.duplicate(true)
 	payload["applied_migration_effect_ids"] = _afterlife_applied_migration_effect_ids.duplicate(true)
+	payload["canon_v2_runtime"] = _canon_v2_runtime_state.duplicate(true)
 	return _write_current_main_payload(payload)
 
 
@@ -222,6 +430,9 @@ func _hydrate_afterlife_fields(payload: Dictionary) -> void:
 	_afterlife_legacy_resolution_snapshot = _dictionary_copy(payload.get("legacy_resolution_snapshot"))
 	_afterlife_first_v2_investigation = _dictionary_copy(payload.get("first_v2_investigation"))
 	_afterlife_applied_migration_effect_ids = _dictionary_copy(payload.get("applied_migration_effect_ids"))
+	_canon_v2_runtime_state = _normalize_canon_v2_runtime_state(_dictionary_copy(payload.get("canon_v2_runtime")))
+	_canon_v2_pending_action_previews.clear()
+	_canon_v2_preview_sequence = 0
 
 
 func _validate_main_v2_payload(payload: Dictionary) -> bool:
@@ -240,7 +451,168 @@ func _validate_main_v2_payload(payload: Dictionary) -> bool:
 			return false
 		if String((record_value as Dictionary).get("state", "")) != "migrated_unverified":
 			return false
-	return typeof(payload.get("migration_history")) == TYPE_ARRAY
+	if typeof(payload.get("migration_history")) != TYPE_ARRAY:
+		return false
+	if payload.has("canon_v2_runtime"):
+		var runtime_validation := _validate_canon_v2_runtime_state(_normalize_canon_v2_runtime_state(_dictionary_copy(payload.get("canon_v2_runtime"))))
+		if not bool(runtime_validation.get("ok", false)):
+			return false
+	return true
+
+
+func _commit_canon_v2_runtime_candidate(candidate: Dictionary, event: String) -> Dictionary:
+	var normalized := _normalize_canon_v2_runtime_state(candidate)
+	var validation := _validate_canon_v2_runtime_state(normalized)
+	if not bool(validation.get("ok", false)):
+		return validation
+	var previous := _canon_v2_runtime_state.duplicate(true)
+	_canon_v2_runtime_state = normalized.duplicate(true)
+	if not _persist_canon_v2_runtime_if_possible():
+		_canon_v2_runtime_state = previous
+		return {"ok": false, "error": "canon_v2_runtime_persistence_failed", "event": event}
+	return {"ok": true, "event": event, "state": get_canon_v2_runtime_state()}
+
+
+func _persist_canon_v2_runtime_if_possible() -> bool:
+	if not is_inside_tree():
+		return true
+	if current_episode_data.is_empty():
+		return true
+	if get_current_episode_id() != AFTERLIFE_EPISODE_ID:
+		return true
+	return save_game()
+
+
+func _ensure_canon_v2_runtime_state() -> void:
+	if _canon_v2_runtime_state.is_empty():
+		_canon_v2_runtime_state = _default_canon_v2_runtime_state()
+	else:
+		_canon_v2_runtime_state = _normalize_canon_v2_runtime_state(_canon_v2_runtime_state)
+
+
+func _default_canon_v2_runtime_state() -> Dictionary:
+	return {
+		"schema_version": CANON_V2_RUNTIME_SCHEMA_VERSION,
+		"rescue_outcome_snapshot": {},
+		"recovery_handoff_state": {},
+		"active_protection_obligations": [],
+		"protection_history": [],
+		"applied_cost_adjustment_ids": {},
+		"termination_preview": {},
+		"incident_end_packet": {},
+		"representative_outcome": "",
+		"follow_up_records": [],
+		"evaluation_packet": {},
+		"reward_claims": {},
+		"legacy_provenance": {}
+	}
+
+
+func _normalize_canon_v2_runtime_state(value: Dictionary) -> Dictionary:
+	var normalized := _default_canon_v2_runtime_state()
+	for key in normalized:
+		if value.has(key):
+			normalized[key] = value.get(key)
+	normalized["schema_version"] = CANON_V2_RUNTIME_SCHEMA_VERSION
+	for dictionary_key in [
+		"rescue_outcome_snapshot",
+		"recovery_handoff_state",
+		"applied_cost_adjustment_ids",
+		"termination_preview",
+		"incident_end_packet",
+		"evaluation_packet",
+		"reward_claims",
+		"legacy_provenance"
+	]:
+		normalized[dictionary_key] = _dictionary_copy(normalized.get(dictionary_key))
+	for array_key in [
+		"active_protection_obligations",
+		"protection_history",
+		"follow_up_records"
+	]:
+		normalized[array_key] = _array_copy(normalized.get(array_key))
+	normalized["representative_outcome"] = String(normalized.get("representative_outcome", ""))
+	return normalized
+
+
+func _validate_canon_v2_runtime_state(state: Dictionary) -> Dictionary:
+	if int(state.get("schema_version", 0)) != CANON_V2_RUNTIME_SCHEMA_VERSION:
+		return {"ok": false, "error": "invalid_canon_v2_runtime_schema"}
+	for dictionary_key in [
+		"rescue_outcome_snapshot",
+		"recovery_handoff_state",
+		"applied_cost_adjustment_ids",
+		"termination_preview",
+		"incident_end_packet",
+		"evaluation_packet",
+		"reward_claims",
+		"legacy_provenance"
+	]:
+		if typeof(state.get(dictionary_key)) != TYPE_DICTIONARY:
+			return {"ok": false, "error": "invalid_runtime_dictionary", "field": dictionary_key}
+	for array_key in ["active_protection_obligations", "protection_history", "follow_up_records"]:
+		if typeof(state.get(array_key)) != TYPE_ARRAY:
+			return {"ok": false, "error": "invalid_runtime_array", "field": array_key}
+
+	var obligation_ids: Dictionary = {}
+	for obligation_value in _array_copy(state.get("active_protection_obligations")):
+		if typeof(obligation_value) != TYPE_DICTIONARY:
+			return {"ok": false, "error": "invalid_obligation_record"}
+		var obligation_id := String((obligation_value as Dictionary).get("obligation_id", ""))
+		if obligation_id.is_empty() or obligation_ids.has(obligation_id):
+			return {"ok": false, "error": "duplicate_or_missing_obligation_id", "obligation_id": obligation_id}
+		obligation_ids[obligation_id] = true
+
+	var follow_up_keys: Dictionary = {}
+	for record_value in _array_copy(state.get("follow_up_records")):
+		if typeof(record_value) != TYPE_DICTIONARY:
+			return {"ok": false, "error": "invalid_follow_up_record"}
+		var record := record_value as Dictionary
+		var dedupe_key := String(record.get("dedupe_key", ""))
+		if dedupe_key.is_empty() or follow_up_keys.has(dedupe_key):
+			return {"ok": false, "error": "duplicate_or_missing_follow_up_dedupe_key", "dedupe_key": dedupe_key}
+		follow_up_keys[dedupe_key] = true
+	return {"ok": true}
+
+
+func _derive_protection_status(obligations: Array) -> String:
+	var has_unresolved := false
+	var has_breached := false
+	for obligation_value in obligations:
+		if typeof(obligation_value) != TYPE_DICTIONARY:
+			continue
+		var status := String((obligation_value as Dictionary).get("status", "unresolved"))
+		if status == "breached":
+			has_breached = true
+		elif status == "unresolved":
+			has_unresolved = true
+	if has_breached:
+		return "breached"
+	if has_unresolved:
+		return "unresolved"
+	return "accounted"
+
+
+func _reward_contains_campaign_power(reward: Dictionary) -> bool:
+	for forbidden_key in [
+		"permanent_stat",
+		"mandatory_skill",
+		"best_campaign_equipment",
+		"mandatory_companion",
+		"core_ending",
+		"accessibility_feature"
+	]:
+		if reward.has(forbidden_key):
+			return true
+	return false
+
+
+func _string_keys_from_adjustments(adjustments_value: Variant) -> Array[String]:
+	var result: Array[String] = []
+	for adjustment_value in _array_copy(adjustments_value):
+		if typeof(adjustment_value) == TYPE_DICTIONARY:
+			result.append(String((adjustment_value as Dictionary).get("cost_adjustment_id", "")))
+	return result
 
 
 func _read_dictionary(path: String) -> Dictionary:
