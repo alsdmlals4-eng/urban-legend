@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "allowed_statuses": ["PASS", "FAIL", "BLOCKED", "NOT_RUN"],
+  "items": [
+    {"id": "load_existing_save", "category": "migration", "title_ko": "기존 저장을 정상적으로 불러올 수 있다", "required": true},
+    {"id": "safe_restart_notice", "category": "migration", "title_ko": "안전 재시작 또는 이관 안내가 명확하게 표시된다", "required": true},
+    {"id": "migrated_unverified_meaning", "category": "migration", "title_ko": "migrated_unverified 상태가 과장 없이 설명된다", "required": true},
+    {"id": "canon_v2_rule_strip", "category": "runtime_ux", "title_ko": "Canon v2 현행 규칙 스트립이 표시된다", "required": true},
+    {"id": "protection_obligation_states", "category": "runtime_ux", "title_ko": "protection_obligation의 critical / urgent / watch 상태를 구분할 수 있다", "required": true},
+    {"id": "observation_without_confirmation", "category": "runtime_ux", "title_ko": "관찰·증거 보존 행동은 불필요한 확인 없이 진행된다", "required": true},
+    {"id": "risk_action_confirmation", "category": "runtime_ux", "title_ko": "위험·책임 행동은 의미·위험·대안을 확인한 뒤 진행된다", "required": true},
+    {"id": "termination_preview", "category": "runtime_ux", "title_ko": "회수 확정 전에 termination_preview가 표시된다", "required": true},
+    {"id": "independent_result_axes", "category": "result", "title_ko": "independent_result_axes에서 현상 통제·보호 책임·증거 무결성·후속 실행·숙련 평가가 분리된다", "required": true},
+    {"id": "completed_report_reward_unchanged", "category": "persistence", "title_ko": "완료 보고서와 기존 보상이 변하지 않는다", "required": true},
+    {"id": "no_duplicate_application", "category": "persistence", "title_ko": "동일 비용·의무·후속·보상이 중복 적용되지 않는다", "required": true},
+    {"id": "validation_isolation", "category": "persistence", "title_ko": "validation_isolation이 유지되어 본편 저장과 Validation 저장이 섞이지 않는다", "required": true},
+    {"id": "layout_1280x720", "category": "layout", "title_ko": "1280x720에서 화면 겹침과 잘림이 없다", "required": true},
+    {"id": "layout_1920x1080", "category": "layout", "title_ko": "1920x1080에서 화면 겹침과 잘림이 없다", "required": true},
+    {"id": "keyboard_focus", "category": "accessibility", "title_ko": "keyboard_focus 이동과 확인·취소가 가능하다", "required": true},
+    {"id": "gamepad_focus", "category": "accessibility", "title_ko": "gamepad_focus 이동과 확인·취소가 가능하다", "required": true},
+    {"id": "non_color_state_cues", "category": "accessibility", "title_ko": "색상 외 텍스트·아이콘으로 상태를 식별할 수 있다", "required": true},
+    {"id": "save_restart", "category": "persistence", "title_ko": "save_restart 후 저장 상태가 정상적으로 복원된다", "required": true}
+  ]
+}
