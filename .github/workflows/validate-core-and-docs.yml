@@ -48,7 +48,6 @@ jobs:
     env:
       PYTHONDONTWRITEBYTECODE: "1"
       GODOT_SILENCE_ROOT_WARNING: "1"
-      GODOT_TEST_TMP: ${{ runner.temp }}/urban-legend-godot-tests
       GODOT_TEST_TIMEOUT: "300"
     steps:
       - name: Check out repository
@@ -105,6 +104,8 @@ jobs:
 
       - name: Import project and run all Godot regressions
         shell: bash
+        env:
+          GODOT_TEST_TMP: ${{ runner.temp }}/urban-legend-godot-tests
         run: |
           "$GODOT_BIN" --version
           "$GODOT_BIN" --headless --path . --import --quit
