@@ -10,6 +10,7 @@ var _failures: Array[String] = []
 
 func _init() -> void:
 	_test_rescue_handoff_and_obligation_preview()
+	_test_unapproved_numbers_are_not_invented()
 	_test_recovery_outcome_independence()
 	_test_follow_up_dedupe_and_breach_preservation()
 	_finish()
@@ -42,7 +43,7 @@ func _test_rescue_handoff_and_obligation_preview() -> void:
 		{"available_supports": ["shield"], "safe_route": true}
 	)
 	_expect(bool(attack_preview.get("allowed", false)), "related attack must remain selectable")
-	_expect(int(attack_preview.get("additional_cost", 0)) > 0 or not (attack_preview.get("risk_changes", []) as Array).is_empty(), "related attack lacks visible consequence")
+	_expect(not (attack_preview.get("risk_changes", []) as Array).is_empty(), "related attack lacks visible consequence")
 	_expect(not (attack_preview.get("alternatives", []) as Array).is_empty(), "related attack lacks fail-forward alternative")
 
 	var observe_preview: Dictionary = obligation_policy.evaluate_action(
@@ -52,6 +53,38 @@ func _test_rescue_handoff_and_obligation_preview() -> void:
 	)
 	_expect(bool(observe_preview.get("allowed", false)), "observation must remain available")
 	_expect(int(observe_preview.get("additional_cost", -1)) == 0, "observation must remain free")
+
+
+func _test_unapproved_numbers_are_not_invented() -> void:
+	var obligation := {
+		"obligation_id": "ob_semantic_only",
+		"target": "victim_001",
+		"responsibility_type": "protection",
+		"source_reason": "partial_separation",
+		"priority_class": "critical",
+		"priority_reason": "잔여 연결 위험이 있습니다.",
+		"affected_actions": ["attack"],
+		"breach_consequence": "피해 전이 위험이 증가합니다.",
+		"status": "unresolved",
+		"created_order": 0
+	}
+	var policy = ObligationPolicyScript.new()
+	var semantic_preview: Dictionary = policy.evaluate_action([obligation], {"action_id": "attack", "base_cost": 1}, {})
+	_expect(int(semantic_preview.get("additional_cost", -1)) == 0, "policy invented an unapproved numeric cost")
+	_expect((semantic_preview.get("cost_adjustments", []) as Array).is_empty(), "semantic-only obligation created a numeric adjustment")
+	_expect(not (semantic_preview.get("risk_changes", []) as Array).is_empty(), "semantic-only obligation lost its visible risk")
+
+	var authored := obligation.duplicate(true)
+	authored["cost_rules"] = {
+		"attack": {
+			"cost_channel": "action_opportunity",
+			"additional_cost": 1,
+			"preview_text": "저작된 보호 행동 기회 1회가 필요합니다."
+		}
+	}
+	var authored_preview: Dictionary = policy.evaluate_action([authored], {"action_id": "attack", "base_cost": 1}, {})
+	_expect(int(authored_preview.get("additional_cost", 0)) == 1, "authored numeric cost was not applied")
+	_expect((authored_preview.get("cost_adjustments", []) as Array).size() == 1, "authored cost adjustment missing")
 
 
 func _test_recovery_outcome_independence() -> void:
