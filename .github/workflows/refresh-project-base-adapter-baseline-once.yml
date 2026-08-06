@@ -70,15 +70,7 @@ jobs:
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add \
-            skills/PROJECT_BASE_ADAPTER.json \
-            skills/PROJECT_SKILL_SNAPSHOT.json \
-            skills/BASE_V9_ADAPTER.json \
-            skills/PROJECT_BASE_SKILL_ADAPTER.json \
-            skills/PROJECT_PATH_ADAPTER.json \
-            docs/PROJECT_OPERATING_DASHBOARD.html \
-            .agents/skills/base-project-router/SKILL.md \
-            .github/workflows/refresh-project-base-adapter-baseline-once.yml
+          git add -A
           git diff --cached --check
           git commit -m "chore: refresh project adapter baseline after Canon v2 main merge"
           git push origin HEAD:agent/canon-v2-main-baseline-refresh-20260806
