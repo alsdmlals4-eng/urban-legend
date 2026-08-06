@@ -92,6 +92,14 @@ class AfterlifeCanonV2OneClickHumanQaTests(unittest.TestCase):
         ):
             self.assertIn(token, text)
 
+    def test_noninteractive_mode_cannot_forge_human_pass(self) -> None:
+        text = ORCHESTRATOR.read_text(encoding="utf-8")
+        self.assertIn("NON_INTERACTIVE_PASS_FORBIDDEN", text)
+        self.assertIn(
+            "if ($NonInteractive -and $DefaultChecklistStatus -eq 'PASS')",
+            text,
+        )
+
     def test_legacy_loader_is_ascii_and_materializes_utf8_bom_copies(self) -> None:
         raw = LEGACY_LOADER.read_bytes()
         raw.decode("ascii")
