@@ -1,0 +1,78 @@
+{
+  "artifact_role": "PROJECT_ENTRY_GATE_CONTRACT",
+  "schema_version": 2,
+  "decision_id": "UL-DEC-ENTRY-GATE-001",
+  "evaluation_policy": "FAIL_CLOSED",
+  "evidence_collection_mode": "CALLER_SUPPLIED_SNAPSHOT_WITH_EXTERNAL_GITHUB_AND_SHEET_READBACK",
+  "required_sources": [
+    "decision",
+    "unresolved",
+    "images",
+    "github",
+    "authority",
+    "gut",
+    "human_qa"
+  ],
+  "forbidden_current_states": [
+    "READY",
+    "AWAITING",
+    "CANON_READY",
+    "IMPLEMENTATION_PLAN_READY",
+    "AUTOMATED_PACKAGE_READY"
+  ],
+  "allowed_states": [
+    "ENTRY_ALLOWED_FOR_DOCS_ONLY",
+    "ENTRY_ALLOWED_FOR_TEST_IMPLEMENTATION",
+    "ENTRY_ALLOWED_FOR_PRODUCT_IMPLEMENTATION",
+    "ENTRY_ALLOWED_FOR_IMAGE_GENERATION",
+    "ENTRY_ALLOWED_FOR_IMAGE_IMPLEMENTATION"
+  ],
+  "blocked_states": [
+    "ENTRY_BLOCKED_MISSING_SOURCE",
+    "ENTRY_BLOCKED_OPEN_P0_P1",
+    "ENTRY_BLOCKED_OPEN_DECISION",
+    "ENTRY_BLOCKED_IMAGE_EVIDENCE",
+    "ENTRY_BLOCKED_EXACT_HEAD_EVIDENCE",
+    "ENTRY_BLOCKED_AUTHORITY_CONFLICT",
+    "ENTRY_BLOCKED_GUT_CONSUMPTION",
+    "ENTRY_BLOCKED_HUMAN_QA"
+  ],
+  "image_product_approval_state": "PRODUCT_ASSET_APPROVED",
+  "github_pass_state": "PASS",
+  "github_head_format": "40_LOWERCASE_OR_UPPERCASE_HEX",
+  "authority_pass_state": "PASS",
+  "gut_usable_states_by_scope": {
+    "DOCS_ONLY": [
+      "TRIAL_APPROVED",
+      "CONSUMPTION_IMPLEMENTED",
+      "EXACT_HEAD_VALIDATED",
+      "ADOPTED_ACTIVE"
+    ],
+    "TEST_IMPLEMENTATION": [
+      "TRIAL_APPROVED",
+      "CONSUMPTION_IMPLEMENTED",
+      "EXACT_HEAD_VALIDATED",
+      "ADOPTED_ACTIVE"
+    ],
+    "PRODUCT_IMPLEMENTATION": [
+      "EXACT_HEAD_VALIDATED",
+      "ADOPTED_ACTIVE"
+    ],
+    "IMAGE_GENERATION": [
+      "CONSUMPTION_IMPLEMENTED",
+      "EXACT_HEAD_VALIDATED",
+      "ADOPTED_ACTIVE"
+    ],
+    "IMAGE_IMPLEMENTATION": [
+      "EXACT_HEAD_VALIDATED",
+      "ADOPTED_ACTIVE"
+    ]
+  },
+  "scope_map": {
+    "DOCS_ONLY": "ENTRY_ALLOWED_FOR_DOCS_ONLY",
+    "TEST_IMPLEMENTATION": "ENTRY_ALLOWED_FOR_TEST_IMPLEMENTATION",
+    "PRODUCT_IMPLEMENTATION": "ENTRY_ALLOWED_FOR_PRODUCT_IMPLEMENTATION",
+    "IMAGE_GENERATION": "ENTRY_ALLOWED_FOR_IMAGE_GENERATION",
+    "IMAGE_IMPLEMENTATION": "ENTRY_ALLOWED_FOR_IMAGE_IMPLEMENTATION"
+  }
+}

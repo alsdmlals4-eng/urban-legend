@@ -1,0 +1,153 @@
+{
+  "artifact_role": "GODOT_TOOL_AUTHORITY_LEDGER",
+  "schema_version": 2,
+  "project": "alsdmlals4-eng/urban-legend",
+  "decision_ids": [
+    "UL-DEC-ADDON-001",
+    "UL-DEC-AUTHORITY-001"
+  ],
+  "base_policy_evidence": {
+    "repository": "alsdmlals4-eng/Base",
+    "commit": "4f98f968a377f7b6a11aafa4fc94d11bddbebedc",
+    "state": "REVIEWED_POLICY_EVIDENCE_NOT_RELEASE_IDENTITY"
+  },
+  "current_exact_head_authority": {
+    "mode": "EXTERNAL_GITHUB_ACTIONS_AND_SHEET",
+    "reason": "A tracked repository file cannot embed the SHA of the commit that contains itself without changing that SHA.",
+    "required_readback": [
+      "GitHub pull-request head SHA",
+      "GitHub Actions runs bound to that SHA",
+      "Google Sheet exact-head state"
+    ]
+  },
+  "protected_paths": [
+    "project.godot",
+    "addons/",
+    "scripts/",
+    "scenes/",
+    "assets/",
+    "data/"
+  ],
+  "tools": [
+    {
+      "tool_id": "higodot",
+      "display_name": "HiGodot / Godot AI",
+      "plugin_cfg": "res://addons/godot_ai/plugin.cfg",
+      "exact_version": "3.1.2",
+      "authority": "GODOT_AUTHORING",
+      "authority_cardinality": "SOLE",
+      "authority_state": "ACTIVE_EDITOR_AUTHORITY",
+      "allowed_operations": [
+        "create_edit_save_scenes",
+        "create_edit_save_nodes",
+        "create_edit_save_resources",
+        "edit_project_settings"
+      ],
+      "allowed_product_mutations": [
+        "project.godot",
+        "scripts/",
+        "scenes/",
+        "assets/",
+        "data/"
+      ],
+      "forbidden_operations": [
+        "forge_test_pass",
+        "suppress_gut_failure",
+        "modify_gut_junit_evidence",
+        "replace_human_qa"
+      ],
+      "consumption_paths": [
+        "Godot editor scene-node-resource-project-settings authoring workflow"
+      ],
+      "validation_requirements": [
+        "reviewed project-settings mutation",
+        "Godot import and maintained regression",
+        "local editor or Human QA when the requested scope requires it"
+      ],
+      "ci_commands": [],
+      "rollback_steps": [
+        "Open a dedicated reviewed PR",
+        "Disable res://addons/godot_ai/plugin.cfg through the authoring authority",
+        "Restore the last reviewed project.godot when rollback is required",
+        "Run Godot 4.7.1 import and the maintained full regression matrix"
+      ]
+    },
+    {
+      "tool_id": "gut",
+      "display_name": "GUT",
+      "plugin_cfg": "res://addons/gut/plugin.cfg",
+      "authority": "TEST_EXECUTION",
+      "authority_cardinality": "NON_AUTHORING",
+      "upstream_repository": "bitwes/Gut",
+      "upstream_branch": "godot_4_7",
+      "upstream_commit": "aeb5d4f3f7f0a6c9b5e178876d6c99b791fda605",
+      "exact_version": "9.7.1",
+      "compatible_godot": "4.7.x",
+      "license": "MIT",
+      "license_path": "addons/gut/LICENSE.md",
+      "installed_tree_match": "MATCH_UPSTREAM_AEB5D4F3",
+      "allowed_operations": [
+        "discover_tests",
+        "execute_tests",
+        "assert_results",
+        "create_doubles_stubs_spies",
+        "write_junit_artifacts"
+      ],
+      "allowed_product_mutations": [],
+      "allowed_write_paths": [
+        ".artifacts/gut/",
+        "user://test_runs/"
+      ],
+      "forbidden_mutation_paths": [
+        "project.godot",
+        "addons/",
+        "scripts/",
+        "scenes/",
+        "assets/",
+        "data/"
+      ],
+      "forbidden_operations": [
+        "invoke_higodot_mutation",
+        "modify_product_canon",
+        "modify_user_save_origin",
+        "convert_failure_to_success",
+        "replace_human_qa"
+      ],
+      "adoption_state": "CONSUMPTION_IMPLEMENTED",
+      "current_head_binding": "EXTERNAL_GITHUB_ACTIONS_AND_SHEET",
+      "consumption_paths": [
+        "tests/gut/test_validation_route_mapper.gd",
+        ".github/workflows/validate-gut-test-authority.yml"
+      ],
+      "ci_commands": [
+        "godot --headless -d -s --path . addons/gut/gut_cmdln.gd -gdir=res://tests/gut -ginclude_subdirs -gexit -gjunit_xml_file=.artifacts/gut/junit.xml"
+      ],
+      "rollback_steps": [
+        "Set adoption_state to REMOVAL_PENDING",
+        "Open a dedicated reviewed PR",
+        "Disable res://addons/gut/plugin.cfg through HiGodot or an explicitly reviewed project-settings edit",
+        "Remove addons/gut only after an equivalent test path exists",
+        "Preserve historical JUnit and adoption evidence",
+        "Run Godot 4.7.1 import and the maintained full regression matrix",
+        "Set adoption_state to REMOVED with the replacement or removal reason"
+      ],
+      "recorded_preceding_validation": {
+        "state": "PASS",
+        "commit": "a03b8bb57fb5ba6486ba65c8700cc41ffd9bf08d",
+        "workflow_run_id": 31110321360,
+        "workflow_job_id": 92646106146,
+        "artifact_id": 8971437085,
+        "artifact_name": "gut-test-authority-a03b8bb57fb5ba6486ba65c8700cc41ffd9bf08d",
+        "artifact_digest": "sha256:43dffa37bdf28cfdec9ef3dc234274a4d629ae500e3a02414e1eb8ca7db2d608",
+        "focused_contract_tests": 25,
+        "gut_tests": 5,
+        "gut_assertions": 17,
+        "legacy_entrypoints": 58,
+        "canon_v2_entrypoints": 7,
+        "full_regression_entrypoints": 65,
+        "protected_diff": "PASS",
+        "recording_note": "Historical preceding-head evidence only. Current exact-head authority must be read from GitHub Actions and the synchronized Sheet."
+      }
+    }
+  ]
+}

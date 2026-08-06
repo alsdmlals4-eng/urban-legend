@@ -7,6 +7,9 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 
+# Test and validation artifacts
+.artifacts/
+
 # Godot export settings and credentials
 export.cfg
 export_credentials.cfg
