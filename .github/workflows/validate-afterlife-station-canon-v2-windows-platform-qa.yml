@@ -10,6 +10,7 @@ on:
       - "scripts/data/afterlife_*.gd"
       - "tools/qa/run_afterlife_canon_v2_human_qa.ps1"
       - "tools/qa/start_afterlife_canon_v2_human_qa.ps1"
+      - "tools/qa/start_afterlife_canon_v2_human_qa_legacy.ps1"
       - "tools/qa/afterlife_canon_v2_human_qa_checklist.json"
       - "tests/afterlife_migration/afterlife_windows_*.gd"
       - "tests/windows/**"
@@ -21,8 +22,6 @@ on:
       - "docs/qa/2026-08-05-afterlife-canon-v2-local-human-qa-runner.md"
       - "docs/qa/2026-08-05-afterlife-canon-v2-local-human-qa-runner-evidence.md"
       - "docs/qa/2026-08-06-one-click-human-qa-package.md"
-      - "docs/superpowers/specs/2026-08-06-one-click-human-qa-package-design.md"
-      - "docs/superpowers/plans/2026-08-06-one-click-human-qa-package.md"
       - "docs/decisions/D-2026-08-05-AFTERLIFE-STATION-CANON-V2-MIGRATION-DESIGN-LOCAL-HUMAN-QA-RUNNER-ADDENDUM.md"
   workflow_dispatch:
 
