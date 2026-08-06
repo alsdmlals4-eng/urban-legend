@@ -1,0 +1,52 @@
+name: Validate Canon v2 Runtime UX
+
+on:
+  pull_request:
+    paths:
+      - "project.godot"
+      - "scripts/core/rescue_recovery_handoff_policy.gd"
+      - "scripts/core/protection_obligation_policy.gd"
+      - "scripts/core/recovery_outcome_policy.gd"
+      - "scripts/core/protection_follow_up_policy.gd"
+      - "scripts/core/afterlife_migrating_game_state.gd"
+      - "scripts/ui/canon_v2_operation_overlay.gd"
+      - "tests/canon_v2_runtime/**"
+      - "tests/run_canon_v2_runtime_ux_tests.sh"
+      - ".github/workflows/validate-canon-v2-runtime-ux.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: canon-v2-runtime-ux-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  canon-v2-runtime-ux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Godot 4.7.1
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.1
+          use-dotnet: false
+          include-templates: false
+      - name: Import project
+        run: |
+          set -o pipefail
+          godot --headless --path . --import 2>&1 | tee canon-v2-runtime-import.log
+      - name: Run Canon v2 runtime and UX tests
+        env:
+          GODOT_BIN: godot
+        run: bash tests/run_canon_v2_runtime_ux_tests.sh
+      - name: Preserve failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: canon-v2-runtime-ux-failure
+          path: canon-v2-runtime-import.log
+          if-no-files-found: warn
+          retention-days: 7
