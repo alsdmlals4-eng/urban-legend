@@ -79,6 +79,14 @@ func request_action_gate_for_test(
 	return _request_action_gate(action_id, continuation, overlay, game_state)
 
 
+func sync_recovery_termination_preview_for_test(host: Node, game_state: Node) -> Dictionary:
+	return _sync_recovery_termination_preview(host, game_state)
+
+
+func finalize_legacy_recovery_for_test(game_state: Node) -> Dictionary:
+	return _finalize_legacy_recovery(game_state)
+
+
 func mount_overlay_for_test(host: Node, runtime_state: Dictionary, mode: String) -> Node:
 	return _mount_overlay(host, runtime_state, mode)
 
@@ -149,9 +157,111 @@ func _sync_current_scene() -> void:
 	var mode := classify_scene_path(scene_path)
 	if mode.is_empty():
 		return
+	var game_state := get_node_or_null("/root/GameState")
+	if mode == "recovery":
+		_sync_recovery_termination_preview(current_scene, game_state)
+	elif mode == "result":
+		_finalize_legacy_recovery(game_state)
 	var state := _build_overlay_state(mode)
 	_mount_overlay(current_scene, state, mode)
 	_mounted_scene_instance_id = current_scene.get_instance_id()
+
+
+func _sync_recovery_termination_preview(host: Node, game_state: Node) -> Dictionary:
+	if host == null or game_state == null:
+		return {}
+	if not game_state.has_method("evaluate_canon_v2_recovery_termination"):
+		return {}
+	var recover_button := host.find_child("RecoverButton", true, false) as Button
+	if recover_button == null or recover_button.disabled:
+		return {}
+	if game_state.has_method("get_canon_v2_runtime_state"):
+		var runtime: Dictionary = game_state.get_canon_v2_runtime_state()
+		var existing := _dictionary_copy(runtime.get("termination_preview"))
+		if String(existing.get("termination_candidate", "")) == "residue_recovered":
+			return existing
+	var obligations: Array = []
+	if game_state.has_method("get_active_protection_obligations"):
+		obligations = game_state.get_active_protection_obligations()
+	return game_state.evaluate_canon_v2_recovery_termination("residue_recovered", {
+		"control_evidence": {
+			"residue_secured": true,
+			"spread_controlled": true
+		},
+		"obligations": obligations
+	})
+
+
+func _finalize_legacy_recovery(game_state: Node) -> Dictionary:
+	if game_state == null:
+		return {"ok": false, "error": "game_state_missing"}
+	if not game_state.has_method("get_canon_v2_runtime_state") or not game_state.has_method("apply_canon_v2_runtime_state"):
+		return {"ok": false, "error": "canon_v2_runtime_api_missing"}
+	var runtime: Dictionary = game_state.get_canon_v2_runtime_state()
+	var existing_packet := _dictionary_copy(runtime.get("incident_end_packet"))
+	if not existing_packet.is_empty():
+		return {"ok": true, "reused_existing_packet": true, "incident_end_packet": existing_packet}
+	var successful := false
+	var legacy_status := ""
+	var legacy_stability := 0
+	if game_state.has_method("is_recovery_successful"):
+		successful = bool(game_state.is_recovery_successful())
+	if game_state.has_method("get_recovery_result_status"):
+		legacy_status = String(game_state.get_recovery_result_status())
+	if game_state.has_method("get_recovery_result_stability"):
+		legacy_stability = int(game_state.get_recovery_result_stability())
+	if legacy_status.is_empty() and not successful:
+		return {"ok": false, "error": "legacy_recovery_result_missing"}
+	var representative_outcome := _map_legacy_recovery_outcome(legacy_status, successful)
+	var obligations := _array_copy(runtime.get("active_protection_obligations"))
+	var packet := {
+		"case_canon_reference": "episode_001_afterlife_station:incident_end",
+		"representative_outcome": representative_outcome,
+		"protection_status": _derive_protection_status(obligations),
+		"legacy_recovery_successful": successful,
+		"legacy_recovery_status": legacy_status,
+		"legacy_recovery_stability": legacy_stability,
+		"legacy_provenance": {
+			"classification": "LEGACY_SINGLE_OUTCOME" if legacy_status == "core_recovered" else "LEGACY_COMPAT_ONLY",
+			"mapping_boundary": "STATUS_FIRST_NO_INVENTED_FULL_SUCCESS"
+		}
+	}
+	runtime["representative_outcome"] = representative_outcome
+	runtime["incident_end_packet"] = packet
+	var applied: Dictionary = game_state.apply_canon_v2_runtime_state(runtime)
+	if not bool(applied.get("ok", false)):
+		return applied
+	return {"ok": true, "reused_existing_packet": false, "incident_end_packet": packet}
+
+
+func _map_legacy_recovery_outcome(status: String, successful: bool) -> String:
+	match status:
+		"core_recovered", "residue_recovered":
+			return "residue_recovered"
+		"containment_complete":
+			return "containment_complete"
+		"stabilization_complete":
+			return "stabilization_complete"
+		"emergency_containment":
+			return "emergency_containment"
+		"approved_withdrawal":
+			return "approved_withdrawal"
+		"control_failure":
+			return "control_failure"
+	return "legacy_success_unclassified" if successful else "legacy_failure_unclassified"
+
+
+func _derive_protection_status(obligations: Array) -> String:
+	var has_unresolved := false
+	for obligation_value in obligations:
+		if typeof(obligation_value) != TYPE_DICTIONARY:
+			continue
+		var status := String((obligation_value as Dictionary).get("status", "unresolved"))
+		if status == "breached":
+			return "breached"
+		if status == "unresolved":
+			has_unresolved = true
+	return "unresolved" if has_unresolved else "accounted"
 
 
 func _mount_overlay(host: Node, runtime_state: Dictionary, mode: String) -> Node:
@@ -184,10 +294,11 @@ func _build_overlay_state(mode: String) -> Dictionary:
 	if mode in ["recovery", "result"]:
 		_bootstrap_and_initialize_handoff(game_state)
 	if mode == "result" and game_state.has_method("rebuild_canon_v2_follow_up_records"):
+		_finalize_legacy_recovery(game_state)
 		var runtime_before_follow_up: Dictionary = {}
 		if game_state.has_method("get_canon_v2_runtime_state"):
 			runtime_before_follow_up = game_state.get_canon_v2_runtime_state()
-		if (runtime_before_follow_up.get("follow_up_records", []) as Array).is_empty() and not (runtime_before_follow_up.get("active_protection_obligations", []) as Array).is_empty():
+		if (runtime_before_follow_up.get("follow_up_records", []) as Array).is_empty():
 			game_state.rebuild_canon_v2_follow_up_records({
 				"default_step_limit": 1,
 				"unresolved": {"actionable": true, "actionable_reason": "미해결 보호 책임을 확인해야 합니다."},
