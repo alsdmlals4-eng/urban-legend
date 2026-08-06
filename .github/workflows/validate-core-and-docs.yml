@@ -1,35 +1,35 @@
 name: Validate core and documentation baseline
 
-on:
+"on":
   pull_request:
     paths:
-      - "project.godot"
-      - "README.md"
-      - "MVP_ROADMAP.md"
-      - "TEST_CHECKLIST.md"
+      - project.godot
+      - README.md
+      - MVP_ROADMAP.md
+      - TEST_CHECKLIST.md
       - "data/**/*.json"
       - "docs/**"
       - "scenes/**/*.tscn"
       - "scripts/**/*.gd"
       - "tests/**"
       - "tools/docs/**"
-      - ".gitignore"
+      - .gitignore
       - ".github/workflows/**"
   push:
     branches:
       - main
     paths:
-      - "project.godot"
-      - "README.md"
-      - "MVP_ROADMAP.md"
-      - "TEST_CHECKLIST.md"
+      - project.godot
+      - README.md
+      - MVP_ROADMAP.md
+      - TEST_CHECKLIST.md
       - "data/**/*.json"
       - "docs/**"
       - "scenes/**/*.tscn"
       - "scripts/**/*.gd"
       - "tests/**"
       - "tools/docs/**"
-      - ".gitignore"
+      - .gitignore
       - ".github/workflows/**"
   workflow_dispatch:
 
@@ -42,6 +42,7 @@ concurrency:
 
 jobs:
   validate:
+    name: Core, docs, and full Godot regression
     runs-on: ubuntu-latest
     timeout-minutes: 75
     env:
@@ -64,9 +65,10 @@ jobs:
         run: python -m pip install --disable-pip-version-check Pillow python-docx
 
       - name: Validate Python contracts and active references
-        run: python -m unittest discover -s tests -p 'test_*.py' -v
+        run: python -m unittest discover -s tests -p "test_*.py" -v
 
       - name: Parse all JSON data
+        shell: bash
         run: |
           python - <<'PY'
           import json
@@ -81,6 +83,7 @@ jobs:
           PY
 
       - name: Build and verify GDD DOCX mirror
+        shell: bash
         run: |
           python tools/docs/build_game_design_doc.py --build
           python tools/docs/build_game_design_doc.py --check
@@ -88,6 +91,7 @@ jobs:
           git diff --exit-code -- docs/GAME_DESIGN_DOCUMENT.md tools/docs/build_game_design_doc.py
 
       - name: Install verified Godot 4.7.1
+        shell: bash
         env:
           GODOT_URL: https://github.com/godotengine/godot-builds/releases/download/4.7.1-stable/Godot_v4.7.1-stable_linux.x86_64.zip
           GODOT_ZIP_SHA256: c7ff14fd28472c8d4f193043de30278dcf7e5241a1dcf7566b02e27addaa33ba
@@ -100,6 +104,7 @@ jobs:
           echo "GODOT_BIN=$RUNNER_TEMP/godot/Godot_v4.7.1-stable_linux.x86_64" >> "$GITHUB_ENV"
 
       - name: Import project and run all Godot regressions
+        shell: bash
         run: |
           "$GODOT_BIN" --version
           "$GODOT_BIN" --headless --path . --import --quit
@@ -107,6 +112,7 @@ jobs:
           bash tests/run_godot_regression.sh
 
       - name: Verify tracked working tree remains unchanged
+        shell: bash
         run: |
           git diff --check
           git diff --exit-code
