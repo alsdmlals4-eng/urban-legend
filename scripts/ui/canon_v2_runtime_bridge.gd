@@ -1,6 +1,7 @@
 extends Node
 
 const OperationOverlayScript := preload("res://scripts/ui/canon_v2_operation_overlay.gd")
+const AfterlifeRescueResultAdapterScript := preload("res://scripts/data/afterlife_rescue_result_adapter.gd")
 
 const SYNC_INTERVAL_SECONDS := 0.25
 
@@ -108,8 +109,8 @@ func _bootstrap_and_initialize_handoff(game_state: Node) -> void:
 	if not game_state.has_method("get_canon_v2_runtime_state"):
 		return
 	var runtime: Dictionary = game_state.get_canon_v2_runtime_state()
-	if _dictionary_copy(runtime.get("rescue_outcome_snapshot")).is_empty() and game_state.has_method("bootstrap_canon_v2_rescue_snapshot_from_minigame"):
-		game_state.bootstrap_canon_v2_rescue_snapshot_from_minigame("minigame_frequency_sync")
+	if _dictionary_copy(runtime.get("rescue_outcome_snapshot")).is_empty():
+		AfterlifeRescueResultAdapterScript.new().bootstrap(game_state, "minigame_frequency_sync")
 		runtime = game_state.get_canon_v2_runtime_state()
 	if _dictionary_copy(runtime.get("rescue_outcome_snapshot")).is_empty():
 		return
