@@ -126,18 +126,41 @@ function Get-BoundedGodotFiles {
 
 function Test-GodotVersion {
     param([Parameter(Mandatory = $true)][string]$Path)
-    $rawOutput = & $Path --version 2>&1
-    if ($LASTEXITCODE -ne 0) {
-        return [ordered]@{ path = $Path; raw = ''; semantic = ''; accepted = $false }
+
+    $startInfo = New-Object System.Diagnostics.ProcessStartInfo
+    $startInfo.FileName = $Path
+    $startInfo.Arguments = '--version'
+    $startInfo.UseShellExecute = $false
+    $startInfo.RedirectStandardOutput = $true
+    $startInfo.RedirectStandardError = $true
+    $startInfo.CreateNoWindow = $true
+
+    $process = New-Object System.Diagnostics.Process
+    $process.StartInfo = $startInfo
+    try {
+        if (-not $process.Start()) {
+            return [ordered]@{ path = $Path; raw = ''; semantic = ''; accepted = $false }
+        }
+        $stdout = $process.StandardOutput.ReadToEnd()
+        $stderr = $process.StandardError.ReadToEnd()
+        $process.WaitForExit()
+        if ($process.ExitCode -ne 0) {
+            return [ordered]@{ path = $Path; raw = ''; semantic = ''; accepted = $false }
+        }
+        $combined = @($stdout, $stderr) -join "`n"
+        $raw = [string]($combined -split "`r?`n" | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Select-Object -First 1)
+        $raw = $raw.Trim()
+        $match = [regex]::Match($raw, '(?<!\d)(\d+\.\d+\.\d+)')
+        $semantic = if ($match.Success) { $match.Groups[1].Value } else { '' }
+        return [ordered]@{
+            path = $Path
+            raw = $raw
+            semantic = $semantic
+            accepted = ($semantic -eq $ExpectedGodotVersion)
+        }
     }
-    $raw = ([string]($rawOutput | Select-Object -First 1)).Trim()
-    $match = [regex]::Match($raw, '(?<!\d)(\d+\.\d+\.\d+)')
-    $semantic = if ($match.Success) { $match.Groups[1].Value } else { '' }
-    return [ordered]@{
-        path = $Path
-        raw = $raw
-        semantic = $semantic
-        accepted = ($semantic -eq $ExpectedGodotVersion)
+    finally {
+        $process.Dispose()
     }
 }
 
