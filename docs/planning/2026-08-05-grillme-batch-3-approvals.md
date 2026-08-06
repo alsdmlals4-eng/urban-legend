@@ -1,6 +1,6 @@
 # GrillMe Batch 3 승인 원장
 
-> 상태: `OPEN / 7_OF_10 / EARLY_CANON_CHECKPOINT`
+> 상태: `OPEN / 8_OF_10 / EARLY_CANON_CHECKPOINT`
 > 배치 병합: `BATCH_MERGE_NOT_STARTED`
 > 구현: `IMPLEMENTATION_NOT_AUTHORIZED`
 > 사람 검증: `HUMAN_QA_NOT_RUN`
@@ -23,7 +23,8 @@
 | 5 | `DEC-20260806-120-CANON-V2-RECOVERY-OUTCOME-STATES-AND-INDEPENDENT-RESULT-PACKET` | 회수 대표 결과 6종·승인 철수 경계·독립 결과 패킷 | `권장안대로 진행` | `APPROVED` | GitHub·Google Sheet 동기화 완료 |
 | 6 | `DEC-20260806-121-CANON-V2-RESCUE-RESULT-HANDOFF-TO-RECOVERY-INITIAL-CONDITIONS-AND-ACTION-CONSTRAINTS` | 불변 구출 스냅샷·회수 초기 조건·보호 의무·행동 제약 | `권장안대로 진행` | `APPROVED` | GitHub·Google Sheet 동기화 완료 |
 | 7 | `DEC-20260806-122-CANON-V2-PROTECTION-OBLIGATION-COST-PRIORITY-AND-RECOVERY-TERMINATION-ELIGIBILITY` | 보호 의무 행동 비용·표시 우선순위·회수 종결 자격 | `권장안대로 진행` | `APPROVED` | GitHub·Google Sheet 동기화 완료 |
-| 8–10 | — | 후속 GrillMe | — | `NOT_ASKED` | 미반영 |
+| 8 | `DEC-20260806-123-CANON-V2-PROTECTION-OBLIGATION-FOLLOW-UP-REENTRY-REWARD-AND-EVALUATION-LINKAGE` | 보호 의무 상태의 후속 조사·재진입·보상·평가 연결 | `권장안대로 진행` | `APPROVED` | GitHub 동기화 완료 / Google Sheet 동기화 대상 |
+| 9–10 | — | 후속 GrillMe | — | `NOT_ASKED` | 미반영 |
 
 ## 1번 승인 — 규칙 정보 연속성
 
@@ -181,9 +182,44 @@ active_protection_obligations
 - `docs/audits/2026-08-06-protection-obligation-cost-priority-and-termination-eligibility-adversarial-review.md`
 - `docs/superpowers/plans/2026-08-06-protection-obligation-cost-priority-and-termination-eligibility.md`
 
+## 8번 승인 — 후속 조사·재진입·보상·평가 연결
+
+```text
+보호 의무 상태
+→ 상태별 후속 의미
+→ dedupe된 follow-up record
+→ 별도 재진입 자격 평가
+→ 저작된 단계 상한 안에서 실행·종결
+→ 다축 평가
+→ 캠페인 중립 보상 또는 후속 책임
+```
+
+- `completed`, `transferred`, `deferred_with_owner`, `breached`, `unresolved`는 상태별 후속 의미가 다르다.
+- 자동으로 같은 후속 임무를 생성하지 않는다.
+- 후속 기록은 `follow_up_id`, `source_obligation_id`, `source_status`, `source_reason`, `case_canon_reference`, `dedupe_key`, `accountable_owner`, `trigger_condition`, `resolution_state`, `causal_history`를 가진다.
+- 후속 기록은 append-only이며 원래 구출 결과·회수 결과·보호 의무 이력을 덮어쓰지 않는다.
+- 하나의 source obligation+reason에는 하나의 활성 루트 후속 기록만 허용한다.
+- 사건은 저작된 단계 상한을 가지며 무한 재조사·무한 재진입을 금지한다.
+- 재진입 자격은 actionable reason·hazard·route·authority·capability를 별도 평가하며 자동 생성하지 않는다.
+- 현상 통제·보호 책임·증거 무결성·후속 실행·숙련 평가를 분리하며 단일 종합 점수로 합치지 않는다.
+- 후속 성공은 원래 breach를 성공으로 소급 변경하지 않는다.
+- 회피 가능하고 중대한 breach만 사전 저작·근거 공개 조건 아래 사건별 숙련 상한에 영향을 줄 수 있다.
+- 모든 미완료 의무가 자동으로 S 랭크를 차단하지 않으며 정확한 랭크 임계값은 미승인이다.
+- 보상은 사건 기록·표창·비필수 부록·코스메틱·전시품·기록 재현 전용으로 제한하고 캠페인 필수 전력과 분리한다.
+- 기본 진행 보상을 박탈하지 않고 피해·위반을 반복 생성해 보상을 파밍하지 못하게 한다.
+- 저장·마이그레이션은 원자적·rollback-safe·idempotent하며 legacy에서 breach나 완료를 추정하지 않는다.
+- 접근성 대체 입력과 시간 완화에는 평가·보상·재진입 자격 불이익이 없다.
+
+상세 Decision·설계·감사·구현 계획:
+
+- `docs/decisions/DEC-20260806-123-CANON-V2-PROTECTION-OBLIGATION-FOLLOW-UP-REENTRY-REWARD-AND-EVALUATION-LINKAGE.md`
+- `docs/planning/2026-08-06-canon-v2-protection-obligation-follow-up-reentry-reward-and-evaluation-linkage-design.md`
+- `docs/audits/2026-08-06-protection-obligation-follow-up-reentry-reward-and-evaluation-linkage-adversarial-review.md`
+- `docs/superpowers/plans/2026-08-06-protection-obligation-follow-up-reentry-reward-and-evaluation-linkage.md`
+
 ## 배치 운영 경계
 
-- 현재 카운터: `7_OF_10`.
+- 현재 카운터: `8_OF_10`.
 - Decision 118은 계속 `RETRACTED / NON_COUNTING`이다.
 - 현재 PR은 조기 기획 체크포인트일 뿐 배치 병합 완료가 아니다.
 - PR #149의 실제 저장·UI·접근성 QA 상태는 변경하지 않는다.
@@ -191,4 +227,4 @@ active_protection_obligations
 
 ## 다음 질문 후보
 
-다음 GrillMe 8/10은 보호 의무의 완료·책임 이관·연기·위반을 후속 조사·재진입·보상·평가에 연결하는 범위와 한계를 다룬다.
+다음 GrillMe 9/10은 후속 조사·재진입의 발생 시점, 동시 보유 상한, 캠페인 일정과 자원 압박에 미치는 범위와 한계를 다룬다.
