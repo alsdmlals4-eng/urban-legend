@@ -6,6 +6,32 @@ var _failures: Array[String] = []
 
 
 func _init() -> void:
+	_test_authored_route_restore_bootstrap()
+	_test_runtime_state_and_action_commit()
+	_finish()
+
+
+func _test_authored_route_restore_bootstrap() -> void:
+	var state = RuntimeGameStateScript.new()
+	state.minigame_results["minigame_frequency_sync"] = {
+		"successful": true,
+		"result_state": "success",
+		"display_title": "저승역 노선 복원",
+		"effect_summary": "안전 노선 검증 기록 확보",
+		"move_count": 9
+	}
+	var bootstrapped: Dictionary = state.bootstrap_canon_v2_rescue_snapshot_from_minigame("minigame_frequency_sync")
+	_expect(bool(bootstrapped.get("ok", false)), "authored route-restore adapter failed")
+	var snapshot := (state.get_canon_v2_runtime_state().get("rescue_outcome_snapshot", {}) as Dictionary)
+	_expect(String(snapshot.get("survival_state", "")) == "alive_stable", "route-restore adapter did not preserve verified victim survival")
+	_expect(String(snapshot.get("separation_state", "")) == "partial", "route-restore success was incorrectly promoted to complete separation")
+	var provenance := snapshot.get("provenance", {}) as Dictionary
+	_expect(String(provenance.get("adapter_id", "")) == "AUTHORED_AFTERLIFE_ROUTE_RESTORE_ADAPTER_V1", "route-restore adapter provenance missing")
+	var bootstrapped_again: Dictionary = state.bootstrap_canon_v2_rescue_snapshot_from_minigame("minigame_frequency_sync")
+	_expect(bool(bootstrapped_again.get("reused_existing_snapshot", false)), "route-restore snapshot was duplicated")
+
+
+func _test_runtime_state_and_action_commit() -> void:
 	var state = RuntimeGameStateScript.new()
 	var candidate := {
 		"schema_version": 1,
@@ -55,7 +81,6 @@ func _init() -> void:
 	var follow_ups: Dictionary = state.rebuild_canon_v2_follow_up_records({"default_step_limit": 1})
 	_expect(bool(follow_ups.get("ok", false)), "follow-up rebuild failed")
 	_expect((state.get_canon_v2_runtime_state().get("protection_history", []) as Array).size() >= 1, "protection history did not record committed action")
-	_finish()
 
 
 func _obligation_ids(obligations: Array) -> Array[String]:
