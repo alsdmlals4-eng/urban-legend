@@ -7,6 +7,7 @@ TESTS=(
   "tests/canon_v2_runtime/canon_v2_policy_test.gd"
   "tests/canon_v2_runtime/canon_v2_runtime_state_test.gd"
   "tests/canon_v2_runtime/canon_v2_operation_overlay_test.gd"
+  "tests/canon_v2_runtime/canon_v2_runtime_bridge_test.gd"
 )
 
 for test_path in "${TESTS[@]}"; do
