@@ -15,6 +15,7 @@ class AfterlifeCanonV2ImplementationEvidenceTests(unittest.TestCase):
 
     def test_decision_tracks_implementation_without_claiming_merge_or_human_qa(self) -> None:
         text = DECISION.read_text(encoding="utf-8")
+        evidence_repo_path = EVIDENCE.relative_to(ROOT).as_posix()
         for token in (
             "IMPLEMENTATION_AUTHORIZED",
             "IMPLEMENTATION_COMPLETE",
@@ -22,7 +23,7 @@ class AfterlifeCanonV2ImplementationEvidenceTests(unittest.TestCase):
             "HUMAN_QA_NOT_RUN",
             "MERGE_NOT_AUTHORIZED",
             "Draft PR: `#146`",
-            str(EVIDENCE.relative_to(ROOT)),
+            evidence_repo_path,
         ):
             self.assertIn(token, text)
 

@@ -3,6 +3,15 @@ name: Validate full matrix
 on:
   push:
     branches: [main]
+  pull_request:
+    paths:
+      - "tests/**"
+      - "scripts/**"
+      - "scenes/**"
+      - "data/**"
+      - "addons/**"
+      - "project.godot"
+      - ".github/workflows/validate-full-matrix.yml"
   schedule:
     - cron: "20 18 * * *"
   workflow_dispatch:
