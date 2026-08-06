@@ -178,11 +178,11 @@ class ProtectionObligationCostPriorityAndTerminationEligibilityPlanningContractT
         ):
             self.assertIn(required, plan)
 
-    def test_batch_records_seventh_real_approval_and_keeps_retraction_non_counting(self) -> None:
+    def test_batch_preserves_seventh_real_approval_and_keeps_retraction_non_counting(self) -> None:
         batch = BATCH.read_text(encoding="utf-8")
         counter = re.search(r"OPEN / (\d+)_OF_10", batch)
         self.assertIsNotNone(counter)
-        self.assertEqual(int(counter.group(1)), 7)
+        self.assertGreaterEqual(int(counter.group(1)), 7)
         self.assertIn(DECISION_ID, batch)
         self.assertIn("APPROVED", batch)
         self.assertIn("DEC-20260806-118-CANON-V2-FOUR-TURN-TELEGRAPH-PATTERN-CYCLE", batch)
