@@ -36,7 +36,7 @@
   "protected_baseline": {
     "authority_kind": "REMOTE_TRACKING_REF",
     "authority_ref": "refs/remotes/origin/main",
-    "commit": "f7edb459938bb5f3e2533ad828c2fe55019cd14b",
+    "commit": "12e72612a389a9a42e9a43b0707203a0ca06036c",
     "policy_sha256": "1c36c4180b85d6bd97f4e7cdba908cc73298f529d368aa07e0dffde6e1e8ec52",
     "policy_source_path": "skills/PROJECT_BASE_ADAPTER.json",
     "policy_source_type": "CANONICAL_ADAPTER_SOURCE",
@@ -293,18 +293,6 @@
     "managing-design-documents": {},
     "managing-game-project-operating-system": {},
     "managing-project-intake-and-work-contract": {
-      "planning_first_governance": {
-        "actual_project_batch_execution": "NOT_RUN",
-        "base_contract_source": "docs/PLANNING_FIRST_GRILL_ME_BATCH_POLICY.md",
-        "base_release_finalization_commit": "0b7c94f38d959efc0fc9442274c60b2e268a3c97",
-        "base_release_lock": "base-v9.4.3.lock.json",
-        "checkpoint_template": "templates/project-operations/GRILL_ME_BATCH_CHECKPOINT.md",
-        "max_approved_decisions_per_batch": 10,
-        "numeric_default_state": "RECOMMENDED_DEFAULT",
-        "planning_conflict_state": "GRILL_ME_REQUIRED",
-        "post_merge_sheet_state": "SYNCED_TO_MAIN",
-        "pre_merge_sheet_state": "APPROVED_PENDING_MERGE"
-      },
       "first_prompt_governance": {
         "actual_project_instruction_execution": "NOT_RUN",
         "approval_reuse": "REUSE_EXACT_APPROVAL_REFERENCE",
@@ -324,31 +312,20 @@
           "IDENTICAL_VALIDATION_RERUN"
         ],
         "unconfirmed_state": "AWAITING_USER_CONFIRMATION"
+      },
+      "planning_first_governance": {
+        "actual_project_batch_execution": "NOT_RUN",
+        "base_contract_source": "docs/PLANNING_FIRST_GRILL_ME_BATCH_POLICY.md",
+        "base_release_finalization_commit": "0b7c94f38d959efc0fc9442274c60b2e268a3c97",
+        "base_release_lock": "base-v9.4.3.lock.json",
+        "checkpoint_template": "templates/project-operations/GRILL_ME_BATCH_CHECKPOINT.md",
+        "max_approved_decisions_per_batch": 10,
+        "numeric_default_state": "RECOMMENDED_DEFAULT",
+        "planning_conflict_state": "GRILL_ME_REQUIRED",
+        "post_merge_sheet_state": "SYNCED_TO_MAIN",
+        "pre_merge_sheet_state": "APPROVED_PENDING_MERGE"
       }
     },
-    "orchestrating-deepseek-worktrees": {
-      "base_contract_source": "skills/orchestrating-deepseek-worktrees/SKILL.md",
-      "work_package_source": "templates/ai/DEEPSEEK_WORK_PACKAGE.md",
-      "worktree_parent": ".worktrees/",
-      "task_branch_prefix": "ai/deepseek-",
-      "draft_root": "drafts/external-ai/",
-      "allowed_write_roots": [
-        "drafts/external-ai/**"
-      ],
-      "protected_paths_source": "skills/PROJECT_BASE_ADAPTER.json#/protected_paths",
-      "result_state": "REVIEW_PENDING",
-      "integration_policy": "LOCAL_REVIEW_REQUIRED_BEFORE_CANON",
-      "base_validator_adoption": "ADOPTED_FROM_BASE_V9_4_1",
-      "base_validator_path": "tools/check_external_ai_worktree_contract.py",
-      "base_release_lock": "base-v9.4.1.lock.json",
-      "actual_external_ai_worktree_execution": "NOT_RUN"
-    },
-    "pruning-stale-and-nonfunctional-material": {},
-    "refactoring-with-contract-preservation": {},
-    "reviewing-and-validating-project-changes": {},
-    "running-adversarial-review-and-refinement": {},
-    "simplifying-skill-bodies": {},
-    "synchronizing-local-and-github-state": {},
     "optimizing-ai-model-and-prompt-costs": {
       "modes": [
         "route-model-and-effort",
@@ -358,7 +335,30 @@
         "recalibrate"
       ],
       "provider_measurement_status": "NOT_RUN"
-    }
+    },
+    "orchestrating-deepseek-worktrees": {
+      "actual_external_ai_worktree_execution": "NOT_RUN",
+      "allowed_write_roots": [
+        "drafts/external-ai/**"
+      ],
+      "base_contract_source": "skills/orchestrating-deepseek-worktrees/SKILL.md",
+      "base_release_lock": "base-v9.4.1.lock.json",
+      "base_validator_adoption": "ADOPTED_FROM_BASE_V9_4_1",
+      "base_validator_path": "tools/check_external_ai_worktree_contract.py",
+      "draft_root": "drafts/external-ai/",
+      "integration_policy": "LOCAL_REVIEW_REQUIRED_BEFORE_CANON",
+      "protected_paths_source": "skills/PROJECT_BASE_ADAPTER.json#/protected_paths",
+      "result_state": "REVIEW_PENDING",
+      "task_branch_prefix": "ai/deepseek-",
+      "work_package_source": "templates/ai/DEEPSEEK_WORK_PACKAGE.md",
+      "worktree_parent": ".worktrees/"
+    },
+    "pruning-stale-and-nonfunctional-material": {},
+    "refactoring-with-contract-preservation": {},
+    "reviewing-and-validating-project-changes": {},
+    "running-adversarial-review-and-refinement": {},
+    "simplifying-skill-bodies": {},
+    "synchronizing-local-and-github-state": {}
   },
   "skill_registry": {
     "base": {
