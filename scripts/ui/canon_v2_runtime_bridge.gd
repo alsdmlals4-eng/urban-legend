@@ -82,14 +82,17 @@ func _build_overlay_state(mode: String) -> Dictionary:
 	if game_state == null:
 		return state
 
-	if mode in ["recovery", "result"] and game_state.has_method("ensure_canon_v2_recovery_handoff_initialized"):
-		var runtime_before: Dictionary = {}
+	if mode in ["recovery", "result"]:
+		_bootstrap_and_initialize_handoff(game_state)
+	if mode == "result" and game_state.has_method("rebuild_canon_v2_follow_up_records"):
+		var runtime_before_follow_up: Dictionary = {}
 		if game_state.has_method("get_canon_v2_runtime_state"):
-			runtime_before = game_state.get_canon_v2_runtime_state()
-		if not _dictionary_copy(runtime_before.get("rescue_outcome_snapshot")).is_empty():
-			game_state.ensure_canon_v2_recovery_handoff_initialized({
-				"case_id": "episode_001_afterlife_station",
-				"protected_subject_id": "victim_afterlife_station_001"
+			runtime_before_follow_up = game_state.get_canon_v2_runtime_state()
+		if (runtime_before_follow_up.get("follow_up_records", []) as Array).is_empty() and not (runtime_before_follow_up.get("active_protection_obligations", []) as Array).is_empty():
+			game_state.rebuild_canon_v2_follow_up_records({
+				"default_step_limit": 1,
+				"unresolved": {"actionable": true, "actionable_reason": "미해결 보호 책임을 확인해야 합니다."},
+				"breached": {"actionable": true, "actionable_reason": "추가 피해 완화와 책임 이행이 필요합니다."}
 			})
 
 	if game_state.has_method("get_canon_v2_runtime_state"):
@@ -99,6 +102,22 @@ func _build_overlay_state(mode: String) -> Dictionary:
 		state["follow_up_records"] = _array_copy(runtime.get("follow_up_records"))
 		state["evaluation_packet"] = _dictionary_copy(runtime.get("evaluation_packet"))
 	return state
+
+
+func _bootstrap_and_initialize_handoff(game_state: Node) -> void:
+	if not game_state.has_method("get_canon_v2_runtime_state"):
+		return
+	var runtime: Dictionary = game_state.get_canon_v2_runtime_state()
+	if _dictionary_copy(runtime.get("rescue_outcome_snapshot")).is_empty() and game_state.has_method("bootstrap_canon_v2_rescue_snapshot_from_minigame"):
+		game_state.bootstrap_canon_v2_rescue_snapshot_from_minigame("minigame_frequency_sync")
+		runtime = game_state.get_canon_v2_runtime_state()
+	if _dictionary_copy(runtime.get("rescue_outcome_snapshot")).is_empty():
+		return
+	if game_state.has_method("ensure_canon_v2_recovery_handoff_initialized"):
+		game_state.ensure_canon_v2_recovery_handoff_initialized({
+			"case_id": "episode_001_afterlife_station",
+			"protected_subject_id": "victim_afterlife_station_001"
+		})
 
 
 func _get_player_manual_state() -> Dictionary:
