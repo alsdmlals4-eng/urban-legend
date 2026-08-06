@@ -1,14 +1,18 @@
 # DESIGN_INTENT — 위치 안내
 
 > 문서 위치: `DESIGN_INTENT.md` | 현행 기획 의도: `docs/GAME_DESIGN_DOCUMENT.md` | 과거 원문 백업: `docs/archive/backup/2026-07-16/PROJECT_STATUS_AND_ROADMAP_BACKUP.md`
-> 최신 승인 오버레이: `DEC-20260806-122-CANON-V2-PROTECTION-OBLIGATION-COST-PRIORITY-AND-RECOVERY-TERMINATION-ELIGIBILITY`
+> 최신 승인 오버레이: `DEC-20260806-123-CANON-V2-PROTECTION-OBLIGATION-FOLLOW-UP-REENTRY-REWARD-AND-EVALUATION-LINKAGE`
 
 이 파일은 기존 링크를 보존하기 위한 리디렉션이며 더 이상 기본 읽기 대상이나 설계 원본이 아니다.
 
 - 게임의 핵심 의도·플레이어 경험·금지 방향: `docs/GAME_DESIGN_DOCUMENT.md`
 - 공식 용어·표현·호환성: `docs/PROJECT_CONTEXT.md`
 - 현재 구현과 다음 계획: `docs/CURRENT_STATUS.md`
-- 최신 사용자 승인 정본: `docs/decisions/DEC-20260806-122-CANON-V2-PROTECTION-OBLIGATION-COST-PRIORITY-AND-RECOVERY-TERMINATION-ELIGIBILITY.md`
+- 최신 사용자 승인 정본: `docs/decisions/DEC-20260806-123-CANON-V2-PROTECTION-OBLIGATION-FOLLOW-UP-REENTRY-REWARD-AND-EVALUATION-LINKAGE.md`
+- 보호 의무 후속 조사·재진입·보상·평가 설계: `docs/planning/2026-08-06-canon-v2-protection-obligation-follow-up-reentry-reward-and-evaluation-linkage-design.md`
+- 보호 의무 후속 조사·재진입·보상·평가 적대적 검토: `docs/audits/2026-08-06-protection-obligation-follow-up-reentry-reward-and-evaluation-linkage-adversarial-review.md`
+- 보호 의무 후속 조사·재진입·보상·평가 TDD 구현 계획: `docs/superpowers/plans/2026-08-06-protection-obligation-follow-up-reentry-reward-and-evaluation-linkage.md`
+- 보호 의무 비용·우선순위·종결 자격 정본: `docs/decisions/DEC-20260806-122-CANON-V2-PROTECTION-OBLIGATION-COST-PRIORITY-AND-RECOVERY-TERMINATION-ELIGIBILITY.md`
 - 보호 의무 비용·우선순위·종결 자격 설계: `docs/planning/2026-08-06-canon-v2-protection-obligation-cost-priority-and-recovery-termination-eligibility-design.md`
 - 보호 의무 비용·우선순위·종결 자격 적대적 검토: `docs/audits/2026-08-06-protection-obligation-cost-priority-and-termination-eligibility-adversarial-review.md`
 - 보호 의무 비용·우선순위·종결 자격 TDD 구현 계획: `docs/superpowers/plans/2026-08-06-protection-obligation-cost-priority-and-termination-eligibility.md`
