@@ -9,18 +9,20 @@ $ErrorActionPreference = 'Stop'
 $repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\..'))
 $source = Join-Path $repoRoot 'tests\fixtures\afterlife_migration\main_mvp039_recovery.json'
 $orchestrator = Join-Path $repoRoot 'tools\qa\start_afterlife_canon_v2_human_qa.ps1'
+$legacyLoader = Join-Path $repoRoot 'tools\qa\start_afterlife_canon_v2_human_qa_legacy.ps1'
 $hostName = if ($PSVersionTable.PSEdition) { [string]$PSVersionTable.PSEdition } else { 'Desktop' }
 $qaRoot = Join-Path $env:RUNNER_TEMP ("afterlife-one-click-human-qa\{0}-{1}" -f $hostName, [Guid]::NewGuid().ToString('N'))
+$entryScript = if ($PSVersionTable.PSVersion.Major -lt 6) { $legacyLoader } else { $orchestrator }
 
 if (-not (Test-Path -LiteralPath $source -PathType Leaf)) {
     throw "ONE_CLICK_SOURCE_FIXTURE_MISSING"
 }
-if (-not (Test-Path -LiteralPath $orchestrator -PathType Leaf)) {
-    throw "ONE_CLICK_ORCHESTRATOR_MISSING"
+if (-not (Test-Path -LiteralPath $entryScript -PathType Leaf)) {
+    throw "ONE_CLICK_ENTRY_SCRIPT_MISSING"
 }
 
 $before = (Get-FileHash -LiteralPath $source -Algorithm SHA256).Hash
-& $orchestrator `
+& $entryScript `
     -GodotBinary $GodotBinary `
     -SourceMain $source `
     -QaRoot $qaRoot `
@@ -78,5 +80,6 @@ foreach ($name in $evidenceNames) {
 
 Write-Host "ONE-CLICK HUMAN QA PREFLIGHT: PASS"
 Write-Host "PowerShell=$($PSVersionTable.PSVersion)"
+Write-Host "Entry=$([System.IO.Path]::GetFileName($entryScript))"
 Write-Host "Classification=HUMAN_QA_INCOMPLETE"
 Write-Host "NOT_RUN=18"
