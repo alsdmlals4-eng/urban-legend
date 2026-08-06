@@ -90,7 +90,9 @@ function Resolve-ExecutablePath {
 
 function Add-GodotCandidate {
     param(
-        [Parameter(Mandatory = $true)][System.Collections.ArrayList]$List,
+        [Parameter(Mandatory = $true)]
+        [AllowEmptyCollection()]
+        [System.Collections.ArrayList]$List,
         [string]$Path,
         [int]$Priority
     )
