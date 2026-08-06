@@ -3,6 +3,7 @@ name: Validate Afterlife Station Canon v2 Migration
 on:
   pull_request:
     paths:
+      - "START_HUMAN_QA.cmd"
       - "data/episodes/episode_001_afterlife_station_canon_v2.json"
       - "data/episodes/episode_001_afterlife_station_canon_v2_runtime_projection.json"
       - "data/migrations/afterlife_station_canon_v2_id_migration.json"
@@ -13,6 +14,9 @@ on:
       - "scripts/core/validation_save_repository.gd"
       - "scripts/core/validation_session.gd"
       - "tools/qa/run_afterlife_canon_v2_human_qa.ps1"
+      - "tools/qa/start_afterlife_canon_v2_human_qa.ps1"
+      - "tools/qa/start_afterlife_canon_v2_human_qa_legacy.ps1"
+      - "tools/qa/afterlife_canon_v2_human_qa_checklist.json"
       - "project.godot"
       - "tests/afterlife_migration/**"
       - "tests/fixtures/afterlife_migration/**"
@@ -24,11 +28,13 @@ on:
       - "tests/test_afterlife_canon_v2_human_qa_plan.py"
       - "tests/test_afterlife_canon_v2_windows_platform_qa.py"
       - "tests/test_afterlife_canon_v2_local_human_qa_runner.py"
+      - "tests/test_afterlife_canon_v2_one_click_human_qa.py"
       - "docs/qa/2026-08-05-afterlife-canon-v2-human-qa-plan.md"
       - "docs/qa/2026-08-05-afterlife-canon-v2-automated-fixture-preflight-evidence.md"
       - "docs/qa/2026-08-05-afterlife-canon-v2-windows-platform-preflight-evidence.md"
       - "docs/qa/2026-08-05-afterlife-canon-v2-local-human-qa-runner.md"
       - "docs/qa/2026-08-05-afterlife-canon-v2-local-human-qa-runner-evidence.md"
+      - "docs/qa/2026-08-06-one-click-human-qa-package.md"
       - "docs/qa/templates/afterlife-canon-v2-human-qa-evidence-template.md"
       - "docs/decisions/D-2026-08-05-AFTERLIFE-STATION-CANON-V2-MIGRATION-DESIGN.md"
       - "docs/decisions/D-2026-08-05-AFTERLIFE-STATION-CANON-V2-MIGRATION-DESIGN-LOCAL-HUMAN-QA-RUNNER-ADDENDUM.md"
@@ -66,6 +72,7 @@ jobs:
           python -m unittest tests/test_afterlife_canon_v2_human_qa_plan.py
           python -m unittest tests/test_afterlife_canon_v2_windows_platform_qa.py
           python -m unittest tests/test_afterlife_canon_v2_local_human_qa_runner.py
+          python -m unittest tests/test_afterlife_canon_v2_one_click_human_qa.py
       - name: Setup Godot 4.7.1
         uses: chickensoft-games/setup-godot@v2
         with:
@@ -134,12 +141,19 @@ jobs:
         run: |
           python -m unittest tests/test_afterlife_canon_v2_windows_platform_qa.py
           python -m unittest tests/test_afterlife_canon_v2_local_human_qa_runner.py
+          python -m unittest tests/test_afterlife_canon_v2_one_click_human_qa.py
       - name: Setup Godot 4.7.1
         uses: chickensoft-games/setup-godot@v2
         with:
           version: 4.7.1
           use-dotnet: false
           include-templates: false
+      - name: Run one-click Human QA preflight with PowerShell 7
+        shell: pwsh
+        run: ./tests/windows/run_afterlife_canon_v2_one_click_preflight.ps1 -GodotBinary godot
+      - name: Run one-click Human QA preflight with Windows PowerShell 5.1
+        shell: powershell
+        run: ./tests/windows/run_afterlife_canon_v2_one_click_preflight.ps1 -GodotBinary godot
       - name: Import project in isolated APPDATA
         shell: pwsh
         run: |
@@ -162,5 +176,6 @@ jobs:
             ${{ env.AFTERLIFE_QA_APPDATA }}/logs
             ${{ runner.temp }}/afterlife-local-human-qa-runner/evidence
             ${{ runner.temp }}/afterlife-local-human-qa-runner/logs
+            ${{ runner.temp }}/afterlife-one-click-human-qa/evidence
           if-no-files-found: warn
           retention-days: 7
