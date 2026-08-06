@@ -2,6 +2,7 @@
 setlocal
 chcp 65001 >nul
 set "SCRIPT=%~dp0tools\qa\start_afterlife_canon_v2_human_qa.ps1"
+set "LEGACY_SCRIPT=%~dp0tools\qa\start_afterlife_canon_v2_human_qa_legacy.ps1"
 
 if not exist "%SCRIPT%" (
   echo [ERROR] One-click Human QA script not found.
@@ -14,7 +15,13 @@ where pwsh.exe >nul 2>nul
 if %ERRORLEVEL% EQU 0 (
   pwsh.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%SCRIPT%" %*
 ) else (
-  powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%SCRIPT%" %*
+  if not exist "%LEGACY_SCRIPT%" (
+    echo [ERROR] Windows PowerShell compatibility loader not found.
+    echo %LEGACY_SCRIPT%
+    if not "%HUMAN_QA_NO_PAUSE%"=="1" pause
+    exit /b 2
+  )
+  powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%LEGACY_SCRIPT%" %*
 )
 
 set "EXIT_CODE=%ERRORLEVEL%"
