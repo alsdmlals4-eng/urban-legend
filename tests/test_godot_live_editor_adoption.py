@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import json
+import re
 import subprocess
+from collections import Counter
 from pathlib import Path
 
 
@@ -13,10 +15,17 @@ ADOPTION_DOC = ROOT / "docs/GODOT_LIVE_EDITOR_ADOPTION.md"
 WORKFLOW = ROOT / ".github/workflows/validate-godot-live-editor-pilot.yml"
 VALIDATION_SESSION_WRAPPER = ROOT / "scripts/core/afterlife_migrating_validation_session.gd"
 GAME_STATE_WRAPPER = ROOT / "scripts/core/afterlife_migrating_game_state.gd"
+UID_COMPANION = ROOT / "tests/gut/test_validation_route_mapper.gd.uid"
+UID_COMPANION_TEXT = "uid://ctcbx5pl1hwyl\n"
+APPROVED_EDITOR_PLUGINS = (
+    "res://addons/godot_ai/plugin.cfg",
+    "res://addons/gut/plugin.cfg",
+)
 ALLOWED_PATHS = {
     ".godot-live-editor/project-pilot.json",
     "docs/GODOT_LIVE_EDITOR_ADOPTION.md",
     "tests/test_godot_live_editor_adoption.py",
+    "tests/gut/test_validation_route_mapper.gd.uid",
     ".github/workflows/validate-godot-live-editor-pilot.yml",
 }
 BEHAVIOR_TARGETS = [
@@ -38,6 +47,43 @@ BEHAVIOR_TARGETS = [
 def _required_text(path: Path) -> str:
     assert path.is_file(), f"missing required adoption surface: {path.relative_to(ROOT)}"
     return path.read_text(encoding="utf-8")
+
+
+def _editor_plugins(project_text: str) -> tuple[str, ...]:
+    section = re.search(
+        r"(?ms)^\[editor_plugins\][ \t]*\r?\n(?P<body>.*?)(?=^\[|\Z)",
+        project_text,
+    )
+    assert section is not None, "missing [editor_plugins] section"
+
+    enabled = re.search(
+        r"(?ms)^[ \t]*enabled[ \t]*=[ \t]*PackedStringArray\((?P<values>.*?)\)[ \t]*$",
+        section.group("body"),
+    )
+    assert enabled is not None, "missing editor_plugins enabled PackedStringArray"
+
+    raw_values = enabled.group("values")
+    plugins = tuple(re.findall(r'"([^"]+)"', raw_values))
+    residue = re.sub(r'"[^"]+"', "", raw_values).replace(",", "").strip()
+    assert not residue, f"malformed editor plugin list: {residue!r}"
+    return plugins
+
+
+def _assert_exact_editor_plugins(project_text: str) -> None:
+    actual = Counter(_editor_plugins(project_text))
+    expected = Counter(APPROVED_EDITOR_PLUGINS)
+    assert actual == expected, (
+        "editor plugin authority mismatch: "
+        f"expected={dict(expected)} actual={dict(actual)}"
+    )
+
+
+def _expect_editor_plugin_contract_failure(project_text: str) -> None:
+    try:
+        _assert_exact_editor_plugins(project_text)
+    except AssertionError:
+        return
+    raise AssertionError("editor plugin contract unexpectedly accepted invalid input")
 
 
 def _changed_paths_from_main() -> set[str]:
@@ -85,6 +131,47 @@ def test_descriptor_is_exact_urban_legend_contract() -> None:
     ]
 
 
+def test_editor_plugin_contract_is_bounded_order_independent_and_fail_closed() -> None:
+    godot_ai, gut = APPROVED_EDITOR_PLUGINS
+    exact_reversed = f"""[application]
+config/name="{godot_ai}"
+
+[editor_plugins]
+enabled=PackedStringArray("{gut}", "{godot_ai}")
+
+[rendering]
+renderer/rendering_method="gl_compatibility"
+"""
+    _assert_exact_editor_plugins(exact_reversed)
+
+    invalid_payloads = (
+        f"""[editor_plugins]
+enabled=PackedStringArray("{godot_ai}")
+""",
+        f"""[editor_plugins]
+enabled=PackedStringArray("{godot_ai}", "{gut}", "res://addons/unapproved/plugin.cfg")
+""",
+        f"""[editor_plugins]
+enabled=PackedStringArray("{godot_ai}", "{gut}", "{gut}")
+""",
+        f"""[application]
+config/name="{godot_ai}"
+
+[editor_plugins]
+enabled=PackedStringArray("{gut}")
+""",
+        f"""[editor_plugins]
+enabled=PackedStringArray("{godot_ai}", "{gut}", bare)
+""",
+    )
+    for payload in invalid_payloads:
+        _expect_editor_plugin_contract_failure(payload)
+
+
+def test_validation_route_mapper_uid_companion_is_canonical() -> None:
+    assert _required_text(UID_COMPANION) == UID_COMPANION_TEXT
+
+
 def test_source_authorities_and_main_scene_remain_installed() -> None:
     project = (ROOT / "project.godot").read_text(encoding="utf-8")
     assert 'run/main_scene="res://scenes/main_menu.tscn"' in project
@@ -103,8 +190,9 @@ def test_source_authorities_and_main_scene_remain_installed() -> None:
         in _required_text(GAME_STATE_WRAPPER)
     )
     assert '_mcp_game_helper="*res://addons/godot_ai/runtime/game_helper.gd"' in project
-    assert 'enabled=PackedStringArray("res://addons/godot_ai/plugin.cfg")' in project
+    _assert_exact_editor_plugins(project)
     assert (ROOT / "addons/godot_ai/plugin.cfg").is_file()
+    assert (ROOT / "addons/gut/plugin.cfg").is_file()
     for target in BEHAVIOR_TARGETS:
         assert (ROOT / target.removeprefix("res://")).is_file(), target
 
@@ -148,6 +236,6 @@ def test_workflow_uses_one_immutable_base_pin() -> None:
     assert text.count(BASE_C0_SHA) == 2
 
 
-def test_change_surface_is_bounded_to_four_adoption_files() -> None:
+def test_change_surface_is_bounded_to_five_adoption_files() -> None:
     changed = _changed_paths_from_main()
     assert changed <= ALLOWED_PATHS, f"forbidden changed paths: {sorted(changed - ALLOWED_PATHS)}"

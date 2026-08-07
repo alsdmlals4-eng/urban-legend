@@ -113,7 +113,8 @@
         "convert_failure_to_success",
         "replace_human_qa"
       ],
-      "adoption_state": "CONSUMPTION_IMPLEMENTED",
+      "adoption_state": "ADOPTED_ACTIVE",
+      "promotion_basis": "MERGED_MAIN_EXACT_HEAD_REVALIDATED_AND_SHEET_READBACK_PASS",
       "current_head_binding": "EXTERNAL_GITHUB_ACTIONS_AND_SHEET",
       "consumption_paths": [
         "tests/gut/test_validation_route_mapper.gd",
@@ -133,20 +134,24 @@
       ],
       "recorded_preceding_validation": {
         "state": "PASS",
-        "commit": "a03b8bb57fb5ba6486ba65c8700cc41ffd9bf08d",
-        "workflow_run_id": 31110321360,
-        "workflow_job_id": 92646106146,
-        "artifact_id": 8971437085,
-        "artifact_name": "gut-test-authority-a03b8bb57fb5ba6486ba65c8700cc41ffd9bf08d",
-        "artifact_digest": "sha256:43dffa37bdf28cfdec9ef3dc234274a4d629ae500e3a02414e1eb8ca7db2d608",
-        "focused_contract_tests": 25,
+        "commit": "22ac24db211a5d474efcc49a73c2a5369698c1a7",
+        "workflow_run_id": 31131917325,
+        "workflow_job_id": 92722504253,
+        "artifact_id": 8976370660,
+        "artifact_name": "gut-test-authority-22ac24db211a5d474efcc49a73c2a5369698c1a7",
+        "artifact_digest": "sha256:3f0c0fd5a2e9bb7a8a7608efa5c3c354f6ecfb5910d902de21566abf5d00177b",
+        "focused_contract_tests": 37,
         "gut_tests": 5,
         "gut_assertions": 17,
+        "junit_tests": 5,
+        "junit_failures": 0,
+        "junit_errors": 0,
         "legacy_entrypoints": 58,
         "canon_v2_entrypoints": 7,
         "full_regression_entrypoints": 65,
+        "upstream_tree": "MATCH_UPSTREAM_AEB5D4F3",
         "protected_diff": "PASS",
-        "recording_note": "Historical preceding-head evidence only. Current exact-head authority must be read from GitHub Actions and the synchronized Sheet."
+        "recording_note": "Merged-main promotion evidence. Current exact-head authority must still be read from GitHub Actions and the synchronized Sheet."
       }
     }
   ]
