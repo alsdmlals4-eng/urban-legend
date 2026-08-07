@@ -41,3 +41,6 @@ exports/
 
 # Deterministic generated document mirror; rebuild from Markdown when needed.
 /docs/URBAN_LEGEND_GAME_DESIGN.docx
+
+# Local asset vault
+.asset-vault/
