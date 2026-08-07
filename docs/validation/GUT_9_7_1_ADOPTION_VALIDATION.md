@@ -9,19 +9,52 @@ decision_ids:
   - UL-DEC-ADDON-001
   - UL-DEC-AUTHORITY-001
   - UL-DEC-ENTRY-GATE-001
+  - UL-DEC-LOCAL-VALIDATION-001
 base_main_at_implementation_start: 47f1e86ea594c2f349d230b245192bae2de67eb0
-recorded_preceding_head: a03b8bb57fb5ba6486ba65c8700cc41ffd9bf08d
+recorded_preceding_head: 22ac24db211a5d474efcc49a73c2a5369698c1a7
 current_head_binding: EXTERNAL_GITHUB_ACTIONS_AND_SHEET
-adoption_state: CONSUMPTION_IMPLEMENTED
-promotion_to_adopted_active: BLOCKED_PENDING_MERGED_MAIN_READBACK
-local_windows_validation: NOT_RUN_NO_LOCAL_ACCESS
+adoption_state: ADOPTED_ACTIVE
+promotion_to_adopted_active: APPROVED_BY_MERGED_MAIN_READBACK
+promotion_pr_merge: EXTERNAL_GITHUB_AND_SHEET
+local_windows_validation: PRECEDING_LOCAL_EVIDENCE_ONLY_NOT_CURRENT_PROMOTION_HEAD
 android_device_export_validation: NOT_RUN
 human_qa: NOT_RUN
 ui_accessibility_qa: NOT_RUN
-merge: NOT_AUTHORIZED
 ```
 
-A tracked file cannot embed the SHA of the commit containing itself without changing that SHA. Therefore this document records the preceding validated head only. Current exact-head authority is the GitHub pull-request head plus Actions runs bound to that SHA and the synchronized Google Sheet state.
+A tracked file cannot embed the SHA or merge state of the commit containing itself without changing that commit. Therefore this document records the preceding validated `main` head. Current exact-head and merge authority remain the GitHub pull-request or merged-main head plus Actions runs bound to that SHA and the synchronized Google Sheet state.
+
+## Merged-main promotion evidence
+
+The previously blocked merged-main readback is complete. The correction in PR #170 was validated on its exact candidate head and then revalidated after merge on `main`.
+
+```yaml
+preceding_main: 22ac24db211a5d474efcc49a73c2a5369698c1a7
+full_matrix_run: 31131917318
+full_matrix_result: SUCCESS
+live_editor_run: 31131917489
+live_editor_result: SUCCESS
+gut_authority_run: 31131917325
+gut_authority_job: 92722504253
+gut_authority_result: SUCCESS
+artifact_id: 8976370660
+artifact_name: gut-test-authority-22ac24db211a5d474efcc49a73c2a5369698c1a7
+artifact_digest: sha256:3f0c0fd5a2e9bb7a8a7608efa5c3c354f6ecfb5910d902de21566abf5d00177b
+focused_contract_tests: 37
+gut_tests: 5
+gut_assertions: 17
+junit_tests: 5
+junit_failures: 0
+junit_errors: 0
+legacy_entrypoints: 58
+canon_v2_entrypoints: 7
+full_regression_entrypoints: 65
+upstream_tree: MATCH_UPSTREAM_AEB5D4F3
+protected_diff: PASS
+sheet_readback: PASS
+```
+
+This evidence satisfies the GUT test-authority lifecycle promotion condition. It does not create Human QA, UI/accessibility QA, Android export/device, or product-image approval claims.
 
 ## 1. Scope
 
@@ -118,7 +151,7 @@ The RED 5 contracts detected only the newly reviewed deficiencies:
 - merged `main` had no automatic GUT authority revalidation;
 - test and regression logs did not produce a machine-readable summary.
 
-## 4. Recorded Preceding Exact-HEAD Evidence
+## 4. Historical preceding exact-head evidence
 
 ```yaml
 head: a03b8bb57fb5ba6486ba65c8700cc41ffd9bf08d
@@ -132,7 +165,7 @@ artifact_digest: sha256:43dffa37bdf28cfdec9ef3dc234274a4d629ae500e3a02414e1eb8ca
 artifact_expiry: 2026-08-20T14:22:26Z
 ```
 
-Verified results from the actual workflow log:
+Verified results from the historical workflow log:
 
 | Gate | Result |
 |---|---|
@@ -185,10 +218,10 @@ HiGodot authority is not an add-on adoption lifecycle claim. Its validation requ
 ### GUT
 
 ```text
-TEST_EXECUTION / NON_AUTHORING / CONSUMPTION_IMPLEMENTED
+TEST_EXECUTION / NON_AUTHORING / ADOPTED_ACTIVE
 ```
 
-GUT product mutation scope is empty. `ADOPTED_ACTIVE` remains unclaimed until merged-main revalidation and canonical readback.
+GUT product mutation scope is empty. The lifecycle promotion is supported by exact merged-main revalidation, immutable Base-pilot validation, protected-state checks and canonical Sheet readback. Every future candidate still requires exact-head external GitHub and Sheet evidence.
 
 ### Entry gate
 
@@ -212,18 +245,16 @@ It does not replace local Windows editor/runtime execution or Android export/dev
 ## 8. Claim Ceiling
 
 ```text
-GUT_9_7_1_CONSUMPTION_IMPLEMENTED
+GUT_9_7_1_ADOPTED_ACTIVE_ON_RECORDED_PRECEDING_MAIN
 GUT_OFFICIAL_UPSTREAM_TREE_MATCH_VERIFIED_ON_RECORDED_HEAD
 HIGODOT_SOLE_AUTHORING_CONTRACT_IMPLEMENTED
 GUT_TEST_ONLY_CONTRACT_IMPLEMENTED
 MANDATORY_ENTRY_GATE_IMPLEMENTED
 CURRENT_EXACT_HEAD_EXTERNAL_REVALIDATION_REQUIRED
-ADOPTED_ACTIVE_NOT_CLAIMED
 INDEPENDENT_CODE_REVIEW_NOT_RUN
-LOCAL_SYNC_BLOCKED_NO_LOCAL_ACCESS
-GODOT_RUN_BLOCKED_NO_LOCAL_ACCESS
+LOCAL_WINDOWS_VALIDATION_NOT_RUN_ON_CURRENT_PROMOTION_HEAD
 ANDROID_DEVICE_EXPORT_NOT_RUN
 HUMAN_QA_NOT_RUN
 UI_ACCESSIBILITY_QA_NOT_RUN
-MERGE_NOT_AUTHORIZED
+PROMOTION_PR_MERGE_STATE_EXTERNAL
 ```
