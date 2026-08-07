@@ -22,6 +22,7 @@ GameState="*res://scripts/core/afterlife_migrating_game_state.gd"
 CanonV2RuntimeBridge="*res://scripts/ui/canon_v2_runtime_bridge.gd"
 CanonV2ResultAxesBridge="*res://scripts/ui/canon_v2_result_axes_bridge.gd"
 _mcp_game_helper="*res://addons/godot_ai/runtime/game_helper.gd"
+HeraGameInspector="*uid://c4ug7a211oav8"
 
 [display]
 
@@ -32,7 +33,7 @@ window/stretch/aspect="expand"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/godot_ai/plugin.cfg", "res://addons/gut/plugin.cfg")
+enabled=PackedStringArray("res://addons/godot_ai/plugin.cfg", "res://addons/gut/plugin.cfg", "res://addons/hera_agent_godot/plugin.cfg")
 
 [rendering]
 
