@@ -1,14 +1,14 @@
 # 괴이기록국 현재 확정 결정
 
 > 문서 역할: `CURRENT_CONFIRMED_DECISIONS`
-> 상태: `PACKAGE_2_MERGED_ON_MAIN / YEAR_ONE_DESIGN_MERGED_ON_MAIN / GRILLME_BATCH_2_MERGED / GRILLME_BATCH_3_OPEN / AUTHORITY_CORRECTION_MERGED / ASSET_GATE_CANON_RECONCILED / UI_HIERARCHY_SPEC_APPROVED_PLAN_READY`
+> 상태: `PACKAGE_2_MERGED_ON_MAIN / YEAR_ONE_DESIGN_MERGED_ON_MAIN / GRILLME_BATCH_2_MERGED / GRILLME_BATCH_3_OPEN / AUTHORITY_CORRECTION_MERGED / ASSET_GATE_CANON_RECONCILED / UI_HIERARCHY_SPEC_PLAN_MERGED`
 > 갱신일: 2026-08-08
 > Base: `9.4.3`
 > Base main: `fa69a77a14f923a756064f6ae151d34cadb374f7` — project-adopted baseline
-> Current Base remote main observed 2026-08-08 20:31 KST: `eee98a930219065e30b4d7d14d99d5ac7db44c60` — not automatically adopted
+> Current Base remote main observed during PR #176 merge gate: `a912cc001ff4d4e3415fb4b4931723c49eb08d9a` — not automatically adopted
 > Godot authority correction: `UL-DEC-AUTHORITY-001` / PR #172 / main `305d9b5bbf21ea13ce23053e43afd98fabc21654`
 > Asset approval authority: root `ASSET_MANIFEST.yml` / current `PROJECT_ASSET_APPROVED` count `0`
-> UI hierarchy Decision: `D-2026-08-08-INVESTIGATION-RECOVERY-UI-HIERARCHY-REFINEMENT` / PR #176 / spec approved / implementation plan ready / runtime not changed
+> UI hierarchy Decision: `D-2026-08-08-INVESTIGATION-RECOVERY-UI-HIERARCHY-REFINEMENT` / PR #176 merged `4ccd37675576141126b7bf8c718fb30ec9020409` / spec approved / implementation plan merged / runtime not changed / router freshness PR #177 merged `6c4058854a977027721d7115ff453be4c80a10c5`
 > Package 1 구현 merge: `80160218d05e79af5442bf27d8fdeb66bcf05723`
 > 병합 운영 정본 merge: `e15b9d25127170a530f66d5c3462340b806ad51d`
 > Package 2 planning merge: `b4d7bd0fb82968325bcf230f3e81b8d96e142402`
@@ -57,7 +57,7 @@ source-only·superseded PR은 현재 권위가 아니다. Package 1·2, 1년차 
 ```yaml
 base_version: 9.4.3
 base_main: fa69a77a14f923a756064f6ae151d34cadb374f7
-base_remote_main_observed_20260808_2031_kst: eee98a930219065e30b4d7d14d99d5ac7db44c60
+base_remote_main_observed_20260808_merge_gate: a912cc001ff4d4e3415fb4b4931723c49eb08d9a
 base_remote_main_auto_adopted: false
 platform: PC_16_9_MOUSE_KEYBOARD
 mobile: DEFERRED_AFTER_PC_VALIDATION
@@ -91,7 +91,9 @@ image_product_promotion: BLOCKED_NO_PROJECT_ASSET_APPROVED
 ui_hierarchy_decision: D-2026-08-08-INVESTIGATION-RECOVERY-UI-HIERARCHY-REFINEMENT
 ui_hierarchy_design_direction: APPROVED
 ui_hierarchy_written_spec: APPROVED
-ui_hierarchy_implementation_plan: READY_ON_PR_176
+ui_hierarchy_implementation_plan: MERGED_ON_MAIN_PR_176
+ui_hierarchy_planning_merge: 4ccd37675576141126b7bf8c718fb30ec9020409
+ui_hierarchy_router_freshness_merge: 6c4058854a977027721d7115ff453be4c80a10c5
 ui_hierarchy_runtime_implementation: NOT_STARTED
 ui_hierarchy_new_runtime_render: NOT_RUN
 ui_hierarchy_human_validation: NOT_RUN
@@ -157,7 +159,7 @@ production_expansion: NOT_APPROVED
 - 실제 1280×720/1920×1080·keyboard/gamepad·접근성·actual save 검증은 구현 이후 Human QA 전까지 `NOT_RUN`이다.
 - 상세 Spec: `docs/superpowers/specs/2026-08-08-investigation-recovery-ui-hierarchy-design.md`
 - 구현 계획: `docs/superpowers/plans/2026-08-08-investigation-recovery-ui-hierarchy-implementation-plan.md`
-- planning PR #176은 docs/canon 범위이며 runtime implementation은 별도 HiGodot implementation PR로 분리한다.
+- planning PR #176은 docs/canon 범위로 main에 병합됐고, runtime implementation은 별도 HiGodot implementation PR로 분리한다.
 
 ## 3. 현재 제품 코어 권위
 
@@ -355,7 +357,7 @@ Package 2는 SCREEN-01에서 SIT-001·SIT-002·SIT-004의 현재 구현 Scene만
 | `D-2026-08-03-CAMPAIGN-REWIND-CANON-ANCHOR-SCOPE` | MERGED_APPROVED_DESIGN_SECTION_8 | 출동 준비 직전 정본 앵커·사건 전체 재진행·소급 반입 금지 |
 | `D-2026-08-03-ACCESSIBILITY-EQUIVALENCE-AND-MASTERY-GATES` | MERGED_APPROVED_DESIGN_SECTION_9 | 판단 보존 접근성 중립·자동 해결 관문 등가 대체 |
 | `D-2026-08-03-MASTERY-REWARD-SCOPE-AND-CAMPAIGN-NEUTRALITY` | MERGED_APPROVED_DESIGN_SECTION_10 | 캠페인 전력 중립 숙련 보상·비정본 기록 재현 변칙 |
-| `D-2026-08-08-INVESTIGATION-RECOVERY-UI-HIERARCHY-REFINEMENT` | SPEC_APPROVED / IMPLEMENTATION_PLAN_READY / RUNTIME_NOT_CHANGED | 조사 field/action 우선·manual progressive disclosure·Canon v2 mode-specific·회수 anomaly-centered/contextual ally cut-in |
+| `D-2026-08-08-INVESTIGATION-RECOVERY-UI-HIERARCHY-REFINEMENT` | SPEC_APPROVED / IMPLEMENTATION_PLAN_MERGED_ON_MAIN / RUNTIME_NOT_CHANGED | 조사 field/action 우선·manual progressive disclosure·Canon v2 mode-specific·회수 anomaly-centered/contextual ally cut-in |
 | `UL-DEC-AUTHORITY-001` | APPROVED_DECISION_REAFFIRMED / MERGED_ON_MAIN / HERA_SOURCE_INACTIVE_ADOPTION_DEFERRED | HiGodot sole persistent authoring · GUT 9.7.1 non-authoring test authority · Hera active adoption deferred |
 
 ## 8. Package 2 구현 보호 계약
@@ -393,7 +395,8 @@ pr_138: MERGED_MAIN_TO_YEAR_ONE_PLANNING_SYNC
 pr_135: MERGED_YEAR_ONE_DESIGN
 pr_140: MERGED_GRILLME_BATCH_2_DESIGN
 pr_172: MERGED_AUTHORITY_CORRECTION
-pr_176: OPEN_DRAFT_SPEC_APPROVED_IMPLEMENTATION_PLAN_READY
+pr_176: MERGED_UI_HIERARCHY_SPEC_PLAN
+pr_177: MERGED_UI_HIERARCHY_ROUTER_FRESHNESS
 pr_122: CLOSED_SOURCE_DO_NOT_MERGE_AS_IS
 issue_121: CLOSED_COMPLETED
 package_2_planning_merge: b4d7bd0fb82968325bcf230f3e81b8d96e142402
@@ -418,6 +421,8 @@ authority_correction_main: 305d9b5bbf21ea13ce23053e43afd98fabc21654
 authority_live_editor_run_31225687879: PASS
 authority_full_matrix_run_31225687571: PASS
 authority_core_docs_run_31225687675: PASS
+ui_hierarchy_planning_merge: 4ccd37675576141126b7bf8c718fb30ec9020409
+ui_hierarchy_router_freshness_merge: 6c4058854a977027721d7115ff453be4c80a10c5
 ui_hierarchy_runtime_implementation: NOT_STARTED
 ui_hierarchy_human_validation: NOT_RUN
 year_one_human_validation: NOT_RUN
@@ -492,9 +497,8 @@ production_expansion: NOT_APPROVED
 ```text
 D-2026-08-08-INVESTIGATION-RECOVERY-UI-HIERARCHY-REFINEMENT
 → written spec APPROVED
-→ implementation plan READY on PR #176
-→ PR #176 exact-head docs/canon 검증
-→ planning/canon merge gate
+→ implementation plan MERGED_ON_MAIN via PR #176
+→ active router freshness MERGED via PR #177
 → fresh latest main + Base + Sheet preflight
 → separate HiGodot implementation PR
 → TDD RED/GREEN
