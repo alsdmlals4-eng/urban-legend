@@ -56,8 +56,13 @@ func _run() -> void:
 	if not _test_situation_choice_presentation():
 		return
 	var investigation_actions := current_scene.get_node("%PointsBox") as Control
+	var field_choices := current_scene.get_node("%FieldChoiceScroll") as Control
 	var manual_panel := current_scene.find_child("ManualPanel", true, false) as Control
-	var investigation_actions_visible := investigation_actions != null and investigation_actions.visible
+	var investigation_actions_visible := (
+		investigation_actions != null and investigation_actions.visible
+	) or (
+		field_choices != null and field_choices.visible and field_choices.get_child_count() > 0
+	)
 	var manual_panel_collapsed := manual_panel == null or not manual_panel.visible
 	if not await _test_method_picker():
 		return

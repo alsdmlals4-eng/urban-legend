@@ -10,6 +10,7 @@ var _close_button: Button
 var _scroll: ScrollContainer
 var _content: VBoxContainer
 var _toggle_button: Button
+var _previous_focus: Control
 var _has_unread_entries := false
 
 
@@ -86,6 +87,8 @@ func mark_new_entries() -> void:
 
 
 func open_drawer() -> void:
+	var focus_owner := get_viewport().gui_get_focus_owner()
+	_previous_focus = focus_owner if focus_owner is Control else null
 	visible = true
 	_has_unread_entries = false
 	_refresh_toggle_button()
@@ -96,8 +99,11 @@ func open_drawer() -> void:
 func close_drawer() -> void:
 	visible = false
 	_refresh_toggle_button()
-	if _toggle_button != null:
+	if is_instance_valid(_previous_focus):
+		_previous_focus.grab_focus()
+	elif _toggle_button != null:
 		_toggle_button.grab_focus()
+	_previous_focus = null
 	drawer_closed.emit()
 
 
