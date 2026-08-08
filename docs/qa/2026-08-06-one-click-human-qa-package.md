@@ -134,3 +134,33 @@ docs/qa/2026-08-05-afterlife-canon-v2-local-human-qa-runner.md
 ```
 
 그 문서에는 `-Stage Prepare`, `-Stage Launch`, `-Stage Collect`의 수동 실행법이 유지된다.
+
+## 2026-08-08 current-main 자동 사전검증
+
+이 절은 원클릭 Human QA 패키지를 최신 통합 상태에서 다시 검증하기 위한 **자동 사전검증 기록**이다. 사람 판정을 대체하지 않는다.
+
+```yaml
+base_main: fa69a77a14f923a756064f6ae151d34cadb374f7
+project_main_baseline: 068f5da111d963afd244c4fd3319dda768f785c2
+pr: 174
+first_verified_head: 37057ae2b7c28f8a615ce5c8c9333ca7225c93bd
+automated_windows_preflight: PASS
+windows_platform_run_31252327145: PASS
+canon_v2_migration_run_31252327156: PASS
+core_docs_run_31252327162: PASS
+documentation_run_31252327150: PASS
+base_adapter_run_31252327141: PASS
+bca_run_31252327139: PASS
+final_exact_head_evidence: PR_174_AND_GOOGLE_SHEET
+human_qa: NOT_RUN
+ui_human_validation: NOT_RUN
+android_validation: NOT_RUN
+product_asset_approved_count: 0
+image_product_promotion: BLOCKED
+```
+
+검증 대상은 기존 workflow `.github/workflows/validate-afterlife-station-canon-v2-windows-platform-qa.yml`이다. Windows runner에서 runner Prepare/Collect, 원본 SHA 불변, privacy boundary, PowerShell 7·Windows PowerShell 5.1 원클릭 preflight, Godot 4.7.1 import, 파일 잠금·강제 종료·source race·write failure 경로를 확인했다.
+
+첫 exact head `37057ae2b7c28f8a615ce5c8c9333ca7225c93bd`에서 위 6개 workflow가 모두 PASS했다. 결과 기록 이후의 최종 병합 후보 head도 동일 Windows·migration·문서·core 계약을 통과해야 하며, 그 exact SHA와 run ID는 PR #174 및 프로젝트 Google Sheet 변경이력에 남긴다.
+
+자동 workflow가 성공해도 18개 사람 검사항목은 자동 `PASS`로 승격하지 않는다. 실제 로컬 사용자가 `START_HUMAN_QA.cmd`를 실행하고 저장·화면·조작을 직접 판정하기 전까지 `HUMAN_QA_NOT_RUN`을 유지한다.
