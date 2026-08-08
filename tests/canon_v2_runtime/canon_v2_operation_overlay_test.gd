@@ -12,7 +12,7 @@ func _init() -> void:
 func _run() -> void:
 	var overlay = OverlayScript.new()
 	root.add_child(overlay)
-	overlay.configure_for_test({
+	var runtime_state := {
 		"manual_state": {
 			"pages": [
 				{"id": "manual_afterlife_page_02_boundary_reset", "title": "안내 종료 전 이동은 공간만 되감는다"},
@@ -43,7 +43,8 @@ func _run() -> void:
 				"actionable_reason": "의료 인계가 필요합니다."
 			}
 		]
-	}, "recovery")
+	}
+	overlay.configure_for_test(runtime_state, "recovery")
 	await process_frame
 
 	_expect(overlay.name == "CanonV2OperationOverlay", "overlay root name mismatch")
@@ -60,6 +61,20 @@ func _run() -> void:
 	_expect(summary_label != null and not summary_label.text.is_empty(), "rule strip lacks text summary")
 	var priority_label := overlay.get_node_or_null("SafeArea/RootLayout/DetailStack/ObligationPanel/ObligationContent/PriorityLabel") as Label
 	_expect(priority_label != null and priority_label.text.contains("critical"), "priority is not expressed as text")
+
+	overlay.configure_for_test(runtime_state, "investigation")
+	await process_frame
+	var safe_area := overlay.get_node_or_null("SafeArea") as Control
+	var rule_strip := overlay.get_node_or_null("SafeArea/RootLayout/RuleStripPanel") as Control
+	var obligation_panel := overlay.get_node_or_null("SafeArea/RootLayout/DetailStack/ObligationPanel") as Control
+	var termination_panel := overlay.get_node_or_null("SafeArea/RootLayout/DetailStack/TerminationPreviewPanel") as Control
+	var follow_up_panel := overlay.get_node_or_null("SafeArea/RootLayout/DetailStack/FollowUpPanel") as Control
+	_expect(rule_strip != null and rule_strip.visible, "investigation must retain compact rule continuity")
+	_expect(obligation_panel != null and not obligation_panel.visible, "investigation must hide obligation detail")
+	_expect(termination_panel != null and not termination_panel.visible, "investigation must hide termination detail")
+	_expect(follow_up_panel != null and not follow_up_panel.visible, "investigation must hide follow-up detail")
+	_expect(overlay.mouse_filter == Control.MOUSE_FILTER_IGNORE, "full-screen overlay root must not consume investigation pointer input")
+	_expect(safe_area != null and safe_area.mouse_filter == Control.MOUSE_FILTER_IGNORE, "full-screen safe area must not consume investigation pointer input")
 
 	overlay.queue_free()
 	await process_frame

@@ -70,16 +70,19 @@ func _verify_layout(scene: Node, viewport_size: Vector2i) -> void:
 	_expect(_inside_viewport(top_hud, viewport_rect), "%s top HUD should fit the viewport" % viewport_size)
 	_expect(_inside_viewport(point_dock, viewport_rect), "%s location panel should fit the viewport" % viewport_size)
 	_expect(_inside_viewport(dialogue_dock, viewport_rect), "%s narrative panel should fit the viewport" % viewport_size)
-	_expect(_inside_viewport(manual_panel, viewport_rect), "%s manual panel should fit the viewport" % viewport_size)
 	_expect(point_dock != null and point_dock.visible, "POINT_PICKER should show the location panel")
 	_expect(dialogue_dock != null and dialogue_dock.visible, "POINT_PICKER should keep the investigation text visible")
-	_expect(manual_panel != null and manual_panel.visible, "afterlife investigation should keep the page manual visible")
+	_expect(manual_panel != null, "compatibility manual node should remain addressable")
+	_expect(manual_panel != null and not manual_panel.visible, "afterlife manual must not permanently occupy the investigation workspace")
+	var manual_toggle := scene.find_child("ManualToggleButton", true, false) as Button
+	_expect(manual_toggle != null and manual_toggle.visible, "investigation must expose a visible manual entry point")
 	_expect(points_box != null and points_box.get_child_count() > 0, "POINT_PICKER should render investigation cards")
 	if points_box != null and points_box.get_child_count() > 0:
 		var action_button := points_box.get_child(0).find_child("ActionButton", true, false) as Button
 		_expect(action_button != null and not action_button.disabled, "the first investigation card should be selectable")
 		_expect(action_button != null and action_button.focus_mode != Control.FOCUS_NONE, "investigation cards should support keyboard focus")
 		_expect(_inside_viewport(action_button, viewport_rect), "%s first investigation card should be on screen" % viewport_size)
+		_expect(root.gui_get_focus_owner() == action_button, "the first enabled investigation action must receive actual keyboard focus")
 
 
 func _inside_viewport(control: Control, viewport_rect: Rect2) -> bool:
