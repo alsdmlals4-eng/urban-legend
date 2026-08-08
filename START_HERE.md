@@ -204,8 +204,7 @@ Godot Scene·Node·Resource·Project Settings의 persistent 저작은 HiGodot �
 - Package 2 Design: `docs/superpowers/specs/2026-08-02-package-2-main-menu-entry-routing-design.md`
 - Package 2 Plan: `docs/superpowers/plans/2026-08-02-package-2-main-menu-entry-routing-implementation-plan.md`
 - Package 2 evidence: `docs/implementation/2026-08-02-package-2-main-menu-entry-routing-evidence.md`
-- 원클릭 Windows Human QA: `docs/qa/2026-08-06-one-click-human-qa-package.md`
-- 원클릭 실행기: `START_HUMAN_QA.cmd`
+- 원클릭 Windows Human QA 실행기: `START_HUMAN_QA.cmd`
 - 제품 자산 권위: `ASSET_MANIFEST.yml`
 - Godot 도구 권위 원장: `docs/operations/GODOT_TOOL_AUTHORITY_LEDGER.json`
 - Grill Me cadence: `docs/decisions/D-2026-08-02-GRILLME-10-MERGE-CADENCE.md`
