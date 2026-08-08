@@ -239,7 +239,7 @@ Godot Scene·Node·Resource·Project Settings의 persistent 저작은 HiGodot �
 - 현재 Validation 인수인계: `docs/CURRENT_HANDOFF_VALIDATION.md`
 - Validation Target: `docs/VALIDATION_TARGET_CANON.md`
 - Package 1 Design: `docs/superpowers/specs/2026-08-02-validation-session-save-isolation-design.md`
-- Package 1 Plan: `docs/superpowers/plans/2026-08-02-package-2-main-menu-entry-routing-implementation-plan.md`
+- Package 1 Plan: `docs/superpowers/plans/2026-08-02-validation-session-save-isolation-implementation-plan.md`
 - Package 1 evidence: `docs/implementation/2026-08-02-package-1-session-save-isolation-evidence.md`
 - Package 2 Design: `docs/superpowers/specs/2026-08-02-package-2-main-menu-entry-routing-design.md`
 - Package 2 Plan: `docs/superpowers/plans/2026-08-02-package-2-main-menu-entry-routing-implementation-plan.md`
