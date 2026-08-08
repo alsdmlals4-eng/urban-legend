@@ -1,9 +1,12 @@
 # 괴이기록국 현재 확정 결정
 
 > 문서 역할: `CURRENT_CONFIRMED_DECISIONS`
-> 상태: `PACKAGE_2_MERGED_ON_MAIN / YEAR_ONE_DESIGN_MERGED_ON_MAIN / GRILLME_BATCH_2_MERGED / GRILLME_BATCH_3_OPEN`
-> 갱신일: 2026-08-03
+> 상태: `PACKAGE_2_MERGED_ON_MAIN / YEAR_ONE_DESIGN_MERGED_ON_MAIN / GRILLME_BATCH_2_MERGED / GRILLME_BATCH_3_OPEN / AUTHORITY_CORRECTION_MERGED / ASSET_GATE_CANON_RECONCILED`
+> 갱신일: 2026-08-08
 > Base: `9.4.3`
+> Base main: `fa69a77a14f923a756064f6ae151d34cadb374f7`
+> Godot authority correction: `UL-DEC-AUTHORITY-001` / PR #172 / main `305d9b5bbf21ea13ce23053e43afd98fabc21654`
+> Asset approval authority: root `ASSET_MANIFEST.yml` / current `PROJECT_ASSET_APPROVED` count `0`
 > Package 1 구현 merge: `80160218d05e79af5442bf27d8fdeb66bcf05723`
 > 병합 운영 정본 merge: `e15b9d25127170a530f66d5c3462340b806ad51d`
 > Package 2 planning merge: `b4d7bd0fb82968325bcf230f3e81b8d96e142402`
@@ -17,6 +20,7 @@
 > 1년차 Design: `docs/planning/2026-08-02-year-one-campaign-master-structure-design.md`
 > Batch 2 Design: `docs/planning/2026-08-02-investigation-system-design.md`
 > Batch 2 감사: `docs/audits/2026-08-03-grillme-batch-2-premerge-audit.md`
+> 정본·Asset Gate 감사: `docs/audits/2026-08-08-canonical-asset-gate-reconciliation.md`
 > 상세 Validation Target: `docs/VALIDATION_TARGET_CANON.md`
 > 현재 인수인계: `docs/CURRENT_HANDOFF_VALIDATION.md`
 > Grill Me ledger: `docs/GRILLME_APPROVAL_MERGE_LEDGER.md`
@@ -42,10 +46,13 @@
 
 source-only·superseded PR은 현재 권위가 아니다. Package 1·2, 1년차 캠페인 Design, Grill Me Batch 2 조사 시스템 Design은 main에 병합됐다. Design 병합은 Design Spec·개별 사건 Spec·구현·사람 검증·POC·Production 확대 권한을 열지 않는다.
 
+제품 자산의 승인·의미·권리 권위는 프로젝트 루트 `ASSET_MANIFEST.yml`이다. 과거 `assets/ASSET_MANIFEST.json`은 `LEGACY_MIGRATION_PENDING_NON_AUTHORITY` 재고이며 그 안의 `stage: final` 또는 QA 문구만으로 `PROJECT_ASSET_APPROVED`를 부여하지 않는다.
+
 ## 2. 현재 상태
 
 ```yaml
 base_version: 9.4.3
+base_main: fa69a77a14f923a756064f6ae151d34cadb374f7
 platform: PC_16_9_MOUSE_KEYBOARD
 mobile: DEFERRED_AFTER_PC_VALIDATION
 package_1_implementation: MERGED
@@ -59,6 +66,22 @@ package_2_product_implementation: MERGED_ON_MAIN
 package_2_automated_code_ci: PASS
 package_2_validation_focused: 5_OF_5_PASS
 full_godot_regression: 58_OF_58_PASS
+godot_persistent_authoring_authority: HIGODOT_SOLE_AUTHORITY
+gut_test_authority: ADOPTED_ACTIVE_NON_AUTHORING
+hera_addon_source: PRESERVED_INACTIVE
+hera_adoption: DEFERRED_PENDING_EXACT_PAIR_LIVE_QA_SOURCE_DELTA_NONE_ROLLBACK
+authority_decision: UL-DEC-AUTHORITY-001
+authority_correction_pr: 172
+authority_correction_main: 305d9b5bbf21ea13ce23053e43afd98fabc21654
+authority_live_editor_run_31225687879: PASS
+authority_full_matrix_run_31225687571: PASS
+authority_core_docs_run_31225687675: PASS
+asset_manifest_authority: ROOT_ASSET_MANIFEST_YML
+project_asset_approved_count: 0
+legacy_asset_manifest_json: LEGACY_MIGRATION_PENDING_NON_AUTHORITY
+vault_local_state: VAULT_LOCAL_STATE_UNVERIFIED
+asset_vault_runtime_contract: NOT_VERIFIED
+image_product_promotion: BLOCKED_NO_PROJECT_ASSET_APPROVED
 year_one_design_sections_1_to_6: MERGED_ON_MAIN
 year_one_design_pr: 135
 year_one_design_merge: 7bddbce2ebd427154cdeb8e4bb9b7aec06e2ea5e
@@ -94,9 +117,21 @@ investigation_rank_validation: NOT_RUN
 replay_rewind_validation: NOT_RUN
 accessibility_equivalence_validation: NOT_RUN
 mastery_reward_motivation_validation: NOT_RUN
+android_validation: NOT_RUN
 poc_passed: NOT_DECLARED
 production_expansion: NOT_APPROVED
 ```
+
+### 도구 권위·Asset Gate 현재 계약
+
+- `UL-DEC-AUTHORITY-001`: HiGodot은 Scene·Node·Resource·Project Settings의 단일 persistent 저작 권위다.
+- GUT 9.7.1은 테스트 검색·실행·assertion·double·JUnit의 비저작 권위로 `ADOPTED_ACTIVE`다.
+- Hera addon 소스는 보존하지만 plugin/autoload 활성 권위는 제거된 상태다. exact CLI/addon pair·live-QA 소비 경로·source-delta `NONE`·rollback evidence를 갖춘 별도 Decision 전에는 active adoption으로 승격하지 않는다.
+- PR #172 병합 후 main `305d9b5bbf21ea13ce23053e43afd98fabc21654`에서 Live Editor `31225687879`, Full Matrix `31225687571`, Core+Docs `31225687675`가 PASS했다.
+- 루트 `ASSET_MANIFEST.yml`은 제품 자산 승인·의미·권리 원장이다. 현재 승인 자산 목록은 비어 있고 `PROJECT_ASSET_APPROVED`는 0건이다.
+- `assets/ASSET_MANIFEST.json`은 역사 재고를 보존하는 `LEGACY_MIGRATION_PENDING_NON_AUTHORITY`이며 개별 재검수 전 제품 승격 근거가 아니다.
+- 이 환경에서 Windows 로컬 `.asset-vault/` 상태와 vault 도구/계약은 검증하지 못했으므로 `VAULT_LOCAL_STATE_UNVERIFIED / NOT_VERIFIED`를 유지한다.
+- 이미지 생성·삭제·tracked 제품 승격을 이 정본 정합화 작업에서 자동 수행하지 않는다.
 
 ## 3. 현재 제품 코어 권위
 
@@ -291,6 +326,7 @@ Package 2는 SCREEN-01에서 SIT-001·SIT-002·SIT-004의 현재 구현 Scene만
 | `D-2026-08-03-CAMPAIGN-REWIND-CANON-ANCHOR-SCOPE` | MERGED_APPROVED_DESIGN_SECTION_8 | 출동 준비 직전 정본 앵커·사건 전체 재진행·소급 반입 금지 |
 | `D-2026-08-03-ACCESSIBILITY-EQUIVALENCE-AND-MASTERY-GATES` | MERGED_APPROVED_DESIGN_SECTION_9 | 판단 보존 접근성 중립·자동 해결 관문 등가 대체 |
 | `D-2026-08-03-MASTERY-REWARD-SCOPE-AND-CAMPAIGN-NEUTRALITY` | MERGED_APPROVED_DESIGN_SECTION_10 | 캠페인 전력 중립 숙련 보상·비정본 기록 재현 변칙 |
+| `UL-DEC-AUTHORITY-001` | APPROVED_DECISION_REAFFIRMED / MERGED_ON_MAIN / HERA_SOURCE_INACTIVE_ADOPTION_DEFERRED | HiGodot sole persistent authoring · GUT 9.7.1 non-authoring test authority · Hera active adoption deferred |
 
 ## 8. Package 2 구현 보호 계약
 
@@ -326,6 +362,7 @@ pr_133: MERGED_MAIN_TO_IMPLEMENTATION_SYNC
 pr_138: MERGED_MAIN_TO_YEAR_ONE_PLANNING_SYNC
 pr_135: MERGED_YEAR_ONE_DESIGN
 pr_140: MERGED_GRILLME_BATCH_2_DESIGN
+pr_172: MERGED_AUTHORITY_CORRECTION
 pr_122: CLOSED_SOURCE_DO_NOT_MERGE_AS_IS
 issue_121: CLOSED_COMPLETED
 package_2_planning_merge: b4d7bd0fb82968325bcf230f3e81b8d96e142402
@@ -346,6 +383,10 @@ batch_2_annual_workflow: NOT_TRIGGERED_BY_PATH_FILTER
 package_1_focused: 4_OF_4_PASS
 package_2_focused: 5_OF_5_PASS
 full_godot_regression: 58_OF_58_PASS
+authority_correction_main: 305d9b5bbf21ea13ce23053e43afd98fabc21654
+authority_live_editor_run_31225687879: PASS
+authority_full_matrix_run_31225687571: PASS
+authority_core_docs_run_31225687675: PASS
 year_one_human_validation: NOT_RUN
 batch_2_human_validation: NOT_RUN
 merge_authorization: EXECUTED
@@ -374,6 +415,13 @@ Batch 1과 Batch 2의 승인 Decision은 `docs/GRILLME_APPROVAL_MERGE_LEDGER.md`
 
 ```yaml
 local_runtime: NOT_RUN
+local_windows_checkout: BLOCKED_UNVERIFIED
+vault_local_state: VAULT_LOCAL_STATE_UNVERIFIED
+asset_vault_runtime_contract: NOT_VERIFIED
+legacy_asset_inventory_reverification: MIGRATION_PENDING
+project_asset_approved_count: 0
+image_product_promotion: BLOCKED
+image_runtime_validation: NOT_RUN
 human_qa: NOT_RUN
 new_player_validation: NOT_RUN
 screen_01_visual_1280x720: NOT_RUN
@@ -395,6 +443,7 @@ investigation_rank_playability: NOT_RUN
 replay_rewind_comprehension: NOT_RUN
 accessibility_equivalence_human_validation: NOT_RUN
 mastery_reward_motivation: NOT_RUN
+android_validation: NOT_RUN
 poc_passed: NOT_DECLARED
 production_expansion: NOT_APPROVED
 ```
@@ -402,6 +451,14 @@ production_expansion: NOT_APPROVED
 ## 12. 다음 Gate
 
 ```text
+정본·Asset Gate 정합화
+→ UL-DEC-AUTHORITY-001은 같은 Decision ID로 GitHub·Sheet 동기화 유지
+→ root ASSET_MANIFEST.yml에는 PROJECT_ASSET_APPROVED 자산만 기록
+→ 현재 승인 자산 0건이므로 이미지 제품 승격은 BLOCKED
+→ Legacy assets/ASSET_MANIFEST.json 항목은 개별 권리·참조·런타임·Sheet 승인 재검수 전 MIGRATION_PENDING
+→ 로컬 .asset-vault 상태는 실제 Windows 접근 전 VAULT_LOCAL_STATE_UNVERIFIED
+→ Human/UI/Android 검증은 실제 실행 전 NOT_RUN
+
 GRILLME_BATCH_3 counter 0/10
 → 다음 중요 제품 결정은 새 Grill Me Decision으로 기록
 → Batch 2 Design Spec·사건별 랭크 관문·저장 스키마·접근성 등가 과제는 별도 사용자 승인 필요

@@ -1,0 +1,37 @@
+schema_version: 1
+project: "괴이기록국(urban-legend)"
+last_reviewed: "2026-08-08"
+source_commit: "305d9b5bbf21ea13ce23053e43afd98fabc21654"
+
+asset_vault:
+  enabled: false
+  authority: local-vault-filesystem
+  project_contract: ""
+  workspace_root: "assets/_vault_local"
+  sync_manifest: ".asset-vault/sync.json"
+  promotion_root: "assets"
+  note: "VAULT_LOCAL_STATE_UNVERIFIED. 이 원장은 tracked 제품 자산의 승인·의미·권리 권위다. 현재 PROJECT_ASSET_APPROVED 자산은 0건이며, 로컬 .asset-vault 상태와 프로젝트 vault 도구/계약은 이 환경에서 검증되지 않았다. 기존 assets/ASSET_MANIFEST.json은 LEGACY_MIGRATION_PENDING_NON_AUTHORITY이며 승인 근거가 아니다."
+
+status_definitions:
+  - REFERENCE
+  - DIRECTION_APPROVED
+  - PRODUCTION_READY
+  - IMPLEMENTED
+  - VISUALLY_VALIDATED
+  - PARTIAL_REFERENCE
+  - SUPERSEDED
+  - MIGRATION_PENDING
+  - REJECTED
+
+canonical_rules:
+  one_active_path_per_asset: true
+  preserve_history_in_git: true
+  forbid_unapproved_replacement: true
+  forbidden_active_name_tokens:
+    - v2
+    - final
+    - latest
+    - copy
+    - new
+
+assets: []

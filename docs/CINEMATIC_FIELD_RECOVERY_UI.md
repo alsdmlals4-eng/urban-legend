@@ -57,7 +57,9 @@
 
 - `ActionChoiceCard`는 행동 ID를 신호로만 전달하고 상태를 수정하지 않는다.
 - `TeamStatusChip`은 체력·정신력·행동 가능·대표 여부만 표시한다.
-- 요원과 괴이 원본 이미지는 보존한다. `assets/ASSET_MANIFEST.json`의 파생 컷아웃만 장면 합성에 사용하며 누락 시 기존 합성 이미지로 폴백한다.
+- 요원과 괴이 원본 이미지는 보존한다. 현재 구현에서 기존 파생 컷아웃 경로를 추적할 때 `assets/ASSET_MANIFEST.json`을 legacy runtime inventory로 참고할 수 있으며 누락 시 기존 합성 이미지로 폴백한다.
+- `assets/ASSET_MANIFEST.json`은 `LEGACY_MIGRATION_PENDING_NON_AUTHORITY`다. 해당 inventory의 `stage: final`은 제품 승인 의미가 아니며, tracked 제품 자산 승인·의미·권리 권위는 루트 `ASSET_MANIFEST.yml`이다.
+- 기존 파생 컷아웃을 새 승인 자산으로 승격·교체하려면 현재 파일/참조·권리·실제 화면·런타임을 재검증하고 `PROJECT_ASSET_APPROVED`를 거쳐 루트 manifest에 기록한다.
 - F2 편집기는 `cinematic_*` 안정 노드만 편집하고 동적 카드는 개별 등록하지 않는다.
 
 ## 저장·호환성
