@@ -34,12 +34,15 @@ docs/VALIDATION_TARGET_CANON.md = Validation 상세 Target
 docs/CURRENT_HANDOFF_VALIDATION.md = 현재 작업 상태·다음 Gate
 실제 main 코드·테스트 = 구현 사실
 docs/CURRENT_STATUS.md = 장기 프로젝트 구현·검증 이력
+ASSET_MANIFEST.yml = tracked 제품 자산 승인·의미·권리 권위
 Google Sheet = 동일 Decision ID의 계획·감사·변경 추적
 ```
 
-Current 문서 안의 commit SHA는 역할이 고정된 병합 증거다. 문서 자신의 병합으로 main이 이동하므로 `현재 main`을 문서 속 상수로 고정하지 않는다.
+Current 문서 안의 commit SHA는 역할이 고정된 병합 증거다. 문서 자신의 병합으로 main이 이동하므로 `현재 main`을 문서 속 상수로 고정하지 않는다. 정확한 현재 main SHA와 최신 CI 결과는 작업 시작 때 GitHub에서 다시 읽는다.
 
 저승역 상세 규칙이 구형 Episode·PoC·CORE-VALIDATION 자료와 충돌하면 `docs/CURRENT_AFTERLIFE_STATION_CANON.md`와 `docs/planning/2026-08-04-afterlife-station-canonical-source-map-and-legacy-disposition.md`를 우선한다.
+
+제품 자산은 루트 `ASSET_MANIFEST.yml`과 Google Sheet 승인 상태가 함께 충족돼야 승격할 수 있다. 과거 `assets/ASSET_MANIFEST.json`의 `stage: final` 또는 QA 문구만으로 `PROJECT_ASSET_APPROVED`를 추론하지 않는다.
 
 ## Work Mode·Skill 라우팅
 
@@ -52,54 +55,88 @@ Current 문서 안의 commit SHA는 역할이 고정된 병합 증거다. 문서
 
 Registry 항목만 읽고 Skill을 실행했다고 보고하지 않는다.
 
-## 현재 Validation 상태
+## 현재 Validation·운영 상태
+
+이 블록은 **단계와 권위만** 요약한다. 테스트 개수·latest main SHA·latest run ID는 빠르게 낡으므로 GitHub와 책임 원본에서 다시 읽는다.
 
 ```yaml
-base: 9.4.0
-branch: main
-canon_merge_pr_125: 595d45454621900e858a903fef0598a03349b794
-package_1_merge_pr_126: 80160218d05e79af5442bf27d8fdeb66bcf05723
-governance_merge_pr_127: e15b9d25127170a530f66d5c3462340b806ad51d
-package_1_automated_ci: PASS
-validation_focused: 4_OF_4_PASS
-full_godot_regression: 53_OF_53_PASS
-package_2: PLANNING_NEXT
+base: 9.4.3
+base_main: READ_GITHUB_BASE_LATEST_MAIN
+project_branch: main
+project_main: READ_GITHUB_PROJECT_LATEST_MAIN
+package_1: MERGED_AND_AUTOMATED_CI_VERIFIED
+package_2: MERGED_ON_MAIN_AND_AUTOMATED_CI_VERIFIED
+canon_v2_runtime_ux: MERGED_ON_MAIN_AND_AUTOMATED_CI_VERIFIED
+one_click_windows_human_qa_package: MERGED_ON_MAIN
+automated_windows_human_qa_preflight: PASS_PR_174
+full_godot_regression: READ_LATEST_CI_EVIDENCE
+godot_persistent_authoring_authority: HIGODOT_SOLE_AUTHORITY
+gut_test_authority: ADOPTED_ACTIVE_NON_AUTHORING
+hera_addon_source: PRESERVED_INACTIVE
+hera_adoption: DEFERRED_PENDING_EXACT_PAIR_LIVE_QA_SOURCE_DELTA_NONE_ROLLBACK
+asset_manifest_authority: ROOT_ASSET_MANIFEST_YML
+project_asset_approved_count: 0
+image_product_promotion: BLOCKED_NO_PROJECT_ASSET_APPROVED
+vault_local_state: VAULT_LOCAL_STATE_UNVERIFIED
 human_qa: NOT_RUN
 new_player_validation: NOT_RUN
 visual_1280x720_validation: NOT_RUN
+ui_accessibility_human_validation: NOT_RUN
+android_validation: NOT_RUN
 poc_passed: NOT_DECLARED
 mobile: DEFERRED_AFTER_PC_VALIDATION
 ```
 
-## Package 1 구현 경계
+`automated_windows_human_qa_preflight: PASS_PR_174`는 GitHub-hosted Windows runner에서 원클릭 QA 도구·PowerShell 7/5.1·Godot 4.7.1 격리 import·안전 실패 경로를 검증했다는 뜻이다. 실제 사용자 저장·화면·조작의 18개 Human QA 항목을 PASS했다는 뜻이 아니다.
 
-구현됨:
+## 현재 구현 경계
 
-- 별도 Validation save repository
-- ValidationSession lifecycle
-- completion apply-once
-- hidden Legacy memory guard
-- GameState field whitelist wrapper
-- invalid active Session fail-closed save routing
-- focused 4-entry·full 53-entry 테스트 배관
+현재 main에 구현·병합된 Validation 계층:
 
-구현되지 않음:
+- 별도 Validation save repository와 `ValidationSession` lifecycle
+- completion apply-once와 hidden Legacy memory guard
+- GameState field whitelist wrapper와 invalid active Session fail-closed save routing
+- Legacy/Validation 독립 메인 메뉴 카드와 생성·재개·완료 기록 흐름
+- Validation runtime whitelist 초기화·route allowlist·single-flight·rollback/abandon 보호
+- Canon v2 저승역 runtime/UX 정책·저장·adapter·공용 overlay·행동 확인·종결 미리보기·독립 결과 축
+- `START_HUMAN_QA.cmd` 기반 원클릭 Windows Human QA 패키지
+- 자동 Windows preflight와 표준 GitHub Actions 회귀
 
-- main-menu Validation entry/continue UX
-- 전용 축약 준비·Reasoning·결과 Scene
-- 전체 SCREEN-01→SIT-008 제품 흐름
-- Human·신규 플레이어·1280×720 시각 검증
+자동 검증이 있어도 다음은 구현 완료나 사람 승인으로 자동 승격하지 않는다.
 
-## Package 2 다음 Gate
+- 실제 Windows 사용자 저장 기반 Human QA
+- 1280×720 / 1920×1080 실제 시각 밀도·폰트·겹침 판정
+- 키보드·게임패드 실제 포커스 체감
+- 색상 외 상태 단서·접근성 사람 검증
+- 신규 플레이어 이해도 검증
+- Android device/export 검증
+- 제품 이미지 승격
+
+## 현재 다음 Gate
+
+자동으로 닫을 수 있는 계약 검증과 실제 사람·기기 검증을 분리한다.
 
 ```text
-main-menu에서 Legacy/Validation 저장 구분
-→ Validation 생성·재개 routing
-→ 전용 준비·추론·결과 Scene 최소 범위
-→ 저장 비파괴·부작용 차단 계약
-→ 적대적 검토
-→ 사용자 구현 승인
+GitHub latest main + Sheet + Current canon 재조회
+→ START_HUMAN_QA.cmd를 실제 Windows 사용자 환경에서 실행
+→ 실제 저장 Prepare → 격리 Launch → 18개 사람 판정 → Collect
+→ 1280×720 / 1920×1080 / 키보드 / 게임패드 / 접근성 검토
+→ 결과를 PASS / FAIL / BLOCKED / NOT_RUN으로 그대로 기록
+→ 필요 시 수정 PR + exact-head 자동 회귀
+→ 별도 제품/출시 판단
 ```
+
+이미지·자산 작업은 별도 게이트다.
+
+```text
+71_이미지기획_생성목록
+→ 72_이미지검수_승인로그
+→ PROJECT_ASSET_APPROVED
+→ root ASSET_MANIFEST.yml
+→ tracked 제품 자산 승격
+```
+
+현재 `PROJECT_ASSET_APPROVED`가 0건이므로 이미지 제품 승격은 BLOCKED다. 자동 생성·삭제·교체로 이 게이트를 우회하지 않는다.
 
 ## Grill Me 승인·병합 규칙
 
@@ -126,18 +163,18 @@ main-menu에서 Legacy/Validation 저장 구분
 
 source-only·superseded·blocked PR은 숫자를 맞추기 위해 병합하지 않는다.
 
-## PR 상태
+## 현재 PR 상태 라우팅
 
-- PR #125: `MERGED` — Canon·승인·Design·Plan
-- PR #126: `MERGED` — Package 1 구현
-- PR #127: `MERGED` — Batch 0·Grill Me 병합 운영
-- PR #142: `MERGED` — 조사 시스템 Batch 3
-- PR #143: `MERGED` — 저승역 완전 사건 설계·정본 Source Map·적대적 감사, merge `5c1f298db43275391bf7ce4c7b1acad841daf295`
-- PR #122: `CLOSED SOURCE / DO NOT MERGE AS-IS`
-- PR #120: `CLOSED / SUPERSEDED`
-- Issue #121: `CLOSED / COMPLETED`
+최근 운영상 중요한 상태만 적는다. 정확한 open/closed/mergeable 상태는 매 작업 시작 때 GitHub에서 다시 읽는다.
 
-PR #122의 유효 승인 내용은 current canon에 통합 승계했다.
+- PR #172: `MERGED` — `UL-DEC-AUTHORITY-001` 권위 복구; Hera source 보존 inactive, active adoption deferred
+- PR #173: `MERGED` — CURRENT 정본 전파 + root `ASSET_MANIFEST.yml` fail-closed 설치
+- PR #174: `MERGED` — current-main 원클릭 Windows Human QA 자동 preflight 재검증; Human QA는 계속 `NOT_RUN`
+- PR #146 / #147 / #148: `CLOSED / SUPERSEDED_BY_MAIN` — exact ancestry로 main 흡수 확인
+- PR #149: `OPEN DRAFT / DIVERGED` — 로컬 Human QA runner 계열; 현재 main과 고유 차이가 있어 별도 감사 전 직접 병합 금지
+- PR #165: `OPEN DRAFT / DIVERGED` — 과거 GUT/addon 정합화 감사; 후속 main 변경과 대조한 별도 재감사 전 직접 병합 금지
+
+과거 PR 번호나 본문이 current canon과 충돌하면 GitHub latest main, `docs/CURRENT_CONFIRMED_DECISIONS.md`, 실제 코드·테스트, Sheet의 최신 동기화 기록을 우선한다.
 
 ## 보호 범위
 
@@ -145,9 +182,12 @@ PR #122의 유효 승인 내용은 current canon에 통합 승계했다.
 - `data/episodes/**`
 - `project.godot`
 - 저장 Schema·기존 ID·캠페인·경제·엔딩 의미
-- 승인 자산과 실제 QA 증거
+- `ASSET_MANIFEST.yml`과 승인 자산
+- 실제 Human/Visual/Device QA 증거
 
 보호 의미 변경은 별도 승인·RED/GREEN·회귀·롤백 없이 수행하지 않는다.
+
+Godot Scene·Node·Resource·Project Settings의 persistent 저작은 HiGodot 단일 권위다. GUT은 비저작 테스트 권위다. Hera addon source는 보존할 수 있으나 exact CLI/addon pair·live-QA 소비·source-delta `NONE`·rollback evidence와 별도 승인 없이는 active plugin/autoload로 승격하지 않는다.
 
 ## 핵심 위치
 
@@ -161,7 +201,13 @@ PR #122의 유효 승인 내용은 current canon에 통합 승계했다.
 - Package 1 Design: `docs/superpowers/specs/2026-08-02-validation-session-save-isolation-design.md`
 - Package 1 Plan: `docs/superpowers/plans/2026-08-02-validation-session-save-isolation-implementation-plan.md`
 - Package 1 evidence: `docs/implementation/2026-08-02-package-1-session-save-isolation-evidence.md`
-- Retarget merge gate: `docs/implementation/2026-08-02-package-1-retarget-merge-gate.md`
+- Package 2 Design: `docs/superpowers/specs/2026-08-02-package-2-main-menu-entry-routing-design.md`
+- Package 2 Plan: `docs/superpowers/plans/2026-08-02-package-2-main-menu-entry-routing-implementation-plan.md`
+- Package 2 evidence: `docs/implementation/2026-08-02-package-2-main-menu-entry-routing-evidence.md`
+- 원클릭 Windows Human QA: `docs/qa/2026-08-06-one-click-human-qa-package.md`
+- 원클릭 실행기: `START_HUMAN_QA.cmd`
+- 제품 자산 권위: `ASSET_MANIFEST.yml`
+- Godot 도구 권위 원장: `docs/operations/GODOT_TOOL_AUTHORITY_LEDGER.json`
 - Grill Me cadence: `docs/decisions/D-2026-08-02-GRILLME-10-MERGE-CADENCE.md`
 - Grill Me ledger: `docs/GRILLME_APPROVAL_MERGE_LEDGER.md`
 - 프로젝트 실제 상태: `docs/CURRENT_STATUS.md`
