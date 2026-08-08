@@ -76,7 +76,7 @@ one_click_windows_human_qa_package: MERGED_ON_MAIN
 automated_windows_human_qa_preflight: PASS_PR_174
 ui_hierarchy_decision: D-2026-08-08-INVESTIGATION-RECOVERY-UI-HIERARCHY-REFINEMENT
 ui_hierarchy_written_spec: APPROVED
-ui_hierarchy_implementation_plan: READY_PR_176
+ui_hierarchy_implementation_plan: MERGED_ON_MAIN_PR_176
 ui_hierarchy_runtime_implementation: NOT_STARTED
 ui_hierarchy_new_runtime_render: NOT_RUN
 full_godot_regression: READ_LATEST_CI_EVIDENCE
@@ -142,8 +142,7 @@ mobile: DEFERRED_AFTER_PC_VALIDATION
 
 ```text
 GitHub latest main + Base latest + project adopted Base baseline + Sheet + Current canon 재조회
-→ PR #176 approved spec + implementation plan exact-head 문서/정본 검증
-→ planning/canon merge gate
+→ UI hierarchy Decision/Spec/Plan이 current main에 병합됐는지 확인
 → 별도 HiGodot implementation branch/PR
 → TDD RED: drawer focus / persistent manual / Canon overlay pointer-mode / RepresentativeVisual contract
 → minimal implementation slices
@@ -206,7 +205,7 @@ source-only·superseded·blocked PR은 숫자를 맞추기 위해 병합하지 �
 - PR #173: `MERGED` — CURRENT 정본 전파 + root `ASSET_MANIFEST.yml` fail-closed 설치
 - PR #174: `MERGED` — current-main 원클릭 Windows Human QA 자동 preflight 재검증; Human QA는 계속 `NOT_RUN`
 - PR #175: `MERGED` — active START_HERE freshness 복구
-- PR #176: `OPEN DRAFT / SPEC_APPROVED / IMPLEMENTATION_PLAN_READY` — docs/canon만 포함; runtime 구현은 별도 HiGodot PR로 분리
+- PR #176: `MERGED / SPEC_APPROVED / IMPLEMENTATION_PLAN_MERGED` — merge main `4ccd37675576141126b7bf8c718fb30ec9020409`; runtime 구현은 별도 HiGodot PR로 분리
 - PR #146 / #147 / #148: `CLOSED / SUPERSEDED_BY_MAIN` — exact ancestry로 main 흡수 확인
 - PR #149: `OPEN DRAFT / DIVERGED` — 로컬 Human QA runner 계열; 현재 main과 고유 차이가 있어 별도 감사 전 직접 병합 금지
 - PR #165: `OPEN DRAFT / DIVERGED` — 과거 GUT/addon 정합화 감사; 후속 main 변경과 대조한 별도 재감사 전 직접 병합 금지
