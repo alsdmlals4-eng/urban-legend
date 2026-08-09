@@ -9,8 +9,7 @@ const LogTutorialCatalog = preload("res://scripts/ui/log_tutorial_catalog.gd")
 const ValidationInspectorScript = preload("res://scripts/core/validation_persistence_inspector.gd")
 const ValidationEntryCoordinatorScript = preload("res://scripts/ui/validation_entry_coordinator.gd")
 const ValidationRouteMapperScript = preload("res://scripts/core/validation_route_mapper.gd")
-
-const GAME_VERSION := "Ver 4.2"
+const ProductVersion = preload("res://scripts/core/product_version.gd")
 
 var _start_episode_button: Button
 var _continue_button: Button
@@ -108,7 +107,8 @@ func _build_ui() -> void:
 	title_row.add_child(title)
 
 	var version_label := Label.new()
-	version_label.text = GAME_VERSION
+	version_label.name = "VersionLabel"
+	version_label.text = ProductVersion.display_text()
 	version_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	version_label.add_theme_font_size_override("font_size", 10)
 	title_row.add_child(version_label)
@@ -577,7 +577,7 @@ func _add_update_notice(parent: Control) -> void:
 	panel.add_child(content)
 
 	var title := Label.new()
-	title.text = "%s 변경사항" % GAME_VERSION
+	title.text = "%s 변경사항" % ProductVersion.display_text()
 	content.add_child(title)
 
 	var changes := Label.new()
