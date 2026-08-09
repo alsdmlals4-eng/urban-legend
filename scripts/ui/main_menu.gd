@@ -59,8 +59,6 @@ func _ready() -> void:
 	set_process_input(true)
 	_build_ui()
 	_refresh_entry_cards()
-	if _legacy_continue_button != null:
-		_legacy_continue_button.call_deferred("grab_focus")
 
 
 func _make_validation_coordinator() -> Object:
@@ -116,6 +114,7 @@ func _build_ui() -> void:
 	_build_debug_panel(_intelligence_rail)
 	_build_validation_dialogs()
 	_configure_entry_focus()
+	resized.connect(_apply_responsive_layout)
 
 
 func _make_menu_rail(
@@ -398,16 +397,79 @@ func _build_validation_dialogs() -> void:
 
 
 func _configure_entry_focus() -> void:
-	if _legacy_continue_button == null or _legacy_new_campaign_button == null:
+	_rebuild_focus_chain()
+
+
+func _rebuild_focus_chain() -> void:
+	var candidates: Array[Control] = []
+	for control in [
+		_legacy_continue_button,
+		_legacy_new_campaign_button,
+		_validation_primary_button,
+		_validation_secondary_button,
+		_database_button,
+		_settings_button,
+		_exit_button,
+	]:
+		if control == null or not control.visible or control.focus_mode == Control.FOCUS_NONE:
+			continue
+		if control is BaseButton and (control as BaseButton).disabled:
+			continue
+		candidates.append(control)
+
+	for index in range(candidates.size()):
+		var control := candidates[index]
+		control.focus_neighbor_left = NodePath("")
+		control.focus_neighbor_right = NodePath("")
+		control.focus_neighbor_top = (
+			control.get_path_to(candidates[index - 1]) if index > 0 else NodePath("")
+		)
+		control.focus_neighbor_bottom = (
+			control.get_path_to(candidates[index + 1]) if index + 1 < candidates.size() else NodePath("")
+		)
+
+
+func _meaningful_primary_action() -> Button:
+	if _legacy_continue_button != null and _legacy_continue_button.visible and not _legacy_continue_button.disabled:
+		return _legacy_continue_button
+	if _legacy_new_campaign_button != null and _legacy_new_campaign_button.visible and not _legacy_new_campaign_button.disabled:
+		return _legacy_new_campaign_button
+	if _validation_primary_button != null and _validation_primary_button.visible and not _validation_primary_button.disabled:
+		return _validation_primary_button
+	return null
+
+
+func _apply_primary_action_emphasis() -> void:
+	var primary := _meaningful_primary_action()
+	for button in [
+		_legacy_continue_button,
+		_legacy_new_campaign_button,
+		_validation_primary_button,
+		_validation_secondary_button,
+	]:
+		if button == null:
+			continue
+		button.remove_theme_stylebox_override("normal")
+		button.remove_theme_color_override("font_color")
+
+	if primary == null:
+		_primary_action_hint.text = "현재 이용 가능한 주요 행동이 없습니다."
 		return
-	_legacy_continue_button.focus_neighbor_bottom = _legacy_continue_button.get_path_to(_legacy_new_campaign_button)
-	_legacy_new_campaign_button.focus_neighbor_top = _legacy_new_campaign_button.get_path_to(_legacy_continue_button)
-	_legacy_new_campaign_button.focus_neighbor_right = _legacy_new_campaign_button.get_path_to(_validation_primary_button)
-	_validation_primary_button.focus_neighbor_left = _validation_primary_button.get_path_to(_legacy_continue_button)
-	_validation_primary_button.focus_neighbor_bottom = _validation_primary_button.get_path_to(_validation_secondary_button)
-	_validation_secondary_button.focus_neighbor_top = _validation_secondary_button.get_path_to(_validation_primary_button)
-	_validation_secondary_button.focus_neighbor_bottom = _validation_secondary_button.get_path_to(_database_button)
-	_database_button.focus_neighbor_top = _database_button.get_path_to(_validation_primary_button)
+
+	primary.add_theme_stylebox_override("normal", ThemeFactory.panel_style(ThemeFactory.COLOR_AMBER, 0.96))
+	primary.add_theme_color_override("font_color", ThemeFactory.COLOR_AMBER)
+	_primary_action_hint.text = "현재 주요 행동 · %s" % primary.text
+
+	if get_viewport().gui_get_focus_owner() == null:
+		primary.call_deferred("grab_focus")
+
+
+func _apply_responsive_layout() -> void:
+	if _current_case_preview == null or _current_case_summary == null:
+		return
+	var compact := size.x <= 1400.0
+	_current_case_preview.visible = not compact
+	_current_case_summary.visible = not compact
 
 
 func _present_log_entry() -> void:
@@ -455,6 +517,9 @@ func _refresh_entry_cards() -> void:
 		_validation_summary = _validation_inspector.inspect_persistence()
 	_render_validation_summary(_validation_summary)
 	_refresh_intelligence_rail()
+	_apply_primary_action_emphasis()
+	_rebuild_focus_chain()
+	_apply_responsive_layout()
 
 
 func _refresh_intelligence_rail() -> void:
@@ -573,7 +638,7 @@ func _on_validation_replace_canceled() -> void:
 func _show_replace_confirmation(summary: Dictionary) -> void:
 	_refresh_entry_cards()
 	var episode := String(summary.get("episode_title", "Validation 기록"))
-	var stage := String(summary.get("flow_stage", summary.get("lifecycle", "")) )
+	var stage := String(summary.get("flow_stage", summary.get("lifecycle", "")))
 	var updated := String(summary.get("updated_at_utc", "기록 시각 없음"))
 	_validation_replace_dialog.dialog_text = (
 		"현재 Validation 기록을 새 기록으로 교체합니다.\n\n"
