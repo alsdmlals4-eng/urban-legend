@@ -116,6 +116,12 @@ func _run() -> void:
 	_expect(legacy_button.focus_neighbor_bottom == legacy_button.get_path_to(legacy_new_button), "Legacy focus must move to new campaign")
 	_expect(db_button.focus_mode == Control.FOCUS_ALL, "Database must remain keyboard accessible")
 
+	db_button.grab_focus()
+	await process_frame
+	menu.refresh_entry_cards_for_test()
+	await process_frame
+	_expect(root.gui_get_focus_owner() == db_button, "normal refresh must preserve the current meaningful focus owner")
+
 	if settings_button != null and settings_panel != null:
 		settings_button.pressed.emit()
 		_expect(settings_panel.visible, "settings must expose the existing accessibility surface")
