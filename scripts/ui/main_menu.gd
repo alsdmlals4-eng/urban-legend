@@ -59,6 +59,7 @@ func _ready() -> void:
 	set_process_input(true)
 	_build_ui()
 	_refresh_entry_cards()
+	_focus_initial_action()
 
 
 func _make_validation_coordinator() -> Object:
@@ -460,16 +461,26 @@ func _apply_primary_action_emphasis() -> void:
 	primary.add_theme_color_override("font_color", ThemeFactory.COLOR_AMBER)
 	_primary_action_hint.text = "현재 주요 행동 · %s" % primary.text
 
-	if get_viewport().gui_get_focus_owner() == null:
+
+func _focus_initial_action() -> void:
+	var primary := _meaningful_primary_action()
+	if primary != null:
 		primary.call_deferred("grab_focus")
 
 
 func _apply_responsive_layout() -> void:
 	if _current_case_preview == null or _current_case_summary == null:
 		return
-	var compact := get_tree().root.size.x <= 1400
-	_current_case_preview.visible = not compact
-	_current_case_summary.visible = not compact
+	var window_size := get_tree().root.size
+	var compact := window_size.x < 1500 or window_size.y < 850
+	_current_case_preview.visible = not compact and _current_case_preview.texture != null
+	_current_case_summary.visible = not compact and not _current_case_summary.text.is_empty()
+	if _identity_rail != null:
+		_identity_rail.add_theme_constant_override("separation", 8 if compact else 12)
+	if _action_rail != null:
+		_action_rail.add_theme_constant_override("separation", 8 if compact else 12)
+	if _intelligence_rail != null:
+		_intelligence_rail.add_theme_constant_override("separation", 8 if compact else 12)
 
 
 func _present_log_entry() -> void:
