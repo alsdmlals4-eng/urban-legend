@@ -1,5 +1,6 @@
 extends GutTest
 
+# Evidence-only trigger after tracking the generated ProductVersion UID.
 var mapper: ValidationRouteMapper
 
 
