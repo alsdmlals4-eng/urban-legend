@@ -108,6 +108,11 @@ jobs:
         run: |
           set -euo pipefail
           godot --headless --path . --import
+          if [ -f scripts/core/product_version.gd.uid ]; then
+            printf 'Generated ProductVersion UID: '
+            cat scripts/core/product_version.gd.uid
+            cp scripts/core/product_version.gd.uid .artifacts/gut/product_version.gd.uid
+          fi
           git diff --exit-code -- project.godot addons scripts scenes assets data
           protected_status="$(git status --porcelain --untracked-files=all -- project.godot addons scripts scenes assets data)"
           if [ -n "$protected_status" ]; then
