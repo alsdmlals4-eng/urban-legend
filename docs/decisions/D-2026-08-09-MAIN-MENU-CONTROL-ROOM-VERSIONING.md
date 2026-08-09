@@ -1,6 +1,6 @@
 # D-2026-08-09-MAIN-MENU-CONTROL-ROOM-VERSIONING
 
-Status: `DESIGN_DIRECTION_APPROVED / VERSION_POLICY_A_APPROVED / WRITTEN_SPEC_APPROVED / IMPLEMENTATION_PLAN_READY / PLANNING_EXACT_HEAD_CI_GREEN / RUNTIME_NOT_STARTED`
+Status: `DESIGN_DIRECTION_APPROVED / VERSION_POLICY_A_APPROVED / WRITTEN_SPEC_APPROVED / IMPLEMENTATION_PLAN_READY / RUNTIME_NOT_STARTED`
 
 GitHub issue: #181
 
@@ -13,7 +13,7 @@ The user approved two linked presentation decisions for the product main menu:
 1. Replace the hard-coded `Ver 4.2` menu label with one canonical product-version source. The first value is `4.3`; future approved product/UI version steps advance sequentially `4.4`, `4.5`, and so on by changing that canonical source rather than duplicating literals in menus.
 2. Redesign the main menu around the approved **괴이기록국 관제실형** direction: institutional occult bureau identity on the left, playable entry/actions in the center, and contextual intelligence/status on the right.
 
-The written design at `docs/superpowers/specs/2026-08-09-main-menu-control-room-versioning-design.md` was explicitly approved by the user on 2026-08-09 20:19 KST. The TDD implementation plan is ready at `docs/superpowers/plans/2026-08-09-main-menu-control-room-versioning-implementation-plan.md`. Planning exact-head CI at `a748468d17435868a34863c77e9fdc24bc2e1960` completed 4/4 triggered workflows successfully before this canonical evidence update; this document update itself requires its own final exact-head CI before merge. Neither approval nor planning completion claims runtime implementation or Human QA PASS.
+The written design at `docs/superpowers/specs/2026-08-09-main-menu-control-room-versioning-design.md` was explicitly approved by the user on 2026-08-09 20:19 KST. The TDD implementation plan is ready at `docs/superpowers/plans/2026-08-09-main-menu-control-room-versioning-implementation-plan.md`. Exact planning-head CI is external verification evidence and is recorded in PR/Issue/Sheet rather than as a self-referential SHA inside this branch document. Neither approval nor planning completion claims runtime implementation or Human QA PASS.
 
 ## Verified current cause
 
@@ -59,4 +59,4 @@ This Decision is separate from `D-2026-08-08-INVESTIGATION-RECOVERY-UI-HIERARCHY
 
 ## Validation ceiling
 
-No runtime implementation or Human/UI/Android PASS is claimed by this Decision record. Next is the planning-PR final exact-head merge gate, then a separate implementation worktree/branch executes the approved TDD plan.
+No runtime implementation or Human/UI/Android PASS is claimed by this Decision record. Next is the planning-PR exact-head merge gate, then a separate implementation worktree/branch executes the approved TDD plan.
