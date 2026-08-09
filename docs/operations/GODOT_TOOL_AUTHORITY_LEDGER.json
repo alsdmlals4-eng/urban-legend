@@ -4,8 +4,7 @@
   "project": "alsdmlals4-eng/urban-legend",
   "decision_ids": [
     "UL-DEC-ADDON-001",
-    "UL-DEC-AUTHORITY-001",
-    "D-2026-08-08-INVESTIGATION-RECOVERY-UI-HIERARCHY-REFINEMENT"
+    "UL-DEC-AUTHORITY-001"
   ],
   "base_policy_evidence": {
     "repository": "alsdmlals4-eng/Base",
@@ -34,7 +33,7 @@
       "tool_id": "higodot",
       "display_name": "HiGodot / Godot AI",
       "plugin_cfg": "res://addons/godot_ai/plugin.cfg",
-      "exact_version": "3.1.3",
+      "exact_version": "3.1.2",
       "authority": "GODOT_AUTHORING",
       "authority_cardinality": "SOLE",
       "authority_state": "ACTIVE_EDITOR_AUTHORITY",
@@ -154,33 +153,6 @@
         "protected_diff": "PASS",
         "recording_note": "Merged-main promotion evidence. Current exact-head authority must still be read from GitHub Actions and the synchronized Sheet."
       }
-    },
-    {
-      "tool_id": "hera_agent_godot",
-      "display_name": "Hera Agent Godot",
-      "plugin_cfg": "res://addons/hera_agent_godot/plugin.cfg",
-      "exact_version": "1.0.0",
-      "authority": "LIVE_QA_AND_OBSERVABILITY_ONLY",
-      "authority_cardinality": "NON_AUTHORING",
-      "authority_state": "ACTIVE_EDITOR_OBSERVABILITY",
-      "allowed_operations": [
-        "live_status_observation",
-        "read_only_runtime_inspection",
-        "screenshot_evidence"
-      ],
-      "allowed_product_mutations": [],
-      "forbidden_operations": [
-        "persistent_scene_mutation",
-        "persistent_node_mutation",
-        "persistent_script_mutation",
-        "persistent_resource_mutation",
-        "project_settings_mutation",
-        "replace_human_qa"
-      ],
-      "validation_requirements": [
-        "Use only read-only status, runtime inspection, and screenshot evidence",
-        "Do not use Hera evidence as a substitute for Human QA"
-      ]
     }
   ]
 }
