@@ -50,6 +50,7 @@ func request_action_confirmation(
 	_pending_cancel = on_cancel
 	_previous_focus = get_viewport().gui_get_focus_owner()
 	_confirmation_detail_label.text = _build_confirmation_text(preview)
+	_confirmation_layer.mouse_filter = Control.MOUSE_FILTER_STOP
 	_confirmation_layer.visible = true
 	_confirmation_panel.visible = true
 	_confirm_button.disabled = not bool(preview.get("allowed", true))
@@ -83,6 +84,7 @@ func _ensure_ui() -> void:
 	root_layout.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	root_layout.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	root_layout.add_theme_constant_override("separation", 8)
+	root_layout.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	safe_area.add_child(root_layout)
 
 	var rule_strip_panel := PanelContainer.new()
@@ -197,7 +199,7 @@ func _build_confirmation_layer() -> void:
 	_confirmation_layer = CenterContainer.new()
 	_confirmation_layer.name = "ConfirmationLayer"
 	_confirmation_layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	_confirmation_layer.mouse_filter = Control.MOUSE_FILTER_STOP
+	_confirmation_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_confirmation_layer.visible = false
 	_confirmation_layer.z_index = 200
 	add_child(_confirmation_layer)
@@ -378,6 +380,7 @@ func _on_confirmation_cancelled() -> void:
 
 func _hide_confirmation(restore_focus: bool) -> void:
 	_confirmation_layer.visible = false
+	_confirmation_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_confirmation_panel.visible = false
 	_pending_confirm = Callable()
 	_pending_cancel = Callable()
