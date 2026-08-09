@@ -2,9 +2,11 @@
 
 Decision: `D-2026-08-09-MAIN-MENU-CONTROL-ROOM-VERSIONING`
 
-Status: `WRITTEN_SPEC_REVIEW_REQUIRED`
+Status: `APPROVED`
 
 Issue: #181
+
+User approval: `2026-08-09 20:19 KST`
 
 ## 1. Goal
 
