@@ -114,7 +114,7 @@ func _build_ui() -> void:
 	_build_debug_panel(_intelligence_rail)
 	_build_validation_dialogs()
 	_configure_entry_focus()
-	get_viewport().size_changed.connect(_apply_responsive_layout)
+	get_tree().root.size_changed.connect(_apply_responsive_layout)
 
 
 func _make_menu_rail(
@@ -467,7 +467,7 @@ func _apply_primary_action_emphasis() -> void:
 func _apply_responsive_layout() -> void:
 	if _current_case_preview == null or _current_case_summary == null:
 		return
-	var compact := get_viewport().get_visible_rect().size.x <= 1400.0
+	var compact := get_tree().root.size.x <= 1400
 	_current_case_preview.visible = not compact
 	_current_case_summary.visible = not compact
 
