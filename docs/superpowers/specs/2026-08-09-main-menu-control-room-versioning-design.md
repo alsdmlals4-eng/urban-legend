@@ -43,19 +43,21 @@ Use a 16:9 full-screen bureau control-room composition with three functional rai
 │ LEFT IDENTITY        │ CENTER ACTIONS        │ RIGHT INTELLIGENCE     │
 │                      │                       │                        │
 │ 괴이기록국           │ 본편                  │ 현재 사건              │
-│ Bureau identity      │  본편 시작            │ compact case summary   │
-│ Ver 4.3              │  이어서 하기          │                        │
+│ Bureau identity      │  primary action       │ compact case summary   │
+│ Ver 4.3              │  secondary action     │                        │
 │                      │                       │ 최근 기록 / 상태       │
 │ clearance framing    │ Validation            │ 위험/보호 요약         │
 │                      │  primary/secondary    │                        │
 │                      │                       │ 저장/기록 상태         │
 │                      │ 기록 보관실           │                        │
-│                      │ 설정                  │                        │
+│                      │ 설정 / 접근성         │                        │
 │                      │ 종료                  │                        │
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
 This must feel like a playable game title screen, not a vertically stacked documentation form.
+
+The mockup's exact button order is not a new routing rule. Within the 본편 group, the **meaningful available action for the current save state** receives primary visual emphasis while the stable Legacy action identities remain unchanged.
 
 ### 3.2 Left identity rail
 
@@ -73,12 +75,13 @@ The title/version remain readable at both target resolutions.
 
 This is the visual and keyboard priority.
 
-Order by domain, not by implementation history:
+Group by domain, not by implementation history:
 
 ```text
 본편
-- 이어서 하기, when meaningful
-- 새 캠페인 시작
+- LegacyContinueButton
+- LegacyNewCampaignButton
+- whichever is meaningful for the current save state receives primary emphasis
 
 Validation
 - ValidationPrimaryButton semantic action from the existing summary
@@ -86,13 +89,13 @@ Validation
 
 utility
 - 기록 보관실 / DatabaseButton
-- 설정
+- 설정 / existing accessibility surface
 - 종료
 ```
 
-The existing Legacy and Validation actions keep their current semantics and stable node identities. The redesign may change labels around them, panels, icon treatment, spacing, selection highlight, and explanatory copy, but it may not merge their persistence domains.
+The existing Legacy and Validation actions keep their current semantics and stable node identities. The redesign may change surrounding labels, panels, icon treatment, spacing, selection highlight, and explanatory copy, but it may not merge their persistence domains.
 
-Default keyboard focus must continue to land on a meaningful available action. A disabled or hidden action must not become the focus dead-end.
+Default keyboard focus must land on the same meaningful action that receives primary visual emphasis. Visible keyboard order must match visual order; a disabled or hidden action must not become a focus dead-end.
 
 ### 3.4 Right intelligence rail
 
@@ -103,7 +106,7 @@ Rules:
 - Populate a module only from already available canonical runtime/read-only summary data.
 - Do not derive hidden truth, correct answers, or future outcomes.
 - Do not copy mockup-only dates, investigator names, risk ranks, save timestamps, slot numbers, or case metadata unless an existing project authority already exposes those exact values.
-- When a data category is unavailable, prefer a compact unavailable/neutral state or omit the secondary module rather than inventing a value.
+- When a data category is unavailable, prefer a compact neutral/unavailable state or omit the secondary module rather than inventing a value.
 - The right rail must remain read-only; it does not become a new save or domain authority.
 
 The right rail is secondary to the center action rail and is the first area allowed to simplify at lower resolution.
@@ -175,7 +178,7 @@ Primary target behavior:
 - title and `Ver 4.3` visible without scrolling;
 - center playable actions visible without scrolling;
 - Legacy vs Validation distinction visible at first glance;
-- current status feedback remains readable;
+- current status/error feedback remains readable;
 - right intelligence rail compacts secondary modules before any primary action disappears;
 - long Korean text uses concise copy and wrapping without covering controls;
 - screen must not regress into one giant `ScrollContainer` document wall.
@@ -185,8 +188,8 @@ Allowed compacting order:
 1. reduce decorative gaps and low-value framing;
 2. shorten right-rail explanatory copy;
 3. hide lowest-priority right-rail modules;
-4. reduce image/preview height;
-5. keep title, version, primary actions, Validation distinction, status/error feedback, and back/focus route.
+4. reduce existing preview/image height;
+5. keep title, version, primary actions, Validation distinction, status/error feedback, and focus/back route.
 
 ### 6.2 1920×1080
 
@@ -214,7 +217,7 @@ Required interaction behavior:
 - corrupt/incompatible Validation data never disables Legacy access;
 - status meaning is not color-only;
 - `ui_cancel`/dialog behavior remains consistent with existing coordinator semantics;
-- settings presentation must reuse existing settings/accessibility authority rather than invent a new persistence model.
+- settings/accessibility presentation must reuse existing settings/accessibility authority rather than invent a new persistence model.
 
 ## 8. Data and save boundaries
 
@@ -237,7 +240,7 @@ This written design does not itself authorize persistent Godot Scene/Node/Resour
 
 The current scene is only a root Control plus script, so most expected implementation is script/UI presentation work. If implementation later requires persistent Scene/Node/Resource/Project Settings changes, HiGodot remains the sole persistent Godot authoring authority.
 
-GUT remains non-authoring test authority. Hera, if separately available under its approved tool decision, remains live QA/observability only and may not mutate persistent product source.
+GUT remains non-authoring test authority. Hera is outside this Decision; if it is available under a separately verified tool state, it may be used only within that tool state's live-QA/observability boundary and never as persistent product authoring authority.
 
 ## 10. Testing contract for the later implementation plan
 
@@ -249,7 +252,7 @@ At minimum it must add failing-before-fix assertions for:
 2. `main_menu.gd` no longer owns a `Ver 4.2` or duplicate product-version literal;
 3. required stable Legacy/Validation controls still exist;
 4. Legacy and Validation continue independently under EMPTY/active/completed/corrupt Validation states;
-5. center action focus order remains valid;
+5. primary visual action and initial keyboard focus agree, and center focus order remains valid;
 6. 1280×720 primary menu contract fits without requiring a vertical document-wall scroll path;
 7. right-rail unavailable data does not fabricate canon or block primary actions;
 8. no `assets/**`, root `ASSET_MANIFEST.yml`, save schema, `data/episodes/**`, or protected domain changes are introduced by the visual slice unless separately approved.
@@ -263,7 +266,7 @@ The design is implemented only when all of the following are true:
 - menu visibly shows `Ver 4.3` from one canonical product-version owner;
 - no current menu path still displays `Ver 4.2`;
 - visual hierarchy matches the approved control-room composition closely enough that the screen reads as left identity / center actions / right intelligence;
-- primary playable action is visually dominant and immediately reachable;
+- the meaningful current playable action is visually dominant and immediately reachable;
 - Legacy and Validation remain clearly separate and semantically unchanged;
 - illustrative mockup fiction is not promoted into product data;
 - 1280×720 and 1920×1080 are both usable;
@@ -273,3 +276,10 @@ The design is implemented only when all of the following are true:
 ## 12. Rollback
 
 Because this Decision does not alter save/domain meaning, rollback is a coordinated revert of the version-owner/menu presentation implementation and its tests. Do not revert tests while keeping the redesigned behavior, or keep the new version display while restoring duplicate hard-coded version ownership.
+
+## 13. Spec self-review
+
+- Placeholder scan: no `TBD`/`TODO` or unresolved implementation placeholder remains.
+- Consistency: visual emphasis and keyboard focus now use the same meaningful-action rule; the approved mockup does not silently override existing Legacy/Validation semantics.
+- Scope: version ownership + main-menu presentation form one bounded UI slice; PR #180, save/domain changes, tool-stack reconciliation, Android, and product assets remain separate.
+- Ambiguity: mockup-only fictional data is explicitly non-canonical; right-rail data must fail closed to read-only available state rather than inventing content.
