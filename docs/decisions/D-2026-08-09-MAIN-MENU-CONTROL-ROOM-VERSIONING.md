@@ -1,8 +1,10 @@
 # D-2026-08-09-MAIN-MENU-CONTROL-ROOM-VERSIONING
 
-Status: `DESIGN_DIRECTION_APPROVED / VERSION_POLICY_A_APPROVED / WRITTEN_SPEC_REVIEW_REQUIRED`
+Status: `DESIGN_DIRECTION_APPROVED / VERSION_POLICY_A_APPROVED / WRITTEN_SPEC_APPROVED / IMPLEMENTATION_PLAN_IN_PROGRESS`
 
 GitHub issue: #181
+
+User written-spec approval: `2026-08-09 20:19 KST`
 
 ## Decision
 
@@ -10,6 +12,8 @@ The user approved two linked presentation decisions for the product main menu:
 
 1. Replace the hard-coded `Ver 4.2` menu label with one canonical product-version source. The first value is `4.3`; future approved product/UI version steps advance sequentially `4.4`, `4.5`, and so on by changing that canonical source rather than duplicating literals in menus.
 2. Redesign the main menu around the approved **괴이기록국 관제실형** direction: institutional occult bureau identity on the left, playable entry/actions in the center, and contextual intelligence/status on the right.
+
+The written design at `docs/superpowers/specs/2026-08-09-main-menu-control-room-versioning-design.md` was explicitly approved by the user on 2026-08-09 20:19 KST. That approval opens implementation planning; it does not by itself claim runtime implementation or Human QA PASS.
 
 ## Verified current cause
 
@@ -55,4 +59,4 @@ This Decision is separate from `D-2026-08-08-INVESTIGATION-RECOVERY-UI-HIERARCHY
 
 ## Validation ceiling
 
-No runtime implementation or Human/UI/Android PASS is claimed by this Decision record. The written design spec must be reviewed before an implementation plan is created.
+No runtime implementation or Human/UI/Android PASS is claimed by this Decision record. The approved written design now proceeds to a TDD implementation plan, followed by a separate implementation branch/PR after the planning gate is satisfied.
