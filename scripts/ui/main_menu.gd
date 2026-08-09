@@ -208,6 +208,44 @@ func _build_action_rail(parent: VBoxContainer) -> void:
 
 
 func _build_intelligence_rail(parent: VBoxContainer) -> void:
+	var case_content := _add_section(parent, "현재 사건")
+
+	_current_case_title = Label.new()
+	_current_case_title.name = "CurrentCaseTitle"
+	_current_case_title.add_theme_font_size_override("font_size", 28)
+	_current_case_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	case_content.add_child(_current_case_title)
+
+	_current_case_meta = Label.new()
+	_current_case_meta.name = "CurrentCaseMeta"
+	_current_case_meta.add_theme_color_override("font_color", ThemeFactory.COLOR_MUTED)
+	_current_case_meta.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	case_content.add_child(_current_case_meta)
+
+	_current_case_preview = TextureRect.new()
+	_current_case_preview.name = "CurrentCasePreview"
+	_current_case_preview.custom_minimum_size = Vector2(0, 150)
+	_current_case_preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_current_case_preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	_current_case_preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	case_content.add_child(_current_case_preview)
+
+	_current_case_summary = Label.new()
+	_current_case_summary.name = "CurrentCaseSummary"
+	_current_case_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	case_content.add_child(_current_case_summary)
+
+	var status_content := _add_section(parent, "기록 상태")
+	_legacy_intel_status = Label.new()
+	_legacy_intel_status.name = "LegacyIntelStatus"
+	_legacy_intel_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	status_content.add_child(_legacy_intel_status)
+
+	_validation_intel_status = Label.new()
+	_validation_intel_status.name = "ValidationIntelStatus"
+	_validation_intel_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	status_content.add_child(_validation_intel_status)
+
 	_settings_panel = _add_accessibility_panel(parent)
 	_settings_panel.name = "SettingsPanel"
 	_settings_panel.visible = false
@@ -416,6 +454,40 @@ func _refresh_entry_cards() -> void:
 	else:
 		_validation_summary = _validation_inspector.inspect_persistence()
 	_render_validation_summary(_validation_summary)
+	_refresh_intelligence_rail()
+
+
+func _refresh_intelligence_rail() -> void:
+	if _current_case_title == null:
+		return
+
+	var current: Dictionary = GameState.get_current_episode()
+	var episode: Dictionary = {}
+	var episode_value: Variant = current.get("episode", {})
+	if typeof(episode_value) == TYPE_DICTIONARY:
+		episode = episode_value as Dictionary
+
+	_current_case_title.text = String(episode.get("title", "현재 사건 정보 없음"))
+	_current_case_meta.text = String(episode.get("legend_type", "분류 정보 없음"))
+	_current_case_summary.text = String(episode.get("summary", ""))
+
+	var visuals: Dictionary = {}
+	var visuals_value: Variant = episode.get("visuals", {})
+	if typeof(visuals_value) == TYPE_DICTIONARY:
+		visuals = visuals_value as Dictionary
+	var background_id := String(visuals.get("dialogue_background_id", ""))
+	_current_case_preview.texture = AssetCatalog.new().get_texture(background_id)
+
+	_legacy_intel_status.text = (
+		"본편 · %s" % _legacy_status_label.text
+		if _legacy_status_label != null
+		else "본편 · 상태 정보 없음"
+	)
+	_validation_intel_status.text = (
+		"Validation · %s" % _validation_status_label.text.replace("\n", " · ")
+		if _validation_status_label != null
+		else "Validation · 상태 정보 없음"
+	)
 
 
 func _render_validation_summary(summary: Dictionary) -> void:
@@ -501,7 +573,7 @@ func _on_validation_replace_canceled() -> void:
 func _show_replace_confirmation(summary: Dictionary) -> void:
 	_refresh_entry_cards()
 	var episode := String(summary.get("episode_title", "Validation 기록"))
-	var stage := String(summary.get("flow_stage", summary.get("lifecycle", "")))
+	var stage := String(summary.get("flow_stage", summary.get("lifecycle", "")) )
 	var updated := String(summary.get("updated_at_utc", "기록 시각 없음"))
 	_validation_replace_dialog.dialog_text = (
 		"현재 Validation 기록을 새 기록으로 교체합니다.\n\n"
