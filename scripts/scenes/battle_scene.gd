@@ -45,6 +45,7 @@ var _result_label: Label
 var _recover_button: Button
 var _representative_agent_label: Label
 var _representative_agent_image: TextureRect
+var _representative_cut_in_generation := 0
 var _anomaly_panel: PanelContainer
 var _anomaly_image: TextureRect
 var _anomaly_stage_label: Label
@@ -94,6 +95,7 @@ func _build_scene_ui() -> void:
 	_fear_bar = %FearBar
 	_fear_bar.max_value = 100
 	_representative_agent_image = %RepresentativeVisual
+	_representative_agent_image.visible = false
 	_anomaly_panel = %AnomalyPanel
 	_anomaly_panel.add_theme_stylebox_override("panel", ThemeFactory.panel_style(Color("8a606c"), 0.12))
 	_anomaly_image = %AnomalyVisual
@@ -176,6 +178,7 @@ func _switch_representative() -> void:
 	_representative_agent_index = (_representative_agent_index + 1) % agents.size()
 	_refresh_representative_agent()
 	_populate_team_strip()
+	_show_representative_cut_in()
 	_result_label.text = "%s이(가) 대표 대응을 맡습니다." % String(_get_representative_agent().get("name", "요원"))
 
 
@@ -1262,6 +1265,7 @@ func _use_agent_recovery_support(support: Dictionary, button: Button) -> void:
 		)
 		if support_texture != null:
 			_representative_agent_image.texture = support_texture
+			_show_representative_cut_in(false)
 
 
 func _update_battle_view(message: String) -> void:
@@ -1300,6 +1304,19 @@ func _update_battle_view(message: String) -> void:
 		if GameState.are_all_agents_inactive():
 			_result_label.text += "\n\n모든 요원이 행동 불능 상태입니다. 조사 화면으로 돌아가 재정비합니다."
 			call_deferred("_return_to_investigation")
+
+
+func _show_representative_cut_in(refresh_portrait: bool = true) -> void:
+	if _representative_agent_image == null:
+		return
+	_representative_cut_in_generation += 1
+	var generation := _representative_cut_in_generation
+	if refresh_portrait:
+		_refresh_representative_agent()
+	_representative_agent_image.visible = true
+	await get_tree().create_timer(0.9).timeout
+	if generation == _representative_cut_in_generation and _representative_agent_image != null:
+		_representative_agent_image.visible = false
 
 
 func _refresh_representative_agent() -> void:

@@ -33,11 +33,14 @@ func _run() -> void:
 	drawer.close_drawer()
 	await process_frame
 	_expect(root.gui_get_focus_owner() == prior_action, "manual drawer should restore the previous meaningful focus")
+	prior_action.queue_free()
+	await process_frame
 	button.emit_signal("pressed")
 	_expect(drawer.visible, "manual button should open the drawer")
 	_expect(button.text == "괴이 매뉴얼 닫기", "opened drawer should offer close state")
 	button.emit_signal("pressed")
 	_expect(not drawer.visible, "manual button should close the drawer")
+	await process_frame
 	_expect(root.gui_get_focus_owner() == button, "manual toggle should remain the fallback focus target")
 	_finish()
 

@@ -172,14 +172,21 @@ func _build_ui() -> void:
 	%LogUtilityButton.pressed.connect(_toggle_record_drawer)
 	%ResultCloseButton.pressed.connect(_close_inline_result)
 	%ResultNextButton.pressed.connect(_return_to_point_picker)
-	_manual_toggle_button.visible = false
+	_manual_toggle_button.visible = _is_afterlife_layout
 	%SettingsButton.pressed.connect(_show_settings)
 	%ReturnHqButton.pressed.connect(_show_return_confirmation)
 	_return_field_button.pressed.connect(_return_to_field_choice)
-	_manual_panel.visible = _is_afterlife_layout
+	_manual_panel.visible = false
 	if _is_afterlife_layout:
 		_record_button.pressed.connect(_toggle_record_drawer)
 		_build_afterlife_manual()
+		_manual_drawer = AnomalyManualDrawerScript.new()
+		add_child(_manual_drawer)
+		_manual_drawer.anchor_left = 0.70
+		_manual_drawer.anchor_top = 0.12
+		_manual_drawer.anchor_right = 0.986
+		_manual_drawer.anchor_bottom = 0.92
+		_manual_drawer.bind_toggle_button(_manual_toggle_button)
 	else:
 		_manual_drawer = AnomalyManualDrawerScript.new()
 		add_child(_manual_drawer)
@@ -380,9 +387,19 @@ func _style_case_dialog(dialog: AcceptDialog) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("ui_cancel"):
+	if not event.is_action_pressed("ui_cancel"):
+		return
+	if _result_toast != null and _result_toast.visible:
+		_close_inline_result()
+	elif _resolution_confirm_panel != null and _resolution_confirm_panel.visible:
+		_resolution_confirm_panel.visible = false
+	elif _manual_drawer != null and _manual_drawer.is_open():
+		_manual_drawer.close_drawer()
+	elif _record_drawer != null and _record_drawer.visible:
+		_record_drawer.visible = false
+	else:
 		_show_return_confirmation()
-		get_viewport().set_input_as_handled()
+	get_viewport().set_input_as_handled()
 
 
 func _build_utility_dialogs() -> void:
@@ -671,6 +688,8 @@ func _show_field_choices() -> void:
 		_points_box.visible = true
 		_configure_point_picker_escape()
 		_set_ui_mode("POINT_PICKER")
+	else:
+		call_deferred("_focus_first_enabled_action", _field_choice_box)
 
 
 func _configure_point_picker_escape() -> void:
@@ -932,6 +951,9 @@ func _show_method_options(point: Dictionary) -> void:
 			card.tooltip_text = "\n".join(info_lines)
 
 
+	call_deferred("_focus_first_enabled_action", _method_button_box)
+
+
 func _show_reasoning_options(point: Dictionary, definition: Dictionary, support_roll_override: float = -1.0) -> void:
 	_reasoning_point = point.duplicate(true)
 	_reasoning_definition = definition.duplicate(true)
@@ -985,6 +1007,7 @@ func _render_reasoning_choices() -> void:
 			reason
 		)
 		card.choice_requested.connect(func(_action_id: String) -> void: _select_reasoning_choice(choice))
+	call_deferred("_focus_first_enabled_action", _field_choice_box)
 
 
 func _select_reasoning_choice(choice: Dictionary) -> void:
@@ -1269,7 +1292,10 @@ func _toggle_manual_panel() -> void:
 
 
 func _refresh_manual_layout() -> void:
-	pass
+	if _manual_panel != null:
+		_manual_panel.visible = false
+	if _manual_toggle_button != null:
+		_manual_toggle_button.visible = _is_afterlife_layout
 
 
 func _refresh_manual_drawer(mark_new: bool) -> void:
@@ -1287,12 +1313,30 @@ func _refresh_manual_drawer(mark_new: bool) -> void:
 			learning_lines.append("- %s" % String(learning.get("reason", "위험 사례가 기록되었습니다.")))
 	if learning_lines.is_empty():
 		learning_lines.append("- 아직 기록된 위험 사례가 없습니다.")
-	_manual_drawer.set_sections([
+	var afterlife_manual_lines: Array[String] = []
+	if _is_afterlife_layout:
+		for page_value in AfterlifeManualCatalog.pages():
+			if typeof(page_value) != TYPE_DICTIONARY:
+				continue
+			var page: Dictionary = page_value
+			afterlife_manual_lines.append("[%s]\n관찰: %s\n절차: %s" % [
+				String(page.get("title", "조사 기록")),
+				String(page.get("observation", "")),
+				String(page.get("procedure", ""))
+			])
+			for case_key in ["success_case_id", "failure_case_id"]:
+				var case_id := String(page.get(case_key, ""))
+				if not case_id.is_empty():
+					afterlife_manual_lines.append(AfterlifeManualCatalog.case_text(case_id))
+	var sections: Array[Dictionary] = [
 		{"title": "현재 규칙", "text": String(_field_node.get("title", GameState.get_current_episode_title()))},
 		{"title": "확보 단서", "text": "\n".join(clue_lines)},
 		{"title": "위험 사례·오대응 학습", "text": "\n".join(learning_lines)},
 		{"title": "요원 지원", "text": GameState.get_selected_agent_summary()}
-	])
+	]
+	if not afterlife_manual_lines.is_empty():
+		sections.append({"title": "저승역 운영 매뉴얼", "text": "\n\n".join(afterlife_manual_lines)})
+	_manual_drawer.set_sections(sections)
 	if mark_new:
 		_manual_drawer.mark_new_entries()
 
@@ -1316,6 +1360,17 @@ func _render_investigation_points() -> void:
 		_field_dialogue_label.text = "왼쪽 조사 지점에서 확인할 장소를 선택하십시오. 잠긴 기록은 선행 관찰을 확보하면 다시 확인할 수 있습니다."
 		_field_next_button.visible = false
 		_clear_children(_field_choice_box)
+	call_deferred("_focus_first_enabled_action", _points_box)
+
+
+func _focus_first_enabled_action(container: Node) -> void:
+	if container == null:
+		return
+	for candidate in container.find_children("ActionButton", "Button", true, false):
+		var button := candidate as Button
+		if button != null and button.visible and not button.disabled and button.focus_mode != Control.FOCUS_NONE:
+			button.grab_focus()
+			return
 
 
 func _show_inline_result(return_to_points: bool) -> void:

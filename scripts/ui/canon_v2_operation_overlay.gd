@@ -65,7 +65,7 @@ func _ensure_ui() -> void:
 		return
 	name = "CanonV2OperationOverlay"
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	mouse_filter = Control.MOUSE_FILTER_PASS
+	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	z_index = 90
 
 	var safe_area := MarginContainer.new()
@@ -75,7 +75,7 @@ func _ensure_ui() -> void:
 	safe_area.add_theme_constant_override("margin_top", 14)
 	safe_area.add_theme_constant_override("margin_right", 18)
 	safe_area.add_theme_constant_override("margin_bottom", 14)
-	safe_area.mouse_filter = Control.MOUSE_FILTER_PASS
+	safe_area.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(safe_area)
 
 	var root_layout := VBoxContainer.new()
@@ -347,7 +347,10 @@ func _apply_mode_visibility() -> void:
 	var detail_stack := get_node("SafeArea/RootLayout/DetailStack") as VBoxContainer
 	(detail_stack.get_node("ObligationPanel") as PanelContainer).visible = _mode in ["rescue", "recovery", "result"]
 	(detail_stack.get_node("TerminationPreviewPanel") as PanelContainer).visible = _mode in ["recovery", "result"]
-	(detail_stack.get_node("FollowUpPanel") as PanelContainer).visible = _mode == "result" or not _array_copy(_runtime_state.get("follow_up_records")).is_empty()
+	(detail_stack.get_node("FollowUpPanel") as PanelContainer).visible = _mode == "result"
+	_manual_toggle_button.visible = _mode != "investigation"
+	if _mode == "investigation":
+		_manual_detail_panel.visible = false
 
 
 func _toggle_manual_detail() -> void:
