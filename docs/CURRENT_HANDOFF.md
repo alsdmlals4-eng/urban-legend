@@ -7,7 +7,7 @@
 ## 1. Baseline
 
 ```yaml
-last_updated_kst: 2026-08-10T12:46+09:00
+last_updated_kst: 2026-08-10T13:10+09:00
 project:
   repo: alsdmlals4-eng/urban-legend
   default_branch: main
@@ -16,12 +16,12 @@ project:
 base:
   repo: alsdmlals4-eng/Base
   default_branch: main
-  main_sha_observed: fbc0abd117066f45200b5cb440801cdd8f0c80a0
-  latest_proposal_fact: BCP-2026-014 proposal-only PR #236 merged as SUBMITTED
+  main_sha_observed: d5cfcfa96fcf33bf7e01dc617d7f68e8d5bbbeaf
+  latest_proposal_fact: "BCP - 괴이기록국(urban-legend) / BCP-2026-014 / SUBMITTED / active implementation NOT_STARTED"
 handoff:
   branch: agent/handoff-checkpoint-20260810
   pr: 187
-  integration_state: REOBSERVE_GITHUB_ON_RESUME
+  integration_state: OPEN_DRAFT_PENDING_THIS_HEAD_VALIDATION_AND_MERGE
   feature_work_paused_by_user: true
 ```
 
@@ -77,8 +77,20 @@ handoff:
 - branch: `agent/handoff-checkpoint-20260810`
 - scope: `docs/CURRENT_HANDOFF.md` only.
 - prior exact Handoff head `2b424906c4ecaa4a027719383d3400486b03c72e` reached all-green automated contract validation after historical compatibility anchors were isolated from current authority.
-- this final checkpoint additionally records merged Base proposal BCP-2026-014 and refreshed Base main.
+- this checkpoint records the final Base proposal storage/naming readback and current Base main.
 - exact current PR head and merge state must be read from GitHub; this live router does not self-claim its future merge result.
+
+### Base proposal lineage — COMPLETED_PROPOSAL_STORAGE / ACTIVE_IMPLEMENTATION_NOT_STARTED
+
+- initial proposal storage PR #236: merged.
+- user-facing naming alignment PR #241: merged.
+- post-merge canonical-path wording correction PR #244: merged.
+- final observed Base main: `d5cfcfa96fcf33bf7e01dc617d7f68e8d5bbbeaf`.
+- user-facing proposal title: `BCP - 괴이기록국(urban-legend)`.
+- machine tracking ID: `BCP-2026-014-handoff-machine-consumer-compatibility-closeout`.
+- Base validator-required canonical path: `[수정제안서]/BCP-2026-014-handoff-machine-consumer-compatibility-closeout/PROPOSAL.md`.
+- status: `SUBMITTED`.
+- active Base implementation: `NOT_STARTED / SEPARATE_FOLLOWUP_STAGE`.
 
 ### Other open PRs
 
@@ -93,7 +105,7 @@ completed_verified:
   - PR186 route endpoint/reachability exact-head CI green
   - PR186 route endpoint/core Windows Human QA passed
   - PR183 local 1280-class and 1920-class visual QA passed
-  - BCP-2026-014 proposal-only Base PR #236 exact-head ci-gate passed and merged as SUBMITTED
+  - Base BCP-2026-014 proposal storage/naming/canonical-path correction merged with exact-head Base ci-gate green
 completed_not_merged:
   - PR186 route implementation head 4113c2d7
   - PR183 main-menu implementation head 42e4f378
@@ -170,9 +182,12 @@ gamepad: NOT_RUN
 android: NOT_RUN
 display_settings_implementation: NOT_RUN
 main_menu_return_design_approval: NOT_RUN
-base_bcp014_proposal_exact_head_ci: PASS
-base_bcp014_proposal_merge_readback: PASS
+base_bcp014_display_name: "BCP - 괴이기록국(urban-legend)"
+base_bcp014_proposal_status: SUBMITTED
+base_bcp014_naming_and_path_ci: PASS
+base_bcp014_merge_readback: PASS
 base_bcp014_active_implementation: NOT_RUN
+handoff_pr187_current_head_ci: PENDING_AFTER_THIS_UPDATE
 ```
 
 `NOT_RUN`을 PASS로 승격하지 않는다.
@@ -225,9 +240,12 @@ handoff_machine_consumer_compatibility:
   verdict: ABSORB
   primary_owner: skills/maintaining-project-context-and-handoff/SKILL.md
   supporting_owner: skills/auditing-canonical-reference-freshness/SKILL.md
+  display_name: "BCP - 괴이기록국(urban-legend)"
   proposal_id: BCP-2026-014-handoff-machine-consumer-compatibility-closeout
-  proposal_pr: 236
   proposal_status: SUBMITTED
+  initial_proposal_pr: 236
+  naming_pr: 241
+  canonical_path_correction_pr: 244
   merged_to_base_main: true
   active_base_implementation: NOT_STARTED_IN_THIS_STAGE
   implementation_boundary: SEPARATE_FOLLOWUP_STAGE
@@ -237,28 +255,26 @@ related_post_merge_lifecycle:
 new_project_handoff_skill: NO
 ```
 
-BCP-2026-014은 Handoff를 큰 폭으로 갱신할 때 machine consumer inventory와 `CURRENT_AUTHORITY / HISTORICAL_COMPATIBILITY_ONLY / STALE_REMOVE` 분류를 closeout gate에 연결하는 공용 후보를 기록한다. Base 활성 구현은 이번 단계에서 하지 않았다.
+`BCP - 괴이기록국(urban-legend)`은 Handoff를 큰 폭으로 갱신할 때 machine consumer inventory와 `CURRENT_AUTHORITY / HISTORICAL_COMPATIBILITY_ONLY / STALE_REMOVE` 분류를 closeout gate에 연결하는 공용 후보를 기록한다. Base 활성 구현은 이번 단계에서 하지 않았다.
 
 ## 13. Base Concurrency / Proposal Readback
 
 ```yaml
 base_concurrency:
   source_project: alsdmlals4-eng/urban-legend
-  base_main_seen: fbc0abd117066f45200b5cb440801cdd8f0c80a0
+  base_main_seen: d5cfcfa96fcf33bf7e01dc617d7f68e8d5bbbeaf
+  proposal_display_name: "BCP - 괴이기록국(urban-legend)"
   proposal_id: BCP-2026-014-handoff-machine-consumer-compatibility-closeout
-  proposal_branch: proposal/urban-legend/bcp-2026-014-handoff-machine-consumer-compatibility-closeout
-  proposal_pr: 236
   proposal_status: SUBMITTED
-  same_goal_state: RELATED_BCP_013_MATERIAL_SCOPE_EXTENSION
-  last_registry_recheck: fbc0abd117066f45200b5cb440801cdd8f0c80a0
+  canonical_machine_path: "[수정제안서]/BCP-2026-014-handoff-machine-consumer-compatibility-closeout/PROPOSAL.md"
   other_project_changes_preserved: true
+  ten_paces_corroborating_evidence_preserved: true
   bcp_013_preserved: true
   active_base_files_changed: 0
-  proposal_storage_merge_authority: GRANTED_BY_EXECUTION_CONTRACT
   base_implementation_authority: NOT_GRANTED_IN_THIS_STAGE
 ```
 
-Base merge readback에서 BCP-2026-013과 BCP-2026-014가 함께 Registry에 존재하고 BCP-2026-014는 `SUBMITTED`로 확인됐다.
+Base 최종 readback에서 BCP-2026-013과 BCP-2026-014가 함께 Registry에 존재하고, BCP-2026-014의 표시명은 `BCP - 괴이기록국(urban-legend)`, 상태는 `SUBMITTED`, canonical machine path는 Proposal ID 기반 경로로 확인됐다.
 
 ## 14. Historical Compatibility Anchors
 
