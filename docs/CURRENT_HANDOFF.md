@@ -83,14 +83,14 @@ implementation: NOT_STARTED
 
 첫 exact head `c90b8fdc...`의 BCA workflow는 BCA contract tests 자체가 아니라 adversarial review 헤더 trailing whitespace 때문에 `git diff --check`에서 실패했다. 내용 의미를 바꾸지 않고 공백만 제거해 `f70fb8d...`로 교정했다.
 
-`f70fb8d...` 마지막 관측:
+`f70fb8d...` exact-head 마지막 관측:
 
-- Documentation contracts: PASS
-- Project Base Adapter: PASS
-- Urban Legend BCA Adoption: PASS
-- Core/docs/full Godot regression: RUNNING at handoff edit time
+- Documentation contracts: PASS — run `31435560337`
+- Project Base Adapter: PASS — run `31435560256`
+- Urban Legend BCA Adoption: PASS — run `31435560390`
+- Core/docs/full Godot regression: PASS — run `31435560312`
 
-다음 세션은 exact head workflow 상태를 다시 읽고 current truth로 교체한다.
+Docs-only exact-head PASS는 runtime 구현 또는 Human QA PASS로 재사용하지 않는다. 다음 세션은 exact head workflow 상태를 다시 읽고 current truth로 교체한다.
 
 ### PR #189 — post-clear return blocker RED reproduction
 
@@ -186,13 +186,7 @@ Resume policy classes:
 - Validation persistence isolation은 하드 경계다.
 - 기존 `save_game()`의 application-level 성공을 crash-atomic durability로 과장하지 않는다.
 
-기획 문서 경로:
-
-- `docs/decisions/D-2026-08-11-GAMEPLAY-MAIN-MENU-SAFE-RETURN-CONTINUE.md`
-- `docs/research/2026-08-11-gameplay-main-menu-safe-return-source-context.md`
-- `docs/superpowers/specs/2026-08-11-gameplay-main-menu-safe-return-design.md`
-- `docs/superpowers/plans/2026-08-11-gameplay-main-menu-safe-return-implementation-plan.md`
-- `docs/planning/GAMEPLAY_MAIN_MENU_SAFE_RETURN_ADVERSARIAL_REVIEW_2026-08-11.md`
+PR #190이 이 Decision의 Decision record, SOURCE_CONTEXT_PACKET, Base L2 Game Feature Design Spec, draft TDD implementation plan, adversarial review를 소유한다. 이 다섯 파일은 PR #190이 병합되기 전에는 main 또는 PR #191 tree에 존재한다고 가정하지 않는다. Resume 시 PR #190의 changed-files/tree에서 직접 읽는다.
 
 ## 5. Display Settings
 
