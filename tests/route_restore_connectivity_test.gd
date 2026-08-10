@@ -21,6 +21,9 @@ func _run() -> void:
 	route.call("_build_final_board")
 	var final_safe: Array[Vector2i] = route.call("_connections_for", Vector2i(3, 0))
 	_expect(final_safe == [WEST], "final safe endpoint should enter from WEST")
+	_expect(route.has_method("_has_reciprocal_connection"), "route should expose reciprocal endpoint connectivity")
+	if route.has_method("_has_reciprocal_connection"):
+		_expect(not bool(route.call("_has_reciprocal_connection", Vector2i(3, 0), WEST)), "disconnected final endpoint should not have a reciprocal rail")
 
 	var disconnected: Dictionary = route.call("_get_reachability")
 	_expect(not bool(disconnected.get("safe", false)), "initial final board should leave the safe endpoint disconnected")
@@ -33,6 +36,8 @@ func _run() -> void:
 	tiles[2]["orientation"] = 1
 	tiles[3]["connections"] = [SOUTH]
 	route.set("_tiles", tiles)
+	if route.has_method("_has_reciprocal_connection"):
+		_expect(bool(route.call("_has_reciprocal_connection", Vector2i(3, 0), WEST)), "reciprocally linked rail should be detected")
 	route.set("_tutorial_complete", true)
 
 	var old_tuple_reachability: Dictionary = route.call("_get_reachability")

@@ -218,6 +218,11 @@ func _get_reachability() -> Dictionary:
 	return {"safe":visited.has(_coord_to_index(_safe)), "false":visited.has(_coord_to_index(_false))}
 
 
+func _has_reciprocal_connection(coord: Vector2i, direction: Vector2i) -> bool:
+	var next := coord + direction
+	return _is_in_bounds(next) and _connections_for(next).has(-direction)
+
+
 func _connections_for(coord: Vector2i) -> Array[Vector2i]:
 	var tile: Dictionary = _tiles[_coord_to_index(coord)]
 	match String(tile.get("kind", "block")):
@@ -266,8 +271,12 @@ func _draw_tile(coord: Vector2i, rect: Rect2, connected: bool) -> void:
 	draw_texture_rect(ROUTE_TILE_TEXTURE, rect.grow(-2), false, Color(0.48,0.45,0.45) if kind != "block" else Color(0.26,0.25,0.26))
 	var rail_color := GOLD_RAIL if connected else DIM_RAIL
 	for direction in _connections_for(coord):
-		draw_line(center,center+Vector2(direction)*radius,Color(0,0,0,0.8),10,true)
-		draw_line(center,center+Vector2(direction)*radius,rail_color,5,true)
+		var endpoint := center + Vector2(direction) * radius
+		draw_line(center, endpoint, Color(0,0,0,0.8), 10, true)
+		draw_line(center, endpoint, rail_color, 5, true)
+		if not _has_reciprocal_connection(coord, direction):
+			var cap_offset := Vector2(-direction.y, direction.x) * 4.0
+			draw_line(endpoint - cap_offset, endpoint + cap_offset, rail_color, 2, true)
 	if kind == "safe": draw_rect(rect.grow(-6),Color("8a7650"),false,2)
 	elif kind == "false": draw_rect(rect.grow(-6),Color("9f3c3f"),false,2)
 	draw_rect(rect,Color("4f4438"),false,1.0)
