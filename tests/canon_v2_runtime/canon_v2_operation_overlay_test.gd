@@ -86,6 +86,10 @@ func _run() -> void:
 	overlay.close_action_confirmation()
 	_expect(confirmation_layer != null and not confirmation_layer.visible and confirmation_layer.mouse_filter == Control.MOUSE_FILTER_IGNORE, "closed confirmation layer must restore pointer passthrough")
 
+	overlay.configure_for_test(runtime_state, "result")
+	await process_frame
+	await _verify_result_detail_pointer_passthrough(overlay)
+
 	overlay.queue_free()
 	await process_frame
 	_finish()
@@ -117,6 +121,45 @@ func _verify_investigation_pointer_passthrough() -> void:
 	await process_frame
 
 	_expect(_underlying_pressed_count == 1, "investigation overlay must allow actual mouse press/release to reach the underlying action")
+	action_button.queue_free()
+
+
+func _verify_result_detail_pointer_passthrough(overlay: Control) -> void:
+	var obligation_panel := overlay.get_node_or_null("SafeArea/RootLayout/DetailStack/ObligationPanel") as Control
+	_expect(obligation_panel != null and obligation_panel.visible, "result pointer test requires a visible obligation panel")
+	if obligation_panel == null or not obligation_panel.visible:
+		return
+
+	var panel_rect := obligation_panel.get_global_rect()
+	_expect(panel_rect.size.x > 0.0 and panel_rect.size.y > 0.0, "result pointer test requires a laid-out obligation panel")
+	if panel_rect.size.x <= 0.0 or panel_rect.size.y <= 0.0:
+		return
+
+	var action_button := Button.new()
+	action_button.name = "UnderlyingPostClearReturnAction"
+	action_button.text = "현장 기록으로 복귀"
+	action_button.position = panel_rect.position
+	action_button.size = panel_rect.size
+	_underlying_pressed_count = 0
+	action_button.pressed.connect(func() -> void: _underlying_pressed_count += 1)
+	root.add_child(action_button)
+	root.move_child(action_button, 0)
+	await process_frame
+
+	var click_position := panel_rect.get_center()
+	var press := InputEventMouseButton.new()
+	press.position = click_position
+	press.button_index = MOUSE_BUTTON_LEFT
+	press.pressed = true
+	root.get_viewport().push_input(press, true)
+	var release := InputEventMouseButton.new()
+	release.position = click_position
+	release.button_index = MOUSE_BUTTON_LEFT
+	release.pressed = false
+	root.get_viewport().push_input(release, true)
+	await process_frame
+
+	_expect(_underlying_pressed_count == 1, "read-only result detail must allow actual mouse press/release to reach the underlying post-clear return action")
 	action_button.queue_free()
 
 
