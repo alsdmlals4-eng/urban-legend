@@ -14,6 +14,8 @@ func _run() -> void:
 	root.add_child(host)
 	var button := Button.new()
 	host.add_child(button)
+	var prior_action := Button.new()
+	host.add_child(prior_action)
 	var drawer: AnomalyManualDrawer = AnomalyManualDrawerScript.new()
 	host.add_child(drawer)
 	drawer.set_sections([{"title": "확보 단서", "text": "안전 노선 검증 기록"}])
@@ -23,11 +25,23 @@ func _run() -> void:
 	_expect(button.text == "괴이 매뉴얼", "manual button should use the shared label")
 	drawer.mark_new_entries()
 	_expect("새 기록" in button.text, "new detail should mark the button without opening the drawer")
+	prior_action.grab_focus()
+	await process_frame
+	drawer.open_drawer()
+	await process_frame
+	_expect(drawer.visible, "manual drawer should open programmatically")
+	drawer.close_drawer()
+	await process_frame
+	_expect(root.gui_get_focus_owner() == prior_action, "manual drawer should restore the previous meaningful focus")
+	prior_action.queue_free()
+	await process_frame
 	button.emit_signal("pressed")
 	_expect(drawer.visible, "manual button should open the drawer")
 	_expect(button.text == "괴이 매뉴얼 닫기", "opened drawer should offer close state")
 	button.emit_signal("pressed")
 	_expect(not drawer.visible, "manual button should close the drawer")
+	await process_frame
+	_expect(root.gui_get_focus_owner() == button, "manual toggle should remain the fallback focus target")
 	_finish()
 
 

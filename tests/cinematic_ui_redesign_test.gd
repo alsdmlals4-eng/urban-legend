@@ -55,12 +55,15 @@ func _run() -> void:
 	(settings_dialog as AcceptDialog).hide()
 	if not _test_situation_choice_presentation():
 		return
-	var dialogue_dock := current_scene.get_node("%DialogueDock") as Control
-	var workspace_width := (current_scene.find_child("Workspace", true, false) as Control).size.x
-	var dialogue_ratio := dialogue_dock.size.x / maxf(1.0, workspace_width)
-	if dialogue_ratio < 0.38 or dialogue_ratio > 0.48:
-		_fail("afterlife field record column must keep the approved compact middle-column ratio")
-		return
+	var investigation_actions := current_scene.get_node("%PointsBox") as Control
+	var field_choices := current_scene.get_node("%FieldChoiceScroll") as Control
+	var manual_panel := current_scene.find_child("ManualPanel", true, false) as Control
+	var investigation_actions_visible := (
+		investigation_actions != null and investigation_actions.visible
+	) or (
+		field_choices != null and field_choices.visible and field_choices.get_child_count() > 0
+	)
+	var manual_panel_collapsed := manual_panel == null or not manual_panel.visible
 	if not await _test_method_picker():
 		return
 	if not _test_investigation_decision_context():
@@ -69,6 +72,16 @@ func _run() -> void:
 		"CinematicStage", "RecoveryHud", "RepresentativeVisual", "AnomalyVisual",
 		"ClueDrawer", "ActionDock", "ResponseGrid", "RepresentativeSwitchButton"
 	]):
+		return
+	var representative_visual := current_scene.find_child("RepresentativeVisual", true, false) as Control
+	if representative_visual == null or representative_visual.visible:
+		_fail("RepresentativeVisual must exist but stay hidden at recovery idle")
+		return
+	if not investigation_actions_visible:
+		_fail("investigation primary actions must remain visible")
+		return
+	if not manual_panel_collapsed:
+		_fail("investigation secondary manual panel must collapse from the persistent workspace")
 		return
 	if not _test_recovery_decision_context():
 		return

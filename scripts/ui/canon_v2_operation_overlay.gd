@@ -50,6 +50,7 @@ func request_action_confirmation(
 	_pending_cancel = on_cancel
 	_previous_focus = get_viewport().gui_get_focus_owner()
 	_confirmation_detail_label.text = _build_confirmation_text(preview)
+	_confirmation_layer.mouse_filter = Control.MOUSE_FILTER_STOP
 	_confirmation_layer.visible = true
 	_confirmation_panel.visible = true
 	_confirm_button.disabled = not bool(preview.get("allowed", true))
@@ -65,7 +66,7 @@ func _ensure_ui() -> void:
 		return
 	name = "CanonV2OperationOverlay"
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	mouse_filter = Control.MOUSE_FILTER_PASS
+	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	z_index = 90
 
 	var safe_area := MarginContainer.new()
@@ -75,7 +76,7 @@ func _ensure_ui() -> void:
 	safe_area.add_theme_constant_override("margin_top", 14)
 	safe_area.add_theme_constant_override("margin_right", 18)
 	safe_area.add_theme_constant_override("margin_bottom", 14)
-	safe_area.mouse_filter = Control.MOUSE_FILTER_PASS
+	safe_area.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(safe_area)
 
 	var root_layout := VBoxContainer.new()
@@ -83,6 +84,7 @@ func _ensure_ui() -> void:
 	root_layout.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	root_layout.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	root_layout.add_theme_constant_override("separation", 8)
+	root_layout.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	safe_area.add_child(root_layout)
 
 	var rule_strip_panel := PanelContainer.new()
@@ -197,7 +199,7 @@ func _build_confirmation_layer() -> void:
 	_confirmation_layer = CenterContainer.new()
 	_confirmation_layer.name = "ConfirmationLayer"
 	_confirmation_layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	_confirmation_layer.mouse_filter = Control.MOUSE_FILTER_STOP
+	_confirmation_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_confirmation_layer.visible = false
 	_confirmation_layer.z_index = 200
 	add_child(_confirmation_layer)
@@ -347,7 +349,10 @@ func _apply_mode_visibility() -> void:
 	var detail_stack := get_node("SafeArea/RootLayout/DetailStack") as VBoxContainer
 	(detail_stack.get_node("ObligationPanel") as PanelContainer).visible = _mode in ["rescue", "recovery", "result"]
 	(detail_stack.get_node("TerminationPreviewPanel") as PanelContainer).visible = _mode in ["recovery", "result"]
-	(detail_stack.get_node("FollowUpPanel") as PanelContainer).visible = _mode == "result" or not _array_copy(_runtime_state.get("follow_up_records")).is_empty()
+	(detail_stack.get_node("FollowUpPanel") as PanelContainer).visible = _mode == "result"
+	_manual_toggle_button.visible = _mode != "investigation"
+	if _mode == "investigation":
+		_manual_detail_panel.visible = false
 
 
 func _toggle_manual_detail() -> void:
@@ -375,6 +380,7 @@ func _on_confirmation_cancelled() -> void:
 
 func _hide_confirmation(restore_focus: bool) -> void:
 	_confirmation_layer.visible = false
+	_confirmation_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_confirmation_panel.visible = false
 	_pending_confirm = Callable()
 	_pending_cancel = Callable()
