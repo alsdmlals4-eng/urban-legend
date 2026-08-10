@@ -7,20 +7,25 @@
 ## 1. Baseline
 
 ```yaml
-last_updated_kst: 2026-08-10T11:55+09:00
+last_updated_kst: 2026-08-10T12:46+09:00
 project:
   repo: alsdmlals4-eng/urban-legend
   default_branch: main
-  main_sha: 8294aa2eefe03fa7669617675516c9f03f739076
+  main_sha_observed: 8294aa2eefe03fa7669617675516c9f03f739076
   main_fact: PR180 merged
 base:
   repo: alsdmlals4-eng/Base
   default_branch: main
-  main_sha: 637dad32c773c56a27d44d847518580848dee493
+  main_sha_observed: fbc0abd117066f45200b5cb440801cdd8f0c80a0
+  latest_proposal_fact: BCP-2026-014 proposal-only PR #236 merged as SUBMITTED
 handoff:
   branch: agent/handoff-checkpoint-20260810
+  pr: 187
+  integration_state: REOBSERVE_GITHUB_ON_RESUME
   feature_work_paused_by_user: true
 ```
+
+`*_observed` 값은 이 checkpoint의 마지막 관측값이다. 다음 세션은 GitHub current ref를 다시 읽고 다르면 이 문서를 stale locator로 취급한다.
 
 ## 2. Authority / Decisions
 
@@ -67,6 +72,14 @@ handoff:
 - remaining Human/input contract includes mouse/keyboard/gamepad; Android NOT_RUN.
 - merge: HELD.
 
+### PR #187 — HANDOFF_ONLY / CURRENT DELIVERY VEHICLE
+
+- branch: `agent/handoff-checkpoint-20260810`
+- scope: `docs/CURRENT_HANDOFF.md` only.
+- prior exact Handoff head `2b424906c4ecaa4a027719383d3400486b03c72e` reached all-green automated contract validation after historical compatibility anchors were isolated from current authority.
+- this final checkpoint additionally records merged Base proposal BCP-2026-014 and refreshed Base main.
+- exact current PR head and merge state must be read from GitHub; this live router does not self-claim its future merge result.
+
 ### Other open PRs
 
 - `#165`: separate audit/governance work; do not fold into paused runtime fixes without scope review.
@@ -80,6 +93,7 @@ completed_verified:
   - PR186 route endpoint/reachability exact-head CI green
   - PR186 route endpoint/core Windows Human QA passed
   - PR183 local 1280-class and 1920-class visual QA passed
+  - BCP-2026-014 proposal-only Base PR #236 exact-head ci-gate passed and merged as SUBMITTED
 completed_not_merged:
   - PR186 route implementation head 4113c2d7
   - PR183 main-menu implementation head 42e4f378
@@ -93,8 +107,10 @@ blocked:
 not_started:
   - display settings implementation
   - main-menu-return implementation
+  - Base BCP-2026-014 active implementation
 user_decision_required:
   - when feature work resumes, choose Main Menu return-control scope; no choice was approved before pause
+  - Base BCP-2026-014 implementation requires a separate follow-up-stage approval/instruction
 ```
 
 ## 5. Runtime Finding — Do Not Lose
@@ -154,6 +170,9 @@ gamepad: NOT_RUN
 android: NOT_RUN
 display_settings_implementation: NOT_RUN
 main_menu_return_design_approval: NOT_RUN
+base_bcp014_proposal_exact_head_ci: PASS
+base_bcp014_proposal_merge_readback: PASS
+base_bcp014_active_implementation: NOT_RUN
 ```
 
 `NOT_RUN`을 PASS로 승격하지 않는다.
@@ -163,8 +182,8 @@ main_menu_return_design_approval: NOT_RUN
 ```text
 1. urban-legend latest main SHA
 2. open PRs, 특히 #186/#183와 최신 comments/checks
-3. Base latest main SHA + maintaining-project-context-and-handoff owner
-4. Google Sheet 00_프로젝트_허브
+3. Base latest main SHA + BCP-2026-013/014 + maintaining-project-context-and-handoff owner
+4. Google Sheet 00_프로젝트_허브 / 98_Base_반영후보
 5. docs/CURRENT_HANDOFF.md
 6. scripts/scenes/minigame_scene.gd
 7. scripts/ui/canon_v2_operation_overlay.gd
@@ -194,28 +213,52 @@ main_menu_return_design_approval: NOT_RUN
 - Main Menu return 범위 임의 확정 금지.
 - display implementation 시작 금지.
 - persistent `.gd` 저작 재개 시 HiGodot authority 재확인.
+- Base 활성 Skill/Docs/Template/Test/Tool/Workflow 구현 금지; BCP-2026-014 구현은 별도 후속 단계.
 
 ## 12. Base Existing-Solution Verdict / Learning
 
 ```yaml
-handoff_operating_pattern:
-  verdict: REUSE
-  base_owner: skills/maintaining-project-context-and-handoff/SKILL.md
-  new_project_handoff_skill: NO
-  new_base_candidate_for_this_checkpoint: NO_PROMOTION
+runtime_findings:
+  classification: PROJECT_ONLY
+  base_promotion: NO_PROMOTION
+handoff_machine_consumer_compatibility:
+  verdict: ABSORB
+  primary_owner: skills/maintaining-project-context-and-handoff/SKILL.md
+  supporting_owner: skills/auditing-canonical-reference-freshness/SKILL.md
+  proposal_id: BCP-2026-014-handoff-machine-consumer-compatibility-closeout
+  proposal_pr: 236
+  proposal_status: SUBMITTED
+  merged_to_base_main: true
+  active_base_implementation: NOT_STARTED_IN_THIS_STAGE
+  implementation_boundary: SEPARATE_FOLLOWUP_STAGE
+related_post_merge_lifecycle:
+  proposal_id: BCP-2026-013-post-merge-continuation-state-reconciliation
+  relationship: RELATED_DISTINCT_LIFECYCLE_EDGE
+new_project_handoff_skill: NO
 ```
 
-현재 runtime findings는 프로젝트 고유 구현/QA 상태다. 이 인계만을 위해 새 Base Skill/BCP를 만들지 않는다.
+BCP-2026-014은 Handoff를 큰 폭으로 갱신할 때 machine consumer inventory와 `CURRENT_AUTHORITY / HISTORICAL_COMPATIBILITY_ONLY / STALE_REMOVE` 분류를 closeout gate에 연결하는 공용 후보를 기록한다. Base 활성 구현은 이번 단계에서 하지 않았다.
 
-## 13. Freshness Conflict
+## 13. Base Concurrency / Proposal Readback
 
-직전 Sheet의 Base remote보다 Base main이 전진했다. 현재 확인 Base main:
-
-```text
-637dad32c773c56a27d44d847518580848dee493
+```yaml
+base_concurrency:
+  source_project: alsdmlals4-eng/urban-legend
+  base_main_seen: fbc0abd117066f45200b5cb440801cdd8f0c80a0
+  proposal_id: BCP-2026-014-handoff-machine-consumer-compatibility-closeout
+  proposal_branch: proposal/urban-legend/bcp-2026-014-handoff-machine-consumer-compatibility-closeout
+  proposal_pr: 236
+  proposal_status: SUBMITTED
+  same_goal_state: RELATED_BCP_013_MATERIAL_SCOPE_EXTENSION
+  last_registry_recheck: fbc0abd117066f45200b5cb440801cdd8f0c80a0
+  other_project_changes_preserved: true
+  bcp_013_preserved: true
+  active_base_files_changed: 0
+  proposal_storage_merge_authority: GRANTED_BY_EXECUTION_CONTRACT
+  base_implementation_authority: NOT_GRANTED_IN_THIS_STAGE
 ```
 
-Sheet와 이 Handoff는 해당 SHA로 동기화한다.
+Base merge readback에서 BCP-2026-013과 BCP-2026-014가 함께 Registry에 존재하고 BCP-2026-014는 `SUBMITTED`로 확인됐다.
 
 ## 14. Historical Compatibility Anchors
 
