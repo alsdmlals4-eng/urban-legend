@@ -24,8 +24,6 @@ handoff:
 
 ## 2. Authority / Decisions
 
-현재 관련 Decision:
-
 - `D-2026-08-08-INVESTIGATION-RECOVERY-UI-HIERARCHY-REFINEMENT`
 - `D-2026-08-09-MAIN-MENU-CONTROL-ROOM-VERSIONING`
 - `D-2026-08-10-DISPLAY-RESOLUTION-WINDOW-MODE`
@@ -33,8 +31,8 @@ handoff:
 
 주의:
 
-- 현재 `START_HERE.md`, `docs/CURRENT_STATUS.md`, `docs/CURRENT_CONFIRMED_DECISIONS.md`에는 과거 상태가 남아 있다. 현재 작업 재개 시 이 파일들의 오래된 상태 문구를 GitHub/Sheet보다 높은 사실로 사용하지 않는다.
-- 현재 상태 판정은 `latest main + open PR + 최신 PR comment + Google Sheet + 이 Handoff`를 대조한다.
+- `START_HERE.md`, `docs/CURRENT_STATUS.md`, `docs/CURRENT_CONFIRMED_DECISIONS.md`에는 과거 상태가 남아 있다. 현재 작업 재개 시 오래된 상태 문구를 GitHub/Sheet보다 높은 사실로 사용하지 않는다.
+- 현재 상태는 `latest main + open PR + 최신 PR comment + Google Sheet + 이 Handoff`를 대조한다.
 - 새 중복 Handoff/Progress owner를 만들지 않는다.
 
 ## 3. PR Influence Map
@@ -44,52 +42,42 @@ handoff:
 - Decision: `D-2026-08-08-INVESTIGATION-RECOVERY-UI-HIERARCHY-REFINEMENT`
 - merged main: `8294aa2eefe03fa7669617675516c9f03f739076`
 - Windows Human QA에서 조사 포인터/진행이 실제로 다음 단계와 미니게임까지 진행됨.
-- 현재 main의 기반으로 취급한다.
 
 ### PR #186 — COMPLETED_NOT_MERGED / BLOCKED
 
 - Decision: `D-2026-08-10-ROUTE-RESTORE-ENDPOINT-CONNECTIVITY`
-- PR: `#186` Draft
-- branch: `agent/route-endpoint-connectivity-20260810`
+- Draft, branch `agent/route-endpoint-connectivity-20260810`
 - exact implementation head: `4113c2d711d96b87082645acd39166ba502a1c90`
-- integration merge candidate used for Windows QA: `3502d8db45504d205a37fdad593192cfffeb545a`
-- exact-head CI: GREEN
-  - Validate Project Base Adapter `31350458351`
-  - Validate full matrix `31350458345`
-  - Validate core and documentation baseline `31350458344`
-  - Validate ANNUAL-MVP-001 `31350458335`
-- Human QA route core: PASS
-  - final safe endpoint approaches from WEST
-  - actual route manipulation works
-  - actual route clear succeeds
-  - successful result persists and Continue shows `검증 기록 완료 | 성공`
-- new blocker after clear: `POST_CLEAR_RETURN_INPUT_BLOCKED`
-- PR body is stale relative to latest PR comments; latest Human QA evidence is issue comment `5235366964`.
-- merge: HELD
+- Windows QA integration candidate: `3502d8db45504d205a37fdad593192cfffeb545a`
+- exact-head CI GREEN: `31350458351 / 31350458345 / 31350458344 / 31350458335`
+- Human route core PASS: WEST safe endpoint, actual manipulation, actual clear, persisted successful result.
+- latest Human QA evidence: PR comment `5235366964`.
+- blocker: `POST_CLEAR_RETURN_INPUT_BLOCKED`.
+- PR body is stale relative to latest comments.
+- merge: HELD.
 
 ### PR #183 — COMPLETED_NOT_MERGED / HUMAN_QA_INCOMPLETE
 
 - Decision: `D-2026-08-09-MAIN-MENU-CONTROL-ROOM-VERSIONING`
-- PR: `#183` Draft
-- branch: `agent/main-menu-control-room-v43-implementation-20260809`
+- Draft, branch `agent/main-menu-control-room-v43-implementation-20260809`
 - exact implementation head: `42e4f378ef10aebfcd812f737bcdae33cfe8dd3f`
-- local visual candidate evidence: `757df80b00f61fc94916bcee65aa6705748fa5f7` (`LOCAL_EVIDENCE`, not PR head)
-- automated evidence on implementation head: GREEN
-- observed Human visual QA: 1280-class PASS, 1920-class PASS, Ver 4.3/control-room hierarchy PASS
-- remaining Human/input gate includes mouse/keyboard/gamepad and other PR contract items; Android NOT_RUN.
-- merge: HELD
+- local visual candidate: `757df80b00f61fc94916bcee65aa6705748fa5f7` (`LOCAL_EVIDENCE`, not PR head)
+- automated implementation-head evidence: GREEN.
+- Human visual evidence: 1280-class PASS, 1920-class PASS, Ver 4.3/control-room hierarchy PASS.
+- remaining Human/input contract includes mouse/keyboard/gamepad; Android NOT_RUN.
+- merge: HELD.
 
 ### Other open PRs
 
-- `#165` P0 audit: separate historical/governance work; do not fold into paused runtime fixes without a new scope review.
-- `#149` local Human QA save runner: separate Draft; reference only for this handoff unless its own work is resumed.
+- `#165`: separate audit/governance work; do not fold into paused runtime fixes without scope review.
+- `#149`: separate Human-QA save-runner Draft; reference only unless explicitly resumed.
 
 ## 4. Progress Classification
 
 ```yaml
 completed_verified:
-  - PR180 merged to main 8294aa2e and Windows pointer/progression Human QA passed
-  - PR186 route endpoint/reachability implementation automated exact-head CI green
+  - PR180 merged and Windows pointer/progression Human QA passed
+  - PR186 route endpoint/reachability exact-head CI green
   - PR186 route endpoint/core Windows Human QA passed
   - PR183 local 1280-class and 1920-class visual QA passed
 completed_not_merged:
@@ -109,11 +97,9 @@ user_decision_required:
   - when feature work resumes, choose Main Menu return-control scope; no choice was approved before pause
 ```
 
-## 5. Current Runtime Finding — Do Not Lose
+## 5. Runtime Finding — Do Not Lose
 
 `POST_CLEAR_RETURN_INPUT_BLOCKED` is separate from route reachability.
-
-Observed sequence:
 
 ```text
 route puzzle solves successfully
@@ -123,46 +109,32 @@ route puzzle solves successfully
 → progression stops
 ```
 
-Root-cause evidence:
+Evidence:
 
-- `scripts/scenes/minigame_scene.gd` creates the return button, connects `pressed` to `_return_to_flow()`, and makes it visible after saved/completed result.
-- `_return_to_flow()` for successful route restore routes to `res://scenes/battle_scene.tscn`.
-- `scripts/ui/canon_v2_operation_overlay.gd` mounts the rescue-mode operation overlay.
-- overlay root / SafeArea / RootLayout are pointer-transparent, but `_make_detail_panel()` assigns `MOUSE_FILTER_STOP` to read-only detail panels.
-- the bottom read-only `ObligationPanel` occupies the same lower screen area as the visible return button in the Human QA screenshot.
+- `scripts/scenes/minigame_scene.gd`: return button exists, is connected to `_return_to_flow()`, becomes visible after result; successful route should go to `res://scenes/battle_scene.tscn`.
+- `scripts/ui/canon_v2_operation_overlay.gd`: rescue-mode overlay mounts; root/SafeArea/RootLayout are pointer-transparent but `_make_detail_panel()` gives read-only detail panels `MOUSE_FILTER_STOP`.
+- Human QA shows bottom read-only `ObligationPanel` over the return-control area.
 
-Current hypothesis is evidence-backed but the fix is NOT implemented. Required next implementation begins with a real click-through RED regression; do not blindly change multiple overlay layers.
+Fix is NOT implemented. Resume with a real click-through RED regression before changing the overlay input policy.
 
 ## 6. Approved Display Settings — Paused
 
 Decision: `D-2026-08-10-DISPLAY-RESOLUTION-WINDOW-MODE`
 
-Approved direction:
-
-- `1280×720`
-- `1600×900`
-- `1920×1080`
-- windowed / fullscreen
-- persistence across restart
-- DisplaySettings responsibility remains separate from AccessibilitySettings
-
-Planning branch:
+Approved: `1280×720 / 1600×900 / 1920×1080`, windowed/fullscreen, persistence, separate DisplaySettings ownership.
 
 ```text
-agent/display-settings-route-connectivity-design-20260810
-HEAD 66c3e24fdffa5502a827f0265f5d1ef8e8ab21f9
+planning branch: agent/display-settings-route-connectivity-design-20260810
+HEAD: 66c3e24fdffa5502a827f0265f5d1ef8e8ab21f9
+status: PLAN_READY / IMPLEMENTATION_NOT_STARTED / PAUSED_BY_USER
 ```
 
-Status: `PLAN_READY / IMPLEMENTATION_NOT_STARTED / PAUSED_BY_USER`
+## 7. Main Menu Return Control — Not Yet Approved Design
 
-## 7. Main Menu Return Control — User Request, Not Yet Approved Design
+User requested a gameplay → main-menu control. Work paused before scope choice:
 
-User requested adding a way to go to the main menu from gameplay.
-
-The last design question had two scopes, but the user paused work before selecting one:
-
-- A: gameplay screens broadly expose `메뉴`; save current progress, go to main menu, Continue returns to the saved screen.
-- B: add it only around the current minigame/result flow.
+- A: broadly on gameplay screens; save, menu, Continue returns to saved screen.
+- B: only around current minigame/result flow.
 
 Status: `USER_DECISION_REQUIRED_WHEN_RESUMED`.
 Do not infer that A was approved.
@@ -170,68 +142,58 @@ Do not infer that A was approved.
 ## 8. Verification State
 
 ```yaml
-project_main_8294aa2e:
-  repository_truth: PASS
-route_pr186_head_4113c2d7:
-  exact_head_ci: PASS
-route_human_core:
-  windows_1280x720: PASS
-post_clear_return_flow:
-  human_qa: FAIL
-pr183_42e4f378:
-  automated: PASS
-  local_visual_1280_class: PASS
-  local_visual_1920_class: PASS
-  complete_human_input_gate: NOT_RUN
-  gamepad: NOT_RUN
-android:
-  status: NOT_RUN
-display_settings_implementation:
-  status: NOT_RUN
-main_menu_return_feature:
-  design_approval: NOT_RUN
+project_main_8294aa2e: PASS
+route_pr186_exact_head_ci: PASS
+route_human_core_windows_1280x720: PASS
+post_clear_return_flow_human_qa: FAIL
+pr183_automated: PASS
+pr183_local_visual_1280_class: PASS
+pr183_local_visual_1920_class: PASS
+pr183_complete_human_input_gate: NOT_RUN
+gamepad: NOT_RUN
+android: NOT_RUN
+display_settings_implementation: NOT_RUN
+main_menu_return_design_approval: NOT_RUN
 ```
 
 `NOT_RUN`을 PASS로 승격하지 않는다.
 
 ## 9. Resume Read Order
 
-새 세션에서 사용자가 기능 작업 재개를 요청하면 “어디까지 했나요?”를 먼저 묻지 않는다.
-
 ```text
 1. urban-legend latest main SHA
 2. open PRs, 특히 #186/#183와 최신 comments/checks
 3. Base latest main SHA + maintaining-project-context-and-handoff owner
 4. Google Sheet 00_프로젝트_허브
-5. 이 docs/CURRENT_HANDOFF.md
+5. docs/CURRENT_HANDOFF.md
 6. scripts/scenes/minigame_scene.gd
 7. scripts/ui/canon_v2_operation_overlay.gd
 8. PR186 route source/test
 9. display planning branch 66c3e24f and PR183 42e4f378
 ```
 
-저장된 SHA가 현재 GitHub와 다르면 먼저 이 Handoff를 stale로 표시하고 현재 저장소 사실로 교정한다.
+저장된 SHA가 GitHub와 다르면 먼저 Handoff를 stale로 표시하고 current truth로 교정한다.
 
 ## 10. Next Executable Step — Only After User Resumes Feature Work
 
-1. latest main / PR186 / Base / Sheet 다시 조회.
-2. `POST_CLEAR_RETURN_INPUT_BLOCKED`를 같은 조건에서 재현.
+1. latest project main / PR186 / Base / Sheet 재조회.
+2. `POST_CLEAR_RETURN_INPUT_BLOCKED` same-condition 재현.
 3. 실제 포인터 click-through RED regression 작성.
-4. read-only CanonV2 detail panel이 뒤의 실제 control을 가로채지 않도록 최소 input-policy fix. Confirmation/backdrop처럼 실제 상호작용이 필요한 layer의 pointer blocking은 보존.
-5. focused regression + maintained relevant suites + exact-head PR CI.
-6. Windows Human QA에서 route clear → `현장 기록으로 복귀` 실제 클릭 → battle/recovery 전환 확인.
-7. 그 뒤에만 PR186 merge gate 재판정.
-8. 별도 사용자 결정으로 Main Menu return-control 범위 확정.
+4. read-only CanonV2 detail panel만 pointer passthrough가 되도록 최소 수정; 실제 confirmation/backdrop 상호작용은 보존.
+5. focused regressions + relevant suites + exact-head PR CI.
+6. Windows Human QA: route clear → `현장 기록으로 복귀` 클릭 → battle/recovery 전환 확인.
+7. 그 뒤 PR186 gate 재판정.
+8. Main Menu return-control 범위를 사용자와 확정.
 9. 그 다음 display settings implementation 재개.
 
 ## 11. Stop Conditions
 
-- 사용자 현재 지시: 기능 수정은 여기서 중단하고 인수인계만 수행.
-- 이 checkpoint에서는 product `.gd` / Scene / data / asset 구현을 하지 않는다.
-- PR #186 / #183을 merge-ready로 올리거나 merge하지 않는다.
-- Main Menu return-control 범위를 임의 확정하지 않는다.
-- display implementation을 시작하지 않는다.
-- persistent `.gd` 저작을 재개할 때는 프로젝트의 HiGodot authority를 다시 확인한다.
+- 현재 사용자 지시: 기능 수정 중단, 인수인계만 수행.
+- product `.gd` / Scene / data / asset 구현 금지.
+- PR #186 / #183 merge-ready 전환·merge 금지.
+- Main Menu return 범위 임의 확정 금지.
+- display implementation 시작 금지.
+- persistent `.gd` 저작 재개 시 HiGodot authority 재확인.
 
 ## 12. Base Existing-Solution Verdict / Learning
 
@@ -243,26 +205,27 @@ handoff_operating_pattern:
   new_base_candidate_for_this_checkpoint: NO_PROMOTION
 ```
 
-이번 checkpoint에서 확인된 runtime 문제들은 프로젝트 고유 구현/QA 상태다. 현재 인수인계 자체를 위해 새 Base Skill이나 새 BCP를 만들 이유는 없다.
+현재 runtime findings는 프로젝트 고유 구현/QA 상태다. 이 인계만을 위해 새 Base Skill/BCP를 만들지 않는다.
 
-## 13. Known Freshness Conflict
+## 13. Freshness Conflict
 
-Google Sheet가 직전까지 기록한 Base remote `b37c9def...`보다 Base main이 다시 전진했다.
-현재 확인된 Base main은:
+직전 Sheet의 Base remote보다 Base main이 전진했다. 현재 확인 Base main:
 
 ```text
 637dad32c773c56a27d44d847518580848dee493
 ```
 
-Sheet/Handoff를 갱신할 때 이 SHA를 사용한다.
+Sheet와 이 Handoff는 해당 SHA로 동기화한다.
 
 ## 14. Historical Compatibility Anchors
 
-아래 문자열은 현재 버전을 주장하기 위한 것이 아니라 기존 활성 문서 계약 테스트가 `docs/CURRENT_HANDOFF.md`에서 계속 찾는 **역사/호환 앵커**다. 현재 작업 상태는 위 1~13절을 따른다.
+아래는 현재 버전을 주장하지 않는다. 기존 활성 문서 계약 테스트가 `docs/CURRENT_HANDOFF.md`에서 계속 찾는 **역사/호환 앵커**이며 현재 상태는 위 절들을 따른다.
 
 ```yaml
 historical_compatibility_only: true
 annual_design: APPROVED_DESIGN_BASELINE
+ANNUAL-MVP-001: HISTORICAL_COMPATIBILITY_ANCHOR
+POC_PASSED: NOT_DECLARED
 legacy_baseline_tokens:
   - CORE-VALIDATION-001
   - UX-PD-001 2A
