@@ -15,8 +15,11 @@
 최신 사용자 지시
 → START_HERE.md
 → AGENTS.md
+→ GitHub latest main ref + open PRs
+→ Google Sheet current Decision/audit rows
 → OPERATING_MODEL.md
 → WORK_MODE_AND_SKILL_ROUTING.md
+→ CURRENT_CONFIRMED_DECISIONS.md
 → CURRENT_STATUS.md
 → PROJECT_CORE.md
 → DOCUMENTATION_MAP.md
@@ -31,6 +34,9 @@
 최신 사용자 지시
 → START_HERE.md
 → AGENTS.md
+→ GitHub latest main ref + open PRs
+→ Google Sheet current Decision/audit rows
+→ CURRENT_CONFIRMED_DECISIONS.md
 → CURRENT_STATUS.md
 → PROJECT_CORE.md
 → GAME_DESIGN_DOCUMENT.md
@@ -41,7 +47,11 @@
 → 대상 코드·데이터·에셋
 ```
 
+`CURRENT_CONFIRMED_DECISIONS.md`, `CURRENT_STATUS.md`, `CURRENT_HANDOFF.md`는 서로 역할이 다르다. current summary가 live GitHub/Sheet와 충돌하면 한 문서를 임의로 우선해 덮어쓰지 말고 `CONFLICTING_SOURCE` / `MISSING_PROPAGATION`으로 보고한 뒤 해당 owner를 교정한다.
+
 ## 연도제 설계 권한 순서
+
+연도제 방향·ANNUAL 작업일 때만 다음 조건부 순서를 사용한다.
 
 ```text
 PROJECT_CORE
@@ -67,15 +77,17 @@ PROJECT_CORE
 9. `superpowers/plans/2026-07-25-annual-raising-vertical-slice-implementation-plan.md`
 10. `../TEST_CHECKLIST.md`
 
-기존 CORE-MVP-001 명세·계획은 사건 코어 구현의 고정 계약이며, 승인된 연도제 상위 제품 구조를 대체하지 않는다.
+기존 CORE-MVP-001 명세·계획은 사건 코어 구현의 고정 계약이며, 승인된 연도제 상위 제품 구조를 대체하지 않는다. 반대로 ANNUAL-MVP-001 트랙도 모든 현재 기능·버그·UX 작업의 전역 진입점이 아니다.
 
 ## 운영 책임 원본
 
 | 책임 | 현행 원본 | 읽기 조건 |
 |---|---|---|
 | 강제 규칙·불변 용어 | `../AGENTS.md` | 항상 |
-| 콜드 스타트 | `../START_HERE.md` | 새 채팅·새 작업자 |
-| 현재 구현·승인 계획·미구현 구분 | `CURRENT_STATUS.md` | 항상 |
+| 콜드 스타트·현재 frontier 라우팅 | `../START_HERE.md` | 새 채팅·새 작업자 |
+| 현재 사용자 승인·대체 관계 | `CURRENT_CONFIRMED_DECISIONS.md` | Decision/범위/정본 의미 확인 |
+| 현재 구현·검증 이력 | `CURRENT_STATUS.md` | 구현 사실·장기 ledger 확인 |
+| 현재 계정/세션 인수 | `CURRENT_HANDOFF.md` | 교대·중단/재개·open frontier 확인 |
 | 프로젝트 코어·변경 경계 | `PROJECT_CORE.md` | L1 이상·구조·기획·검수 |
 | 상세 게임 설계 | `GAME_DESIGN_DOCUMENT.md` | 시스템·콘텐츠 상세 변경 |
 | 운영 생명주기 | `OPERATING_MODEL.md` | L1 이상 |
@@ -143,18 +155,29 @@ PROJECT_CORE
 
 ## 현재 활성 구현 라우팅
 
+전역 현재 frontier를 하나의 과거 implementation plan으로 고정하지 않는다. 모든 구현·버그·UX 작업은 다음처럼 topic owner를 고른다.
+
 ```text
-CURRENT_STATUS.md
-→ PROJECT_CORE.md
-→ GAME_DESIGN_DOCUMENT.md
-→ 승인된 연도제 설계와 승인 기록
-→ ../MVP_ROADMAP.md
-→ superpowers/plans/2026-07-25-annual-raising-vertical-slice-implementation-plan.md
-→ ../TEST_CHECKLIST.md
-→ ANNUAL-MVP-001 격리 코드·데이터·Scene·테스트
+최신 사용자 지시
+→ GitHub latest main + open PRs
+→ Google Sheet current Decision/audit rows
+→ CURRENT_CONFIRMED_DECISIONS.md
+→ START_HERE.md current frontier
+→ 해당 주제의 분야 정본 / Decision / Spec / Plan
+→ 실제 owner 코드·데이터·Scene·테스트
+→ TEST_CHECKLIST.md
 ```
 
-현재 상태는 `APPROVED_DESIGN_BASELINE / ANNUAL-MVP-001 PLAN_PENDING_APPROVAL`이다. CORE-MVP-001은 보존 회귀 자산이며 신규 구현 진입점은 ANNUAL-MVP 트랙이다.
+현재 live frontier는 작업 주제에 따라 다르며, 2026-08-11 기준 대표적으로 다음처럼 분리된다.
+
+- 조사·회수 UI hierarchy: PR #180 runtime은 이미 main에 병합됨; 이를 신규 구현 gate로 다시 만들지 않는다.
+- route endpoint/post-clear return: PR #186 Draft + 별도 blocker RED PR #189를 current GitHub에서 확인한다.
+- Main Menu Ver 4.3: PR #183 Draft owner를 확인한다.
+- gameplay→Main Menu safe-return: 승인 Decision과 PR #190 written-Spec gate를 확인하며 runtime은 아직 자동 승인되지 않는다.
+- display resolution/window mode: 승인된 planning 범위와 runtime 미시작 상태를 분리한다.
+- ANNUAL-MVP-001: 연도제/ANNUAL 작업일 때만 위의 연도제 설계 권한 순서를 사용한다.
+
+위 번호·상태는 라우팅 예시이므로 정확한 current head/merge/CI는 매 작업 시작 때 GitHub에서 다시 읽는다. `CURRENT_HANDOFF.md` 또는 다른 current summary가 live GitHub/Sheet와 충돌하면 그 차이를 보고하고 owner-aware propagation으로 교정한다.
 
 ## 기타 조건부 문서
 
