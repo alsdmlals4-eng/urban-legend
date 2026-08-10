@@ -31,6 +31,7 @@ func _run() -> void:
 	tiles[5]["orientation"] = 1
 	tiles[6]["orientation"] = 3
 	tiles[2]["orientation"] = 1
+	tiles[3]["connections"] = [SOUTH]
 	route.set("_tiles", tiles)
 	route.set("_tutorial_complete", true)
 

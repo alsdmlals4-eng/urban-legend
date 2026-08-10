@@ -55,9 +55,9 @@ func _build_tutorial_board() -> void:
 	_safe = Vector2i(2, 0)
 	_false = Vector2i(2, 2)
 	_tiles = [
-		{"kind":"block"}, {"kind":"block"}, {"kind":"safe"},
+		{"kind":"block"}, {"kind":"block"}, {"kind":"safe","connections":[SOUTH]},
 		{"kind":"block"}, {"kind":"curve","orientation":0}, {"kind":"curve","orientation":1},
-		{"kind":"start"}, {"kind":"switch","state":0}, {"kind":"false"}
+		{"kind":"start","connections":[EAST]}, {"kind":"switch","state":0}, {"kind":"false","connections":[WEST]}
 	]
 	_initial_tiles = _tiles.duplicate(true)
 	_selected = Vector2i(1, 2)
@@ -71,10 +71,10 @@ func _build_final_board() -> void:
 	_safe = Vector2i(3, 0)
 	_false = Vector2i(3, 3)
 	_tiles = [
-		{"kind":"block"}, {"kind":"block"}, {"kind":"curve","orientation":2}, {"kind":"safe"},
+		{"kind":"block"}, {"kind":"block"}, {"kind":"curve","orientation":2}, {"kind":"safe","connections":[WEST]},
 		{"kind":"block"}, {"kind":"curve","orientation":0}, {"kind":"curve","orientation":1,"locked":_route_lock}, {"kind":"block"},
 		{"kind":"block"}, {"kind":"straight","state":0}, {"kind":"block"}, {"kind":"block"},
-		{"kind":"start"}, {"kind":"switch","state":0}, {"kind":"block"}, {"kind":"false"}
+		{"kind":"start","connections":[EAST]}, {"kind":"switch","state":0}, {"kind":"block"}, {"kind":"false","connections":[WEST]}
 	]
 	_initial_tiles = _tiles.duplicate(true)
 	_selected = Vector2i(1, 3)
@@ -156,7 +156,7 @@ func _rotate_selected() -> void:
 
 func _confirm_route() -> void:
 	var reach := _get_reachability()
-	if _is_solution() or (bool(reach.get("safe", false)) and not bool(reach.get("false", false))):
+	if bool(reach.get("safe", false)) and not bool(reach.get("false", false)):
 		if not _tutorial_complete:
 			_tutorial_complete = true
 			_build_final_board()
@@ -182,6 +182,7 @@ func _confirm_route() -> void:
 	_emit_status(); queue_redraw()
 
 
+# 레거시 방향 tuple을 재현하는 테스트 전용 도우미이며, 성공 판정에 사용하지 않는다.
 func _is_solution() -> bool:
 	if not _tutorial_complete:
 		return int(_tiles[_coord_to_index(Vector2i(1, 2))].get("state", 0)) == 1 and int(_tiles[_coord_to_index(Vector2i(1, 1))].get("orientation", 0)) == 1 and int(_tiles[_coord_to_index(Vector2i(2, 1))].get("orientation", 0)) == 3
@@ -220,9 +221,14 @@ func _get_reachability() -> Dictionary:
 func _connections_for(coord: Vector2i) -> Array[Vector2i]:
 	var tile: Dictionary = _tiles[_coord_to_index(coord)]
 	match String(tile.get("kind", "block")):
-		"start": return [EAST]
-		"safe": return [SOUTH]
-		"false": return [WEST]
+		"start", "safe", "false":
+			var stored: Variant = tile.get("connections", [])
+			if stored is Array:
+				var result: Array[Vector2i] = []
+				for direction in stored:
+					result.append(direction as Vector2i)
+				return result
+			return []
 		"switch": return [WEST, EAST] if int(tile.get("state", 0)) == 0 else [WEST, NORTH]
 		"straight": return [WEST, EAST] if int(tile.get("state", 0)) == 0 else [NORTH, SOUTH]
 		"curve":
