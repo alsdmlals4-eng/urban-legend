@@ -1,9 +1,9 @@
 # Gameplay → Main Menu Safe Return — Adversarial Review
 
-Date: 2026-08-11 KST  
-Decision: `D-2026-08-11-GAMEPLAY-MAIN-MENU-SAFE-RETURN-CONTINUE`  
-Feature: `UL-FEATURE-GAMEPLAY-MAIN-MENU-SAFE-RETURN-001`  
-Project baseline inspected: `cba130ee156c89710d3ddef33ed677bf99aa0716`  
+Date: 2026-08-11 KST
+Decision: `D-2026-08-11-GAMEPLAY-MAIN-MENU-SAFE-RETURN-CONTINUE`
+Feature: `UL-FEATURE-GAMEPLAY-MAIN-MENU-SAFE-RETURN-001`
+Project baseline inspected: `cba130ee156c89710d3ddef33ed677bf99aa0716`
 Base remote inspected: `315c66eea9614c284b9c11c4d522141065dfa4b0`
 
 ## Scope of attack
