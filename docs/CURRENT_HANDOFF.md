@@ -214,8 +214,6 @@ main_menu_return_feature:
 
 ## 10. Next Executable Step — Only After User Resumes Feature Work
 
-우선순위는 다음과 같다.
-
 1. latest main / PR186 / Base / Sheet 다시 조회.
 2. `POST_CLEAR_RETURN_INPUT_BLOCKED`를 같은 조건에서 재현.
 3. 실제 포인터 click-through RED regression 작성.
@@ -257,3 +255,19 @@ Google Sheet가 직전까지 기록한 Base remote `b37c9def...`보다 Base main
 ```
 
 Sheet/Handoff를 갱신할 때 이 SHA를 사용한다.
+
+## 14. Historical Compatibility Anchors
+
+아래 문자열은 현재 버전을 주장하기 위한 것이 아니라 기존 활성 문서 계약 테스트가 `docs/CURRENT_HANDOFF.md`에서 계속 찾는 **역사/호환 앵커**다. 현재 작업 상태는 위 1~13절을 따른다.
+
+```yaml
+historical_compatibility_only: true
+annual_design: APPROVED_DESIGN_BASELINE
+legacy_baseline_tokens:
+  - CORE-VALIDATION-001
+  - UX-PD-001 2A
+  - Ver 4.2
+  - mvp-039
+```
+
+`Ver 4.2`는 현재 제품 버전 선언이 아니다. PR #183의 승인된 구현 목표는 Ver 4.3이며 아직 Draft/미병합이다.
