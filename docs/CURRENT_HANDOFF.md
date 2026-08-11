@@ -67,10 +67,10 @@ android: NOT_RUN
 
 Current intended REDs:
 
-1. `case01_device_model_test.gd` → `scripts/ui/case01_device_data_adapter.gd` 부재
-2. `case01_device_shell_contract_test.gd` → `scenes/ui/case01_investigative_device_shell.tscn` 부재
+1. `case01_device_model_test.gd` → scripts/ui/case01_device_data_adapter.gd 부재
+2. `case01_device_shell_contract_test.gd` → scenes/ui/case01_investigative_device_shell.tscn 부재
 3. `case01_manual_draft_state_test.gd` → `apply_afterlife_manual_draft` 부재
-4. `case01_shared_travel_test.gd` → `scripts/ui/case01_travel_session.gd` 부재
+4. `case01_shared_travel_test.gd` → scripts/ui/case01_travel_session.gd 부재
 
 Focused summary: `CASE-01 UI contracts RED: 4/4 failing`.
 
