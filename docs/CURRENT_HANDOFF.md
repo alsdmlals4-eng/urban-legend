@@ -1,15 +1,16 @@
 # Current Handoff — 2026-08-12
 
-> 상태: `PHASE_C_IMPLEMENTATION_PAUSED_FOR_HANDOFF / PR198_TDD_RED_VERIFIED / LOCAL_EXECUTOR_BOOTSTRAP_IN_PROGRESS / CODEX_NOT_STARTED / PRODUCT_RUNTIME_UNCHANGED`
+> 상태: `PHASE_C_IMPLEMENTATION_PAUSED_FOR_HANDOFF / PR198_TDD_RED_VERIFIED / LOCAL_EXECUTOR_BOOTSTRAP_IN_PROGRESS / CODEX_NOT_STARTED / PRODUCT_RUNTIME_UNCHANGED / HANDOFF_AND_BASE_PROPOSAL_CLOSED`
 > 현재 대상: `alsdmlals4-eng/urban-legend + alsdmlals4-eng/Base`
 > 역할: 다음 세션이 과거 대화나 과거 PID/session을 신뢰하지 않고 live GitHub + Sheet + exact local receipt를 다시 읽어 안전하게 재개하기 위한 continuation router.
 
 ## 1. Live Authority
 
 ```yaml
-last_updated_kst: 2026-08-12T01:37+09:00
+last_updated_kst: 2026-08-12
 continuation_checkpoint:
-  state_observed_at_main: 6f84b68ee2c9e34c207f44d56aa251d0287e78a7
+  state_observed_at_main: f46258233246be04f0efbef637e95710af6f5af5
+  work_merge_main_sha: f46258233246be04f0efbef637e95710af6f5af5
   self_merge_sha_required_in_file: false
   resume_rule: FETCH_LATEST_MAIN_BEFORE_USE
 project:
@@ -21,12 +22,15 @@ project:
 base:
   repo: alsdmlals4-eng/Base
   default_branch: main
-  last_observed_main: 1d6cc79ae95ffb67ba4de618f010a6540fc6e02c
+  last_observed_main: be2435bc5ebb9f55c49c0b37284a122a3689e583
   dedicated_execution_owner_commit: 6d2feba2bc49fda2d8d273248b55087853615d5d
+  proposal_id: BCP-2026-022-local-executor-content-identity-dirty-gate
+  proposal_pr: 294
+  proposal_status: SUBMITTED
+  base_implementation_authority: NOT_GRANTED_IN_THIS_STAGE
 sheet:
   decision_row: "02_현재_확정결정!116"
   decision_id: D-2026-08-11-CASE01-UI-I18N-RESPONSIVE-LOCAL-ISOLATION
-  freshness_note: "row K still says Base latest 6d2feba; live Base main is newer and must be re-read"
 continuous_work:
   exact_base_trigger_present: false
   note: "current user explicitly authorized uninterrupted handoff/merge work, but this is not labeled CONTINUOUS_WORK_ACTIVE because the exact [연속작업] 진행해 trigger was not used"
@@ -57,7 +61,7 @@ state: OPEN_DRAFT
 remote_branch: agent/case01-investigation-device-ui-implementation-20260811
 current_pr_head: 2830c8978de46bc2801bd12a63a490b26b803ee9
 red_evidence_head: 076974644c38f059448a3afdd04279c6e942d171
-base_main: 6f84b68ee2c9e34c207f44d56aa251d0287e78a7
+planning_base_main: 6f84b68ee2c9e34c207f44d56aa251d0287e78a7
 product_runtime: UNCHANGED
 human_ui_qa: NOT_RUN
 android: NOT_RUN
@@ -91,13 +95,13 @@ Protected by default:
 | #196 | `OPEN_DRAFT / OVERLAP_RISK` | Changes protected `scripts/core/game_state.gd`; recheck before any PR198 persistent mutation. |
 | #193 | `OPEN_DRAFT / ROUTER_FRESHNESS` | Changes `START_HERE.md` + `docs/DOCUMENTATION_MAP.md`; separate from this handoff owner. |
 | #192 | `OPEN_DRAFT / REFERENCE_AUDIT` | Canon freshness evidence; no product mutation. |
-| #191 | `STALE_HANDOFF / SUPERSEDE` | Changes this same `docs/CURRENT_HANDOFF.md` from older base/state. Do not merge after this handoff lands. |
+| #191 | `CLOSED_UNMERGED / SUPERSEDED_BY_199` | Same handoff owner with older facts; preserve only as history. |
 | #190 | `OPEN_DRAFT / SAFE_RETURN_PLAN` | Gameplay→Main Menu plan owner; separate Decision scope. |
 | #189 | `OPEN_DRAFT / RED_OVERLAP_RISK` | Changes Canon v2 overlay test used by PR198 baseline; fresh baseline required if it moves/merges. |
 | #186 | `OPEN_DRAFT / HELD` | Route endpoint implementation; separate blocker/QA frontier. |
 | #183 | `OPEN_DRAFT / HELD` | Main Menu Ver 4.3; separate Human/input/Android gates. |
 
-Do not rewrite, merge, close, or absorb unrelated open PRs merely to simplify PR198. The only stale PR intentionally superseded by this handoff is #191 because it owns the same continuation file with older facts.
+Do not rewrite, merge, close, or absorb unrelated open PRs merely to simplify PR198.
 
 ## 5. Local Executor State at Pause
 
@@ -171,7 +175,8 @@ This proves the representative file is content-identical while low-level/index s
 - root cause class: `STAT_ONLY_OR_INDEX_METADATA_DIRTINESS`; exact all-file classification still requires per-file hash verification.
 - failed approaches: treating `status` alone as semantic dirtiness; trying EOL overrides and `--really-refresh` as if they proved content change.
 - fast recovery: staged diff → index blob → raw working blob → path-filtered blob → porcelain content diff → attributes/filter context. Never destructively clean before classification.
-- owner: current handoff + project execution workflow; reusable Base principle may be proposed separately.
+- owner: current handoff + project execution workflow.
+- Base locator: `BCP-2026-022-local-executor-content-identity-dirty-gate`.
 - knowledge state: `PATTERN` pending all-relevant-file verification.
 
 ## 7. Project Learning Closure
@@ -180,44 +185,67 @@ This proves the representative file is content-identical while low-level/index s
 LRN-UL-2026-08-12-001:
   classification: SPLIT
   project_application: APPLIED_TO_CURRENT_HANDOFF_AND_RESUME_GATES
-  project_verification: HANDOFF_PR_EXACT_HEAD_REQUIRED
+  project_verification: PR199_EXACT_HEAD_CI_PASS_AND_MAIN_MERGE
   common_principle: CONTENT_IDENTITY_MUST_BE_SEPARATED_FROM_LOW_LEVEL_STAT_DIRTINESS
-  base_proposal: PENDING_CONCURRENT_SAFE_EXISTING_SOLUTION_CHECK
-  closure: OPEN_UNTIL_PROJECT_HANDOFF_AND_BASE_PROPOSAL_LIFECYCLE_COMPLETE
+  base_proposal: BCP-2026-022-local-executor-content-identity-dirty-gate
+  base_proposal_pr: 294
+  base_proposal_main: be2435bc5ebb9f55c49c0b37284a122a3689e583
+  base_proposal_status: SUBMITTED
+  closure: CLOSED
 
 LRN-UL-2026-08-12-002:
   classification: PROJECT_ONLY
   project_application: DEDICATED_GODOT_4_7_1_HIGODOT_8004_9504_HERA_CODEX_HOME_RESUME_CONTRACT
-  project_verification: LOCAL_EXECUTOR_READY_NOT_YET_PROVEN
+  project_verification: PR199_EXACT_HEAD_CI_PASS_AND_MAIN_MERGE
+  runtime_readiness_evidence: NOT_RUN_SEPARATE_RESUME_GATE
   base_proposal: N/A
-  closure: OPEN_UNTIL_RESUME_RECEIPT
+  closure: CLOSED
 ```
+
+Learning Closure here means the **handoff/operating contract** was applied, exact-head validated, and merged. It does not claim the paused local executor is runtime-ready; that remains a separate resume gate in Section 9.
 
 Existing Solution First for project handoff/workflow: `REUSE`. Existing owners are `docs/CURRENT_HANDOFF.md`, the project Production/PM handoff route, and the adopted Base handoff/validation support skills. No new project Skill is justified for this pause.
 
-## 8. Base State / Proposal Boundary
+## 8. Base Proposal Closure / Concurrency
 
 ```yaml
-base_main_observed: 1d6cc79ae95ffb67ba4de618f010a6540fc6e02c
-bcp_014:
-  proposal_id: BCP-2026-014-handoff-machine-consumer-compatibility-closeout
-  status: IMPLEMENTED
-  implementation_pr: 260
-new_base_candidate:
-  topic: local executor content-identity vs stat-only dirty classification
-  existing_solution_verdict: ABSORB_CANDIDATE
-  proposal_identity: NOT_ALLOCATED_YET
-  concurrency_rule: RECHECK_LATEST_BASE_MAIN_REGISTRY_AND_OPEN_PROPOSAL_PRS_BEFORE_ANY_BASE_WRITE
-base_active_implementation_in_this_handoff: FORBIDDEN
+base_proposal:
+  id: BCP-2026-022-local-executor-content-identity-dirty-gate
+  path: "[수정제안서]/BCP-2026-022-local-executor-content-identity-dirty-gate/PROPOSAL.md"
+  source_project: alsdmlals4-eng/urban-legend
+  source_commit: f46258233246be04f0efbef637e95710af6f5af5
+  proposal_pr: 294
+  proposal_head_verified: 39554cd3aad4c790c84cec99ec726b80d8e0095b
+  proposal_merge_main: be2435bc5ebb9f55c49c0b37284a122a3689e583
+  proposal_status: SUBMITTED
+  proposal_storage_merge_authority: GRANTED_BY_HANDOFF_INSTRUCTION
+  base_implementation_authority: NOT_GRANTED_IN_THIS_STAGE
+  implementation_status: NOT_STARTED_IN_THIS_STAGE
+  implementation_boundary: SEPARATE_FOLLOWUP_STAGE
+  existing_solution_verdict: ABSORB
 ```
 
-The old handoff statement `BCP-2026-014 = SUBMITTED / implementation NOT_STARTED` is stale. Base proposal-only work for the new lesson, if still non-duplicate after the final race check, must modify only `[수정제안서]/**`; Base active Skill/Docs/Template/Test/Tool/Workflow implementation is a separate future stage.
+Concurrency closeout:
+
+- initial Base main observed: `1d6cc79ae95ffb67ba4de618f010a6540fc6e02c`;
+- PR #291 from another project merged during this work as `d7dedbc6548294ac6109c22548e40adb0d6d273a` and occupied BCP-021;
+- stale urban-legend proposal PR #292 was closed unmerged rather than overwriting BCP-021;
+- GRIMOIRE PR #293 then temporarily occupied BCP-022 and closed itself unmerged on race detection;
+- urban-legend temporarily moved its own proposal to BCP-023, then released it when GRIMOIRE replacement #295 occupied BCP-023;
+- after #293/#295 closed unmerged and the final open-PR/Registry check showed BCP-022 free, urban-legend finalized only its own proposal as BCP-022;
+- PR #294 exact-head proposal validation passed and the final Base main/open-PR/Registry race check preceded merge;
+- Base PR #294 changed exactly two `[수정제안서]/**` files and merged proposal-only;
+- no Base active Skill/Docs/Template/Test/Tool/Workflow implementation was performed.
+
+Do not promote BCP-022 from `SUBMITTED` to `APPROVED_FOR_IMPLEMENTATION` based on this handoff. Future Base implementation requires a separate stage.
 
 ## 9. Verification Boundary
 
 ```yaml
 pr198_red_evidence: PASS_AS_INTENDED_RED
 pr198_current_product_green: NOT_RUN
+project_handoff_pr199: PASS_MERGED
+base_proposal_pr294: PASS_MERGED_PROPOSAL_ONLY
 local_executor_exact_identity: PARTIALLY_VERIFIED_BEFORE_HANDOFF
 all_111_import_content_identity_gate: NOT_RUN
 codex_launch: NOT_RUN
@@ -234,15 +262,16 @@ No automation/reference/runtime-tool evidence may be promoted to Human/Player PA
 
 ```text
 1. Base repository root + latest Base main + open Base PRs
-2. urban-legend latest main + all open PRs + latest commits
-3. Google Sheet current rows, especially Decision row 116
-4. docs/CURRENT_HANDOFF.md
-5. PR #198 metadata, changed files, latest comments/checks
-6. PR #196 and #189 overlap state
-7. PR #198 approved spec and implementation plan
-8. exact local pr198-exec worktree identity/status
-9. dedicated Godot / HiGodot / Hera / CODEX_HOME fresh receipts
-10. only after all gates pass, launch/continue Codex Phase C
+2. Base BCP-2026-022 proposal/Registry status
+3. urban-legend latest main + all open PRs + latest commits
+4. Google Sheet current rows, especially Decision row 116
+5. docs/CURRENT_HANDOFF.md
+6. PR #198 metadata, changed files, latest comments/checks
+7. PR #196 and #189 overlap state
+8. PR #198 approved spec and implementation plan
+9. exact local pr198-exec worktree identity/status
+10. dedicated Godot / HiGodot / Hera / CODEX_HOME fresh receipts
+11. only after all gates pass, launch/continue Codex Phase C
 ```
 
 ## 11. Next Executable Step
