@@ -1,11 +1,11 @@
 # D-2026-08-11-HYBRID-NARRATIVE-DEDUCTION-GROWTH-INTEGRATION
 
-> 상태: `USER_APPROVED_DIRECTION / WRITTEN_SPEC_AWAITING_REVIEW`
+> 상태: `USER_APPROVED_DIRECTION / WRITTEN_SPEC_APPROVED / PLANNING_COMPLETE_DECLARATION_RECEIVED / PHASE_B_FINAL_REVIEW_COMPLETE / PACKAGE_1_DOR_LOCKED`
 > 승인 시각: 2026-08-11 KST
-> 사용자 승인: `권장안 승인 / 연속작업 진행해`
+> 사용자 승인: `권장안 승인 / 연속작업 진행해 / 승인,진행해 / 기획 완료`
 > 적용 범위: 텍스트노벨·추리·육성 장르 통합 보완 방향
-> 제품 구현: `NOT_AUTHORIZED`
-> `기획 완료`: `NOT_RECEIVED`
+> 제품 구현: `PACKAGE_1_AUTHORIZED_AFTER_PHASE_B / NOT_STARTED / HIGODOT_REQUIRED`
+> `기획 완료`: `RECEIVED_2026-08-11_KST`
 > Human/Player Experience 검증: `NOT_RUN`
 
 ## 1. 승인된 방향
@@ -100,11 +100,11 @@ FACT → MEANING → IDENTITY
 - 일반 클리어 가능 여부
 - 핵심 엔딩·필수 동료·접근성 자격
 
-정확한 상태 표현과 데이터 Schema는 PoC 이후 별도 L2 Spec에서 승인한다.
+정확한 상태 표현과 데이터 Schema는 PoC 결과가 살아남은 뒤 별도 L2 Spec에서만 승인한다.
 
 ### D. Core Relationship Network — `ADAPT / TEST`
 
-관계는 선물 반복·호감도 노동으로 키우지 않는다. 첫 범위는 핵심 동료 2~3명에 집중하며, **사건에서 실제로 내린 판단과 함께 일한 방식**이 관계 장면과 지원 방식에 되돌아오게 한다.
+관계는 선물 반복·호감도 노동으로 키우지 않는다. 미래 범위는 핵심 동료 2~3명에 집중하며, **사건에서 실제로 내린 판단과 함께 일한 방식**이 관계 장면과 지원 방식에 되돌아오게 한다.
 
 관계 변화는 최소 다음 근거 중 하나를 가져야 한다.
 
@@ -114,6 +114,8 @@ FACT → MEANING → IDENTITY
 - 실패·손실·미완료 책임의 후속 처리
 
 선택적 로맨스는 관계 시스템의 필수 성공 조건이 아니며 별도 콘텐츠 승인 전까지 `OPTIONAL / PROVISIONAL`을 유지한다.
+
+**Package 1 현재 동료는 오현 1명으로 고정한다.** Fresh Sheet에서 한세린은 `PARTIAL_DISABLED`이므로 현재 PoC에서 제외한다. 이는 향후 전체 관계망에서 한세린을 영구 제거한다는 뜻이 아니다.
 
 ### E. Year-One Narrative Spine — `ADAPT`
 
@@ -144,25 +146,56 @@ FACT → MEANING → IDENTITY
 - `AVOID`: 관계를 선물/반복 클릭 노동으로 대체
 - `AVOID`: 자동 테스트를 플레이어 재미·감정 검증으로 승격
 
-## 5. Production 분해
+## 5. Production 분해와 현재 Package 1 잠금
 
 이 Decision은 하나의 거대 구현 Feature를 승인하지 않는다. 다음 순서를 따른다.
 
 ```text
 상위 통합 Design
-→ 저승역 대표 PoC / Human Playtest 설계
-→ 살아남은 항목만 L2 후보 승격
-→ 개별 Feature Spec 승인
-→ 프로젝트 `기획 완료`
-→ final planning review
+→ written Spec 승인
+→ 저승역 대표 PoC / Human Playtest 계획
+→ 정확한 `기획 완료`
+→ Phase B final planning review
+→ Package 1 DoR lock
 → HiGodot-authorized TDD BUILD
+→ 실제 Human Playtest
+→ 살아남은 항목만 L2 후보 승격
 ```
 
-우선 PoC 후보:
+사용자의 정확한 `기획 완료` 선언은 2026-08-11 KST에 수신되었고 Phase B 최종 검수를 완료했다.
 
-1. 저승역 1장의 Thought Path 관찰 계약
-2. 저승역 주요 조사 장면 1개의 Text Novel Scene Contract
-3. 사건 후 핵심 동료 1명의 짧은 후속 장면에서 `사실 → 의미 → 정체성/관계` 연결 검증
+Package 1은 다음으로만 잠근다.
+
+1. 저승역 1장 Thought Path 관찰 계약
+2. `point_staff_room_door` 대표 조사 선택의 Scene Contract 검증
+3. 사건 후 핵심 동료 **오현**의 기존 `agent_event_oh_breakthrough_warning_01` 콜백으로 `사실 → 의미 → 정체성/관계` 연결 검증
+
+현재 main에서 이미 재사용 가능한 것:
+
+- Canon v2 `record_afterlife_*` 증거·매뉴얼 구조
+- 기존 `GameState` 조사 method 결과 저장
+- 기존 `triggered_agent_event_ids` 1회 이벤트 저장
+- 기존 결과/사건 보고서의 agent event/support 표시
+- 기존 Canon v2 protection follow-up/evaluation packet
+
+따라서 Package 1은 새 관계 DB·정체성 Schema·save version·Scene·Resource를 만들지 않는다.
+
+Phase B에서 확인된 최소 runtime gap:
+
+- 기존 오현 이벤트 문구는 `길을 열었으면 바로 빠져나갈 경로도 확보`라는 사건 인과를 이미 표현한다.
+- 그러나 현재 오현 temperament는 `balanced`이고 대표 staff-room method의 trust rules는 `breakthrough / empathetic / analytical`만 가지므로, 이 대표 사건 선택만으로 기존 trust ≥2 이벤트가 자연스럽게 도달하지 않는다.
+- `resolve_investigation_method`는 새 `method_result`를 저장하기 전에 agent event를 평가하므로, 아직 저장되지 않은 `method_results`를 읽는 방식도 사용하지 않는다.
+- 해결은 같은 stable event ID/문구를 보존하고 `point_staff_room_door + destruction + successful` 사건 context를 명시적으로 전달하는 최소 trigger 확장이다.
+- 다른 기존 agent event는 기존 trust-threshold 동작을 유지한다.
+- 이 사건-memory trigger 자체는 오현 trust 수치를 올리지 않는다.
+
+구현 계획 정본:
+
+`docs/superpowers/plans/2026-08-11-afterlife-station-fact-meaning-identity-poc-implementation-plan.md`
+
+Phase B 최종 검수:
+
+`docs/planning/HYBRID_NARRATIVE_DEDUCTION_GROWTH_PHASE_B_FINAL_REVIEW_2026-08-11.md`
 
 ## 6. Evidence ceiling
 
@@ -171,21 +204,50 @@ FACT → MEANING → IDENTITY
 - 프로젝트 current canon/Sheet의 구조적 갭
 - 상용작·개발자 발표·현업 인터뷰 기반 benchmark/professional evidence
 - Steam 사용자 평가의 방향성 signal
+- current main의 Canon v2/runtime/event/report 실제 구현 구조
+- Package 1의 TDD·Human Playtest 사전등록 계획
 
 현재 확보되지 않은 것은 다음이다.
 
 - 괴이기록국 신규 설계의 Human usability 결과
 - 괴이기록국 신규 설계의 Player Experience 결과
 - 신규 장면의 재미·감정·관계 몰입 증거
-- 신규 identity/relationship 상태 Schema의 runtime 타당성
+- Package 1 실제 실행 결과
 
-따라서 현 상태는 `DESIGN_DIRECTION_APPROVED`, `PLAYER_EXPERIENCE_EVIDENCE=NOT_RUN`이다.
+따라서 현 상태는:
 
-## 7. 다음 Gate
+```text
+WRITTEN_SPEC_APPROVED
+PLANNING_COMPLETE_DECLARATION_RECEIVED
+PHASE_B_FINAL_REVIEW_COMPLETE
+PACKAGE_1_DOR_LOCKED
+PHASE_C_READY
+PRODUCT_RUNTIME_BUILD_NOT_STARTED
+HUMAN_USABILITY_EVIDENCE=NOT_RUN
+PLAYER_EXPERIENCE_EVIDENCE=NOT_RUN
+```
 
-1. 상위 Design Spec 작성 및 self-review
-2. Source Context + adversarial review와 함께 Draft PR로 공개
-3. Google Sheet에 동일 Decision ID 동기화
-4. 사용자의 **written Spec review/approval**
-5. 그 뒤에만 PoC/세부 L2 계획으로 이동
-6. 정확한 `기획 완료` 선언 전 제품 BUILD 금지
+## 7. Current conflict / validation notes
+
+- 한세린: current Sheet `PARTIAL_DISABLED` → Package 1 제외, 오현만 사용.
+- Sheet `10_제품방향` current Gate: v4.5-r2 이전 상태를 가리키므로 post-merge 동기화 대상.
+- Sheet `50_메인콘텐츠` missing responsibility path: inference로 복원하지 않고 owner-aware reconciliation debt 유지.
+- `docs/CURRENT_AFTERLIFE_STATION_CANON.md`의 오래된 `IMPLEMENTATION_NOT_AUTHORIZED` 문구는 이후 Canon v2 actual main 구현/Decision보다 역사적으로 오래된 상태이므로 현재 구현 사실로 사용하지 않는다.
+- 저승역 1장 `목적지는 방송되지 않는다` page title 및 answer-adjacent intro 표현은 Thought Path priming 위험이다. initial Package 1에서 자동 변경하지 않고 Human protocol로 측정한다.
+
+## 8. 다음 Gate
+
+Phase B는 닫혔다.
+
+```text
+PHASE_B_FINAL_REVIEW_COMPLETE
+→ PACKAGE_1_DOR_LOCKED
+→ PHASE_C_READY
+→ authorized HiGodot persistent-authoring surface에서 RED → minimal implementation → GREEN
+→ focused Canon v2 suite + maintained full regression + exact-head CI
+→ 실제 fresh/unexposed Human sessions
+→ Thought Path / Scene Contract / Oh callback 각각 KEEP / CHANGE / RETEST / REMOVE
+→ KEEP만 별도 L2 후보 승격
+```
+
+현재 이 planning PR 자체는 제품 runtime을 변경하지 않는다. 현재 ChatGPT connector surface에는 persistent Godot product-authoring을 수행할 HiGodot 실행 도구가 없으므로 PowerShell/Codex/HiGodot 실행을 가장하거나 제품 BUILD 완료로 보고하지 않는다.
