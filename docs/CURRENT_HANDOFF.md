@@ -1,229 +1,280 @@
-# Current Handoff — 2026-08-10
+# Current Handoff — 2026-08-12
 
-> 상태: `FEATURE_WORK_PAUSED_BY_USER / HANDOFF_MERGED_POST_MERGE_RECONCILED`
+> 상태: `PHASE_C_IMPLEMENTATION_PAUSED_FOR_HANDOFF / PR198_TDD_RED_VERIFIED / LOCAL_EXECUTOR_BOOTSTRAP_IN_PROGRESS / CODEX_NOT_STARTED / PRODUCT_RUNTIME_UNCHANGED`
 > 현재 대상: `alsdmlals4-eng/urban-legend + alsdmlals4-eng/Base`
-> 역할: 다음 세션이 과거 대화 없이 현재 저장소·PR·Sheet를 다시 읽고 안전하게 이어가기 위한 live continuation router.
+> 역할: 다음 세션이 과거 대화나 과거 PID/session을 신뢰하지 않고 live GitHub + Sheet + exact local receipt를 다시 읽어 안전하게 재개하기 위한 continuation router.
 
 ## 1. Live Authority
 
 ```yaml
-last_updated_kst: 2026-08-10T13:15+09:00
+last_updated_kst: 2026-08-12T01:37+09:00
+continuation_checkpoint:
+  state_observed_at_main: 6f84b68ee2c9e34c207f44d56aa251d0287e78a7
+  self_merge_sha_required_in_file: false
+  resume_rule: FETCH_LATEST_MAIN_BEFORE_USE
 project:
   repo: alsdmlals4-eng/urban-legend
   default_branch: main
   current_main_source: READ_GITHUB_MAIN_REF_ON_RESUME
-  handoff_delivery_pr: 187
-  handoff_delivery_state: MERGED
-  handoff_merge_commit: e724cd14908368b436f2e5976da57100e8414e0f
+  primary_active_pr: 198
+  primary_active_pr_head: 2830c8978de46bc2801bd12a63a490b26b803ee9
 base:
   repo: alsdmlals4-eng/Base
   default_branch: main
-  last_observed_main: d5cfcfa96fcf33bf7e01dc617d7f68e8d5bbbeaf
-  proposal_display_name: "BCP - 괴이기록국(urban-legend)"
+  last_observed_main: 1d6cc79ae95ffb67ba4de618f010a6540fc6e02c
+  dedicated_execution_owner_commit: 6d2feba2bc49fda2d8d273248b55087853615d5d
+sheet:
+  decision_row: "02_현재_확정결정!116"
+  decision_id: D-2026-08-11-CASE01-UI-I18N-RESPONSIVE-LOCAL-ISOLATION
+  freshness_note: "row K still says Base latest 6d2feba; live Base main is newer and must be re-read"
+continuous_work:
+  exact_base_trigger_present: false
+  note: "current user explicitly authorized uninterrupted handoff/merge work, but this is not labeled CONTINUOUS_WORK_ACTIVE because the exact [연속작업] 진행해 trigger was not used"
+```
+
+GitHub, Google Sheet, exact worktree/receipt가 이 파일과 충돌하면 live authority가 우선한다. 이 파일 안의 SHA/PID/session 값은 locator 또는 관찰시점 증거이며 현재 실행 권한 자체가 아니다.
+
+## 2. Active CASE-01 Decisions
+
+- `D-2026-08-11-LUME-INTEGRATED-COMPANION-NO-LOG-TAB`
+- `D-2026-08-11-CASE01-RECORDS-TAB-ARCHIVE-IA`
+- `D-2026-08-11-CASE01-MANUAL-FIVE-SECTION-THREE-CHAPTER-MAPPING`
+- `D-2026-08-11-CASE01-UI-RUNTIME-PROJECTION-MAPPING`
+- `D-2026-08-11-CASE01-MANUAL-KEYWORD-INPUT-CONTRACT`
+- `D-2026-08-11-CASE01-LANDSCAPE-SAME-COMPOSITION-UI`
+- `D-2026-08-11-CASE01-SHARED-LOCATION-TRAVEL-CONTRACT`
+- `D-2026-08-11-CASE01-FIELD-INVESTIGATION-SURFACE-CONTRACT`
+- `D-2026-08-11-CASE01-UI-SEPARATION-SPEC-APPROVED`
+- `D-2026-08-11-CASE01-UI-I18N-RESPONSIVE-LOCAL-ISOLATION`
+
+Planning contract is v4.5/r2. Exact `기획 완료` was received on 2026-08-11 KST, so Phase C implementation is authorized subject to TDD + HiGodot authority and the protected-scope constraints below.
+
+## 3. PR #198 — Current Implementation Frontier
+
+```yaml
+pr: 198
+state: OPEN_DRAFT
+remote_branch: agent/case01-investigation-device-ui-implementation-20260811
+current_pr_head: 2830c8978de46bc2801bd12a63a490b26b803ee9
+red_evidence_head: 076974644c38f059448a3afdd04279c6e942d171
+base_main: 6f84b68ee2c9e34c207f44d56aa251d0287e78a7
+product_runtime: UNCHANGED
+human_ui_qa: NOT_RUN
+android: NOT_RUN
+```
+
+`red_evidence_head`와 `current_pr_head`를 혼동하지 않는다. RED evidence head에서 기존 4개 baseline은 PASS했고 신규 4개 계약은 의도한 기능 부재로 RED였다.
+
+Current intended REDs:
+
+1. `case01_device_model_test.gd` → `scripts/ui/case01_device_data_adapter.gd` 부재
+2. `case01_device_shell_contract_test.gd` → `scenes/ui/case01_investigative_device_shell.tscn` 부재
+3. `case01_manual_draft_state_test.gd` → `apply_afterlife_manual_draft` 부재
+4. `case01_shared_travel_test.gd` → `scripts/ui/case01_travel_session.gd` 부재
+
+Focused summary: `CASE-01 UI contracts RED: 4/4 failing`.
+
+Protected by default:
+
+- `scripts/core/game_state.gd`
+- `project.godot`
+- `data/episodes/**`
+- Lume product image before `PROJECT_ASSET_APPROVED`
+- player-facing `[로그]` / `AI 로그`
+- pre-reveal correctness/proximity/slot-fitness/mutation leakage
+
+## 4. PR Influence Map
+
+| PR | Current disposition | Handoff relevance |
+|---|---|---|
+| #198 | `IN_PROGRESS / DRAFT / TDD_RED_VERIFIED` | CASE-01 Phase C owner. Do not merge while intentionally RED. |
+| #196 | `OPEN_DRAFT / OVERLAP_RISK` | Changes protected `scripts/core/game_state.gd`; recheck before any PR198 persistent mutation. |
+| #193 | `OPEN_DRAFT / ROUTER_FRESHNESS` | Changes `START_HERE.md` + `docs/DOCUMENTATION_MAP.md`; separate from this handoff owner. |
+| #192 | `OPEN_DRAFT / REFERENCE_AUDIT` | Canon freshness evidence; no product mutation. |
+| #191 | `STALE_HANDOFF / SUPERSEDE` | Changes this same `docs/CURRENT_HANDOFF.md` from older base/state. Do not merge after this handoff lands. |
+| #190 | `OPEN_DRAFT / SAFE_RETURN_PLAN` | Gameplay→Main Menu plan owner; separate Decision scope. |
+| #189 | `OPEN_DRAFT / RED_OVERLAP_RISK` | Changes Canon v2 overlay test used by PR198 baseline; fresh baseline required if it moves/merges. |
+| #186 | `OPEN_DRAFT / HELD` | Route endpoint implementation; separate blocker/QA frontier. |
+| #183 | `OPEN_DRAFT / HELD` | Main Menu Ver 4.3; separate Human/input/Android gates. |
+
+Do not rewrite, merge, close, or absorb unrelated open PRs merely to simplify PR198. The only stale PR intentionally superseded by this handoff is #191 because it owns the same continuation file with older facts.
+
+## 5. Local Executor State at Pause
+
+```yaml
+execution_worktree: C:\Users\user\Documents\GitHub\Ninza\urban-legend.codex-isolated\pr198-exec
+local_execution_branch: local/case01-pr198-exec-20260812
+expected_head: 2830c8978de46bc2801bd12a63a490b26b803ee9
+old_contaminated_worktree: C:\Users\user\Documents\GitHub\Ninza\urban-legend.codex-isolated\pr198
+dedicated_godot: C:\Users\user\Tools\Godot-URBAN-LEGEND-4.7.1\Godot-URBAN-LEGEND-4.7.1.exe
+godot_version: 4.7.1.stable.official.a13da4feb
+self_contained_marker: _sc_
+editor_settings: editor_data/editor_settings-4.7.tres
+higodot_http: 8004
+higodot_ws: 9504
+godot_ai_expected: 3.1.2
+godot_ai_mode: dev
+hera: LOCAL_LIVE_QA_TOOLING_EXPECTED
+codex: NOT_STARTED
+local_executor_ready: NOT_CLAIMED
+```
+
+The old `pr198` worktree was contaminated by a failed Godot AI self-update attempt and must be preserved for diagnosis; do not `reset`, `restore`, `clean`, or copy its changed addon state into `pr198-exec`.
+
+Latest Git diagnosis before handoff used representative tracked file `addons/gut/fonts/AnonymousPro-Bold.ttf.import` and observed:
+
+```text
+INDEX    = 23867ed44fa29a70a38d9a9dc8128d28059c437a
+RAW      = 23867ed44fa29a70a38d9a9dc8128d28059c437a
+FILTERED = 23867ed44fa29a70a38d9a9dc8128d28059c437a
+git diff --quiet       = 0
+git diff-files --quiet = 1
+porcelain v2            = .M
+```
+
+This proves the representative file is content-identical while low-level/index stat state still reports dirty. Earlier observation counted 111 tracked `.import` entries, but **the all-111 index/raw/filtered hash gate has NOT_RUN**. Do not promote the representative proof to a full-worktree clean claim.
+
+## 6. Troubleshooting Lessons — Current Applicable Set
+
+### LESSON-UL-EXEC-001 — Godot editor settings filename is major.minor scoped
+
+- symptom: bootstrap searched `editor_settings-4.tres` and failed even though self-contained initialization succeeded.
+- root cause: Godot 4.7.1 generated `editor_settings-4.7.tres`.
+- fast recovery: derive settings filename from the running Godot major.minor; inspect `editor_data` before declaring absence.
+- prevention/action: handoff/bootstrap must not hardcode `editor_settings-4.tres`.
+- knowledge state: `VALIDATED_PATTERN` for this project/toolchain.
+
+### LESSON-UL-EXEC-002 — One pasted bootstrap must be one terminating ScriptBlock
+
+- symptom: a `throw` occurred but later pasted commands still ran and printed a false READY state.
+- root cause: sequential interactive PowerShell input, not one atomic `& { ... }` block.
+- fast recovery: new PowerShell → one whole `& { ... }` block → any failure aborts before READY/Codex launch.
+- knowledge state: `VALIDATED_PATTERN`.
+
+### LESSON-UL-EXEC-003 — `$Pid` collides with PowerShell `$PID`
+
+- symptom: helper function failed before HiGodot receipt validation.
+- root cause: PowerShell variable names are case-insensitive and `$PID` is a read-only automatic variable.
+- fast recovery: use `$ProcessId` or another explicit parameter name.
+- knowledge state: `VALIDATED_PATTERN`.
+
+### LESSON-UL-EXEC-004 — HiGodot self-update/local runtime state must be isolated
+
+- symptom: old worktree Godot AI 3.1.2 self-updated to 3.1.4, dirtying `addons/godot_ai/**`, `.import`, and local `project.godot` tooling state.
+- resolution: dedicated self-contained Godot + isolated APPDATA/LOCALAPPDATA/TEMP + `godot_ai/mode_override = "dev"` + reserved 8004/9504.
+- fast recovery: preserve contaminated worktree, create exact-head execution worktree, never clean unknown user/tool state destructively.
+- knowledge state: `VALIDATED_PATTERN`.
+
+### LESSON-UL-EXEC-005 — Separate content identity from stat-only Git dirtiness
+
+- symptom: `git status` / `git diff-files` report `.M`/modified while representative index/raw/path-filtered blob hashes are identical and porcelain `git diff` is empty.
+- root cause class: `STAT_ONLY_OR_INDEX_METADATA_DIRTINESS`; exact all-file classification still requires per-file hash verification.
+- failed approaches: treating `status` alone as semantic dirtiness; trying EOL overrides and `--really-refresh` as if they proved content change.
+- fast recovery: staged diff → index blob → raw working blob → path-filtered blob → porcelain content diff → attributes/filter context. Never destructively clean before classification.
+- owner: current handoff + project execution workflow; reusable Base principle may be proposed separately.
+- knowledge state: `PATTERN` pending all-relevant-file verification.
+
+## 7. Project Learning Closure
+
+```yaml
+LRN-UL-2026-08-12-001:
+  classification: SPLIT
+  project_application: APPLIED_TO_CURRENT_HANDOFF_AND_RESUME_GATES
+  project_verification: HANDOFF_PR_EXACT_HEAD_REQUIRED
+  common_principle: CONTENT_IDENTITY_MUST_BE_SEPARATED_FROM_LOW_LEVEL_STAT_DIRTINESS
+  base_proposal: PENDING_CONCURRENT_SAFE_EXISTING_SOLUTION_CHECK
+  closure: OPEN_UNTIL_PROJECT_HANDOFF_AND_BASE_PROPOSAL_LIFECYCLE_COMPLETE
+
+LRN-UL-2026-08-12-002:
+  classification: PROJECT_ONLY
+  project_application: DEDICATED_GODOT_4_7_1_HIGODOT_8004_9504_HERA_CODEX_HOME_RESUME_CONTRACT
+  project_verification: LOCAL_EXECUTOR_READY_NOT_YET_PROVEN
+  base_proposal: N/A
+  closure: OPEN_UNTIL_RESUME_RECEIPT
+```
+
+Existing Solution First for project handoff/workflow: `REUSE`. Existing owners are `docs/CURRENT_HANDOFF.md`, the project Production/PM handoff route, and the adopted Base handoff/validation support skills. No new project Skill is justified for this pause.
+
+## 8. Base State / Proposal Boundary
+
+```yaml
+base_main_observed: 1d6cc79ae95ffb67ba4de618f010a6540fc6e02c
+bcp_014:
   proposal_id: BCP-2026-014-handoff-machine-consumer-compatibility-closeout
-  proposal_status: SUBMITTED
-  active_implementation: NOT_STARTED
-feature_work:
-  state: PAUSED_BY_USER
+  status: IMPLEMENTED
+  implementation_pr: 260
+new_base_candidate:
+  topic: local executor content-identity vs stat-only dirty classification
+  existing_solution_verdict: ABSORB_CANDIDATE
+  proposal_identity: NOT_ALLOCATED_YET
+  concurrency_rule: RECHECK_LATEST_BASE_MAIN_REGISTRY_AND_OPEN_PROPOSAL_PRS_BEFORE_ANY_BASE_WRITE
+base_active_implementation_in_this_handoff: FORBIDDEN
 ```
 
-`handoff_merge_commit`은 PR #187이 실제 통합된 역사적 증거다. 이 문서는 자신을 전달하는 후속 reconciliation commit SHA를 `current main`으로 계속 추적하지 않는다. 다음 세션은 반드시 GitHub `main` ref를 다시 읽는다.
+The old handoff statement `BCP-2026-014 = SUBMITTED / implementation NOT_STARTED` is stale. Base proposal-only work for the new lesson, if still non-duplicate after the final race check, must modify only `[수정제안서]/**`; Base active Skill/Docs/Template/Test/Tool/Workflow implementation is a separate future stage.
 
-## 2. Current Decisions
-
-- `D-2026-08-08-INVESTIGATION-RECOVERY-UI-HIERARCHY-REFINEMENT`
-- `D-2026-08-09-MAIN-MENU-CONTROL-ROOM-VERSIONING`
-- `D-2026-08-10-DISPLAY-RESOLUTION-WINDOW-MODE`
-- `D-2026-08-10-ROUTE-RESTORE-ENDPOINT-CONNECTIVITY`
-
-`START_HERE.md`, `docs/CURRENT_STATUS.md`, `docs/CURRENT_CONFIRMED_DECISIONS.md`의 오래된 상태 문구가 GitHub·Sheet의 최신 사실과 충돌하면 최신 저장소/Sheet를 우선한다.
-
-## 3. Completed / Merged
-
-### PR #180
-
-- `MERGED / HUMAN POINTER-PROGRESSION PASS`
-- 조사 입력과 진행이 실제 Windows QA에서 다음 단계 및 미니게임까지 진행됨.
-
-### PR #187
-
-- `MERGED / HANDOFF_ONLY`
-- exact pre-merge head: `e762398a349ff2658c7159c420c6e8e0314f992e`
-- changed files: `docs/CURRENT_HANDOFF.md` only.
-- exact-head workflows all PASS:
-  - documentation `31354655174`
-  - BCA `31354655165`
-  - Base Adapter `31354655151`
-  - core/docs/full Godot regression `31354655195`
-  - ANNUAL `31354655203`
-- merge commit: `e724cd14908368b436f2e5976da57100e8414e0f`.
-
-## 4. Open Product Work — Do Not Merge During Handoff
-
-### PR #186 — route restore
+## 9. Verification Boundary
 
 ```yaml
-decision: D-2026-08-10-ROUTE-RESTORE-ENDPOINT-CONNECTIVITY
-head: 4113c2d711d96b87082645acd39166ba502a1c90
-route_core_human_qa: PASS
-post_clear_return_flow: FAIL
-merge: HELD
+pr198_red_evidence: PASS_AS_INTENDED_RED
+pr198_current_product_green: NOT_RUN
+local_executor_exact_identity: PARTIALLY_VERIFIED_BEFORE_HANDOFF
+all_111_import_content_identity_gate: NOT_RUN
+codex_launch: NOT_RUN
+codex_internal_fresh_higodot_receipt: NOT_RUN
+codex_internal_fresh_hera_receipt: NOT_RUN
+human_ui_accessibility: NOT_RUN
+android: NOT_RUN
+lume_product_asset: BLOCKED_BY_ASSET_GATE
 ```
 
-Verified route behavior:
-- final safe endpoint enters from WEST;
-- route manipulation works;
-- actual route clear works;
-- successful result persists.
+No automation/reference/runtime-tool evidence may be promoted to Human/Player PASS.
 
-Current blocker: `POST_CLEAR_RETURN_INPUT_BLOCKED`.
-
-Observed sequence:
+## 10. Resume Read Order
 
 ```text
-route clear succeeds
-→ result persists
-→ saved-result UI shows 성공
-→ visible `현장 기록으로 복귀` does not respond
-→ progression blocked
+1. Base repository root + latest Base main + open Base PRs
+2. urban-legend latest main + all open PRs + latest commits
+3. Google Sheet current rows, especially Decision row 116
+4. docs/CURRENT_HANDOFF.md
+5. PR #198 metadata, changed files, latest comments/checks
+6. PR #196 and #189 overlap state
+7. PR #198 approved spec and implementation plan
+8. exact local pr198-exec worktree identity/status
+9. dedicated Godot / HiGodot / Hera / CODEX_HOME fresh receipts
+10. only after all gates pass, launch/continue Codex Phase C
 ```
 
-Evidence-backed root cause to retest before changing code:
-- `scripts/scenes/minigame_scene.gd` owns the visible return button and `_return_to_flow()`.
-- `scripts/ui/canon_v2_operation_overlay.gd` mounts a read-only bottom detail/obligation panel.
-- `_make_detail_panel()` uses `MOUSE_FILTER_STOP`.
-- Human QA screenshot placed that panel over the return-control area.
+## 11. Next Executable Step
 
-Fix is `NOT_IMPLEMENTED`. Resume with a real pointer click-through RED regression first.
+1. Assume previous PowerShell/process/session is stale; fresh-read everything.
+2. Recheck PR #198 remote head before local mutation.
+3. Revalidate `pr198-exec` exact worktree/branch/HEAD.
+4. Revalidate dedicated Godot 4.7.1, self-contained editor settings, Godot AI 3.1.2 dev mode, HiGodot 8004/9504 ownership, Hera exact worktree, and dedicated CODEX_HOME.
+5. Finish the all-relevant-file content-identity gate for the 111 `.import` stat-only candidates without reset/restore/clean/staging.
+6. Only after a complete receipt, launch Codex in the exact worktree and require fresh HiGodot/Hera receipts from inside Codex.
+7. Continue approved Phase C TDD: adapter → manual draft state/API → shared travel → DeviceShell → Records → Manual → Map → Lume → investigation integration → responsive/i18n/regression QA.
+8. Recheck #196/#189 overlap before protected/baseline-adjacent changes.
+9. Explicit-path staging only; never `git add -A` or `git add .` while local tooling/stat-only noise exists.
 
-### PR #183 — main menu Ver 4.3
+## 12. Stop / Fail-Closed Conditions
 
-```yaml
-decision: D-2026-08-09-MAIN-MENU-CONTROL-ROOM-VERSIONING
-head: 42e4f378ef10aebfcd812f737bcdae33cfe8dd3f
-local_visual_candidate: 757df80b00f61fc94916bcee65aa6705748fa5f7
-automated: PASS
-human_visual_1280_class: PASS
-human_visual_1920_class: PASS
-complete_input_gate: NOT_RUN
-gamepad: NOT_RUN
-android: NOT_RUN
-merge: HELD
-```
+Stop persistent product mutation and report current evidence if any of the following is unresolved:
 
-## 5. Approved Display Settings — Implementation Paused
+- PR #198 remote head moved unexpectedly;
+- wrong worktree/branch/HEAD;
+- HiGodot port owner/worktree/session ambiguous;
+- Godot AI version self-updated or addon tracked files changed;
+- Hera does not report exact worktree;
+- CODEX_HOME points at the wrong project;
+- candidate `.import` files fail content-identity checks;
+- protected path overlap with another open PR is not reconciled;
+- Sheet/GitHub authority conflict changes product semantics;
+- new material product Decision is required.
 
-Decision: `D-2026-08-10-DISPLAY-RESOLUTION-WINDOW-MODE`
+Do not `reset`, `restore`, `clean`, kill unrelated processes, or rewrite another worktree to force readiness.
 
-Approved scope:
-- `1280×720`
-- `1600×900`
-- `1920×1080`
-- windowed / fullscreen
-- persistence across restart
-- DisplaySettings responsibility separate from AccessibilitySettings
-
-Planning branch: `agent/display-settings-route-connectivity-design-20260810`
-Planning head: `66c3e24fdffa5502a827f0265f5d1ef8e8ab21f9`
-Status: `PLAN_READY / IMPLEMENTATION_NOT_STARTED / PAUSED_BY_USER`.
-
-## 6. Gameplay → Main Menu Control — Decision Still Open
-
-User requested a Main Menu return control, but work was paused before scope approval.
-
-- A: gameplay screens broadly expose `메뉴`; save current progress, go to main menu, Continue returns to the saved screen.
-- B: only current minigame/result flow exposes it.
-
-Status: `USER_DECISION_REQUIRED_WHEN_RESUMED`.
-Do not infer A or B as approved.
-
-## 7. Base Proposal Result
-
-```yaml
-display_name: "BCP - 괴이기록국(urban-legend)"
-proposal_id: BCP-2026-014-handoff-machine-consumer-compatibility-closeout
-status: SUBMITTED
-existing_solution_verdict: ABSORB
-primary_owner: skills/maintaining-project-context-and-handoff/SKILL.md
-supporting_owner: skills/auditing-canonical-reference-freshness/SKILL.md
-canonical_machine_path: "[수정제안서]/BCP-2026-014-handoff-machine-consumer-compatibility-closeout/PROPOSAL.md"
-initial_storage_pr: 236
-naming_alignment_pr: 241
-canonical_wording_correction_pr: 244
-last_observed_base_main: d5cfcfa96fcf33bf7e01dc617d7f68e8d5bbbeaf
-active_base_implementation: NOT_STARTED_IN_THIS_STAGE
-```
-
-사용자 표시명은 `BCP - 프로젝트 이름` 규칙을 따른다. 현재 Base validator는 Proposal ID와 Registry path 일치를 요구하므로 machine canonical path는 BCP-ID 경로를 유지한다. 긴 원본 제안과 Urban Legend/Ten-Paces 증거는 동일 BCP evidence 경로에 보존됐다.
-
-관련 제안 `BCP-2026-013-post-merge-continuation-state-reconciliation`은 별도 lifecycle edge로 유지된다. 이번 post-merge reconciliation이 바로 그 원칙을 적용한 사례다.
-
-## 8. Verification Boundary
-
-```yaml
-route_pr186_exact_head_ci: PASS
-route_human_core_windows_1280x720: PASS
-post_clear_return_flow_human_qa: FAIL
-pr183_automated: PASS
-pr183_local_visual_1280_class: PASS
-pr183_local_visual_1920_class: PASS
-pr183_complete_human_input_gate: NOT_RUN
-gamepad: NOT_RUN
-android: NOT_RUN
-display_settings_implementation: NOT_RUN
-main_menu_return_design_approval: NOT_RUN
-base_bcp014_proposal_storage_and_naming: PASS
-base_bcp014_active_implementation: NOT_RUN
-handoff_pr187_exact_head_ci: PASS
-handoff_pr187_merge: PASS
-```
-
-`NOT_RUN`을 PASS로 승격하지 않는다.
-
-## 9. Resume Read Order
-
-새 세션에서 사용자가 기능 작업 재개를 요청하면 먼저 다음을 다시 읽는다.
-
-```text
-1. urban-legend current main ref / latest commit
-2. open PRs, 특히 #186/#183와 최신 comments/checks
-3. Base current main + BCP-2026-013/014 + handoff owner
-4. Google Sheet 00_프로젝트_허브 / 98_Base_반영후보
-5. docs/CURRENT_HANDOFF.md
-6. scripts/scenes/minigame_scene.gd
-7. scripts/ui/canon_v2_operation_overlay.gd
-8. PR186 route source/test
-9. display planning branch 66c3e24f and PR183 42e4f378
-```
-
-GitHub/Sheet와 이 파일이 다르면 먼저 live authority를 교정한다.
-
-## 10. Next Executable Product Step — Only After User Resumes
-
-1. current project main / PR186 / Base / Sheet 재조회.
-2. `POST_CLEAR_RETURN_INPUT_BLOCKED` 같은 조건 재현.
-3. 실제 포인터 click-through RED regression 작성.
-4. read-only CanonV2 detail panel만 pointer passthrough가 되도록 최소 input-policy 수정.
-5. confirmation/backdrop 등 실제 상호작용 layer의 pointer blocking은 보존.
-6. focused regression + maintained suites + exact-head PR CI.
-7. Windows Human QA: route clear → `현장 기록으로 복귀` 실제 클릭 → 다음 battle/recovery 전환 확인.
-8. 그 뒤에만 PR186 merge gate 재판정.
-9. Main Menu return-control 범위를 사용자와 확정.
-10. 이후 approved display settings implementation 재개.
-
-## 11. Stop Conditions
-
-- 기능 수정은 현재 중단 상태다.
-- product `.gd` / Scene / data / asset 구현 금지.
-- PR #186 / #183 merge 금지.
-- Main Menu return 범위 임의 확정 금지.
-- display implementation 시작 금지.
-- persistent `.gd` 저작 재개 시 HiGodot authority 재확인.
-- Base 활성 Skill/Docs/Template/Test/Tool/Workflow 구현 금지; BCP-2026-014 활성 구현은 별도 승인 단계다.
-
-## 12. Historical Compatibility Anchors
-
-아래 값은 현재 버전/상태가 아니라 기존 machine consumers가 요구하는 역사·호환 앵커다.
+## 13. Historical Compatibility Anchors
 
 ```yaml
 historical_compatibility_only: true
@@ -237,4 +288,4 @@ legacy_baseline_tokens:
   - mvp-039
 ```
 
-`Ver 4.2`는 현재 제품 버전 선언이 아니다. PR #183의 승인된 목표는 Ver 4.3이며 아직 Draft/미병합이다.
+These tokens are historical/machine-consumer anchors, not current product-state claims.
