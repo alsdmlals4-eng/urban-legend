@@ -7,7 +7,7 @@
 ```yaml
 decision_id: D-2026-08-11-CASE01-UI-RUNTIME-PROJECTION-MAPPING
 classification: USER_APPROVED_RUNTIME_PROJECTION_MAPPING
-approved_choice: RECOMMENDED_MAPPING_AS_WRITTEN
+approved_choice: RECOMMENDED_MAPPING_AS_WRITTEN_WITH_NON_LEAKING_DISPLAY_NORMALIZATION
 scope: CASE-01_AFTERLIFE_STATION_INVESTIGATION_UI_PRESENTATION_PROJECTION
 planning_package: PR_197
 planning_complete_declaration: NOT_RECEIVED_EXACT_PHRASE
@@ -45,6 +45,8 @@ section_afterlife_recovery_response / 회수 대응
 
 ## 2. Stable presentation keyword IDs
 
+ID는 내부적으로 원본/변조 계보를 구분할 수 있다. 그러나 **정답 공개 전 플레이어-facing display label에는 `[변조]` 접두를 노출하지 않는다.** 모든 후보는 동일한 카드 문법·정보 해상도·상태 표현을 사용한다.
+
 ### Page 1 — sections 1–2 shared pool
 
 ```text
@@ -54,8 +56,8 @@ kw_afterlife_p01_concurrent_destination_mismatch     = 동시간대 목적지 �
 kw_afterlife_p01_official_route_absence              = 공식 노선에 없는 추가 목적지
 kw_afterlife_p01_original_testimony_mismatch         = 원본과 증언의 불일치
 kw_afterlife_p01_personal_memory_projection          = 개인별 기억 투영
-kw_afterlife_p01_mutated_start_silence               = [변조] 방송 시작 구간의 무음 공백
-kw_afterlife_p01_mutated_same_destination            = [변조] 모두가 같은 목적지를 들음
+kw_afterlife_p01_mutated_start_silence               = 방송 시작 구간의 무음 공백
+kw_afterlife_p01_mutated_same_destination            = 모두가 같은 목적지를 들음
 ```
 
 ### Page 2 — section 3
@@ -68,8 +70,8 @@ kw_afterlife_p02_position_only_reset                 = 위치만 초기화
 kw_afterlife_p02_time_record_persistence             = 시간·기록 유지
 kw_afterlife_p02_internal_movement_safe              = 승강장 내부 이동은 안전
 kw_afterlife_p02_victim_link_deepens                 = 반복할수록 피해자 연결 심화
-kw_afterlife_p02_mutated_after_announcement_end      = [변조] 안내 종료 후
-kw_afterlife_p02_mutated_time_and_position_reset     = [변조] 시간과 위치가 함께 초기화
+kw_afterlife_p02_mutated_after_announcement_end      = 안내 종료 후
+kw_afterlife_p02_mutated_time_and_position_reset     = 시간과 위치가 함께 초기화
 ```
 
 ### Page 3 — section 4
@@ -82,25 +84,25 @@ kw_afterlife_p03_matching_ticket                     = 노선색·노선명·역
 kw_afterlife_p03_joint_boarding_and_disembarkation   = 피해자 동행 탑승·표 보관·지정 역 하차
 kw_afterlife_p03_projected_destination_not_real      = 투영된 목적지는 현실 노선이 아님
 kw_afterlife_p03_multichannel_ticket_verification    = 색상 외 문양·텍스트 교차 확인
-kw_afterlife_p03_mutated_desired_ticket              = [변조] 개인의 바람에 맞는 승차권
-kw_afterlife_p03_mutated_early_disembark             = [변조] 한 정거장 앞 하차
-kw_afterlife_p03_mutated_victim_solo_boarding        = [변조] 피해자 단독 탑승
+kw_afterlife_p03_mutated_desired_ticket              = 개인의 바람에 맞는 승차권
+kw_afterlife_p03_mutated_early_disembark             = 한 정거장 앞 하차
+kw_afterlife_p03_mutated_victim_solo_boarding        = 피해자 단독 탑승
 ```
 
-이 ID들은 안정적인 presentation/save-reference ID이며, 플레이어-facing 스타일에서 정답 여부를 암시하지 않는다.
+이 ID들은 안정적인 presentation/save-reference ID다. 내부 ID의 `mutated` 토큰, provenance, source relation은 정답 공개 전 UI가 상태 배지·색·아이콘·정렬·검색 필터로 노출하지 않는다.
 
 ## 3. Unlock and provenance
 
 - 핵심 키워드는 직접 지지하는 Canon v2 record가 플레이어의 manual/evidence record set에 존재할 때 해금한다.
 - 비교·보조 키워드는 해당 비교에 필요한 record가 모두 존재할 때만 해금한다.
-- `[변조]` 후보는 정상 후보 하나에서 파생하며 정상 후보보다 먼저 해금하지 않는다.
-- `[변조]`에 독립 가짜 evidence source를 만들지 않는다.
-- UI catalog는 `source_record_ids`와 필요한 경우 `source_keyword_id`를 저장할 수 있으나, presentation이 소비하는 `correct` boolean을 두지 않는다.
-- 페이지/섹션 필터는 슬롯 적합도·정답 가능성으로 후보 풀을 축소하지 않는다.
+- 변조 후보는 정상 후보 하나에서 파생하며 정상 후보보다 먼저 해금하지 않는다.
+- 변조 후보에 독립 가짜 evidence source를 만들지 않는다.
+- UI catalog는 `source_record_ids`와 필요한 경우 `source_keyword_id`를 저장할 수 있으나, presentation이 소비하는 `correct` boolean이나 pre-reveal `mutated_badge`를 두지 않는다.
+- 페이지/섹션 필터는 슬롯 적합도·정답 가능성·정상/변조 여부로 후보 풀을 축소하지 않는다.
 
 ## 4. Presentation location projection
 
-새 `field_node_id`를 만들지 않는다. 이동은 기존 investigation point를 플레이어-facing 장소로 그룹화해 현재 표시 대상을 전환한다.
+새 `field_node_id`를 만들지 않는다. 이동은 기존 investigation point를 플레이어-facing 장소로 그룹화해 **현재 field session에서 표시되는 장소와 조사 포인트 집합을 전환**한다. 지도 진입과 현장 `[이동]`은 동일 location dataset과 동일 shared travel handler를 호출한다.
 
 ```text
 location_afterlife_platform / 승강장
@@ -117,7 +119,7 @@ location_afterlife_staff_room / 역무원실
   point_staff_room_log
 ```
 
-기존 condition으로 잠긴 조사 포인트는 기존 locked-text/condition 계약을 그대로 따른다. 이동은 잠금을 우회하지 않는다.
+기존 condition으로 잠긴 조사 포인트는 기존 locked-text/condition 계약을 그대로 따른다. 이동은 잠금을 우회하지 않는다. 이 Decision은 저장을 새로 확장하지 않으므로 field-session 밖의 위치 영속성은 별도 승인 없이 발명하지 않는다.
 
 ## 5. Preserved boundaries
 
