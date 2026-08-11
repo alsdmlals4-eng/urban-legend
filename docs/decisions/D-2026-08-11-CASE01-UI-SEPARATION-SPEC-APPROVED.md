@@ -1,7 +1,8 @@
 # D-2026-08-11-CASE01-UI-SEPARATION-SPEC-APPROVED
 
-> 상태: `USER_APPROVED_CONSOLIDATED_SPEC / IMPLEMENTATION_PLANNING_AUTHORIZED / RUNTIME_EXECUTION_NOT_YET_AUTHORIZED`
+> 상태: `USER_APPROVED_CONSOLIDATED_SPEC / IMPLEMENTATION_PLANNING_AUTHORIZED / PLANNING_COMPLETE_RECEIVED / PHASE_C_READY`
 > 승인 시각: 2026-08-11 KST
+> Phase C 진입 선언: 2026-08-11 KST `기획 완료`
 > 대상: `docs/specs/CASE01_ACTUAL_GAME_UI_SEPARATION_SPEC_2026-08-11.md`
 > Human/UI 검증: `NOT_RUN`
 
@@ -21,14 +22,14 @@
 8. 지도 이동과 현장 `[이동]`은 같은 장소 데이터와 같은 travel 판정을 사용한다.
 9. 탭 전환과 Shell 열기/닫기는 자체적으로 시간·판정·저장·조사 진행을 발생시키지 않으며 UI 문맥을 보존한다.
 
-## 이번 승인으로 허용하는 것
+## 초기 Spec 승인으로 허용한 것
 
 - 실제 현재 main/Canon v2/runtime 구조를 읽고 구현 영향 범위를 감사한다.
 - TDD 중심 구현 계획을 작성한다.
 - Visual Requirement Gate, HiGodot authoring gate, protected-path gate, exact-head regression 순서를 구현 계획에 포함한다.
 - 구현용 별도 branch/PR의 파일·테스트·커밋 단위를 설계한다.
 
-## 이번 승인만으로 허용하지 않는 것
+## 초기 Spec 승인만으로 허용하지 않았던 것
 
 - `scripts/`, `scenes/`, `data/episodes/**`, `project.godot`, 자산 파일의 제품 runtime 변경.
 - save schema 또는 사건 규칙 변경.
@@ -36,7 +37,23 @@
 - Android Project Settings 변경.
 - Canon v2의 정답/오답을 UI가 판정하거나 노출하는 기능.
 
-제품 runtime 구현은 이 승인된 Spec을 바탕으로 구현 계획을 검토한 뒤 별도 실행 단계에서 시작한다.
+위 제한은 **정확한 `기획 완료` 선언 수신 전의 Phase B 경계**였다. 2026-08-11 KST 사용자가 정확히 `기획 완료`라고 선언했으므로, 아래 Phase C 승인 범위가 그 이전 실행 차단을 대체한다.
+
+## Phase C 진입 승인
+
+2026-08-11 KST 사용자의 정확한 `기획 완료` 선언을 `USER_EXPLICIT_PLANNING_COMPLETE_DECLARATION`으로 기록한다.
+
+Phase C에서 허용되는 구현 범위:
+
+- 최신 `main`에서 분기한 격리 implementation branch 사용.
+- `docs/superpowers/plans/2026-08-11-case01-investigation-ui-implementation-plan.md`와 r2 addendum 순서의 TDD RED→GREEN 실행.
+- 계획에 명시된 CASE-01 test·thin adapter·shared travel·device shell·tab controller 구현.
+- Scene/Node/Resource persistent authoring은 HiGodot-authorized 경로를 사용할 때만 수행.
+- `scripts/core/game_state.gd`, `project.godot`, `data/episodes/**`, save version은 현재 승인 범위에서 변경하지 않음.
+- 제품 이미지 바인딩은 Visual Requirement Gate가 `PROJECT_ASSET_APPROVED`에 도달하기 전까지 금지.
+- 자동 검증은 Human/UI/Android PASS로 승격하지 않음.
+
+현재 실행 기준선은 fresh startup audit에서 확인한 `main@6f84b68ee2c9e34c207f44d56aa251d0287e78a7`이다. Base remote 이동은 기록만 하고 자동 채택하지 않는다.
 
 ## 구현 계획 필수 경계
 
@@ -56,3 +73,4 @@
 - `D-2026-08-11-CASE01-SHARED-LOCATION-TRAVEL-CONTRACT`
 - `D-2026-08-11-CASE01-FIELD-INVESTIGATION-SURFACE-CONTRACT`
 - `D-2026-08-11-CASE01-MANUAL-FIVE-SECTION-THREE-CHAPTER-MAPPING`
+- `D-2026-08-11-CASE01-UI-RUNTIME-PROJECTION-MAPPING`
