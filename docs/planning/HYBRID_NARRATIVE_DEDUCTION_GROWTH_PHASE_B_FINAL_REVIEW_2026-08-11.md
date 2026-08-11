@@ -12,7 +12,7 @@
 
 ## 1. Fresh authority readback
 
-Phase B did not rely on historical chat state as current truth. It re-read the live authorities before locking Package 1.
+Phase B did not rely on historical chat state as current truth. It re-read live authorities before locking Package 1.
 
 ### Base
 
@@ -77,9 +77,7 @@ Result: `EXISTING_SOLUTION_FIRST = PASS`.
 
 ### 3.2 Approved design still current
 
-The following remain valid and unchanged:
-
-- `FACT → MEANING → IDENTITY` is the integration rule.
+- `FACT → MEANING → IDENTITY` remains the integration rule.
 - Required mystery truth remains independent of stats, relationship, identity, tags, and RNG.
 - No universal morality/affection meter is introduced.
 - Relationship memory comes from actual incident/responsibility decisions rather than gift/click grind.
@@ -132,7 +130,7 @@ NOT_AUTOMATIC_CONTENT_REWRITE
 NOT_PLAYER_EXPERIENCE_PASS
 ```
 
-Package 1 is specifically designed to measure this. If at least 2/5 fresh participants report that title/intro wording gave away the answer, a separate CHANGE package is required before broader Thought-Path claims.
+Package 1 is designed to measure this. If at least 2/5 fresh participants report that title/intro wording gave away the answer, a separate CHANGE package is required before broader Thought-Path claims.
 
 ## 4. Benchmark / professional comparison disposition
 
@@ -163,7 +161,7 @@ Rejected as incomplete. Current Oh Hyun temperament is `balanced`, while the ins
 
 ### Attack: “Trigger by reading `method_results` after the choice”
 
-Rejected for the current call site. In `resolve_investigation_method`, event evaluation happens before the new `method_result` is stored into `method_results[point_id]`. The implementation must pass the just-resolved context explicitly rather than depend on not-yet-persisted state or reorder unrelated persistence.
+Rejected for the current call site. In `resolve_investigation_method`, event evaluation happens before the new `method_result` is stored into `method_results[point_id]`. The implementation passes the just-resolved context explicitly rather than depending on not-yet-persisted state or reordering unrelated persistence.
 
 ### Attack: “Rewrite the page title now because it looks like a spoiler”
 
@@ -187,14 +185,18 @@ HUMAN_PRIMING_RISK_REMAINS_OPEN
 Implementation plan authority:
 `docs/superpowers/plans/2026-08-11-afterlife-station-fact-meaning-identity-poc-implementation-plan.md`
 
-Only the following initial product/test/QA surfaces are authorized by Package 1:
+Human preregistration authority:
+`docs/planning/AFTERLIFE_FACT_MEANING_IDENTITY_POC_HUMAN_PLAYTEST_CONTRACT_2026-08-11.md`
+
+Only the following product/test surfaces are authorized for the initial Phase C implementation:
 
 ```text
 MODIFY  scripts/core/game_state.gd
 CREATE  tests/canon_v2_runtime/canon_v2_fact_meaning_identity_poc_test.gd
 MODIFY  tests/run_canon_v2_runtime_ux_tests.sh
-CREATE  docs/qa/2026-08-11-afterlife-fact-meaning-identity-poc-human-playtest.md
 ```
+
+The Human planning contract already exists in this planning package. Completed Human evidence is created only after real sessions under the repository evidence lifecycle.
 
 ### Exact minimal runtime contract
 
@@ -252,9 +254,9 @@ RED focused event-contract test
 → exact-head CI
 ```
 
-The focused matrix must prove:
+Focused matrix:
 
-1. existing trust events still require the existing threshold;
+1. existing trust events retain threshold behavior;
 2. Oh callback does not trigger for a different point/method/failure;
 3. Oh must be selected;
 4. matching staff-room destruction success triggers at zero numeric trust;
@@ -265,7 +267,7 @@ The focused matrix must prove:
 
 Recommended starting sample: **5 fresh/unexposed sessions** (`RECOMMENDED_STARTING_SAMPLE`, not population/statistical proof).
 
-Fixed decision rules:
+Fixed decision rules in the Human planning contract:
 
 - `THOUGHT_PATH_KEEP`: ≥4/5 articulate page-1 hypothesis using ≥2 independent records before explicit answer exposure.
 - `PRIMING_CHANGE`: ≥2/5 report title/intro wording gave away the answer.
@@ -313,7 +315,7 @@ Revert the Oh event trigger metadata, requirement helper, and explicit context c
 | implementation sequence and protected surfaces | `PASS` |
 | adversarial review | `PASS` |
 | exact implementation plan | `PASS` |
-| Human evidence preregistration | `PASS / EXECUTION_NOT_RUN` |
+| Human preregistration planning contract | `PASS / SESSIONS_NOT_RUN` |
 | persistent product-authoring executor in this ChatGPT surface | `NOT_AVAILABLE / HIGODOT_REQUIRED` |
 
 Final state:
