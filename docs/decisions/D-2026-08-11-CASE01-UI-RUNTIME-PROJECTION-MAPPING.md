@@ -2,7 +2,7 @@
 
 ## Decision
 
-사용자는 2026-08-11 KST에 CASE-01 조사 디바이스 구현 계획의 Pre-code Gate A 권장 매핑에 대해 `권장안 승인,연속작업 진행해`라고 승인했다.
+사용자는 2026-08-11 KST에 CASE-01 조사 디바이스 구현 계획의 Pre-code Gate A 권장 매핑에 대해 `권장안 승인,연속작업 진행해`라고 승인했고, 이후 정확히 `기획 완료`라고 선언해 Phase C 진입 Gate를 충족했다.
 
 ```yaml
 decision_id: D-2026-08-11-CASE01-UI-RUNTIME-PROJECTION-MAPPING
@@ -10,8 +10,8 @@ classification: USER_APPROVED_RUNTIME_PROJECTION_MAPPING
 approved_choice: RECOMMENDED_MAPPING_AS_WRITTEN_WITH_NON_LEAKING_DISPLAY_NORMALIZATION
 scope: CASE-01_AFTERLIFE_STATION_INVESTIGATION_UI_PRESENTATION_PROJECTION
 planning_package: PR_197
-planning_complete_declaration: NOT_RECEIVED_EXACT_PHRASE
-phase_c_persistent_build: BLOCKED_PENDING_EXACT_기획_완료_DECLARATION
+planning_complete_declaration: RECEIVED_EXACT_기획_완료
+phase_c_persistent_build: AUTHORIZED_WITH_TDD_AND_HIGODOT_BOUNDARIES
 product_asset_promotion: BLOCKED_BY_VISUAL_REQUIREMENT_GATE
 ```
 
@@ -134,6 +134,6 @@ location_afterlife_staff_room / 역무원실
 
 ## 6. Work-instruction gate
 
-현행 v4.5-r2의 `planning_completion_trigger`는 `USER_EXPLICIT_PLANNING_COMPLETE_DECLARATION`이다. 이번 사용자 문구는 이 Decision의 권장 매핑 승인과 연속 planning 진행 승인이지만, 정확한 `기획 완료` 선언으로 대체하지 않는다.
+현행 v4.5-r2의 `planning_completion_trigger`는 `USER_EXPLICIT_PLANNING_COMPLETE_DECLARATION`이다. 2026-08-11 KST 사용자가 정확히 `기획 완료`라고 선언했으므로 이 CASE-01 UI package의 Phase C 진입 Gate는 충족됐다.
 
-따라서 이 Decision을 GitHub·Sheet에 동기화하고 planning PR을 검수·병합 준비하는 작업은 진행할 수 있으나, persistent Phase C 제품 BUILD는 정확한 `기획 완료` 수신 전 시작하지 않는다.
+따라서 최신 `main`에서 분기한 격리 implementation branch에서 TDD RED부터 실행한다. 제품 Scene/Node/Resource persistent authoring은 HiGodot-authorized 경로를 사용하며, Visual Requirement Gate 미통과 상태에서는 루메 제품 이미지 바인딩을 계속 금지한다.
