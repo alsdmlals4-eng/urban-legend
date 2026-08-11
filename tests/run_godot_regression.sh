@@ -124,5 +124,10 @@ for test_name in "${scene_tests[@]}"; do
   run_test "$test_name" scene
 done
 
-echo "Godot regression suite: 58/58 legacy entrypoints + 7/7 Canon v2 focused entrypoints passed"
+GODOT_BIN="$GODOT_BIN" \
+  GODOT_TEST_TIMEOUT="$GODOT_TEST_TIMEOUT" \
+  GODOT_TEST_TMP="$RUN_ROOT" \
+  bash tests/case01_ui/run_case01_ui_tests.sh
+
+echo "Godot regression suite: 58/58 legacy entrypoints + 9/9 Afterlife Canon v2 migration entrypoints + CASE-01 UI focused contracts passed"
 echo "Logs: $LOG_ROOT"
