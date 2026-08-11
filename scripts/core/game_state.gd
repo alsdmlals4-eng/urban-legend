@@ -74,6 +74,12 @@ const AGENT_TRUST_EVENTS: Array[Dictionary] = [
 		"id": "agent_event_oh_breakthrough_warning_01",
 		"agent_id": "agent_oh_hyun",
 		"required_trust": 2,
+		"trigger_mode": "incident_context",
+		"trigger_context": {
+			"point_id": "point_staff_room_door",
+			"method_type": "destruction",
+			"successful": true
+		},
 		"title": "오현의 돌파 경고",
 		"text": "오현: 길을 열었으면 바로 빠져나갈 경로도 확보해야 합니다. 다음 회수 판단 때는 제가 앞을 보겠습니다.",
 		"support_text": "오현의 돌파 경고: 다음 조사 또는 회수 판단에서 진입 경로를 참고할 수 있습니다."
@@ -1704,7 +1710,11 @@ func resolve_investigation_method(point_id: String, method: Dictionary) -> Dicti
 
 	apply_story_effects(effects)
 	var trust_changes := _apply_method_trust_rules(method, successful, helper_agent_id)
-	var triggered_agent_events := _try_trigger_agent_trust_events()
+	var triggered_agent_events := _try_trigger_agent_trust_events({
+		"point_id": point_id,
+		"method_type": String(method.get("method_type", stat_key)),
+		"successful": successful
+	})
 	var random_event_result := check_random_event(_to_string_array(method.get("situation_tags", [])))
 	var new_clue_ids := _get_new_string_ids(before_clue_ids, get_collected_clue_ids())
 	var method_result := {
@@ -3259,7 +3269,26 @@ func _add_agent_trust_delta(agent_id: String, delta: int) -> void:
 	agent_trust_changes[agent_id] = next_value
 
 
-func _try_trigger_agent_trust_events() -> Array:
+func _agent_event_requirements_met(event: Dictionary, context: Dictionary) -> bool:
+	var trigger_mode := String(event.get("trigger_mode", "trust_threshold"))
+	if trigger_mode == "incident_context":
+		var required_value: Variant = event.get("trigger_context", {})
+		if typeof(required_value) != TYPE_DICTIONARY:
+			return false
+		var required := required_value as Dictionary
+		if required.is_empty():
+			return false
+		for key in ["point_id", "method_type", "successful"]:
+			if not required.has(key) or not context.has(key) or context.get(key) != required.get(key):
+				return false
+		return true
+	if trigger_mode != "trust_threshold":
+		return false
+	var agent_id := String(event.get("agent_id", ""))
+	return get_agent_trust(agent_id) >= int(event.get("required_trust", 2))
+
+
+func _try_trigger_agent_trust_events(context: Dictionary = {}) -> Array:
 	var triggered_events: Array = []
 	for event in AGENT_TRUST_EVENTS:
 		var event_id := String(event.get("id", ""))
@@ -3268,7 +3297,7 @@ func _try_trigger_agent_trust_events() -> Array:
 			continue
 		if triggered_agent_event_ids.has(event_id):
 			continue
-		if get_agent_trust(agent_id) < int(event.get("required_trust", 2)):
+		if not _agent_event_requirements_met(event, context):
 			continue
 		triggered_agent_event_ids.append(event_id)
 		triggered_events.append(event.duplicate(true))

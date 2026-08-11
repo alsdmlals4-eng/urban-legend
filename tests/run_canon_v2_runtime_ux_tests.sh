@@ -10,6 +10,7 @@ TESTS=(
   "tests/canon_v2_runtime/canon_v2_runtime_bridge_test.gd"
   "tests/canon_v2_runtime/canon_v2_action_gate_test.gd"
   "tests/canon_v2_runtime/canon_v2_result_termination_test.gd"
+  "tests/canon_v2_runtime/canon_v2_fact_meaning_identity_poc_test.gd"
 )
 
 for test_path in "${TESTS[@]}"; do
