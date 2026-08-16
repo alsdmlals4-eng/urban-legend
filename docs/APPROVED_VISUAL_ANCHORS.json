@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "purpose": "Project-owned approved visual reference anchors. This registry grants visual-reference authority only and does not grant PROJECT_ASSET_APPROVED or replace tracked gameplay assets.",
+  "entries": [
+    {
+      "project_id": "urban-legend",
+      "subject_id": "kwon_narae",
+      "subject_name": "Kwon Narae",
+      "anchor_role": "CHARACTER_EXPRESSION_IDENTITY",
+      "approval_state": "APPROVED",
+      "source_path": "assets/source/mvp043_character_v1/kwon_narae.png",
+      "source_sha256": "94d35a4b992bf1a801117275f6b8f9862455ef7acdf6ecffe3ab880f727b0123",
+      "figma_node_url": "https://www.figma.com/design/Z7J3eLeavEytKN20H4HfoP/urban-legend?node-id=33-2",
+      "evidence": {
+        "kind": "FIGMA_CONNECTOR",
+        "ref": "node=33:2;imageHash=67ecb84c43929e63f99ec3e4486fb326c53f1f58;bytes=337727;sha256=94d35a4b992bf1a801117275f6b8f9862455ef7acdf6ecffe3ab880f727b0123",
+        "checked_at": "2026-08-16T13:51:03Z"
+      },
+      "product_asset_approval": "NOT_GRANTED"
+    }
+  ]
+}
