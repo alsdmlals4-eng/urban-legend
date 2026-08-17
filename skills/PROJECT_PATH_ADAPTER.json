@@ -41,7 +41,7 @@
     "version": "9.4.3"
   },
   "canonical_source": "skills/PROJECT_BASE_ADAPTER.json",
-  "canonical_source_sha256": "78cc1fb5f4dcc731c55e63a94e4ad72052988447c81b36665e18858361a480d0",
+  "canonical_source_sha256": "71ac58ed655afcb0b29d146de7dc8f41d66be031a22e9779d9a0986328e01f8c",
   "generated": true,
   "hash_definition": "RAW_FILE_BYTES_SHA256",
   "legacy_source": "docs/archive/base-v9-legacy-inputs/PROJECT_PATH_ADAPTER.json",
@@ -49,6 +49,7 @@
   "lifecycle": "ONE_CYCLE",
   "project": {
     "engine": "Godot 4.7",
+    "project_id": "urban-legend",
     "repository": "alsdmlals4-eng/urban-legend",
     "root": "."
   },
