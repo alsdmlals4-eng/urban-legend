@@ -85,22 +85,11 @@ jobs:
             --check
           python tests/test_tool_hub_v2_identity.py
 
-      - name: Pin validator and publish generated outputs
+      - name: Publish generated operating files only
         shell: bash
         run: |
           set -euo pipefail
-          python - <<'PY'
-          from pathlib import Path
-
-          path = Path('.github/workflows/validate-project-base-adapter.yml')
-          text = path.read_text(encoding='utf-8')
-          old = 'bfdc9e44d4a6920dc085eaa3f9d19d31b1acd2a1'
-          new = '19d936a3048115ab1bf8d94a6400d9bedbe09b2f'
-          if text.count(old) != 1:
-              raise SystemExit(f'expected one old validator pin, found {text.count(old)}')
-          path.write_text(text.replace(old, new), encoding='utf-8')
-          PY
-          rm -f .github/workflows/tmp-generate-tool-hub-v2-identity.yml generated-files.txt
+          rm -f generated-files.txt
           rm -rf .base-contract
           git add \
             skills/PROJECT_BASE_ADAPTER.json \
@@ -108,12 +97,10 @@ jobs:
             skills/BASE_V9_ADAPTER.json \
             skills/PROJECT_BASE_SKILL_ADAPTER.json \
             skills/PROJECT_PATH_ADAPTER.json \
-            docs/PROJECT_OPERATING_DASHBOARD.html \
-            .github/workflows/validate-project-base-adapter.yml \
-            .github/workflows/tmp-generate-tool-hub-v2-identity.yml
-          printf '%s\n' 'Staged migration changes:'
+            docs/PROJECT_OPERATING_DASHBOARD.html
+          printf '%s\n' 'Staged generated changes:'
           git diff --cached --name-only
-          test "$(git diff --cached --name-only | wc -l | tr -d ' ')" = "8"
+          test "$(git diff --cached --name-only | wc -l | tr -d ' ')" = "6"
           git config user.name 'Base Tool Hub IRG Bot'
           git config user.email 'base-tool-hub-irg@users.noreply.github.com'
           git commit -m 'fix: migrate Tool Hub project identity to v2'
