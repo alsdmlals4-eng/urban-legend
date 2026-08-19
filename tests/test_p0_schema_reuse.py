@@ -59,6 +59,29 @@ class P0SchemaReuseTests(unittest.TestCase):
         self.assertTrue(report["ok"], report["violations"])
         self.assertGreaterEqual(report["checked_records"], 2)
 
+    def test_base_reuse_adoption_manifest_preserves_adapted_validator_boundary(self) -> None:
+        manifest = json.loads((ROOT / "docs" / "base-reuse-adoption.json").read_text(encoding="utf-8"))
+        self.assertEqual(1, manifest["schema_version"])
+        self.assertEqual(
+            "8553678f70e22f193a2336b591f677dcfa5a8965",
+            manifest["base_source_commit"],
+        )
+        states = {
+            module_id: config["state"]
+            for module_id, config in manifest["modules"].items()
+        }
+        self.assertEqual(
+            {
+                "RM-TOOL-001": "deferred",
+                "RM-SYS-001": "not_applicable",
+                "RM-SYS-003": "planned",
+                "RM-VIS-001": "planned",
+                "RM-VIS-002": "planned",
+            },
+            states,
+        )
+        self.assertEqual("deferred", states["RM-TOOL-001"])
+
 
 if __name__ == "__main__":
     unittest.main()
