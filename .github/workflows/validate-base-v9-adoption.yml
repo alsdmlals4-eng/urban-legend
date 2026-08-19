@@ -5,7 +5,9 @@ on:
     paths:
       - 'skills/BASE_V9_ADAPTER.json'
       - 'docs/BASE_V9_ADOPTION_AUDIT.md'
+      - 'docs/base-reuse-adoption.json'
       - 'tests/test_base_v9_adoption.py'
+      - 'tests/test_p0_schema_reuse.py'
       - 'tests/test_skill_package_integrity.py'
       - '.github/workflows/validate-base-v9-adoption.yml'
 
