@@ -1,0 +1,14 @@
+{
+  "files": [
+    {
+      "path": "data/agents.json",
+      "records": "$.agents",
+      "id_field": "id",
+      "required_fields": ["id", "name", "temperament", "visual_asset_id"],
+      "enum_fields": {
+        "temperament": ["breakthrough", "empathetic"]
+      }
+    }
+  ],
+  "references": []
+}
