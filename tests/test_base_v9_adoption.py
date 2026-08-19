@@ -46,5 +46,10 @@ class BaseV9AdoptionTests(unittest.TestCase):
         self.assertIn("adversarial-gate", workflow)
 
 
+# Required-check bridge for the already-merged RM-TOOL-001 pilot and its
+# Base Adoption Kit manifest boundary.
+from tests.test_p0_schema_reuse import P0SchemaReuseTests
+
+
 if __name__ == "__main__":
     unittest.main()
