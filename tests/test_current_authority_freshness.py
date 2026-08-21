@@ -31,13 +31,23 @@ class CurrentAuthorityFreshnessTests(unittest.TestCase):
         self.assertIn("NOT_RUN", text)
         self.assertNotIn("APPROVED_FINAL_PLANNING_BASELINE_PENDING_MAIN", text)
 
-    def test_verified_ui_successor_is_not_frozen_as_not_started(self) -> None:
+    def test_verified_ui_successor_is_not_frozen_as_current_state(self) -> None:
         start = self.read("START_HERE.md")
         overlay = self.read("docs/CURRENT_DECISION_OVERLAY.md")
         self.assertIn("PR #180", overlay)
         self.assertIn("병합 완료", overlay)
-        self.assertNotIn("ui_hierarchy_runtime_implementation: NOT_STARTED", start)
-        self.assertNotIn("BLOCKED_HIGODOT_UNAVAILABLE_IN_CHATGPT_SESSION", start)
+
+        snapshot = start.split("## 현재 제품·Gate Snapshot", 1)[1].split(
+            "## Verified successor와 미완료를 구분한다", 1
+        )[0]
+        self.assertNotIn("ui_hierarchy_runtime_implementation: NOT_STARTED", snapshot)
+        self.assertNotIn("BLOCKED_HIGODOT_UNAVAILABLE_IN_CHATGPT_SESSION", snapshot)
+
+        successor_section = start.split(
+            "## Verified successor와 미완료를 구분한다", 1
+        )[1].split("## Validation Router", 1)[0]
+        self.assertIn("predecessor history", successor_section)
+        self.assertIn("PR #180", successor_section)
 
     def test_base_version_has_single_current_owner(self) -> None:
         agents = self.read("AGENTS.md")
