@@ -1,7 +1,7 @@
 # 괴이기록국 Validation Target Canon
 
 > 문서 역할: `CURRENT_VALIDATION_ROUTER`
-> 상태: `CURRENT / PLAN_LOCK / HUMAN_NOT_RUN`
+> 상태: `CURRENT / PLANNING_COMPLETE / IMPLEMENTATION_GATE / HUMAN_NOT_RUN`
 > 현재 제품 기획: `docs/CURRENT_PLANNING_CANON.md` + `docs/current-planning-canon.json`
 > 현재 mutable decision: `docs/CURRENT_DECISION_OVERLAY.md`
 > predecessor 원문: `docs/archive/history/VALIDATION_TARGET_CANON_PRE_MONTHLY_2026-08-21.md`
@@ -11,9 +11,10 @@
 ## 1. Evidence ceiling
 
 ```yaml
-planning: NON_VISUAL_PLANNING_CLOSURE_READY
-overall_plan: OPEN
-plan_lock: ACTIVE
+planning: COMPLETE
+user_final_planning_declaration: APPROVED
+plan_lock: RELEASED_TO_IMPLEMENTATION_GATE
+implementation_reality_gate: HANDOFF_READY_WITH_KNOWN_REALIGNMENT
 runtime_implementation_authorized: false
 canonical_root_runtime_receipt: NOT_RUN
 human_qa: NOT_RUN
@@ -22,14 +23,14 @@ poc_passed: NOT_DECLARED
 production_expansion: NOT_APPROVED
 ```
 
-문서·자동 테스트·과거 runtime 증거가 있어도 **현재 월간 제품 기준 Human QA를 대신하지 않는다.** 실행하지 않은 Runtime·Human·device 검증은 PASS로 승격하지 않는다.
+기획 완료는 Human/runtime 증거가 생겼다는 뜻이 아니다. 문서·자동 테스트·과거 runtime 증거가 있어도 **현재 월간 제품 기준 Human QA를 대신하지 않는다.** 실행하지 않은 Runtime·Human·device 검증은 PASS로 승격하지 않는다.
 
 ## 2. 현재 Validation 책임 분리
 
 | Route | 역할 | 핵심 질문 | 현재 상태 |
 |---|---|---|---|
-| `M01_FIRST_SESSION` | 첫 세션·온보딩·회귀 | 처음 보는 플레이어가 조사→추리→구출→회수의 인과와 기록국 역할을 이해하는가? | `PLANNED / HUMAN_NOT_RUN` |
-| `M04_RELEASE_NEAR_VERTICAL_SLICE` | release-near 제품 경험 | 실제 사용 후보 UI/UX·아트·연출·Audio/VFX·핵심 시스템·콘텐츠가 연결됐을 때 이 게임을 사고 싶게 만드는 경험과 차별점이 전달되는가? | `PLAN_ONLY / HUMAN_NOT_RUN` |
+| `M01_FIRST_SESSION` | 첫 세션·온보딩·회귀 | 처음 보는 플레이어가 조사→추리→구출→회수의 인과와 기록국 역할을 이해하는가? | `IMPLEMENTATION_HANDOFF_READY / HUMAN_NOT_RUN` |
+| `M04_RELEASE_NEAR_VERTICAL_SLICE` | release-near 제품 경험 | 실제 사용 후보 UI/UX·아트·연출·Audio/VFX·핵심 시스템·콘텐츠가 연결됐을 때 이 게임을 사고 싶게 만드는 경험과 차별점이 전달되는가? | `SYSTEM_PREP_READY / PRODUCT_REFERENCE_ASSET_PENDING / HUMAN_NOT_RUN` |
 
 M01은 M04의 제품 완성도·판매 포인트 검증을 대신하지 않는다. M04는 M01의 첫 세션 학습 책임을 대신하지 않는다.
 
@@ -57,6 +58,7 @@ M01 저승역은 첫 세션·온보딩·회귀 사건이다.
 - 조사 패킷: `docs/M01_INVESTIGATION_SCENE_PACKET.md`.
 - 추리 패킷: `docs/M01_DEDUCTION_SCENE_PACKET.md`.
 - 구출 패킷: `docs/M01_RESCUE_SCENE_PACKET.md`.
+- 회수 패킷: `docs/M01_RECOVERY_SCENE_PACKET.md`.
 
 첫 추리는 다음 4후보를 보존한다.
 
@@ -73,6 +75,7 @@ M01 저승역은 첫 세션·온보딩·회귀 사건이다.
 - 피해자는 현실 교통 기록과 공식 승차권을 대조하고 지정 역에서 동반 하차하는 절차로 구출한다.
 - 단일 RNG 성공이 필수 진실을 잠그지 않는다.
 - 요원·성장·장비·아카는 정답 가설이나 미관측 패턴을 대신 제공하지 않는다.
+- `SERIAL_EXAM_FATIGUE_GUARD`: 구출·회수는 조사/추리와 무관한 새 정답 시험이 아니라 이미 확보한 규칙의 적용/실행이어야 한다.
 
 ### 플레이어 경험 검증 질문
 
@@ -83,20 +86,25 @@ Human 세션에서는 최소한 다음을 행동과 설명으로 분리해 관�
 - 왜 가설을 제거하거나 유지했는지 관측 근거로 설명하는가?
 - 구출 절차가 가설 확인과 어떻게 연결되는지 설명하는가?
 - 회수 전조에 어떤 조사 기록을 적용해야 하는지 이해하는가?
+- 단계가 연속된 독립 시험처럼 피로하게 느껴지는가, 하나의 규칙을 점점 더 깊게 사용하는 것으로 느껴지는가?
 - 실패가 단순 초기화가 아니라 위험 사례·후속 조사·매뉴얼로 남는다는 것을 이해하는가?
 - 결과 화면에서 구출 결과와 회수 결과를 별도 축으로 이해하는가?
 
-### 구현 전 Reality Gate
+### 구현 Reality Gate — 완료된 판단
 
-M01 current Human QA 전에 다음이 필요하다.
+2026-08-22 fresh-main Reality Gate에서 다음을 확인했다.
 
-1. fresh main의 legacy Episode/PoC와 Canon v2 차이 readback.
-2. 기존 Episode/save/report ID를 보존하는 migration matrix.
-3. 필요한 Canon v2 runtime 이관의 RED→GREEN 계약.
-4. current canonical-root runtime 실행 증거.
-5. 실제 검증 빌드/commit 고정.
+- `EXISTING_CANON_V2_RUNTIME_REUSE`: loader/save migrator/transaction/active runtime wrapper가 이미 current main에 존재.
+- 기존 ID/save migration matrix를 새로 만들지 않고 재사용.
+- `COMPOSITE_RESULT_RUNTIME_SUCCESSOR_PRESENT`.
+- `LEGACY_S_RANK_CONTRACT_REALIGNMENT_REQUIRED`.
+- `MONTHLY_STATE_NOT_IMPLEMENTED`.
 
-현재 legacy Episode 데이터의 의미 불일치는 `docs/planning/2026-08-04-afterlife-station-canonical-source-map-and-legacy-disposition.md`가 선언한 migration debt이며, PLAN_LOCK 중 임의로 수정하지 않는다.
+현재 implementation owner:
+- `docs/superpowers/specs/2026-08-22-post-planning-runtime-reconciliation-design.md`
+- `docs/superpowers/plans/2026-08-22-post-planning-runtime-reconciliation-implementation-plan.md`
+
+즉 M01은 기획을 다시 여는 상태가 아니라 **기존 runtime 재사용 + 의미 정합화 + First Session orchestration 구현 대기**다.
 
 ## 4. M04_RELEASE_NEAR_VERTICAL_SLICE
 
@@ -111,7 +119,7 @@ M04 빨간 우산은 약 30~45분 **release-near player-experience Vertical Slic
 ### 필수 포함 범위
 
 - 실제 사용 후보 UI/UX.
-- 승인된 또는 명시적으로 placeholder 처리된 아트 방향.
+- 승인된 product-reference 기반 아트 또는 명시적으로 placeholder 처리된 개발 자산.
 - 핵심 Audio/VFX·피드백 방향.
 - 조사 → Deduction/괴이 매뉴얼 → Victim Rescue → Recovery → Composite Result 전체 인과.
 - 요원·관계·준비 요소가 핵심 정답을 대신하지 않고 선택 이유를 만드는지 확인.
@@ -131,15 +139,18 @@ M04 빨간 우산은 약 30~45분 **release-near player-experience Vertical Slic
 
 ### 구현·Human Gate
 
-M04는 current planning이 `PLAN_ONLY`다. 다음이 충족되기 전 제품 구현 완료나 Human PASS를 선언하지 않는다.
+기획은 완료됐다. 남은 Gate는 구현·asset·증거다.
 
-1. 사용자 전체 기획 완료 또는 명시적 보류 범위.
-2. 필요한 시각 시안·asset 후보 승인/보류.
-3. fresh-main Reality Gate.
-4. 단일 Codex/HiGodot 구현 계약.
-5. TDD와 exact-head 자동 회귀.
-6. actual runtime capture와 입력 검증.
-7. 사전등록 Human session.
+1. fresh-main Reality Gate — 완료.
+2. 단일 implementation contract — `READY`.
+3. runtime implementation 실행 권한 — `NOT_AUTHORIZED`.
+4. 공용 code/data/state plumbing 및 M04 validation baseline 구현.
+5. concrete product-reference asset — `PENDING`.
+6. product-reference 승인 뒤 release-near visual/audio/VFX 구현.
+7. exact-head 자동 회귀 + actual runtime capture/input 검증.
+8. 사전등록 Human session.
+
+`PRODUCT_REFERENCE_ASSET_PENDING` 상태에서 code/data shared system은 준비할 수 있지만 release-near visual experience PASS를 선언하지 않는다.
 
 ## 5. M02와 기타 사건의 역할
 
@@ -170,29 +181,32 @@ M02 등 Standard 사건은 월간 공용 화면 문법·save/결과 orchestratio
 
 - 저장 손실·진행 불가·복귀 불일치가 있으면 release-near 통과로 선언하지 않는다.
 - 자동 테스트 성공을 사람 이해 증거로 대체하지 않는다.
-- 시각 screenshot이 존재한다는 사실을 입력·접근성 PASS로 대체하지 않는다.
+- screenshot 존재를 입력·접근성 PASS로 대체하지 않는다.
 - 표본이 부족하면 `NOT_RUN` 또는 `REPEAT_VALIDATION`을 유지한다.
 
 ## 7. Legacy Validation disposition
 
-2026-08-02의 저승역 단일 35~50분 Validation Target은 당시의 중요한 설계·검증 역사다. 그러나 현재 월 1사건 제품 구조에서는 M01과 M04의 책임을 합쳐 표현하므로 current execution authority가 아니다.
+2026-08-02의 저승역 단일 35~50분 Validation Target은 중요한 역사지만 current execution authority가 아니다.
 
 - 원문 보존: `docs/archive/history/VALIDATION_TARGET_CANON_PRE_MONTHLY_2026-08-21.md`
 - 현재 M01 상세 규칙: `docs/CURRENT_AFTERLIFE_STATION_CANON.md`
 - 현재 M01/M04 역할: `docs/M01_M04_VERTICAL_SLICE_FLOW.md`
 - current plan/gate: `docs/CURRENT_PLANNING_CANON.md`
 
-과거 Issue #92·#105 같은 predecessor Human QA 작업을 current Route로 그대로 재실행하지 않는다. 해당 Issue를 닫더라도 **Human QA 자체는 완료되지 않았으며 현재 상태는 계속 `NOT_RUN`**이다.
+과거 Issue #92·#105 같은 predecessor Human QA 작업을 current Route로 그대로 재실행하지 않는다. 해당 Issue가 닫혀도 **Human QA 자체는 완료되지 않았고 현재 상태는 `NOT_RUN`**이다.
 
 ## 8. 현재 실행 순서
 
 ```text
-현재 Notion/GitHub planning readback
-→ 사용자 시안 review
-→ 전체 기획 완료/보류 범위
-→ fresh-main migration Reality Gate
-→ 필요한 M01 Canon v2 runtime 이관
-→ M01 current runtime + First Session Human QA
+current implementation handoff readback
+→ runtime implementation 명시 실행 권한
+→ COMPOSITE_RESULT semantic realignment
+→ legacy save/grade compatibility 검증
+→ additive monthly_state
+→ M01 First Session orchestration
+→ M01 current runtime evidence + Human QA
+→ M04 shared-system/baseline 준비
+→ product-reference asset 승인
 → M04 release-near Vertical Slice 구현
 → exact-head 자동/actual runtime 검증
 → M04 Human QA
@@ -200,4 +214,4 @@ M02 등 Standard 사건은 월간 공용 화면 문법·save/결과 orchestratio
 → POC/production gate 별도 판정
 ```
 
-현재는 `PLAN_LOCK`이므로 이 문서 갱신만으로 제품 code/data/Scene/save/asset 구현 권한이 열리지 않는다.
+현재는 planning lock이 아니라 **runtime implementation authorization**이 mutation 경계다.
