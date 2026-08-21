@@ -1,8 +1,8 @@
 # 괴이기록국 Current Decision Overlay
 
 > 문서 역할: `CURRENT_MUTABLE_DECISION_OVERLAY`
-> 상태: `CURRENT / PLAN_LOCK`
-> 갱신 기준: 2026-08-21 monthly canon integration 이후
+> 상태: `CURRENT / PLAN_LOCK / PLANNING_CLOSURE_READY`
+> 갱신 기준: 2026-08-21 Visual/UI planning closure
 > 상세 역사 결정 원장: `docs/CURRENT_CONFIRMED_DECISIONS.md`
 
 이 파일은 **현재 작업자가 즉시 판단해야 하는 mutable decision과 verified successor state만** 소유한다. `CURRENT_CONFIRMED_DECISIONS.md`는 승인·대체 계보와 과거 검증 증거를 보존하는 상세 원장으로 유지한다. 두 문서가 현재 상태에서 충돌하면 최신 사용자 지시 → GitHub latest main → Notion 현재 기획 → `CURRENT_PLANNING_CANON.md` / `current-planning-canon.json` → 이 Overlay 순으로 해석한다.
@@ -17,6 +17,8 @@ signature_cases: [M01, M04, M07, M10]
 first_session: M01_AFTERLIFE_STATION
 release_near_vertical_slice: M04_RED_UMBRELLA
 core_flow: INVESTIGATION_DEDUCTION_MANUAL_RESCUE_RECOVERY_COMPOSITE_RESULT
+visual_treatment: SOFT_ANIME_NOIR_LOCKED
+presentation_language: DOSSIER_HYBRID_IS_PRESENTATION_LANGUAGE_NOT_MEDIUM
 ```
 
 - M01 저승역은 첫 세션·온보딩·회귀 사건이다.
@@ -28,8 +30,10 @@ core_flow: INVESTIGATION_DEDUCTION_MANUAL_RESCUE_RECOVERY_COMPOSITE_RESULT
 
 ```yaml
 non_visual_planning: CLOSURE_READY
-visual_review: WAITING_USER_DRAFT
-overall_plan: OPEN
+visual_planning: CLOSURE_READY
+product_reference_asset: PENDING
+overall_plan: CLOSURE_READY
+user_final_planning_declaration: PENDING
 plan_lock: ACTIVE
 runtime_implementation: NOT_AUTHORIZED
 canonical_root_runtime_receipt: NOT_RUN
@@ -39,7 +43,9 @@ poc_passed: NOT_DECLARED
 production_expansion: NOT_APPROVED
 ```
 
-사용자의 전체 기획 완료 선언 또는 명시적 보류 범위, 필요한 시각 시안 검토, fresh-main Reality Gate 전에는 code/data/Scene/save/제품 asset을 수정하지 않는다.
+`VISUAL_PLANNING_CLOSURE_READY`는 화면 구조·정보 위계·소프트 애니 누아르 treatment·Dossier presentation language가 구현 명세 수준으로 정리됐다는 뜻이다. `PRODUCT_REFERENCE_ASSET_PENDING`은 실제 M01/M04 이미지·레이어·권리·가독성 reference 승격은 아직 하지 않았다는 뜻이다. 둘을 같은 Gate로 묶지 않는다.
+
+사용자의 최종 `기획 완료` 선언과 fresh-main Reality Gate 전에는 code/data/Scene/save/제품 asset을 수정하지 않는다.
 
 ## 3. Verified successor state
 
@@ -50,6 +56,13 @@ production_expansion: NOT_APPROVED
 - 현재 main에는 저승역 요청형 매뉴얼, 의미 있는 focus 복귀, 조사 pointer-through 교정, 회수 대표 요원 contextual cut-in 등 successor 구현이 존재한다.
 - 따라서 과거 문서의 `ui_hierarchy_runtime_implementation: NOT_STARTED` 또는 `BLOCKED_HIGODOT_UNAVAILABLE_IN_CHATGPT_SESSION`은 현재 상태가 아니라 predecessor history다.
 - 실제 전체 Human/UI/device validation은 별도이며 `NOT_RUN`을 유지한다.
+
+### Visual/UI planning closure
+
+- current owner: `docs/planning/2026-08-21-visual-ui-planning-closure.md`.
+- M01 Investigation/Deduction/Rescue에 빠져 있던 Recovery Packet을 `docs/M01_RECOVERY_SCENE_PACKET.md`로 보완한다.
+- `SERIAL_EXAM_FATIGUE_GUARD`로 조사→추리→구출→회수가 서로 다른 정답 시험이 아니라 같은 규칙의 관측→해석→적용→실행이 되도록 고정한다.
+- 사건 결과는 단일 S/A/B 등급으로 현재 복합 결과를 덮어쓰지 않는다.
 
 ### 메인 메뉴 Ver 4.3 중앙화
 
