@@ -45,7 +45,11 @@ class CurrentPlanningCanonTests(unittest.TestCase):
         self.assertFalse(gates["runtime_implementation_authorized"])
         self.assertEqual("NOT_RUN", gates["human_qa"])
         self.assertEqual("NOT_DECLARED", gates["poc_passed"])
-        self.assertEqual("OPEN", gates["overall_plan"])
+        self.assertEqual("CLOSURE_READY", gates["non_visual_planning"])
+        self.assertEqual("CLOSURE_READY", gates["visual_planning"])
+        self.assertEqual("PENDING", gates["product_reference_asset"])
+        self.assertEqual("CLOSURE_READY", gates["overall_plan"])
+        self.assertEqual("PENDING", gates["user_final_planning_declaration"])
 
     def test_runtime_compatibility_uses_additive_monthly_orchestration(self) -> None:
         runtime = self.canon["runtime_compatibility"]
@@ -66,6 +70,15 @@ class CurrentPlanningCanonTests(unittest.TestCase):
         }
         self.assertEqual(expected, self.canon["integrated_pull_request_sources"])
         for path in expected.values():
+            self.assertTrue((ROOT / path).is_file(), path)
+
+        closure = self.canon["planning_closure_sources"]
+        self.assertEqual(
+            "docs/planning/2026-08-21-visual-ui-planning-closure.md",
+            closure["visual_ui_closure"],
+        )
+        self.assertEqual("docs/M01_RECOVERY_SCENE_PACKET.md", closure["m01_recovery"])
+        for path in closure.values():
             self.assertTrue((ROOT / path).is_file(), path)
 
     def test_active_workspace_contract_is_notion_plus_repository(self) -> None:
@@ -127,6 +140,9 @@ class CurrentPlanningCanonTests(unittest.TestCase):
         rescue = (ROOT / "docs/M01_RESCUE_SCENE_PACKET.md").read_text(
             encoding="utf-8"
         )
+        recovery = (ROOT / "docs/M01_RECOVERY_SCENE_PACKET.md").read_text(
+            encoding="utf-8"
+        )
 
         for hypothesis in (
             "### H1 공식 원본 목적지설",
@@ -142,6 +158,9 @@ class CurrentPlanningCanonTests(unittest.TestCase):
         )
         self.assertIn("공식 승차권", rescue)
         self.assertIn("검은 승차권 접촉·파괴는 구출 정답이 아니다", rescue)
+        for pattern in ("목적지 합창", "회귀 승강장", "무정차 환송"):
+            self.assertIn(pattern, recovery)
+        self.assertIn("COMPOSITE_RESULT", recovery)
 
     def test_merge_governance_requires_five_loops_and_postmerge_readback(self) -> None:
         pull_request_template = (
