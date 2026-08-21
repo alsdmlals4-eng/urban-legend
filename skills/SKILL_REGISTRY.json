@@ -11,13 +11,13 @@
     "coverage_map": "skills/BASE_SKILL_COVERAGE.json",
     "source_type": "pinned-progressive-disclosure",
     "copy_all_skill_bodies": false,
-    "integrated_execution_prompt": "templates/prompts/VERTICAL_SLICE_INTEGRATED_EXECUTION_PROMPT_v8.md",
-    "project_sheet_status": "PROJECT_SHEET_CONFIGURED",
-    "project_sheet_url": "https://docs.google.com/spreadsheets/d/14xtlvd90iQTKjDLcZR_b-WS5fHnBwNf-OfBruPBS6ck/edit",
-    "project_sheet_id": "14xtlvd90iQTKjDLcZR_b-WS5fHnBwNf-OfBruPBS6ck",
-    "project_sheet_role": "USER_FACING_GDD_WORKSPACE",
-    "project_sheet_edit_policy": "PROPOSED_SHEET_CHANGE",
-    "project_sheet_last_verified_at": "2026-07-29"
+    "integrated_execution_contract": "skills/PROJECT_BASE_ADAPTER.json"
+  },
+  "workspace_authority": {
+    "human_facing": "NOTION",
+    "human_facing_project_page": "https://app.notion.com/p/3c01b237eb1c811c9d5ec512acad4f92",
+    "structured_implementation": "REPOSITORY",
+    "structured_planning_canon": "docs/current-planning-canon.json"
   },
   "routing_policy": {
     "load_all_skills": false,
@@ -572,9 +572,10 @@
   "path_adapter": "skills/PROJECT_PATH_ADAPTER.json",
   "legacy_aliases": "skills/LEGACY_SKILL_ALIASES.md",
   "learning_log": "skills/SKILL_LEARNING_LOG.md",
-  "bca_visual_sheet": {
-    "status": "ADOPTED",
-    "sheet_status": "PROJECT_SHEET_CONFIGURED",
+  "legacy_bca_visual_sheet": {
+    "status": "LEGACY_READ_ONLY",
+    "role": "MIGRATION_ONLY",
+    "new_work_policy": "DO_NOT_USE_FOR_NEW_WORK",
     "required_tabs": [
       "00_프로젝트_허브",
       "01_작업순서",
@@ -612,8 +613,8 @@
     "adversarial_mode": "repository-wide-audit",
     "spreadsheet_url": "https://docs.google.com/spreadsheets/d/14xtlvd90iQTKjDLcZR_b-WS5fHnBwNf-OfBruPBS6ck/edit",
     "spreadsheet_id": "14xtlvd90iQTKjDLcZR_b-WS5fHnBwNf-OfBruPBS6ck",
-    "workbook_role": "USER_FACING_GDD_WORKSPACE",
-    "sheet_edit_policy": "PROPOSED_SHEET_CHANGE",
+    "workbook_role": "MIGRATION_ONLY_LEGACY_WORKSPACE",
+    "sheet_edit_policy": "NO_NEW_WRITES",
     "last_verified_at": "2026-07-29"
   }
 }

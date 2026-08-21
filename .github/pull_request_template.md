@@ -21,6 +21,7 @@
 ## 적대적 검토
 
 - 실패 가정·공격 렌즈:
+- [ ] 큰 통합은 같은 전체 범위를 대상으로 최소 5회 whole-scope `attack → review → decision` 루프를 완료했다.
 - `MUST_FIX`:
 - 승인한 `SHOULD_FIX`:
 - `DEFER / REJECT / UNVERIFIED`:
@@ -53,6 +54,8 @@
 - [ ] 삭제·rename·바이너리·보호 경로를 별도로 확인했다.
 - [ ] stacked PR의 차단 finding을 상속하지 않는다.
 - [ ] PR 설명·실제 CI·테스트 결과가 일치한다.
+- [ ] latest commit SHA의 필수 CI를 확인하고 expected head로 병합했다.
+- [ ] 병합 뒤 GitHub·Notion의 main/원 PR 상태·대상 페이지·속성을 각각 readback했다.
 
 ## 결과
 

@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "artifact_role": "CURRENT_PROJECT_PLANNING_CANON",
+  "project": "urban-legend",
+  "planning": {
+    "cadence": {
+      "unit": "MONTH",
+      "main_cases_per_unit": 1,
+      "initial_slate_months": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+      "signature_months": [1, 4, 7, 10],
+      "continues_after_month_12": true
+    },
+    "core_flow": [
+      "INVESTIGATION",
+      "DEDUCTION",
+      "ANOMALY_MANUAL",
+      "VICTIM_RESCUE",
+      "RECOVERY",
+      "COMPOSITE_RESULT"
+    ],
+    "first_session": "M01_AFTERLIFE_STATION",
+    "release_near_vertical_slice": "M04_RED_UMBRELLA",
+    "content_budget": {
+      "signature_cases": 4,
+      "standard_cases": 8
+    }
+  },
+  "gates": {
+    "plan_lock": "ACTIVE",
+    "non_visual_planning": "CLOSURE_READY",
+    "visual_review": "WAITING_USER_DRAFT",
+    "overall_plan": "OPEN",
+    "runtime_implementation_authorized": false,
+    "human_qa": "NOT_RUN",
+    "poc_passed": "NOT_DECLARED",
+    "production_expansion": "NOT_APPROVED"
+  },
+  "runtime_compatibility": {
+    "monthly_state_key": "monthly_state",
+    "annual_mvp_identifiers": "PRESERVE_HISTORICAL_RUNTIME_IDS",
+    "infer_month_completion_from_legacy_reports": false,
+    "rename_existing_episode_ids": false,
+    "known_case_ids": {
+      "M01": "episode_001_afterlife_station",
+      "M04": "episode_002_red_umbrella_alley",
+      "M07": "episode_003_dead_frequency_station"
+    }
+  },
+  "workspace_authority": {
+    "human_facing": "NOTION",
+    "structured_implementation": "REPOSITORY",
+    "legacy_google_sheet": "MIGRATION_ONLY"
+  },
+  "notion_sources": {
+    "project_home": "https://app.notion.com/p/3c01b237eb1c811c9d5ec512acad4f92",
+    "core_systems": "https://app.notion.com/p/3c11b237eb1c81bf8390e5fcd22eb716",
+    "vertical_slice": "https://app.notion.com/p/3c11b237eb1c81c291d8d45d2747451b",
+    "content_budget": "https://app.notion.com/p/3c11b237eb1c816daf1cd88db749c90e",
+    "first_session": "https://app.notion.com/p/3c11b237eb1c81c89490c01a3534818b",
+    "closure_matrix": "https://app.notion.com/p/3c21b237eb1c8174892fd10a0948a61c",
+    "five_loop_review": "https://app.notion.com/p/3c21b237eb1c81ed854be8e175d3618c"
+  },
+  "integrated_pull_request_sources": {
+    "211": "docs/CURRENT_DEDUCTION_RECOVERY_WORK_ORDER.md",
+    "213": "docs/M01_M04_VERTICAL_SLICE_FLOW.md",
+    "214": "docs/UI_COMPONENT_REUSE_CONTRACT.md",
+    "215": "docs/VISUAL_ANCHOR_SPEC.md",
+    "216": "docs/M01_INVESTIGATION_SCENE_PACKET.md",
+    "217": "docs/M01_DEDUCTION_SCENE_PACKET.md",
+    "218": "docs/M01_RESCUE_SCENE_PACKET.md"
+  },
+  "active_entrypoints": [
+    "START_HERE.md",
+    "AGENTS.md",
+    "docs/CURRENT_PLANNING_CANON.md",
+    "docs/current-planning-canon.json",
+    "docs/CURRENT_STATUS.md",
+    "docs/CURRENT_AFTERLIFE_STATION_CANON.md",
+    "docs/CURRENT_VISUAL_WORK_ORDER.md",
+    "docs/CURRENT_HANDOFF.md",
+    "docs/DOCUMENTATION_MAP.md",
+    "skills/PROJECT_BASE_ADAPTER.json",
+    "skills/SKILL_REGISTRY.json"
+  ]
+}

@@ -1,5 +1,7 @@
 # 괴이기록국 현재 인수인계
 
+> 현재 라우팅 주의: 이 문서는 Package 1/2·1년차·Validation 구현 계보를 보존하는 전문 인수인계다. 프로젝트 전체 현재 Handoff는 `docs/CURRENT_HANDOFF.md`, 최신 월간 기획은 `docs/CURRENT_PLANNING_CANON.md`를 우선한다. 아래 `GRILLME_BATCH_3_OPEN`과 연간/분기 next step은 현재 실행 권한이 아니다.
+
 > 상태: `PACKAGE_2_MERGED_AND_VERIFIED / YEAR_ONE_DESIGN_MERGED_ON_MAIN / GRILLME_BATCH_2_MERGED / GRILLME_BATCH_3_OPEN`
 > 갱신일: 2026-08-03
 > Base: `9.4.3`

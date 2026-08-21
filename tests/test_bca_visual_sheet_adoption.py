@@ -1,13 +1,39 @@
 from __future__ import annotations
-import json,unittest
+
+import json
+import unittest
 from pathlib import Path
-ROOT=Path(__file__).resolve().parents[1]; BASE_SHA="c987647d01ad2baa028a16e03d85ddfc1572a727"; SHEET_ID="14xtlvd90iQTKjDLcZR_b-WS5fHnBwNf-OfBruPBS6ck"
-class BCAAdoptionTests(unittest.TestCase):
- def test_contract(self):
-  self.assertIn(BASE_SHA,(ROOT/"docs/BASE_RULES_VERSION.md").read_text(encoding="utf-8"))
-  for p in ("README.md","AGENTS.md"): self.assertIn("PROJECT_SHEET_CONFIGURED",(ROOT/p).read_text(encoding="utf-8"),p)
-  s=(ROOT/"docs/PROJECT_GOOGLE_SHEET_WORKBOOK.md").read_text(encoding="utf-8")
-  for x in ("PROJECT_SHEET_CONFIGURED",SHEET_ID,"USER_FACING_GDD_WORKSPACE","PROPOSED_SHEET_CHANGE","05_GDD_요약","15_조작_게임규칙","51_미니게임","52_글쓰기_서사"): self.assertIn(x,s)
- def test_registry(self):
-  r=json.loads((ROOT/"skills/SKILL_REGISTRY.json").read_text(encoding="utf-8")); self.assertEqual(r["base"]["commit"],BASE_SHA); self.assertEqual(r["bca_visual_sheet"]["spreadsheet_id"],SHEET_ID); self.assertIn("51_미니게임",r["bca_visual_sheet"]["required_tabs"]); self.assertIn("52_글쓰기_서사",r["bca_visual_sheet"]["required_tabs"])
-if __name__=="__main__": unittest.main()
+
+
+ROOT = Path(__file__).resolve().parents[1]
+SHEET_ID = "14xtlvd90iQTKjDLcZR_b-WS5fHnBwNf-OfBruPBS6ck"
+
+
+def load(path: str) -> dict:
+    return json.loads((ROOT / path).read_text(encoding="utf-8"))
+
+
+class WorkspaceAuthorityContractTests(unittest.TestCase):
+    def test_active_authority_is_notion_plus_repository(self) -> None:
+        registry = load("skills/SKILL_REGISTRY.json")
+        self.assertEqual("NOTION", registry["workspace_authority"]["human_facing"])
+        self.assertEqual("REPOSITORY", registry["workspace_authority"]["structured_implementation"])
+        self.assertTrue((ROOT / registry["workspace_authority"]["structured_planning_canon"]).is_file())
+
+    def test_sheet_inventory_is_retained_only_for_migration(self) -> None:
+        registry = load("skills/SKILL_REGISTRY.json")
+        legacy = registry["legacy_bca_visual_sheet"]
+        self.assertEqual(SHEET_ID, legacy["spreadsheet_id"])
+        self.assertEqual("MIGRATION_ONLY", legacy["role"])
+        self.assertEqual("DO_NOT_USE_FOR_NEW_WORK", legacy["new_work_policy"])
+        self.assertIn("51_미니게임", legacy["required_tabs"])
+        self.assertIn("52_글쓰기_서사", legacy["required_tabs"])
+
+        workbook = (ROOT / "docs/PROJECT_GOOGLE_SHEET_WORKBOOK.md").read_text(encoding="utf-8")
+        self.assertIn("MIGRATION_ONLY", workbook)
+        self.assertIn("DO_NOT_USE_FOR_NEW_WORK", workbook)
+        self.assertIn(SHEET_ID, workbook)
+
+
+if __name__ == "__main__":
+    unittest.main()

@@ -1,17 +1,18 @@
-# 괴이기록국 프로젝트 Google Sheets Workbook
+# 괴이기록국 프로젝트 Google Sheets Workbook · Legacy Inventory
 
 ```yaml
 project: urban-legend
-sheet_status: PROJECT_SHEET_CONFIGURED
+sheet_status: LEGACY_READ_ONLY
 spreadsheet_url: https://docs.google.com/spreadsheets/d/14xtlvd90iQTKjDLcZR_b-WS5fHnBwNf-OfBruPBS6ck/edit
 spreadsheet_id: 14xtlvd90iQTKjDLcZR_b-WS5fHnBwNf-OfBruPBS6ck
-workbook_role: USER_FACING_GDD_WORKSPACE
-sheet_edit_policy: PROPOSED_SHEET_CHANGE
+workbook_role: MIGRATION_ONLY
+new_work_policy: DO_NOT_USE_FOR_NEW_WORK
+sheet_edit_policy: NO_NEW_WRITES
 base_commit: c987647d01ad2baa028a16e03d85ddfc1572a727
 last_verified_at: 2026-07-29
 ```
 
-Google Sheets는 CORE 사건·연간 운영·동료·장비·연구·가설 보드·미니게임·서사의 전체 흐름을 사용자가 확인·수정하고 AI가 GitHub 정본·실제 구현과 함께 읽는 GDD 작업면이다.
+이 파일은 과거 Google Sheets 탭의 발견 가능성과 이관 계보만 보존한다. 새 기획·승인·감사 작업면으로 사용하지 않는다. 사람용 전체 그림은 Notion 프로젝트 홈, 구조화 기획·구현·테스트·runtime evidence는 GitHub repository가 소유한다.
 
 ## 검증된 탭
 - `00_프로젝트_허브`
@@ -52,4 +53,4 @@ Google Sheets는 CORE 사건·연간 운영·동료·장비·연구·가설 보�
 | 미니게임·서사 | 사건별 규격과 `51_미니게임`, `52_글쓰기_서사` |
 | 이미지 계획·검수 | `docs/IMAGE_ASSET_WORKFLOW.md` |
 
-확정 상태와 `PROVISIONAL_BASELINE`을 섞지 않으며 GitHub에 없는 사용자 수정은 `PROPOSED_SHEET_CHANGE`로 보존한다.
+새로운 Sheet 쓰기는 금지한다. 이관이 필요한 고유 정보는 Notion 또는 Repository의 책임 원본에 흡수한 뒤 exact readback으로 확인한다.

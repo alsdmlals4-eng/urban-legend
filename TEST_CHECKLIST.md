@@ -1,5 +1,7 @@
 # TEST_CHECKLIST
 
+> 현재 월간 기획·Gate: `docs/CURRENT_PLANNING_CANON.md` + `docs/current-planning-canon.json`
+> 문서 역할: 병합된 CORE/ANNUAL runtime의 회귀 Checklist. 새 월간 구현 권한을 부여하지 않는다.
 > 상태: `docs/CURRENT_STATUS.md`  
 > 코어: `docs/PROJECT_CORE.md`  
 > 로드맵: `MVP_ROADMAP.md`  
@@ -16,7 +18,7 @@
 - 4주 보정: `MERGED / HISTORICAL_REGRESSION_EVIDENCE` — PR #70
 - 7일 주간 계약: `APPROVED / COMPLETE` — Issue #75
 - 7일 주간 구현: `MERGED / AUTOMATED_QA_PASSED` — PR #76 / commit `57c1f3d92e0fdae658826a23e5c2326fe9efe478`
-- ANNUAL-MVP-002 구현: `ON_BRANCH / AUTOMATED_QA_PASSED` — Issue #88 / draft PR #89
+- ANNUAL-MVP-002 구현: `MERGED / AUTOMATED_QA_PASSED` — Issue #88 / PR #89 / commit `c790bf747c0fa4f4427d9e4b49b22adbfce92824`
 - ANNUAL-MVP-002 contract: `annual-mvp-002-v1`
 - ANNUAL-MVP-002 검증: 문서 #333 / ANNUAL #167 / Visual #55 PASS
 - GDD: v3.2
@@ -278,10 +280,10 @@
 - [x] draft PR #89 생성
 - [x] 구현 계획·TDD·자동 검증 완료
 - [x] 문서 #333 / ANNUAL #167 / Visual #55 PASS
-- [ ] PR #89 changed-file 감사
-- [ ] PR #89 review thread 0건 확인
-- [ ] PR #89 squash merge와 merge commit 기록
-- [ ] Issue #88 completed 확인
+- [x] PR #89 changed-file 감사
+- [x] PR #89 review thread 0건 확인
+- [x] PR #89 squash merge — commit `c790bf747c0fa4f4427d9e4b49b22adbfce92824`
+- [x] Issue #88 completed 확인
 
 ## 문서 동기화 계약
 
@@ -316,9 +318,9 @@ annual_mvp_001_seven_day_contract: APPROVED
 annual_mvp_001_seven_day_implementation: MERGED
 annual_mvp_001_automated_verification: PASSED
 annual_mvp_002_design: APPROVED_IMPLEMENTATION_BASELINE
-annual_mvp_002_implementation: ON_BRANCH
+annual_mvp_002_implementation: MERGED
 annual_mvp_002_automated_verification: PASSED
-annual_mvp_002_merge: PENDING
+annual_mvp_002_merge: COMPLETE
 human_usability_qa: NOT_RUN
 player_validation: NOT_RUN
 annual_loop_passed: NOT_DECLARED

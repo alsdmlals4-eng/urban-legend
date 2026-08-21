@@ -1,5 +1,8 @@
 # 괴이 기록국 통합 로드맵·인수인계 기획서
 
+> 문서 역할: `HISTORICAL_ANNUAL_RUNTIME_ROADMAP`
+> 현재 기획·Gate: `../CURRENT_PLANNING_CANON.md` + `../current-planning-canon.json`
+> 실행 권한: 없음. 병합된 ANNUAL runtime 계보와 미실행 사람 검증을 보존하며, 월간 M01+ 실행 순서와 충돌하면 현재 기획 정본을 우선한다.
 > 문서 위치: `docs/planning/ROADMAP_AND_HANDOFF.md`  
 > 상태: `../CURRENT_STATUS.md`  
 > 실행 순서: `../../MVP_ROADMAP.md`  
@@ -7,7 +10,7 @@
 
 ## 목적
 
-승인된 연도제 육성·텍스트 노벨 설계를 작은 수직절편부터 검증하고, 사건 코어·육성·동료·장비·관계·연도 결산을 단계적으로 확대하도록 의존성과 통과 조건을 고정한다.
+과거 승인된 연도제 육성·텍스트 노벨 설계를 작은 수직절편부터 검증했던 의존성과 통과 조건을 역사·runtime 회귀 자료로 보존한다.
 
 ## 기준선
 

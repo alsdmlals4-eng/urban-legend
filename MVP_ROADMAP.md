@@ -1,5 +1,10 @@
 # MVP_ROADMAP
 
+> Current planning overlay: `docs/CURRENT_PLANNING_CANON.md` / `docs/current-planning-canon.json`
+> 현재 Gate: `NON_VISUAL_PLANNING_CLOSURE_READY / OVERALL_PLAN_OPEN / PLAN_LOCK`
+
+이 문서의 CORE/ANNUAL 단계는 병합된 기술·검증·회귀 계보를 보존한다. 현재 제품 순서는 `M01 First Session → M04 release-near Vertical Slice → M01/M02/M04 Human QA`이며, 사용자 시안 review와 전체 기획 완료 선언 전 구현하지 않는다. 아래 ANNUAL-MVP-003 이후 순서는 현재 실행 권한이 아니다.
+
 > 상태 원본: `docs/CURRENT_STATUS.md`  
 > 프로젝트 코어: `docs/PROJECT_CORE.md`  
 > 최신 시간 설계: `docs/superpowers/specs/2026-07-25-annual-mvp-001-seven-day-scheduling-design.md`  
@@ -9,7 +14,7 @@
 > ANNUAL-MVP-002 구현 계획: `docs/superpowers/plans/2026-07-26-annual-mvp-002-vertical-slice-implementation-plan.md`  
 > 벤치마크 권장안: `docs/planning/ANNUAL_BENCHMARK_RECOMMENDATIONS.md`
 
-## 현재 기준
+## 역사적 구현 기준선
 
 | 항목 | 값 |
 |---|---|
@@ -145,7 +150,7 @@ ANNUAL-MVP-002 동료·장비·연구 조합
 
 모든 신규 세부값은 `PROVISIONAL_BASELINE`이다. 구현 결합 전에 ID 충돌 감사와 사람 플레이 수치 검증을 거친다.
 
-## ANNUAL-MVP-002 수직절편 — 자동 검증 완료, 병합 대기
+## ANNUAL-MVP-002 수직절편 — 병합·자동 검증 완료 (runtime history)
 
 ### 구현 subset
 
@@ -204,8 +209,8 @@ ANNUAL-MVP-002 동료·장비·연구 조합
 - [x] 1280×720·1920×1080 화면 캡처 — run #55 PASS
 - [x] 캡처 8장 직접 검사 — artifact `8625300008`
 - [x] 문서 계약 — run #333 PASS
-- [ ] PR #89 changed-file·review thread 최종 감사
-- [ ] PR #89 squash merge와 Issue #88 완료 기록
+- [x] PR #89 changed-file·review thread 최종 감사
+- [x] PR #89 squash merge와 Issue #88 완료 — commit `c790bf747c0fa4f4427d9e4b49b22adbfce92824`
 
 ### 별도 후속 범위
 
@@ -275,9 +280,9 @@ annual_mvp_001_automated_verification: PASSED
 annual_expansion_sequence: APPROVED
 annual_expansion_provisional_data: AUTHORED
 annual_mvp_002_design: APPROVED_IMPLEMENTATION_BASELINE
-annual_mvp_002_implementation: ON_BRANCH
+annual_mvp_002_implementation: MERGED
 annual_mvp_002_automated_verification: PASSED
-annual_mvp_002_merge: PENDING
+annual_mvp_002_merge: COMPLETE
 annual_mvp_003_implementation: NOT_APPROVED
 annual_mvp_004_implementation: NOT_APPROVED
 human_usability_qa: NOT_RUN

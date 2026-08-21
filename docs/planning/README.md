@@ -2,13 +2,16 @@
 
 > 문서 위치: `docs/planning/README.md` | 시작: `../../START_HERE.md` | 현재 상태: `../CURRENT_STATUS.md` | 코어: `../PROJECT_CORE.md`
 
-이 폴더는 현재 구현, 확정된 최소 코어, 미구현 지원 방향, 검증 게이트를 구분하는 기획 진입점이다. 구현 사실이 충돌하면 현재 코드·데이터·테스트가 우선한다.
+이 폴더는 현재 구현, 월간 기획, 사건별 정본, 검증 Gate를 구분하는 기획 진입점이다. 사람용 전체 그림은 Notion, 구조화 기획·구현 사실은 Repository가 소유한다. 이 폴더의 과거 annual 문서가 `../CURRENT_PLANNING_CANON.md`와 충돌하면 현재 월간 정본을 우선한다.
 
 ## 권장 읽기 순서
 
 ```text
 START_HERE.md
 → AGENTS.md
+→ Notion 괴이기록국 프로젝트 홈
+→ docs/CURRENT_PLANNING_CANON.md
+→ docs/current-planning-canon.json
 → docs/CURRENT_STATUS.md
 → docs/PROJECT_CORE.md
 → docs/planning/PROJECT_CORE_STRESS_TEST_AND_BENCHMARK.md
@@ -24,6 +27,8 @@ START_HERE.md
 
 | 문서 | 책임 |
 |---|---|
+| `../CURRENT_PLANNING_CANON.md` | 월 1사건 M01+ cadence, M01/M04 역할, PLAN_LOCK, 현재 Gate |
+| `../current-planning-canon.json` | 현재 기획과 workspace 권위의 기계 계약 |
 | `../PROJECT_CORE.md` | 최소 제품 정체성, 불변·지원·재승인 경계 |
 | `PROJECT_CORE_STRESS_TEST_AND_BENCHMARK.md` | PR 검토, 진단 점수, P0/P1/P2, SWOT, VRIO, 벤치마크, PoC 근거 |
 | `../superpowers/specs/2026-07-23-project-core-integrated-spec.md` | 확정 코어의 상태 머신·데이터·UI·페어플레이·수용 기준 통합 명세 |
@@ -44,10 +49,12 @@ START_HERE.md
 
 - 구현 완료선: MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A / Ver 4.2 / save `mvp-039`
 - 프로젝트 코어: `CORE_RECORDED` / `CORE_STRESS_TESTED`
-- 구현·플레이 검증: `POC_PENDING` / `HOLD_UNTIL_PLAYER_EVIDENCE`
+- 월간 기획: `NON_VISUAL_PLANNING_CLOSURE_READY / OVERALL_PLAN_OPEN / PLAN_LOCK`
+- M01: First Session·온보딩·회귀 / M04: release-near player-experience Vertical Slice
+- 구현·플레이 검증: 월간 runtime `NOT_AUTHORIZED` / Human `NOT_RUN` / `HOLD_UNTIL_PLAYER_EVIDENCE`
 - 가설 보드 합성 판정: `ADAPT / T6_AI_INFERENCE / HUMAN_NOT_RUN`
-- 현재 유일한 활성 구현 트랙: CORE-MVP-001
-- CORE-MVP-002~004와 UX-PD-001 2B·2C, MVP-044~046은 게이트 대기 또는 재매핑 상태
+- 현재 활성 구현 트랙: 없음. 사용자 전체 기획 완료 선언과 fresh main Reality Gate 전까지 `PLAN_LOCK`.
+- 기존 CORE/ANNUAL/UX/MVP 식별자는 구현·회귀·history 자산으로 보존하며 월간 기획에서 자동 rename하지 않는다.
 
 ## 기획 판단 우선순위
 

@@ -27,5 +27,5 @@ reviewed_base_main_policy_state: POLICY_EVIDENCE_NOT_RELEASE_IDENTITY
 - HiGodot은 Scene·Node·Resource·Project Settings의 단일 저작 권위이고 GUT은 테스트 실행·assertion·JUnit의 검증 권위다.
 - GUT 실행은 제품 정본을 수정할 수 없으며 실행 전후 보호 경로 diff가 생기면 실패한다.
 - 복선·반대 근거·위험 사례·실패 경로·기존 ID·저장 호환성을 보존한다.
-- Sheet는 `SHEET_GITHUB_CONFLICT / NO_AUTOMATIC_OVERWRITE`를 유지하되, 승인된 Decision과 검증 상태는 같은 ID와 exact HEAD로 동기화한다.
+- 프로젝트 workspace는 Notion 사람용 정본 + Repository 구조화/구현 정본으로 운영한다. 과거 Sheet는 migration-only로 보존하고 새 작업에 사용하지 않는다.
 - 로컬 Windows·Android·사람 검증은 실제 증거가 없으면 `NOT_RUN` 또는 `HUMAN_NOT_RUN`이다.

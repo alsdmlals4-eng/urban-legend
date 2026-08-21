@@ -136,6 +136,9 @@ git diff --check
 - [ ] Base pin·Skill 수·Coverage·PR 설명과 실제 CI가 일치한다.
 - [ ] stacked PR의 차단 finding을 상속하지 않는다.
 - [ ] 적대적 finding은 `MUST_FIX / SHOULD_FIX / DEFER / REJECT / UNVERIFIED`로 분류한다.
+- [ ] 큰 통합은 같은 전체 범위를 대상으로 최소 5회 whole-scope `attack → review → decision` 루프를 기록한다.
+- [ ] latest commit SHA의 필수 CI를 확인하고 expected head로 병합한다.
+- [ ] 병합 뒤 GitHub·Notion의 main/원 PR 상태·대상 페이지·속성을 각각 readback한다.
 
 ## 10. Definition of Done
 

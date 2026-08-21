@@ -10,9 +10,26 @@
 > 최신 구현 계획: `docs/superpowers/plans/2026-07-26-annual-mvp-002-vertical-slice-implementation-plan.md`  
 > 벤치마크 권장안: `docs/planning/ANNUAL_BENCHMARK_RECOMMENDATIONS.md`
 
+## 2026-08-21 현재 Overlay
+
+| 항목 | 현재 값 |
+|---|---|
+| 최신 기획 정본 | `docs/CURRENT_PLANNING_CANON.md` + `docs/current-planning-canon.json` |
+| 제품 cadence | 1개월 메인 사건 1개, M01~M12 뒤 M13+ 연속 |
+| 첫 세션 | M01 저승역 |
+| release-near Vertical Slice | M04 빨간 우산, `PLAN_ONLY` |
+| 비이미지 기획 | `CLOSURE_READY` |
+| 전체 기획 | `OPEN` — 사용자 시안 review·전체 기획 완료 선언 대기 |
+| 구현 | `PLAN_LOCK / NOT_AUTHORIZED` |
+| ANNUAL-MVP-001/002 | 병합된 runtime/history ID와 기술 자산으로 보존 |
+| Human QA | `NOT_RUN` |
+| POC_PASSED | `NOT_DECLARED` |
+
+아래 ANNUAL/CORE/MVP 상세는 병합된 기술·회귀·검증 계보를 보존하는 구현 Ledger다. 현재 제품 구조나 다음 Gate가 충돌하면 위 Overlay와 `CURRENT_PLANNING_CANON`을 우선한다.
+
 이 문서는 구현, 자동 검증, 렌더링·입력 QA, 신규 플레이어 검증을 분리한다. 자동 회귀와 화면 검증은 `POC_PASSED`, 연간 루프 통과, 제작 확대 승인을 뜻하지 않는다.
 
-## 현재 기준
+## 역사적 구현 기준선
 
 | 항목 | 현재 값 |
 |---|---|
@@ -183,9 +200,11 @@ PR #70의 4주 구조는 달력 월 보정과 위험 0/15/30의 근거로 유지
 - PR #76 squash merge: commit `57c1f3d92e0fdae658826a23e5c2326fe9efe478`
 - Issue #75: `completed`
 
-## 충돌 해석 우선순위
+## 병합된 ANNUAL runtime ledger의 역사적 충돌 해석
 
-1. 사용자가 승인한 ANNUAL-MVP-002 진행과 최신 벤치마크 반영 범위
+현재 제품 cadence와 다음 Gate는 이 목록이 아니라 문서 상단의 월간 Overlay와 `CURRENT_PLANNING_CANON`이 소유한다. 아래 순서는 이미 병합된 ANNUAL runtime/history를 해석할 때만 사용한다.
+
+1. 사용자가 승인했던 ANNUAL-MVP-002 범위와 당시 벤치마크 반영 범위
 2. `docs/superpowers/specs/2026-07-26-annual-mvp-002-companion-equipment-research-design.md`
 3. `docs/superpowers/plans/2026-07-26-annual-mvp-002-vertical-slice-implementation-plan.md`
 4. 사용자가 승인한 7일 주간·가변 일정 설계
@@ -221,15 +240,14 @@ PR #70의 4주 구조는 달력 월 보정과 위험 0/15/30의 근거로 유지
 - 연도 결산 계승 payload의 실제 다음 연도 소비
 - ANNUAL-MVP-003·004 구현
 
-## 다음 게이트
+## 미실행 ANNUAL 사람 검증 backlog (현재 제품 다음 Gate 아님)
 
-1. PR #89 changed-file·보호 경로·review thread 최종 감사와 squash merge
-2. 실제 사람의 7일 편성·템플릿·동료·장비 반복 사용성 평가
-3. 신규 플레이어의 2주차 조기·3주차 자율·4주차 강제 출동 플레이
-4. 동료별 장점, 지원 확률·준비도·보장 발동, 육성→사건→연구 인과 설명 수집
-5. 장비·동료가 사건 정답을 제공한다고 오인하지 않는지 확인
-6. `KEEP / AMPLIFY / CHANGE / RETEST / HOLD` 판정
-7. 별도 사용자 승인 전 ANNUAL-MVP-003과 제작 확대 시작 금지
+1. 실제 사람의 7일 편성·템플릿·동료·장비 반복 사용성 평가
+2. 신규 플레이어의 2주차 조기·3주차 자율·4주차 강제 출동 플레이
+3. 동료별 장점, 지원 확률·준비도·보장 발동, 육성→사건→연구 인과 설명 수집
+4. 장비·동료가 사건 정답을 제공한다고 오인하지 않는지 확인
+5. `KEEP / AMPLIFY / CHANGE / RETEST / HOLD` 판정
+6. 별도 사용자 승인 전 ANNUAL-MVP-003과 제작 확대 시작 금지
 
 ## Base v9.4 운영 계약
 

@@ -4,6 +4,9 @@
 > 현재 구현 기준: **MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A / Ver 4.2 / save `mvp-039`**  
 > 승인 설계: **연도제 육성·텍스트 노벨 통합 설계 / APPROVED_DESIGN_BASELINE**  
 > 현재 구현 상태: **CORE-MVP-001 POC_BUILD_READY / ANNUAL-MVP-001 SEVEN_DAY_SCHEDULING_MERGED / AUTOMATED_QA_PASSED**
+> 현재 제품 기획 Overlay: **월 1사건 M01+ / M01 First Session / M04 release-near Vertical Slice / PLAN_LOCK** — `docs/CURRENT_PLANNING_CANON.md`
+
+이 v3.2 본문은 병합된 annual 기술 설계와 기존 상세 시스템을 보존한다. 현재 cadence·콘텐츠 예산·M01/M04 역할·다음 Gate가 충돌하면 `CURRENT_PLANNING_CANON.md`와 `current-planning-canon.json`을 우선한다. 현재 기획은 annual 문서의 즉시 전면 개작이 아니라 검증된 일정·육성 기술을 월간 사건 구조에 안전하게 재사용한다.
 
 | 항목 | 현재 값 |
 |---|---|
@@ -22,7 +25,7 @@
 
 ### 제품 약속
 
-> 플레이어가 1년 동안 육성하고 준비한 권나래가 조사로 괴이의 규칙을 밝혀내고, 그 이해를 조작형 검증과 턴제 회수 전투에서 직접 증명하며, 성공과 실패를 연구·장비·동료 협업·다음 연도 기록으로 축적한다.
+> 플레이어가 주간 일정으로 준비한 권나래가 월간 사건 조사로 괴이의 규칙을 밝혀내고, 그 이해를 피해자 구출과 턴제 회수에서 직접 증명하며, 성공과 실패를 연구·장비·동료 협업·다음 달 기록으로 축적한다.
 
 | 질문 | 답 |
 |---|---|
