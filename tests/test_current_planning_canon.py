@@ -41,19 +41,25 @@ class CurrentPlanningCanonTests(unittest.TestCase):
             self.canon["planning"]["core_flow"],
         )
         gates = self.canon["gates"]
-        self.assertEqual("ACTIVE", gates["plan_lock"])
+        self.assertEqual("RELEASED_TO_IMPLEMENTATION_GATE", gates["plan_lock"])
         self.assertFalse(gates["runtime_implementation_authorized"])
         self.assertEqual("NOT_RUN", gates["human_qa"])
         self.assertEqual("NOT_DECLARED", gates["poc_passed"])
-        self.assertEqual("CLOSURE_READY", gates["non_visual_planning"])
-        self.assertEqual("CLOSURE_READY", gates["visual_planning"])
+        self.assertEqual("COMPLETE", gates["non_visual_planning"])
+        self.assertEqual("COMPLETE", gates["visual_planning"])
         self.assertEqual("PENDING", gates["product_reference_asset"])
-        self.assertEqual("CLOSURE_READY", gates["overall_plan"])
-        self.assertEqual("PENDING", gates["user_final_planning_declaration"])
+        self.assertEqual("COMPLETE", gates["overall_plan"])
+        self.assertEqual("APPROVED", gates["user_final_planning_declaration"])
+        self.assertEqual("HANDOFF_READY_WITH_KNOWN_REALIGNMENT", gates["implementation_reality_gate"])
+        self.assertEqual("READY", gates["implementation_contract"])
 
     def test_runtime_compatibility_uses_additive_monthly_orchestration(self) -> None:
         runtime = self.canon["runtime_compatibility"]
         self.assertEqual("monthly_state", runtime["monthly_state_key"])
+        self.assertEqual("NOT_IMPLEMENTED", runtime["monthly_state_status"])
+        self.assertEqual("REUSE_EXISTING_CANON_V2_RUNTIME", runtime["canon_v2_runtime_strategy"])
+        self.assertEqual("COMPOSITE_RESULT", runtime["current_result_authority"])
+        self.assertEqual("REALIGNMENT_REQUIRED", runtime["legacy_s_rank_contract"])
         self.assertEqual("PRESERVE_HISTORICAL_RUNTIME_IDS", runtime["annual_mvp_identifiers"])
         self.assertFalse(runtime["infer_month_completion_from_legacy_reports"])
         self.assertFalse(runtime["rename_existing_episode_ids"])
@@ -79,6 +85,22 @@ class CurrentPlanningCanonTests(unittest.TestCase):
         )
         self.assertEqual("docs/M01_RECOVERY_SCENE_PACKET.md", closure["m01_recovery"])
         for path in closure.values():
+            self.assertTrue((ROOT / path).is_file(), path)
+
+        handoff = self.canon["implementation_handoff_sources"]
+        self.assertEqual(
+            "docs/audits/2026-08-22-final-planning-implementation-reality-gate.md",
+            handoff["reality_gate"],
+        )
+        self.assertEqual(
+            "docs/superpowers/specs/2026-08-22-post-planning-runtime-reconciliation-design.md",
+            handoff["design"],
+        )
+        self.assertEqual(
+            "docs/superpowers/plans/2026-08-22-post-planning-runtime-reconciliation-implementation-plan.md",
+            handoff["implementation_plan"],
+        )
+        for path in handoff.values():
             self.assertTrue((ROOT / path).is_file(), path)
 
     def test_active_workspace_contract_is_notion_plus_repository(self) -> None:
