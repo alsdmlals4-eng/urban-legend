@@ -1,6 +1,6 @@
 # 괴이기록국 · UI Component Reuse Contract
 
-> Status: PLAN_LOCK / INTEGRATED_CANON / IMPLEMENTATION_NOT_AUTHORIZED
+> Status: PLANNING_COMPLETE / INTEGRATED_CANON / IMPLEMENTATION_NOT_AUTHORIZED
 > Source PR: #214
 > Parent canon: `docs/CURRENT_PLANNING_CANON.md`
 
@@ -72,8 +72,8 @@ Do not replace main character art or full investigation presentation with pixel 
 
 ## Guardrails
 
-- No runtime code/data/Scene/save changes.
-- No asset promotion.
+- Planning is complete, but `runtime_implementation: NOT_AUTHORIZED` remains the mutation boundary.
+- No product asset promotion while `PRODUCT_REFERENCE_ASSET_PENDING`.
 - 공용 Component는 질문·반증·피해자 갈등·봉쇄 조건을 사건 간 동일하게 만들지 않는다.
-- 사용자 시안 검토 전 이미지 생성 없음.
-- No Human QA claims.
+- Concrete image candidates require separate reference/rights/readability approval.
+- No Human QA claims before actual sessions.

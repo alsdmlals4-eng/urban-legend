@@ -1,6 +1,6 @@
 # 괴이기록국 · Visual Anchor Specification
 
-Status: `PLAN_LOCK / VISUAL_PLANNING_CLOSURE_READY / PRODUCT_REFERENCE_ASSET_PENDING / IMPLEMENTATION_NOT_AUTHORIZED`
+Status: `PLANNING_COMPLETE / PRODUCT_REFERENCE_ASSET_PENDING / IMPLEMENTATION_NOT_AUTHORIZED`
 Art treatment: `SOFT_ANIME_NOIR_LOCKED`
 Presentation invariant: `DOSSIER_HYBRID_IS_PRESENTATION_LANGUAGE_NOT_MEDIUM`
 
@@ -10,7 +10,7 @@ Closure contract: `docs/planning/2026-08-21-visual-ui-planning-closure.md`
 
 ## Purpose
 
-Define the visual planning criteria before production asset work. Visual planning can close without pretending that an ungenerated/unreviewed image is an approved product reference. Product-reference image selection, layer/reuse audit, rights review, runtime readability and Human QA remain separate gates.
+Define the final visual planning criteria before production asset work. Planning is complete without pretending that an ungenerated/unreviewed image is an approved product reference. Product-reference image selection, layer/reuse audit, rights review, runtime readability and Human QA remain separate gates.
 
 ## Anchor order
 
@@ -89,23 +89,24 @@ No:
 ## Asset boundary
 
 `PRODUCT_REFERENCE_ASSET_PENDING` means:
-- no M01/M04 generated or user-owned draft is promoted to product reference merely because this planning spec is complete
-- final image/reference approval still checks Investigation/Deduction/Recovery P0 criteria, 1280×720 and 1920×1080 readability, layer/reuse structure, rights/provenance and semantic correctness
+- no M01/M04 generated or user-owned draft is promoted to product reference merely because planning is complete
+- final image/reference approval checks Investigation/Deduction/Recovery P0 criteria, 1280×720 and 1920×1080 readability, layer/reuse structure, rights/provenance and semantic correctness
 - product-reference approval does not imply runtime or Human QA PASS
 
 ## Next gates
 
-1. Planning closure readback
-2. User final planning declaration
-3. Fresh-main Reality Gate
-4. Product-reference image/asset approval when a concrete candidate exists
-5. Layer/reuse structure
-6. Single implementation contract
-7. Runtime + Human QA
+1. Final planning declaration — `APPROVED`.
+2. Fresh-main Reality Gate — `HANDOFF_READY_WITH_KNOWN_REALIGNMENT`.
+3. Runtime implementation execution authorization — `NOT_AUTHORIZED`.
+4. Current implementation plan execution for shared code/data/state.
+5. Product-reference image/asset approval when concrete candidates exist.
+6. Layer/reuse + rights/provenance + resolution checks.
+7. Release-near M04 visual/audio/VFX implementation.
+8. Runtime + Human QA.
 
 ## Evidence boundary
 
-- Visual planning closure is not product asset approval.
-- Product promotion requires the project asset authority and rights/meaning review.
-- Runtime visual, 1280×720/1920×1080 readability, animation, Audio/VFX, and Human QA remain `NOT_RUN`.
-- `IMPLEMENTATION_NOT_AUTHORIZED` remains active until the planning and implementation gates are explicitly crossed.
+- Planning completion is not product asset approval.
+- Product promotion requires project asset authority and rights/meaning review.
+- Runtime visual, final 1280×720/1920×1080 readability, animation, Audio/VFX, and Human QA remain `NOT_RUN` until actually executed.
+- `IMPLEMENTATION_NOT_AUTHORIZED` remains the product-mutation boundary until explicit runtime execution authorization.

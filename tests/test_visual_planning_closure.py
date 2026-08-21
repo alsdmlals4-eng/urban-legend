@@ -13,16 +13,17 @@ def text(path: str) -> str:
 
 
 class VisualPlanningClosureTests(unittest.TestCase):
-    def test_current_planning_separates_visual_planning_from_asset_approval(self) -> None:
+    def test_current_planning_preserves_asset_gate_after_final_approval(self) -> None:
         canon = text("docs/CURRENT_PLANNING_CANON.md")
         machine = json.loads(text("docs/current-planning-canon.json"))
 
-        self.assertIn("VISUAL_PLANNING_CLOSURE_READY", canon)
+        self.assertIn("PLANNING_COMPLETE", canon)
+        self.assertIn("USER_FINAL_PLANNING_DECLARATION_APPROVED", canon)
         self.assertIn("PRODUCT_REFERENCE_ASSET_PENDING", canon)
-        self.assertIn("USER_FINAL_PLANNING_DECLARATION_PENDING", canon)
-        self.assertEqual(machine["gates"]["visual_planning"], "CLOSURE_READY")
+        self.assertEqual(machine["gates"]["visual_planning"], "COMPLETE")
         self.assertEqual(machine["gates"]["product_reference_asset"], "PENDING")
-        self.assertEqual(machine["gates"]["overall_plan"], "CLOSURE_READY")
+        self.assertEqual(machine["gates"]["overall_plan"], "COMPLETE")
+        self.assertEqual(machine["gates"]["user_final_planning_declaration"], "APPROVED")
         self.assertFalse(machine["gates"]["runtime_implementation_authorized"])
 
     def test_visual_contract_locks_medium_without_promoting_assets(self) -> None:
@@ -44,7 +45,7 @@ class VisualPlanningClosureTests(unittest.TestCase):
         self.assertIn("LEGACY_SINGLE_GRADE_SUPERSEDED", afterlife)
         self.assertIn("COMPOSITE_RESULT", afterlife)
 
-    def test_closure_contract_preserves_human_and_runtime_evidence_ceilings(self) -> None:
+    def test_historical_closure_contract_preserves_evidence_ceilings(self) -> None:
         closure = text("docs/planning/2026-08-21-visual-ui-planning-closure.md")
         for token in (
             "VISUAL_PLANNING_CLOSURE_READY",

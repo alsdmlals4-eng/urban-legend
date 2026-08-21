@@ -1,10 +1,10 @@
 # 괴이기록국 · M01-M04 Vertical Slice Flow
 
-Status: `PLAN_LOCK / PLANNING_CLOSURE_READY / IMPLEMENTATION_NOT_AUTHORIZED`
+Status: `PLANNING_COMPLETE / IMPLEMENTATION_HANDOFF_READY / IMPLEMENTATION_NOT_AUTHORIZED`
 
 Source PR: #213
 Parent canon: `docs/CURRENT_PLANNING_CANON.md`
-Closure contract: `docs/planning/2026-08-21-visual-ui-planning-closure.md`
+Implementation design: `docs/superpowers/specs/2026-08-22-post-planning-runtime-reconciliation-design.md`
 
 ## Core flow
 
@@ -55,17 +55,27 @@ M04 Red Umbrella is the 30~45 minute release-near player-experience Vertical Sli
 
 M04는 실제 사용 후보 UI/UX·시각·Audio/VFX·피드백·핵심 시스템·콘텐츠를 연결한 뒤 재미·첫인상·가독성·추리 인과를 Human QA한다. M01은 온보딩/회귀, M04는 제품 경험 검증이므로 서로를 대체하지 않는다.
 
-## Visual closure boundary
+## Visual / asset boundary
 
 - `SOFT_ANIME_NOIR_LOCKED`: main character/key narrative treatment.
 - `DOSSIER_HYBRID_IS_PRESENTATION_LANGUAGE_NOT_MEDIUM`: field terminal/case file/manual UI composition.
 - `PRODUCT_REFERENCE_ASSET_PENDING`: concrete images/layers are not yet promoted to product reference.
-- Visual planning closure does not claim runtime visual PASS or Human QA.
+- Planning completion does not claim runtime visual PASS or Human QA.
+
+## Current implementation boundary
+
+Fresh-main Reality Gate:
+- existing Canon v2 runtime/save migration = `REUSE_EXISTING_CANON_V2_RUNTIME`.
+- result successor = `COMPOSITE_RESULT_RUNTIME_SUCCESSOR_PRESENT`.
+- stale sidecar grade semantics = `LEGACY_S_RANK_CONTRACT_REALIGNMENT_REQUIRED`.
+- monthly orchestration = `MONTHLY_STATE_NOT_IMPLEMENTED`.
+
+Current plan: `docs/superpowers/plans/2026-08-22-post-planning-runtime-reconciliation-implementation-plan.md`.
 
 ## Guardrails
 
-- No runtime code/data/Scene/save changes.
-- No asset promotion.
-- No Human QA claims.
-- No single S/A/B grade may overwrite the current composite result.
-- User final planning declaration is still required before implementation authorization.
+- Planning is complete.
+- `runtime_implementation: NOT_AUTHORIZED` until explicit execution authorization.
+- No asset promotion while `PRODUCT_REFERENCE_ASSET_PENDING`.
+- No Human QA claims before actual sessions.
+- No single S/A/B grade may overwrite current composite result.

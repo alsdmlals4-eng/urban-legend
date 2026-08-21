@@ -1,9 +1,9 @@
 # M01 저승역 Recovery Scene Packet
 
-Status: `PLAN_LOCK / CANON_V2_ALIGNED / IMPLEMENTATION_NOT_AUTHORIZED`
+Status: `PLANNING_COMPLETE / CANON_V2_ALIGNED / IMPLEMENTATION_NOT_AUTHORIZED`
 Parent canon: `docs/CURRENT_PLANNING_CANON.md`
 Incident canon: `docs/CURRENT_AFTERLIFE_STATION_CANON.md`
-Planning closure: `docs/planning/2026-08-21-visual-ui-planning-closure.md`
+Implementation design: `docs/superpowers/specs/2026-08-22-post-planning-runtime-reconciliation-design.md`
 
 ## Purpose
 
@@ -113,4 +113,4 @@ M01은 세 패턴을 동등한 난이도의 연속 시험으로 제시하지 않
 - 색상·음향 하나에만 전조 정보를 의존하지 않음.
 - 구출 성공과 회수 성공을 같은 bool로 덮어쓰지 않음.
 - Human QA 전 패턴 수치·허용 시간·피해량은 provisional.
-- runtime/code/data/Scene/save 변경 권한 없음.
+- planning은 완료됐지만 `runtime_implementation: NOT_AUTHORIZED` 동안 code/data/Scene/save 변경 금지.

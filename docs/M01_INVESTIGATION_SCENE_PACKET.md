@@ -1,6 +1,6 @@
 # 괴이기록국 M01 저승역 Investigation Scene Packet
 
-Status: PLAN_LOCK / CANON_V2_ALIGNED / IMPLEMENTATION_NOT_AUTHORIZED
+Status: PLANNING_COMPLETE / CANON_V2_ALIGNED / IMPLEMENTATION_NOT_AUTHORIZED
 
 Source PR: #216
 Parent canon: `docs/CURRENT_PLANNING_CANON.md`
@@ -94,3 +94,4 @@ Obtain:
 - Investigation does not directly reveal final deduction.
 - 관측 사실과 해석을 별도 상태로 남긴다.
 - 공식 기록과 개인 기억을 도덕적 진실/거짓말로 단순 판정하지 않는다.
+- planning은 완료됐지만 `runtime_implementation: NOT_AUTHORIZED` 동안 product code/data/Scene/save mutation은 시작하지 않는다.

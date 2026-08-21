@@ -1,6 +1,6 @@
 # M01 저승역 Rescue Scene Packet
 
-Status: PLAN_LOCK / CANON_V2_ALIGNED / IMPLEMENTATION_NOT_AUTHORIZED
+Status: PLANNING_COMPLETE / CANON_V2_ALIGNED / IMPLEMENTATION_NOT_AUTHORIZED
 
 Source PR: #218
 Parent canon: `docs/CURRENT_PLANNING_CANON.md`
@@ -53,12 +53,13 @@ Investigation → Deduction / Anomaly Manual → Victim Rescue → Recovery
 
 ## Guardrails
 
-- 체력 소모형 구조 금지
-- 정답 규칙 없이 강제 해결 금지
-- 실패 시 새로운 기록을 남긴다
-- 핵심 정보는 확률 실패로 영구 손실하지 않는다
-- 구출 조작 실패와 추리 실패의 이유를 구분한다
+- 체력 소모형 구조 금지.
+- 정답 규칙 없이 강제 해결 금지.
+- 실패 시 새로운 기록을 남긴다.
+- 핵심 정보는 확률 실패로 영구 손실하지 않는다.
+- 구출 조작 실패와 추리 실패의 이유를 구분한다.
+- planning은 완료됐지만 `runtime_implementation: NOT_AUTHORIZED` 동안 runtime mutation은 하지 않는다.
 
 ## Next
 
-Recovery Scene Packet using the three Canon v2 patterns: 목적지 합창, 회귀 승강장, 무정차 환송.
+`docs/M01_RECOVERY_SCENE_PACKET.md`의 세 Canon v2 패턴으로 이어진다: 목적지 합창, 회귀 승강장, 무정차 환송.

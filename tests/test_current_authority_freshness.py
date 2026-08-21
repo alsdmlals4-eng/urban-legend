@@ -26,7 +26,8 @@ class CurrentAuthorityFreshnessTests(unittest.TestCase):
         text = self.read("docs/VALIDATION_TARGET_CANON.md")
         self.assertIn("M01_FIRST_SESSION", text)
         self.assertIn("M04_RELEASE_NEAR_VERTICAL_SLICE", text)
-        self.assertIn("PLAN_LOCK", text)
+        self.assertIn("RELEASED_TO_IMPLEMENTATION_GATE", text)
+        self.assertIn("runtime_implementation_authorized: false", text)
         self.assertIn("Human QA", text)
         self.assertIn("NOT_RUN", text)
         self.assertNotIn("APPROVED_FINAL_PLANNING_BASELINE_PENDING_MAIN", text)
@@ -72,6 +73,7 @@ class CurrentAuthorityFreshnessTests(unittest.TestCase):
         self.assertIn("open", overlay)
         self.assertIn("구현 권한", overlay)
         self.assertIn("DEFERRED_VALID", overlay)
+        self.assertIn("CURRENT_VALID / IMPLEMENTATION_GATE", overlay)
 
     def test_issue_disposition_audit_covers_all_baseline_open_issues(self) -> None:
         text = self.read(

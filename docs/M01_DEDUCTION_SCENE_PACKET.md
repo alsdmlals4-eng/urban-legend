@@ -1,6 +1,6 @@
 # M01 저승역 Deduction Scene Packet
 
-Status: PLAN_LOCK / CANON_V2_ALIGNED / IMPLEMENTATION_NOT_AUTHORIZED
+Status: PLANNING_COMPLETE / CANON_V2_ALIGNED / IMPLEMENTATION_NOT_AUTHORIZED
 
 Source PR: #217
 Parent canon: `docs/CURRENT_PLANNING_CANON.md`
@@ -34,11 +34,9 @@ Investigation
 - 목적지 공백
   - Source: 안내방송 원본
   - Meaning: 객관적 목적지 정보 결손
-
 - 서로 다른 목적지
   - Source: 피해자 진술 비교
   - Meaning: 개인 인식 차이 가능성
-
 - 검은 승차권
   - Source: 현장 조사 물품
   - Meaning: 괴이 연결 매개 후보
@@ -91,13 +89,14 @@ Weakness:
 
 ## Rules
 
-- 조사 단계에서 정답 확정 금지
-- 근거 부족 시 현장 복귀 가능
-- 키워드는 반드시 출처 기록 유지
-- 추리는 규칙 작성이며 단순 정답 선택이 아님
-- 정답 후보를 색·위치·크기로 미리 강조하지 않음
-- 공식 승차권 구출 규칙과 검은 승차권 원인설을 혼동하지 않음
+- 조사 단계에서 정답 확정 금지.
+- 근거 부족 시 현장 복귀 가능.
+- 키워드는 반드시 출처 기록 유지.
+- 추리는 규칙 작성이며 단순 정답 선택이 아님.
+- 정답 후보를 색·위치·크기로 미리 강조하지 않음.
+- 공식 승차권 구출 규칙과 검은 승차권 원인설을 혼동하지 않음.
+- planning은 완료됐지만 `runtime_implementation: NOT_AUTHORIZED` 동안 runtime mutation은 하지 않는다.
 
 ## Next Gate
 
-Victim rescue application, then recovery validation. Deduction completion alone does not resolve the incident.
+Victim Rescue application, then Recovery. Deduction completion alone does not resolve the incident.

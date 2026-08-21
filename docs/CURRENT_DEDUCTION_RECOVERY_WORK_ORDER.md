@@ -1,9 +1,9 @@
 # 괴이기록국 · Current Deduction Recovery Work Order
 
-> Status: `PLAN_LOCK / PLANNING_CLOSURE_READY / IMPLEMENTATION_NOT_AUTHORIZED`
+> Status: `PLANNING_COMPLETE / IMPLEMENTATION_HANDOFF_READY / IMPLEMENTATION_NOT_AUTHORIZED`
 > Source PR: #211
 > Parent canon: `docs/CURRENT_PLANNING_CANON.md`
-> Closure owner: `docs/planning/2026-08-21-visual-ui-planning-closure.md`
+> Current implementation design: `docs/superpowers/specs/2026-08-22-post-planning-runtime-reconciliation-design.md`
 
 ## Approved sequence
 
@@ -20,13 +20,8 @@ Investigation Anchor
 ## Deduction Anchor
 
 - 조사에서 얻은 raw observation / record / keyword를 별도 괴이 매뉴얼 화면에서 사용한다.
-- 키워드 단순 조합 정답이 아니라 출처 확인 → 경쟁 가설 → 지지/반박/미해결 → 규칙 작성 흐름을 유지한다.
-- Manual slot:
-  1. 발생 조건
-  2. 피해자 연결
-  3. 금지 행동
-  4. 구출 절차
-  5. 회수 대응
+- 출처 확인 → 경쟁 가설 → 지지/반박/미해결 → 규칙 작성 흐름을 유지한다.
+- Manual slot: 발생 조건 / 피해자 연결 / 금지 행동 / 구출 절차 / 회수 대응.
 - 추리는 언제든 현장으로 복귀 가능해야 한다.
 
 ## Rescue Anchor
@@ -39,48 +34,47 @@ Investigation Anchor
 ## Recovery Anchor
 
 - 회수의 주체는 괴이 현상, 전조, 보호 대상이다.
-- 캐릭터는 작은 상태 표현 중심.
-- 스킬 사용·중요 지원 순간에만 Cut-in 허용.
-- 행동 우선순위:
-  - 보호
-  - 관찰
-  - 대응
-  - 공격
-  - 장비
-  - 봉쇄
-  - 후퇴
+- 캐릭터는 작은 상태 표현 중심, 중요 지원 순간만 Cut-in.
+- 행동: 보호 / 관찰 / 대응 / 공격 / 장비 / 봉쇄 / 후퇴.
 - 공격 반복으로 해결하는 구조 금지.
 - M01 상세 전조·대응은 `docs/M01_RECOVERY_SCENE_PACKET.md`가 소유한다.
+- `SERIAL_EXAM_FATIGUE_GUARD`: 새 정답 체계가 아니라 이미 학습한 규칙의 실행 형태로 이어진다.
 
 ## Composite Result
 
 - 피해자 상태
-- 확인 규칙
-- 위험 사례
-- 회수/안정화 상태
-- 잔향/미회수
-- 미해결 질문
+- 확인 규칙 / 증거 무결성
+- 위험 사례 / 보호 책임
+- 회수·안정화 상태
+- 잔향 / 미회수
+- 미해결 질문 / 후속 실행
 
-단일 S/A/B 등급 하나가 이 축을 덮어쓰지 않는다.
+단일 S/A/B/S-rank가 이 축을 덮어쓰지 않는다.
 
 ## Current work order
 
-1. M01 Investigation/Deduction/Rescue/Recovery packet과 저승역 Canon v2 정합 완료
-2. M01/M04 공통 화면 문법과 서로 다른 검증 역할 확인 완료
-3. UI Component 재사용 계약과 Visual Anchor 연결 완료
-4. Visual planning `CLOSURE_READY`
-5. concrete product-reference image/asset은 `PRODUCT_REFERENCE_ASSET_PENDING`
-6. 사용자 최종 `기획 완료` 선언
-7. fresh-main Reality Gate
-8. ID/save migration matrix + 단일 구현 계약
-9. 별도 Codex/HiGodot 구현
-10. runtime/Human QA
+1. M01 Investigation/Deduction/Rescue/Recovery planning — COMPLETE.
+2. M01/M04 역할·화면 문법 — COMPLETE.
+3. Visual planning — COMPLETE.
+4. 사용자 최종 `기획완료` — APPROVED.
+5. fresh-main Reality Gate — `HANDOFF_READY_WITH_KNOWN_REALIGNMENT`.
+6. existing Canon v2 runtime — REUSE.
+7. `COMPOSITE_RESULT` semantic realignment.
+8. additive `monthly_state`.
+9. M01 First Session orchestration.
+10. #181 existing plan reuse for main menu / Ver 4.3.
+11. M04 shared-system preparation.
+12. concrete product-reference image/asset — `PRODUCT_REFERENCE_ASSET_PENDING`.
+13. runtime/Human QA.
+
+Current execution plan: `docs/superpowers/plans/2026-08-22-post-planning-runtime-reconciliation-implementation-plan.md`.
 
 ## Guardrail
 
-- 코드/데이터/Scene/save 변경 없음.
-- 제품 asset promotion 없음.
-- `PRODUCT_REFERENCE_ASSET_PENDING`을 전체 기획 OPEN의 동의어로 사용하지 않는다.
+- 이 문서 작업 자체에서는 코드/데이터/Scene/save 변경 없음.
+- `runtime_implementation: NOT_AUTHORIZED` 전에는 product mutation 금지.
+- product asset promotion 없음.
+- `PRODUCT_REFERENCE_ASSET_PENDING`을 planning 미완료와 혼동하지 않는다.
 - Human QA PASS 주장 금지.
 - 이미지/asset 승인과 runtime 구현 승인을 같은 Gate로 합치지 않는다.
-- 진행 중인 다른 PR을 후속 수정 대상으로 삼지 않는다.
+- 진행 중 unrelated PR은 read-only로 유지한다.
