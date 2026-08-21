@@ -84,7 +84,7 @@ Planning Canon의 top-level optional `monthly_state`는 fresh main runtime에서
 
 ### 조사·회수 UI hierarchy
 
-PR #180 successor 구현은 current main에 존재한다. 요청형 매뉴얼, focus 복귀, pointer-through 교정, contextual cut-in 등을 재사용한다. 전체 Human/UI/device validation은 계속 `NOT_RUN`이다.
+PR #180은 조사·회수 UI hierarchy successor 구현으로 **병합 완료**됐으며 현재 main에 존재한다. 요청형 매뉴얼, focus 복귀, pointer-through 교정, contextual cut-in 등을 재사용한다. 전체 Human/UI/device validation은 계속 `NOT_RUN`이다.
 
 ### M01 Visual/UI / Recovery closure
 
