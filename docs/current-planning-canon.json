@@ -77,6 +77,11 @@
     "visual_ui_closure": "docs/planning/2026-08-21-visual-ui-planning-closure.md",
     "m01_recovery": "docs/M01_RECOVERY_SCENE_PACKET.md"
   },
+  "conditional_history_ledgers": [
+    "docs/CURRENT_STATUS.md",
+    "docs/CURRENT_CONFIRMED_DECISIONS.md",
+    "docs/CURRENT_HANDOFF_VALIDATION.md"
+  ],
   "active_entrypoints": [
     "START_HERE.md",
     "AGENTS.md",
@@ -84,7 +89,6 @@
     "docs/current-planning-canon.json",
     "docs/CURRENT_DECISION_OVERLAY.md",
     "docs/VALIDATION_TARGET_CANON.md",
-    "docs/CURRENT_STATUS.md",
     "docs/CURRENT_AFTERLIFE_STATION_CANON.md",
     "docs/CURRENT_VISUAL_WORK_ORDER.md",
     "docs/VISUAL_ANCHOR_SPEC.md",
