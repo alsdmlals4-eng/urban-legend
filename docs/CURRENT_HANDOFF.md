@@ -1,38 +1,44 @@
 # 괴이기록국 Current Handoff
 
-> 상태: `MONTHLY_CANON_SYNCED / NON_VISUAL_PLANNING_CLOSURE_READY / OVERALL_PLAN_OPEN / PLAN_LOCK`
+> 상태: `PLANNING_COMPLETE / USER_FINAL_PLANNING_DECLARATION_APPROVED / IMPLEMENTATION_HANDOFF_READY`
 > 정확한 main·PR·CI: 재개 시 GitHub에서 다시 조회
 > 사람용 정본: Notion 괴이기록국 프로젝트 홈
 > 구조화 정본: `docs/CURRENT_PLANNING_CANON.md`, `docs/current-planning-canon.json`
 
-이 문서는 다음 채팅·작업자가 과거 PID, 로컬 worktree, 오래된 PR 번호, 연간/분기 next step을 현재 권한으로 오인하지 않도록 하는 continuation router다. 과거 CASE-01/PR #198 로컬 실행기 handoff는 Git history의 PR #199/#200 계보로 보존하며 현재 작업 전선이 아니다.
+이 문서는 다음 GPT/Codex가 과거 annual next-step, 오래된 migration PR 상태, final-planning 대기 문구를 현재 권한으로 오인하지 않도록 하는 continuation router다.
 
 ```yaml
-status: MONTHLY_CANON_SYNCED_PLAN_LOCK
-branch: READ_GITHUB_DEFAULT_BRANCH
-completed_work_commit: READ_GITHUB_LATEST_MAIN
-tests: READ_LATEST_EXACT_HEAD_CI
-next_action: REVIEW_USER_VISUAL_DRAFT_AND_WAIT_FOR_PLANNING_COMPLETE_DECLARATION
-main_integrated: VERIFY_ON_RESUME
-origin_pushed: VERIFY_ON_RESUME
+status: IMPLEMENTATION_HANDOFF_READY
+planning: COMPLETE
+user_final_planning_declaration: APPROVED
+plan_lock: RELEASED_TO_IMPLEMENTATION_GATE
+implementation_reality_gate: HANDOFF_READY_WITH_KNOWN_REALIGNMENT
+implementation_contract: READY
+runtime_implementation: NOT_AUTHORIZED
+product_reference_asset: PENDING
+human_qa: NOT_RUN
+poc_passed: NOT_DECLARED
 ```
 
 ## 1. 재개 순서
 
 ```text
 최신 사용자 지시
-→ GitHub latest main + open PR + exact-head CI
-→ Notion 프로젝트 홈 + 08 Core + 09 Vertical Slice + 10 Content Budget + 11 First Session
+→ GitHub latest main + open PR/Issue + exact-head CI
+→ Notion Project Home
 → docs/CURRENT_PLANNING_CANON.md
 → docs/current-planning-canon.json
-→ docs/CURRENT_STATUS.md
-→ 사건별 current canon
-→ 실제 code/data/Scene/test
+→ docs/CURRENT_DECISION_OVERLAY.md
+→ docs/audits/2026-08-22-final-planning-implementation-reality-gate.md
+→ docs/superpowers/specs/2026-08-22-post-planning-runtime-reconciliation-design.md
+→ docs/superpowers/plans/2026-08-22-post-planning-runtime-reconciliation-implementation-plan.md
+→ 실제 current code/data/Scene/test
+→ 필요한 조건부 역사 Ledger
 ```
 
-Notion `Repo Main SHA`는 마지막 동기화 receipt이며 현재 GitHub ref를 대신하지 않는다. GitHub와 Notion을 병합 뒤 각각 readback하고 `Repo Main SHA`, `Sync State`, 관련 현재 페이지를 갱신한다.
+현재 main의 실제 구현이 문서상 과거 상태보다 우선한다.
 
-## 2. 현재 제품 계약
+## 2. 최종 제품 계약
 
 ```yaml
 cadence: ONE_MAIN_CASE_PER_MONTH
@@ -42,78 +48,112 @@ signature_cases: M01_M04_M07_M10
 first_session: M01_AFTERLIFE_STATION
 release_near_vertical_slice: M04_RED_UMBRELLA
 core_flow: INVESTIGATION_DEDUCTION_MANUAL_RESCUE_RECOVERY_COMPOSITE_RESULT
-non_visual_planning: CLOSURE_READY
-visual_review: WAITING_USER_DRAFT
-overall_plan: OPEN
-plan_lock: ACTIVE
-runtime_implementation: NOT_AUTHORIZED
-human_qa: NOT_RUN
-poc_passed: NOT_DECLARED
-production_expansion: NOT_APPROVED
+visual_treatment: SOFT_ANIME_NOIR_LOCKED
+presentation_language: DOSSIER_HYBRID_IS_PRESENTATION_LANGUAGE_NOT_MEDIUM
+planning: COMPLETE
+product_reference_asset: PENDING
 ```
 
-`ANNUAL-MVP-001/002`는 주간 일정·육성 기술 구현과 회귀 계보를 가리키는 runtime/history ID다. 이를 삭제·rename하지 않지만, 다음 제품 기획 트랙이나 1년 4분기 콘텐츠 정본으로 사용하지 않는다.
+M01과 M04는 서로 대체하지 않는다.
+- M01 = First Session / onboarding / regression.
+- M04 = 30~45분 release-near player-experience validation.
 
-## 3. M01 / M04 역할
+## 3. Fresh-main Reality Gate 핵심
 
-- M01 저승역: First Session, 온보딩, regression anchor.
-- M01 추리: 공식 원본 목적지설·단일 가짜 목적지설·개인 기억 투영설·검은 승차권 원인설 4후보를 근거로 줄인다.
-- 저승역 구출: 안내 종료 전 개인 목적지 경계 통과 금지 → 현실 교통 기록과 공식 승차권 → 지정 역 동반 하차. 검은 승차권 접촉·파괴는 정답이 아니다.
-- M04 빨간 우산: 약 30~45분 release-near player-experience Vertical Slice. 실제 사용 후보 UI/UX·시각·Audio/VFX·피드백·핵심 시스템·콘텐츠를 연결한 뒤 Human QA한다.
+### REUSE_EXISTING_CANON_V2_RUNTIME
 
-## 4. 열린 PR 통합 계보
+현재 main에는 Canon v2 loader, ID registry, save migrator, transaction, active migrating GameState/ValidationSession, runtime state/result policies가 이미 있다. 과거 migration plan을 다시 Task 1부터 구현하지 않는다.
 
-PR #211, #213, #214, #215, #216, #217, #218의 고유 문서는 현재 월간 기획 통합 범위에 흡수한다. 통합 main에서 다음 파일의 동등 이상 내용을 확인한 뒤 원 PR을 `SUPERSEDED_BY_INTEGRATED_CANON`으로 닫는다.
+### COMPOSITE_RESULT
 
-- `docs/CURRENT_DEDUCTION_RECOVERY_WORK_ORDER.md`
-- `docs/M01_M04_VERTICAL_SLICE_FLOW.md`
-- `docs/UI_COMPONENT_REUSE_CONTRACT.md`
-- `docs/VISUAL_ANCHOR_SPEC.md`
-- `docs/M01_INVESTIGATION_SCENE_PACKET.md`
-- `docs/M01_DEDUCTION_SCENE_PACKET.md`
-- `docs/M01_RESCUE_SCENE_PACKET.md`
+현재 runtime에는 independent result axes successor가 존재한다. 새 결과 시스템을 만들지 않는다.
 
-## 5. Workspace authority
+보정 필요:
+- Canon v2 sidecar의 current-like `owns_first_s_rank` / `s_rank` authority를 legacy/mastery compatibility로 내린다.
+- current product result는 `COMPOSITE_RESULT`가 소유한다.
 
-- Notion: 사람이 보는 전체 그림, Flow, 비교표, 현재 승인 방향.
-- Repository: 구조화된 기획 계약, implementation, test, runtime evidence.
-- Google Sheet: migration-only legacy inventory. 새 작업·승인·감사 쓰기 금지.
-- 의미를 바꾸는 작업은 Notion과 Repository를 같은 범위에서 동기화하고 병합 뒤 readback한다.
+### monthly_state
 
-## 6. 구현 전 Gate
+runtime에서 아직 확인되지 않았다. 다음 구현에서 top-level optional orchestration block으로 추가한다.
 
-1. 사용자 보유 시각 시안 검토.
-2. 사용자 전체 `기획 완료` 선언 또는 명시적 보류 범위.
-3. fresh main에서 character/case ID, top-level `monthly_state`, save/migration Reality Gate.
-4. 필요한 production asset 승인.
-5. Codex/HiGodot 단일 구현 계약.
-6. TDD RED→GREEN, 전체 회귀, exact-head CI.
-7. M01/M02/M04 사전등록 Human QA.
+금지:
+- 기존 ID rename
+- legacy report만 보고 month completion 추론
+- monthly state에 case truth 저장
+- 같은 달 해결 뒤 두 번째 main case 생성
 
-현재는 1~5가 충족되지 않았으므로 code/data/Scene/save/제품 asset을 수정하지 않는다.
+## 4. 현재 단일 구현 계약
 
-## 7. 보호 범위
+Design:
+`docs/superpowers/specs/2026-08-22-post-planning-runtime-reconciliation-design.md`
 
-- `data/`, `scripts/`, `scenes/`, `assets/`, `addons/`, `project.godot`
-- 기존 `mvp-039`, episode/character/report ID, Validation save, campaign/economy state
-- root `ASSET_MANIFEST.yml` 승인·의미·권리
-- 실제 Human/Visual/Device QA evidence
+Implementation plan:
+`docs/superpowers/plans/2026-08-22-post-planning-runtime-reconciliation-implementation-plan.md`
 
-이번 planning sync는 위 보호 경로를 변경하지 않는다. 새 월간 state는 top-level `monthly_state` additive optional block 방향만 승인됐으며 실제 schema 변경 권한은 없다.
+계획 순서:
+1. `COMPOSITE_RESULT` sidecar 의미 정합화.
+2. legacy grade/save compatibility 검증.
+3. additive `monthly_state`.
+4. `M01_FIRST_SESSION` orchestration + `SERIAL_EXAM_FATIGUE_GUARD`.
+5. #181 기존 plan으로 main menu / Ver 4.3 구현.
+6. M04 shared-system 준비; `PRODUCT_REFERENCE_ASSET_PENDING`에서 final visual production 중지.
+
+## 5. #181 successor state
+
+Planning 완료로 #181의 이전 `DEFERRED_VALID / PLAN_LOCK` 보류 사유는 끝났다.
+
+현재 의미:
+
+```text
+CURRENT_VALID / IMPLEMENTATION_GATE
+```
+
+실제 `Ver 4.2` hardcode가 남아 있으므로 Issue는 닫지 않는다. 기존 2026-08-09 design/implementation plan을 재사용한다.
+
+## 6. 구현 권한 경계
+
+이 handoff가 준비됐다는 사실과 actual mutation authorization은 별개다.
+
+현재:
+```yaml
+runtime_implementation: NOT_AUTHORIZED
+```
+
+따라서 이 문서/PR에서는 `data/`, `scripts/`, `scenes/`, `assets/`, `addons/`, `project.godot`, save bytes를 바꾸지 않는다.
+
+실제 Codex/agent 실행이 승인되면 fresh-main에서 계획의 RED부터 시작한다.
+
+## 7. Product reference / Human gate
+
+`PRODUCT_REFERENCE_ASSET_PENDING` 유지:
+- concrete M01/M04 이미지/레이어
+- rights/source approval
+- 1280×720 / 1920×1080 최종 가독성
+- release-near M04 visual/audio/VFX polish
+
+Human QA 유지:
+- M01 첫 세션 이해도
+- serial-exam fatigue 체감
+- M04 재미/첫인상/차별화
+- 접근성·실제 입력 체감
+
+실행 전에는 모두 `NOT_RUN`이다.
 
 ## 8. 완료·병합 기준
 
 ```text
-focused contracts
-→ full Python discovery
-→ available local runtime/static checks
-→ 5 whole-scope adversarial loops
+TDD RED
+→ minimal GREEN
+→ focused regression
+→ full relevant regression
+→ 최소 5회 whole-scope adversarial loop
 → exact-head CI
-→ merge with expected head SHA
-→ GitHub main readback
-→ original PR disposition readback
-→ Notion destination/property readback
-→ remaining risk and progress report
+→ expected-head merge
+→ new main readback
+→ open PR + Issue successor freshness
+→ merge-linked Issue readback
+→ GitHub + Notion destination sync/readback
+→ Human/runtime evidence ceiling 보존
 ```
 
-실행하지 않은 검사는 `NOT_RUN`, 확인할 수 없는 상태는 `UNVERIFIED`, 플레이 증거 없는 제품 판단은 `NOT_DECLARED`로 남긴다.
+현재 기획 단계의 REQUIRED_WORK_REMAINING은 0이다. 다음 남은 범위는 **runtime implementation execution**이며 이 handoff 자체는 실행 권한을 자동 부여하지 않는다.
