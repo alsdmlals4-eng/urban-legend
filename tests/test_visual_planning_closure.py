@@ -1,0 +1,62 @@
+from __future__ import annotations
+
+import json
+import unittest
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def text(path: str) -> str:
+    return (ROOT / path).read_text(encoding="utf-8")
+
+
+class VisualPlanningClosureTests(unittest.TestCase):
+    def test_current_planning_separates_visual_planning_from_asset_approval(self) -> None:
+        canon = text("docs/CURRENT_PLANNING_CANON.md")
+        machine = json.loads(text("docs/current-planning-canon.json"))
+
+        self.assertIn("VISUAL_PLANNING_CLOSURE_READY", canon)
+        self.assertIn("PRODUCT_REFERENCE_ASSET_PENDING", canon)
+        self.assertIn("USER_FINAL_PLANNING_DECLARATION_PENDING", canon)
+        self.assertEqual(machine["gates"]["visual_planning"], "CLOSURE_READY")
+        self.assertEqual(machine["gates"]["product_reference_asset"], "PENDING")
+        self.assertEqual(machine["gates"]["overall_plan"], "CLOSURE_READY")
+        self.assertFalse(machine["gates"]["runtime_implementation_authorized"])
+
+    def test_visual_contract_locks_medium_without_promoting_assets(self) -> None:
+        visual = text("docs/VISUAL_ANCHOR_SPEC.md")
+        work_order = text("docs/CURRENT_VISUAL_WORK_ORDER.md")
+
+        for source in (visual, work_order):
+            self.assertIn("SOFT_ANIME_NOIR_LOCKED", source)
+            self.assertIn("DOSSIER_HYBRID_IS_PRESENTATION_LANGUAGE_NOT_MEDIUM", source)
+            self.assertIn("PRODUCT_REFERENCE_ASSET_PENDING", source)
+            self.assertIn("IMPLEMENTATION_NOT_AUTHORIZED", source)
+
+    def test_m01_has_complete_recovery_packet_and_no_current_single_grade_authority(self) -> None:
+        recovery = text("docs/M01_RECOVERY_SCENE_PACKET.md")
+        afterlife = text("docs/CURRENT_AFTERLIFE_STATION_CANON.md")
+
+        for token in ("목적지 합창", "회귀 승강장", "무정차 환송", "COMPOSITE_RESULT"):
+            self.assertIn(token, recovery)
+        self.assertIn("LEGACY_SINGLE_GRADE_SUPERSEDED", afterlife)
+        self.assertIn("COMPOSITE_RESULT", afterlife)
+
+    def test_closure_contract_preserves_human_and_runtime_evidence_ceilings(self) -> None:
+        closure = text("docs/planning/2026-08-21-visual-ui-planning-closure.md")
+        for token in (
+            "VISUAL_PLANNING_CLOSURE_READY",
+            "PRODUCT_REFERENCE_ASSET_PENDING",
+            "HUMAN_QA_NOT_RUN",
+            "RUNTIME_IMPLEMENTATION_NOT_AUTHORIZED",
+            "SERIAL_EXAM_FATIGUE_GUARD",
+            "M01_FIRST_SESSION",
+            "M04_RELEASE_NEAR_VERTICAL_SLICE",
+        ):
+            self.assertIn(token, closure)
+
+
+if __name__ == "__main__":
+    unittest.main()
