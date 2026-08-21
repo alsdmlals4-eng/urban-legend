@@ -1,11 +1,11 @@
 # 괴이기록국 Current Decision Overlay
 
 > 문서 역할: `CURRENT_MUTABLE_DECISION_OVERLAY`
-> 상태: `CURRENT / PLAN_LOCK / PLANNING_CLOSURE_READY`
-> 갱신 기준: 2026-08-21 Visual/UI planning closure
+> 상태: `CURRENT / PLANNING_COMPLETE / IMPLEMENTATION_HANDOFF_READY`
+> 갱신 기준: 2026-08-22 사용자 최종 `기획완료` 선언 + fresh-main Reality Gate
 > 상세 역사 결정 원장: `docs/CURRENT_CONFIRMED_DECISIONS.md`
 
-이 파일은 **현재 작업자가 즉시 판단해야 하는 mutable decision과 verified successor state만** 소유한다. `CURRENT_CONFIRMED_DECISIONS.md`는 승인·대체 계보와 과거 검증 증거를 보존하는 상세 원장으로 유지한다. 두 문서가 현재 상태에서 충돌하면 최신 사용자 지시 → GitHub latest main → Notion 현재 기획 → `CURRENT_PLANNING_CANON.md` / `current-planning-canon.json` → 이 Overlay 순으로 해석한다.
+이 파일은 **현재 작업자가 즉시 판단해야 하는 mutable decision과 verified successor state만** 소유한다. 역사 원장이 current state와 충돌하면 최신 사용자 지시 → GitHub latest main → Notion current planning → `CURRENT_PLANNING_CANON.md` / `current-planning-canon.json` → 이 Overlay 순으로 해석한다.
 
 ## 1. 현재 제품 구조
 
@@ -21,20 +21,23 @@ visual_treatment: SOFT_ANIME_NOIR_LOCKED
 presentation_language: DOSSIER_HYBRID_IS_PRESENTATION_LANGUAGE_NOT_MEDIUM
 ```
 
-- M01 저승역은 첫 세션·온보딩·회귀 사건이다.
-- M04 빨간 우산은 약 30~45분 release-near player-experience Vertical Slice다.
-- 과거 1년 4분기·ANNUAL next-step 문구는 현재 제품 cadence를 소유하지 않는다.
-- `ANNUAL-MVP-001/002`는 병합된 runtime/history ID와 기술 자산으로만 보존한다.
+- M01 저승역 = First Session / onboarding / regression.
+- M04 빨간 우산 = 약 30~45분 release-near player-experience Vertical Slice.
+- `ANNUAL-MVP-001/002` = 병합된 runtime/history ID와 기술 자산; current cadence owner가 아님.
 
 ## 2. 현재 Gate
 
 ```yaml
-non_visual_planning: CLOSURE_READY
-visual_planning: CLOSURE_READY
+PLANNING_COMPLETE: true
+USER_FINAL_PLANNING_DECLARATION_APPROVED: true
+non_visual_planning: COMPLETE
+visual_planning: COMPLETE
 product_reference_asset: PENDING
-overall_plan: CLOSURE_READY
-user_final_planning_declaration: PENDING
-plan_lock: ACTIVE
+overall_plan: COMPLETE
+user_final_planning_declaration: APPROVED
+plan_lock: RELEASED_TO_IMPLEMENTATION_GATE
+implementation_reality_gate: HANDOFF_READY_WITH_KNOWN_REALIGNMENT
+implementation_contract: READY
 runtime_implementation: NOT_AUTHORIZED
 canonical_root_runtime_receipt: NOT_RUN
 human_qa: NOT_RUN
@@ -43,74 +46,101 @@ poc_passed: NOT_DECLARED
 production_expansion: NOT_APPROVED
 ```
 
-`VISUAL_PLANNING_CLOSURE_READY`는 화면 구조·정보 위계·소프트 애니 누아르 treatment·Dossier presentation language가 구현 명세 수준으로 정리됐다는 뜻이다. `PRODUCT_REFERENCE_ASSET_PENDING`은 실제 M01/M04 이미지·레이어·권리·가독성 reference 승격은 아직 하지 않았다는 뜻이다. 둘을 같은 Gate로 묶지 않는다.
+`RELEASED_TO_IMPLEMENTATION_GATE`는 기획 잠금이 종료됐다는 뜻이지 runtime mutation이 자동 승인됐다는 뜻이 아니다. **runtime_implementation: NOT_AUTHORIZED**를 유지한다.
 
-사용자의 최종 `기획 완료` 선언과 fresh-main Reality Gate 전에는 code/data/Scene/save/제품 asset을 수정하지 않는다.
+Concrete M01/M04 이미지·레이어·권리·가독성 reference는 계속 `PRODUCT_REFERENCE_ASSET_PENDING`이다.
 
-## 3. Verified successor state
+## 3. Fresh-main verified successor state
+
+### Canon v2 runtime
+
+현재 main에는 Canon v2 loader/save migration/transaction/runtime wrapper가 이미 존재하고 active autoload에 연결되어 있다.
+
+판정: `EXISTING_CANON_V2_RUNTIME_REUSE`.
+
+- 2026-08-05 migration 계획을 처음부터 재실행하지 않는다.
+- stable Episode/victim IDs와 bounded mvp-040/validation-save-v2 migration을 보존한다.
+- current base `GameState.SAVE_VERSION`을 증거 없이 전역 변경하지 않는다.
+
+### Composite result
+
+현재 runtime에는 independent result/evaluation axes와 `CanonV2ResultAxesBridge` successor가 존재한다.
+
+판정: `COMPOSITE_RESULT_RUNTIME_SUCCESSOR_PRESENT`.
+
+다만 current Canon v2 sidecar의 `owns_first_s_rank` / `s_rank`는 최종 정본과 충돌한다.
+
+판정: `LEGACY_S_RANK_CONTRACT_REALIGNMENT_REQUIRED`.
+
+Legacy grade/S-rank는 history/mastery compatibility로만 보존하고 current product result authority가 될 수 없다.
+
+### monthly_state
+
+Planning Canon의 top-level optional `monthly_state`는 fresh main runtime에서 확인되지 않았다.
+
+판정: `MONTHLY_STATE_NOT_IMPLEMENTED`.
+
+구현은 additive optional orchestration state로 하고, legacy report에서 month completion을 추론하지 않으며 case truth를 저장하지 않는다.
 
 ### 조사·회수 UI hierarchy
 
-- Decision: `D-2026-08-08-INVESTIGATION-RECOVERY-UI-HIERARCHY-REFINEMENT`
-- 구현: PR #180 병합 완료.
-- 현재 main에는 저승역 요청형 매뉴얼, 의미 있는 focus 복귀, 조사 pointer-through 교정, 회수 대표 요원 contextual cut-in 등 successor 구현이 존재한다.
-- 따라서 과거 문서의 `ui_hierarchy_runtime_implementation: NOT_STARTED` 또는 `BLOCKED_HIGODOT_UNAVAILABLE_IN_CHATGPT_SESSION`은 현재 상태가 아니라 predecessor history다.
-- 실제 전체 Human/UI/device validation은 별도이며 `NOT_RUN`을 유지한다.
+PR #180 successor 구현은 current main에 존재한다. 요청형 매뉴얼, focus 복귀, pointer-through 교정, contextual cut-in 등을 재사용한다. 전체 Human/UI/device validation은 계속 `NOT_RUN`이다.
 
-### Visual/UI planning closure
+### M01 Visual/UI / Recovery closure
 
-- current owner: `docs/planning/2026-08-21-visual-ui-planning-closure.md`.
-- M01 Investigation/Deduction/Rescue에 빠져 있던 Recovery Packet을 `docs/M01_RECOVERY_SCENE_PACKET.md`로 보완한다.
-- `SERIAL_EXAM_FATIGUE_GUARD`로 조사→추리→구출→회수가 서로 다른 정답 시험이 아니라 같은 규칙의 관측→해석→적용→실행이 되도록 고정한다.
-- 사건 결과는 단일 S/A/B 등급으로 현재 복합 결과를 덮어쓰지 않는다.
+- `docs/M01_RECOVERY_SCENE_PACKET.md`까지 First Session packet chain이 닫혀 있다.
+- `SERIAL_EXAM_FATIGUE_GUARD`를 구현 acceptance로 유지한다.
+- 같은 규칙을 관측→해석→적용→실행으로 재사용하고 단계마다 별도 정답 시험을 추가하지 않는다.
 
-### 메인 메뉴 Ver 4.3 중앙화
+## 4. 메인 메뉴 Ver 4.3 — #181
 
-- Issue #181은 현재도 유효한 미완료 설계다.
-- 현재 main `scripts/ui/main_menu.gd`는 `GAME_VERSION := "Ver 4.2"`를 유지하므로 Ver 4.3 중앙화 완료를 주장하지 않는다.
-- 현 단계에서는 `DEFERRED_VALID / PLAN_LOCK`이다. 전체 기획 완료와 runtime 구현 권한 뒤 별도 구현 계약으로 재개한다.
+Issue #181은 실제 main의 `Ver 4.2` hardcode가 남아 있어 여전히 미완료다. 그러나 최종 기획 완료로 기존 `DEFERRED_VALID / PLAN_LOCK`의 보류 사유는 해소됐다.
 
-## 4. Workspace authority
+현재 판정:
+
+```text
+#181 = CURRENT_VALID / IMPLEMENTATION_GATE
+```
+
+기존 owner를 재사용한다.
+- `docs/superpowers/specs/2026-08-09-main-menu-control-room-versioning-design.md`
+- `docs/superpowers/plans/2026-08-09-main-menu-control-room-versioning-implementation-plan.md`
+
+새 main-menu 계획을 만들지 않는다. 실제 변경은 runtime implementation 실행 단계에서 한다.
+
+## 5. Workspace authority
 
 - Notion: 사람이 보는 전체 그림, Flow, 비교표, 현재 승인 방향.
 - Repository: 구조화 기획 계약, 구현, 테스트, runtime evidence.
-- Google Sheet: migration-only legacy inventory. 새 기획·승인·감사 쓰기 금지.
-- 의미 변경은 GitHub·Notion을 같은 범위에서 동기화하고 병합 뒤 양쪽을 readback한다.
+- Google Sheet: migration-only legacy inventory.
+- 의미 변경은 GitHub·Notion을 같은 범위에서 동기화하고 병합 뒤 양쪽 readback한다.
 
-## 5. Base authority
+## 6. Base authority
 
-- 프로젝트가 채택한 Base 릴리스·payload·trusted evidence·registry hash는 `docs/BASE_RULES_VERSION.md`와 `skills/PROJECT_BASE_ADAPTER.json`만 소유한다.
-- 다른 current entrypoint에 Base 버전 숫자나 채택 commit을 중복 고정하지 않는다.
-- Base 원격 latest main이 전진해도 별도 채택 검증 없이 프로젝트 baseline을 자동 승격하지 않는다.
+프로젝트가 채택한 Base 릴리스·payload·trusted evidence·registry hash는 `docs/BASE_RULES_VERSION.md`와 `skills/PROJECT_BASE_ADAPTER.json`이 소유한다. remote latest를 자동 채택하지 않는다.
 
-## 6. Runtime migration boundary
+## 7. 현재 implementation handoff
 
-현재 저승역 legacy Episode/PoC/runtime 자료에는 최신 Canon v2와 다른 의미가 남아 있을 수 있다. 이는 `docs/planning/2026-08-04-afterlife-station-canonical-source-map-and-legacy-disposition.md`가 선언한 계획된 migration debt다.
+Fresh-main Reality Gate:
+- `docs/audits/2026-08-22-final-planning-implementation-reality-gate.md`
 
-- 기존 Episode/save/report/ANNUAL ID를 자동 rename하지 않는다.
-- 새 월간 조율은 top-level optional `monthly_state` additive block 방향만 승인됐다.
-- 실제 save schema·Episode JSON·Scene 이관은 별도 Reality Gate와 승인 구현 계약 전에는 하지 않는다.
+Current design:
+- `docs/superpowers/specs/2026-08-22-post-planning-runtime-reconciliation-design.md`
 
-## 7. Issue authority
+Current implementation plan:
+- `docs/superpowers/plans/2026-08-22-post-planning-runtime-reconciliation-implementation-plan.md`
 
-GitHub Issue의 `open` 상태만으로 현재 구현 권한을 부여하지 않는다.
+이 세 문서가 현재 **`IMPLEMENTATION_HANDOFF_READY`** owner다.
 
-```text
-최신 사용자 지시
-→ current canon / current overlay
-→ 실제 main 구현·검증
-→ Issue disposition
-→ 과거 Issue 본문
-```
+## 8. Issue authority
 
-2026-08-21 전수 감사의 disposition receipt는 `docs/audits/2026-08-21-open-issue-and-authority-freshness-correction.md`가 소유한다. 완료·대체된 Issue는 post-merge에 close하고, 실제 미완료이며 현재 결정과 충돌하지 않는 Issue만 `CURRENT_VALID` 또는 `DEFERRED_VALID`로 유지한다.
+GitHub Issue open/closed 상태만으로 구현 권한이나 완료를 만들지 않는다. current canon → actual main → evidence → Issue disposition 순으로 판정한다.
 
-## 8. 현재 검증 진입점
+현재 open Issue는 #181 하나이며 planning handoff merge 뒤 `CURRENT_VALID / IMPLEMENTATION_GATE`로 successor freshness를 동기화한다.
 
-현재 Validation 책임은 `docs/VALIDATION_TARGET_CANON.md`의 최신 Router를 따른다.
+## 9. 검증 진입점
 
-- M01: First Session / onboarding / regression comprehension.
-- M04: release-near player-experience Vertical Slice.
-- 과거 저승역 단일 35~50분 Validation target은 historical predecessor이며 현재 제품 Validation 권한이 아니다.
+- M01: `M01_FIRST_SESSION` — First Session/onboarding/regression comprehension.
+- M04: `M04_RELEASE_NEAR_VERTICAL_SLICE` — release-near product experience.
 
 실행하지 않은 Runtime·Human·device 검증은 PASS로 승격하지 않는다.
