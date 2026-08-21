@@ -28,12 +28,14 @@
     }
   },
   "gates": {
-    "plan_lock": "ACTIVE",
-    "non_visual_planning": "CLOSURE_READY",
-    "visual_planning": "CLOSURE_READY",
+    "plan_lock": "RELEASED_TO_IMPLEMENTATION_GATE",
+    "non_visual_planning": "COMPLETE",
+    "visual_planning": "COMPLETE",
     "product_reference_asset": "PENDING",
-    "overall_plan": "CLOSURE_READY",
-    "user_final_planning_declaration": "PENDING",
+    "overall_plan": "COMPLETE",
+    "user_final_planning_declaration": "APPROVED",
+    "implementation_reality_gate": "HANDOFF_READY_WITH_KNOWN_REALIGNMENT",
+    "implementation_contract": "READY",
     "runtime_implementation_authorized": false,
     "human_qa": "NOT_RUN",
     "poc_passed": "NOT_DECLARED",
@@ -41,6 +43,10 @@
   },
   "runtime_compatibility": {
     "monthly_state_key": "monthly_state",
+    "monthly_state_status": "NOT_IMPLEMENTED",
+    "canon_v2_runtime_strategy": "REUSE_EXISTING_CANON_V2_RUNTIME",
+    "current_result_authority": "COMPOSITE_RESULT",
+    "legacy_s_rank_contract": "REALIGNMENT_REQUIRED",
     "annual_mvp_identifiers": "PRESERVE_HISTORICAL_RUNTIME_IDS",
     "infer_month_completion_from_legacy_reports": false,
     "rename_existing_episode_ids": false,
@@ -77,6 +83,11 @@
     "visual_ui_closure": "docs/planning/2026-08-21-visual-ui-planning-closure.md",
     "m01_recovery": "docs/M01_RECOVERY_SCENE_PACKET.md"
   },
+  "implementation_handoff_sources": {
+    "reality_gate": "docs/audits/2026-08-22-final-planning-implementation-reality-gate.md",
+    "design": "docs/superpowers/specs/2026-08-22-post-planning-runtime-reconciliation-design.md",
+    "implementation_plan": "docs/superpowers/plans/2026-08-22-post-planning-runtime-reconciliation-implementation-plan.md"
+  },
   "conditional_history_ledgers": [
     "docs/CURRENT_STATUS.md",
     "docs/CURRENT_CONFIRMED_DECISIONS.md",
@@ -93,7 +104,9 @@
     "docs/CURRENT_VISUAL_WORK_ORDER.md",
     "docs/VISUAL_ANCHOR_SPEC.md",
     "docs/M01_RECOVERY_SCENE_PACKET.md",
-    "docs/planning/2026-08-21-visual-ui-planning-closure.md",
+    "docs/audits/2026-08-22-final-planning-implementation-reality-gate.md",
+    "docs/superpowers/specs/2026-08-22-post-planning-runtime-reconciliation-design.md",
+    "docs/superpowers/plans/2026-08-22-post-planning-runtime-reconciliation-implementation-plan.md",
     "docs/CURRENT_HANDOFF.md",
     "docs/DOCUMENTATION_MAP.md",
     "skills/PROJECT_BASE_ADAPTER.json",
