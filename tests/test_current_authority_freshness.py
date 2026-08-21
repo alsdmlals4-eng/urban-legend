@@ -35,7 +35,7 @@ class CurrentAuthorityFreshnessTests(unittest.TestCase):
         start = self.read("START_HERE.md")
         overlay = self.read("docs/CURRENT_DECISION_OVERLAY.md")
         self.assertIn("PR #180", overlay)
-        self.assertIn("MERGED", overlay)
+        self.assertIn("병합 완료", overlay)
         self.assertNotIn("ui_hierarchy_runtime_implementation: NOT_STARTED", start)
         self.assertNotIn("BLOCKED_HIGODOT_UNAVAILABLE_IN_CHATGPT_SESSION", start)
 
