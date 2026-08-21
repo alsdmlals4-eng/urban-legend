@@ -15,17 +15,17 @@
 → docs/CURRENT_PLANNING_CANON.md
 → docs/current-planning-canon.json
 → docs/CURRENT_DECISION_OVERLAY.md
-→ docs/CURRENT_STATUS.md
 → docs/DOCUMENTATION_MAP.md
 → skills/SKILL_REGISTRY.json
 → 실제 main 코드·데이터·Scene·테스트
 → 작업에 필요한 조건부 원본만 추가
 ```
 
-Validation·저승역·승인 역사처럼 작업 주제가 요구할 때만 다음을 추가한다.
+Validation·저승역·장기 구현 Ledger·승인 역사처럼 작업 주제가 요구할 때만 다음을 추가한다.
 
 - Validation: `docs/VALIDATION_TARGET_CANON.md`
 - 저승역 상세 규칙: `docs/CURRENT_AFTERLIFE_STATION_CANON.md`
+- 장기 구현·검증 이력/evidence ceiling: `docs/CURRENT_STATUS.md`
 - 상세 승인·대체 역사: `docs/CURRENT_CONFIRMED_DECISIONS.md`
 - 과거 Validation 인수인계: `docs/CURRENT_HANDOFF_VALIDATION.md`
 
@@ -41,16 +41,16 @@ Notion 프로젝트 홈
 = 사람이 보는 전체 그림·Flow·비교표·현재 승인 방향
 
 docs/CURRENT_PLANNING_CANON.md + docs/current-planning-canon.json
-= 월 1사건 제품 구조·M01/M04 역할·PLAN_LOCK의 현재 기획 정본
+= 월 1사건 제품 구조·M01/M04 역할·현재 Planning Gate의 정본
 
 docs/CURRENT_DECISION_OVERLAY.md
 = 다음 작업자가 바로 소비하는 current mutable decision·verified successor state
 
+docs/CURRENT_STATUS.md
+= 장기 구현·검증·ANNUAL/CORE 계보와 evidence ceiling을 보존하는 조건부 Ledger; 현재 Planning Gate를 단독 소유하지 않음
+
 docs/CURRENT_CONFIRMED_DECISIONS.md
 = 승인·대체·병합·과거 CI의 상세 역사 원장; current state를 단독 소유하지 않음
-
-docs/CURRENT_STATUS.md
-= 장기 구현·검증 이력과 evidence ceiling
 
 실제 main 코드·테스트
 = 구현 사실
@@ -62,7 +62,7 @@ Google Sheet
 = migration-only legacy inventory
 ```
 
-같은 질문에 여러 문서가 다른 시대의 상태를 말하면 **최신 사용자 지시 → GitHub latest main → Notion current planning → CURRENT_PLANNING_CANON/current-planning-canon.json → CURRENT_DECISION_OVERLAY → 분야별 current canon → 실제 code/test → 역사 ledger** 순서로 판정한다.
+같은 질문에 여러 문서가 다른 시대의 상태를 말하면 **최신 사용자 지시 → GitHub latest main → Notion current planning → CURRENT_PLANNING_CANON/current-planning-canon.json → CURRENT_DECISION_OVERLAY → 분야별 current canon → 실제 code/test → 조건부 역사 ledger** 순서로 판정한다.
 
 ## 현재 제품·Gate Snapshot
 
@@ -72,8 +72,13 @@ initial_slate: M01_TO_M12
 continuous_after_m12: true
 first_session: M01_AFTERLIFE_STATION
 release_near_vertical_slice: M04_RED_UMBRELLA
-monthly_planning: NON_VISUAL_PLANNING_CLOSURE_READY
-overall_plan: OPEN
+non_visual_planning: CLOSURE_READY
+visual_planning: CLOSURE_READY
+product_reference_asset: PENDING
+overall_plan: CLOSURE_READY
+user_final_planning_declaration: PENDING
+visual_treatment: SOFT_ANIME_NOIR_LOCKED
+presentation_language: DOSSIER_HYBRID_IS_PRESENTATION_LANGUAGE_NOT_MEDIUM
 planning_lock: ACTIVE
 runtime_implementation: NOT_AUTHORIZED
 canonical_root_runtime_receipt: NOT_RUN
@@ -85,6 +90,7 @@ production_expansion: NOT_APPROVED
 
 - M01 저승역은 첫 세션·온보딩·회귀 사건이다.
 - M04 빨간 우산은 약 30~45분 release-near player-experience Vertical Slice다.
+- Visual planning closure와 concrete product-reference asset 승인은 별도 Gate다.
 - `ANNUAL-MVP-001/002`는 현재 제품 cadence가 아니라 병합된 runtime/history ID다.
 - 과거 1년 4분기·ANNUAL next-step 문구는 current 실행 권한이 아니다.
 
@@ -110,6 +116,14 @@ Decision `D-2026-08-08-INVESTIGATION-RECOVERY-UI-HIERARCHY-REFINEMENT`의 runtim
 - 실제 키보드·게임패드 체감 검증
 - 접근성·신규 플레이어 검증
 
+### Visual/UI planning closure
+
+- 현재 screen/flow closure owner: `docs/planning/2026-08-21-visual-ui-planning-closure.md`.
+- M01 packet chain은 Investigation → Deduction → Rescue → `M01_RECOVERY_SCENE_PACKET.md` → Composite Result까지 닫는다.
+- `SERIAL_EXAM_FATIGUE_GUARD`로 각 Phase가 새 정답 시험이 아니라 같은 규칙의 관측→해석→적용→실행이 되도록 한다.
+- 과거 단일 S/A/B 결과 등급은 현재 `COMPOSITE_RESULT`를 덮어쓰지 않는다.
+- concrete image/product reference는 `PENDING`이며 planning closure나 runtime/Human PASS와 동일하지 않다.
+
 ### 메인 메뉴 Ver 4.3 중앙화
 
 Issue #181은 **현재도 유효한 미완료 작업**이다. 실제 main `scripts/ui/main_menu.gd`는 아직 `Ver 4.2` 기준이므로 완료로 간주하지 않는다.
@@ -120,7 +134,7 @@ Issue #181은 **현재도 유효한 미완료 작업**이다. 실제 main `scrip
 DEFERRED_VALID / PLAN_LOCK
 ```
 
-전체 기획 완료와 runtime 구현 권한 뒤 별도 계약으로 재개한다.
+사용자 최종 기획 완료 선언과 runtime 구현 권한 뒤 별도 계약으로 재개한다.
 
 ## Validation Router
 
@@ -204,18 +218,17 @@ Registry 항목만 읽고 Skill을 실행했다고 보고하지 않는다.
 
 ```text
 GitHub latest main + Notion current planning + adopted Base 재조회
-→ 사용자 보유 시각 시안 review
-→ 전체 기획 완료 또는 명시적 보류 범위
+→ 현재 Visual/UI planning closure readback
+→ 사용자 최종 '기획 완료' 선언
 → fresh main에서 character/case ID·monthly_state·save/migration Reality Gate
 → 단일 Codex/HiGodot 구현 계약
 → 필요한 M01 Canon v2 runtime migration
+→ concrete product-reference asset 후보가 있으면 별도 P0/해상도/레이어/권리 승인
 → M04 release-near Vertical Slice 구현
 → exact-head 자동 회귀 + actual runtime evidence
 → M01/M04 사전등록 Human QA
 → PASS / FAIL / BLOCKED / NOT_RUN 그대로 기록
-→ 병합 뒤 GitHub·Notion readback + 적대적 검토
+→ 병합 뒤 GitHub·Notion readback + Issue successor freshness + 적대적 검토
 ```
 
 HiGodot 저작 권위가 필요한 제품 Scene·Node·Resource·Project Settings mutation은 해당 권위가 실제 가능한 구현 환경에서만 수행한다.
-
-실행하지 않은 Runtime·Human·device 검증은 절대 PASS로 승격하지 않는다.

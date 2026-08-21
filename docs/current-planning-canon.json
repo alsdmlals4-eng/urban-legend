@@ -20,6 +20,8 @@
     ],
     "first_session": "M01_AFTERLIFE_STATION",
     "release_near_vertical_slice": "M04_RED_UMBRELLA",
+    "visual_treatment": "SOFT_ANIME_NOIR_LOCKED",
+    "presentation_language": "DOSSIER_HYBRID_IS_PRESENTATION_LANGUAGE_NOT_MEDIUM",
     "content_budget": {
       "signature_cases": 4,
       "standard_cases": 8
@@ -28,8 +30,10 @@
   "gates": {
     "plan_lock": "ACTIVE",
     "non_visual_planning": "CLOSURE_READY",
-    "visual_review": "WAITING_USER_DRAFT",
-    "overall_plan": "OPEN",
+    "visual_planning": "CLOSURE_READY",
+    "product_reference_asset": "PENDING",
+    "overall_plan": "CLOSURE_READY",
+    "user_final_planning_declaration": "PENDING",
     "runtime_implementation_authorized": false,
     "human_qa": "NOT_RUN",
     "poc_passed": "NOT_DECLARED",
@@ -69,6 +73,15 @@
     "217": "docs/M01_DEDUCTION_SCENE_PACKET.md",
     "218": "docs/M01_RESCUE_SCENE_PACKET.md"
   },
+  "planning_closure_sources": {
+    "visual_ui_closure": "docs/planning/2026-08-21-visual-ui-planning-closure.md",
+    "m01_recovery": "docs/M01_RECOVERY_SCENE_PACKET.md"
+  },
+  "conditional_history_ledgers": [
+    "docs/CURRENT_STATUS.md",
+    "docs/CURRENT_CONFIRMED_DECISIONS.md",
+    "docs/CURRENT_HANDOFF_VALIDATION.md"
+  ],
   "active_entrypoints": [
     "START_HERE.md",
     "AGENTS.md",
@@ -76,9 +89,11 @@
     "docs/current-planning-canon.json",
     "docs/CURRENT_DECISION_OVERLAY.md",
     "docs/VALIDATION_TARGET_CANON.md",
-    "docs/CURRENT_STATUS.md",
     "docs/CURRENT_AFTERLIFE_STATION_CANON.md",
     "docs/CURRENT_VISUAL_WORK_ORDER.md",
+    "docs/VISUAL_ANCHOR_SPEC.md",
+    "docs/M01_RECOVERY_SCENE_PACKET.md",
+    "docs/planning/2026-08-21-visual-ui-planning-closure.md",
     "docs/CURRENT_HANDOFF.md",
     "docs/DOCUMENTATION_MAP.md",
     "skills/PROJECT_BASE_ADAPTER.json",

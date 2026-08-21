@@ -1,11 +1,11 @@
 # 괴이기록국 현재 기획 정본
 
 > 역할: `CURRENT_PLANNING_CANON`
-> 상태: `NON_VISUAL_PLANNING_CLOSURE_READY / OVERALL_PLAN_OPEN / PLAN_LOCK`
+> 상태: `PLANNING_CLOSURE_READY / USER_FINAL_PLANNING_DECLARATION_PENDING / PLAN_LOCK`
 > 사람용 정본: Notion 프로젝트 홈과 하위 기획 페이지
 > 구조화·구현 정본: 이 저장소와 `docs/current-planning-canon.json`
 
-이 문서는 2026-08-20까지 승인된 Notion 기획을 GitHub의 활성 진입점에 연결한다. 과거의 `1년 4분기`, `분기 핵심 사건 4개`, `ANNUAL-MVP-*가 다음 기획 트랙`이라는 설명과 충돌하면 이 문서를 우선한다. `ANNUAL-MVP-001/002` 이름은 이미 병합된 runtime·역사 식별자로 보존하며 삭제하거나 이름을 바꾸지 않는다.
+이 문서는 2026-08-20까지 승인된 Notion 기획과 2026-08-21 Visual/UI closure 검토를 GitHub의 활성 진입점에 연결한다. 과거의 `1년 4분기`, `분기 핵심 사건 4개`, `ANNUAL-MVP-*가 다음 기획 트랙`이라는 설명과 충돌하면 이 문서를 우선한다. `ANNUAL-MVP-001/002` 이름은 이미 병합된 runtime·역사 식별자로 보존하며 삭제하거나 이름을 바꾸지 않는다.
 
 ## 제품 약속
 
@@ -43,12 +43,14 @@
 5. 구출 결과와 회수 결과는 서로 덮어쓰지 않고 복합 결과에 함께 남긴다.
 6. 회수 행동은 보호·관찰·대응·공격·장비·봉쇄·후퇴이며 공격 반복만으로 승리할 수 없다.
 7. 실패는 위험 사례·비용·후속 조사·재출동 조건을 남긴다.
+8. 사건 결과를 단일 S/A/B 등급 하나로 압축해 위 복합 결과를 덮어쓰지 않는다.
 
 ## M01과 M04의 다른 역할
 
 - `M01 저승역`은 첫 세션·온보딩·회귀 사건이다. 기록 조각 → 기록국 첫 업무 → 제한된 주간 일정 → 저승역 → 첫 완전한 인과 체험을 가르친다.
 - M01 첫 추리는 4개 후보를 사용한다. 공식 원본 목적지설과 동일 가짜 목적지설을 1차 배제하고, 개인 기억 투영설과 검은 승차권 원인설을 경쟁시킨 뒤 독립 기록으로 후자를 약화한다.
 - 저승역 상세 규칙은 `docs/CURRENT_AFTERLIFE_STATION_CANON.md`가 소유한다. 검은 승차권 접촉·파괴를 정답으로 되살리지 않는다.
+- M01 회수는 `docs/M01_RECOVERY_SCENE_PACKET.md`가 `목적지 합창 / 회귀 승강장 / 무정차 환송`의 전조·대응·첫 세션 pacing을 소유한다.
 - `M04 빨간 우산`은 약 30~45분 release-near player-experience Vertical Slice다. 실제 사용 후보 UI/UX·아트·연출·Audio/VFX·시스템·콘텐츠가 연결된 뒤 Human QA한다.
 - M04는 M01의 온보딩 역할을 대신하지 않으며, M01은 M04의 제품 차별화·관계·시각 훅 검증 역할을 대신하지 않는다.
 
@@ -57,8 +59,20 @@
 - 조사는 장면 이미지, 짧은 서술, 2~4개 선택지, 기록·키워드 획득을 우선한다.
 - 추리는 별도 괴이 매뉴얼 화면에서 출처, 경쟁 가설, 지지·반박·미해결, 추리문을 다룬다.
 - 일반 조사에서는 큰 캐릭터를 상시 노출하지 않는다. 환경·사건·증거가 주체이며 캐릭터는 작은 지원 표현과 중요한 순간의 짧은 Cut-in으로 제한한다.
+- `SOFT_ANIME_NOIR_LOCKED`: 메인 캐릭터·중요 서사 일러스트 treatment는 승인된 소프트 애니 누아르를 따른다.
+- `DOSSIER_HYBRID_IS_PRESENTATION_LANGUAGE_NOT_MEDIUM`: Korean Urban Occult Dossier Hybrid는 UI·정보 위계·현장/기록 구성 언어이며 메인 아트 매체를 다시 여는 경쟁안이 아니다.
 - 픽셀/도트는 CCTV·센서·로그·지도·괴이 간섭을 위한 보조 관측 언어다. 메인 캐릭터와 전체 조사 화면의 기본 화풍을 대체하지 않는다.
 - M01~M12는 공용 화면 문법을 재사용하되 질문·반증·피해자 갈등·봉쇄 조건은 사건별로 구분한다.
+
+## Visual planning과 product reference asset 분리
+
+`VISUAL_PLANNING_CLOSURE_READY`와 `PRODUCT_REFERENCE_ASSET_PENDING`은 동시에 성립한다.
+
+- 화면 구조·정보 위계·아트 treatment·캐릭터 노출·pixel 관측 언어는 기획 수준에서 closure ready다.
+- 실제 M01/M04 이미지·레이어·권리·production reference 승격은 아직 승인되지 않았다.
+- 이미지 생성/선정 뒤에는 P0 Investigation/Deduction/Recovery 승인 조건, 1280×720·1920×1080 가독성, layer/reuse 구조를 별도로 검증한다.
+- product reference asset 승인은 runtime 구현·Human QA·POC PASS를 의미하지 않는다.
+- 상세 closure 계약은 `docs/planning/2026-08-21-visual-ui-planning-closure.md`가 소유한다.
 
 ## 성장·결과·저장 방향
 
@@ -72,8 +86,10 @@
 
 ```yaml
 non_visual_planning: CLOSURE_READY
-visual_review: WAITING_USER_DRAFT
-overall_plan: OPEN
+visual_planning: CLOSURE_READY
+product_reference_asset: PENDING
+overall_plan: CLOSURE_READY
+user_final_planning_declaration: PENDING
 plan_lock: ACTIVE
 runtime_implementation: NOT_AUTHORIZED
 human_qa: NOT_RUN
@@ -81,11 +97,11 @@ poc_passed: NOT_DECLARED
 production_expansion: NOT_APPROVED
 ```
 
-사용자의 전체 `기획 완료` 선언, 필요한 시각 레퍼런스 승인/보류 범위, fresh main 감사, 단일 구현 계약이 갖춰지기 전에는 code/data/Scene/save/제품 asset로 진행하지 않는다.
+`USER_FINAL_PLANNING_DECLARATION_PENDING`은 실제 이미지가 없어서가 아니라, 사용자가 최종 기획 정본을 닫았다고 선언하는 마지막 제품 Gate가 남았다는 뜻이다. 그 선언 전에는 code/data/Scene/save/제품 asset로 진행하지 않는다. 선언 뒤에도 fresh-main Reality Gate와 단일 구현 계약을 거쳐야 runtime 권한이 열린다.
 
 ## 열린 PR 통합 계보
 
-이번 정합화는 PR #211, #213, #214, #215, #216, #217, #218의 고유 문서를 모두 포함한다. 해당 PR의 원문은 최신 저승역 Canon v2와 월간 기획에 맞게 보강한다. 통합 PR이 main에 병합되고 파일별 동등 이상 내용이 확인된 뒤 원 PR은 `SUPERSEDED_BY_INTEGRATED_CANON`으로 닫는다.
+PR #211, #213, #214, #215, #216, #217, #218의 고유 문서는 PR #219에서 통합됐고 현재 main 정본에 포함되어 있다. 추가된 M01 Recovery Packet은 기존 저승역 Canon v2의 세 회수 패턴을 현재 월간/First Session 계약에 연결하는 successor 문서다.
 
 ## 정본 우선순위
 
