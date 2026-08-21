@@ -1,11 +1,11 @@
 # 괴이기록국 현재 기획 정본
 
 > 역할: `CURRENT_PLANNING_CANON`
-> 상태: `PLANNING_CLOSURE_READY / USER_FINAL_PLANNING_DECLARATION_PENDING / PLAN_LOCK`
+> 상태: `PLANNING_COMPLETE / USER_FINAL_PLANNING_DECLARATION_APPROVED / IMPLEMENTATION_HANDOFF_READY`
 > 사람용 정본: Notion 프로젝트 홈과 하위 기획 페이지
 > 구조화·구현 정본: 이 저장소와 `docs/current-planning-canon.json`
 
-이 문서는 2026-08-20까지 승인된 Notion 기획과 2026-08-21 Visual/UI closure 검토를 GitHub의 활성 진입점에 연결한다. 과거의 `1년 4분기`, `분기 핵심 사건 4개`, `ANNUAL-MVP-*가 다음 기획 트랙`이라는 설명과 충돌하면 이 문서를 우선한다. `ANNUAL-MVP-001/002` 이름은 이미 병합된 runtime·역사 식별자로 보존하며 삭제하거나 이름을 바꾸지 않는다.
+이 문서는 2026-08-20까지 승인된 Notion 기획, 2026-08-21 Visual/UI closure, 2026-08-22 사용자의 최종 `기획완료` 선언을 GitHub의 활성 진입점에 연결한다. 과거의 `1년 4분기`, `분기 핵심 사건 4개`, `ANNUAL-MVP-*가 다음 기획 트랙`이라는 설명과 충돌하면 이 문서를 우선한다. `ANNUAL-MVP-001/002` 이름은 이미 병합된 runtime·역사 식별자로 보존하며 삭제하거나 이름을 바꾸지 않는다.
 
 ## 제품 약속
 
@@ -66,42 +66,63 @@
 
 ## Visual planning과 product reference asset 분리
 
-`VISUAL_PLANNING_CLOSURE_READY`와 `PRODUCT_REFERENCE_ASSET_PENDING`은 동시에 성립한다.
+기획 완료 후에도 `PRODUCT_REFERENCE_ASSET_PENDING`은 유지된다.
 
-- 화면 구조·정보 위계·아트 treatment·캐릭터 노출·pixel 관측 언어는 기획 수준에서 closure ready다.
+- 화면 구조·정보 위계·아트 treatment·캐릭터 노출·pixel 관측 언어는 최종 기획에 포함되어 `COMPLETE`다.
 - 실제 M01/M04 이미지·레이어·권리·production reference 승격은 아직 승인되지 않았다.
 - 이미지 생성/선정 뒤에는 P0 Investigation/Deduction/Recovery 승인 조건, 1280×720·1920×1080 가독성, layer/reuse 구조를 별도로 검증한다.
 - product reference asset 승인은 runtime 구현·Human QA·POC PASS를 의미하지 않는다.
-- 상세 closure 계약은 `docs/planning/2026-08-21-visual-ui-planning-closure.md`가 소유한다.
 
 ## 성장·결과·저장 방향
 
 - 성장의 장기 방향은 0~5 Rank + 내부 숙련 진행도다. threshold와 피로·연구 수치는 provisional이다.
 - 성장은 Clarity·Access·Tolerance·Support를 바꾸며 핵심 진실이나 정답을 자동 제공하지 않는다.
 - 결과는 `rescue_outcome_snapshot → recovery_handoff_state → recovery_result_packet → monthly envelope` 계보를 재사용한다.
-- 새 월간 조율 상태는 top-level `monthly_state`의 additive optional block으로 계획한다. 기존 `mvp-039`, Episode ID, report, ANNUAL PoC state를 자동 rename·import·월 완료 추론하지 않는다.
-- 이 항목은 구현 방향 정본이며 현재 save schema 변경 권한은 아니다.
+- 새 월간 조율 상태는 top-level `monthly_state`의 additive optional block으로 구현한다. 기존 Episode ID, report, ANNUAL PoC state를 자동 rename·import·월 완료 추론하지 않는다.
+- current main의 Canon v2 migration/runtime 구현은 재사용한다. 새로 재구축하지 않는다.
+
+## 최종 기획 승인 후 Reality Gate
+
+2026-08-22 fresh-main 검토 결과:
+
+- `EXISTING_CANON_V2_RUNTIME_REUSE`
+- `COMPOSITE_RESULT_RUNTIME_SUCCESSOR_PRESENT`
+- `LEGACY_S_RANK_CONTRACT_REALIGNMENT_REQUIRED`
+- `MONTHLY_STATE_NOT_IMPLEMENTED`
+- #181: `CURRENT_VALID / IMPLEMENTATION_GATE`
+
+상세 근거는 `docs/audits/2026-08-22-final-planning-implementation-reality-gate.md`가 소유한다.
 
 ## 현재 Gate
 
 ```yaml
-non_visual_planning: CLOSURE_READY
-visual_planning: CLOSURE_READY
+PLANNING_COMPLETE: true
+USER_FINAL_PLANNING_DECLARATION_APPROVED: true
+non_visual_planning: COMPLETE
+visual_planning: COMPLETE
 product_reference_asset: PENDING
-overall_plan: CLOSURE_READY
-user_final_planning_declaration: PENDING
-plan_lock: ACTIVE
+overall_plan: COMPLETE
+user_final_planning_declaration: APPROVED
+plan_lock: RELEASED_TO_IMPLEMENTATION_GATE
+implementation_reality_gate: HANDOFF_READY_WITH_KNOWN_REALIGNMENT
+implementation_contract: READY
 runtime_implementation: NOT_AUTHORIZED
 human_qa: NOT_RUN
 poc_passed: NOT_DECLARED
 production_expansion: NOT_APPROVED
 ```
 
-`USER_FINAL_PLANNING_DECLARATION_PENDING`은 실제 이미지가 없어서가 아니라, 사용자가 최종 기획 정본을 닫았다고 선언하는 마지막 제품 Gate가 남았다는 뜻이다. 그 선언 전에는 code/data/Scene/save/제품 asset로 진행하지 않는다. 선언 뒤에도 fresh-main Reality Gate와 단일 구현 계약을 거쳐야 runtime 권한이 열린다.
+`RELEASED_TO_IMPLEMENTATION_GATE`는 더 이상 기획 완료 선언을 기다리지 않는다는 뜻이다. **runtime_implementation: NOT_AUTHORIZED**는 이 선언만으로 제품 파일 변경을 시작하지 않는다는 별도 실행 권한 경계다.
+
+현재 구현 handoff owner:
+- `docs/superpowers/specs/2026-08-22-post-planning-runtime-reconciliation-design.md`
+- `docs/superpowers/plans/2026-08-22-post-planning-runtime-reconciliation-implementation-plan.md`
+
+따라서 현재 상태는 **`IMPLEMENTATION_HANDOFF_READY`**다.
 
 ## 열린 PR 통합 계보
 
-PR #211, #213, #214, #215, #216, #217, #218의 고유 문서는 PR #219에서 통합됐고 현재 main 정본에 포함되어 있다. 추가된 M01 Recovery Packet은 기존 저승역 Canon v2의 세 회수 패턴을 현재 월간/First Session 계약에 연결하는 successor 문서다.
+PR #211, #213, #214, #215, #216, #217, #218의 고유 문서는 PR #219에서 통합됐고 현재 main 정본에 포함되어 있다. M01 Recovery Packet은 기존 저승역 Canon v2의 세 회수 패턴을 현재 월간/First Session 계약에 연결하는 successor 문서다.
 
 ## 정본 우선순위
 
@@ -111,6 +132,8 @@ PR #211, #213, #214, #215, #216, #217, #218의 고유 문서는 PR #219에서 �
 → Notion 프로젝트 홈·현재 하위 기획
 → docs/current-planning-canon.json
 → 이 문서
+→ CURRENT_DECISION_OVERLAY
+→ 현재 implementation handoff spec/plan
 → 사건별 current canon
 → 실제 code/data/Scene/test
 → 자동·Human 증거
