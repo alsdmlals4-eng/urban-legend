@@ -130,6 +130,16 @@ Human QA는 계속 `NOT_RUN`이며 자동 테스트로 대체하지 않는다.
 - 병합 뒤 open Issue뿐 아니라 merge-linked auto-close Issue도 successor freshness로 재검사한다.
 - #181은 final planning handoff 기준 `CURRENT_VALID / IMPLEMENTATION_GATE`; 실제 구현 완료 전 닫지 않는다.
 
+## CORE-MVP-001 보존 문서
+
+| 책임 | 문서 |
+|---|---|
+| CORE-MVP-001 마일스톤 계약 | `superpowers/specs/2026-07-23-project-core-integrated-spec.md` |
+| CORE-MVP-001 실행 계획 | `superpowers/plans/2026-07-23-core-mvp-001-implementation-plan.md` |
+| 스트레스 테스트·벤치마킹 | `planning/PROJECT_CORE_STRESS_TEST_AND_BENCHMARK.md` |
+
+위 문서는 역사적 마일스톤 계약·기술 회귀 근거를 보존한다. 현재 월간 제품 cadence나 M01/M04 Validation 책임, 현재 implementation handoff를 소유하지 않는다.
+
 ## Skill 조건부 라우팅
 
 | 작업 조건 | 프로젝트 Skill | 추가 책임 원본 |
