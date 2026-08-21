@@ -71,7 +71,9 @@
     "215": "docs/VISUAL_ANCHOR_SPEC.md",
     "216": "docs/M01_INVESTIGATION_SCENE_PACKET.md",
     "217": "docs/M01_DEDUCTION_SCENE_PACKET.md",
-    "218": "docs/M01_RESCUE_SCENE_PACKET.md",
+    "218": "docs/M01_RESCUE_SCENE_PACKET.md"
+  },
+  "planning_closure_sources": {
     "visual_ui_closure": "docs/planning/2026-08-21-visual-ui-planning-closure.md",
     "m01_recovery": "docs/M01_RECOVERY_SCENE_PACKET.md"
   },
