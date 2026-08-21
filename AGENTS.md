@@ -14,6 +14,9 @@
 → AGENTS.md
 → docs/OPERATING_MODEL.md
 → docs/WORK_MODE_AND_SKILL_ROUTING.md
+→ Notion 괴이기록국 프로젝트 홈
+→ docs/CURRENT_PLANNING_CANON.md
+→ docs/current-planning-canon.json
 → docs/CURRENT_CONFIRMED_DECISIONS.md
 → docs/CURRENT_STATUS.md
 → docs/DOCUMENTATION_MAP.md
@@ -33,6 +36,9 @@
 → AGENTS.md
 → docs/OPERATING_MODEL.md
 → docs/WORK_MODE_AND_SKILL_ROUTING.md
+→ Notion 괴이기록국 프로젝트 홈
+→ docs/CURRENT_PLANNING_CANON.md
+→ docs/current-planning-canon.json
 → docs/CURRENT_CONFIRMED_DECISIONS.md
 → docs/VALIDATION_TARGET_CANON.md  # Validation·제품 Target 관련일 때
 → docs/CURRENT_STATUS.md
@@ -70,10 +76,14 @@
 
 - 시작 전에 목표, 플레이어 가치, 포함·제외 범위, 영향 파일, 저장/UI 위험, 완료 기준과 검증을 짧게 적는다.
 - 실제 `main`의 코드·데이터·테스트가 구현 사실의 우선 근거다.
+- 사람이 보는 전체 그림·Flow·비교표는 Notion, 구조화 기획·구현·테스트·runtime evidence는 Repository가 책임진다.
+- 승인된 최신 월간 기획은 `docs/CURRENT_PLANNING_CANON.md`와 `docs/current-planning-canon.json`에서 읽는다. 과거 연간·분기 문구와 충돌하면 월간 정본을 우선한다.
 - 승인 계획과 전달 패키지는 구현 완료가 아니다. `docs/CURRENT_STATUS.md`의 상태 구분을 따른다.
 - 승인된 제품 Target은 `docs/CURRENT_CONFIRMED_DECISIONS.md`와 해당 분야 정본에서 읽고 실제 구현과 혼합하지 않는다.
 - 기획 작업은 `docs/planning/`의 책임 문서와 실제 파일을 함께 확인한다.
 - 가장 작은 end-to-end 변경을 구현하고 자동·수동 검증 뒤 `main`에 통합한다.
+- 속도보다 장기 효율과 최고 결과를 우선한다. 구조·구현 방법을 정할 때 현재 공식 자료, 현업 사례, 실무 운영 사례와 대안을 비교하고 `ADOPT / ADAPT / AVOID / TEST / DEFER` 근거를 남긴다.
+- PR 병합 전 전체 범위 적대적 검토와 교정을 수행하고, 병합 뒤 GitHub·Notion exact readback·진행도·잔여 문제를 다시 확인한다. 큰 통합은 최소 5회 whole-scope attack→review→decision 루프를 기본으로 한다.
 - 사용자 변경과 dirty worktree를 보존한다.
 - 생성·삭제·이동·대규모 수정은 이유, 참조 영향, 백업 위치를 보고한다.
 - 기존 프로젝트 구조 변경은 `audit`와 승인된 처리표 없이 수행하지 않는다.
@@ -90,6 +100,8 @@
 
 ## 문서 책임 원본
 
+- 현재 사람용 전체 그림: Notion `괴이기록국 (urban-legend)` 프로젝트 홈
+- 현재 월간 기획 정본: `docs/CURRENT_PLANNING_CANON.md`, `docs/current-planning-canon.json`
 - 현재 승인 결정: `docs/CURRENT_CONFIRMED_DECISIONS.md`
 - Validation 상세 Target: `docs/VALIDATION_TARGET_CANON.md`
 - 현재 구현과 검증 상태: `docs/CURRENT_STATUS.md`
@@ -122,6 +134,8 @@
 - 최종 기록 보상은 **괴이 매뉴얼 작성·갱신**이다.
 - 플레이어 노출 안내자는 **기록관 아카**다. 내부 `로그` ID·파일명·저장 키는 호환용으로 유지할 수 있다.
 - 괴이는 처치 대상이 아니라 규칙을 조사하고 현재 출현을 안정화할 현상이다.
+- 제품 cadence는 1개월 메인 사건 1개다. 초기 M01~M12 뒤에도 M13+로 이어지며 12개월 checkpoint를 엔딩이나 진입 Gate로 만들지 않는다.
+- M01 저승역은 첫 세션·온보딩·회귀, M04 빨간 우산은 release-near player-experience Vertical Slice다.
 - `battle_scene`은 안정화·잔향 회수 화면이다. HP·공격·처치 중심 시스템을 추가하지 않는다.
 - 시나리오당 대표 미니게임은 조사 마지막 규칙 검증으로 사용하고 이후 별도 안정화·회수로 연결한다.
 - 미니게임 중 저장하지 않는다. 진입 직전 체크포인트와 동일 보드·변수 복구를 사용한다.
@@ -168,16 +182,16 @@ Base를 갱신한 뒤 프로젝트의 `docs/BASE_RULES_VERSION.md`에 기준 커
 - 큰 MVP 종료 시 `docs/CURRENT_STATUS.md`, `MVP_ROADMAP.md`, `TEST_CHECKLIST.md`, 해당 `docs/planning/` 문서를 갱신한다.
 - 5개 MVP마다 문서 중복·구문서·깨진 참조·불필요한 기본 읽기를 감사한다.
 
-## Base v9.4·Sheet·이미지 생성·검수
+## Base v9.4·Workspace·이미지 생성·검수
 
 - 현행 Base 기준은 `docs/BASE_RULES_VERSION.md`의 Base `9.4.0` payload·trusted evidence·registry hash다.
 - 프로젝트 main 채택 커밋은 `7277b9cececa56532f7b0d11c1a02fd3d5642750`이다.
 - `c987647d01ad2baa028a16e03d85ddfc1572a727`와 `VERTICAL_SLICE_INTEGRATED_EXECUTION_PROMPT_v8.md`는 Legacy compatibility input이며 현행 Base 기준으로 사용하지 않는다.
-- Sheet는 `PROJECT_SHEET_CONFIGURED`지만 GitHub와 충돌할 때 `SHEET_GITHUB_CONFLICT / NO_AUTOMATIC_OVERWRITE`를 적용한다.
-- 승인된 주요 변경은 동일 Decision ID로 GitHub 책임 원본과 연결 Sheet에 기록하고 Commit·범위를 남긴다.
+- Notion은 사람용 기획 정본, Repository는 구조화·구현·테스트·증거 정본이다. 양쪽 의미가 바뀌는 작업은 같은 범위에서 동기화하고 병합 뒤 readback한다.
+- Google Sheet는 migration-only legacy inventory다. 새 기획·승인·감사 쓰기를 금지하고 고유 정보가 필요할 때만 현재 정본으로 이관한다.
 - GPT는 기획 중 세계관·인물·에피소드·UI 목업과 기획 종료 Demo·상점 후보를 생성할 수 있다.
 - 생성 결과는 자동 최종 자산이 아니며 `docs/IMAGE_ASSET_WORKFLOW.md`의 검수·manifest·Godot 적용 Gate를 통과해야 한다.
-- 각 단계 뒤 `repository-wide-audit`로 stale 이미지·구형 Prompt·untouched 소비자를 검수한다.
+- 각 단계와 병합 뒤 `repository-wide-audit`로 stale 이미지·구형 Prompt·untouched consumer·Notion/GitHub 충돌을 검수한다.
 
 ## 플랫폼 출시·에셋 권리
 

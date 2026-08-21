@@ -1,8 +1,8 @@
 > # urban-legend
 
-> 시작: `START_HERE.md` | 현재 상태: `docs/CURRENT_STATUS.md` | 프로젝트 코어: `docs/PROJECT_CORE.md` | 상세 설계: `docs/GAME_DESIGN_DOCUMENT.md`
+> 시작: `START_HERE.md` | 현재 기획: `docs/CURRENT_PLANNING_CANON.md` | 현재 상태: `docs/CURRENT_STATUS.md` | 프로젝트 코어: `docs/PROJECT_CORE.md`
 
-`괴이 기록국`은 Godot 4.7.1과 GDScript로 제작하는 PC용 **권나래 연도제 육성 시뮬레이션 + 텍스트 노벨 + 규칙 추리 + 조작형 미니게임 + 턴제 회수 전투** 프로젝트다. 플레이어는 권나래의 일정·역량·신념·관계를 육성하고, 관측 가능한 단서로 괴이 규칙 가설을 만든 뒤, 조작형 검증과 전조 기반 회수 전투에서 그 이해를 증명한다.
+`괴이 기록국`은 Godot 4.7.1과 GDScript로 제작하는 PC용 **월간 육성·일정 + 텍스트 조사 + 규칙 추리 + 피해자 구출 + 턴제 회수** 프로젝트다. 플레이어는 권나래의 일정·역량·신념·관계를 준비하고, 관측 가능한 단서로 괴이 규칙 가설을 만든 뒤 조작형 구출과 전조 기반 회수에서 그 이해를 증명한다.
 
 > 괴이는 완전히 죽지 않는다. 그렇기에 규칙을 기록하고, 다음에 살아남을 방법을 남긴다.
 
@@ -15,14 +15,16 @@
 | 저장 Schema | `mvp-039` (`mvp-038` 이관 지원) |
 | 플랫폼 | PC / Steam, 16:9, 마우스·키보드 |
 | 사건 코어 | CORE-MVP-001 `POC_BUILD_READY` |
-| 연도제 설계 | `APPROVED_DESIGN_BASELINE` |
-| 연도제 구현 | `NOT_IMPLEMENTED` |
-| 다음 트랙 | `ANNUAL-MVP-001` 계획 승인 대기 |
+| ANNUAL-MVP-001/002 | runtime/history ID · `MERGED / AUTOMATED_QA_PASSED` |
+| 현재 기획 | 월 1사건 M01+ · non-visual `CLOSURE_READY` |
+| 첫 세션 | M01 저승역 |
+| release-near Vertical Slice | M04 빨간 우산 · `PLAN_ONLY` |
+| Planning gate | `PLAN_LOCK / OVERALL_PLAN_OPEN` |
 | POC_PASSED | `NOT_DECLARED` |
 | Production gate | `HOLD_UNTIL_PLAYER_EVIDENCE` |
 | 제작 확대 | `NOT_APPROVED` |
 
-현재 구현에는 기존 세 사건과 CORE-MVP-001 독립 저승역 PoC가 있다. 연도제 육성 상위 루프는 승인된 설계이며 아직 구현되지 않았다.
+현재 구현에는 기존 사건·저승역 Canon v2 Validation 계층과 ANNUAL-MVP-001/002의 주간 일정·육성 기술 구현이 있다. 최신 제품 기획은 이 기술 자산을 월 1사건 M01+ cadence에 재사용하는 방향이며, 월간 orchestration·M04 release-near Slice 구현은 아직 승인되지 않았다.
 
 UX-PD-001 2B·2C와 기존 MVP-044~046은 폐기하지 않는다. ANNUAL-MVP 수직절편 결과에 맞춰 **재매핑**하며 현재 구현 진입점으로 사용하지 않는다.
 
@@ -33,6 +35,9 @@ START_HERE.md
 → AGENTS.md
 → docs/OPERATING_MODEL.md
 → docs/WORK_MODE_AND_SKILL_ROUTING.md
+→ Notion 괴이기록국 프로젝트 홈
+→ docs/CURRENT_PLANNING_CANON.md
+→ docs/current-planning-canon.json
 → docs/CURRENT_STATUS.md
 → docs/PROJECT_CORE.md
 → docs/GAME_DESIGN_DOCUMENT.md
@@ -42,14 +47,14 @@ START_HERE.md
 → 실제 대상 파일
 ```
 
-연도제 작업에서는 다음을 추가로 읽는다.
+월간 기획·콘텐츠 작업에서는 다음을 추가로 읽는다.
 
 ```text
-docs/superpowers/specs/2026-07-25-annual-raising-visual-novel-design.md
-→ docs/superpowers/specs/2026-07-25-annual-raising-visual-novel-design-approval.md
-→ MVP_ROADMAP.md
-→ docs/superpowers/plans/2026-07-25-annual-design-canonical-migration-plan.md
-→ docs/superpowers/plans/2026-07-25-annual-raising-vertical-slice-implementation-plan.md
+docs/CURRENT_PLANNING_CANON.md
+→ docs/CURRENT_VISUAL_WORK_ORDER.md
+→ docs/M01_M04_VERTICAL_SLICE_FLOW.md
+→ M01 또는 M04 책임 Packet
+→ docs/CURRENT_AFTERLIFE_STATION_CANON.md  # M01일 때
 → TEST_CHECKLIST.md
 ```
 
@@ -67,13 +72,13 @@ Base 공용 Skill은 `skills/BASE_SKILL_INDEX.json`에서 선택하고, 프로�
 ```text
 주간 일정·육성
 → 관계·기관·연구·장비 준비
-→ 사건 징후와 출동 판단
+→ 월간 사건 징후와 출동 판단
 → 텍스트 노벨형 조사
-→ 조작형 규칙 검증 미니게임
+→ 추리·괴이 매뉴얼
+→ 피해자 구출
 → 턴제 회수 전투
 → 위험 사례·잔향·괴이 매뉴얼
-→ 연구·스킬·분기 정산
-→ 연도 결산·다음 연도 계승
+→ 복합 결과·연구·관계·다음 달 준비
 ```
 
 ### 보호되는 사건 코어
@@ -86,10 +91,11 @@ Base 공용 Skill은 `skills/BASE_SKILL_INDEX.json`에서 선택하고, 프로�
 - 괴이 HP 0이 아닌 포획 창 개방
 - 성공과 실패의 괴이 매뉴얼 기록
 
-### 승인된 연도제 확장
+### 승인된 월간 확장
 
-- 1년 4분기
-- 주간 계획 + 중요 반일 선택
+- 1개월 메인 사건 1개, M01~M12 뒤 M13+ 연속
+- 월 4주 준비·조기/지연/강제 출동
+- Signature 4 + Standard 8
 - 기초 역량·가치 성향·전문성
 - 피로 1개 + 상태 태그
 - 기본 장비 + 연구 모듈
@@ -97,11 +103,12 @@ Base 공용 Skill은 `skills/BASE_SKILL_INDEX.json`에서 선택하고, 프로�
 - 권나래 직접 명령, 동료 고유·공용 스킬 자동 지원
 - 기관 교육·괴이 연구
 - 실패 전진
-- 최종 엔딩이 아닌 연도 결산
+- 단일 등급이 아닌 구출·회수·위험 사례·관계의 복합 결과
 
 ## 주요 문서
 
 - 문서·Skill 선택: [`docs/DOCUMENTATION_MAP.md`](docs/DOCUMENTATION_MAP.md)
+- 현재 월간 기획: [`docs/CURRENT_PLANNING_CANON.md`](docs/CURRENT_PLANNING_CANON.md)
 - 프로젝트 코어: [`docs/PROJECT_CORE.md`](docs/PROJECT_CORE.md)
 - 상세 게임 설계: [`docs/GAME_DESIGN_DOCUMENT.md`](docs/GAME_DESIGN_DOCUMENT.md)
 - 현재 상태: [`docs/CURRENT_STATUS.md`](docs/CURRENT_STATUS.md)
@@ -152,17 +159,18 @@ git diff --check
 
 ## 다음 작업
 
-1. 연도제 정본 전환 문서 계약 완료
-2. ANNUAL-MVP-001 구현 계획 최종 승인
-3. 기존 저장과 본편을 건드리지 않는 격리 수직절편 구현
-4. 자동 계약·Godot 회귀·사람 눈 UI QA
-5. 육성→사건→연구 인과 플레이 검증
-6. `KEEP / CHANGE / RETEST / HOLD` 판정
+1. 사용자 보유 시각 시안 검토와 승인/보류 범위 기록
+2. 사용자 전체 `기획 완료` 선언 전 `PLAN_LOCK` 유지
+3. fresh main에서 character/case ID·`monthly_state`·save/migration Reality Gate
+4. M04 release-near Vertical Slice 단일 구현 계약과 TDD
+5. 자동 회귀·actual runtime evidence 뒤 M01/M02/M04 Human QA
+6. 병합 뒤 GitHub·Notion readback과 적대적 검토·교정 확인
 
-## BCA v8 기획·이미지·Sheet 운영
+## Workspace·이미지 운영
 
 - Base 버전 원본: `docs/BASE_RULES_VERSION.md`
-- v8 통합 실행문 사용.
-- Sheet: `PROJECT_SHEET_CONFIGURED`; `docs/PROJECT_GOOGLE_SHEET_WORKBOOK.md`
+- 사람용 전체 그림: Notion 괴이기록국 프로젝트 홈
+- 구조화 기획·구현·테스트·증거: Repository
+- Google Sheet: migration-only legacy inventory; `docs/PROJECT_GOOGLE_SHEET_WORKBOOK.md`
 - GPT 이미지·검수: `docs/IMAGE_ASSET_WORKFLOW.md`
 - 적대적 검토: `docs/BCA_VISUAL_SHEET_ADOPTION_AUDIT.md`

@@ -46,13 +46,12 @@ STALE_REFERENCE_DOCS = [
     for path in ALL_ROUTED_DOCS + [CORE_VALIDATION_QA, PROGRESSIVE_DISCLOSURE_QA]
     if path not in {ROOT / "AGENTS.md", ROOT / "docs/DOCUMENTATION_MAP.md"}
 ]
-BASELINE_DOCS = ACTIVE_DOCS
+BASELINE_DOCS = [path for path in ACTIVE_DOCS if path != ROOT / "docs/CURRENT_HANDOFF.md"]
 PROGRESSIVE_BASELINE_DOCS = [
     ROOT / "README.md",
     ROOT / "MVP_ROADMAP.md",
     ROOT / "TEST_CHECKLIST.md",
     ROOT / "docs/CURRENT_STATUS.md",
-    ROOT / "docs/CURRENT_HANDOFF.md",
     ROOT / "docs/GAME_DESIGN_DOCUMENT.md",
     ROOT / "docs/planning/README.md",
     ROOT / "docs/planning/ROADMAP_AND_HANDOFF.md",
@@ -105,21 +104,21 @@ class ActiveDocumentReferenceTests(unittest.TestCase):
         ):
             self.assertTrue(path.is_file(), path.relative_to(ROOT))
 
-    def test_annual_design_baseline_is_canonicalized(self) -> None:
+    def test_current_monthly_planning_baseline_is_canonicalized(self) -> None:
         core = (ROOT / "docs/PROJECT_CORE.md").read_text(encoding="utf-8")
         gdd = (ROOT / "docs/GAME_DESIGN_DOCUMENT.md").read_text(encoding="utf-8")
         status = (ROOT / "docs/CURRENT_STATUS.md").read_text(encoding="utf-8")
         handoff = (ROOT / "docs/CURRENT_HANDOFF.md").read_text(encoding="utf-8")
-        roadmap = (ROOT / "MVP_ROADMAP.md").read_text(encoding="utf-8")
+        planning = (ROOT / "docs/CURRENT_PLANNING_CANON.md").read_text(encoding="utf-8")
 
-        for text in (core, gdd, status, handoff, roadmap):
-            self.assertIn("APPROVED_DESIGN_BASELINE", text)
-            self.assertIn("ANNUAL-MVP-001", text)
+        for text in (core, gdd, status, handoff, planning):
+            self.assertIn("CURRENT_PLANNING_CANON", text)
 
         self.assertIn("주인공 육성 시뮬레이션 + 텍스트 노벨", core)
         self.assertIn("연도 결산", gdd)
         self.assertIn("POC_BUILD_READY", status)
-        self.assertIn("POC_PASSED: NOT_DECLARED", handoff)
+        self.assertIn("ONE_MAIN_CASE_PER_MONTH", handoff)
+        self.assertIn("PLAN_LOCK", handoff)
 
     def test_active_status_docs_do_not_claim_old_merge_wait(self) -> None:
         current_docs = (

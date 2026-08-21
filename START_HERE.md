@@ -11,6 +11,9 @@
 → GitHub latest main ref
 → docs/OPERATING_MODEL.md
 → docs/WORK_MODE_AND_SKILL_ROUTING.md
+→ Notion 괴이기록국 프로젝트 홈
+→ docs/CURRENT_PLANNING_CANON.md
+→ docs/current-planning-canon.json
 → docs/CURRENT_CONFIRMED_DECISIONS.md
 → docs/CURRENT_AFTERLIFE_STATION_CANON.md  # 저승역 작업일 때
 → docs/CURRENT_HANDOFF_VALIDATION.md       # Validation 일반 인수인계가 필요할 때
@@ -24,12 +27,15 @@
 
 `전부 확인`은 모든 파일을 무조건 로드한다는 뜻이 아니다. 현재 정본·Registry·실제 변경 경로로 범위를 좁힌 뒤 필요한 전문만 읽는다.
 
-현재 승인된 조사·회수 UI hierarchy 작업은 `D-2026-08-08-INVESTIGATION-RECOVERY-UI-HIERARCHY-REFINEMENT`를 먼저 읽고, 해당 Spec/Plan을 이어서 읽는다. 일반 Validation Handoff의 과거 next step보다 최신 사용자 승인·`CURRENT_CONFIRMED_DECISIONS.md`·GitHub active PR 상태를 우선한다.
+현재 제품 구조는 월 1사건 M01+ cadence다. `1년 4분기` 또는 ANNUAL 트랙을 다음 기획 단계라고 안내하는 과거 문구보다 `CURRENT_PLANNING_CANON`을 우선한다. `ANNUAL-MVP-001/002`는 이미 병합된 runtime/history ID로만 보존한다.
 
 ## 현재 권위 구분
 
 ```text
 GitHub latest main ref = 현재 정확한 commit
+Notion 프로젝트 홈 = 사람이 보는 전체 그림·Flow·비교표·현재 승인 방향
+docs/CURRENT_PLANNING_CANON.md = 최신 월간 기획과 Gate의 사람용 Repository 정본
+docs/current-planning-canon.json = 월간 기획·M01/M04·workspace·Gate의 기계 정본
 docs/CURRENT_CONFIRMED_DECISIONS.md = 프로젝트 전체 사용자 승인·대체 관계
 docs/CURRENT_AFTERLIFE_STATION_CANON.md = 저승역 현재 제품 정본과 구형 자료 우선순위
 docs/VALIDATION_TARGET_CANON.md = Validation 상세 Target
@@ -37,7 +43,7 @@ docs/CURRENT_HANDOFF_VALIDATION.md = Validation 일반 인수인계; 최신 승�
 실제 main 코드·테스트 = 구현 사실
 docs/CURRENT_STATUS.md = 장기 프로젝트 구현·검증 이력
 ASSET_MANIFEST.yml = tracked 제품 자산 승인·의미·권리 권위
-Google Sheet = 동일 Decision ID의 계획·감사·변경 추적
+Google Sheet = migration-only legacy inventory
 ```
 
 Current 문서 안의 commit SHA는 역할이 고정된 병합 증거다. 문서 자신의 병합으로 main이 이동하므로 `현재 main`을 문서 속 상수로 고정하지 않는다. 정확한 현재 main SHA와 최신 CI 결과는 작업 시작 때 GitHub에서 다시 읽는다.
@@ -46,7 +52,7 @@ Base도 같은 원칙을 사용한다. 프로젝트가 채택한 Base baseline�
 
 저승역 상세 규칙이 구형 Episode·PoC·CORE-VALIDATION 자료와 충돌하면 `docs/CURRENT_AFTERLIFE_STATION_CANON.md`와 `docs/planning/2026-08-04-afterlife-station-canonical-source-map-and-legacy-disposition.md`를 우선한다.
 
-제품 자산은 루트 `ASSET_MANIFEST.yml`과 Google Sheet 승인 상태가 함께 충족돼야 승격할 수 있다. 과거 `assets/ASSET_MANIFEST.json`의 `stage: final` 또는 QA 문구만으로 `PROJECT_ASSET_APPROVED`를 추론하지 않는다.
+제품 자산은 루트 `ASSET_MANIFEST.yml`의 승인·의미·권리 계약을 충족해야 승격할 수 있다. Notion의 시각 방향 승인은 제품 asset 승격이 아니며, 과거 Sheet나 `assets/ASSET_MANIFEST.json`의 상태 문구만으로 `PROJECT_ASSET_APPROVED`를 추론하지 않는다.
 
 ## Work Mode·Skill 라우팅
 
@@ -79,6 +85,12 @@ ui_hierarchy_written_spec: APPROVED
 ui_hierarchy_implementation_plan: MERGED_ON_MAIN_PR_176
 ui_hierarchy_runtime_implementation: NOT_STARTED
 ui_hierarchy_new_runtime_render: NOT_RUN
+monthly_planning: NON_VISUAL_CLOSURE_READY
+monthly_cadence: ONE_MAIN_CASE_PER_MONTH
+first_session: M01_AFTERLIFE_STATION
+release_near_vertical_slice: M04_RED_UMBRELLA
+planning_lock: ACTIVE
+overall_plan: OPEN
 full_godot_regression: READ_LATEST_CI_EVIDENCE
 godot_persistent_authoring_authority: HIGODOT_SOLE_AUTHORITY
 gut_test_authority: ADOPTED_ACTIVE_NON_AUTHORING
@@ -138,22 +150,19 @@ mobile: DEFERRED_AFTER_PC_VALIDATION
 
 ## 현재 다음 Gate
 
-현재 UI hierarchy 승인으로 인해 실제 Human QA보다 먼저 known presentation defect를 교정한다.
+현재는 월간 non-visual planning이 closure-ready지만 전체 기획과 구현 Gate는 열리지 않았다.
 
 ```text
-GitHub latest main + Base latest + project adopted Base baseline + Sheet + Current canon 재조회
-→ UI hierarchy Decision/Spec/Plan이 current main에 병합됐는지 확인
-→ 별도 HiGodot implementation branch/PR
-→ TDD RED: drawer focus / persistent manual / Canon overlay pointer-mode / RepresentativeVisual contract
-→ minimal implementation slices
-→ adopted GUT + maintained full Godot regression + exact-head CI
-→ implementation PR 검토/병합
-→ START_HUMAN_QA.cmd를 실제 Windows 사용자 환경에서 실행
-→ 실제 저장 Prepare → 격리 Launch → 18개 사람 판정 → Collect
-→ 1280×720 / 1920×1080 / 키보드 / 게임패드 / 접근성 검토
+GitHub latest main + Notion current planning + project adopted Base baseline 재조회
+→ 사용자 보유 시각 시안 review
+→ 전체 기획 완료/보류 범위 명시
+→ fresh main에서 character/case ID·monthly_state·save/migration Reality Gate
+→ Codex/HiGodot 단일 구현 계약
+→ release-near M04 Vertical Slice TDD 구현
+→ 자동 회귀 + actual runtime evidence
+→ M01/M02/M04 사전등록 Human QA
 → 결과를 PASS / FAIL / BLOCKED / NOT_RUN으로 그대로 기록
-→ 필요 시 수정 PR + exact-head 자동 회귀
-→ 별도 Android/제품/출시 판단
+→ 병합 뒤 GitHub·Notion readback + 적대적 검토·교정 확인
 ```
 
 HiGodot 권위가 없는 환경에서는 Scene·Node·Resource·Project Settings의 persistent mutation을 시작하지 않는다.
@@ -184,33 +193,24 @@ HiGodot 권위가 없는 환경에서는 Scene·Node·Resource·Project Settings
 ```text
 최신 main 고정
 → GitHub 열린 PR·Issue·review threads·CI 확인
-→ Google Sheet 동일 Decision ID·exact range 확인
+→ Notion 동일 Decision·관련 현재 페이지 확인
 → 중복·대체·충돌·권한·범위 적대적 검토
 → Canon PR과 구현 PR 분리
 → 최신 HEAD 재검증
-→ 병합 직전 GitHub·Sheet 재조회
+→ 병합 직전 GitHub·Notion 재조회
 → expected head SHA 고정 병합
-→ merge SHA·Sheet 위치·미검증 ledger 기록
+→ merge SHA·Notion 위치·미검증 ledger 기록
 ```
 
 source-only·superseded·blocked PR은 숫자를 맞추기 위해 병합하지 않는다.
 
 동일 Decision의 spec/plan/implementation 후속은 새 Grill Me 질문으로 중복 계산하지 않는다.
 
-## 현재 PR 상태 라우팅
+## 현재 PR 통합 계보
 
-최근 운영상 중요한 상태만 적는다. 정확한 open/closed/mergeable 상태는 매 작업 시작 때 GitHub에서 다시 읽는다.
+PR #211, #213~#218의 고유 문서는 `CURRENT_PLANNING_CANON` 통합 범위에 포함한다. 통합본은 월간 정본·저승역 Canon v2·workspace domain split·회귀 검사를 함께 적용한다. 통합 PR 병합 뒤 파일 존재와 동등 이상 내용을 확인한 다음 원 PR을 `SUPERSEDED_BY_INTEGRATED_CANON`으로 닫는다.
 
-- PR #172: `MERGED` — `UL-DEC-AUTHORITY-001` 권위 복구; Hera source 보존 inactive, active adoption deferred
-- PR #173: `MERGED` — CURRENT 정본 전파 + root `ASSET_MANIFEST.yml` fail-closed 설치
-- PR #174: `MERGED` — current-main 원클릭 Windows Human QA 자동 preflight 재검증; Human QA는 계속 `NOT_RUN`
-- PR #175: `MERGED` — active START_HERE freshness 복구
-- PR #176: `MERGED / SPEC_APPROVED / IMPLEMENTATION_PLAN_MERGED` — merge main `4ccd37675576141126b7bf8c718fb30ec9020409`; runtime 구현은 별도 HiGodot PR로 분리
-- PR #146 / #147 / #148: `CLOSED / SUPERSEDED_BY_MAIN` — exact ancestry로 main 흡수 확인
-- PR #149: `OPEN DRAFT / DIVERGED` — 로컬 Human QA runner 계열; 현재 main과 고유 차이가 있어 별도 감사 전 직접 병합 금지
-- PR #165: `OPEN DRAFT / DIVERGED` — 과거 GUT/addon 정합화 감사; 후속 main 변경과 대조한 별도 재감사 전 직접 병합 금지
-
-과거 PR 번호나 본문이 current canon과 충돌하면 GitHub latest main, `docs/CURRENT_CONFIRMED_DECISIONS.md`, 실제 코드·테스트, Sheet의 최신 동기화 기록을 우선한다.
+정확한 현재 open/closed/mergeable/check 상태는 매 작업 시작과 병합 직전에 GitHub에서 다시 읽는다. 과거 PR 번호나 본문이 current canon과 충돌하면 GitHub latest main, Notion 현재 프로젝트 기획, `docs/CURRENT_PLANNING_CANON.md`, 실제 코드·테스트를 우선한다.
 
 ## 보호 범위
 
@@ -228,6 +228,8 @@ Godot Scene·Node·Resource·Project Settings의 persistent 저작은 HiGodot �
 ## 핵심 위치
 
 - 승인 결정: `docs/CURRENT_CONFIRMED_DECISIONS.md`
+- 현재 월간 기획: `docs/CURRENT_PLANNING_CANON.md`, `docs/current-planning-canon.json`
+- 사람용 프로젝트 홈: `https://app.notion.com/p/3c01b237eb1c811c9d5ec512acad4f92`
 - UI hierarchy Decision: `docs/decisions/D-2026-08-08-INVESTIGATION-RECOVERY-UI-HIERARCHY-REFINEMENT.md`
 - UI hierarchy Spec: `docs/superpowers/specs/2026-08-08-investigation-recovery-ui-hierarchy-design.md`
 - UI hierarchy Plan: `docs/superpowers/plans/2026-08-08-investigation-recovery-ui-hierarchy-implementation-plan.md`

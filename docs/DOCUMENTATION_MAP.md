@@ -17,6 +17,9 @@
 → AGENTS.md
 → OPERATING_MODEL.md
 → WORK_MODE_AND_SKILL_ROUTING.md
+→ Notion 괴이기록국 프로젝트 홈
+→ CURRENT_PLANNING_CANON.md
+→ current-planning-canon.json
 → CURRENT_STATUS.md
 → PROJECT_CORE.md
 → DOCUMENTATION_MAP.md
@@ -31,6 +34,9 @@
 최신 사용자 지시
 → START_HERE.md
 → AGENTS.md
+→ Notion 괴이기록국 프로젝트 홈
+→ CURRENT_PLANNING_CANON.md
+→ current-planning-canon.json
 → CURRENT_STATUS.md
 → PROJECT_CORE.md
 → GAME_DESIGN_DOCUMENT.md
@@ -41,33 +47,21 @@
 → 대상 코드·데이터·에셋
 ```
 
-## 연도제 설계 권한 순서
+## 현재 월간 기획 권한 순서
 
 ```text
-PROJECT_CORE
-→ GAME_DESIGN_DOCUMENT
-→ annual approved design spec + approval record
-→ CURRENT_STATUS / CURRENT_HANDOFF
-→ MVP_ROADMAP
-→ annual canonical migration plan
-→ annual vertical slice implementation plan
-→ TEST_CHECKLIST
+최신 사용자 승인
+→ Notion 괴이기록국 프로젝트 홈·현재 하위 기획
+→ CURRENT_PLANNING_CANON.md
+→ current-planning-canon.json
+→ PROJECT_CORE.md
+→ 사건별 current canon
+→ CURRENT_STATUS.md / CURRENT_HANDOFF.md
+→ 실제 code/data/Scene/test
+→ TEST_CHECKLIST.md
 ```
 
-실제 경로:
-
-1. `PROJECT_CORE.md`
-2. `GAME_DESIGN_DOCUMENT.md`
-3. `superpowers/specs/2026-07-25-annual-raising-visual-novel-design.md`
-4. `superpowers/specs/2026-07-25-annual-raising-visual-novel-design-approval.md`
-5. `CURRENT_STATUS.md`
-6. `CURRENT_HANDOFF.md`
-7. `../MVP_ROADMAP.md`
-8. `superpowers/plans/2026-07-25-annual-design-canonical-migration-plan.md`
-9. `superpowers/plans/2026-07-25-annual-raising-vertical-slice-implementation-plan.md`
-10. `../TEST_CHECKLIST.md`
-
-기존 CORE-MVP-001 명세·계획은 사건 코어 구현의 고정 계약이며, 승인된 연도제 상위 제품 구조를 대체하지 않는다.
+과거 annual spec/plan은 병합된 ANNUAL runtime ID·기술 자산의 역사와 회귀 근거다. 월 1사건 M01+ 제품 구조나 M04 release-near Vertical Slice의 현재 실행 권한을 소유하지 않는다.
 
 ## 운영 책임 원본
 
@@ -75,6 +69,8 @@ PROJECT_CORE
 |---|---|---|
 | 강제 규칙·불변 용어 | `../AGENTS.md` | 항상 |
 | 콜드 스타트 | `../START_HERE.md` | 새 채팅·새 작업자 |
+| 사람용 전체 그림·Flow·비교표 | Notion 괴이기록국 프로젝트 홈 | 기획·상태·검토 |
+| 현재 월간 기획·Gate | `CURRENT_PLANNING_CANON.md`, `current-planning-canon.json` | 항상 |
 | 현재 구현·승인 계획·미구현 구분 | `CURRENT_STATUS.md` | 항상 |
 | 프로젝트 코어·변경 경계 | `PROJECT_CORE.md` | L1 이상·구조·기획·검수 |
 | 상세 게임 설계 | `GAME_DESIGN_DOCUMENT.md` | 시스템·콘텐츠 상세 변경 |
@@ -93,10 +89,12 @@ PROJECT_CORE
 |---|---|---|
 | 프로젝트 약속·최소 코어 | `PROJECT_CORE.md` | 모든 구조·기획 변경 |
 | 상세 게임 설계 | `GAME_DESIGN_DOCUMENT.md` | 전체 시스템·콘텐츠 상세 변경 |
-| 승인된 연도제 설계 | `superpowers/specs/2026-07-25-annual-raising-visual-novel-design.md` | 연도제 방향·범위 확인 |
-| 연도제 승인 기록 | `superpowers/specs/2026-07-25-annual-raising-visual-novel-design-approval.md` | 승인 상태 확인 |
-| 정본 전환 계획 | `superpowers/plans/2026-07-25-annual-design-canonical-migration-plan.md` | 정본 전환 실행·검증 |
-| ANNUAL-MVP-001 계획 | `superpowers/plans/2026-07-25-annual-raising-vertical-slice-implementation-plan.md` | 격리 수직절편 구현 |
+| 현재 월간 제품 구조 | `CURRENT_PLANNING_CANON.md` | cadence·Slate·M01/M04·Gate |
+| 현재 기계 계약 | `current-planning-canon.json` | 자동 검증·consumer |
+| 현재 시각 작업 순서 | `CURRENT_VISUAL_WORK_ORDER.md` | 화면·시각·자산 검토 |
+| M01/M04 역할 | `M01_M04_VERTICAL_SLICE_FLOW.md` | 온보딩·release-near Slice |
+| 저승역 상세 정본 | `CURRENT_AFTERLIFE_STATION_CANON.md` | M01 규칙·구형 자료 대체 |
+| 과거 annual 설계 | `superpowers/specs/2026-07-25-annual-raising-visual-novel-design.md` | history/runtime 회귀만 |
 | 기획 인수인계·분야 라우팅 | `planning/README.md` | 기획·콘텐츠·아트·연출 |
 | 장기 방향 | `planning/PROJECT_DIRECTION.md` | 범위·캐릭터·미감 판단 |
 | 서사·대화·관계 | `planning/NARRATIVE_CONTENT_PLAN.md` | 사건 대사·일상·관계 이벤트 |
@@ -124,7 +122,7 @@ PROJECT_CORE
 | 작업 조건 | 프로젝트 Skill | 추가 책임 원본 |
 |---|---|---|
 | 새 괴이 사건·전조·가설·근거·대응·매뉴얼 | `urban-legend-investigation-case-authoring` | `CURRENT_STATUS.md`, GDD, 실제 사건 데이터 |
-| 대사·일상·관계·연도 결산 | `urban-legend-narrative` | `planning/NARRATIVE_CONTENT_PLAN.md`, `PROJECT_CONTEXT.md` |
+| 대사·일상·관계·월간 결과 | `urban-legend-narrative` | `planning/NARRATIVE_CONTENT_PLAN.md`, `PROJECT_CONTEXT.md` |
 | 육성·일정·조사·미니게임·회수·밸런스 | `urban-legend-game-design` | GDD, `MINIGAME_SYSTEM_SPEC.md` |
 | UI·입력·접근성 | `urban-legend-ux-ui-accessibility` | `planning/PROGRESSIVE_DISCLOSURE_PLAN.md`, UI 문서 |
 | Godot·저장·Scene·데이터 계약 | `urban-legend-engineering` | 실제 코드·테스트 |
@@ -141,20 +139,22 @@ PROJECT_CORE
 - `../skills/BASE_SKILL_INDEX.json`
 - `../skills/urban-legend-investigation-case-authoring/SKILL.md`
 
-## 현재 활성 구현 라우팅
+## 현재 Gate 라우팅
 
 ```text
-CURRENT_STATUS.md
+Notion current planning
+→ CURRENT_PLANNING_CANON.md
+→ current-planning-canon.json
+→ CURRENT_STATUS.md
 → PROJECT_CORE.md
-→ GAME_DESIGN_DOCUMENT.md
-→ 승인된 연도제 설계와 승인 기록
-→ ../MVP_ROADMAP.md
-→ superpowers/plans/2026-07-25-annual-raising-vertical-slice-implementation-plan.md
-→ ../TEST_CHECKLIST.md
-→ ANNUAL-MVP-001 격리 코드·데이터·Scene·테스트
+→ M01/M04 책임 문서
+→ 사용자 시각 시안 검토
+→ 사용자 전체 기획 완료 선언
+→ fresh main Reality Gate
+→ 별도 구현 계약·TDD·HiGodot
 ```
 
-현재 상태는 `APPROVED_DESIGN_BASELINE / ANNUAL-MVP-001 PLAN_PENDING_APPROVAL`이다. CORE-MVP-001은 보존 회귀 자산이며 신규 구현 진입점은 ANNUAL-MVP 트랙이다.
+현재 상태는 `NON_VISUAL_PLANNING_CLOSURE_READY / OVERALL_PLAN_OPEN / PLAN_LOCK`이다. runtime 구현 진입점은 아직 열리지 않았다.
 
 ## 기타 조건부 문서
 

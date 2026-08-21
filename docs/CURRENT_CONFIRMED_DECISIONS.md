@@ -1,5 +1,8 @@
 # 괴이기록국 현재 확정 결정
 
+> 2026-08-20 supersession: 현재 제품 구조는 `월 1사건 M01+ / Signature 4 + Standard 8 / M01 First Session / M04 release-near Vertical Slice`다. 아래 1년차·분기 구조는 승인·병합 history와 기술 회귀 근거로 보존하되 현재 cadence를 소유하지 않는다. 최신 계획은 `docs/CURRENT_PLANNING_CANON.md`를 우선한다.
+> Workspace authority: Notion 사람용 정본 + Repository 구조화/구현 정본. Google Sheet는 migration-only다.
+
 > 문서 역할: `CURRENT_CONFIRMED_DECISIONS`
 > 상태: `PACKAGE_2_MERGED_ON_MAIN / YEAR_ONE_DESIGN_MERGED_ON_MAIN / GRILLME_BATCH_2_MERGED / GRILLME_BATCH_3_OPEN / AUTHORITY_CORRECTION_MERGED / ASSET_GATE_CANON_RECONCILED / UI_HIERARCHY_SPEC_PLAN_MERGED`
 > 갱신일: 2026-08-08

@@ -36,13 +36,14 @@ class BaseV942PlanningFirstAdoptionTests(unittest.TestCase):
         self.assertEqual(10, policy["max_approved_decisions_per_batch"])
         self.assertEqual("RECOMMENDED_DEFAULT", policy["numeric_default_state"])
         self.assertEqual("GRILL_ME_REQUIRED", policy["planning_conflict_state"])
-        self.assertEqual("APPROVED_PENDING_MERGE", policy["pre_merge_sheet_state"])
-        self.assertEqual("SYNCED_TO_MAIN", policy["post_merge_sheet_state"])
+        self.assertEqual("APPROVED_PENDING_REPOSITORY_MERGE", policy["pre_merge_workspace_state"])
+        self.assertEqual("NOTION_AND_REPOSITORY_READBACK_VERIFIED", policy["post_merge_workspace_state"])
         self.assertEqual("NOT_RUN", policy["actual_project_batch_execution"])
 
     def test_project_boundaries_remain_unchanged(self) -> None:
         adapter = load()
         self.assertEqual("BLOCKED", adapter["gdd_sheet"]["sync_status"])
+        self.assertEqual("MIGRATION_ONLY", adapter["gdd_sheet"]["operational_role"])
         self.assertEqual(["data/", "scripts/", "scenes/", "assets/", "addons/", "project.godot"], adapter["protected_paths"])
         self.assertEqual("NOT_RUN", adapter["shared_overrides"]["orchestrating-deepseek-worktrees"]["actual_external_ai_worktree_execution"])
 

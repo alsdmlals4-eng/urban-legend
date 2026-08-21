@@ -11,7 +11,7 @@ SNAPSHOT_SHA256 = "e30fca95d201a31937c7bddcbc341c79764d4940c318933a8902cb5bf901b
 
 
 class BaseV9AdoptionTests(unittest.TestCase):
-    def test_v9_adapter_preserves_project_ownership_and_sheet_conflict(self) -> None:
+    def test_v9_adapter_is_preserved_as_a_generated_legacy_view(self) -> None:
         adapter = json.loads((ROOT / "skills/BASE_V9_ADAPTER.json").read_text(encoding="utf-8"))
 
         self.assertEqual(adapter["base"]["release_commit"], BASE_V9_RELEASE)
@@ -19,8 +19,16 @@ class BaseV9AdoptionTests(unittest.TestCase):
         self.assertFalse(adapter["base"]["copy_common_skill_bodies"])
         self.assertEqual(adapter["sheet"]["role"], "USER_FACING_GDD_WORKSPACE")
         self.assertEqual(adapter["sheet"]["sync_status"], "SHEET_GITHUB_CONFLICT")
+        self.assertEqual("GENERATED_COMPATIBILITY_VIEW", adapter["artifact_role"])
         self.assertEqual(adapter["maturity"]["level"], 4)
         self.assertEqual(adapter["maturity"]["status"], "PROVISIONAL_PENDING_RUNTIME_REVALIDATION")
+
+        current = json.loads((ROOT / "skills/PROJECT_BASE_ADAPTER.json").read_text(encoding="utf-8"))
+        self.assertEqual("MIGRATION_ONLY", current["gdd_sheet"]["operational_role"])
+        self.assertEqual(
+            "NOTION",
+            current["project"]["workspace_authority"]["human_facing"]["system"],
+        )
 
     def test_adoption_audit_keeps_game_implementation_and_human_validation_separate(self) -> None:
         audit = (ROOT / "docs/BASE_V9_ADOPTION_AUDIT.md").read_text(encoding="utf-8")

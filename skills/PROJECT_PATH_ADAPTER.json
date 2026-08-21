@@ -41,7 +41,7 @@
     "version": "9.4.3"
   },
   "canonical_source": "skills/PROJECT_BASE_ADAPTER.json",
-  "canonical_source_sha256": "71ac58ed655afcb0b29d146de7dc8f41d66be031a22e9779d9a0986328e01f8c",
+  "canonical_source_sha256": "5084c528dc2bca2c5731c7a37fe14aa2c6714d48dfbb80fe6b2bd8706559eb3d",
   "generated": true,
   "hash_definition": "RAW_FILE_BYTES_SHA256",
   "legacy_source": "docs/archive/base-v9-legacy-inputs/PROJECT_PATH_ADAPTER.json",
@@ -51,7 +51,19 @@
     "engine": "Godot 4.7",
     "project_id": "urban-legend",
     "repository": "alsdmlals4-eng/urban-legend",
-    "root": "."
+    "root": ".",
+    "workspace_authority": {
+      "human_facing": {
+        "project_page": "https://app.notion.com/p/3c01b237eb1c811c9d5ec512acad4f92",
+        "role": "HUMAN_FACING_PLANNING_CANON",
+        "system": "NOTION"
+      },
+      "structured_implementation": {
+        "repository": "alsdmlals4-eng/urban-legend",
+        "role": "STRUCTURED_IMPLEMENTATION_AND_EVIDENCE_CANON",
+        "system": "REPOSITORY"
+      }
+    }
   },
   "protected_paths": [
     "scripts/core/game_state.gd",
