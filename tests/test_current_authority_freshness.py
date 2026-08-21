@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import re
 import unittest
 from pathlib import Path
@@ -16,6 +17,10 @@ class CurrentAuthorityFreshnessTests(unittest.TestCase):
         for relative_path in ("START_HERE.md", "AGENTS.md", "docs/DOCUMENTATION_MAP.md"):
             text = self.read(relative_path)
             self.assertIn("CURRENT_DECISION_OVERLAY.md", text, relative_path)
+
+        canon = json.loads(self.read("docs/current-planning-canon.json"))
+        self.assertIn("docs/CURRENT_DECISION_OVERLAY.md", canon["active_entrypoints"])
+        self.assertIn("docs/VALIDATION_TARGET_CANON.md", canon["active_entrypoints"])
 
     def test_validation_router_separates_m01_and_m04(self) -> None:
         text = self.read("docs/VALIDATION_TARGET_CANON.md")
