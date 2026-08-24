@@ -1,0 +1,66 @@
+name: Temporary M01 Successor Contract Patch
+
+on:
+  push:
+    branches:
+      - gpt/m01-human-qa-and-m04-brief-20260824
+    paths:
+      - ".github/workflows/temporary-m01-successor-contract-patch.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: gpt/m01-human-qa-and-m04-brief-20260824
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Patch successor contracts
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          def replace_once(path: str, old: str, new: str) -> None:
+              p = Path(path)
+              text = p.read_text(encoding="utf-8")
+              if text.count(old) != 1:
+                  raise SystemExit(f"{path}: expected exactly one match for {old!r}, got {text.count(old)}")
+              p.write_text(text.replace(old, new), encoding="utf-8")
+
+          replace_once(
+              "docs/qa/M01_FIRST_SESSION_HUMAN_QA_PACKET.md",
+              "진행자는 정답이나 규칙을 설명하지 않는다.",
+              "진행자가 정답이나 규칙을 설명하지 않는다.",
+          )
+
+          replace_once(
+              "tests/test_current_authority_freshness.py",
+              'self.assertIn("RUNTIME_IMPLEMENTED / AUTOMATED_GREEN / HUMAN_NOT_RUN", text)',
+              'self.assertIn("RUNTIME_IMPLEMENTED / AUTOMATED_GREEN / HUMAN_QA_NOT_RUN", text)',
+          )
+          replace_once(
+              "tests/test_current_authority_freshness.py",
+              'self.assertIn("SHARED_SYSTEM_BASELINE_IMPLEMENTED / PRODUCT_REFERENCE_ASSET_PENDING / HUMAN_NOT_RUN", text)',
+              'self.assertIn("SHARED_SYSTEM_BASELINE_IMPLEMENTED / PRODUCT_REFERENCE_ASSET_PENDING / HUMAN_QA_NOT_RUN", text)',
+          )
+
+          old = '''        # These planning artifacts preserve their historical implementation boundary;\n        # current runtime authority is owned by CURRENT_PLANNING_CANON / Overlay / main.\n        self.assertIn("IMPLEMENTATION_NOT_AUTHORIZED", visual)\n        self.assertIn("IMPLEMENTATION_NOT_AUTHORIZED", work_order)'''
+          new = '''        # These are current visual authorities, so they must follow the merged runtime successor\n        # while keeping product-reference and Human evidence gates closed.\n        self.assertIn("RUNTIME_IMPLEMENTED", visual)\n        self.assertIn("RUNTIME_IMPLEMENTED", work_order)\n        self.assertIn("HUMAN_QA_NOT_RUN", visual)\n        self.assertIn("HUMAN_QA_NOT_RUN", work_order)\n        self.assertNotIn("IMPLEMENTATION_NOT_AUTHORIZED", visual)\n        self.assertNotIn("IMPLEMENTATION_NOT_AUTHORIZED", work_order)'''
+          replace_once("tests/test_visual_planning_closure.py", old, new)
+          PY
+          git diff --check
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/qa/M01_FIRST_SESSION_HUMAN_QA_PACKET.md tests/test_current_authority_freshness.py tests/test_visual_planning_closure.py
+          git commit -m "test: align current QA and visual successor contracts"
+          git push origin HEAD:gpt/m01-human-qa-and-m04-brief-20260824
