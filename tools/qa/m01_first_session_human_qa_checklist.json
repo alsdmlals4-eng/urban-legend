@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "route": "M01_FIRST_SESSION",
+  "evidence_mode": "BEHAVIOR_FIRST_SELF_REPORT_SECOND",
+  "human_only": true,
+  "automatic_pass_allowed": false,
+  "default_status": "NOT_RUN",
+  "allowed_statuses": ["PASS", "FAIL", "BLOCKED", "NOT_RUN"],
+  "items": [
+    {
+      "id": "bureau_role_identity",
+      "category": "identity",
+      "title_ko": "기록국 요원의 역할을 규칙 조사·피해자 구출·안정화로 이해한다",
+      "human_only": true,
+      "required": true,
+      "observation_prompt": "진행자가 역할을 설명하지 않은 상태에서 플레이어가 첫 사건의 목표와 우선 행동을 어떻게 해석하는지 기록한다.",
+      "debrief_question": "이 게임에서 기록국 요원이 하는 일을 한두 문장으로 설명해 주세요.",
+      "pass_evidence": "플레이 행동 또는 사후 설명에서 화력 처치보다 규칙 조사, 피해자 보호·구출, 안정화·회수를 핵심 책임으로 연결한다.",
+      "failure_evidence": "정답 유도 없이 관찰했을 때 단순 적 처치가 주목표라고 일관되게 이해하거나 핵심 역할을 설명하지 못한다."
+    },
+    {
+      "id": "observation_hypothesis_separation",
+      "category": "comprehension",
+      "title_ko": "관측 사실과 가설·반박·미해결을 구분한다",
+      "human_only": true,
+      "required": true,
+      "observation_prompt": "조사와 추리 중 플레이어가 기록을 사실과 해석으로 분리해 사용하는지, 서로 다른 정보 상태를 혼동하는지 기록한다.",
+      "debrief_question": "확실히 본 사실과 아직 추측인 내용을 각각 하나씩 말해 주세요.",
+      "pass_evidence": "관측 사실과 해석 또는 가설을 구별하고, 미확정 정보를 확정 사실처럼 다루지 않는다.",
+      "failure_evidence": "관측과 가설을 반복적으로 혼동해 판단 근거를 설명하지 못한다."
+    },
+    {
+      "id": "hypothesis_reasoning_explained",
+      "category": "comprehension",
+      "title_ko": "가설을 유지·배제한 이유를 관측 기록으로 설명한다",
+      "human_only": true,
+      "required": true,
+      "observation_prompt": "추리 선택 직전 어떤 기록을 다시 확인하고 어떤 근거로 후보를 유지·배제하는지 행동을 기록한다.",
+      "debrief_question": "가설 하나를 유지하거나 버린 가장 큰 근거는 무엇이었나요?",
+      "pass_evidence": "최소 하나의 유지·배제 판단을 실제로 관측한 기록과 연결해 설명한다.",
+      "failure_evidence": "근거 없이 정답처럼 선택하거나, 선택 이유를 화면의 정답 암시·추측으로만 설명한다."
+    },
+    {
+      "id": "investigation_to_rescue_link",
+      "category": "causal_reuse",
+      "title_ko": "조사·추리에서 만든 규칙을 피해자 구출 행동에 재사용한다",
+      "human_only": true,
+      "required": true,
+      "observation_prompt": "구출 Phase 진입 뒤 진행자 힌트 없이 앞선 기록·매뉴얼을 다시 보거나 그 규칙을 행동 선택에 연결하는지 기록한다.",
+      "debrief_question": "구출 단계에서 앞선 조사나 추리 결과가 어떤 행동에 도움이 됐나요?",
+      "pass_evidence": "구출을 독립 퀴즈로 풀기보다 앞서 확보한 규칙 또는 기록을 행동 근거로 재사용한다.",
+      "failure_evidence": "앞선 정보와 연결을 찾지 못하고 구출을 새로운 무관한 정답 맞히기로 인식한다."
+    },
+    {
+      "id": "investigation_to_recovery_link",
+      "category": "causal_reuse",
+      "title_ko": "앞서 확보한 규칙을 회수 전조와 대응 판단에 재사용한다",
+      "human_only": true,
+      "required": true,
+      "observation_prompt": "회수 전조가 제시될 때 플레이어가 이전 기록·매뉴얼과 대조하고 대응 이유를 설명하는 행동이 나타나는지 기록한다.",
+      "debrief_question": "회수 단계에서 이전에 알게 된 규칙 중 다시 쓴 것은 무엇이었나요?",
+      "pass_evidence": "회수 전조와 이전 조사·추리 규칙 사이의 인과를 진행자 설명 없이 하나 이상 연결한다.",
+      "failure_evidence": "회수 대응을 이전 사건 정보와 무관한 새 규칙 시험으로만 해석한다."
+    },
+    {
+      "id": "serial_exam_fatigue",
+      "category": "fatigue",
+      "title_ko": "조사→추리→구출→회수가 연속 독립 시험보다 하나의 규칙을 깊게 적용하는 흐름으로 느껴진다",
+      "human_only": true,
+      "required": true,
+      "observation_prompt": "Phase 전환마다 재학습·무작위 추측·장시간 정체가 발생하는지와 이미 배운 규칙을 자연스럽게 재사용하는지 기록한다.",
+      "debrief_question": "단계가 바뀔 때 같은 문제를 더 깊게 푸는 느낌이었나요, 서로 다른 시험을 연속으로 치르는 느낌이었나요? 이유도 말해 주세요.",
+      "pass_evidence": "행동상 이전 규칙 재사용이 관찰되고, 자기보고에서도 단계들이 하나의 인과 흐름으로 연결된다고 설명한다.",
+      "failure_evidence": "행동상 반복 재학습이 발생하거나 자기보고에서 서로 무관한 시험이 연속된다는 피로를 핵심 문제로 지적한다."
+    },
+    {
+      "id": "failure_forward_understood",
+      "category": "comprehension",
+      "title_ko": "실패가 전체 초기화가 아니라 다음 판단에 남는 기록·위험 사례·후속으로 이해된다",
+      "human_only": true,
+      "required": true,
+      "observation_prompt": "실패 또는 부분 성공 뒤 플레이어가 무엇이 남았는지 확인하고 다음 행동을 수정하는지 기록한다. 실패가 발생하지 않았다면 NOT_RUN을 허용한다.",
+      "debrief_question": "실패하거나 불완전하게 끝났을 때 무엇이 남고 다음에는 무엇을 바꿀 수 있다고 느꼈나요?",
+      "pass_evidence": "실패 결과가 학습 가능한 기록·위험·후속 조건으로 남고 다음 판단을 바꿀 수 있다고 이해한다.",
+      "failure_evidence": "실패를 정보가 남지 않는 단순 초기화 또는 무의미한 손실로만 이해한다."
+    },
+    {
+      "id": "composite_result_axes_understood",
+      "category": "result",
+      "title_ko": "피해자 구출과 괴이 회수·안정화 결과를 서로 다른 축으로 이해한다",
+      "human_only": true,
+      "required": true,
+      "observation_prompt": "Composite Result에서 플레이어가 피해자 상태와 현상 통제·증거·후속 상태를 별도 결과로 읽는지 기록한다.",
+      "debrief_question": "이번 사건 결과를 한 등급이 아니라 여러 결과로 나눈다면 무엇과 무엇을 따로 보겠나요?",
+      "pass_evidence": "피해자/구출 결과와 회수·안정화 또는 증거·후속 결과를 최소 두 축으로 구분한다.",
+      "failure_evidence": "사건 결과를 하나의 승패·단일 등급으로만 이해해 독립 결과 축을 구분하지 못한다."
+    }
+  ]
+}

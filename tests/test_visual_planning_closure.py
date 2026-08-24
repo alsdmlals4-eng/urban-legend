@@ -37,10 +37,14 @@ class VisualPlanningClosureTests(unittest.TestCase):
             self.assertIn("SOFT_ANIME_NOIR_LOCKED", source)
             self.assertIn("DOSSIER_HYBRID_IS_PRESENTATION_LANGUAGE_NOT_MEDIUM", source)
             self.assertIn("PRODUCT_REFERENCE_ASSET_PENDING", source)
-        # These planning artifacts preserve their historical implementation boundary;
-        # current runtime authority is owned by CURRENT_PLANNING_CANON / Overlay / main.
-        self.assertIn("IMPLEMENTATION_NOT_AUTHORIZED", visual)
-        self.assertIn("IMPLEMENTATION_NOT_AUTHORIZED", work_order)
+        # These are current visual authorities, so they must follow the merged runtime successor
+        # while keeping product-reference and Human evidence gates closed.
+        self.assertIn("RUNTIME_IMPLEMENTED", visual)
+        self.assertIn("RUNTIME_IMPLEMENTED", work_order)
+        self.assertIn("HUMAN_QA_NOT_RUN", visual)
+        self.assertIn("HUMAN_QA_NOT_RUN", work_order)
+        self.assertNotIn("IMPLEMENTATION_NOT_AUTHORIZED", visual)
+        self.assertNotIn("IMPLEMENTATION_NOT_AUTHORIZED", work_order)
 
     def test_m01_has_complete_recovery_packet_and_no_current_single_grade_authority(self) -> None:
         recovery = text("docs/M01_RECOVERY_SCENE_PACKET.md")

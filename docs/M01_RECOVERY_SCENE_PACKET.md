@@ -1,13 +1,16 @@
 # M01 저승역 Recovery Scene Packet
 
-Status: `PLANNING_COMPLETE / CANON_V2_ALIGNED / IMPLEMENTATION_NOT_AUTHORIZED`
+Status: `PLANNING_COMPLETE / CANON_V2_ALIGNED / RUNTIME_IMPLEMENTED / PRODUCT_REFERENCE_ASSET_PENDING / HUMAN_QA_NOT_RUN`
 Parent canon: `docs/CURRENT_PLANNING_CANON.md`
 Incident canon: `docs/CURRENT_AFTERLIFE_STATION_CANON.md`
-Implementation design: `docs/superpowers/specs/2026-08-22-post-planning-runtime-reconciliation-design.md`
+Implementation provenance: `docs/superpowers/specs/2026-08-22-post-planning-runtime-reconciliation-design.md`
+Human QA: `docs/qa/M01_FIRST_SESSION_HUMAN_QA_PACKET.md`
 
 ## Purpose
 
 피해자 구출 뒤 남은 저승역 잔향을 **전조를 읽고 규칙을 적용해 안정화·회수**하는 M01 마지막 실행 Phase를 정의한다. 구출 성공은 회수 승리를 자동 보장하지 않으며, 회수 실패도 이미 구출한 피해자를 소급 삭제하지 않는다.
+
+현재 shared runtime과 M01 First Session orchestration은 구현됐지만, 실제 사람에게 이 인과가 이해되고 피로 없이 전달되는지는 `HUMAN_QA_NOT_RUN`이다.
 
 ## Flow
 
@@ -86,6 +89,8 @@ M01은 세 패턴을 동등한 난이도의 연속 시험으로 제시하지 않
 - 실패는 `전조 해석 오류 / 규칙 적용 오류 / 입력 지연`을 구분한다.
 - 첫 실패는 학습 가능한 기록을 남기며 즉시 전체 사건 리셋으로 보내지 않는다.
 
+이 Guard가 실제 플레이 경험에서 성립하는지는 `tools/qa/m01_first_session_human_qa_checklist.json`의 `serial_exam_fatigue` 항목으로 사람에게 확인한다.
+
 ## Character presentation
 
 - 일반 상태: 작은 Portrait/상태/지원 조건.
@@ -113,4 +118,5 @@ M01은 세 패턴을 동등한 난이도의 연속 시험으로 제시하지 않
 - 색상·음향 하나에만 전조 정보를 의존하지 않음.
 - 구출 성공과 회수 성공을 같은 bool로 덮어쓰지 않음.
 - Human QA 전 패턴 수치·허용 시간·피해량은 provisional.
-- planning은 완료됐지만 `runtime_implementation: NOT_AUTHORIZED` 동안 code/data/Scene/save 변경 금지.
+- runtime 구현 완료를 Human comprehension/fatigue PASS로 간주하지 않음.
+- concrete visual asset은 `PRODUCT_REFERENCE_ASSET_PENDING` 상태를 유지하고 별도 승인 없이 승격하지 않음.

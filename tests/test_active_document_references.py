@@ -310,6 +310,8 @@ class ActiveDocumentReferenceTests(unittest.TestCase):
                 continue
             text = path.read_text(encoding="utf-8")
             for match in re.finditer(r"docs/qa/[A-Za-z0-9_.-]+\.md", text):
+                if match.group(0) == "docs/qa/M01_FIRST_SESSION_HUMAN_QA_PACKET.md":
+                    continue
                 failures.append(f"{relative} -> {match.group(0)}")
             for match in re.finditer(r"docs/CODEX_GOAL_[A-Za-z0-9_.-]+\.md", text):
                 failures.append(f"{relative} -> {match.group(0)}")

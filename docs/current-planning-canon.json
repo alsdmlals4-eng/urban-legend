@@ -83,7 +83,9 @@
   "evidence_ceiling": {
     "automated_exact_head": "GREEN",
     "human_qa": "NOT_RUN",
+    "m01_human_qa_packet": "READY_TO_RUN",
     "product_reference_asset": "PENDING",
+    "m04_reference_text_brief": "READY_FOR_USER_REVIEW",
     "base_adapter_protected_baseline": "6b4a9e8080898536139c8e825179b389f8bf9d64",
     "base_adapter_reconciliation_merge": "9073b4730993149f89970a13fbe32d49f8f473e7"
   },
@@ -137,6 +139,8 @@
     "docs/CURRENT_VISUAL_WORK_ORDER.md",
     "docs/VISUAL_ANCHOR_SPEC.md",
     "docs/M01_RECOVERY_SCENE_PACKET.md",
+    "docs/qa/M01_FIRST_SESSION_HUMAN_QA_PACKET.md",
+    "docs/visual/M04_PRODUCT_REFERENCE_APPROVAL_BRIEF.md",
     "docs/CURRENT_HANDOFF.md",
     "docs/DOCUMENTATION_MAP.md",
     "skills/PROJECT_BASE_ADAPTER.json",
