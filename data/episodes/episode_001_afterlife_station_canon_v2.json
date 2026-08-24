@@ -186,18 +186,21 @@
       ]
     },
     "result_contract": {
+      "authority": "composite_result",
+      "axes": [
+        "victim_outcome",
+        "control_or_stabilization",
+        "evidence_integrity",
+        "protection_responsibility",
+        "residual_anomaly",
+        "unresolved_and_follow_up"
+      ],
       "first_run": {
-        "owns_campaign_canon": true,
-        "owns_first_s_rank": true
+        "owns_campaign_canon": true
       },
       "normal_clear": {
         "spoiler_state": "answer_viewed",
         "reveal_complete_manual": true
-      },
-      "s_rank": {
-        "requires_first_run": true,
-        "requires_victim_rescue": true,
-        "requires_manual_precision": true
       },
       "approved_retreat": {
         "spoiler_state": "partial_truth_revealed",
@@ -206,6 +209,15 @@
       "partial_truth_reveal": {
         "show_verified_only": true,
         "unverified_slots_hidden": true
+      },
+      "legacy_mastery": {
+        "grade_history_preserved": true,
+        "may_overwrite_composite_result": false,
+        "s_rank_criteria": {
+          "requires_first_run": true,
+          "requires_victim_rescue": true,
+          "requires_manual_precision": true
+        }
       },
       "replay_mastery": {
         "canonical_result_overwrite": false,
