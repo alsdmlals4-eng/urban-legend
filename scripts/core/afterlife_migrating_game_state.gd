@@ -342,6 +342,15 @@ func load_episode(file_path: String = DEFAULT_EPISODE_PATH) -> bool:
 	return true
 
 
+func _make_save_data() -> Dictionary:
+	_ensure_monthly_state()
+	_ensure_m01_first_session_state()
+	var payload: Dictionary = super._make_save_data()
+	payload["monthly_state"] = _monthly_state.duplicate(true)
+	payload["m01_first_session"] = _m01_first_session_state.duplicate(true)
+	return payload
+
+
 func load_game() -> bool:
 	if not FileAccess.file_exists(SAVE_FILE_PATH):
 		return false
@@ -361,9 +370,16 @@ func load_game() -> bool:
 			return false
 		return true
 	if source_version not in ["mvp-038", "mvp-039"] or episode_id != AFTERLIFE_EPISODE_ID:
-		return super.load_game()
+		var orchestration_validation := _validate_orchestration_payload(source_payload)
+		if not bool(orchestration_validation.get("ok", false)):
+			_last_migration_result = orchestration_validation.duplicate(true)
+			return false
+		var loaded_non_afterlife := super.load_game()
+		if loaded_non_afterlife:
+			_hydrate_orchestration_fields(source_payload)
+		return loaded_non_afterlife
 
-	var source_bytes := FileAccess.get_file_as_bytes(SAVE_FILE_PATH)
+	var source_bytes := FileAccess.file_get_as_bytes(SAVE_FILE_PATH)
 	var inspector = AfterlifeInspectorScript.new()
 	var inspected: Dictionary = inspector.inspect_main_bytes(source_bytes)
 	if String(inspected.get("code", "")) != "MIGRATABLE_MAIN":
@@ -508,10 +524,32 @@ func _hydrate_afterlife_fields(payload: Dictionary) -> void:
 	_afterlife_first_v2_investigation = _dictionary_copy(payload.get("first_v2_investigation"))
 	_afterlife_applied_migration_effect_ids = _dictionary_copy(payload.get("applied_migration_effect_ids"))
 	_canon_v2_runtime_state = _normalize_canon_v2_runtime_state(_dictionary_copy(payload.get("canon_v2_runtime")))
-	_monthly_state = MonthlyStatePolicyScript.new().normalize(_dictionary_copy(payload.get("monthly_state")), 1)
-	_m01_first_session_state = M01FirstSessionOrchestratorScript.new().normalize(_dictionary_copy(payload.get("m01_first_session")))
+	_hydrate_orchestration_fields(payload)
 	_canon_v2_pending_action_previews.clear()
 	_canon_v2_preview_sequence = 0
+
+
+func _hydrate_orchestration_fields(payload: Dictionary) -> void:
+	_monthly_state = MonthlyStatePolicyScript.new().normalize(_dictionary_copy(payload.get("monthly_state")), 1)
+	_m01_first_session_state = M01FirstSessionOrchestratorScript.new().normalize(_dictionary_copy(payload.get("m01_first_session")))
+
+
+func _validate_orchestration_payload(payload: Dictionary) -> Dictionary:
+	if payload.has("monthly_state"):
+		var monthly_value: Variant = payload.get("monthly_state")
+		if typeof(monthly_value) != TYPE_DICTIONARY:
+			return {"ok": false, "code": "INVALID_MONTHLY_STATE_TYPE"}
+		var monthly_validation: Dictionary = MonthlyStatePolicyScript.new().validate(monthly_value as Dictionary)
+		if not bool(monthly_validation.get("ok", false)):
+			return {"ok": false, "code": "INVALID_MONTHLY_STATE", "detail": monthly_validation}
+	if payload.has("m01_first_session"):
+		var m01_value: Variant = payload.get("m01_first_session")
+		if typeof(m01_value) != TYPE_DICTIONARY:
+			return {"ok": false, "code": "INVALID_M01_FIRST_SESSION_TYPE"}
+		var m01_validation: Dictionary = M01FirstSessionOrchestratorScript.new().validate(m01_value as Dictionary)
+		if not bool(m01_validation.get("ok", false)):
+			return {"ok": false, "code": "INVALID_M01_FIRST_SESSION", "detail": m01_validation}
+	return {"ok": true, "code": "ORCHESTRATION_PAYLOAD_VALID"}
 
 
 func _validate_main_v2_payload(payload: Dictionary) -> bool:
@@ -536,20 +574,9 @@ func _validate_main_v2_payload(payload: Dictionary) -> bool:
 		var runtime_validation := _validate_canon_v2_runtime_state(_normalize_canon_v2_runtime_state(_dictionary_copy(payload.get("canon_v2_runtime"))))
 		if not bool(runtime_validation.get("ok", false)):
 			return false
-	if payload.has("monthly_state"):
-		var monthly_value: Variant = payload.get("monthly_state")
-		if typeof(monthly_value) != TYPE_DICTIONARY:
-			return false
-		var monthly_validation: Dictionary = MonthlyStatePolicyScript.new().validate(monthly_value as Dictionary)
-		if not bool(monthly_validation.get("ok", false)):
-			return false
-	if payload.has("m01_first_session"):
-		var m01_value: Variant = payload.get("m01_first_session")
-		if typeof(m01_value) != TYPE_DICTIONARY:
-			return false
-		var m01_validation: Dictionary = M01FirstSessionOrchestratorScript.new().validate(m01_value as Dictionary)
-		if not bool(m01_validation.get("ok", false)):
-			return false
+	var orchestration_validation := _validate_orchestration_payload(payload)
+	if not bool(orchestration_validation.get("ok", false)):
+		return false
 	return true
 
 
@@ -597,8 +624,6 @@ func _persist_monthly_state_if_possible() -> bool:
 	if not is_inside_tree():
 		return true
 	if current_episode_data.is_empty():
-		return true
-	if get_current_episode_id() != AFTERLIFE_EPISODE_ID:
 		return true
 	return save_game()
 
