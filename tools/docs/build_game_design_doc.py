@@ -20,6 +20,8 @@ from docx.shared import Inches, Pt, RGBColor
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = ROOT / "docs" / "GAME_DESIGN_DOCUMENT.md"
 OUTPUT = ROOT / "docs" / "URBAN_LEGEND_GAME_DESIGN.docx"
+PRODUCT_VERSION_SOURCE = ROOT / "scripts" / "core" / "product_version.gd"
+PRODUCT_VERSION_PATTERN = re.compile(r'const CURRENT := "([^"]+)"')
 FORMAT_VERSION = "urban-legend-gdd-index-v5"
 HASH_PREFIX = "gdd-source-sha256="
 FONT = "NanumSquare"
@@ -38,6 +40,14 @@ def args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def product_version() -> str:
+    text = PRODUCT_VERSION_SOURCE.read_text(encoding="utf-8")
+    match = PRODUCT_VERSION_PATTERN.search(text)
+    if match is None:
+        raise RuntimeError(f"Cannot read product version from {PRODUCT_VERSION_SOURCE}")
+    return match.group(1)
+
+
 def image_paths(markdown: str) -> list[Path]:
     return [(SOURCE.parent / raw).resolve() for raw in re.findall(r"!\[[^\]]*\]\(([^)]+)\)", markdown)]
 
@@ -45,6 +55,8 @@ def image_paths(markdown: str) -> list[Path]:
 def source_hash(markdown: str) -> str:
     digest = hashlib.sha256(FORMAT_VERSION.encode())
     digest.update(markdown.encode())
+    digest.update(PRODUCT_VERSION_SOURCE.relative_to(ROOT).as_posix().encode())
+    digest.update(PRODUCT_VERSION_SOURCE.read_bytes())
     for path in image_paths(markdown):
         digest.update(path.relative_to(ROOT).as_posix().encode())
         digest.update(path.read_bytes())
@@ -112,11 +124,12 @@ def add_picture(doc: Document, path: Path, alt: str) -> None:
 
 
 def configure(doc: Document, digest: str) -> None:
+    version = product_version()
     section = doc.sections[0]
     section.left_margin = section.right_margin = Inches(0.72)
     section.top_margin = section.bottom_margin = Inches(0.65)
     doc.core_properties.title = "괴이 기록국 게임기획서"
-    doc.core_properties.subject = "MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A / Ver 4.2 / ANNUAL-MVP-001 4주×7일"
+    doc.core_properties.subject = f"MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A / Ver {version} / ANNUAL-MVP-001 4주×7일"
     doc.core_properties.keywords = HASH_PREFIX + digest
     for style_name, size, color in (("Normal", 9, TEXT), ("Heading 1", 16, NAVY), ("Heading 2", 12, BLUE)):
         style = doc.styles[style_name]
@@ -126,7 +139,7 @@ def configure(doc: Document, digest: str) -> None:
         style.font.color.rgb = RGBColor.from_string(color)
     footer = section.footer.paragraphs[0]
     footer.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    font(footer.add_run("괴이 기록국 · GDD v3.2 · ANNUAL-MVP-001 4주×7일 · Ver 4.2"), 8, MUTED)
+    font(footer.add_run(f"괴이 기록국 · GDD v3.2 · ANNUAL-MVP-001 4주×7일 · Ver {version}"), 8, MUTED)
 
 
 def render(doc: Document, markdown: str) -> None:
