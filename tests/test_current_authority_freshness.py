@@ -28,7 +28,7 @@ class CurrentAuthorityFreshnessTests(unittest.TestCase):
         self.assertIn("M01_FIRST_SESSION", text)
         self.assertIn("M04_RELEASE_NEAR_VERTICAL_SLICE", text)
         self.assertIn("RUNTIME_IMPLEMENTED / AUTOMATED_GREEN / HUMAN_QA_NOT_RUN", text)
-        self.assertIn("SHARED_SYSTEM_BASELINE_IMPLEMENTED / PRODUCT_REFERENCE_ASSET_PENDING / HUMAN_QA_NOT_RUN", text)
+        self.assertIn("SHARED_SYSTEM_BASELINE_IMPLEMENTED / USER_APPROVED_VISUAL_CANDIDATE / PRODUCT_REFERENCE_ASSET_PENDING / HUMAN_QA_NOT_RUN", text)
         self.assertIn(RUNTIME_MERGE, text)
         self.assertIn("Human QA", text)
         self.assertIn("NOT_RUN", text)
