@@ -31,7 +31,7 @@ class AnnualMvp001StaticContractTests(unittest.TestCase):
         self.assertIn("CORE-MVP-001 조사→전조→포획 PoC", menu)
         self.assertIn("res://scenes/poc/core_mvp_001/core_mvp_001_scene.tscn", menu)
 
-    def test_regression_runner_registers_annual_and_validation_tests(self) -> None:
+    def test_regression_runner_registers_annual_validation_and_shared_case_tests(self) -> None:
         runner = (ROOT / "tests/run_godot_regression.sh").read_text(encoding="utf-8")
         for name in (
             "annual_mvp_001_data_test",
@@ -49,9 +49,13 @@ class AnnualMvp001StaticContractTests(unittest.TestCase):
             "validation/validation_runtime_initializer_test",
             "validation/validation_entry_coordinator_test",
             "validation/validation_main_menu_contract_test",
+            "shared_system/shared_investigation_manual_test",
+            "shared_system/shared_rescue_recovery_test",
+            "m04/m04_validation_baseline_test",
         ):
             self.assertIn(name, runner)
-        self.assertIn("58/58", runner)
+        self.assertIn("all configured entrypoints passed", runner)
+        self.assertNotIn("58/58", runner)
 
     def test_runtime_does_not_reference_protected_main_state(self) -> None:
         combined = "\n".join(
