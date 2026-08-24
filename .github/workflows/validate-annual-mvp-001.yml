@@ -15,11 +15,17 @@ on:
       - "data/migrations/afterlife_station_canon_v2_id_migration.json"
       - "scripts/data/afterlife_*.gd"
       - "scripts/core/afterlife_*.gd"
+      - "scripts/core/monthly_state_policy.gd"
+      - "scripts/core/m01_first_session_orchestrator.gd"
+      - "scripts/core/m01_first_session_runtime_sync.gd"
       - "scripts/data/episode_loader.gd"
+      - "scripts/ui/canon_v2_runtime_bridge.gd"
       - "scripts/ui/validation_entry_coordinator.gd"
       - "scripts/ui/main_menu.gd"
       - "project.godot"
       - "tests/**"
+      - "tests/monthly_state/**"
+      - "tests/first_session/**"
       - "tests/fixtures/afterlife_migration/**"
       - "tests/run_afterlife_canon_v2_migration_tests.sh"
       - "TEST_CHECKLIST.md"
@@ -55,6 +61,7 @@ jobs:
             tests/test_annual_mvp_001_data_contract.py \
             tests/test_annual_mvp_002_data_contract.py \
             tests/test_annual_mvp_001_static_contract.py \
+            tests/test_m01_first_session_runtime_wiring.py \
             tests/test_active_document_references.py -v
       - name: Setup Godot 4.7.1
         uses: chickensoft-games/setup-godot@v2

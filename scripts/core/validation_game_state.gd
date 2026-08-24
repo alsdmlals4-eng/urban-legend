@@ -1,6 +1,7 @@
 extends "res://scripts/core/game_state.gd"
 
 const VALIDATION_EPISODE_ID := "episode_001_afterlife_station"
+const AFTERLIFE_CANON_V2_CONTRACT_ID := "afterlife-station-canon-v2"
 const VALIDATION_REQUIRED_KEYS := [
 	"episode_id",
 	"episode_path",
@@ -31,6 +32,34 @@ func save_game() -> bool:
 		var result: Dictionary = session.save(self)
 		return String(result.get("code", "")) == "OK"
 	return super.save_game()
+
+
+func restart_afterlife_station_flow(agent_ids: Array = []) -> bool:
+	if has_method("activate_afterlife_content_contract_for_migration"):
+		var activated := bool(call(
+			"activate_afterlife_content_contract_for_migration",
+			AFTERLIFE_CANON_V2_CONTRACT_ID
+		))
+		if not activated:
+			return false
+	var restarted := super.restart_afterlife_station_flow(agent_ids)
+	if not restarted:
+		return false
+	if has_method("_hydrate_afterlife_fields"):
+		call("_hydrate_afterlife_fields", {
+			"content_contract_id": AFTERLIFE_CANON_V2_CONTRACT_ID,
+			"afterlife_canon_v2": {},
+			"migration_history": [],
+			"orphan_legacy_ids": [],
+			"legacy_migration_notes": [],
+			"legacy_resolution_snapshot": {},
+			"first_v2_investigation": {},
+			"applied_migration_effect_ids": {},
+			"canon_v2_runtime": {},
+			"monthly_state": {},
+			"m01_first_session": {}
+		})
+	return true
 
 
 func initialize_validation_runtime(episode_id: String, agent_ids: Array) -> Dictionary:

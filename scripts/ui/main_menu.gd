@@ -9,8 +9,7 @@ const LogTutorialCatalog = preload("res://scripts/ui/log_tutorial_catalog.gd")
 const ValidationInspectorScript = preload("res://scripts/core/validation_persistence_inspector.gd")
 const ValidationEntryCoordinatorScript = preload("res://scripts/ui/validation_entry_coordinator.gd")
 const ValidationRouteMapperScript = preload("res://scripts/core/validation_route_mapper.gd")
-
-const GAME_VERSION := "Ver 4.2"
+const ProductVersion = preload("res://scripts/core/product_version.gd")
 
 var _start_episode_button: Button
 var _continue_button: Button
@@ -34,6 +33,21 @@ var _dev_panel: Control
 var _accessibility := Accessibility.new()
 var _log_guide: LogGuide
 
+var _menu_shell: HBoxContainer
+var _identity_rail: VBoxContainer
+var _action_rail: VBoxContainer
+var _intelligence_rail: VBoxContainer
+var _primary_action_hint: Label
+var _current_case_preview: TextureRect
+var _current_case_title: Label
+var _current_case_meta: Label
+var _current_case_summary: Label
+var _legacy_intel_status: Label
+var _validation_intel_status: Label
+var _settings_button: Button
+var _settings_panel: Control
+var _exit_button: Button
+
 
 func _ready() -> void:
 	theme = ThemeFactory.create_theme()
@@ -46,8 +60,7 @@ func _ready() -> void:
 	set_process_input(true)
 	_build_ui()
 	_refresh_entry_cards()
-	if _legacy_continue_button != null:
-		_legacy_continue_button.call_deferred("grab_focus")
+	_focus_initial_action()
 
 
 func _make_validation_coordinator() -> Object:
@@ -68,175 +81,164 @@ func _build_ui() -> void:
 	backdrop.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 	backdrop.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(backdrop)
+
 	var background := ColorRect.new()
-	background.color = Color(0.025, 0.035, 0.05, 0.68)
+	background.color = Color(0.025, 0.035, 0.05, 0.82)
 	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	background.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(background)
 
 	var margin := MarginContainer.new()
 	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	margin.add_theme_constant_override("margin_left", 28)
-	margin.add_theme_constant_override("margin_top", 36)
-	margin.add_theme_constant_override("margin_right", 28)
-	margin.add_theme_constant_override("margin_bottom", 36)
+	margin.add_theme_constant_override("margin_left", 24)
+	margin.add_theme_constant_override("margin_top", 24)
+	margin.add_theme_constant_override("margin_right", 24)
+	margin.add_theme_constant_override("margin_bottom", 24)
 	add_child(margin)
 
+	_menu_shell = HBoxContainer.new()
+	_menu_shell.name = "MenuShell"
+	_menu_shell.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_menu_shell.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_menu_shell.add_theme_constant_override("separation", 18)
+	margin.add_child(_menu_shell)
+
+	_identity_rail = _make_menu_rail(_menu_shell, "IdentityRail", 260.0, 0.82, Color("31434d"))
+	_action_rail = _make_menu_rail(_menu_shell, "ActionRail", 410.0, 1.18, ThemeFactory.COLOR_AMBER)
+	_intelligence_rail = _make_menu_rail(_menu_shell, "IntelligenceRail", 320.0, 1.0, ThemeFactory.COLOR_TEAL)
+
+	_build_identity_rail(_identity_rail)
+	_build_action_rail(_action_rail)
+	_build_intelligence_rail(_intelligence_rail)
+	_build_debug_panel(_intelligence_rail)
+	_build_validation_dialogs()
+	_configure_entry_focus()
+	resized.connect(_apply_responsive_layout)
+	_apply_responsive_layout()
+
+
+func _make_menu_rail(parent: Control, node_name: String, minimum_width: float, stretch_ratio: float, accent: Color) -> VBoxContainer:
 	var panel := PanelContainer.new()
 	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	margin.add_child(panel)
+	panel.size_flags_stretch_ratio = stretch_ratio
+	panel.custom_minimum_size.x = minimum_width
+	panel.add_theme_stylebox_override("panel", ThemeFactory.panel_style(accent, 0.90))
+	parent.add_child(panel)
 
-	var scroll := ScrollContainer.new()
-	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	panel.add_child(scroll)
+	var rail := VBoxContainer.new()
+	rail.name = node_name
+	rail.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	rail.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	rail.add_theme_constant_override("separation", 12)
+	panel.add_child(rail)
+	return rail
 
-	var content := VBoxContainer.new()
-	content.custom_minimum_size = Vector2(960, 0)
-	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	content.add_theme_constant_override("separation", 14)
-	scroll.add_child(content)
 
-	var title_row := HBoxContainer.new()
-	title_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	title_row.add_theme_constant_override("separation", 14)
-	content.add_child(title_row)
+func _build_identity_rail(parent: VBoxContainer) -> void:
+	var bureau_mark := Label.new()
+	bureau_mark.text = "RECORD / CONTAIN / RETURN"
+	bureau_mark.add_theme_color_override("font_color", ThemeFactory.COLOR_TEAL)
+	bureau_mark.add_theme_font_size_override("font_size", 12)
+	parent.add_child(bureau_mark)
 
 	var title := Label.new()
-	title.text = "괴이 기록국"
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title_row.add_child(title)
+	title.name = "BureauTitle"
+	title.text = "괴이기록국"
+	title.add_theme_font_size_override("font_size", 42)
+	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	parent.add_child(title)
+
+	var english := Label.new()
+	english.text = "Urban Legend Archive Bureau"
+	english.add_theme_color_override("font_color", ThemeFactory.COLOR_MUTED)
+	english.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	parent.add_child(english)
 
 	var version_label := Label.new()
-	version_label.text = GAME_VERSION
-	version_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	version_label.add_theme_font_size_override("font_size", 10)
-	title_row.add_child(version_label)
+	version_label.name = "VersionLabel"
+	version_label.text = ProductVersion.display_text()
+	version_label.add_theme_font_size_override("font_size", 18)
+	version_label.add_theme_color_override("font_color", ThemeFactory.COLOR_AMBER)
+	parent.add_child(version_label)
 
-	var subtitle := Label.new()
-	subtitle.text = "현대 오컬트 미스터리"
-	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	subtitle.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	content.add_child(subtitle)
+	var divider := HSeparator.new()
+	parent.add_child(divider)
 
-	var body := Label.new()
-	body.text = "괴이의 규칙을 조사하고 현재 출현을 안정화한 뒤, 다음 피해를 막을 괴이 매뉴얼을 기록합니다."
-	body.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	content.add_child(body)
+	var mission_heading := Label.new()
+	mission_heading.text = "기록국 임무"
+	mission_heading.add_theme_color_override("font_color", ThemeFactory.COLOR_MUTED)
+	parent.add_child(mission_heading)
 
-	_log_guide = LogGuideScript.new()
-	_log_guide.set_compact(true)
-	content.add_child(_log_guide)
-	_present_log_entry()
+	var mission := Label.new()
+	mission.text = "괴이의 규칙을 조사하고 현재 출현을 안정화해 다음 피해를 막을 기록을 남깁니다."
+	mission.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	parent.add_child(mission)
 
-	_build_entry_cards(content)
+	var identity_spacer := Control.new()
+	identity_spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	parent.add_child(identity_spacer)
 
-	var columns := HBoxContainer.new()
-	columns.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	columns.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	columns.add_theme_constant_override("separation", 16)
-	content.add_child(columns)
+	var boundary := Label.new()
+	boundary.text = "본편 기록과 Validation 기록은 서로 독립적으로 보존됩니다."
+	boundary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	boundary.add_theme_color_override("font_color", ThemeFactory.COLOR_MUTED)
+	boundary.add_theme_font_size_override("font_size", 13)
+	parent.add_child(boundary)
 
-	var overview_column := VBoxContainer.new()
-	overview_column.custom_minimum_size = Vector2(560, 0)
-	overview_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	overview_column.add_theme_constant_override("separation", 12)
-	columns.add_child(overview_column)
 
-	var control_column := VBoxContainer.new()
-	control_column.custom_minimum_size = Vector2(360, 0)
-	control_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	control_column.add_theme_constant_override("separation", 12)
-	columns.add_child(control_column)
+func _build_action_rail(parent: VBoxContainer) -> void:
+	var heading := Label.new()
+	heading.text = "MAIN MENU"
+	heading.add_theme_color_override("font_color", ThemeFactory.COLOR_MUTED)
+	parent.add_child(heading)
 
-	var case_image := TextureRect.new()
-	case_image.texture = AssetCatalog.new().get_texture("afterlife_platform")
-	case_image.custom_minimum_size = Vector2(0, 240)
-	case_image.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	case_image.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-	overview_column.add_child(case_image)
-	var case_focus := Label.new()
-	case_focus.text = "첫 기록 · 저승역\n막차 이후 존재하지 않는 승강장에서 반복 규칙을 추적합니다."
-	case_focus.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	overview_column.add_child(case_focus)
+	_primary_action_hint = Label.new()
+	_primary_action_hint.name = "PrimaryActionHint"
+	_primary_action_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_primary_action_hint.add_theme_color_override("font_color", ThemeFactory.COLOR_AMBER)
+	parent.add_child(_primary_action_hint)
 
-	var database_content := _add_section(
-		control_column,
-		"기록 열람",
-		"확보한 사건·요원·괴이 기록을 확인합니다."
-	)
+	_build_entry_cards(parent)
+
+	var utility := _add_section(parent, "기록국 도구")
 	_database_button = Button.new()
 	_database_button.name = "DatabaseButton"
-	_database_button.text = "기록국 DB"
+	_database_button.text = "기록 보관실"
 	_database_button.focus_mode = Control.FOCUS_ALL
 	_database_button.pressed.connect(_open_database)
-	database_content.add_child(_database_button)
+	utility.add_child(_database_button)
 
-	_add_accessibility_panel(control_column)
+	_settings_button = Button.new()
+	_settings_button.name = "SettingsButton"
+	_settings_button.text = "설정 / 접근성"
+	_settings_button.focus_mode = Control.FOCUS_ALL
+	_settings_button.pressed.connect(_toggle_settings_panel)
+	utility.add_child(_settings_button)
 
-	var dev_content := _add_section(
-		control_column,
-		"개발 / 테스트",
-		"플레이 루프 검증용 보조 버튼입니다. 실제 진행은 주요 행동에서 시작합니다."
-	)
-	_dev_panel = dev_content.get_parent()
-	_dev_panel.visible = false
-
-	var clear_save_button := Button.new()
-	clear_save_button.text = "저장 초기화"
-	clear_save_button.pressed.connect(_clear_saved_game)
-	dev_content.add_child(clear_save_button)
-
-	_add_scene_button(dev_content, "MVP-002 데이터 확인", "res://scenes/case_data_scene.tscn")
-
-	var scene_label := Label.new()
-	scene_label.text = "MVP-001 핵심 씬 테스트"
-	scene_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	dev_content.add_child(scene_label)
-
-	_add_scene_button(
-		dev_content,
-		"CORE-MVP-001 조사→전조→포획 PoC",
-		"res://scenes/poc/core_mvp_001/core_mvp_001_scene.tscn"
-	)
-	_add_scene_button(
-		dev_content,
-		"ANNUAL-MVP-001 육성→사건→연구 PoC",
-		"res://scenes/poc/annual_mvp_001/annual_mvp_001_scene.tscn"
-	)
-	var annual_mvp_002_button := Button.new()
-	annual_mvp_002_button.name = "AnnualMvp002Button"
-	annual_mvp_002_button.text = "ANNUAL-MVP-002 동료·장비·연구 PoC"
-	annual_mvp_002_button.pressed.connect(func() -> void:
-		get_tree().change_scene_to_file("res://scenes/poc/annual_mvp_002/annual_mvp_002_scene.tscn")
-	)
-	dev_content.add_child(annual_mvp_002_button)
-	_add_scene_button(dev_content, "조사씬 열기", "res://scenes/investigation_scene.tscn")
-	_add_scene_button(dev_content, "준비 화면 열기", GameState.SCENE_PREPARATION)
-	_add_scene_button(dev_content, "대화씬 열기", "res://scenes/dialogue_scene.tscn")
-	_add_scene_button(dev_content, "회수 페이즈 열기", "res://scenes/battle_scene.tscn")
-	_add_scene_button(dev_content, "미니게임씬 열기", "res://scenes/minigame_scene.tscn")
-
-	_build_validation_dialogs()
-	_configure_entry_focus()
+	_exit_button = Button.new()
+	_exit_button.name = "ExitButton"
+	_exit_button.text = "종료"
+	_exit_button.focus_mode = Control.FOCUS_ALL
+	_exit_button.pressed.connect(func() -> void: get_tree().quit())
+	utility.add_child(_exit_button)
 
 
 func _build_entry_cards(parent: Control) -> void:
-	var entry_cards := HBoxContainer.new()
+	var entry_cards := VBoxContainer.new()
 	entry_cards.name = "EntryCards"
 	entry_cards.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	entry_cards.add_theme_constant_override("separation", 16)
+	entry_cards.add_theme_constant_override("separation", 10)
 	parent.add_child(entry_cards)
 
 	var legacy_content := _add_section(
 		entry_cards,
-		"기존 진행",
-		"본편 캠페인 기록입니다. Validation 기록과 서로 영향을 주지 않습니다."
+		"본편",
+		"기존 캠페인 기록입니다. Validation 기록과 서로 영향을 주지 않습니다."
 	)
 	_legacy_status_label = Label.new()
 	_legacy_status_label.name = "LegacyStatusLabel"
-	_legacy_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_legacy_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	_legacy_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	legacy_content.add_child(_legacy_status_label)
 
@@ -266,12 +268,13 @@ func _build_entry_cards(parent: Control) -> void:
 	_validation_badge_label = Label.new()
 	_validation_badge_label.name = "ValidationBadgeLabel"
 	_validation_badge_label.text = "본편과 별도 기록"
-	_validation_badge_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_validation_badge_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	_validation_badge_label.add_theme_color_override("font_color", ThemeFactory.COLOR_TEAL)
 	validation_content.add_child(_validation_badge_label)
 
 	_validation_status_label = Label.new()
 	_validation_status_label.name = "ValidationStatusLabel"
-	_validation_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_validation_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	_validation_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	validation_content.add_child(_validation_status_label)
 
@@ -287,6 +290,88 @@ func _build_entry_cards(parent: Control) -> void:
 	_validation_secondary_button.focus_mode = Control.FOCUS_ALL
 	_validation_secondary_button.pressed.connect(_on_validation_secondary_pressed)
 	validation_content.add_child(_validation_secondary_button)
+
+
+func _build_intelligence_rail(parent: VBoxContainer) -> void:
+	var case_content := _add_section(parent, "현재 사건")
+
+	_current_case_title = Label.new()
+	_current_case_title.name = "CurrentCaseTitle"
+	_current_case_title.add_theme_font_size_override("font_size", 28)
+	_current_case_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	case_content.add_child(_current_case_title)
+
+	_current_case_meta = Label.new()
+	_current_case_meta.name = "CurrentCaseMeta"
+	_current_case_meta.add_theme_color_override("font_color", ThemeFactory.COLOR_MUTED)
+	_current_case_meta.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	case_content.add_child(_current_case_meta)
+
+	_current_case_preview = TextureRect.new()
+	_current_case_preview.name = "CurrentCasePreview"
+	_current_case_preview.custom_minimum_size = Vector2(0, 150)
+	_current_case_preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_current_case_preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	_current_case_preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	case_content.add_child(_current_case_preview)
+
+	_current_case_summary = Label.new()
+	_current_case_summary.name = "CurrentCaseSummary"
+	_current_case_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	case_content.add_child(_current_case_summary)
+
+	var status_content := _add_section(parent, "기록 상태")
+	_legacy_intel_status = Label.new()
+	_legacy_intel_status.name = "LegacyIntelStatus"
+	_legacy_intel_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	status_content.add_child(_legacy_intel_status)
+
+	_validation_intel_status = Label.new()
+	_validation_intel_status.name = "ValidationIntelStatus"
+	_validation_intel_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	status_content.add_child(_validation_intel_status)
+
+	_settings_panel = _add_accessibility_panel(parent)
+	_settings_panel.name = "SettingsPanel"
+	_settings_panel.visible = false
+
+	_log_guide = LogGuideScript.new()
+	_log_guide.set_compact(true)
+	parent.add_child(_log_guide)
+	_present_log_entry()
+
+
+func _build_debug_panel(parent: Control) -> void:
+	var dev_content := _add_section(
+		parent,
+		"개발 / 테스트",
+		"플레이 루프 검증용 보조 버튼입니다. 실제 진행은 주요 행동에서 시작합니다."
+	)
+	_dev_panel = dev_content.get_parent()
+	_dev_panel.visible = false
+
+	var clear_save_button := Button.new()
+	clear_save_button.text = "저장 초기화"
+	clear_save_button.pressed.connect(_clear_saved_game)
+	dev_content.add_child(clear_save_button)
+
+	_add_scene_button(dev_content, "MVP-002 데이터 확인", "res://scenes/case_data_scene.tscn")
+	_add_scene_button(dev_content, "CORE-MVP-001 조사→전조→포획 PoC", "res://scenes/poc/core_mvp_001/core_mvp_001_scene.tscn")
+	_add_scene_button(dev_content, "ANNUAL-MVP-001 육성→사건→연구 PoC", "res://scenes/poc/annual_mvp_001/annual_mvp_001_scene.tscn")
+
+	var annual_mvp_002_button := Button.new()
+	annual_mvp_002_button.name = "AnnualMvp002Button"
+	annual_mvp_002_button.text = "ANNUAL-MVP-002 동료·장비·연구 PoC"
+	annual_mvp_002_button.pressed.connect(func() -> void:
+		get_tree().change_scene_to_file("res://scenes/poc/annual_mvp_002/annual_mvp_002_scene.tscn")
+	)
+	dev_content.add_child(annual_mvp_002_button)
+
+	_add_scene_button(dev_content, "조사씬 열기", "res://scenes/investigation_scene.tscn")
+	_add_scene_button(dev_content, "준비 화면 열기", GameState.SCENE_PREPARATION)
+	_add_scene_button(dev_content, "대화씬 열기", "res://scenes/dialogue_scene.tscn")
+	_add_scene_button(dev_content, "회수 페이즈 열기", "res://scenes/battle_scene.tscn")
+	_add_scene_button(dev_content, "미니게임씬 열기", "res://scenes/minigame_scene.tscn")
 
 
 func _build_validation_dialogs() -> void:
@@ -317,16 +402,127 @@ func _build_validation_dialogs() -> void:
 
 
 func _configure_entry_focus() -> void:
-	if _legacy_continue_button == null or _legacy_new_campaign_button == null:
+	_rebuild_focus_chain()
+
+
+func _rebuild_focus_chain() -> void:
+	var candidates: Array[Button] = [
+		_legacy_continue_button,
+		_legacy_new_campaign_button,
+		_validation_primary_button,
+		_validation_secondary_button,
+		_database_button,
+		_settings_button,
+		_exit_button,
+	]
+	var ordered: Array[Button] = []
+	for button in candidates:
+		if button == null:
+			continue
+		button.focus_neighbor_top = NodePath()
+		button.focus_neighbor_bottom = NodePath()
+		button.focus_neighbor_left = NodePath()
+		button.focus_neighbor_right = NodePath()
+		if button.visible and not button.disabled:
+			ordered.append(button)
+
+	for index in range(ordered.size()):
+		var button := ordered[index]
+		if index > 0:
+			button.focus_neighbor_top = button.get_path_to(ordered[index - 1])
+		if index + 1 < ordered.size():
+			button.focus_neighbor_bottom = button.get_path_to(ordered[index + 1])
+
+
+func _meaningful_primary_action() -> Button:
+	if _legacy_continue_button != null and _legacy_continue_button.visible and not _legacy_continue_button.disabled:
+		return _legacy_continue_button
+	if _legacy_new_campaign_button != null and _legacy_new_campaign_button.visible and not _legacy_new_campaign_button.disabled:
+		return _legacy_new_campaign_button
+	if _validation_primary_button != null and _validation_primary_button.visible and not _validation_primary_button.disabled:
+		return _validation_primary_button
+	return null
+
+
+func _apply_primary_action_emphasis() -> void:
+	var buttons: Array[Button] = [
+		_legacy_continue_button,
+		_legacy_new_campaign_button,
+		_validation_primary_button,
+		_validation_secondary_button,
+		_database_button,
+		_settings_button,
+		_exit_button,
+	]
+	for button in buttons:
+		if button == null:
+			continue
+		button.custom_minimum_size.y = 46
+		button.add_theme_font_size_override("font_size", 16)
+		button.remove_theme_stylebox_override("normal")
+		button.add_theme_stylebox_override("focus", ThemeFactory.panel_style(ThemeFactory.COLOR_AMBER, 0.98))
+
+	var primary := _meaningful_primary_action()
+	if primary == null:
+		_primary_action_hint.text = "현재 사용 가능한 시작 행동이 없습니다."
 		return
-	_legacy_continue_button.focus_neighbor_bottom = _legacy_continue_button.get_path_to(_legacy_new_campaign_button)
-	_legacy_new_campaign_button.focus_neighbor_top = _legacy_new_campaign_button.get_path_to(_legacy_continue_button)
-	_legacy_new_campaign_button.focus_neighbor_right = _legacy_new_campaign_button.get_path_to(_validation_primary_button)
-	_validation_primary_button.focus_neighbor_left = _validation_primary_button.get_path_to(_legacy_continue_button)
-	_validation_primary_button.focus_neighbor_bottom = _validation_primary_button.get_path_to(_validation_secondary_button)
-	_validation_secondary_button.focus_neighbor_top = _validation_secondary_button.get_path_to(_validation_primary_button)
-	_validation_secondary_button.focus_neighbor_bottom = _validation_secondary_button.get_path_to(_database_button)
-	_database_button.focus_neighbor_top = _database_button.get_path_to(_validation_primary_button)
+	primary.custom_minimum_size.y = 62
+	primary.add_theme_font_size_override("font_size", 20)
+	primary.add_theme_stylebox_override("normal", ThemeFactory.panel_style(ThemeFactory.COLOR_AMBER, 0.96))
+	_primary_action_hint.text = "현재 권장 행동 · %s" % primary.text
+
+
+func _focus_initial_action() -> void:
+	var primary := _meaningful_primary_action()
+	if primary != null:
+		primary.call_deferred("grab_focus")
+
+
+func _apply_responsive_layout() -> void:
+	var compact := size.x < 1500.0 or size.y < 850.0
+	if _current_case_preview != null:
+		_current_case_preview.visible = not compact and _current_case_preview.texture != null
+	if _current_case_summary != null:
+		_current_case_summary.visible = not compact and not _current_case_summary.text.is_empty()
+	if _identity_rail != null:
+		_identity_rail.add_theme_constant_override("separation", 8 if compact else 12)
+	if _action_rail != null:
+		_action_rail.add_theme_constant_override("separation", 8 if compact else 12)
+	if _intelligence_rail != null:
+		_intelligence_rail.add_theme_constant_override("separation", 8 if compact else 12)
+
+
+func _refresh_intelligence_rail() -> void:
+	if _current_case_title == null:
+		return
+
+	var current: Dictionary = GameState.get_current_episode()
+	var episode: Dictionary = {}
+	var episode_value: Variant = current.get("episode", {})
+	if typeof(episode_value) == TYPE_DICTIONARY:
+		episode = episode_value as Dictionary
+
+	_current_case_title.text = String(episode.get("title", "현재 사건 정보 없음"))
+	_current_case_meta.text = String(episode.get("legend_type", "분류 정보 없음"))
+	_current_case_summary.text = String(episode.get("summary", ""))
+
+	var visuals: Dictionary = {}
+	var visuals_value: Variant = episode.get("visuals", {})
+	if typeof(visuals_value) == TYPE_DICTIONARY:
+		visuals = visuals_value as Dictionary
+	var background_id := String(visuals.get("dialogue_background_id", ""))
+	_current_case_preview.texture = AssetCatalog.new().get_texture(background_id)
+
+	_legacy_intel_status.text = (
+		"본편 · %s" % _legacy_status_label.text
+		if _legacy_status_label != null
+		else "본편 · 상태 정보 없음"
+	)
+	_validation_intel_status.text = (
+		"Validation · %s" % _validation_status_label.text.replace("\n", " · ")
+		if _validation_status_label != null
+		else "Validation · 상태 정보 없음"
+	)
 
 
 func _present_log_entry() -> void:
@@ -373,6 +569,10 @@ func _refresh_entry_cards() -> void:
 	else:
 		_validation_summary = _validation_inspector.inspect_persistence()
 	_render_validation_summary(_validation_summary)
+	_refresh_intelligence_rail()
+	_apply_primary_action_emphasis()
+	_rebuild_focus_chain()
+	_apply_responsive_layout()
 
 
 func _render_validation_summary(summary: Dictionary) -> void:
@@ -518,11 +718,17 @@ func _change_scene_for_validation(scene_path: String) -> int:
 	return get_tree().change_scene_to_file(scene_path)
 
 
-func _add_accessibility_panel(parent: Control) -> void:
-	var content := _add_section(parent, "연출 강도", "화면 연출을 편한 수준으로 조절합니다.")
+func _add_accessibility_panel(parent: Control) -> Control:
+	var content := _add_section(parent, "설정 / 접근성", "화면 연출을 편한 수준으로 조절합니다.")
 	_add_effect_slider(content, "화면 흔들림", "screen_shake")
 	_add_effect_slider(content, "섬광", "flash")
 	_add_effect_slider(content, "공포 왜곡", "horror_distortion")
+	return content.get_parent()
+
+
+func _toggle_settings_panel() -> void:
+	if _settings_panel != null:
+		_settings_panel.visible = not _settings_panel.visible
 
 
 func _add_effect_slider(parent: Control, label_text: String, effect_id: String) -> void:
@@ -554,13 +760,15 @@ func _add_section(parent: Control, title_text: String, description_text: String 
 
 	var title := Label.new()
 	title.text = title_text
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	content.add_child(title)
 
 	if not description_text.is_empty():
 		var description := Label.new()
 		description.text = description_text
 		description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		description.add_theme_color_override("font_color", ThemeFactory.COLOR_MUTED)
+		description.add_theme_font_size_override("font_size", 13)
 		content.add_child(description)
 
 	return content
@@ -577,7 +785,7 @@ func _add_update_notice(parent: Control) -> void:
 	panel.add_child(content)
 
 	var title := Label.new()
-	title.text = "%s 변경사항" % GAME_VERSION
+	title.text = "%s 변경사항" % ProductVersion.display_text()
 	content.add_child(title)
 
 	var changes := Label.new()
@@ -618,6 +826,7 @@ func _clear_saved_game() -> void:
 	GameState.reset_run_state()
 	GameState.set_current_scene_path("res://scenes/main_menu.tscn")
 	_refresh_entry_cards()
+	_focus_initial_action()
 
 
 func _refresh_save_controls() -> void:

@@ -9,6 +9,10 @@ on:
       - "data/migrations/afterlife_station_canon_v2_id_migration.json"
       - "scripts/data/afterlife_*.gd"
       - "scripts/core/afterlife_*.gd"
+      - "scripts/core/monthly_state_policy.gd"
+      - "scripts/core/m01_first_session_orchestrator.gd"
+      - "scripts/core/m01_first_session_runtime_sync.gd"
+      - "scripts/ui/canon_v2_runtime_bridge.gd"
       - "scripts/data/episode_loader.gd"
       - "scripts/core/game_state.gd"
       - "scripts/core/validation_save_repository.gd"
@@ -19,11 +23,14 @@ on:
       - "tools/qa/afterlife_canon_v2_human_qa_checklist.json"
       - "project.godot"
       - "tests/afterlife_migration/**"
+      - "tests/monthly_state/**"
+      - "tests/first_session/**"
       - "tests/fixtures/afterlife_migration/**"
       - "tests/windows/**"
       - "tests/run_afterlife_canon_v2_migration_tests.sh"
       - "tests/run_godot_regression.sh"
       - "tests/test_afterlife_canon_v2_runner_contract.py"
+      - "tests/test_m01_first_session_runtime_wiring.py"
       - "tests/test_afterlife_canon_v2_implementation_evidence.py"
       - "tests/test_afterlife_canon_v2_human_qa_plan.py"
       - "tests/test_afterlife_canon_v2_windows_platform_qa.py"
@@ -39,7 +46,7 @@ on:
       - "docs/decisions/D-2026-08-05-AFTERLIFE-STATION-CANON-V2-MIGRATION-DESIGN.md"
       - "docs/decisions/D-2026-08-05-AFTERLIFE-STATION-CANON-V2-MIGRATION-DESIGN-LOCAL-HUMAN-QA-RUNNER-ADDENDUM.md"
       - "docs/decisions/D-2026-08-05-WORKFLOW-BENCHMARK-TDD-AND-CHECKPOINT-POLICY.md"
-      - "docs/implementation/2026-08-05-afterlife-station-canon-v2-migration-implementation-evidence.md"
+      - "docs/implementation/2026-08-05-afterlife-canon-v2-migration-implementation-evidence.md"
       - "docs/superpowers/specs/2026-08-05-afterlife-station-canon-v2-migration-design.md"
       - "docs/superpowers/plans/2026-08-05-afterlife-station-canon-v2-migration-implementation-plan.md"
       - "docs/superpowers/plans/2026-08-05-afterlife-station-canon-v2-migration-plan-adversarial-review-addendum.md"
@@ -68,6 +75,7 @@ jobs:
           python -m unittest tests/test_afterlife_station_canon_v2_migration_design.py
           python -m unittest tests/test_afterlife_station_canon_v2_implementation_plan.py
           python -m unittest tests/test_afterlife_canon_v2_runner_contract.py
+          python -m unittest tests/test_m01_first_session_runtime_wiring.py
           python -m unittest tests/test_afterlife_canon_v2_implementation_evidence.py
           python -m unittest tests/test_afterlife_canon_v2_human_qa_plan.py
           python -m unittest tests/test_afterlife_canon_v2_windows_platform_qa.py

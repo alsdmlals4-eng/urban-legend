@@ -68,6 +68,9 @@ script_tests=(
   validation/validation_runtime_initializer_test
   validation/validation_entry_coordinator_test
   validation/validation_main_menu_contract_test
+  shared_system/shared_investigation_manual_test
+  shared_system/shared_rescue_recovery_test
+  m04/m04_validation_baseline_test
 )
 
 scene_tests=(
@@ -124,5 +127,5 @@ for test_name in "${scene_tests[@]}"; do
   run_test "$test_name" scene
 done
 
-echo "Godot regression suite: 58/58 legacy entrypoints + 7/7 Canon v2 focused entrypoints passed"
+echo "Godot regression suite: all configured entrypoints passed"
 echo "Logs: $LOG_ROOT"

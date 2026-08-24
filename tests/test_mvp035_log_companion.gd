@@ -4,6 +4,7 @@ const TestSaveGuard = preload("res://tests/test_save_guard.gd")
 const LogGuide = preload("res://scripts/ui/log_guide.gd")
 const LogTutorialCatalog = preload("res://scripts/ui/log_tutorial_catalog.gd")
 const AssetCatalog = preload("res://scripts/ui/ui_asset_catalog.gd")
+const ProductVersion = preload("res://scripts/core/product_version.gd")
 
 var _guard := TestSaveGuard.new()
 var _passed := 0
@@ -130,7 +131,7 @@ func _check_scene_claims_tutorial(scene_path: String, tutorial_id: String) -> vo
 			guide.advance()
 	_check(GameState.has_seen_log_tutorial(tutorial_id), "%s claims %s after close" % [scene_path.get_file(), tutorial_id])
 	if scene_path.ends_with("main_menu.tscn"):
-		_check(_node_has_text(scene, "Ver 4.2"), "main menu displays current Ver 4.2")
+		_check(_node_has_text(scene, ProductVersion.display_text()), "main menu displays canonical product version")
 		_check(not GameState.has_save_file(), "main tutorial does not create a fake continue save")
 	if scene_path.ends_with("database_view.tscn"):
 		_check(not GameState.has_save_file(), "database tutorial does not create a fake continue save")

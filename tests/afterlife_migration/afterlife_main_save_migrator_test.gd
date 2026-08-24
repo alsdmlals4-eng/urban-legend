@@ -117,6 +117,7 @@ func _test_completed_history(migrator: Object) -> void:
 	_expect(not bool(first_v2.get("s_rank_awarded", true)), "legacy result promoted to v2 S rank")
 	_expect((payload.get("granted_reward_ids", []) as Array) == reward_before, "legacy reward duplicated or removed")
 	_expect((payload.get("completed_case_reports", []) as Array) == report_before, "legacy report overwritten")
+	_expect(not payload.has("composite_result_from_legacy_grade"), "legacy grade synthesized a current composite result")
 
 
 func _test_mvp038_result_code(migrator: Object) -> void:

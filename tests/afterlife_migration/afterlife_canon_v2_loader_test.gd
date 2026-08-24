@@ -44,6 +44,19 @@ func _test_data_contract() -> void:
 	_expect(_contains_id(canonical.get("recovery_encounters", {}), "pattern_afterlife_nonstop_farewell"), "canonical pattern missing")
 	_expect(_contains_id(canonical.get("recovery_encounters", {}), "response_afterlife_present_official_ticket"), "canonical response missing")
 
+	var result_contract_value: Variant = canonical.get("result_contract", {})
+	_expect(typeof(result_contract_value) == TYPE_DICTIONARY, "result contract missing")
+	if typeof(result_contract_value) == TYPE_DICTIONARY:
+		var result_contract := result_contract_value as Dictionary
+		_expect(String(result_contract.get("authority", "")) == "composite_result", "composite result authority missing")
+		_expect(not _contains_key_recursive(result_contract, "owns_first_s_rank"), "legacy S-rank still owns current result")
+		var legacy_mastery_value: Variant = result_contract.get("legacy_mastery", {})
+		_expect(typeof(legacy_mastery_value) == TYPE_DICTIONARY, "legacy mastery compatibility block missing")
+		if typeof(legacy_mastery_value) == TYPE_DICTIONARY:
+			var legacy_mastery := legacy_mastery_value as Dictionary
+			_expect(bool(legacy_mastery.get("grade_history_preserved", false)), "legacy grade history lost")
+			_expect(not bool(legacy_mastery.get("may_overwrite_composite_result", true)), "legacy grade can overwrite composite result")
+
 
 func _test_explicit_loader_and_computed_provenance() -> void:
 	var episode_loader = EpisodeLoaderScript.new()
@@ -106,6 +119,22 @@ func _contains_id(value: Variant, target_id: String) -> bool:
 		TYPE_ARRAY:
 			for child in value as Array:
 				if _contains_id(child, target_id):
+					return true
+	return false
+
+
+func _contains_key_recursive(value: Variant, target_key: String) -> bool:
+	match typeof(value):
+		TYPE_DICTIONARY:
+			var dictionary := value as Dictionary
+			if dictionary.has(target_key):
+				return true
+			for child in dictionary.values():
+				if _contains_key_recursive(child, target_key):
+					return true
+		TYPE_ARRAY:
+			for child in value as Array:
+				if _contains_key_recursive(child, target_key):
 					return true
 	return false
 
