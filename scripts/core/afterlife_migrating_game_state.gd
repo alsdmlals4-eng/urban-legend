@@ -11,6 +11,7 @@ const ProtectionObligationPolicyScript := preload("res://scripts/core/protection
 const RecoveryOutcomePolicyScript := preload("res://scripts/core/recovery_outcome_policy.gd")
 const ProtectionFollowUpPolicyScript := preload("res://scripts/core/protection_follow_up_policy.gd")
 const MonthlyStatePolicyScript := preload("res://scripts/core/monthly_state_policy.gd")
+const M01FirstSessionOrchestratorScript := preload("res://scripts/core/m01_first_session_orchestrator.gd")
 const AFTERLIFE_REGISTRY_PATH := "res://data/migrations/afterlife_station_canon_v2_id_migration.json"
 const AFTERLIFE_EPISODE_ID := "episode_001_afterlife_station"
 const AFTERLIFE_CONTRACT_ID := "afterlife-station-canon-v2"
@@ -29,6 +30,7 @@ var _canon_v2_runtime_state: Dictionary = {}
 var _canon_v2_pending_action_previews: Dictionary = {}
 var _canon_v2_preview_sequence := 0
 var _monthly_state: Dictionary = {}
+var _m01_first_session_state: Dictionary = {}
 var _last_migration_result: Dictionary = {}
 var _inject_runtime_failure := false
 
@@ -75,8 +77,55 @@ func apply_monthly_state(candidate: Dictionary) -> Dictionary:
 	_monthly_state = normalized.duplicate(true)
 	if not _persist_monthly_state_if_possible():
 		_monthly_state = previous
-		return {"ok": false, "reason": "monthly_state_persistence_failed"}
-	return {"ok": true, "state": get_monthly_state()}
+		return {"ok": false, "code": "MONTHLY_STATE_PERSISTENCE_FAILED", "reason": "monthly_state_persistence_failed"}
+	return {"ok": true, "code": "STATE_APPLIED", "state": get_monthly_state()}
+
+
+func transition_monthly_state(event: String, payload: Dictionary = {}) -> Dictionary:
+	_ensure_monthly_state()
+	var policy = MonthlyStatePolicyScript.new()
+	var transition: Dictionary = policy.transition(_monthly_state, event, payload)
+	if not bool(transition.get("ok", false)):
+		return transition
+	var previous := _monthly_state.duplicate(true)
+	_monthly_state = (transition.get("state", {}) as Dictionary).duplicate(true)
+	if not _persist_monthly_state_if_possible():
+		_monthly_state = previous
+		return {"ok": false, "code": "MONTHLY_STATE_PERSISTENCE_FAILED", "reason": "monthly_state_persistence_failed"}
+	transition["state"] = get_monthly_state()
+	return transition
+
+
+func get_m01_first_session_state() -> Dictionary:
+	_ensure_m01_first_session_state()
+	return _m01_first_session_state.duplicate(true)
+
+
+func get_m01_first_session_available_actions() -> Array:
+	_ensure_m01_first_session_state()
+	return M01FirstSessionOrchestratorScript.new().available_actions(
+		_m01_first_session_state,
+		_build_m01_runtime_snapshot()
+	)
+
+
+func apply_m01_first_session_event(event: String) -> Dictionary:
+	_ensure_m01_first_session_state()
+	var orchestrator = M01FirstSessionOrchestratorScript.new()
+	var result: Dictionary = orchestrator.apply_event(
+		_m01_first_session_state,
+		event,
+		_build_m01_runtime_snapshot()
+	)
+	if not bool(result.get("ok", false)):
+		return result
+	var previous := _m01_first_session_state.duplicate(true)
+	_m01_first_session_state = (result.get("state", {}) as Dictionary).duplicate(true)
+	if not _persist_m01_first_session_state_if_possible():
+		_m01_first_session_state = previous
+		return {"ok": false, "code": "M01_FIRST_SESSION_PERSISTENCE_FAILED", "reason": "m01_first_session_persistence_failed"}
+	result["state"] = get_m01_first_session_state()
+	return result
 
 
 func apply_canon_v2_runtime_state(candidate: Dictionary) -> Dictionary:
@@ -382,6 +431,7 @@ func save_game() -> bool:
 		return super.save_game()
 	_ensure_canon_v2_runtime_state()
 	_ensure_monthly_state()
+	_ensure_m01_first_session_state()
 	var payload := _make_save_data()
 	payload["save_version"] = MAIN_TARGET_VERSION
 	payload["content_contract_id"] = AFTERLIFE_CONTRACT_ID
@@ -394,6 +444,7 @@ func save_game() -> bool:
 	payload["applied_migration_effect_ids"] = _afterlife_applied_migration_effect_ids.duplicate(true)
 	payload["canon_v2_runtime"] = _canon_v2_runtime_state.duplicate(true)
 	payload["monthly_state"] = _monthly_state.duplicate(true)
+	payload["m01_first_session"] = _m01_first_session_state.duplicate(true)
 	return _write_current_main_payload(payload)
 
 
@@ -458,6 +509,7 @@ func _hydrate_afterlife_fields(payload: Dictionary) -> void:
 	_afterlife_applied_migration_effect_ids = _dictionary_copy(payload.get("applied_migration_effect_ids"))
 	_canon_v2_runtime_state = _normalize_canon_v2_runtime_state(_dictionary_copy(payload.get("canon_v2_runtime")))
 	_monthly_state = MonthlyStatePolicyScript.new().normalize(_dictionary_copy(payload.get("monthly_state")), 1)
+	_m01_first_session_state = M01FirstSessionOrchestratorScript.new().normalize(_dictionary_copy(payload.get("m01_first_session")))
 	_canon_v2_pending_action_previews.clear()
 	_canon_v2_preview_sequence = 0
 
@@ -491,7 +543,31 @@ func _validate_main_v2_payload(payload: Dictionary) -> bool:
 		var monthly_validation: Dictionary = MonthlyStatePolicyScript.new().validate(monthly_value as Dictionary)
 		if not bool(monthly_validation.get("ok", false)):
 			return false
+	if payload.has("m01_first_session"):
+		var m01_value: Variant = payload.get("m01_first_session")
+		if typeof(m01_value) != TYPE_DICTIONARY:
+			return false
+		var m01_validation: Dictionary = M01FirstSessionOrchestratorScript.new().validate(m01_value as Dictionary)
+		if not bool(m01_validation.get("ok", false)):
+			return false
 	return true
+
+
+func _build_m01_runtime_snapshot() -> Dictionary:
+	var manual := get_afterlife_manual_state()
+	var episode_manual := _dictionary_copy(current_episode_data.get("investigation_manual"))
+	if manual.is_empty():
+		manual = episode_manual
+	else:
+		for key in ["pages", "active_rule_ids", "completed_page_ids", "candidate_keywords", "semantic_relations"]:
+			if not manual.has(key) and episode_manual.has(key):
+				var value: Variant = episode_manual.get(key)
+				manual[key] = value.duplicate(true) if typeof(value) in [TYPE_DICTIONARY, TYPE_ARRAY] else value
+	return {
+		"monthly_state": get_monthly_state(),
+		"manual_state": manual,
+		"canon_v2_runtime": get_canon_v2_runtime_state()
+	}
 
 
 func _commit_canon_v2_runtime_candidate(candidate: Dictionary, event: String) -> Dictionary:
@@ -527,11 +603,28 @@ func _persist_monthly_state_if_possible() -> bool:
 	return save_game()
 
 
+func _persist_m01_first_session_state_if_possible() -> bool:
+	if not is_inside_tree():
+		return true
+	if current_episode_data.is_empty():
+		return true
+	if get_current_episode_id() != AFTERLIFE_EPISODE_ID:
+		return true
+	return save_game()
+
+
 func _ensure_monthly_state() -> void:
 	if _monthly_state.is_empty():
 		_monthly_state = MonthlyStatePolicyScript.new().default_state(1)
 	else:
 		_monthly_state = MonthlyStatePolicyScript.new().normalize(_monthly_state, 1)
+
+
+func _ensure_m01_first_session_state() -> void:
+	if _m01_first_session_state.is_empty():
+		_m01_first_session_state = M01FirstSessionOrchestratorScript.new().default_state()
+	else:
+		_m01_first_session_state = M01FirstSessionOrchestratorScript.new().normalize(_m01_first_session_state)
 
 
 func _ensure_canon_v2_runtime_state() -> void:
