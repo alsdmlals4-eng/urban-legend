@@ -19,6 +19,7 @@ func _init() -> void:
 		_expect(sync_script is Script, "M01 runtime sync coordinator failed to load")
 		if state_script is Script and sync_script is Script:
 			_test_new_campaign_activates_canon_v2(state_script as Script)
+			_test_new_campaign_resets_wrapper_state(state_script as Script, sync_script as Script)
 			_test_investigation_sync(state_script as Script, sync_script as Script)
 			_test_non_m01_noop(state_script as Script, sync_script as Script)
 	_finish()
@@ -36,6 +37,39 @@ func _test_new_campaign_activates_canon_v2(state_script: Script) -> void:
 	if typeof(manual_value) == TYPE_DICTIONARY:
 		var manual := manual_value as Dictionary
 		_expect((manual.get("pages", []) as Array).size() >= 3, "M01 Canon v2 manual pages missing on new campaign")
+	state.free()
+
+
+func _test_new_campaign_resets_wrapper_state(state_script: Script, sync_script: Script) -> void:
+	var state = state_script.new()
+	_expect(state.restart_afterlife_station_flow(), "M01 reset fixture failed to initialize")
+	var coordinator = sync_script.new()
+	var first: Dictionary = coordinator.sync_scene_mode(state, "investigation")
+	_expect(bool(first.get("ok", false)), "M01 reset fixture could not advance to investigation")
+	var runtime := state.get_canon_v2_runtime_state() as Dictionary
+	runtime["representative_outcome"] = "stale_previous_campaign"
+	runtime["incident_end_packet"] = {
+		"case_canon_reference": "episode_001_afterlife_station:stale_previous_campaign"
+	}
+	var applied_runtime := state.apply_canon_v2_runtime_state(runtime) as Dictionary
+	_expect(bool(applied_runtime.get("ok", false)), "M01 reset fixture could not seed prior runtime")
+	var before_monthly := state.get_monthly_state() as Dictionary
+	var before_session := state.get_m01_first_session_state() as Dictionary
+	_expect(String(before_monthly.get("main_case_status", "")) == "ACTIVE", "M01 reset fixture monthly state did not become active")
+	_expect(String(before_session.get("phase", "")) == "M01_INVESTIGATION", "M01 reset fixture First Session did not advance")
+
+	_expect(state.restart_afterlife_station_flow(), "M01 second new campaign restart failed")
+	var monthly := state.get_monthly_state() as Dictionary
+	var first_session := state.get_m01_first_session_state() as Dictionary
+	var reset_runtime := state.get_canon_v2_runtime_state() as Dictionary
+	_expect(int(monthly.get("month_index", 0)) == 1, "new campaign retained previous month index")
+	_expect(int(monthly.get("week_index", 0)) == 1, "new campaign retained previous week index")
+	_expect(String(monthly.get("active_main_case_id", "")) == "", "new campaign retained previous active main case")
+	_expect(String(monthly.get("main_case_status", "")) == "DORMANT", "new campaign retained previous monthly status")
+	_expect(not bool(monthly.get("resolved_this_month", true)), "new campaign retained previous resolved flag")
+	_expect(String(first_session.get("phase", "")) == "OPENING_RECORD", "new campaign retained previous First Session phase")
+	_expect(String(reset_runtime.get("representative_outcome", "")) == "", "new campaign retained previous composite outcome")
+	_expect((reset_runtime.get("incident_end_packet", {}) as Dictionary).is_empty(), "new campaign retained previous incident end packet")
 	state.free()
 
 
