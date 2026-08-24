@@ -3,6 +3,7 @@ extends SceneTree
 const GAME_STATE_PATH := "res://scripts/core/afterlife_migrating_game_state.gd"
 const SYNC_PATH := "res://scripts/core/m01_first_session_runtime_sync.gd"
 const M01_CASE_ID := "episode_001_afterlife_station"
+const M01_CONTRACT_ID := "afterlife-station-canon-v2"
 const M04_PATH := "res://data/episodes/episode_002_red_umbrella_alley.json"
 
 var _failures: Array[String] = []
@@ -17,14 +18,30 @@ func _init() -> void:
 		_expect(state_script is Script, "active GameState failed to load")
 		_expect(sync_script is Script, "M01 runtime sync coordinator failed to load")
 		if state_script is Script and sync_script is Script:
+			_test_new_campaign_activates_canon_v2(state_script as Script)
 			_test_investigation_sync(state_script as Script, sync_script as Script)
 			_test_non_m01_noop(state_script as Script, sync_script as Script)
 	_finish()
 
 
+func _test_new_campaign_activates_canon_v2(state_script: Script) -> void:
+	var state = state_script.new()
+	_expect(state.restart_afterlife_station_flow(), "M01 new campaign restart failed")
+	_expect(state.get_afterlife_content_contract_id() == M01_CONTRACT_ID, "M01 new campaign did not activate Canon v2 contract")
+	var episode := state.get_current_episode() as Dictionary
+	_expect(String(episode.get("content_contract_id", "")) == M01_CONTRACT_ID, "M01 new campaign loaded legacy episode instead of Canon v2")
+	_expect(String(episode.get("recovery_pattern_source", "")) == "canonical_v2_projection", "M01 new campaign lacks Canon v2 recovery projection")
+	var manual_value: Variant = episode.get("investigation_manual")
+	_expect(typeof(manual_value) == TYPE_DICTIONARY, "M01 new campaign lacks Canon v2 investigation manual")
+	if typeof(manual_value) == TYPE_DICTIONARY:
+		var manual := manual_value as Dictionary
+		_expect((manual.get("pages", []) as Array).size() >= 3, "M01 Canon v2 manual pages missing on new campaign")
+	state.free()
+
+
 func _test_investigation_sync(state_script: Script, sync_script: Script) -> void:
 	var state = state_script.new()
-	_expect(state.load_episode(), "M01 episode failed to load")
+	_expect(state.restart_afterlife_station_flow(), "M01 episode failed to initialize")
 	_expect(state.get_current_episode_id() == M01_CASE_ID, "M01 episode identity mismatch")
 	var coordinator = sync_script.new()
 	var first: Dictionary = coordinator.sync_scene_mode(state, "investigation")
