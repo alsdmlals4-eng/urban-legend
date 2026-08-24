@@ -2,6 +2,7 @@ extends Node
 
 const OperationOverlayScript := preload("res://scripts/ui/canon_v2_operation_overlay.gd")
 const AfterlifeRescueResultAdapterScript := preload("res://scripts/data/afterlife_rescue_result_adapter.gd")
+const M01FirstSessionRuntimeSyncScript := preload("res://scripts/core/m01_first_session_runtime_sync.gd")
 
 const SYNC_INTERVAL_SECONDS := 0.25
 const FREE_INFORMATION_CHANNELS := ["observe", "open_manual", "preview_result"]
@@ -87,6 +88,10 @@ func finalize_legacy_recovery_for_test(game_state: Node) -> Dictionary:
 	return _finalize_legacy_recovery(game_state)
 
 
+func sync_m01_first_session_for_test(mode: String, game_state: Node) -> Dictionary:
+	return _sync_m01_first_session(mode, game_state)
+
+
 func mount_overlay_for_test(host: Node, runtime_state: Dictionary, mode: String) -> Node:
 	return _mount_overlay(host, runtime_state, mode)
 
@@ -163,8 +168,15 @@ func _sync_current_scene() -> void:
 	elif mode == "result":
 		_finalize_legacy_recovery(game_state)
 	var state := _build_overlay_state(mode)
+	_sync_m01_first_session(mode, game_state)
 	_mount_overlay(current_scene, state, mode)
 	_mounted_scene_instance_id = current_scene.get_instance_id()
+
+
+func _sync_m01_first_session(mode: String, game_state: Node) -> Dictionary:
+	if game_state == null:
+		return {"ok": false, "code": "GAME_STATE_MISSING"}
+	return M01FirstSessionRuntimeSyncScript.new().sync_scene_mode(game_state, mode)
 
 
 func _sync_recovery_termination_preview(host: Node, game_state: Node) -> Dictionary:
