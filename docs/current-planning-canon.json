@@ -85,9 +85,24 @@
     "human_qa": "NOT_RUN",
     "m01_human_qa_packet": "READY_TO_RUN",
     "product_reference_asset": "PENDING",
-    "m04_reference_text_brief": "READY_FOR_USER_REVIEW",
+    "m04_reference_text_brief": "RESULT_APPROVED",
+    "m04_reference_visual_candidate": "USER_APPROVED_VISUAL_CANDIDATE",
+    "m04_runtime_visual_validation": "NOT_RUN",
     "base_adapter_protected_baseline": "6b4a9e8080898536139c8e825179b389f8bf9d64",
     "base_adapter_reconciliation_merge": "9073b4730993149f89970a13fbe32d49f8f473e7"
+  },
+  "visual_candidate_receipts": {
+    "M04_INVESTIGATION_ANCHOR_01": {
+      "status": "USER_APPROVED_VISUAL_CANDIDATE",
+      "approved_on": "2026-08-24",
+      "sha256": "4c67a65c9f7469bf39c231c81710fd71f0796501d13231c8fd7020bdad20462f",
+      "width": 1672,
+      "height": 941,
+      "bytes": 2291020,
+      "notion_surface": "04 · Visual · UX · Assets",
+      "product_asset_promoted": false,
+      "runtime_visual_validation": "NOT_RUN"
+    }
   },
   "workspace_authority": {
     "human_facing": "NOTION",

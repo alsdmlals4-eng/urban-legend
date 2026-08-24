@@ -6,14 +6,30 @@
 > Art treatment: `SOFT_ANIME_NOIR_LOCKED`
 > Presentation invariant: `DOSSIER_HYBRID_IS_PRESENTATION_LANGUAGE_NOT_MEDIUM`
 > Asset state: `PRODUCT_REFERENCE_ASSET_PENDING`
-> Generation gate: `USER_APPROVAL_REQUIRED_BEFORE_IMAGE_GENERATION`
-> Generation count after approval: `GENERATE_EXACTLY_ONE`
+> Generation contract: `GENERATE_EXACTLY_ONE / COMPLETE`
+> RESULT_APPROVAL: `USER_APPROVED`
+> Candidate status: `USER_APPROVED_VISUAL_CANDIDATE`
 
-## 1. 이 Brief의 역할
+## 1. 현재 역할
 
-이 문서는 M04 release-near Vertical Slice의 첫 product-reference 후보를 **생성하기 전** 사람이 검토할 텍스트 계약이다. 여기서 이미지 생성, asset promotion, rights 승인, runtime visual PASS를 선언하지 않는다.
+이 문서는 M04 release-near Vertical Slice의 첫 product-reference 후보에 대한 **텍스트 Brief + 생성/사용자 승인 receipt**다.
 
-사용자가 이 Brief를 명시적으로 승인한 다음 단계에서만 이미지 후보를 **정확히 1장** 생성한다. 생성된 1장도 곧바로 product reference가 아니며, 별도 승인·레이어/재사용·rights/provenance·해상도 가독성 검토를 통과해야 한다.
+Brief 승인 뒤 후보는 정확히 1장 생성됐고, 사용자가 2026-08-24 결과를 승인했다. 이 승인은 사람용 시각 후보 승인이지 product asset 승격, rights 승인, runtime visual PASS 또는 Human QA PASS가 아니다. 현재 `PRODUCT_REFERENCE_ASSET_PENDING`은 유지한다.
+
+### Approved candidate receipt
+
+```yaml
+candidate_id: M04_INVESTIGATION_ANCHOR_01
+status: USER_APPROVED_VISUAL_CANDIDATE
+approved_on: 2026-08-24
+sha256: 4c67a65c9f7469bf39c231c81710fd71f0796501d13231c8fd7020bdad20462f
+pixel_size: 1672x941
+bytes: 2291020
+notion_surface: 04 · Visual · UX · Assets
+notion_native_attachment_readback: PASS
+product_asset_promoted: false
+runtime_visual_validation: NOT_RUN
+```
 
 ## 2. 왜 첫 후보를 Investigation Anchor로 잡는가
 
@@ -87,7 +103,7 @@ M04의 판매 포인트는 캐릭터 일러스트 자체보다 **평범한 한�
 
 ## 6. 레이어·재사용 구조
 
-product-reference 후보가 승인될 경우 후속 분리를 염두에 둔다.
+승인 후보의 후속 product-reference 검토에서는 다음 분리를 확인한다.
 
 1. `BG_ENVIRONMENT` — 골목 사거리/상가/노면.
 2. `ANOMALY_UMBRELLA` — 빨간 우산/손잡이 현상.
@@ -95,7 +111,7 @@ product-reference 후보가 승인될 경우 후속 분리를 염두에 둔다.
 4. `ATMOSPHERE_RAIN` — 잔비·물방울·안개·습기.
 5. `INTERFERENCE_OPTIONAL` — CCTV/센서/기록 간섭 보조 표현.
 
-UI 텍스트, 선택지, Manual panel, 정답 강조는 이미지에 bake하지 않는다. 이 구조는 Investigation 배경과 추후 Cut-in/VFX를 재사용할 수 있게 하기 위한 목표이며, 실제 생성 결과가 레이어 분리 가능하다는 증거는 생성·검토 전에는 주장하지 않는다.
+UI 텍스트, 선택지, Manual panel, 정답 강조는 이미지에 bake하지 않는다. 현재 승인 PNG가 실제 production layer source로 분리 가능하다는 증거는 아직 없으므로 `NOT_RUN`으로 둔다.
 
 ## 7. 가독성 기준
 
@@ -108,6 +124,8 @@ UI 텍스트, 선택지, Manual panel, 정답 강조는 이미지에 bake하지 
 - 발자국도 색상만이 아니라 질감·반사·경계로 식별한다.
 - 향후 하단 선택지와 짧은 서술이 올라갈 안전 영역을 남긴다.
 
+현재 후보가 1672x941로 생성됐다는 사실은 위 1280×720 / 1920×1080 runtime 가독성 검증을 대신하지 않는다.
+
 ## 8. 금지사항
 
 - 빨간 우산이 단순 보스 몬스터처럼 화면 중앙에서 포효하는 구성.
@@ -116,30 +134,27 @@ UI 텍스트, 선택지, Manual panel, 정답 강조는 이미지에 bake하지 
 - 과도한 네온·홀로그램·glass HUD.
 - 붉은색만으로 상태를 구분.
 - 저승역의 M01 truth ID나 검은 승차권을 M04 현재 진실처럼 재사용.
-- 생성된 이미지를 검토 없이 제품 reference/최종 asset으로 승격.
+- 승인 후보를 검증 없이 제품 reference/최종 asset으로 승격.
 
 ## 9. 권리·정본 Gate
 
-- 생성 후보라면 프로젝트가 사용할 수 있는 생성 provenance를 기록한다.
-- 외부 reference를 직접 포함하거나 복제하는 경우 rights/source를 별도 확인한다.
-- 사건 의미가 현재 `episode_002_red_umbrella_alley`와 충돌하지 않는지 검수한다.
+- 생성 provenance는 ChatGPT image generation → 사용자 결과 승인 → Notion native attachment/readback 순서로 기록한다.
+- 외부 reference를 직접 포함하거나 복제한 project asset이라고 주장하지 않는다.
+- 사건 의미가 현재 `episode_002_red_umbrella_alley`와 충돌하지 않는지 계속 검수한다.
 - 승인된 visual direction과 다른 매체로 임의 전환하지 않는다.
 - Human QA나 runtime 가독성 PASS를 이미지 승인으로 대체하지 않는다.
 
-## 10. 다음 단계 — 여기서 정지
-
-현재 상태는 계속 `PRODUCT_REFERENCE_ASSET_PENDING`이다.
+## 10. 다음 단계
 
 ```text
-이 텍스트 Brief 검토
-→ USER_APPROVAL_REQUIRED_BEFORE_IMAGE_GENERATION
-→ 승인 시 GENERATE_EXACTLY_ONE
-→ 생성 결과를 사용자에게 제시하고 정지
-→ 사용자 승인/수정 요청
-→ 승인된 경우에만 product-reference promotion 검토
-→ layer/reuse + rights/provenance + 1280×720/1920×1080 검증
+텍스트 Brief 승인 — COMPLETE
+→ 이미지 후보 정확히 1개 생성 — COMPLETE
+→ 사용자 결과 승인 — COMPLETE
+→ Notion 사람용 Visual surface 업로드/readback — COMPLETE
+→ product-reference promotion 검토 — NEXT
+→ layer/reuse + rights/provenance + 1280×720/1920×1080 실제 검증
 → M04 release-near visual/audio/VFX 구현
 → Human player-experience QA
 ```
 
-이 문서 작성 자체는 이미지 생성 승인이 아니다.
+현재 승인 receipt가 있어도 `PRODUCT_REFERENCE_ASSET_PENDING`과 `runtime_visual_validation: NOT_RUN`은 유지한다.
