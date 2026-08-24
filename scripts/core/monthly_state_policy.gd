@@ -91,6 +91,8 @@ func transition(state: Dictionary, event: String, payload: Dictionary = {}) -> D
 				String(payload.get("case_id", "")),
 				int(payload.get("week_index", 0))
 			)
+		"START_MAIN_CASE":
+			result = start_main_case(state, String(payload.get("case_id", "")))
 		"RESOLVE_MAIN_CASE":
 			result = resolve_main_case(state, String(payload.get("result_ref", "")))
 		"ADVANCE_WEEK":
@@ -127,6 +129,27 @@ func make_dispatchable(state: Dictionary, case_id: String, week_index: int) -> D
 	normalized["dispatch_risk"] = _dispatch_risk_for_week(week_index)
 	normalized["aftermath_available"] = false
 	return {"ok": true, "code": "DISPATCHABLE", "state": normalized}
+
+
+func start_main_case(state: Dictionary, case_id: String) -> Dictionary:
+	var normalized := normalize(state)
+	var validation := validate(normalized)
+	if not bool(validation.get("ok", false)):
+		return validation
+	if bool(normalized.get("resolved_this_month", false)):
+		return _failure("MAIN_CASE_ALREADY_RESOLVED_THIS_MONTH")
+	if case_id.is_empty():
+		return _failure("MAIN_CASE_ID_REQUIRED")
+	var active_case_id := String(normalized.get("active_main_case_id", ""))
+	if active_case_id != case_id:
+		return _failure("DIFFERENT_MAIN_CASE_ALREADY_ACTIVE")
+	var status := String(normalized.get("main_case_status", ""))
+	if status == "ACTIVE":
+		return {"ok": true, "code": "MAIN_CASE_ALREADY_ACTIVE", "state": normalized}
+	if status != "DISPATCHABLE":
+		return _failure("MAIN_CASE_NOT_DISPATCHABLE")
+	normalized["main_case_status"] = "ACTIVE"
+	return {"ok": true, "code": "MAIN_CASE_STARTED", "state": normalized}
 
 
 func resolve_main_case(state: Dictionary, result_ref: String = "") -> Dictionary:
