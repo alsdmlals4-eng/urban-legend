@@ -34,19 +34,25 @@
     "product_reference_asset": "PENDING",
     "overall_plan": "COMPLETE",
     "user_final_planning_declaration": "APPROVED",
-    "implementation_reality_gate": "HANDOFF_READY_WITH_KNOWN_REALIGNMENT",
-    "implementation_contract": "READY",
-    "runtime_implementation_authorized": false,
+    "implementation_reality_gate": "RUNTIME_RECONCILIATION_MERGED",
+    "implementation_contract": "EXECUTED",
+    "runtime_implementation_authorized": true,
+    "runtime_implementation": "MERGED_MAIN",
+    "runtime_merge_commit": "8d303f0f9414950273be934fd28c8fb1b3a21e18",
     "human_qa": "NOT_RUN",
     "poc_passed": "NOT_DECLARED",
-    "production_expansion": "NOT_APPROVED"
+    "production_expansion": "NOT_APPROVED",
+    "base_adapter_baseline_reconciliation": "REQUIRED"
   },
   "runtime_compatibility": {
     "monthly_state_key": "monthly_state",
-    "monthly_state_status": "NOT_IMPLEMENTED",
+    "monthly_state_status": "IMPLEMENTED_ADDITIVE_OPTIONAL",
     "canon_v2_runtime_strategy": "REUSE_EXISTING_CANON_V2_RUNTIME",
     "current_result_authority": "COMPOSITE_RESULT",
-    "legacy_s_rank_contract": "REALIGNMENT_REQUIRED",
+    "legacy_s_rank_contract": "LEGACY_MASTERY_COMPATIBILITY_ONLY",
+    "m01_first_session_orchestration": "IMPLEMENTED",
+    "main_menu_product_version": "4.3",
+    "m04_shared_system_baseline": "IMPLEMENTED",
     "annual_mvp_identifiers": "PRESERVE_HISTORICAL_RUNTIME_IDS",
     "infer_month_completion_from_legacy_reports": false,
     "rename_existing_episode_ids": false,
@@ -55,6 +61,11 @@
       "M04": "episode_002_red_umbrella_alley",
       "M07": "episode_003_dead_frequency_station"
     }
+  },
+  "evidence_ceiling": {
+    "automated_exact_head": "GREEN",
+    "human_qa": "NOT_RUN",
+    "product_reference_asset": "PENDING"
   },
   "workspace_authority": {
     "human_facing": "NOTION",
@@ -77,7 +88,8 @@
     "215": "docs/VISUAL_ANCHOR_SPEC.md",
     "216": "docs/M01_INVESTIGATION_SCENE_PACKET.md",
     "217": "docs/M01_DEDUCTION_SCENE_PACKET.md",
-    "218": "docs/M01_RESCUE_SCENE_PACKET.md"
+    "218": "docs/M01_RESCUE_SCENE_PACKET.md",
+    "224": "8d303f0f9414950273be934fd28c8fb1b3a21e18"
   },
   "planning_closure_sources": {
     "visual_ui_closure": "docs/planning/2026-08-21-visual-ui-planning-closure.md",
@@ -86,7 +98,8 @@
   "implementation_handoff_sources": {
     "reality_gate": "docs/audits/2026-08-22-final-planning-implementation-reality-gate.md",
     "design": "docs/superpowers/specs/2026-08-22-post-planning-runtime-reconciliation-design.md",
-    "implementation_plan": "docs/superpowers/plans/2026-08-22-post-planning-runtime-reconciliation-implementation-plan.md"
+    "implementation_plan": "docs/superpowers/plans/2026-08-22-post-planning-runtime-reconciliation-implementation-plan.md",
+    "merged_runtime": "8d303f0f9414950273be934fd28c8fb1b3a21e18"
   },
   "conditional_history_ledgers": [
     "docs/CURRENT_STATUS.md",
@@ -104,9 +117,6 @@
     "docs/CURRENT_VISUAL_WORK_ORDER.md",
     "docs/VISUAL_ANCHOR_SPEC.md",
     "docs/M01_RECOVERY_SCENE_PACKET.md",
-    "docs/audits/2026-08-22-final-planning-implementation-reality-gate.md",
-    "docs/superpowers/specs/2026-08-22-post-planning-runtime-reconciliation-design.md",
-    "docs/superpowers/plans/2026-08-22-post-planning-runtime-reconciliation-implementation-plan.md",
     "docs/CURRENT_HANDOFF.md",
     "docs/DOCUMENTATION_MAP.md",
     "skills/PROJECT_BASE_ADAPTER.json",
