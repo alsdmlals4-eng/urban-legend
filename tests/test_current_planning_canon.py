@@ -9,6 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 CANON_PATH = ROOT / "docs/current-planning-canon.json"
 ADAPTER_PATH = ROOT / "skills/PROJECT_BASE_ADAPTER.json"
 REGISTRY_PATH = ROOT / "skills/SKILL_REGISTRY.json"
+RUNTIME_MERGE = "8d303f0f9414950273be934fd28c8fb1b3a21e18"
 
 
 def load(path: Path) -> dict:
@@ -42,7 +43,11 @@ class CurrentPlanningCanonTests(unittest.TestCase):
         )
         gates = self.canon["gates"]
         self.assertEqual("RELEASED_TO_IMPLEMENTATION_GATE", gates["plan_lock"])
-        self.assertFalse(gates["runtime_implementation_authorized"])
+        self.assertTrue(gates["runtime_implementation_authorized"])
+        self.assertEqual("MERGED_MAIN", gates["runtime_implementation"])
+        self.assertEqual(RUNTIME_MERGE, gates["runtime_merge_commit"])
+        self.assertEqual("RUNTIME_RECONCILIATION_MERGED", gates["implementation_reality_gate"])
+        self.assertEqual("EXECUTED", gates["implementation_contract"])
         self.assertEqual("NOT_RUN", gates["human_qa"])
         self.assertEqual("NOT_DECLARED", gates["poc_passed"])
         self.assertEqual("COMPLETE", gates["non_visual_planning"])
@@ -50,22 +55,24 @@ class CurrentPlanningCanonTests(unittest.TestCase):
         self.assertEqual("PENDING", gates["product_reference_asset"])
         self.assertEqual("COMPLETE", gates["overall_plan"])
         self.assertEqual("APPROVED", gates["user_final_planning_declaration"])
-        self.assertEqual("HANDOFF_READY_WITH_KNOWN_REALIGNMENT", gates["implementation_reality_gate"])
-        self.assertEqual("READY", gates["implementation_contract"])
+        self.assertEqual("REQUIRED", gates["base_adapter_baseline_reconciliation"])
 
     def test_runtime_compatibility_uses_additive_monthly_orchestration(self) -> None:
         runtime = self.canon["runtime_compatibility"]
         self.assertEqual("monthly_state", runtime["monthly_state_key"])
-        self.assertEqual("NOT_IMPLEMENTED", runtime["monthly_state_status"])
+        self.assertEqual("IMPLEMENTED_ADDITIVE_OPTIONAL", runtime["monthly_state_status"])
         self.assertEqual("REUSE_EXISTING_CANON_V2_RUNTIME", runtime["canon_v2_runtime_strategy"])
         self.assertEqual("COMPOSITE_RESULT", runtime["current_result_authority"])
-        self.assertEqual("REALIGNMENT_REQUIRED", runtime["legacy_s_rank_contract"])
+        self.assertEqual("LEGACY_MASTERY_COMPATIBILITY_ONLY", runtime["legacy_s_rank_contract"])
+        self.assertEqual("IMPLEMENTED", runtime["m01_first_session_orchestration"])
+        self.assertEqual("4.3", runtime["main_menu_product_version"])
+        self.assertEqual("IMPLEMENTED", runtime["m04_shared_system_baseline"])
         self.assertEqual("PRESERVE_HISTORICAL_RUNTIME_IDS", runtime["annual_mvp_identifiers"])
         self.assertFalse(runtime["infer_month_completion_from_legacy_reports"])
         self.assertFalse(runtime["rename_existing_episode_ids"])
 
     def test_all_reviewed_pull_request_deliverables_are_integrated(self) -> None:
-        expected = {
+        expected_docs = {
             "211": "docs/CURRENT_DEDUCTION_RECOVERY_WORK_ORDER.md",
             "213": "docs/M01_M04_VERTICAL_SLICE_FLOW.md",
             "214": "docs/UI_COMPONENT_REUSE_CONTRACT.md",
@@ -74,9 +81,11 @@ class CurrentPlanningCanonTests(unittest.TestCase):
             "217": "docs/M01_DEDUCTION_SCENE_PACKET.md",
             "218": "docs/M01_RESCUE_SCENE_PACKET.md",
         }
-        self.assertEqual(expected, self.canon["integrated_pull_request_sources"])
-        for path in expected.values():
+        integrated = self.canon["integrated_pull_request_sources"]
+        for pr, path in expected_docs.items():
+            self.assertEqual(path, integrated[pr])
             self.assertTrue((ROOT / path).is_file(), path)
+        self.assertEqual(RUNTIME_MERGE, integrated["224"])
 
         closure = self.canon["planning_closure_sources"]
         self.assertEqual(
@@ -100,8 +109,9 @@ class CurrentPlanningCanonTests(unittest.TestCase):
             "docs/superpowers/plans/2026-08-22-post-planning-runtime-reconciliation-implementation-plan.md",
             handoff["implementation_plan"],
         )
-        for path in handoff.values():
-            self.assertTrue((ROOT / path).is_file(), path)
+        self.assertEqual(RUNTIME_MERGE, handoff["merged_runtime"])
+        for key in ("reality_gate", "design", "implementation_plan"):
+            self.assertTrue((ROOT / handoff[key]).is_file(), handoff[key])
 
     def test_active_workspace_contract_is_notion_plus_repository(self) -> None:
         adapter = load(ADAPTER_PATH)
