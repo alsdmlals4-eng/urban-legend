@@ -277,15 +277,21 @@ class ActiveDocumentReferenceTests(unittest.TestCase):
         self.assertIn("anomaly_manual_records", text)
         self.assertIn("가설 → 근거 → 대응", text)
 
-    def test_runtime_and_docx_builder_use_current_baseline(self) -> None:
+    def test_runtime_and_docx_builder_use_canonical_product_version(self) -> None:
         menu = (ROOT / "scripts/ui/main_menu.gd").read_text(encoding="utf-8")
         menu_test = (ROOT / "tests/test_mvp035_log_companion.gd").read_text(encoding="utf-8")
         builder = (ROOT / "tools/docs/build_game_design_doc.py").read_text(encoding="utf-8")
-        self.assertIn('GAME_VERSION := "Ver 4.2"', menu)
-        self.assertIn('"Ver 4.2"', menu_test)
-        self.assertNotIn('"Ver 4.1"', menu_test)
+        version_owner = (ROOT / "scripts/core/product_version.gd").read_text(encoding="utf-8")
+        self.assertIn('const CURRENT := "4.3"', version_owner)
+        self.assertIn('preload("res://scripts/core/product_version.gd")', menu)
+        self.assertNotIn("const GAME_VERSION", menu)
+        self.assertIn('preload("res://scripts/core/product_version.gd")', menu_test)
+        self.assertIn("ProductVersion.display_text()", menu_test)
+        self.assertNotIn('"Ver 4.2"', menu_test)
         self.assertIn("MVP-043 + CORE-VALIDATION-001", builder)
-        self.assertIn("Ver 4.2", builder)
+        self.assertIn("PRODUCT_VERSION_SOURCE", builder)
+        self.assertIn("product_version.gd", builder)
+        self.assertNotIn("Ver 4.2", builder)
         self.assertNotIn("Ver 4.3", builder)
 
     def test_current_specs_do_not_link_completed_qa_files(self) -> None:
