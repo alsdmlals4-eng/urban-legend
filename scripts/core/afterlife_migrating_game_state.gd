@@ -379,7 +379,7 @@ func load_game() -> bool:
 			_hydrate_orchestration_fields(source_payload)
 		return loaded_non_afterlife
 
-	var source_bytes := FileAccess.file_get_as_bytes(SAVE_FILE_PATH)
+	var source_bytes := FileAccess.get_file_as_bytes(SAVE_FILE_PATH)
 	var inspector = AfterlifeInspectorScript.new()
 	var inspected: Dictionary = inspector.inspect_main_bytes(source_bytes)
 	if String(inspected.get("code", "")) != "MIGRATABLE_MAIN":
