@@ -63,13 +63,31 @@ class M01HumanQaAndM04ReferenceGateTests(unittest.TestCase):
             "젖지 않은 발자국",
             "SOFT_ANIME_NOIR_LOCKED",
             "DOSSIER_HYBRID_IS_PRESENTATION_LANGUAGE_NOT_MEDIUM",
-            "USER_APPROVAL_REQUIRED_BEFORE_IMAGE_GENERATION",
             "GENERATE_EXACTLY_ONE",
             "PRODUCT_REFERENCE_ASSET_PENDING",
         ):
             self.assertIn(token, text)
         self.assertIn("Investigation Anchor", text)
         self.assertIn("환경·괴이·증거 우선", text)
+        self.assertNotIn("PRODUCT_REFERENCE_ASSET_APPROVED", text)
+
+    def test_m04_result_approval_is_recorded_without_promoting_product_asset(self) -> None:
+        machine = json.loads((ROOT / "docs/current-planning-canon.json").read_text(encoding="utf-8"))
+        evidence = machine["evidence_ceiling"]
+        self.assertEqual("USER_APPROVED_VISUAL_CANDIDATE", evidence["m04_reference_visual_candidate"])
+        self.assertEqual("PENDING", evidence["product_reference_asset"])
+        self.assertEqual("NOT_RUN", evidence["m04_runtime_visual_validation"])
+
+        text = M04_BRIEF.read_text(encoding="utf-8")
+        for token in (
+            "RESULT_APPROVAL: USER_APPROVED",
+            "USER_APPROVED_VISUAL_CANDIDATE",
+            "4c67a65c9f7469bf39c231c81710fd71f0796501d13231c8fd7020bdad20462f",
+            "1672x941",
+            "2291020",
+            "PRODUCT_REFERENCE_ASSET_PENDING",
+        ):
+            self.assertIn(token, text)
         self.assertNotIn("PRODUCT_REFERENCE_ASSET_APPROVED", text)
 
     def test_current_active_visual_docs_do_not_reopen_runtime_authorization_gate(self) -> None:
