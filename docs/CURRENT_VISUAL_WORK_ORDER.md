@@ -1,13 +1,13 @@
 # 괴이기록국 · Current Visual Work Order
 
 > Role: `CURRENT_VISUAL_WORK_ORDER`
-> Updated: `2026-08-22`
-> Status: `PLANNING_COMPLETE / PRODUCT_REFERENCE_ASSET_PENDING / IMPLEMENTATION_NOT_AUTHORIZED`
+> Updated: `2026-08-24`
+> Status: `PLANNING_COMPLETE / RUNTIME_IMPLEMENTED / PRODUCT_REFERENCE_ASSET_PENDING / HUMAN_QA_NOT_RUN`
 > Art treatment: `SOFT_ANIME_NOIR_LOCKED`
 > Presentation invariant: `DOSSIER_HYBRID_IS_PRESENTATION_LANGUAGE_NOT_MEDIUM`
 > Decision: `D-2026-08-20-INVESTIGATION-SCENE-KEYWORD-DEDUCTION-LIMITED-CHARACTER-EXPOSURE`
 
-이 문서는 현재 시각/화면 계약을 소유한다. 최종 기획은 완료됐지만 제품 코드·Scene·save·asset promotion 권한은 별도다.
+이 문서는 현재 시각/화면 계약을 소유한다. 공유 runtime 구현은 PR #224를 통해 main에 반영됐고, 현재 mutation 경계는 구현 승인 여부가 아니라 **실제 product-reference asset 승인과 Human evidence**다.
 
 ## 1. Current approved direction
 
@@ -87,25 +87,27 @@ M01 상세는 `docs/M01_RECOVERY_SCENE_PACKET.md`를 따른다. Cut-in은 전조
 - screen grammar와 visual treatment는 최종 기획에 포함되어 `COMPLETE`.
 - concrete M01/M04 이미지·레이어·rights/provenance·최종 해상도 가독성 reference는 아직 승인하지 않았다.
 - product-reference 승격은 runtime/Human QA와 별도 Gate다.
+- M04 첫 후보의 현재 승인용 텍스트 계약은 `docs/visual/M04_PRODUCT_REFERENCE_APPROVAL_BRIEF.md`다.
+- 이 Brief의 승인 전에는 이미지를 생성하지 않고, 승인 후에도 정확히 1개 후보만 생성한 뒤 다시 사용자 판정을 기다린다.
 
 ## 5. Current work sequence
 
 ```text
-1. 사용자 최종 '기획완료' — COMPLETE
-2. fresh-main Reality Gate — HANDOFF_READY_WITH_KNOWN_REALIGNMENT
-3. current implementation design/plan readback
-4. runtime implementation 명시 실행 권한
-5. COMPOSITE_RESULT semantic realignment + monthly_state + M01 First Session
-6. #181 기존 plan으로 main menu / Ver 4.3
-7. M04 shared-system/baseline 준비
-8. concrete image 후보 생성/선정 시 product-reference asset approval
+1. 사용자 최종 기획완료 — COMPLETE
+2. runtime reconciliation / COMPOSITE_RESULT / monthly_state / M01 First Session — COMPLETE_MERGED (#224)
+3. main menu Ver 4.3 / M04 shared-system baseline — COMPLETE_MERGED (#224)
+4. current authority + Base protected baseline reconciliation — COMPLETE (#225~#227)
+5. M01 First Session Human QA packet — READY_TO_RUN / HUMAN_QA_NOT_RUN
+6. M04 product-reference text Brief — READY_FOR_USER_REVIEW / PRODUCT_REFERENCE_ASSET_PENDING
+7. 사용자 Brief 명시 승인 시 이미지 후보 정확히 1개 생성
+8. 후보 승인 시 layer/reuse + rights/provenance + 1280×720/1920×1080 검증
 9. M04 release-near visual/audio/VFX 구현
-10. 자동/runtime QA + Human QA
+10. M04 actual runtime/input + Human player-experience QA
 ```
 
 ## 6. Approval boundary
 
-### Planning COMPLETE
+### Complete
 - 조사/추리 화면 분리
 - 장면형 조사 문법
 - 환경·증거 우선 화면
@@ -115,15 +117,19 @@ M01 상세는 `docs/M01_RECOVERY_SCENE_PACKET.md`를 따른다. Cut-in은 전조
 - 소프트 애니 누아르 treatment
 - Dossier UI presentation language
 - M01/M04 화면 책임 분리
+- 공용 runtime/state/result implementation
+- M04 shared-system validation baseline
 
 ### Pending / not run
-- product-reference image/asset 승격
-- runtime implementation 실행
-- Human QA / new-player validation
+- M01 actual Human QA / new-player validation
+- product-reference image/asset 생성 및 승격
 - 1280×720/1920×1080 최종 product-reference 시각 PASS
+- M04 release-near visual/audio/VFX Human QA
 - Android
 - POC_PASSED
 - Production expansion
+
+자동 검증 성공은 Human PASS를 의미하지 않는다.
 
 ## 7. Sync rule
 
