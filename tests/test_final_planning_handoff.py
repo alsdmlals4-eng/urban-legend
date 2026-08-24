@@ -80,7 +80,7 @@ class FinalPlanningHandoffTests(unittest.TestCase):
         self.assertIn(str(SPEC.relative_to(ROOT)).replace("\\", "/"), handoff)
         self.assertIn(str(PLAN.relative_to(ROOT)).replace("\\", "/"), handoff)
         self.assertIn("RUNTIME_RECONCILIATION_MERGED", handoff)
-        self.assertIn("구현 provenance", handoff)
+        self.assertIn("설계·계획 provenance", handoff)
         self.assertIn(RUNTIME_MERGE, handoff)
         self.assertNotIn("현재 **runtime implementation authorization**", handoff)
 
