@@ -13,6 +13,7 @@ func _init() -> void:
 		if script_value is Script:
 			var state = (script_value as Script).new()
 			_test_missing_block_defaults(state)
+			_test_bounded_transition_hook(state)
 			_test_optional_validation(state)
 	_finish()
 
@@ -28,6 +29,23 @@ func _test_missing_block_defaults(state: Object) -> void:
 	_expect(int(monthly.get("week_index", 0)) == 1, "missing monthly block did not get deterministic week")
 	_expect(not bool(monthly.get("resolved_this_month", true)), "old report history inferred monthly resolution")
 	_expect(String(monthly.get("main_case_status", "")) == "DORMANT", "missing monthly block status mismatch")
+
+
+func _test_bounded_transition_hook(state: Object) -> void:
+	_expect(state.has_method("transition_monthly_state"), "GameState monthly transition hook missing")
+	if not state.has_method("transition_monthly_state"):
+		return
+	state.call("_hydrate_afterlife_fields", _minimal_payload(false))
+	var result := state.call(
+		"transition_monthly_state",
+		"MAKE_DISPATCHABLE",
+		{"case_id": "episode_001_afterlife_station", "week_index": 2}
+	) as Dictionary
+	_expect(bool(result.get("ok", false)), "GameState bounded monthly transition failed")
+	_expect(String(result.get("code", "")) == "TRANSITION_APPLIED", "GameState transition did not preserve policy code")
+	var monthly := state.call("get_monthly_state") as Dictionary
+	_expect(String(monthly.get("main_case_status", "")) == "DISPATCHABLE", "GameState did not commit monthly transition")
+	_expect(int(monthly.get("week_index", 0)) == 2, "GameState transition week mismatch")
 
 
 func _test_optional_validation(state: Object) -> void:
