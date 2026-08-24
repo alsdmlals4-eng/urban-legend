@@ -13,7 +13,7 @@ def text(path: str) -> str:
 
 
 class VisualPlanningClosureTests(unittest.TestCase):
-    def test_current_planning_preserves_asset_gate_after_final_approval(self) -> None:
+    def test_current_planning_preserves_asset_gate_after_runtime_merge(self) -> None:
         canon = text("docs/CURRENT_PLANNING_CANON.md")
         machine = json.loads(text("docs/current-planning-canon.json"))
 
@@ -24,7 +24,10 @@ class VisualPlanningClosureTests(unittest.TestCase):
         self.assertEqual(machine["gates"]["product_reference_asset"], "PENDING")
         self.assertEqual(machine["gates"]["overall_plan"], "COMPLETE")
         self.assertEqual(machine["gates"]["user_final_planning_declaration"], "APPROVED")
-        self.assertFalse(machine["gates"]["runtime_implementation_authorized"])
+        self.assertTrue(machine["gates"]["runtime_implementation_authorized"])
+        self.assertEqual(machine["gates"]["runtime_implementation"], "MERGED_MAIN")
+        self.assertEqual(machine["gates"]["human_qa"], "NOT_RUN")
+        self.assertEqual(machine["evidence_ceiling"]["product_reference_asset"], "PENDING")
 
     def test_visual_contract_locks_medium_without_promoting_assets(self) -> None:
         visual = text("docs/VISUAL_ANCHOR_SPEC.md")
@@ -34,7 +37,10 @@ class VisualPlanningClosureTests(unittest.TestCase):
             self.assertIn("SOFT_ANIME_NOIR_LOCKED", source)
             self.assertIn("DOSSIER_HYBRID_IS_PRESENTATION_LANGUAGE_NOT_MEDIUM", source)
             self.assertIn("PRODUCT_REFERENCE_ASSET_PENDING", source)
-            self.assertIn("IMPLEMENTATION_NOT_AUTHORIZED", source)
+        # These planning artifacts preserve their historical implementation boundary;
+        # current runtime authority is owned by CURRENT_PLANNING_CANON / Overlay / main.
+        self.assertIn("IMPLEMENTATION_NOT_AUTHORIZED", visual)
+        self.assertIn("IMPLEMENTATION_NOT_AUTHORIZED", work_order)
 
     def test_m01_has_complete_recovery_packet_and_no_current_single_grade_authority(self) -> None:
         recovery = text("docs/M01_RECOVERY_SCENE_PACKET.md")
