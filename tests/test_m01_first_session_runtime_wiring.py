@@ -42,9 +42,9 @@ class M01FirstSessionRuntimeWiringTests(unittest.TestCase):
             'preload("res://scripts/core/m01_first_session_runtime_sync.gd")',
             text,
         )
-        build_index = text.index("var state := _build_overlay_state(mode)")
-        sync_index = text.index("_sync_m01_first_session(mode, game_state)")
-        mount_index = text.index("_mount_overlay(current_scene, state, mode)")
+        build_index = text.index("\tvar state := _build_overlay_state(mode)\n")
+        sync_index = text.index("\t_sync_m01_first_session(mode, game_state)\n")
+        mount_index = text.index("\t_mount_overlay(current_scene, state, mode)\n")
         self.assertLess(build_index, sync_index)
         self.assertLess(sync_index, mount_index)
         self.assertIn("func sync_m01_first_session_for_test(", text)
