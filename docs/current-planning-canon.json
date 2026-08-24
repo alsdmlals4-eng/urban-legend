@@ -6,8 +6,26 @@
     "cadence": {
       "unit": "MONTH",
       "main_cases_per_unit": 1,
-      "initial_slate_months": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-      "signature_months": [1, 4, 7, 10],
+      "initial_slate_months": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "signature_months": [
+        1,
+        4,
+        7,
+        10
+      ],
       "continues_after_month_12": true
     },
     "core_flow": [
@@ -42,7 +60,7 @@
     "human_qa": "NOT_RUN",
     "poc_passed": "NOT_DECLARED",
     "production_expansion": "NOT_APPROVED",
-    "base_adapter_baseline_reconciliation": "REQUIRED"
+    "base_adapter_baseline_reconciliation": "COMPLETE"
   },
   "runtime_compatibility": {
     "monthly_state_key": "monthly_state",
@@ -65,7 +83,9 @@
   "evidence_ceiling": {
     "automated_exact_head": "GREEN",
     "human_qa": "NOT_RUN",
-    "product_reference_asset": "PENDING"
+    "product_reference_asset": "PENDING",
+    "base_adapter_protected_baseline": "6b4a9e8080898536139c8e825179b389f8bf9d64",
+    "base_adapter_reconciliation_merge": "9073b4730993149f89970a13fbe32d49f8f473e7"
   },
   "workspace_authority": {
     "human_facing": "NOTION",

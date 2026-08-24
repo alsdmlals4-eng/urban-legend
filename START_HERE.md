@@ -85,7 +85,7 @@ human_qa: NOT_RUN
 new_player_validation: NOT_RUN
 poc_passed: NOT_DECLARED
 production_expansion: NOT_APPROVED
-base_adapter_baseline_reconciliation: REQUIRED
+base_adapter_baseline_reconciliation: COMPLETE
 ```
 
 - M01 저승역은 첫 세션·온보딩·회귀 사건이다.
@@ -198,4 +198,4 @@ current canon / current overlay
 
 이 소유한다. Base remote latest를 자동 채택하지 않는다.
 
-현재 PR #224의 protected runtime 변경 뒤 `PROJECT_BASE_ADAPTER` protected baseline reconciliation이 남아 있다. 이 후속은 공식 Base generator로 adapter + generated views를 함께 갱신해야 하며 수동 해시 편집으로 완료 처리하지 않는다.
+PR #226에서 project-pinned 공식 Base generator로 `PROJECT_BASE_ADAPTER` + generated views reconciliation을 완료했다. protected baseline은 `6b4a9e8080898536139c8e825179b389f8bf9d64`, reconciliation merge는 `9073b4730993149f89970a13fbe32d49f8f473e7`이며 수동 해시 편집으로 완료 처리하지 않았다.

@@ -22,7 +22,7 @@ new_player_validation: NOT_RUN
 product_reference_asset: PENDING
 poc_passed: NOT_DECLARED
 production_expansion: NOT_APPROVED
-base_adapter_baseline_reconciliation: REQUIRED
+base_adapter_baseline_reconciliation: COMPLETE
 ```
 
 자동 테스트 성공은 사람 이해·재미·입력·접근성 증거를 대신하지 않는다. 실행하지 않은 Human 검증은 PASS로 승격하지 않는다.
@@ -149,8 +149,6 @@ PR #224 merge 뒤 successor는 다음과 같다.
 ## 8. 현재 실행 순서
 
 ```text
-protected-baseline reconciliation (독립 technical governance follow-up)
-↘
 M01 current merged runtime으로 actual First Session Human QA
 → finding 교정·재검증
 
@@ -162,4 +160,4 @@ product-reference asset 승인
 → POC/production gate 별도 판정
 ```
 
-Base adapter reconciliation과 Human QA는 서로 독립적인 남은 Gate다. 어느 한쪽 완료가 다른 쪽 PASS를 의미하지 않는다.
+Base adapter reconciliation은 PR #226으로 완료됐다. 남은 Gate는 실제 Human QA와 product-reference asset/후속 release-near 구현이며, 자동화 성공을 Human PASS로 대체하지 않는다.
