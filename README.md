@@ -10,21 +10,21 @@
 
 | 항목 | 값 |
 |---|---|
-| 구현 기준선 | MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A |
-| 화면 버전 | Ver 4.2 |
+| 구현 기준선 | Canon v2 / Composite Result + M01 First Session + M04 shared-system baseline |
+| 화면 버전 | Ver 4.3 current product owner |
 | 저장 Schema | `mvp-039` (`mvp-038` 이관 지원) |
 | 플랫폼 | PC / Steam, 16:9, 마우스·키보드 |
 | 사건 코어 | CORE-MVP-001 `POC_BUILD_READY` |
 | ANNUAL-MVP-001/002 | runtime/history ID · `MERGED / AUTOMATED_QA_PASSED` |
 | 현재 기획 | 월 1사건 M01+ · non-visual `CLOSURE_READY` |
 | 첫 세션 | M01 저승역 |
-| release-near Vertical Slice | M04 빨간 우산 · `PLAN_ONLY` |
-| Planning gate | `PLAN_LOCK / OVERALL_PLAN_OPEN` |
+| release-near Vertical Slice | M04 빨간 우산 · `SHARED_SYSTEM_BASELINE_IMPLEMENTED / FINAL_VISUAL_GATE_PENDING` |
+| Planning gate | `PLANNING_COMPLETE / RUNTIME_RECONCILIATION_MERGED` |
 | POC_PASSED | `NOT_DECLARED` |
 | Production gate | `HOLD_UNTIL_PLAYER_EVIDENCE` |
 | 제작 확대 | `NOT_APPROVED` |
 
-현재 구현에는 기존 사건·저승역 Canon v2 Validation 계층과 ANNUAL-MVP-001/002의 주간 일정·육성 기술 구현이 있다. 최신 제품 기획은 이 기술 자산을 월 1사건 M01+ cadence에 재사용하는 방향이며, 월간 orchestration·M04 release-near Slice 구현은 아직 승인되지 않았다.
+current main에는 Canon v2/Composite Result 재정합, additive `monthly_state`, M01 First Session orchestration, Ver 4.3 메뉴, M04 shared-system baseline이 병합되어 있다. M04의 최종 제품 이미지·권리·Audio/VFX·사람 경험 검증은 아직 별도 Gate이며, 이 구현 사실을 POC 또는 Human QA PASS로 승격하지 않는다.
 
 UX-PD-001 2B·2C와 기존 MVP-044~046은 폐기하지 않는다. ANNUAL-MVP 수직절편 결과에 맞춰 **재매핑**하며 현재 구현 진입점으로 사용하지 않는다.
 
@@ -159,12 +159,11 @@ git diff --check
 
 ## 다음 작업
 
-1. 사용자 보유 시각 시안 검토와 승인/보류 범위 기록
-2. 사용자 전체 `기획 완료` 선언 전 `PLAN_LOCK` 유지
-3. fresh main에서 character/case ID·`monthly_state`·save/migration Reality Gate
-4. M04 release-near Vertical Slice 단일 구현 계약과 TDD
-5. 자동 회귀·actual runtime evidence 뒤 M01/M02/M04 Human QA
-6. 병합 뒤 GitHub·Notion readback과 적대적 검토·교정 확인
+1. M04 product-reference asset 승인/보류와 권리 범위 기록
+2. fresh main에서 final visual/audio/VFX Gate와 M04-specific experience contract를 확인
+3. M01 및 M04의 실제 입력·이해도·피로·가독성 Human QA
+4. 자동 회귀와 actual runtime evidence 뒤 범위 확장 여부를 별도 결정
+5. 새 변경마다 GitHub·Notion readback과 적대적 검토·교정 확인
 
 ## Workspace·이미지 운영
 
