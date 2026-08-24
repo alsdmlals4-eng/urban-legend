@@ -42,7 +42,24 @@ func restart_afterlife_station_flow(agent_ids: Array = []) -> bool:
 		))
 		if not activated:
 			return false
-	return super.restart_afterlife_station_flow(agent_ids)
+	var restarted := super.restart_afterlife_station_flow(agent_ids)
+	if not restarted:
+		return false
+	if has_method("_hydrate_afterlife_fields"):
+		call("_hydrate_afterlife_fields", {
+			"content_contract_id": AFTERLIFE_CANON_V2_CONTRACT_ID,
+			"afterlife_canon_v2": {},
+			"migration_history": [],
+			"orphan_legacy_ids": [],
+			"legacy_migration_notes": [],
+			"legacy_resolution_snapshot": {},
+			"first_v2_investigation": {},
+			"applied_migration_effect_ids": {},
+			"canon_v2_runtime": {},
+			"monthly_state": {},
+			"m01_first_session": {}
+		})
+	return true
 
 
 func initialize_validation_runtime(episode_id: String, agent_ids: Array) -> Dictionary:
