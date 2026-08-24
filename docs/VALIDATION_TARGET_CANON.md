@@ -1,7 +1,7 @@
 # 괴이기록국 Validation Target Canon
 
 > 문서 역할: `CURRENT_VALIDATION_ROUTER`
-> 상태: `CURRENT / RUNTIME_IMPLEMENTED / HUMAN_QA_NOT_RUN / PRODUCT_REFERENCE_ASSET_PENDING`
+> 상태: `CURRENT / RUNTIME_IMPLEMENTED / HUMAN_QA_NOT_RUN / USER_APPROVED_VISUAL_CANDIDATE / PRODUCT_REFERENCE_ASSET_PENDING`
 > 현재 제품 기획: `docs/CURRENT_PLANNING_CANON.md` + `docs/current-planning-canon.json`
 > 현재 mutable decision: `docs/CURRENT_DECISION_OVERLAY.md`
 > predecessor 원문: `docs/archive/history/VALIDATION_TARGET_CANON_PRE_MONTHLY_2026-08-21.md`
@@ -19,20 +19,22 @@ runtime_merge_commit: 8d303f0f9414950273be934fd28c8fb1b3a21e18
 canonical_root_runtime_receipt: AUTOMATED_EXACT_HEAD_GREEN
 human_qa: NOT_RUN
 new_player_validation: NOT_RUN
+m04_reference_visual_candidate: USER_APPROVED_VISUAL_CANDIDATE
 product_reference_asset: PENDING
+m04_runtime_visual_validation: NOT_RUN
 poc_passed: NOT_DECLARED
 production_expansion: NOT_APPROVED
 base_adapter_baseline_reconciliation: COMPLETE
 ```
 
-자동 테스트 성공은 사람 이해·재미·입력·접근성 증거를 대신하지 않는다. 실행하지 않은 Human 검증은 PASS로 승격하지 않는다. 현재 통합 표기는 `HUMAN_QA_NOT_RUN`이다.
+자동 테스트 성공은 사람 이해·재미·입력·접근성 증거를 대신하지 않는다. 사용자 시각 후보 승인도 product asset 또는 runtime visual PASS를 대신하지 않는다. 현재 통합 Human 표기는 `HUMAN_QA_NOT_RUN`이다.
 
 ## 2. 현재 Validation 책임 분리
 
 | Route | 역할 | 핵심 질문 | 현재 상태 |
 |---|---|---|---|
 | `M01_FIRST_SESSION` | 첫 세션·온보딩·회귀 | 처음 보는 플레이어가 조사→추리→구출→회수의 인과와 기록국 역할을 이해하는가? | `RUNTIME_IMPLEMENTED / AUTOMATED_GREEN / HUMAN_QA_NOT_RUN` |
-| `M04_RELEASE_NEAR_VERTICAL_SLICE` | release-near 제품 경험 | 실제 사용 후보 UI/UX·아트·연출·Audio/VFX·핵심 시스템·콘텐츠가 연결됐을 때 차별점과 판매 포인트가 전달되는가? | `SHARED_SYSTEM_BASELINE_IMPLEMENTED / PRODUCT_REFERENCE_ASSET_PENDING / HUMAN_QA_NOT_RUN` |
+| `M04_RELEASE_NEAR_VERTICAL_SLICE` | release-near 제품 경험 | 실제 사용 후보 UI/UX·아트·연출·Audio/VFX·핵심 시스템·콘텐츠가 연결됐을 때 차별점과 판매 포인트가 전달되는가? | `SHARED_SYSTEM_BASELINE_IMPLEMENTED / USER_APPROVED_VISUAL_CANDIDATE / PRODUCT_REFERENCE_ASSET_PENDING / HUMAN_QA_NOT_RUN` |
 
 M01은 M04의 판매 포인트 검증을 대신하지 않고, M04는 M01의 첫 세션 학습 책임을 대신하지 않는다.
 
@@ -100,14 +102,25 @@ PR #224에서 다음 shared-system baseline이 구현됐다.
 - M01 truth ID를 M04 current truth로 재사용하지 않는 경계.
 - `PRODUCT_REFERENCE_ASSET_PENDING`이면 `RELEASE_NEAR_VISUAL_READY` 승격을 차단하는 Gate.
 
-현재 첫 시각 Gate의 텍스트 owner는 `docs/visual/M04_PRODUCT_REFERENCE_APPROVAL_BRIEF.md`다. 이 문서는 **M04 Investigation Anchor 후보 1안**만 정의하며 이미지 생성 자체를 승인하지 않는다. 사용자 명시 승인 전에는 이미지를 만들지 않고, 승인되면 정확히 1개 후보만 생성한 뒤 다시 판정을 기다린다.
+현재 첫 시각 후보의 owner는 `docs/visual/M04_PRODUCT_REFERENCE_APPROVAL_BRIEF.md`다. Brief 승인 → 이미지 후보 정확히 1개 생성 → 사용자 결과 승인 → Notion `04 · Visual · UX · Assets` native attachment/readback까지 완료됐다.
+
+현재 candidate receipt:
+
+```text
+M04_INVESTIGATION_ANCHOR_01
+USER_APPROVED_VISUAL_CANDIDATE
+SHA256 4c67a65c9f7469bf39c231c81710fd71f0796501d13231c8fd7020bdad20462f
+1672x941 / 2291020 bytes
+PRODUCT_REFERENCE_ASSET_PENDING
+RUNTIME_VISUAL_VALIDATION_NOT_RUN
+```
 
 아직 남은 제품 경험 Gate:
-1. `docs/visual/M04_PRODUCT_REFERENCE_APPROVAL_BRIEF.md` 사용자 명시 승인.
-2. 승인 후 이미지 후보 정확히 1개 생성·검토.
-3. product-reference 승격 판단 + rights/source + layer/reuse 확인.
-4. release-near background/character/cut-in/VFX/Audio 구현·폴리싱.
-5. 1280×720 / 1920×1080 실제 가독성·입력 검증.
+1. product-reference promotion 판단.
+2. layer/reuse production source 가능 여부 검증.
+3. rights/provenance promotion 검토.
+4. 1280×720 / 1920×1080 실제 runtime 가독성·입력 검증.
+5. release-near background/character/cut-in/VFX/Audio 구현·폴리싱.
 6. Human player-experience session.
 
 Human 세션에서는 첫인상, 추리 고민, 지식 재사용 만족감, 괴이의 규칙 문제로서의 차별성, 다음 사건 기대, 기억에 남는 장면·판단·판매 포인트를 확인한다.
@@ -116,8 +129,9 @@ Human 세션에서는 첫인상, 추리 고민, 지식 재사용 만족감, 괴�
 
 ```text
 SHARED_SYSTEM_BASELINE_IMPLEMENTED
-M04_REFERENCE_TEXT_BRIEF_READY
+M04_REFERENCE_VISUAL_CANDIDATE: USER_APPROVED
 PRODUCT_REFERENCE_ASSET_PENDING
+RUNTIME_VISUAL_VALIDATION: NOT_RUN
 RELEASE_NEAR_VISUAL_READY: BLOCKED_BY_ASSET_GATE
 HUMAN_PLAYER_EXPERIENCE: NOT_RUN
 ```
@@ -170,10 +184,9 @@ M01: 시스템 one-click Human QA 필요 범위 실행
 → M01 First Session 인간 전용 8항목 행동 관찰 + 사후 자기보고
 → finding 교정·재검증
 
-M04: product-reference 텍스트 Brief 사용자 검토
-→ 명시 승인 시 이미지 후보 정확히 1개 생성
-→ 사용자 판정 후 product-reference promotion 검토
-→ layer/reuse + rights/provenance + 1280×720/1920×1080 검증
+M04: 승인된 시각 후보 receipt — COMPLETE
+→ product-reference promotion 판단
+→ layer/reuse + rights/provenance + 1280×720/1920×1080 runtime 검증
 → release-near visual/audio/VFX 구현
 → exact-head 자동 + actual runtime/input 검증
 → M04 Human QA
@@ -181,4 +194,4 @@ M04: product-reference 텍스트 Brief 사용자 검토
 → POC/production gate 별도 판정
 ```
 
-Base adapter reconciliation은 PR #226으로 완료됐다. 남은 Gate는 실제 Human QA와 `PRODUCT_REFERENCE_ASSET_PENDING`인 M04 시각 후보 승인/후속 구현이며, 자동화 성공을 Human PASS로 대체하지 않는다.
+Base adapter reconciliation은 PR #226으로 완료됐다. 남은 Gate는 실제 Human QA와 `PRODUCT_REFERENCE_ASSET_PENDING`인 M04 시각 후보의 product-reference 승격/후속 구현이며, 사용자 후보 승인이나 자동화 성공을 Human/runtime/product-asset PASS로 대체하지 않는다.
