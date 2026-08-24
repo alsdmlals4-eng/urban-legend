@@ -37,6 +37,15 @@ func _run() -> void:
 	]:
 		_expect(menu.find_child(node_name, true, false) != null, "%s must exist" % node_name)
 
+	for node_name in [
+		"MenuShell", "IdentityRail", "ActionRail", "IntelligenceRail",
+		"VersionLabel", "PrimaryActionHint", "CurrentCaseTitle",
+		"CurrentCaseMeta", "CurrentCaseSummary", "CurrentCasePreview",
+		"LegacyIntelStatus", "ValidationIntelStatus",
+		"SettingsButton", "SettingsPanel", "ExitButton"
+	]:
+		_expect(menu.find_child(node_name, true, false) != null, "%s must exist" % node_name)
+
 	if not menu.has_method("configure_validation_repository_path_for_test") or not menu.has_method("refresh_entry_cards_for_test"):
 		_expect(false, "main menu must expose isolated refresh test facade")
 		_cleanup(menu)
@@ -58,6 +67,26 @@ func _run() -> void:
 			_cleanup(menu)
 			_finish()
 			return
+
+	var version_label := menu.find_child("VersionLabel", true, false) as Label
+	var primary_hint := menu.find_child("PrimaryActionHint", true, false) as Label
+	var current_case_title := menu.find_child("CurrentCaseTitle", true, false) as Label
+	var settings_button := menu.find_child("SettingsButton", true, false) as Button
+	var settings_panel := menu.find_child("SettingsPanel", true, false) as Control
+	var exit_button := menu.find_child("ExitButton", true, false) as Button
+
+	_expect(version_label != null and version_label.text == "Ver 4.3", "menu must display canonical Ver 4.3")
+	_expect(primary_hint != null and "새 캠페인 시작" in primary_hint.text, "no-save state must name new campaign as primary")
+	_expect(current_case_title != null and "저승역" in current_case_title.text, "current case must use loaded canonical episode data")
+	_expect(settings_button != null and settings_button.focus_mode == Control.FOCUS_ALL, "settings must accept keyboard focus")
+	_expect(settings_panel != null and not settings_panel.visible, "settings panel must start collapsed")
+	_expect(exit_button != null and exit_button.focus_mode == Control.FOCUS_ALL, "exit must accept keyboard focus")
+	_expect(menu.find_children("*", "ScrollContainer", true, false).is_empty(), "main menu must not contain a document-wall ScrollContainer")
+
+	await process_frame
+	_expect(root.gui_get_focus_owner() == legacy_new_button, "no-save initial focus must match the primary new-campaign action")
+	_expect(_inside_viewport(version_label), "Ver 4.3 must fit inside 1280x720")
+	_expect(_inside_viewport(legacy_new_button), "primary Legacy action must fit inside 1280x720")
 
 	_expect("별도 기록" in badge.text, "Validation badge must explain persistence separation")
 	_expect(legacy_button.focus_mode == Control.FOCUS_ALL, "Legacy primary must accept keyboard focus")
@@ -87,8 +116,30 @@ func _run() -> void:
 	_expect(legacy_button.focus_neighbor_bottom == legacy_button.get_path_to(legacy_new_button), "Legacy focus must move to new campaign")
 	_expect(db_button.focus_mode == Control.FOCUS_ALL, "Database must remain keyboard accessible")
 
+	settings_button.pressed.emit()
+	_expect(settings_panel.visible, "settings must expose the existing accessibility surface")
+	settings_button.pressed.emit()
+	_expect(not settings_panel.visible, "settings must collapse the accessibility surface")
+
+	var case_preview := menu.find_child("CurrentCasePreview", true, false) as Control
+	var case_summary := menu.find_child("CurrentCaseSummary", true, false) as Control
+	_expect(case_preview != null and not case_preview.visible, "1280x720 must compact secondary preview first")
+	_expect(case_summary != null and not case_summary.visible, "1280x720 must compact secondary summary first")
+
+	root.size = Vector2i(1920, 1080)
+	await process_frame
+	await process_frame
+	_expect(case_preview.visible, "1920x1080 may expose the existing case preview")
+	_expect(case_summary.visible, "1920x1080 may expose the existing case summary")
+
 	_cleanup(menu)
 	_finish()
+
+
+func _inside_viewport(control: Control) -> bool:
+	if control == null:
+		return false
+	return Rect2(Vector2.ZERO, Vector2(root.size)).encloses(control.get_global_rect())
 
 
 func _write_payload(lifecycle: String, flow_stage: String) -> void:
