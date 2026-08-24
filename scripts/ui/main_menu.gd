@@ -496,12 +496,7 @@ func _refresh_intelligence_rail() -> void:
 	if _current_case_title == null:
 		return
 
-	var current: Dictionary = GameState.get_current_episode()
-	var episode: Dictionary = {}
-	var episode_value: Variant = current.get("episode", {})
-	if typeof(episode_value) == TYPE_DICTIONARY:
-		episode = episode_value as Dictionary
-
+	var episode: Dictionary = GameState.get_current_episode()
 	_current_case_title.text = String(episode.get("title", "현재 사건 정보 없음"))
 	_current_case_meta.text = String(episode.get("legend_type", "분류 정보 없음"))
 	_current_case_summary.text = String(episode.get("summary", ""))
