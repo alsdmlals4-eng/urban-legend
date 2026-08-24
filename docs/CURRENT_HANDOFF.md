@@ -11,6 +11,7 @@
 status: RUNTIME_RECONCILIATION_MERGED
 planning: COMPLETE
 user_final_planning_declaration: APPROVED
+plan_lock: RELEASED_TO_IMPLEMENTATION_GATE
 runtime_implementation: MERGED_MAIN
 runtime_merge_commit: 8d303f0f9414950273be934fd28c8fb1b3a21e18
 product_reference_asset: PENDING
@@ -19,6 +20,8 @@ poc_passed: NOT_DECLARED
 production_expansion: NOT_APPROVED
 base_adapter_baseline_reconciliation: FOLLOW_UP_REQUIRED
 ```
+
+`PLAN_LOCK`은 predecessor 기획 잠금 식별자이며 현재 값은 `RELEASED_TO_IMPLEMENTATION_GATE`다. 이를 runtime 미승인 상태로 되돌려 해석하지 않는다.
 
 ## 1. 재개 순서
 
