@@ -1,7 +1,7 @@
 # 괴이기록국 Current Handoff
 
 > 상태: `PLANNING_COMPLETE / RUNTIME_RECONCILIATION_MERGED / HUMAN_QA_PENDING`
-> 기준 main: `8d303f0f9414950273be934fd28c8fb1b3a21e18` · PR #224
+> 기준 main: `9073b4730993149f89970a13fbe32d49f8f473e7` · PR #226 (runtime implementation: `8d303f0f9414950273be934fd28c8fb1b3a21e18` · PR #224)
 > 사람용 정본: Notion 괴이기록국 프로젝트 홈
 > 구조화 정본: `docs/CURRENT_PLANNING_CANON.md`, `docs/current-planning-canon.json`
 
@@ -18,7 +18,7 @@ product_reference_asset: PENDING
 human_qa: NOT_RUN
 poc_passed: NOT_DECLARED
 production_expansion: NOT_APPROVED
-base_adapter_baseline_reconciliation: FOLLOW_UP_REQUIRED
+base_adapter_baseline_reconciliation: COMPLETE
 ```
 
 `PLAN_LOCK`은 predecessor 기획 잠금 식별자이며 현재 값은 `RELEASED_TO_IMPLEMENTATION_GATE`다. 이를 runtime 미승인 상태로 되돌려 해석하지 않는다.
@@ -75,7 +75,7 @@ PR #224 exact head에서 다음 계열이 GREEN이었다.
 - documentation contracts
 - visual capture automation
 
-`Project Base Adapter`는 보호 runtime 경로 변경을 감지해 의도적으로 fail-closed했다. 제품 코드 회귀가 아니라 post-merge protected-baseline reconciliation을 요구하는 governance gate다.
+`Project Base Adapter`의 fail-closed 신호는 PR #226에서 공식 Base generator로 reconciliation했다. protected baseline은 `6b4a9e8080898536139c8e825179b389f8bf9d64`으로 갱신됐고, adapter/generated views 검증과 core full Godot regression이 GREEN인 exact head를 `9073b4730993149f89970a13fbe32d49f8f473e7`로 병합했다.
 
 ## 5. Product reference / Human gate
 
@@ -91,11 +91,13 @@ Human QA는 계속 `NOT_RUN`:
 - M04 재미/첫인상/차별화
 - 접근성·실제 입력 체감
 
-## 6. 현재 남은 기술 후속
+## 6. Base governance reconciliation 완료
 
-1. `skills/PROJECT_BASE_ADAPTER.json`의 protected baseline을 merge commit `8d303f0f...` 기준으로 reconciliation하고 Base-generated views를 공식 생성기로 갱신한다.
-2. 위 후속은 제품 구현과 분리된 docs/adapter governance change이며 protected runtime 코드를 다시 변경하지 않는다.
-3. 실제 Human QA와 product reference asset 승인은 별도 사람/시각 Gate다.
+- PR #226에서 project-pinned Base generator를 사용해 adapter + generated views를 갱신했다.
+- protected baseline: `6b4a9e8080898536139c8e825179b389f8bf9d64`.
+- reconciliation merge: `9073b4730993149f89970a13fbe32d49f8f473e7`.
+- 제품 `data/`, `scripts/`, `scenes/`, `assets/`, `addons/`, `project.godot` 재변경 없이 Project Base Adapter 및 Base 9.4.x 검증을 GREEN으로 닫았다.
+- 남은 제품 Gate는 실제 Human QA와 product-reference asset 승인/후속 release-near 구현이다.
 
 ## 7. 이전 구현 계약의 역할
 
@@ -115,5 +117,5 @@ runtime_reconciliation: COMPLETE_MERGED
 human_qa: NOT_RUN
 product_reference_asset: PENDING
 production_expansion: NOT_APPROVED
-base_adapter_baseline_reconciliation: REQUIRED
+base_adapter_baseline_reconciliation: COMPLETE
 ```

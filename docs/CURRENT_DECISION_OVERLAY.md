@@ -2,7 +2,7 @@
 
 > 문서 역할: `CURRENT_MUTABLE_DECISION_OVERLAY`
 > 상태: `CURRENT / PLANNING_COMPLETE / RUNTIME_RECONCILIATION_MERGED`
-> 갱신 기준: PR #224 merge commit `8d303f0f9414950273be934fd28c8fb1b3a21e18` + merged-main readback
+> 갱신 기준: PR #226 merge commit `9073b4730993149f89970a13fbe32d49f8f473e7` + merged-main adapter readback (runtime merge `8d303f0f9414950273be934fd28c8fb1b3a21e18`)
 > 상세 역사 결정 원장: `docs/CURRENT_CONFIRMED_DECISIONS.md`
 
 이 파일은 현재 작업자가 즉시 판단해야 하는 mutable decision과 verified successor state만 소유한다. 역사 원장이 current state와 충돌하면 최신 사용자 지시 → GitHub latest main → Notion current planning → `CURRENT_PLANNING_CANON.md` / `current-planning-canon.json` → 이 Overlay 순으로 해석한다.
@@ -37,7 +37,7 @@ human_qa: NOT_RUN
 new_player_validation: NOT_RUN
 poc_passed: NOT_DECLARED
 production_expansion: NOT_APPROVED
-base_adapter_baseline_reconciliation: REQUIRED
+base_adapter_baseline_reconciliation: COMPLETE
 ```
 
 ## 3. Verified successor state
@@ -92,7 +92,7 @@ base_adapter_baseline_reconciliation: REQUIRED
 
 PR #224 exact head에서 core/docs, full matrix, Canon v2 migration/runtime UX, ANNUAL/CORE, Windows platform preflight, documentation 및 visual capture 계열이 GREEN이었다.
 
-`Project Base Adapter`는 protected runtime 변경을 감지해 fail-closed했다. 이는 post-merge baseline reconciliation을 요구하는 별도 governance 후속이며 runtime 구현 실패 판정이 아니다.
+`Project Base Adapter`의 protected-path fail-closed 신호는 PR #226에서 project-pinned Base generator로 reconciliation 완료했다. protected baseline `6b4a9e8080898536139c8e825179b389f8bf9d64`, reconciliation merge `9073b4730993149f89970a13fbe32d49f8f473e7` 기준으로 adapter 및 Base 9.4.x 검증이 GREEN이다.
 
 ## 5. Workspace authority
 
@@ -102,14 +102,11 @@ PR #224 exact head에서 core/docs, full matrix, Canon v2 migration/runtime UX, 
 
 Notion Home 및 `05 · Production · Validation`에 PR #224 구현 상태와 evidence ceiling을 동기화했다.
 
-## 6. Base authority / 남은 governance follow-up
+## 6. Base authority / governance reconciliation
 
 프로젝트가 채택한 Base 릴리스·payload·trusted evidence·registry hash는 `docs/BASE_RULES_VERSION.md`와 `skills/PROJECT_BASE_ADAPTER.json`이 소유한다.
 
-현재 남은 기술 후속:
-- product merge `8d303f0f...`를 protected baseline으로 reconciliation.
-- 공식 Base generator로 snapshot / compatibility views / dashboard를 함께 갱신.
-- 이 후속에서 product code/data/Scene을 다시 수정하지 않는다.
+PR #226에서 공식 Base generator로 snapshot / compatibility views / dashboard를 함께 갱신했고, protected baseline `6b4a9e8080898536139c8e825179b389f8bf9d64`을 merged main에 고정했다. 이 runtime reconciliation 관련 Base governance 후속은 `COMPLETE`다.
 
 ## 7. 구현 provenance
 
@@ -128,6 +125,6 @@ Issue #181은 merged-main readback 뒤 `completed`로 닫혔다. 새 Issue/PR의
 
 - M01: 실제 First Session comprehension / input / fatigue Human QA.
 - M04: product-reference asset 승인 후 release-near player-experience Human QA.
-- 공통: protected-baseline reconciliation 완료 후 adapter readback.
+- Base adapter: PR #226 merged-main readback 완료; runtime reconciliation 관련 추가 technical gate 없음.
 
 실행하지 않은 Human·device·visual 검증은 PASS로 승격하지 않는다.

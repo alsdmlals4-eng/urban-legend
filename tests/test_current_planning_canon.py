@@ -55,7 +55,7 @@ class CurrentPlanningCanonTests(unittest.TestCase):
         self.assertEqual("PENDING", gates["product_reference_asset"])
         self.assertEqual("COMPLETE", gates["overall_plan"])
         self.assertEqual("APPROVED", gates["user_final_planning_declaration"])
-        self.assertEqual("REQUIRED", gates["base_adapter_baseline_reconciliation"])
+        self.assertEqual("COMPLETE", gates["base_adapter_baseline_reconciliation"])
 
     def test_runtime_compatibility_uses_additive_monthly_orchestration(self) -> None:
         runtime = self.canon["runtime_compatibility"]

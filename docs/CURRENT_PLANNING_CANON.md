@@ -94,6 +94,7 @@ PR #224가 squash merge되어 main `8d303f0f9414950273be934fd28c8fb1b3a21e18`에
 - M01 First Session orchestration → 구현 완료, automated regression GREEN.
 - #181 main menu / Ver 4.3 → 구현 완료, merged-main readback 뒤 Issue closed.
 - M04 shared-system baseline → 구현 완료, final visual gate는 pending.
+- Project Base Adapter protected baseline → PR #226에서 `6b4a9e8080898536139c8e825179b389f8bf9d64`으로 공식 generator reconciliation 완료; merge `9073b4730993149f89970a13fbe32d49f8f473e7`.
 
 ## 현재 Gate
 
@@ -110,7 +111,7 @@ automated_exact_head: GREEN
 human_qa: NOT_RUN
 poc_passed: NOT_DECLARED
 production_expansion: NOT_APPROVED
-base_adapter_baseline_reconciliation: REQUIRED
+base_adapter_baseline_reconciliation: COMPLETE
 ```
 
 ## 구현 provenance
