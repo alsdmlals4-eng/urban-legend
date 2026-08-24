@@ -1,0 +1,72 @@
+{
+  "schema": "m04-shared-system-validation-v1",
+  "case_id": "episode_002_red_umbrella_alley",
+  "visual_status": "PRODUCT_REFERENCE_ASSET_PENDING",
+  "final_visuals_authorized": false,
+  "record_ids": [
+    "clue_red_umbrella_fabric",
+    "clue_repeating_alley_sign",
+    "clue_reverse_rain_flow"
+  ],
+  "investigation_point_ids": [
+    "point_dry_red_umbrella",
+    "point_repeating_alley_sign",
+    "point_reverse_rain_puddle",
+    "point_cctv_crossing_sync"
+  ],
+  "minigame_ids": [
+    "minigame_rain_sync"
+  ],
+  "recovery_pattern_ids": [
+    "pattern_red_rain_rewind",
+    "pattern_red_reverse_reflection",
+    "pattern_red_victim_approach",
+    "pattern_red_dry_footprint_transfer"
+  ],
+  "investigation_manual": {
+    "schema_version": 1,
+    "case_id": "episode_002_red_umbrella_alley",
+    "record_ids": [
+      "clue_red_umbrella_fabric",
+      "clue_repeating_alley_sign",
+      "clue_reverse_rain_flow"
+    ],
+    "rule_pages": [
+      {
+        "id": "rule_m04_rain_rewind",
+        "required_record_ids": [
+          "clue_repeating_alley_sign",
+          "clue_reverse_rain_flow"
+        ],
+        "player_rule_summary": "세 번째 빗소리와 선행하는 빗물 흐름을 함께 대조해 반복 경로가 되감기는 시점을 판별한다."
+      },
+      {
+        "id": "rule_m04_victim_tether",
+        "required_record_ids": [
+          "clue_red_umbrella_fabric",
+          "clue_repeating_alley_sign"
+        ],
+        "player_rule_summary": "우산에 남은 피해자 흔적과 반복 표지판을 분리해 피해자의 실제 귀가 경로가 다시 덮어쓰이지 않도록 보호한다."
+      }
+    ],
+    "rescue_gate": {
+      "minimum_earned_records": 2,
+      "minimum_completed_rules": 1
+    }
+  },
+  "rescue_recovery_adapter": {
+    "case_id": "episode_002_red_umbrella_alley",
+    "protected_subject_id": "victim_alley_witness",
+    "source_minigame_id": "minigame_rain_sync",
+    "safe_withdrawal_route": true,
+    "public_exposure": "low"
+  },
+  "composite_result_axes": [
+    "victim_outcome",
+    "control_or_stabilization",
+    "evidence_integrity",
+    "protection_responsibility",
+    "residual_anomaly",
+    "unresolved_and_follow_up"
+  ]
+}
