@@ -16,6 +16,7 @@ func _init() -> void:
 			_test_default(policy)
 			_test_transition_interface(policy)
 			_test_dispatch_risk(policy)
+			_test_active_transition(policy)
 			_test_resolution_lock(policy)
 			_test_case_truth_boundary(policy)
 	_finish()
@@ -68,6 +69,27 @@ func _test_dispatch_risk(policy: Object) -> void:
 		_expect(int(state.get("week_index", 0)) == int(pair[0]), "week transition mismatch")
 		_expect(int(state.get("dispatch_risk", -1)) == int(pair[1]), "dispatch risk mismatch for week %s" % pair[0])
 		_expect(String(state.get("main_case_status", "")) == "DISPATCHABLE", "dispatchable status missing")
+
+
+func _test_active_transition(policy: Object) -> void:
+	var dispatched: Dictionary = policy.transition(
+		policy.default_state(1),
+		"MAKE_DISPATCHABLE",
+		{"case_id": AFTERLIFE_CASE_ID, "week_index": 2}
+	)
+	var started: Dictionary = policy.transition(
+		dispatched.get("state", {}) as Dictionary,
+		"START_MAIN_CASE",
+		{"case_id": AFTERLIFE_CASE_ID}
+	)
+	_expect(bool(started.get("ok", false)), "dispatchable main case could not become ACTIVE")
+	_expect(String((started.get("state", {}) as Dictionary).get("main_case_status", "")) == "ACTIVE", "START_MAIN_CASE did not set ACTIVE")
+	var wrong_case: Dictionary = policy.transition(
+		dispatched.get("state", {}) as Dictionary,
+		"START_MAIN_CASE",
+		{"case_id": "episode_999_wrong_case"}
+	)
+	_expect(not bool(wrong_case.get("ok", true)), "different case could start over active monthly case")
 
 
 func _test_resolution_lock(policy: Object) -> void:
