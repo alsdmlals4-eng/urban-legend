@@ -18,6 +18,8 @@ entrypoints=(
   "res://tests/afterlife_migration/afterlife_migration_integration_test.gd"
   "res://tests/afterlife_migration/afterlife_runtime_projection_test.gd"
   "res://tests/afterlife_migration/afterlife_real_fixture_contract_test.gd"
+  "res://tests/monthly_state/monthly_state_policy_test.gd"
+  "res://tests/monthly_state/monthly_state_save_compatibility_test.gd"
 )
 
 run_entrypoint() {
@@ -58,5 +60,5 @@ for entrypoint in "${entrypoints[@]}"; do
   run_entrypoint "$entrypoint"
 done
 
-echo "Afterlife canon v2 migration: 9/9 entrypoints passed"
+echo "Afterlife canon v2 migration: 11/11 entrypoints passed"
 echo "Logs: $LOG_ROOT"
