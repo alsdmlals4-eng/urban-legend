@@ -127,6 +127,7 @@ func _run() -> void:
 	_expect(case_summary != null and not case_summary.visible, "1280x720 must compact secondary summary first")
 
 	root.size = Vector2i(1920, 1080)
+	menu.size = Vector2(1920, 1080)
 	await process_frame
 	await process_frame
 	_expect(case_preview.visible, "1920x1080 may expose the existing case preview")
