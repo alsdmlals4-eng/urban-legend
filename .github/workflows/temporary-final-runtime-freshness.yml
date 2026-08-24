@@ -1,0 +1,107 @@
+name: Temporary Final Runtime Freshness
+
+on:
+  push:
+    branches:
+      - gpt/runtime-final-freshness-20260824
+    paths:
+      - ".github/workflows/temporary-final-runtime-freshness.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: gpt/runtime-final-freshness-20260824
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Refresh current authority after baseline reconciliation
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          RUNTIME = "8d303f0f9414950273be934fd28c8fb1b3a21e18"
+          BASELINE = "6b4a9e8080898536139c8e825179b389f8bf9d64"
+          RECONCILE = "9073b4730993149f89970a13fbe32d49f8f473e7"
+
+          def rewrite(path, replacements):
+              p = Path(path)
+              text = p.read_text(encoding="utf-8")
+              for old, new, expected in replacements:
+                  actual = text.count(old)
+                  if actual != expected:
+                      raise SystemExit(f"{path}: expected {expected} occurrence(s) of {old!r}, got {actual}")
+                  text = text.replace(old, new)
+              p.write_text(text, encoding="utf-8")
+
+          rewrite("docs/CURRENT_HANDOFF.md", [
+              (f"> 기준 main: `{RUNTIME}` · PR #224", f"> 기준 main: `{RECONCILE}` · PR #226 (runtime implementation: `{RUNTIME}` · PR #224)", 1),
+              ("base_adapter_baseline_reconciliation: FOLLOW_UP_REQUIRED", "base_adapter_baseline_reconciliation: COMPLETE", 1),
+              ("`Project Base Adapter`는 보호 runtime 경로 변경을 감지해 의도적으로 fail-closed했다. 제품 코드 회귀가 아니라 post-merge protected-baseline reconciliation을 요구하는 governance gate다.", f"`Project Base Adapter`의 fail-closed 신호는 PR #226에서 공식 Base generator로 reconciliation했다. protected baseline은 `{BASELINE}`으로 갱신됐고, adapter/generated views 검증과 core full Godot regression이 GREEN인 exact head를 `{RECONCILE}`로 병합했다.", 1),
+              ("## 6. 현재 남은 기술 후속\n\n1. `skills/PROJECT_BASE_ADAPTER.json`의 protected baseline을 merge commit `8d303f0f...` 기준으로 reconciliation하고 Base-generated views를 공식 생성기로 갱신한다.\n2. 위 후속은 제품 구현과 분리된 docs/adapter governance change이며 protected runtime 코드를 다시 변경하지 않는다.\n3. 실제 Human QA와 product reference asset 승인은 별도 사람/시각 Gate다.", f"## 6. Base governance reconciliation 완료\n\n- PR #226에서 project-pinned Base generator를 사용해 adapter + generated views를 갱신했다.\n- protected baseline: `{BASELINE}`.\n- reconciliation merge: `{RECONCILE}`.\n- 제품 `data/`, `scripts/`, `scenes/`, `assets/`, `addons/`, `project.godot` 재변경 없이 Project Base Adapter 및 Base 9.4.x 검증을 GREEN으로 닫았다.\n- 남은 제품 Gate는 실제 Human QA와 product-reference asset 승인/후속 release-near 구현이다.", 1),
+              ("base_adapter_baseline_reconciliation: REQUIRED", "base_adapter_baseline_reconciliation: COMPLETE", 1),
+          ])
+
+          rewrite("docs/CURRENT_DECISION_OVERLAY.md", [
+              (f"> 갱신 기준: PR #224 merge commit `{RUNTIME}` + merged-main readback", f"> 갱신 기준: PR #226 merge commit `{RECONCILE}` + merged-main adapter readback (runtime merge `{RUNTIME}`)", 1),
+              ("base_adapter_baseline_reconciliation: REQUIRED", "base_adapter_baseline_reconciliation: COMPLETE", 1),
+              ("`Project Base Adapter`는 protected runtime 변경을 감지해 fail-closed했다. 이는 post-merge baseline reconciliation을 요구하는 별도 governance 후속이며 runtime 구현 실패 판정이 아니다.", f"`Project Base Adapter`의 protected-path fail-closed 신호는 PR #226에서 project-pinned Base generator로 reconciliation 완료했다. protected baseline `{BASELINE}`, reconciliation merge `{RECONCILE}` 기준으로 adapter 및 Base 9.4.x 검증이 GREEN이다.", 1),
+              ("## 6. Base authority / 남은 governance follow-up\n\n프로젝트가 채택한 Base 릴리스·payload·trusted evidence·registry hash는 `docs/BASE_RULES_VERSION.md`와 `skills/PROJECT_BASE_ADAPTER.json`이 소유한다.\n\n현재 남은 기술 후속:\n- product merge `8d303f0f...`를 protected baseline으로 reconciliation.\n- 공식 Base generator로 snapshot / compatibility views / dashboard를 함께 갱신.\n- 이 후속에서 product code/data/Scene을 다시 수정하지 않는다.", f"## 6. Base authority / governance reconciliation\n\n프로젝트가 채택한 Base 릴리스·payload·trusted evidence·registry hash는 `docs/BASE_RULES_VERSION.md`와 `skills/PROJECT_BASE_ADAPTER.json`이 소유한다.\n\nPR #226에서 공식 Base generator로 snapshot / compatibility views / dashboard를 함께 갱신했고, protected baseline `{BASELINE}`을 merged main에 고정했다. 이 runtime reconciliation 관련 Base governance 후속은 `COMPLETE`다.", 1),
+              ("- 공통: protected-baseline reconciliation 완료 후 adapter readback.", "- Base adapter: PR #226 merged-main readback 완료; runtime reconciliation 관련 추가 technical gate 없음.", 1),
+          ])
+
+          rewrite("docs/CURRENT_PLANNING_CANON.md", [
+              ("- M04 shared-system baseline → 구현 완료, final visual gate는 pending.\n", f"- M04 shared-system baseline → 구현 완료, final visual gate는 pending.\n- Project Base Adapter protected baseline → PR #226에서 `{BASELINE}`으로 공식 generator reconciliation 완료; merge `{RECONCILE}`.\n", 1),
+              ("base_adapter_baseline_reconciliation: REQUIRED", "base_adapter_baseline_reconciliation: COMPLETE", 1),
+          ])
+
+          rewrite("START_HERE.md", [
+              ("base_adapter_baseline_reconciliation: REQUIRED", "base_adapter_baseline_reconciliation: COMPLETE", 1),
+              ("현재 PR #224의 protected runtime 변경 뒤 `PROJECT_BASE_ADAPTER` protected baseline reconciliation이 남아 있다. 이 후속은 공식 Base generator로 adapter + generated views를 함께 갱신해야 하며 수동 해시 편집으로 완료 처리하지 않는다.", f"PR #226에서 project-pinned 공식 Base generator로 `PROJECT_BASE_ADAPTER` + generated views reconciliation을 완료했다. protected baseline은 `{BASELINE}`, reconciliation merge는 `{RECONCILE}`이며 수동 해시 편집으로 완료 처리하지 않았다.", 1),
+          ])
+
+          rewrite("docs/VALIDATION_TARGET_CANON.md", [
+              ("base_adapter_baseline_reconciliation: REQUIRED", "base_adapter_baseline_reconciliation: COMPLETE", 1),
+              ("protected-baseline reconciliation (독립 technical governance follow-up)\n↘\nM01 current merged runtime으로 actual First Session Human QA", "M01 current merged runtime으로 actual First Session Human QA", 1),
+              ("Base adapter reconciliation과 Human QA는 서로 독립적인 남은 Gate다. 어느 한쪽 완료가 다른 쪽 PASS를 의미하지 않는다.", "Base adapter reconciliation은 PR #226으로 완료됐다. 남은 Gate는 실제 Human QA와 product-reference asset/후속 release-near 구현이며, 자동화 성공을 Human PASS로 대체하지 않는다.", 1),
+          ])
+
+          p = Path("docs/current-planning-canon.json")
+          data = json.loads(p.read_text(encoding="utf-8"))
+          if data["gates"].get("base_adapter_baseline_reconciliation") != "REQUIRED":
+              raise SystemExit("machine canon baseline reconciliation was not REQUIRED before successor update")
+          data["gates"]["base_adapter_baseline_reconciliation"] = "COMPLETE"
+          data["evidence_ceiling"]["base_adapter_protected_baseline"] = BASELINE
+          data["evidence_ceiling"]["base_adapter_reconciliation_merge"] = RECONCILE
+          p.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+          for path in [
+              "START_HERE.md",
+              "docs/CURRENT_PLANNING_CANON.md",
+              "docs/CURRENT_DECISION_OVERLAY.md",
+              "docs/CURRENT_HANDOFF.md",
+              "docs/VALIDATION_TARGET_CANON.md",
+              "docs/current-planning-canon.json",
+          ]:
+              text = Path(path).read_text(encoding="utf-8")
+              if "base_adapter_baseline_reconciliation: REQUIRED" in text or "base_adapter_baseline_reconciliation: FOLLOW_UP_REQUIRED" in text:
+                  raise SystemExit(f"stale baseline reconciliation state remains in {path}")
+          PY
+
+          python -m json.tool docs/current-planning-canon.json >/dev/null
+
+      - name: Commit and push successor
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add START_HERE.md docs/CURRENT_PLANNING_CANON.md docs/current-planning-canon.json docs/CURRENT_DECISION_OVERLAY.md docs/CURRENT_HANDOFF.md docs/VALIDATION_TARGET_CANON.md
+          git commit -m "docs: close runtime baseline reconciliation"
+          git push origin HEAD:gpt/runtime-final-freshness-20260824
