@@ -28,7 +28,7 @@
 1. 테스트할 빌드의 `repository commit SHA`를 고정한다.
 2. Windows에서 저장/입력/레이아웃까지 함께 볼 경우 `START_HUMAN_QA.cmd`를 먼저 사용한다.
 3. M01을 처음 보거나 정답을 모르는 플레이어를 우선한다. 이미 내용을 아는 사람은 `prior_knowledge: KNOWN`으로 분리한다.
-4. 진행자는 정답이나 규칙을 설명하지 않는다.
+4. 진행자가 정답이나 규칙을 설명하지 않는다.
 5. 플레이어에게 체크리스트의 PASS 조건이나 정본 해답을 보여주지 않는다.
 6. `tools/qa/m01_first_session_human_qa_checklist.json`의 모든 항목은 `NOT_RUN`에서 시작한다.
 
