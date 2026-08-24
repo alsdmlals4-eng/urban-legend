@@ -80,7 +80,7 @@ class M01HumanQaAndM04ReferenceGateTests(unittest.TestCase):
 
         text = M04_BRIEF.read_text(encoding="utf-8")
         for token in (
-            "RESULT_APPROVAL: USER_APPROVED",
+            "RESULT_APPROVAL: `USER_APPROVED`",
             "USER_APPROVED_VISUAL_CANDIDATE",
             "4c67a65c9f7469bf39c231c81710fd71f0796501d13231c8fd7020bdad20462f",
             "1672x941",
