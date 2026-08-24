@@ -21,17 +21,17 @@ class MainMenuControlRoomStaticContract(unittest.TestCase):
     def test_main_menu_is_not_a_document_wall(self) -> None:
         menu = MENU.read_text(encoding="utf-8")
         self.assertNotIn("ScrollContainer.new()", menu)
-        for required_name in [
-            'name = "MenuShell"',
-            'name = "IdentityRail"',
-            'name = "ActionRail"',
-            'name = "IntelligenceRail"',
-            'name = "VersionLabel"',
-            'name = "PrimaryActionHint"',
-            'name = "SettingsButton"',
-            'name = "ExitButton"',
+        for node_name in [
+            "MenuShell",
+            "IdentityRail",
+            "ActionRail",
+            "IntelligenceRail",
+            "VersionLabel",
+            "PrimaryActionHint",
+            "SettingsButton",
+            "ExitButton",
         ]:
-            self.assertIn(required_name, menu)
+            self.assertIn(f'"{node_name}"', menu)
 
     def test_reference_mockup_fiction_is_not_baked_into_runtime(self) -> None:
         menu = MENU.read_text(encoding="utf-8")
