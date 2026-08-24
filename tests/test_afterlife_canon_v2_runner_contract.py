@@ -28,6 +28,7 @@ EXPECTED_MONTHLY_ENTRYPOINTS = (
 )
 EXPECTED_FIRST_SESSION_ENTRYPOINTS = (
     "res://tests/first_session/m01_first_session_orchestration_test.gd",
+    "res://tests/first_session/m01_first_session_runtime_sync_test.gd",
 )
 EXPECTED_ENTRYPOINTS = (
     EXPECTED_AFTERLIFE_ENTRYPOINTS
@@ -44,11 +45,11 @@ class AfterlifeCanonV2RunnerContractTests(unittest.TestCase):
             self.assertIn(entrypoint, text)
         self.assertEqual(text.count("res://tests/afterlife_migration/"), 9)
         self.assertEqual(text.count("res://tests/monthly_state/"), 3)
-        self.assertEqual(text.count("res://tests/first_session/"), 1)
+        self.assertEqual(text.count("res://tests/first_session/"), 2)
         self.assertIn("set -euo pipefail", text)
         self.assertIn("GODOT_TEST_TMP", text)
         self.assertIn("XDG_DATA_HOME", text)
-        self.assertIn("Afterlife canon v2 migration: 13/13 entrypoints passed", text)
+        self.assertIn("Afterlife canon v2 migration: 14/14 entrypoints passed", text)
 
     def test_full_regression_and_ci_call_the_focused_runner(self) -> None:
         for path in (REGRESSION, DEDICATED_WORKFLOW, ANNUAL_WORKFLOW):
@@ -68,6 +69,7 @@ class AfterlifeCanonV2RunnerContractTests(unittest.TestCase):
             "tests/test_afterlife_canon_v2_human_qa_plan.py",
             '"scripts/core/monthly_state_policy.gd"',
             '"scripts/core/m01_first_session_orchestrator.gd"',
+            '"scripts/core/m01_first_session_runtime_sync.gd"',
             '"tests/monthly_state/**"',
             '"tests/first_session/**"',
             "Run focused Canon v2 migration suite",
@@ -84,6 +86,7 @@ class AfterlifeCanonV2RunnerContractTests(unittest.TestCase):
             '"scripts/core/afterlife_*.gd"',
             '"scripts/core/monthly_state_policy.gd"',
             '"scripts/core/m01_first_session_orchestrator.gd"',
+            '"scripts/core/m01_first_session_runtime_sync.gd"',
             '"tests/monthly_state/**"',
             '"tests/first_session/**"',
             '"tests/fixtures/afterlife_migration/**"',
