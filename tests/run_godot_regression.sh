@@ -25,6 +25,9 @@ script_tests=(
   accessibility_settings_test
   agent_selection_card_test
   anomaly_manual_drawer_test
+  case01_ui/case01_device_model_test
+  case01_ui/case01_manual_draft_state_test
+  case01_ui/case01_shared_travel_test
   cinematic_ui_redesign_test
   core_mvp_001_case_data_test
   core_mvp_001_playtest_log_test
