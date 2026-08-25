@@ -89,7 +89,7 @@ Stable top-level commands:
 - 오대응은 비용/위험뿐 아니라 실패 관측 기록을 남겨 이후 판단 근거로 재사용한다.
 
 Deprecated predecessor:
-- `보호 / 관찰 / 대응 / 공격 / 장비 / 봉쇄 / 후퇴`를 모두 같은 상시 1차 메뉴에 나열하는 구조는 사용하지 않는다.
+- 과거의 다중 평면 1차 command set은 사용하지 않는다. 세부 역사 목록은 Decision 문서에서만 보존한다.
 
 Character usage:
 - small status presence normally
