@@ -78,7 +78,7 @@ Visual/interaction priority:
 
 오대응은 비용/위험과 함께 **실패 관측 기록**을 남겨 이후 판단 근거가 된다.
 
-기존 평면 1차 메뉴 `보호 / 관찰 / 대응 / 공격 / 장비 / 봉쇄 / 후퇴`는 폐기된 predecessor다.
+기존의 다중 평면 1차 command set은 폐기된 predecessor다. 세부 역사 목록은 Decision 문서에서만 보존한다.
 
 M01 상세 runtime predecessor는 `docs/M01_RECOVERY_SCENE_PACKET.md`에 남아 있을 수 있으므로 재개 시 이 successor decision과 reconcile한다. Cut-in은 전조·보호 대상·상황 행동을 가리지 않는다.
 
