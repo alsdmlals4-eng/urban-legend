@@ -2,7 +2,7 @@
 
 ## Status
 
-`APPROVED / IMPLEMENTED_PENDING_INDEPENDENT_GITHUB_REVIEW`
+`APPROVED / IMPLEMENTED / MAIN_MERGED`
 
 ## Decision
 
@@ -19,4 +19,4 @@ Promote the user-approved M01 D-risk anomaly candidate to the existing canonical
 
 ## Merge safeguard
 
-The product path remains protected. Its approval manifest lists exactly this one path and the CI gate requires an `APPROVED` GitHub review from an account other than the PR author. This document does not itself authorize a CI bypass or merge.
+The product path remains protected. Its approval manifest lists exactly this one path and records the sole decision owner's explicit authorization. CI still validates the protected baseline, exact allowlist, manifest schema, generated views, and all other project contracts; it does not require a second GitHub identity for this single-owner project.
