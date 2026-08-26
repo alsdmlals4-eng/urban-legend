@@ -1,11 +1,11 @@
 # IMG-M01-03 · Afterlife Recovery Background · Consumer Requirement
 
-Status: `REUSE_REVIEW / PIXEL_COMPARE_PENDING`
+Status: `REPLACE_REQUIRED / USER_APPROVED_VISUAL_CANDIDATE / PRODUCT_ASSET_PROMOTION_PENDING`
 Decision: `D-2026-08-26-RUNTIME-CONSUMER-FIRST-VISUAL-ASSET-GATE`
 Consumer: `scenes/battle_scene.tscn -> ArtLayer/Background`
 Current file: `assets/backgrounds/afterlife_recovery.png`
-Current file replacement: `NOT_DECIDED`
-Image generation: `NOT_AUTHORIZED_BY_THIS_REQUIREMENT`
+Current file replacement: `VISUAL_CANDIDATE_APPROVED / RUNTIME_WIRING_UNCHANGED`
+Image generation: `GENERATE_EXACTLY_ONE / COMPLETE`
 
 ## 1. Player question
 
@@ -102,7 +102,19 @@ Runtime overlay를 고려한다.
 - baked text/UI가 production localization을 방해함.
 - 1280×720 crop에서 현장 identity를 판독하기 어려움.
 
-현재 session에서는 PNG pixel bytes를 직접 읽지 못했으므로 **`REPLACE_REQUIRED`로 승격하지 않는다**.
+### Pixel review · 2026-08-26
+
+현재 PNG와 승인된 Recovery full-mockup reference를 실제로 비교했다. 다음 사실이 확인됐다.
+
+- 현행 PNG의 가장 높은 대비 초점은 화면 중앙의 백색 전신 실루엣과 그 뒤의 발광 현현이다. 이는 별도 `AnomalyVisual` owner와 역할이 겹친다.
+- 그 초점은 `AnomalyPanel`의 실제 overlay 영역(`x 43–96%`, `y 10–66%`)에 놓여, runtime에서는 배경의 핵심 정보가 대부분 가려진다.
+- 중심 현현·강한 반사·사진적 금속 질감은 승인된 Recovery의 손그림 기록물/소프트 애니 누아르 방향과 현저히 다르다.
+
+따라서 이 항목은 `REPLACE_REQUIRED`다. 이 판정은 **배경 전용 시각 후보 1장**을 검토할 수 있게 할 뿐, 현행 PNG 교체, `ASSET_MANIFEST.yml` 승격, Godot 연결, runtime readability PASS 또는 Human QA를 승인하지 않는다.
+
+### Approved candidate · 2026-08-26
+
+`M01_RECOVERY_BACKGROUND_ADAPT_01`은 위 requirement를 따른 정확히 1장의 결과이며, 사용자가 결과를 승인했다. 원본·hash·소비처·승인 경계는 `docs/visual/candidates/M01_RECOVERY_BACKGROUND_ADAPT_01.md`가 소유한다.
 
 ## 9. If replacement becomes required
 
