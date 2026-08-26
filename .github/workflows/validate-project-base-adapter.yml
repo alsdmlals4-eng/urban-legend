@@ -54,6 +54,11 @@ jobs:
           git merge-base --is-ancestor "$PROTECTED_BASE_SHA" "$PR_BASE_SHA"
           printf 'PROTECTED_BASE_SHA=%s\n' "$PROTECTED_BASE_SHA" >> "$GITHUB_ENV"
 
+      - name: Validate pull-request diff integrity
+        env:
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: git diff --check "$PR_BASE_SHA"...HEAD
+
       - name: Discover a pull-request approval manifest
         id: approval
         env:
