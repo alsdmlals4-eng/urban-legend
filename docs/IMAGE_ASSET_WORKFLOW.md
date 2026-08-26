@@ -45,6 +45,15 @@ GPT는 프로젝트 정본과 레퍼런스를 바탕으로 기획 중 탐색 이
 - 실제 Godot import·16:9 적용·접근성·시각 QA를 실행하지 않았다면 manifest의 검증 상태를 통과로 쓰지 않는다.
 - 승인·교체·폐기는 관련 Decision ID와 Sheet 승인 로그를 함께 남긴다.
 
+## 사용자 승인 시각 원본의 이중 보관
+
+사용자가 이미지의 시각 방향 또는 후보 결과를 승인하면, 승인 범위가 `USER_APPROVED_VISUAL_REFERENCE` 또는 `APPROVED_CANDIDATE`인 한 원본 PNG와 receipt를 다음 두 장소에 함께 보관한다.
+
+1. 프로젝트 저장소의 `docs/visual/candidates/` 아래: 파일명·픽셀 크기·바이트·SHA-256·승인 범위·실제/계획 소비처·권리 경계를 기록한다.
+2. 해당 Project의 Notion `04 · Visual · UX · Assets` 아래: 같은 원본 파일을 native attachment로 붙이고 repository receipt와 연결한다.
+
+이 보관은 원본 회수와 사람용 검토를 위한 것이다. `ASSET_MANIFEST.yml` 등록, `assets/` 제품 경로 복사, Scene 연결, Godot import, `PROJECT_ASSET_APPROVED`, runtime 가독성 PASS, Human QA PASS를 뜻하지 않는다. 기존 첨부가 있어도 해시로 확인 가능한 원본 보관이 없으면 이 규칙을 적용한다.
+
 ## Legacy `assets/ASSET_MANIFEST.json`
 
 `assets/ASSET_MANIFEST.json`은 과거 제작 재고와 생성 기록을 보존하는 `LEGACY_MIGRATION_PENDING_NON_AUTHORITY` 자료다. 그 안의 `stage: final`, 파일명, QA 문구는 현재 `PROJECT_ASSET_APPROVED` 또는 런타임 승인을 부여하지 않는다.

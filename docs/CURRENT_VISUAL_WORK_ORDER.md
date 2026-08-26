@@ -129,6 +129,7 @@ Recovery visual history:
 - predecessor SHA-256: `606cb6998d4d1d08b44f96fe508b777e631786f05fdbd9a8c0d2b307dbe0e4d2`.
 - successor hierarchy 전체 시안: current conversation에서 `USER_APPROVED_VISUAL_CANDIDATE`.
 - successor 승인은 화면 의미/시각 후보 승인이지 current `afterlife_recovery.png`, anomaly cutout, product asset promotion, runtime readability PASS를 자동 승인하지 않는다.
+- 2026-08-26 원본 보관: `docs/visual/candidates/approved-references/m01_recovery_context_action_approved_candidate.png`; 1672×941, `2,464,731` bytes, SHA-256 `cf476ea56e89aa0e87e41eabae2c29f3bf85a95740b443ca8a573f7095ed6116`. 전체 UI mockup은 Recovery의 시각 후보/reference이며 배경 texture 또는 live UI 교체본이 아니다.
 
 Composite Result visual references:
 
@@ -253,3 +254,5 @@ Root `ASSET_MANIFEST.yml`가 current tracked product-asset authority이며 현�
 ## 9. Sync rule
 
 향후 시각/UX 의미 변경은 Notion과 Repository를 같은 작업 범위에서 갱신하고 readback한다. 승인된 Decision은 동일 Decision ID로 양쪽에 기록한다. 구현·asset·Human evidence Gate는 서로 분리한다. 진행 중 unrelated PR은 read-only로 유지한다.
+
+사용자 승인 시각 원본은 `docs/visual/candidates/`의 receipt 포함 PNG와 Notion native attachment를 함께 남긴다. 자세한 보관 계약과 2026-08-26 원본 목록은 `docs/IMAGE_ASSET_WORKFLOW.md` 및 `docs/visual/candidates/APPROVED_VISUAL_REFERENCES_2026-08-26.md`를 따른다.
