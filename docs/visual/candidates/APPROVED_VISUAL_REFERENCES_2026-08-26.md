@@ -27,7 +27,7 @@ These are exact PNG originals supplied by the user for durable visual-reference 
 
 ## Notion persistence
 
-The same four originals must be attached on the Project Notion Visual page or its child archive page. The attachment locator and readback are added with the corresponding publication update; expiration-prone display previews are not the canonical repository receipt.
+The same four originals are attached on the Project Notion child page [승인 시각 원본 보관 · 2026-08-26](https://app.notion.com/p/3c81b237eb1c8173a044d037fde2b1e3). Readback on 2026-08-26 confirmed its Project relation, four native image attachments, intended status labels, and the repository receipt link. Expiration-prone display previews are not the canonical repository receipt.
 
 ## Provenance and rollback
 
