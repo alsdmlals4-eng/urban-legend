@@ -79,6 +79,11 @@ class ApprovedVisualAnchorRegistryTests(unittest.TestCase):
         )
         self.assertIn('asset_id: "M01-ANOMALY-D-001"', manifest)
         self.assertIn('source_path: "docs/visual/candidates/M01_ANOMALY_D_ADAPT_01.png"', manifest)
+        self.assertIn('asset_id: "M04-INVESTIGATION-BACKGROUND-001"', manifest)
+        self.assertIn(
+            'source_path: "docs/visual/candidates/M04_INVESTIGATION_BACKGROUND_ADAPT_01.png"',
+            manifest,
+        )
         self.assertIn('replacement_requires_approval: true', manifest)
 
 

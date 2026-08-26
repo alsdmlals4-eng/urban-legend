@@ -1,10 +1,10 @@
 # 괴이기록국 · Current Visual Asset Consumer Checklist
 
 > Role: `CURRENT_VISUAL_ASSET_CONSUMER_CHECKLIST`
-> Updated: `2026-08-26`
+> Updated: `2026-08-27`
 > Decision: `D-2026-08-26-RUNTIME-CONSUMER-FIRST-VISUAL-ASSET-GATE`
 > Scope: planning / visual asset requirement inventory
-> Product asset approval: `3 CURRENT ROOT-MANIFEST ENTRIES (M01 Recovery background, B/C, D)`
+> Product asset approval: `4 CURRENT ROOT-MANIFEST ENTRIES (M01 Recovery background, B/C, D; M04 Investigation background)`
 > Runtime visual validation: `NOT_RUN`
 > Human QA: `NOT_RUN`
 
@@ -75,7 +75,7 @@ actual consumer
 | ID | Actual consumer | Current file | Current status | Delete test / note |
 |---|---|---|---|---|
 | `IMG-M04-01` | Dialogue background + current-case preview | `assets/backgrounds/red_alley_entrance.png` | `REUSE_REVIEW` | 오프닝/preview surface. |
-| `IMG-M04-02` | Investigation `ArtLayer/Background` | `assets/backgrounds/red_crossroads.png` | `REUSE_REVIEW / APPROVED_CANDIDATE_COMPARE_REQUIRED` | 사용자 승인 M04 Investigation Anchor가 이 consumer의 strongest visual candidate다. 기존 tracked file과 promotion/replacement를 비교한다. |
+| `IMG-M04-02` | Investigation `ArtLayer/Background` + shared `LocationPreview` | `assets/backgrounds/red_crossroads.png` | `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_AND_HUMAN_QA_PENDING` | `M04_INVESTIGATION_BACKGROUND_ADAPT_01` exact bytes가 canonical PNG를 교체했다. Scene/catalog/UI는 기존 route를 재사용하며, 1280×720/1920×1080 runtime 및 Human evidence는 별도 Gate다. |
 | `IMG-M04-03` | Recovery `ArtLayer/Background` | `assets/backgrounds/red_recovery.png` | `REUSE_REVIEW` | M04 Recovery background. |
 | `IMG-M04-04` | Recovery `AnomalyVisual` B/C | `assets/anomalies/cutouts/red_umbrella_b_cutout.png` with full fallback | `REUSE_REVIEW` | actual anomaly consumer. |
 | `IMG-M04-05` | Recovery `AnomalyVisual` D | `assets/anomalies/cutouts/red_umbrella_d_cutout.png` with full fallback | `REUSE_REVIEW` | actual high-risk anomaly consumer. |
@@ -166,7 +166,7 @@ Current status: `REUSE_REVIEW`.
 1. `IMG-M01-03` Afterlife Recovery background — `PROJECT_ASSET_APPROVED`; import/1280×720/1920×1080 runtime and Human QA evidence pending.
 2. `IMG-M01-04` Afterlife anomaly B/C — `PROJECT_ASSET_APPROVED`; import/1280×720/1920×1080 runtime and Human QA evidence pending.
 3. `IMG-M01-05` Afterlife anomaly D — `PROJECT_ASSET_APPROVED`; 1280×720 runtime evidence recorded, 1920×1080 and Human QA pending.
-4. `IMG-M04-02` approved M04 Investigation Anchor vs current `red_crossroads` consumer.
+4. `IMG-M04-02` Investigation background — `PROJECT_ASSET_APPROVED / IMPLEMENTED`; 1280×720/1920×1080 runtime and Human QA pending.
 5. `IMG-M01-02` Afterlife Investigation background.
 6. `IMG-M01-01` Afterlife Entrance / Dialogue background.
 7. M04 Recovery/anomaly consumers.
@@ -189,7 +189,7 @@ No batch generation from checklist gaps.
 
 ## 10. Authority / evidence ceiling
 
-Root `ASSET_MANIFEST.yml` is the current tracked product-asset authority and has three current approved M01 entries: Recovery background, B/C anomaly cutout, and D anomaly cutout.
+Root `ASSET_MANIFEST.yml` is the current tracked product-asset authority and has four current approved entries: M01 Recovery background, B/C anomaly cutout, D anomaly cutout, and the M04 Investigation background.
 
 Legacy `assets/ASSET_MANIFEST.json`, tracked PNG presence, `.import` files, existing runtime wiring, and old QA labels do **not** independently grant `PROJECT_ASSET_APPROVED`.
 

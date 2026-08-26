@@ -5,7 +5,7 @@
 > Target: `Investigation Anchor`
 > Art treatment: `SOFT_ANIME_NOIR_LOCKED`
 > Presentation invariant: `DOSSIER_HYBRID_IS_PRESENTATION_LANGUAGE_NOT_MEDIUM`
-> Asset state: `PRODUCT_REFERENCE_ASSET_PENDING`
+> Asset state: `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_AND_HUMAN_QA_PENDING`
 > Generation contract: `GENERATE_EXACTLY_ONE / COMPLETE`
 > RESULT_APPROVAL: `USER_APPROVED`
 > Candidate status: `USER_APPROVED_VISUAL_CANDIDATE`
@@ -151,10 +151,10 @@ UI 텍스트, 선택지, Manual panel, 정답 강조는 이미지에 bake하지 
 → 이미지 후보 정확히 1개 생성 — COMPLETE
 → 사용자 결과 승인 — COMPLETE
 → Notion 사람용 Visual surface 업로드/readback — COMPLETE
-→ product-reference promotion 검토 — NEXT
-→ layer/reuse + rights/provenance + 1280×720/1920×1080 실제 검증
+→ product-reference promotion — COMPLETE (2026-08-27, existing canonical path only)
+→ layer/reuse provenance recorded + 1280×720/1920×1080 실제 검증 pending
 → M04 release-near visual/audio/VFX 구현
 → Human player-experience QA
 ```
 
-현재 승인 receipt가 있어도 `PRODUCT_REFERENCE_ASSET_PENDING`과 `runtime_visual_validation: NOT_RUN`은 유지한다.
+후속 승격은 별도 adaptation receipt `M04_INVESTIGATION_BACKGROUND_ADAPT_01`로 완료됐으며, 원 후보 `M04_INVESTIGATION_ANCHOR_01` 자체는 사람용 reference로 보존한다. `runtime_visual_validation: NOT_RUN`과 Human QA pending은 유지한다.
