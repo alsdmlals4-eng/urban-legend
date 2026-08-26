@@ -1,7 +1,7 @@
 schema_version: 1
 project: "괴이기록국(urban-legend)"
-last_reviewed: "2026-08-08"
-source_commit: "305d9b5bbf21ea13ce23053e43afd98fabc21654"
+last_reviewed: "2026-08-27"
+source_commit: "5fe87d3729b130385c489169ac6943307f2dd633"
 
 asset_vault:
   enabled: false
@@ -256,3 +256,76 @@ assets:
       - "After an AnomalyVisual layout or scaling change"
       - "Before release-rights sign-off"
       - "When human visual QA reports clipping, ambiguity, or overlap"
+  - asset_id: "M04-INVESTIGATION-BACKGROUND-001"
+    name: "Red Umbrella Investigation background"
+    category: "environment_background"
+    purpose: "M04 Investigation alley-crossroads environment behind the existing deduction UI and shared LocationPreview."
+    owner_discipline: "Visual"
+    affected_disciplines:
+      - "Godot UI"
+      - "Narrative"
+      - "QA"
+    statuses:
+      - "PRODUCTION_READY"
+      - "IMPLEMENTED"
+    vault_source_key: "M04_INVESTIGATION_BACKGROUND_ADAPT_01"
+    canonical_path: "assets/backgrounds/red_crossroads.png"
+    source_path: "docs/visual/candidates/M04_INVESTIGATION_BACKGROUND_ADAPT_01.png"
+    runtime_path: "scenes/investigation_scene.tscn -> ArtLayer/Background; shared LocationPreview"
+    latest_capture_path: ""
+    golden_screenshot_path: ""
+    source_type: "AI_GENERATED"
+    source_and_license: >
+      OpenAI built-in image generation output created on 2026-08-26 and promoted after explicit sole-owner approval.
+      The generation prompt contains no named third-party character, logo, or requested imitation style. This record
+      captures project provenance and an obvious-conflict review only; it is not legal clearance. The user remains
+      responsible for final distribution-rights review under the applicable service terms and law.
+    approved_reference: "docs/visual/candidates/M04_INVESTIGATION_BACKGROUND_ADAPT_01.md"
+    supersedes: "Pre-promotion tracked red_crossroads.png (SHA-256 e1e17dabf9ff38e2799fea79ec6ea0fca3670376d4c5afee508466eb36707d9f)"
+    superseded_by: ""
+    replacement_requires_approval: true
+    reference_elements:
+      use:
+        - "Rain-wet Korean closed-shop back-alley crossroads"
+        - "A clearly silhouetted red umbrella as the anomaly cue"
+        - "Dry footprints legible by edge and reflection contrast, with no baked UI or answer"
+      do_not_use:
+        - "Named IP, logos, copied character identity, or readable text"
+        - "Characters presented as a poster, answer annotations, HUD, panels, or rules tables"
+        - "M01 station or black-ticket motifs, photoreal glare, or neon-dominant color"
+    visual_dna:
+      silhouette: "Environment-first alley intersection; the umbrella and dry-footprint route read before any character."
+      proportion: "1672x941 landscape background filling the existing ArtLayer Background TextureRect and shared LocationPreview."
+      camera: "Eye-level wide alley-crossroads composition with an environment-to-anomaly-to-evidence eye path."
+      resolution_or_pixel_density: "1672x941 PNG; existing runtime nodes own aspect fitting and modulation."
+      palette: "Charcoal wet pavement, muted warm practical lights, restrained crimson umbrella accent, and no neon wash."
+      lighting: "Soft anime-noir nocturnal separation with readable wet versus dry surface contrast."
+      material_language: "Soft anime-noir ink/paper texture."
+      outline_and_readability: "Umbrella silhouette and footprint texture retain non-color-only cues; existing UI owns interaction and rule text."
+      allowed_variation: "Existing scene modulation, layout, and UI scaling only."
+      forbidden_elements: "Readable text, UI, labels, answer callouts, character poster composition, M01 motifs, or baked screen effects."
+      post_process: "No baked screen effects; existing Godot UI owns display treatment."
+      engine_import: "Godot Texture2D import from the canonical PNG."
+      performance_budget: "One existing landscape TextureRect and one 1672x941 PNG; no new runtime nodes or scripts."
+      accessibility_fallback: "Existing investigation copy and UI communicate the rule and evidence independently of the background image."
+    generation_record:
+      tool_and_model: "OpenAI built-in image generation (model identifier not exposed to this session)"
+      prompt_core: "Textless Korean closed-shop alley crossroads after rain, clear red umbrella, dry footprints that contrast with wet pavement, environment-to-anomaly-to-evidence eye path, restrained soft anime-noir ink/paper texture; no characters, UI, labels, rule answers, M01 motifs, photoreal glare, or neon HUD."
+      seed_or_reproduction: "Not exposed by the generation surface."
+      manual_post_process: "None recorded."
+      known_remaining_issues: "Godot import and focused automated checks are required in this promotion. Live 1280x720/1920x1080 capture and Human visual/accessibility QA remain pending."
+    validation:
+      target_resolutions:
+        - "1280x720"
+        - "1920x1080"
+      runtime_verified: false
+      visual_qa_verified: false
+      accessibility_verified: false
+      evidence:
+        - "docs/visual/candidates/M04_INVESTIGATION_BACKGROUND_ADAPT_01.md"
+        - "GitHub Issue #253"
+      last_verified_commit: ""
+    next_review_triggers:
+      - "After an ArtLayer Background or LocationPreview layout/scaling change"
+      - "Before release-rights sign-off"
+      - "When runtime or human QA reports weak umbrella, footprint, contrast, or UI-overlap readability"

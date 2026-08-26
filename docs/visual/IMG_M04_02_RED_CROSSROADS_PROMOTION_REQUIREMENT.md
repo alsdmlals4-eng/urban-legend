@@ -1,6 +1,6 @@
 # IMG-M04-02 · Red Crossroads Investigation Background · Promotion Requirement
 
-Status: `USER_APPROVED_VISUAL_CANDIDATE / RUNTIME_CONSUMER_COMPARE_PENDING / PRODUCT_REFERENCE_ASSET_PENDING`
+Status: `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_AND_HUMAN_QA_PENDING`
 Decision: `D-2026-08-26-RUNTIME-CONSUMER-FIRST-VISUAL-ASSET-GATE`
 Route: `M04_RED_UMBRELLA`
 Consumer:
@@ -10,6 +10,8 @@ Current tracked file: `assets/backgrounds/red_crossroads.png`
 Approved challenger: `M04_INVESTIGATION_ANCHOR_01`
 Approved challenger receipt: `docs/visual/M04_PRODUCT_REFERENCE_APPROVAL_BRIEF.md`
 New image generation: `NOT_REQUIRED_BY_THIS_GATE`
+
+2026-08-27 promotion result: `M04_INVESTIGATION_BACKGROUND_ADAPT_01` was promoted to the existing canonical `assets/backgrounds/red_crossroads.png` path after the sole decision owner authorized continuation. The source/canonical SHA-256 is `874d3c531a45c9ddf670e9a8ff70a37443762dc24af640edac2ff45fea762f9d`. Existing Scene/catalog/UI wiring is intentionally unchanged. Runtime 1280×720/1920×1080 and Human QA are still pending.
 
 ## 1. Goal
 
