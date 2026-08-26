@@ -196,8 +196,8 @@ actual Scene / Texture consumer
 11. Composite Result mockup 1단계/2단계 — USER_APPROVED_REFERENCE; 3단계 — IN_REVIEW
 12. runtime-consumer-first image gate — APPROVED
 13. actual visual consumer inventory — COMPLETE_FOR_CURRENT_CORE_SURFACES
-14. next visual review: `IMG-M01-03 afterlife_recovery.png` → current file pixel compare when available; no blind replacement
-15. then M01 anomaly B/C → D → Investigation/Entrance consumer review
+14. `IMG-M01-03 afterlife_recovery.png` pixel compare — COMPLETE; `REPLACE_REQUIRED / TEXT_BRIEF_PENDING_USER_APPROVAL`; no product asset promotion
+15. after the M01-03 candidate result is approved or rejected, M01 anomaly B/C → D → Investigation/Entrance consumer review
 16. M04 approved Investigation Anchor vs actual `red_crossroads` consumer comparison — `ADAPT_CANDIDATE` selected
 17. `M04_INVESTIGATION_BACKGROUND_ADAPT_01` one-image adaptation + user result approval — COMPLETE_AS_VISUAL_CANDIDATE
 18. M04 product-reference promotion + rights/provenance + 1280×720/1920×1080 runtime 검증
@@ -231,8 +231,8 @@ actual Scene / Texture consumer
 
 ### Pending / not run
 - Composite Result 3단계 result approval
-- current runtime PNG pixel-quality comparison against latest approved visual references
-- any `REPLACE_REQUIRED` or `CREATE_REQUIRED` classification based on actual pixel review
+- remaining runtime PNG pixel-quality comparisons against latest approved visual references
+- M01-03 background-only text brief approval → exactly one visual candidate → result approval
 - M01 actual Human QA / new-player validation
 - M04 product-reference asset 승격
 - layer/reuse production source 검증
