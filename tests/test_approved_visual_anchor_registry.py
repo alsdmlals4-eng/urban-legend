@@ -66,6 +66,7 @@ class ApprovedVisualAnchorRegistryTests(unittest.TestCase):
     def test_anchor_approval_does_not_grant_unrelated_product_asset_approval(self) -> None:
         manifest = (ROOT / "ASSET_MANIFEST.yml").read_text(encoding="utf-8")
         self.assertNotIn("kwon_narae.png", manifest)
+        self.assertNotIn("M01_INVESTIGATION_PLATFORM_ADAPT_01", manifest)
         self.assertNotIn("현재 PROJECT_ASSET_APPROVED 자산은 0건", manifest)
         self.assertIn('asset_id: "M01-RECOVERY-BACKGROUND-001"', manifest)
         self.assertIn(
