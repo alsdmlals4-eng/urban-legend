@@ -71,6 +71,7 @@ script_tests=(
   shared_system/shared_investigation_manual_test
   shared_system/shared_rescue_recovery_test
   m04/m04_validation_baseline_test
+  recovery_telegraph_audio_test
 )
 
 scene_tests=(

@@ -7,6 +7,7 @@ const ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")
 const RuntimeEditor = preload("res://scripts/ui/runtime_ui_editor.gd")
 const LogGuideScript = preload("res://scripts/ui/log_guide.gd")
 const LogTutorialCatalog = preload("res://scripts/ui/log_tutorial_catalog.gd")
+const RecoveryTelegraphAudio = preload("res://scripts/ui/recovery_telegraph_audio.gd")
 const ActionChoiceCardScene = preload("res://scenes/ui/action_choice_card.tscn")
 const TeamStatusChipScene = preload("res://scenes/ui/team_status_chip.tscn")
 const AnomalyManualDrawerScript = preload("res://scripts/ui/anomaly_manual_drawer.gd")
@@ -67,6 +68,7 @@ var _decision_progress_label: Label
 var _decision_instruction_label: Label
 var _decision_back_button: Button
 var _decision_confirm_button: Button
+var _telegraph_audio_player: AudioStreamPlayer
 var _decision_step := GuidedDecisionStep.DIRECT
 var _selected_hypothesis_response_id := ""
 var _selected_evidence_ids: Array[String] = []
@@ -115,6 +117,9 @@ func _build_scene_ui() -> void:
 	_auto_effect_label = %ClueSummaryLabel
 	_decision_back_button = %DecisionBackButton
 	_decision_confirm_button = %DecisionConfirmButton
+	_telegraph_audio_player = AudioStreamPlayer.new()
+	_telegraph_audio_player.name = "TelegraphAudio"
+	add_child(_telegraph_audio_player)
 
 	var initial_stage := SceneVisuals.apply_anomaly(_anomaly_image, GameState.get_anomaly_risk())
 	_anomaly_stage_label.text = "관측 위험 단계 %s · %s" % [initial_stage, _make_resolution_phase_text()]
@@ -475,6 +480,7 @@ func _begin_recovery_turn(last_result: String = "") -> void:
 		_refresh_recovery_evidence()
 		_log_guide.show_compact_hint("전조 기록을 찾지 못했습니다. 현장 기록을 다시 확인해 주세요.")
 		return
+	_play_telegraph_cue()
 	var first_telegraph := not GameState.has_seen_log_tutorial("recovery_first_telegraph")
 	if first_telegraph:
 		_present_log_tutorial("recovery_first_telegraph")
@@ -516,6 +522,13 @@ func _begin_recovery_turn(last_result: String = "") -> void:
 	else:
 		_last_result_detail_label.text = "직전 판단 상세\n%s" % last_result
 		_update_battle_view(_make_compact_last_result(last_result))
+
+
+func _play_telegraph_cue() -> void:
+	if _telegraph_audio_player == null:
+		return
+	_telegraph_audio_player.stream = RecoveryTelegraphAudio.make_stream(String(_current_pattern.get("id", "")))
+	_telegraph_audio_player.play()
 
 
 func _make_compact_last_result(last_result: String) -> String:
