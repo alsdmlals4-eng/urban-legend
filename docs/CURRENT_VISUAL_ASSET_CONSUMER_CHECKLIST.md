@@ -53,7 +53,7 @@ actual consumer
 | `IMG-M01-02` | Investigation `ArtLayer/Background` + `LocationPreview` | `assets/backgrounds/afterlife_platform.png` | `REUSE_REVIEW` | 없으면 조사 장소/관측 공간이 사라진다. 별도 location-card 이미지를 만들지 않는다. |
 | `IMG-M01-03` | Recovery `ArtLayer/Background` | `assets/backgrounds/afterlife_recovery.png` | `REPLACE_REQUIRED / USER_APPROVED_VISUAL_CANDIDATE / PRODUCT_ASSET_PROMOTION_PENDING` | `M01_RECOVERY_BACKGROUND_ADAPT_01`은 배경 전용 후보로 승인됐다. 현행 PNG 교체와 Godot 연결은 별도 Gate다. |
 | `IMG-M01-04` | Recovery `AnomalyVisual` B/C | `assets/anomalies/cutouts/afterlife_b_cutout.png` with `assets/anomalies/afterlife_b.png` fallback | `REPLACE_REQUIRED / USER_APPROVED_VISUAL_CANDIDATE / PRODUCT_ASSET_PROMOTION_PENDING` | `M01_ANOMALY_BC_ADAPT_01`은 투명 현현 후보로 승인됐다. 현행 컷아웃 교체와 Godot 연결은 별도 Gate다. |
-| `IMG-M01-05` | Recovery `AnomalyVisual` D | `assets/anomalies/cutouts/afterlife_d_cutout.png` with `assets/anomalies/afterlife_d.png` fallback | `REPLACE_REQUIRED / TEXT_BRIEF_PENDING_USER_APPROVAL` | 등진 일반 인물/혼잡한 fallback은 D 위험 단계의 현현 상승을 전달하지 못한다. B/C 후보 결과 승인 뒤 D 후보를 별도 검토한다. |
+| `IMG-M01-05` | Recovery `AnomalyVisual` D | `assets/anomalies/cutouts/afterlife_d_cutout.png` with `assets/anomalies/afterlife_d.png` fallback | `REPLACE_REQUIRED / USER_APPROVED_VISUAL_CANDIDATE / PRODUCT_ASSET_PROMOTION_PENDING` | `M01_ANOMALY_D_ADAPT_01`은 단일 실루엣의 투명 고위험 현현 후보로 승인됐다. 현행 컷아웃 교체와 Godot 연결은 별도 Gate다. |
 | `IMG-M01-06` | Investigation `ManualSurface: TextureRect` | `assets/ui/afterlife/manual_book_frame.png` | `REUSE_REVIEW` | 실제 live Godot text 뒤의 textless surface. |
 | `IMG-M01-07` | route-restore minigame full-screen surface | `assets/ui/afterlife/generated/afterlife_metal_panel_v1.png` | `REUSE_REVIEW` | 저승역 최종 노선 복원 runtime surface. |
 
@@ -165,7 +165,7 @@ Current status: `REUSE_REVIEW`.
 
 1. `IMG-M01-03` Afterlife Recovery background — `REPLACE_REQUIRED`; candidate result approved, product promotion 별도 대기.
 2. `IMG-M01-04` Afterlife anomaly B/C — candidate result approved; product promotion 별도 대기.
-3. `IMG-M01-05` Afterlife anomaly D — `REPLACE_REQUIRED`; text brief approval 대기.
+3. `IMG-M01-05` Afterlife anomaly D — candidate result approved; product promotion 별도 대기.
 4. `IMG-M01-02` Afterlife Investigation background.
 5. `IMG-M01-01` Afterlife Entrance / Dialogue background.
 6. `IMG-M04-02` approved M04 Investigation Anchor vs current `red_crossroads` consumer.

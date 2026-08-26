@@ -197,7 +197,7 @@ actual Scene / Texture consumer
 12. runtime-consumer-first image gate — APPROVED
 13. actual visual consumer inventory — COMPLETE_FOR_CURRENT_CORE_SURFACES
 14. `IMG-M01-03 afterlife_recovery.png` pixel compare + one background-only candidate result approval — COMPLETE_AS_VISUAL_CANDIDATE; no product asset promotion
-15. M01 anomaly B/C and D pixel compare — COMPLETE; B/C one transparent candidate result approved, D `REPLACE_REQUIRED / TEXT_BRIEF_PENDING_USER_APPROVAL`
+15. M01 anomaly B/C and D pixel compare — COMPLETE; B/C와 D 각각의 투명 후보가 사용자 결과 승인을 받았고 product promotion은 별도 대기
 16. M04 approved Investigation Anchor vs actual `red_crossroads` consumer comparison — `ADAPT_CANDIDATE` selected
 17. `M04_INVESTIGATION_BACKGROUND_ADAPT_01` one-image adaptation + user result approval — COMPLETE_AS_VISUAL_CANDIDATE
 18. M04 product-reference promotion + rights/provenance + 1280×720/1920×1080 runtime 검증
@@ -234,7 +234,7 @@ actual Scene / Texture consumer
 - remaining runtime PNG pixel-quality comparisons against latest approved visual references
 - M01-03 product-reference asset promotion + rights/provenance + runtime readability / Human QA
 - M01 B/C product-reference asset promotion + rights/provenance + runtime readability / Human QA
-- M01 D background-independent transparent anomaly candidate: text brief approval → exactly one candidate → result approval
+- M01 D product-reference asset promotion + rights/provenance + runtime readability / Human QA
 - M01 actual Human QA / new-player validation
 - M04 product-reference asset 승격
 - layer/reuse production source 검증
