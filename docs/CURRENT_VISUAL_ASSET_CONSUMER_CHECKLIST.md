@@ -51,7 +51,7 @@ actual consumer
 |---|---|---|---|---|
 | `IMG-M01-01` | Main Menu backdrop + Dialogue `ArtLayer/Background` + dialogue location preview | `assets/backgrounds/afterlife_entrance.png` | `REUSE_REVIEW` | 없으면 Main Menu identity/background와 오프닝 현장 preview가 사라진다. 같은 파일을 여러 surface가 재사용한다. |
 | `IMG-M01-02` | Investigation `ArtLayer/Background` + `LocationPreview` | `assets/backgrounds/afterlife_platform.png` | `REUSE_REVIEW` | 없으면 조사 장소/관측 공간이 사라진다. 별도 location-card 이미지를 만들지 않는다. |
-| `IMG-M01-03` | Recovery `ArtLayer/Background` | `assets/backgrounds/afterlife_recovery.png` | `REUSE_REVIEW / NEXT_VISUAL_COMPARE` | 최신 사용자 승인 Recovery visual reference와 가장 먼저 비교할 production target. |
+| `IMG-M01-03` | Recovery `ArtLayer/Background` | `assets/backgrounds/afterlife_recovery.png` | `REPLACE_REQUIRED / TEXT_BRIEF_PENDING_USER_APPROVAL` | 2026-08-26 pixel review에서 중앙 백색 현현이 별도 `AnomalyVisual`과 역할 충돌하고, 그 초점이 `AnomalyPanel` overlay에 가려짐을 확인했다. 배경 전용 후보만 다음 단계에서 검토한다. |
 | `IMG-M01-04` | Recovery `AnomalyVisual` B/C | `assets/anomalies/cutouts/afterlife_b_cutout.png` with `assets/anomalies/afterlife_b.png` fallback | `REUSE_REVIEW` | 괴이 현현/전조 판단의 primary visual. |
 | `IMG-M01-05` | Recovery `AnomalyVisual` D | `assets/anomalies/cutouts/afterlife_d_cutout.png` with `assets/anomalies/afterlife_d.png` fallback | `REUSE_REVIEW` | 고위험 현현 visual. |
 | `IMG-M01-06` | Investigation `ManualSurface: TextureRect` | `assets/ui/afterlife/manual_book_frame.png` | `REUSE_REVIEW` | 실제 live Godot text 뒤의 textless surface. |
@@ -157,7 +157,7 @@ Current status: `REUSE_REVIEW`.
 
 ### REUSE/REPLACE review order
 
-1. `IMG-M01-03` Afterlife Recovery background.
+1. `IMG-M01-03` Afterlife Recovery background — `REPLACE_REQUIRED`; text brief approval 대기.
 2. `IMG-M01-04` Afterlife anomaly B/C.
 3. `IMG-M01-05` Afterlife anomaly D.
 4. `IMG-M01-02` Afterlife Investigation background.
