@@ -34,4 +34,79 @@ canonical_rules:
     - copy
     - new
 
-assets: []
+assets:
+  - asset_id: "M01-ANOMALY-D-001"
+    name: "Afterlife Station D-risk anomaly cutout"
+    category: "anomaly_cutout"
+    purpose: "M01 Recovery D-risk visual escalation for the battle cinematic HUD."
+    owner_discipline: "Visual"
+    affected_disciplines:
+      - "Godot UI"
+      - "Narrative"
+      - "QA"
+    statuses:
+      - "PRODUCTION_READY"
+      - "IMPLEMENTED"
+      - "VISUALLY_VALIDATED"
+    vault_source_key: "M01_ANOMALY_D_ADAPT_01"
+    canonical_path: "assets/anomalies/cutouts/afterlife_d_cutout.png"
+    source_path: "docs/visual/candidates/M01_ANOMALY_D_ADAPT_01.png"
+    runtime_path: "scenes/battle_scene.tscn -> CinematicStage/AnomalyPanel/Content/AnomalyVisual"
+    latest_capture_path: ""
+    golden_screenshot_path: ""
+    source_type: "AI_GENERATED"
+    source_and_license: >
+      OpenAI built-in image generation output created on 2026-08-26 and promoted after explicit user approval.
+      The generation prompt contains no named third-party character, logo, or requested imitation style. This record
+      captures project provenance and an obvious-conflict review only; it is not legal clearance. The user remains
+      responsible for final distribution-rights review under the applicable service terms and law.
+    approved_reference: "docs/visual/candidates/M01_ANOMALY_D_ADAPT_01.md"
+    supersedes: "Pre-manifest tracked afterlife_d_cutout.png (SHA-256 fc90aa96ce8d203688f1ba09c2ef8fa89ab3d1e386fe59021fb7643105c1c1ad)"
+    superseded_by: ""
+    replacement_requires_approval: true
+    reference_elements:
+      use:
+        - "Unnamed Korean late-night station-attendant-like human figure"
+        - "Single front-facing figure, cap, light-grey inner garment, and long coat hem"
+        - "Transparent cutout with no embedded HUD or background"
+      do_not_use:
+        - "Named IP, logos, or copied character identity"
+        - "Duplicated limbs/faces, posters, environmental background, or runtime text"
+        - "M04 or recovery-background subject matter"
+    visual_dna:
+      silhouette: "One centered station-attendant-like figure with a forward-facing head/upper-body read; cap and coat hem remain readable at D-risk scale."
+      proportion: "Tall narrow portrait cutout; fill only the existing AnomalyVisual TextureRect."
+      camera: "Eye-level rear three-quarter implication without a separate environment."
+      resolution_or_pixel_density: "941x1672 PNG with alpha; existing runtime node uses KEEP_ASPECT_CENTERED."
+      palette: "Black/charcoal coat, muted light-grey inner garment, restrained warm D-risk modulation from the existing scene."
+      lighting: "Subdued rim separation; no neon or photoreal glare."
+      material_language: "Soft anime-noir ink/paper texture."
+      outline_and_readability: "Readable cap, shoulders, garment break, and continuous hem at a glance."
+      allowed_variation: "Existing scene modulation and UI scaling only."
+      forbidden_elements: "Additional figures, duplicate anatomy, scenery, UI, labels, named insignia, or text."
+      post_process: "No baked screen effects; existing Godot UI owns display treatment."
+      engine_import: "Godot Texture2D import from the canonical PNG."
+      performance_budget: "One existing TextureRect and one 941x1672 alpha PNG; no new runtime nodes or scripts."
+      accessibility_fallback: "The gameplay risk label and existing HUD communicate D-risk independently of the image."
+    generation_record:
+      tool_and_model: "OpenAI built-in image generation (model identifier not exposed to this session)"
+      prompt_core: "Anonymous Korean late-night station-attendant-like figure, one coherent single silhouette, cap and light-grey inner garment, unnaturally continuing coat hem, transparent cutout, restrained soft anime-noir ink/paper texture; no text, UI, scenery, logo, named character, duplicate face, or duplicate limbs."
+      seed_or_reproduction: "Not exposed by the generation surface."
+      manual_post_process: "None recorded."
+      known_remaining_issues: "Human visual QA and 1920x1080 runtime capture remain pending. The fixed 1280x720 logical viewport was verified in the live consumer."
+    validation:
+      target_resolutions:
+        - "1280x720"
+        - "1920x1080"
+      runtime_verified: true
+      visual_qa_verified: true
+      accessibility_verified: false
+      evidence:
+        - "docs/visual/candidates/M01_ANOMALY_D_ADAPT_01.md"
+        - "docs/visual/candidates/M01_ANOMALY_D_RUNTIME_1280x720.png"
+        - "GitHub Issue #246"
+      last_verified_commit: ""
+    next_review_triggers:
+      - "After an AnomalyVisual layout or scaling change"
+      - "Before release-rights sign-off"
+      - "When human visual QA reports clipping, ambiguity, or overlap"
