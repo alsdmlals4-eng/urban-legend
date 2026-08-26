@@ -21,11 +21,11 @@
     "version": "9.4.3"
   },
   "canonical_source": "skills/PROJECT_BASE_ADAPTER.json",
-  "canonical_source_sha256": "723b3fcedcd469a182f354cbee336ef146f7fa1c217a098cb627a600eb8ad920",
+  "canonical_source_sha256": "998ed3501e69bfcfadd48c24440a18e4f81adbbdd046c995cd81221a70a0bb03",
   "generated": true,
   "hash_definition": "RAW_FILE_BYTES_SHA256",
   "legacy_source": "docs/archive/base-v9-legacy-inputs/BASE_V9_ADAPTER.json",
-  "legacy_source_sha256": "a313cd544722734ae99f6ac17d960fd7e0ae166a597dc19387526cfb9bd294ec",
+  "legacy_source_sha256": "77a1f526ec6e0fad5fd05871f33e7100cbdd9781745e7121f3903ee98e23a122",
   "lifecycle": "ONE_CYCLE",
   "maturity": {
     "level": 4,

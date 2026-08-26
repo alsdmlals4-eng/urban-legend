@@ -41,11 +41,11 @@
     "version": "9.4.3"
   },
   "canonical_source": "skills/PROJECT_BASE_ADAPTER.json",
-  "canonical_source_sha256": "723b3fcedcd469a182f354cbee336ef146f7fa1c217a098cb627a600eb8ad920",
+  "canonical_source_sha256": "998ed3501e69bfcfadd48c24440a18e4f81adbbdd046c995cd81221a70a0bb03",
   "generated": true,
   "hash_definition": "RAW_FILE_BYTES_SHA256",
   "legacy_source": "docs/archive/base-v9-legacy-inputs/PROJECT_PATH_ADAPTER.json",
-  "legacy_source_sha256": "6cedec6eef7ad53fb083f69f2fe43d024721e14dc48dc0cdf5b98c6dad533fce",
+  "legacy_source_sha256": "e9a8c7b708e647391aeae856ffd077fad81874a91093d8f3d55f1008f7e0ae49",
   "lifecycle": "ONE_CYCLE",
   "project": {
     "engine": "Godot 4.7",
