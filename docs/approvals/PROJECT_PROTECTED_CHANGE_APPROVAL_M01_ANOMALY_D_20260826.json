@@ -9,7 +9,7 @@
   "approved_paths": [
     "assets/anomalies/cutouts/afterlife_d_cutout.png"
   ],
-  "approval_source": "User explicit ChatGPT Work approval and Codex-mode authorization on 2026-08-26; independent GitHub PR approval remains mandatory for merge.",
+  "approval_source": "The project's sole decision owner gave explicit ChatGPT Work approval and Codex-mode authorization on 2026-08-26. This recorded approval is the merge evidence; no second GitHub identity is required.",
   "approval_time": "2026-08-26T14:13:00Z",
   "scope_summary": "Replace only the approved M01 D-risk anomaly cutout at its existing canonical runtime path; no scene, catalog, data, fallback, or additional asset changes."
 }
