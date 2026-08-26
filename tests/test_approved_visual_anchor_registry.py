@@ -68,6 +68,7 @@ class ApprovedVisualAnchorRegistryTests(unittest.TestCase):
         self.assertNotIn("kwon_narae.png", manifest)
         self.assertNotIn("M01_INVESTIGATION_PLATFORM_ADAPT_01", manifest)
         self.assertNotIn("M01_ENTRANCE_BACKGROUND_ADAPT_01", manifest)
+        self.assertNotIn("M04_RECOVERY_BACKGROUND_ADAPT_01", manifest)
         self.assertNotIn("현재 PROJECT_ASSET_APPROVED 자산은 0건", manifest)
         self.assertIn('asset_id: "M01-RECOVERY-BACKGROUND-001"', manifest)
         self.assertIn(

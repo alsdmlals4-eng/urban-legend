@@ -76,7 +76,7 @@ actual consumer
 |---|---|---|---|---|
 | `IMG-M04-01` | Dialogue background + current-case preview | `assets/backgrounds/red_alley_entrance.png` | `REUSE_REVIEW` | 오프닝/preview surface. |
 | `IMG-M04-02` | Investigation `ArtLayer/Background` + shared `LocationPreview` | `assets/backgrounds/red_crossroads.png` | `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_AND_HUMAN_QA_PENDING` | `M04_INVESTIGATION_BACKGROUND_ADAPT_01` exact bytes가 canonical PNG를 교체했다. Scene/catalog/UI는 기존 route를 재사용하며, 1280×720/1920×1080 runtime 및 Human evidence는 별도 Gate다. |
-| `IMG-M04-03` | Recovery `ArtLayer/Background` | `assets/backgrounds/red_recovery.png` | `REUSE_REVIEW` | M04 Recovery background. |
+| `IMG-M04-03` | Recovery `ArtLayer/Background` | `assets/backgrounds/red_recovery.png` | `REUSE_REVIEW / AUTO_AUTHORIZED_CANDIDATE_COMPARE_REQUIRED` | 현행 파일은 서양식 가로등 골목·강한 유광 반사로 M04의 한국 폐점 골목과 분리 `AnomalyVisual` 역할을 흐린다. `M04_RECOVERY_BACKGROUND_ADAPT_01`을 보관했으며 실제 Recovery overlay 아래에서 기존 file과 promotion을 비교한다. |
 | `IMG-M04-04` | Recovery `AnomalyVisual` B/C | `assets/anomalies/cutouts/red_umbrella_b_cutout.png` with full fallback | `REUSE_REVIEW` | actual anomaly consumer. |
 | `IMG-M04-05` | Recovery `AnomalyVisual` D | `assets/anomalies/cutouts/red_umbrella_d_cutout.png` with full fallback | `REUSE_REVIEW` | actual high-risk anomaly consumer. |
 
