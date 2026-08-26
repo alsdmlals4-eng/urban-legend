@@ -202,8 +202,9 @@ actual Scene / Texture consumer
 17. `M04_INVESTIGATION_BACKGROUND_ADAPT_01` one-image adaptation + user result approval — COMPLETE_AS_VISUAL_CANDIDATE
 18. M04 product-reference promotion + rights/provenance — `PROJECT_ASSET_APPROVED / IMPLEMENTED`; 1280×720/1920×1080 runtime 검증 pending
 19. `M01_INVESTIGATION_PLATFORM_ADAPT_01` one-image candidate — `USER_AUTONOMOUSLY_AUTHORIZED_VISUAL_CANDIDATE`; current `afterlife_platform` consumer promotion compare pending
-20. M04 release-near visual/audio/VFX implementation — separate later authorization
-21. M04 actual runtime/input + Human player-experience QA — separate later gate
+20. `M01_ENTRANCE_BACKGROUND_ADAPT_01` one-image candidate — `USER_AUTONOMOUSLY_AUTHORIZED_VISUAL_CANDIDATE`; current `afterlife_entrance` dialogue/preview/Main Menu shared-consumer promotion compare pending
+21. M04 release-near visual/audio/VFX implementation — separate later authorization
+22. M04 actual runtime/input + Human player-experience QA — separate later gate
 ```
 
 ## 7. Approval boundary
