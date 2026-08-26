@@ -85,6 +85,8 @@ PR #224 exact head에서 다음 계열이 GREEN이었다.
 - 최종 1280×720 / 1920×1080 가독성
 - release-near M04 visual/audio/VFX polish
 
+Exception recorded: M01 D-risk `afterlife_d_cutout.png` is `PROJECT_ASSET_APPROVED / IMPLEMENTED / 1280_RUNTIME_VERIFIED` under Issue #246. Its 1920×1080 capture and Human QA remain pending; this exception does not promote other M01/M04 assets.
+
 Human QA는 계속 `NOT_RUN`:
 - M01 첫 세션 이해도
 - serial-exam fatigue 체감

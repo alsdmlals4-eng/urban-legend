@@ -5,6 +5,7 @@ on:
 
 permissions:
   contents: read
+  pull-requests: read
 
 jobs:
   validate:
@@ -53,12 +54,80 @@ jobs:
           git merge-base --is-ancestor "$PROTECTED_BASE_SHA" "$PR_BASE_SHA"
           printf 'PROTECTED_BASE_SHA=%s\n' "$PROTECTED_BASE_SHA" >> "$GITHUB_ENV"
 
+      - name: Validate pull-request diff integrity
+        env:
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: git diff --check "$PR_BASE_SHA"...HEAD
+
+      - name: Discover a pull-request approval manifest
+        id: approval
+        env:
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          CHANGED=( $(git diff --name-only "$PR_BASE_SHA"...HEAD -- 'docs/approvals/PROJECT_PROTECTED_CHANGE_APPROVAL_*.json') )
+          if [ "${#CHANGED[@]}" -eq 0 ]; then
+            printf 'mode=normal\n' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [ "${#CHANGED[@]}" -ne 1 ]; then
+            printf 'Expected exactly one changed PROJECT_PROTECTED_CHANGE_APPROVAL manifest; found %s\n' "${#CHANGED[@]}" >&2
+            exit 1
+          fi
+          printf 'mode=approved\n' >> "$GITHUB_OUTPUT"
+          printf 'path=%s\n' "${CHANGED[0]}" >> "$GITHUB_OUTPUT"
+
+      - name: Require an independent GitHub PR approval for a protected change
+        id: external-approval
+        if: steps.approval.outputs.mode == 'approved'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          curl --fail-with-body --silent --show-error \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER/reviews?per_page=100" \
+            > reviews.json
+          EXTERNAL_APPROVAL="$({
+            python - "$PR_AUTHOR" <<'PY'
+import json
+import sys
+
+author = sys.argv[1]
+latest_state = {}
+for review in json.load(open("reviews.json", encoding="utf-8")):
+    login = review.get("user", {}).get("login", "")
+    if login and login != author:
+        latest_state[login] = review.get("state", "")
+print("true" if any(state == "APPROVED" for state in latest_state.values()) else "false")
+PY
+          })"
+          printf 'value=%s\n' "$EXTERNAL_APPROVAL" >> "$GITHUB_OUTPUT"
+          if [ "$EXTERNAL_APPROVAL" != "true" ]; then
+            printf 'Protected changes require an APPROVED review from a GitHub account other than the PR author.\n' >&2
+            exit 1
+          fi
+
       - name: Validate adapter against the trusted protected baseline
         run: |
           # Historical compatibility marker only; forbidden as an executable command:
           # --protected-base "$PR_BASE_SHA"
-          python .base-contract/tools/check_project_operating_contract.py \
-            --project-root . \
-            --base-repository .base-contract \
-            --protected-base "$PROTECTED_BASE_SHA" \
-            --check
+          if [ "${{ steps.approval.outputs.mode }}" = "approved" ]; then
+            python .base-contract/tools/check_approved_project_operating_contract.py \
+              --project-root . \
+              --base-repository .base-contract \
+              --protected-base "$PROTECTED_BASE_SHA" \
+              --approval "${{ steps.approval.outputs.path }}" \
+              --external-approval "${{ steps.external-approval.outputs.value }}" \
+              --check
+          else
+            python .base-contract/tools/check_project_operating_contract.py \
+              --project-root . \
+              --base-repository .base-contract \
+              --protected-base "$PROTECTED_BASE_SHA" \
+              --check
+          fi
