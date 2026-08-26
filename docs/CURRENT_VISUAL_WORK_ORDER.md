@@ -114,13 +114,13 @@ M01 상세 runtime predecessor는 `docs/M01_RECOVERY_SCENE_PACKET.md`에 남아 
 - 실제 product-reference 승격 전 layer/reuse, rights/provenance, 1280×720/1920×1080 runtime readability, runtime consumption을 검증한다.
 - Human QA와 product-reference asset Gate는 서로 독립이다.
 
-2026-08-26 M04 Investigation background adaptation은 별도 `USER_APPROVED_VISUAL_CANDIDATE`로 확정됐다.
+2026-08-26 M04 Investigation background adaptation은 별도 `USER_APPROVED_VISUAL_CANDIDATE`로 확정됐고, 2026-08-27에는 기존 canonical runtime path에 제품 승격됐다.
 
 - candidate ID: `M04_INVESTIGATION_BACKGROUND_ADAPT_01`.
 - durable review source: `docs/visual/candidates/M04_INVESTIGATION_BACKGROUND_ADAPT_01.png`.
 - receipt: `1672x941`, `2,662,606` bytes, SHA-256 `874d3c531a45c9ddf670e9a8ff70a37443762dc24af640edac2ff45fea762f9d`.
 - actual consumer intent: `investigation_scene.tscn -> ArtLayer/Background` plus shared `LocationPreview`.
-- this is an approved visual adaptation candidate after current `red_crossroads.png` pixel comparison. It is **not** `PROJECT_ASSET_APPROVED`, a replacement of the tracked PNG, a Godot connection, runtime readability PASS, or Human QA PASS.
+- this is an approved visual adaptation candidate after current `red_crossroads.png` pixel comparison. Its exact bytes are now `PROJECT_ASSET_APPROVED / IMPLEMENTED` at the existing `assets/backgrounds/red_crossroads.png` route; no Godot connection was added or changed. Runtime readability PASS and Human QA PASS remain pending.
 - detailed approval/provenance record: Notion `M04_INVESTIGATION_BACKGROUND_ADAPT_01` Asset Library entry.
 
 Recovery visual history:
@@ -196,13 +196,16 @@ actual Scene / Texture consumer
 11. Composite Result mockup 1단계/2단계 — USER_APPROVED_REFERENCE; 3단계 — IN_REVIEW
 12. runtime-consumer-first image gate — APPROVED
 13. actual visual consumer inventory — COMPLETE_FOR_CURRENT_CORE_SURFACES
-14. `IMG-M01-03 afterlife_recovery.png` pixel compare + one background-only candidate result approval — COMPLETE_AS_VISUAL_CANDIDATE; no product asset promotion
-15. M01 anomaly B/C and D pixel compare — COMPLETE; B/C와 D 각각의 투명 후보가 사용자 결과 승인을 받았고 product promotion은 별도 대기
+14. `IMG-M01-03 afterlife_recovery.png` pixel compare + one background-only candidate result approval → product asset promotion — `PROJECT_ASSET_APPROVED / IMPLEMENTED`; runtime/Human evidence pending
+15. M01 anomaly B/C and D pixel compare → product asset promotion — B/C `PROJECT_ASSET_APPROVED / IMPLEMENTED`, D `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VALIDATED_1280`; remaining evidence stays separate
 16. M04 approved Investigation Anchor vs actual `red_crossroads` consumer comparison — `ADAPT_CANDIDATE` selected
 17. `M04_INVESTIGATION_BACKGROUND_ADAPT_01` one-image adaptation + user result approval — COMPLETE_AS_VISUAL_CANDIDATE
-18. M04 product-reference promotion + rights/provenance + 1280×720/1920×1080 runtime 검증
-19. M04 release-near visual/audio/VFX implementation — separate later authorization
-20. M04 actual runtime/input + Human player-experience QA — separate later gate
+18. M04 product-reference promotion + rights/provenance — `PROJECT_ASSET_APPROVED / IMPLEMENTED`; 1280×720/1920×1080 runtime 검증 pending
+19. `M01_INVESTIGATION_PLATFORM_ADAPT_01` one-image candidate — `USER_AUTONOMOUSLY_AUTHORIZED_VISUAL_CANDIDATE`; current `afterlife_platform` consumer promotion compare pending
+20. `M01_ENTRANCE_BACKGROUND_ADAPT_01` one-image candidate — `USER_AUTONOMOUSLY_AUTHORIZED_VISUAL_CANDIDATE`; current `afterlife_entrance` dialogue/preview/Main Menu shared-consumer promotion compare pending
+21. M04 release-near visual/audio/VFX implementation — separate later authorization
+22. M04 actual runtime/input + Human player-experience QA — separate later gate
+23. `M04_RECOVERY_BACKGROUND_ADAPT_01` one-image candidate — `USER_AUTONOMOUSLY_AUTHORIZED_VISUAL_CANDIDATE`; current `red_recovery` background and separate transparent anomaly overlay promotion compare pending
 ```
 
 ## 7. Approval boundary
@@ -232,13 +235,10 @@ actual Scene / Texture consumer
 ### Pending / not run
 - Composite Result 3단계 result approval
 - remaining runtime PNG pixel-quality comparisons against latest approved visual references
-- M01-03 product-reference asset promotion + rights/provenance + runtime readability / Human QA
-- M01 B/C product-reference asset promotion + rights/provenance + runtime readability / Human QA
-- M01 D product-reference asset promotion + rights/provenance + runtime readability / Human QA
+- M01-03 and M01 B/C Godot import plus 1280×720/1920×1080 runtime readability / Human QA
+- M01 D 1920×1080 runtime capture / Human QA
 - M01 actual Human QA / new-player validation
-- M04 product-reference asset 승격
-- layer/reuse production source 검증
-- rights/provenance promotion 검토
+- M04 1280×720/1920×1080 runtime visual QA
 - 1280×720/1920×1080 최종 runtime 시각 PASS
 - M04 release-near visual/audio/VFX Human QA
 - Android
@@ -249,7 +249,7 @@ actual Scene / Texture consumer
 
 ## 8. Asset authority warning
 
-Root `ASSET_MANIFEST.yml`가 current tracked product-asset authority이며 현재 `assets: []`다.
+Root `ASSET_MANIFEST.yml`가 current tracked product-asset authority이며, 현재 승인된 M01 Recovery background·B/C cutout·D cutout 및 M04 Investigation background의 4개 entry를 가진다.
 
 `assets/ASSET_MANIFEST.json`은 `LEGACY_MIGRATION_PENDING_NON_AUTHORITY`다. 과거 `stage=final`, QA 문구, tracked PNG, `.import`, runtime wiring은 existence/provenance/history evidence일 수 있지만 `PROJECT_ASSET_APPROVED`를 부여하지 않는다.
 

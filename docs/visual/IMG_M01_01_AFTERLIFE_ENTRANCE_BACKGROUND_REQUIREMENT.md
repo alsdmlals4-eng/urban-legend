@@ -1,10 +1,10 @@
 # IMG-M01-01 · Afterlife Entrance / Dialogue Background · Consumer Requirement
 
-Status: `REUSE_REVIEW / SHARED_CONSUMER_ROLE_REVIEW / PIXEL_COMPARE_PENDING`
+Status: `REUSE_REVIEW / SHARED_CONSUMER_ROLE_REVIEW / AUTO_AUTHORIZED_CANDIDATE_COMPARE_REQUIRED`
 Decision: `D-2026-08-26-RUNTIME-CONSUMER-FIRST-VISUAL-ASSET-GATE`
 Current file: `assets/backgrounds/afterlife_entrance.png`
-Current replacement: `NOT_DECIDED`
-Image generation: `NOT_AUTHORIZED_BY_THIS_REQUIREMENT`
+Current replacement: `M01_ENTRANCE_BACKGROUND_ADAPT_01 / PRODUCT_ASSET_PROMOTION_PENDING`
+Image generation: `USER_AUTONOMOUSLY_AUTHORIZED_FOR_THIS_RUNTIME_CONSUMER`
 
 ## 1. Actual consumers
 

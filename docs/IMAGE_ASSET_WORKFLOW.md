@@ -10,7 +10,7 @@
 
 GPT는 프로젝트 정본과 레퍼런스를 바탕으로 기획 중 탐색 이미지·목업과 기획 종료 실사용 후보를 생성한다. Codex는 승인된 후보의 파일 규격·manifest·Godot import·실제 화면 적용을 담당한다. DeepSeek는 명시적 대량 초안 위임에서만 보조하며 이미지 생성의 기본 소유자가 아니다.
 
-현재 제품 자산 승격은 fail-closed다. `71_이미지기획_생성목록`·`72_이미지검수_승인로그`와 GitHub 정본에서 같은 자산이 `PROJECT_ASSET_APPROVED`로 승인되고, 루트 `ASSET_MANIFEST.yml`에 승인·의미·권리·용도가 기록된 뒤에만 tracked 제품 자산 승격을 허용한다. 현재 루트 manifest의 승인 자산 목록은 비어 있으며 자동 생성·자동 승격·자동 교체를 하지 않는다.
+현재 제품 자산 승격은 fail-closed다. 승인 원장과 GitHub 정본에서 같은 자산이 `PROJECT_ASSET_APPROVED`로 확인되고, 루트 `ASSET_MANIFEST.yml`에 승인·의미·권리·용도가 기록된 뒤에만 tracked 제품 자산 승격을 허용한다. 현재 root manifest에는 M01 Recovery background, B/C anomaly cutout, D anomaly cutout, M04 Investigation background의 4개 승인 entry가 있으며, 이 밖의 후보는 자동 생성·자동 승격·자동 교체를 하지 않는다.
 
 원격 작업 환경에서 프로젝트 로컬 `.asset-vault/`를 읽지 못하면 `VAULT_LOCAL_STATE_UNVERIFIED`를 유지한다. 로컬 후보 존재를 과거 대화·이전 manifest·Repo 상태만으로 추정하지 않는다.
 

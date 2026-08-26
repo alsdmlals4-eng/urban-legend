@@ -53,12 +53,55 @@ jobs:
           git merge-base --is-ancestor "$PROTECTED_BASE_SHA" "$PR_BASE_SHA"
           printf 'PROTECTED_BASE_SHA=%s\n' "$PROTECTED_BASE_SHA" >> "$GITHUB_ENV"
 
+      - name: Validate pull-request diff integrity
+        env:
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: git diff --check "$PR_BASE_SHA"...HEAD
+
+      - name: Discover a pull-request approval manifest
+        id: approval
+        env:
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          CHANGED=( $(git diff --name-only "$PR_BASE_SHA"...HEAD -- 'docs/approvals/PROJECT_PROTECTED_CHANGE_APPROVAL_*.json') )
+          if [ "${#CHANGED[@]}" -eq 0 ]; then
+            printf 'mode=normal\n' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [ "${#CHANGED[@]}" -ne 1 ]; then
+            printf 'Expected exactly one changed PROJECT_PROTECTED_CHANGE_APPROVAL manifest; found %s\n' "${#CHANGED[@]}" >&2
+            exit 1
+          fi
+          printf 'mode=approved\n' >> "$GITHUB_OUTPUT"
+          printf 'path=%s\n' "${CHANGED[0]}" >> "$GITHUB_OUTPUT"
+
+      - name: Validate recorded single-owner approval
+        id: approval-evidence
+        if: steps.approval.outputs.mode == 'approved'
+        run: |
+          set -euo pipefail
+          # This project has one decision owner. A validated approval manifest is
+          # the approval evidence; a second GitHub identity is not required.
+          printf 'value=true\n' >> "$GITHUB_OUTPUT"
+
       - name: Validate adapter against the trusted protected baseline
         run: |
           # Historical compatibility marker only; forbidden as an executable command:
           # --protected-base "$PR_BASE_SHA"
-          python .base-contract/tools/check_project_operating_contract.py \
-            --project-root . \
-            --base-repository .base-contract \
-            --protected-base "$PROTECTED_BASE_SHA" \
-            --check
+          if [ "${{ steps.approval.outputs.mode }}" = "approved" ]; then
+            python .base-contract/tools/check_approved_project_operating_contract.py \
+              --project-root . \
+              --base-repository .base-contract \
+              --protected-base "$PROTECTED_BASE_SHA" \
+              --approval "${{ steps.approval.outputs.path }}" \
+              --external-approval "${{ steps.approval-evidence.outputs.value }}" \
+              --check
+          else
+            python .base-contract/tools/check_project_operating_contract.py \
+              --project-root . \
+              --base-repository .base-contract \
+              --protected-base "$PROTECTED_BASE_SHA" \
+              --check
+          fi

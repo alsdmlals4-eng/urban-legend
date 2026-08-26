@@ -63,10 +63,31 @@ class ApprovedVisualAnchorRegistryTests(unittest.TestCase):
             r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$",
         )
 
-    def test_anchor_approval_does_not_grant_product_asset_approval(self) -> None:
+    def test_anchor_approval_does_not_grant_unrelated_product_asset_approval(self) -> None:
         manifest = (ROOT / "ASSET_MANIFEST.yml").read_text(encoding="utf-8")
-        self.assertIn("assets: []", manifest)
         self.assertNotIn("kwon_narae.png", manifest)
+        self.assertNotIn("M01_INVESTIGATION_PLATFORM_ADAPT_01", manifest)
+        self.assertNotIn("M01_ENTRANCE_BACKGROUND_ADAPT_01", manifest)
+        self.assertNotIn("M04_RECOVERY_BACKGROUND_ADAPT_01", manifest)
+        self.assertNotIn("현재 PROJECT_ASSET_APPROVED 자산은 0건", manifest)
+        self.assertIn('asset_id: "M01-RECOVERY-BACKGROUND-001"', manifest)
+        self.assertIn(
+            'source_path: "docs/visual/candidates/M01_RECOVERY_BACKGROUND_ADAPT_01.png"',
+            manifest,
+        )
+        self.assertIn('asset_id: "M01-ANOMALY-BC-001"', manifest)
+        self.assertIn(
+            'source_path: "docs/visual/candidates/M01_ANOMALY_BC_ADAPT_01.png"',
+            manifest,
+        )
+        self.assertIn('asset_id: "M01-ANOMALY-D-001"', manifest)
+        self.assertIn('source_path: "docs/visual/candidates/M01_ANOMALY_D_ADAPT_01.png"', manifest)
+        self.assertIn('asset_id: "M04-INVESTIGATION-BACKGROUND-001"', manifest)
+        self.assertIn(
+            'source_path: "docs/visual/candidates/M04_INVESTIGATION_BACKGROUND_ADAPT_01.png"',
+            manifest,
+        )
+        self.assertIn('replacement_requires_approval: true', manifest)
 
 
 if __name__ == "__main__":
