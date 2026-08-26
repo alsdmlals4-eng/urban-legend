@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "artifact_role": "PROJECT_PROTECTED_CHANGE_APPROVAL",
+  "status": "APPROVED",
+  "protected_base_commit": "e8abd45c76039fc28a7da6e7ba59dbc224bc4105",
+  "decision_ids": [
+    "UL-DEC-20260827-M01-RECOVERY-VISUALS-PRODUCT-PROMOTION"
+  ],
+  "approved_paths": [
+    "assets/backgrounds/afterlife_recovery.png",
+    "assets/anomalies/cutouts/afterlife_b_cutout.png"
+  ],
+  "approval_source": "The project's sole decision owner gave explicit ChatGPT Work approval, authorized autonomous continuation, and permitted Codex-mode Godot work when needed. This recorded approval is the merge evidence; no second GitHub identity is required.",
+  "approval_time": "2026-08-27T00:00:00+09:00",
+  "scope_summary": "Replace only the approved M01 Recovery background and B/C anomaly cutout at their existing canonical runtime paths; no scene, catalog, data, fallback, UI, or additional asset changes."
+}
