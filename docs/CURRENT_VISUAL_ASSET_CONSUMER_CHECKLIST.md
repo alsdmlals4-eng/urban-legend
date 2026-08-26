@@ -52,10 +52,16 @@ actual consumer
 | `IMG-M01-01` | Main Menu backdrop + Dialogue `ArtLayer/Background` + dialogue location preview | `assets/backgrounds/afterlife_entrance.png` | `REUSE_REVIEW` | 없으면 Main Menu identity/background와 오프닝 현장 preview가 사라진다. 같은 파일을 여러 surface가 재사용한다. |
 | `IMG-M01-02` | Investigation `ArtLayer/Background` + `LocationPreview` | `assets/backgrounds/afterlife_platform.png` | `REUSE_REVIEW` | 없으면 조사 장소/관측 공간이 사라진다. 별도 location-card 이미지를 만들지 않는다. |
 | `IMG-M01-03` | Recovery `ArtLayer/Background` | `assets/backgrounds/afterlife_recovery.png` | `REPLACE_REQUIRED / USER_APPROVED_VISUAL_CANDIDATE / PRODUCT_ASSET_PROMOTION_PENDING` | `M01_RECOVERY_BACKGROUND_ADAPT_01`은 배경 전용 후보로 승인됐다. 현행 PNG 교체와 Godot 연결은 별도 Gate다. |
-| `IMG-M01-04` | Recovery `AnomalyVisual` B/C | `assets/anomalies/cutouts/afterlife_b_cutout.png` with `assets/anomalies/afterlife_b.png` fallback | `REUSE_REVIEW` | 괴이 현현/전조 판단의 primary visual. |
-| `IMG-M01-05` | Recovery `AnomalyVisual` D | `assets/anomalies/cutouts/afterlife_d_cutout.png` with `assets/anomalies/afterlife_d.png` fallback | `REUSE_REVIEW` | 고위험 현현 visual. |
+| `IMG-M01-04` | Recovery `AnomalyVisual` B/C | `assets/anomalies/cutouts/afterlife_b_cutout.png` with `assets/anomalies/afterlife_b.png` fallback | `REPLACE_REQUIRED / TEXT_BRIEF_PENDING_USER_APPROVAL` | 투명 컷아웃은 존재하지만 현행 긴 코트 인물은 익명 역무원형 현현·소프트 애니 누아르 방향을 명확히 전달하지 못한다. B/C 공용 후보를 먼저 검토한다. |
+| `IMG-M01-05` | Recovery `AnomalyVisual` D | `assets/anomalies/cutouts/afterlife_d_cutout.png` with `assets/anomalies/afterlife_d.png` fallback | `REPLACE_REQUIRED / TEXT_BRIEF_PENDING_USER_APPROVAL` | 등진 일반 인물/혼잡한 fallback은 D 위험 단계의 현현 상승을 전달하지 못한다. B/C 후보 결과 승인 뒤 D 후보를 별도 검토한다. |
 | `IMG-M01-06` | Investigation `ManualSurface: TextureRect` | `assets/ui/afterlife/manual_book_frame.png` | `REUSE_REVIEW` | 실제 live Godot text 뒤의 textless surface. |
 | `IMG-M01-07` | route-restore minigame full-screen surface | `assets/ui/afterlife/generated/afterlife_metal_panel_v1.png` | `REUSE_REVIEW` | 저승역 최종 노선 복원 runtime surface. |
+
+### M01 Anomaly pixel-review decision · 2026-08-26
+
+- **Reuse current transparent cutouts:** alpha·파일 경로는 맞지만, B/C의 긴 코트 인물과 D의 등진 일반 인물은 `익명 역무원형` 현현과 stage 상승을 전달하지 못한다.
+- **Reuse landscape fallbacks:** B fallback은 역 내부 인물 장면, D fallback은 군중 장면이라 `AnomalyVisual`의 단일 현현 owner에 맞지 않고 transparent presentation도 잃는다.
+- **Selected — replace with separate transparent candidates:** B/C와 D를 서로 다른 위험 단계의 독립 현현으로 생성·승인한다. 이는 현재 Scene/consumer path를 바꾸지 않는 최소 시각 교정이다.
 
 ### M01 UI that is not an image backlog
 
@@ -158,8 +164,8 @@ Current status: `REUSE_REVIEW`.
 ### REUSE/REPLACE review order
 
 1. `IMG-M01-03` Afterlife Recovery background — `REPLACE_REQUIRED`; candidate result approved, product promotion 별도 대기.
-2. `IMG-M01-04` Afterlife anomaly B/C.
-3. `IMG-M01-05` Afterlife anomaly D.
+2. `IMG-M01-04` Afterlife anomaly B/C — `REPLACE_REQUIRED`; text brief approval 대기.
+3. `IMG-M01-05` Afterlife anomaly D — `REPLACE_REQUIRED`; B/C 결과 승인 뒤 text brief approval 대기.
 4. `IMG-M01-02` Afterlife Investigation background.
 5. `IMG-M01-01` Afterlife Entrance / Dialogue background.
 6. `IMG-M04-02` approved M04 Investigation Anchor vs current `red_crossroads` consumer.
