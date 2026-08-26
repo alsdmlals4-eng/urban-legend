@@ -1,13 +1,18 @@
 # 괴이기록국 · Current Visual Work Order
 
 > Role: `CURRENT_VISUAL_WORK_ORDER`
-> Updated: `2026-08-25`
-> Status: `PLANNING_COMPLETE / RUNTIME_IMPLEMENTED / USER_APPROVED_VISUAL_CANDIDATE / RECOVERY_WIP_REVISION_REQUIRED / PRODUCT_REFERENCE_ASSET_PENDING / HUMAN_QA_NOT_RUN`
+> Updated: `2026-08-26`
+> Status: `PLANNING_COMPLETE / RUNTIME_IMPLEMENTED / USER_APPROVED_VISUAL_CANDIDATES / RUNTIME_CONSUMER_FIRST_ASSET_GATE / PRODUCT_REFERENCE_ASSET_PENDING / HUMAN_QA_NOT_RUN`
 > Art treatment: `SOFT_ANIME_NOIR_LOCKED`
 > Presentation invariant: `DOSSIER_HYBRID_IS_PRESENTATION_LANGUAGE_NOT_MEDIUM`
-> Decisions: `D-2026-08-20-INVESTIGATION-SCENE-KEYWORD-DEDUCTION-LIMITED-CHARACTER-EXPOSURE`, `D-2026-08-25-RECOVERY-CONTEXT-ACTION-HIERARCHY`
+> Decisions: `D-2026-08-20-INVESTIGATION-SCENE-KEYWORD-DEDUCTION-LIMITED-CHARACTER-EXPOSURE`, `D-2026-08-25-RECOVERY-CONTEXT-ACTION-HIERARCHY`, `D-2026-08-26-RUNTIME-CONSUMER-FIRST-VISUAL-ASSET-GATE`
+> Consumer checklist: `docs/CURRENT_VISUAL_ASSET_CONSUMER_CHECKLIST.md`
 
-이 문서는 현재 시각/화면 계약을 소유한다. 공유 runtime 구현은 PR #224를 통해 main에 반영됐고, M04 Investigation Anchor 1안은 사용자 결과 승인을 받았다. Recovery의 최신 상호작용 의미는 2026-08-25 사용자 결정으로 갱신됐으며, 현재 Recovery 이미지는 수정 전 WIP reference다. 현재 mutation 경계는 **Recovery 수정 시안, product-reference asset 승격, runtime 가독성 검증, release-near polish, Human evidence**다.
+이 문서는 현재 시각/화면 계약을 소유한다. 공유 runtime 구현은 PR #224를 통해 main에 반영됐고, M04 Investigation Anchor 1안은 사용자 결과 승인을 받았다. Recovery successor 전체 시안도 현재 대화에서 사용자 승인을 받았고, Composite Result 1·2단계 mockup은 사용자 승인 reference다. 다만 이 화면 mockup들은 자동으로 제품 PNG asset이 되지 않는다.
+
+2026-08-26 사용자 결정에 따라 신규 이미지 제작은 **실제 게임 runtime consumer가 있는 asset**을 기준으로 한다. `PanelContainer`, `Label`, `Button`, `GridContainer`, Theme/StyleBox 등 Godot UI 구조를 설명하기 위한 component sheet는 이미지 backlog에서 제외한다. 실제 생성/교체 판단은 `CURRENT_VISUAL_ASSET_CONSUMER_CHECKLIST.md`가 소비처·기존 파일·Delete Test를 연결해 소유한다.
+
+현재 mutation 경계는 **runtime-consumed visual asset review, product-reference asset 승격, runtime 가독성 검증, release-near polish, Human evidence**다.
 
 ## 1. Current approved direction
 
@@ -20,6 +25,7 @@
 - 일반 조사에서 큰 캐릭터 전신/반신 상시 노출 금지.
 - 회수 = 괴이/전조 중심, 캐릭터는 작은 상태 표현 + 의미 있는 스킬 순간 Cut-in.
 - 픽셀/도트 = CCTV·센서·로그·지도·괴이 간섭의 보조 관측 언어.
+- **이미지 제작은 actual runtime consumer first**. 설명용 시트는 별도 explanatory need가 입증되지 않으면 만들지 않는다.
 
 ## 2. Character exposure policy
 
@@ -82,6 +88,8 @@ Visual/interaction priority:
 
 M01 상세 runtime predecessor는 `docs/M01_RECOVERY_SCENE_PACKET.md`에 남아 있을 수 있으므로 재개 시 이 successor decision과 reconcile한다. Cut-in은 전조·보호 대상·상황 행동을 가리지 않는다.
 
+현재 `TelegraphLabel`, contextual action list, 기본 행동 category는 Godot UI 구조로 다루며, 별도 설명용 PNG 제작 대상이 아니다. 실제 이미지 target은 `Background`, `AnomalyVisual`, `RepresentativeVisual`처럼 명확한 Texture consumer를 먼저 본다.
+
 ### E. Composite Result
 
 단일 S/A/B 하나로 압축하지 않는다.
@@ -91,6 +99,8 @@ M01 상세 runtime predecessor는 `docs/M01_RECOVERY_SCENE_PACKET.md`에 남아 
 - 안정화/잔향
 - 미해결 질문
 - 후속 관계·연구·정보 공유
+
+현재 `result_scene.gd`는 Control/Theme 기반 runtime UI를 구성한다. 따라서 승인된 Composite Result mockup은 **UI/visual direction reference**이며, 현재 별도 product PNG consumer를 증명하지 않는다.
 
 ## 4. Product-reference asset boundary
 
@@ -104,14 +114,63 @@ M01 상세 runtime predecessor는 `docs/M01_RECOVERY_SCENE_PACKET.md`에 남아 
 - 실제 product-reference 승격 전 layer/reuse, rights/provenance, 1280×720/1920×1080 runtime readability, runtime consumption을 검증한다.
 - Human QA와 product-reference asset Gate는 서로 독립이다.
 
-Recovery WIP는 별도다.
-- state: `REFERENCE_MOCKUP / REVISION_REQUIRED / NOT_PRODUCT_ASSET`.
-- SHA-256: `606cb6998d4d1d08b44f96fe508b777e631786f05fdbd9a8c0d2b307dbe0e4d2`.
-- source: `1672x941`, `2399097` bytes.
-- Notion Home + Visual surface native attachment/readback.
-- 다음 이미지는 successor hierarchy를 반영한 Recovery 수정 전체 시안 정확히 1장이다.
+Recovery visual history:
 
-## 5. Current work sequence
+- predecessor WIP: `REFERENCE_MOCKUP / REVISION_REQUIRED / NOT_PRODUCT_ASSET`.
+- predecessor SHA-256: `606cb6998d4d1d08b44f96fe508b777e631786f05fdbd9a8c0d2b307dbe0e4d2`.
+- successor hierarchy 전체 시안: current conversation에서 `USER_APPROVED_VISUAL_CANDIDATE`.
+- successor 승인은 화면 의미/시각 후보 승인이지 current `afterlife_recovery.png`, anomaly cutout, product asset promotion, runtime readability PASS를 자동 승인하지 않는다.
+
+Composite Result visual references:
+
+- 1단계 정보 위계: `USER_APPROVED_REFERENCE`.
+- 2단계 결과 인과: `USER_APPROVED_REFERENCE`.
+- 3단계 기록 귀결: `GENERATED / IN_REVIEW`; 사용자 승인으로 추론하지 않는다.
+- 현재 runtime result scene은 Control/Theme 기반이므로 이 mockup들은 설명/방향 reference이며 product PNG asset 승격 대상이 아니다.
+
+## 5. Runtime-consumer-first asset gate
+
+Decision: `D-2026-08-26-RUNTIME-CONSUMER-FIRST-VISUAL-ASSET-GATE`.
+
+이미지 후보는 다음 순서만 허용한다.
+
+```text
+actual Scene / Texture consumer
+→ current file / project reuse
+→ Delete Test
+→ REUSE_REVIEW | REPLACE_REQUIRED | CREATE_REQUIRED
+→ consumer-specific text brief
+→ explicit generation approval
+→ exactly one image
+→ result approval
+→ promotion/runtime validation
+```
+
+### Image backlog에서 제거
+
+실제 texture consumer가 별도로 입증되지 않는 한 다음은 이미지 생성 대상이 아니다.
+
+- Recovery Telegraph Badge state sheet.
+- Recovery Context Action List sheet.
+- 공격 / 보호 / 보조 Category Bar sheet.
+- Composite Result Axis Card sheet.
+- Composite Result causal strip sheet.
+- Composite Result record-consequence tag sheet.
+- generic public UI component explanation sheet.
+
+위 항목은 필요하면 Godot UI/UX 설계 task로 남는다.
+
+### Current actual consumer checklist
+
+`docs/CURRENT_VISUAL_ASSET_CONSUMER_CHECKLIST.md`가 실제 consumer와 tracked file을 연결한다.
+
+현재 확인 결과:
+
+- `CREATE_REQUIRED`: `NONE_PROVEN_YET`.
+- 대부분 runtime consumer에는 tracked file이 이미 존재하므로 먼저 `REUSE_REVIEW`한다.
+- tracked file 존재는 current root `ASSET_MANIFEST.yml` product approval을 의미하지 않는다.
+
+## 6. Current work sequence
 
 ```text
 1. 사용자 최종 기획완료 — COMPLETE
@@ -122,15 +181,21 @@ Recovery WIP는 별도다.
 6. M04 product-reference text Brief 승인 — COMPLETE
 7. M04 Investigation Anchor 후보 1개 생성/사용자 승인/Notion upload — COMPLETE
 8. CASE-01 통합 UI style reference — USER_APPROVED_STYLE_REFERENCE
-9. Recovery first WIP — COMPLETE_AS_REFERENCE / REVISION_REQUIRED
-10. Recovery successor command hierarchy — APPROVED; next image = 수정 전체 시안 정확히 1장
-11. Recovery 승인 후 component extraction → Composite Result mockup → 공용 UI component 승인화
-12. M04 product-reference promotion + layer/reuse + rights/provenance + 1280×720/1920×1080 runtime 검증
-13. M04 release-near visual/audio/VFX 구현
-14. M04 actual runtime/input + Human player-experience QA
+9. Recovery predecessor WIP — COMPLETE_AS_REFERENCE / SUPERSEDED_FOR_HIERARCHY
+10. Recovery successor hierarchy + revised full mockup — USER_APPROVED_VISUAL_CANDIDATE
+11. Composite Result mockup 1단계/2단계 — USER_APPROVED_REFERENCE; 3단계 — IN_REVIEW
+12. runtime-consumer-first image gate — APPROVED
+13. actual visual consumer inventory — COMPLETE_FOR_CURRENT_CORE_SURFACES
+14. next visual review: `IMG-M01-03 afterlife_recovery.png` → current file pixel compare when available; no blind replacement
+15. then M01 anomaly B/C → D → Investigation/Entrance consumer review
+16. M04 approved Investigation Anchor vs actual `red_crossroads` consumer comparison
+17. only `REPLACE_REQUIRED` / `CREATE_REQUIRED` items receive one-image generation cycle
+18. M04 product-reference promotion + rights/provenance + 1280×720/1920×1080 runtime 검증
+19. M04 release-near visual/audio/VFX implementation — separate later authorization
+20. M04 actual runtime/input + Human player-experience QA — separate later gate
 ```
 
-## 6. Approval boundary
+## 7. Approval boundary
 
 ### Complete
 - 조사/추리 화면 분리
@@ -140,6 +205,7 @@ Recovery WIP는 별도다.
 - 캐릭터 노출 레벨
 - 회수 skill Cut-in policy
 - Recovery 기본 category vs contextual telegraph-response 의미 분리
+- Recovery successor full-mockup user visual approval
 - pixel/dot 보조 관측 언어
 - 소프트 애니 누아르 treatment
 - 최신 손그림+괴이감+애니메 캐릭터 style reference
@@ -148,10 +214,14 @@ Recovery WIP는 별도다.
 - 공용 runtime/state/result implementation
 - M04 Investigation Anchor 1안 사용자 결과 승인
 - 사람용 Notion Visual/Home 이미지 upload/readback
+- Composite Result information-hierarchy / causal visual references 1·2단계 사용자 승인
+- runtime-consumer-first visual asset production gate
+- current core-surface visual consumer inventory
 
 ### Pending / not run
-- Recovery successor 수정 전체 시안 사용자 결과 승인
-- Recovery component extraction
+- Composite Result 3단계 result approval
+- current runtime PNG pixel-quality comparison against latest approved visual references
+- any `REPLACE_REQUIRED` or `CREATE_REQUIRED` classification based on actual pixel review
 - M01 actual Human QA / new-player validation
 - M04 product-reference asset 승격
 - layer/reuse production source 검증
@@ -162,8 +232,14 @@ Recovery WIP는 별도다.
 - POC_PASSED
 - Production expansion
 
-자동 검증 성공이나 사용자 시각 후보 승인은 Human/runtime/product-asset PASS를 의미하지 않는다.
+자동 검증 성공, tracked asset 존재, mockup 승인, 또는 사용자 시각 후보 승인은 Human/runtime/product-asset PASS를 의미하지 않는다.
 
-## 7. Sync rule
+## 8. Asset authority warning
 
-향후 시각/UX 의미 변경은 Notion과 Repository를 같은 작업 범위에서 갱신하고 readback한다. 구현·asset·Human evidence Gate는 서로 분리한다. 진행 중 unrelated PR은 read-only로 유지한다.
+Root `ASSET_MANIFEST.yml`가 current tracked product-asset authority이며 현재 `assets: []`다.
+
+`assets/ASSET_MANIFEST.json`은 `LEGACY_MIGRATION_PENDING_NON_AUTHORITY`다. 과거 `stage=final`, QA 문구, tracked PNG, `.import`, runtime wiring은 existence/provenance/history evidence일 수 있지만 `PROJECT_ASSET_APPROVED`를 부여하지 않는다.
+
+## 9. Sync rule
+
+향후 시각/UX 의미 변경은 Notion과 Repository를 같은 작업 범위에서 갱신하고 readback한다. 승인된 Decision은 동일 Decision ID로 양쪽에 기록한다. 구현·asset·Human evidence Gate는 서로 분리한다. 진행 중 unrelated PR은 read-only로 유지한다.
