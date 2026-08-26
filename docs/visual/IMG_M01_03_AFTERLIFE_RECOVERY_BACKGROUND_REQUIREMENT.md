@@ -1,11 +1,11 @@
 # IMG-M01-03 · Afterlife Recovery Background · Consumer Requirement
 
-Status: `REPLACE_REQUIRED / TEXT_BRIEF_PENDING_USER_APPROVAL`
+Status: `REPLACE_REQUIRED / USER_APPROVED_VISUAL_CANDIDATE / PRODUCT_ASSET_PROMOTION_PENDING`
 Decision: `D-2026-08-26-RUNTIME-CONSUMER-FIRST-VISUAL-ASSET-GATE`
 Consumer: `scenes/battle_scene.tscn -> ArtLayer/Background`
 Current file: `assets/backgrounds/afterlife_recovery.png`
-Current file replacement: `VISUAL_CANDIDATE_REQUIRED / RUNTIME_WIRING_UNCHANGED`
-Image generation: `NOT_AUTHORIZED_BY_THIS_REQUIREMENT`
+Current file replacement: `VISUAL_CANDIDATE_APPROVED / RUNTIME_WIRING_UNCHANGED`
+Image generation: `GENERATE_EXACTLY_ONE / COMPLETE`
 
 ## 1. Player question
 
@@ -111,6 +111,10 @@ Runtime overlay를 고려한다.
 - 중심 현현·강한 반사·사진적 금속 질감은 승인된 Recovery의 손그림 기록물/소프트 애니 누아르 방향과 현저히 다르다.
 
 따라서 이 항목은 `REPLACE_REQUIRED`다. 이 판정은 **배경 전용 시각 후보 1장**을 검토할 수 있게 할 뿐, 현행 PNG 교체, `ASSET_MANIFEST.yml` 승격, Godot 연결, runtime readability PASS 또는 Human QA를 승인하지 않는다.
+
+### Approved candidate · 2026-08-26
+
+`M01_RECOVERY_BACKGROUND_ADAPT_01`은 위 requirement를 따른 정확히 1장의 결과이며, 사용자가 결과를 승인했다. 원본·hash·소비처·승인 경계는 `docs/visual/candidates/M01_RECOVERY_BACKGROUND_ADAPT_01.md`가 소유한다.
 
 ## 9. If replacement becomes required
 
