@@ -4,7 +4,7 @@
 > Updated: `2026-08-26`
 > Decision: `D-2026-08-26-RUNTIME-CONSUMER-FIRST-VISUAL-ASSET-GATE`
 > Scope: planning / visual asset requirement inventory
-> Product asset approval: `0 CURRENT ROOT-MANIFEST ENTRIES`
+> Product asset approval: `3 CURRENT ROOT-MANIFEST ENTRIES (M01 Recovery background, B/C, D)`
 > Runtime visual validation: `NOT_RUN`
 > Human QA: `NOT_RUN`
 
@@ -51,9 +51,9 @@ actual consumer
 |---|---|---|---|---|
 | `IMG-M01-01` | Main Menu backdrop + Dialogue `ArtLayer/Background` + dialogue location preview | `assets/backgrounds/afterlife_entrance.png` | `REUSE_REVIEW` | 없으면 Main Menu identity/background와 오프닝 현장 preview가 사라진다. 같은 파일을 여러 surface가 재사용한다. |
 | `IMG-M01-02` | Investigation `ArtLayer/Background` + `LocationPreview` | `assets/backgrounds/afterlife_platform.png` | `REUSE_REVIEW` | 없으면 조사 장소/관측 공간이 사라진다. 별도 location-card 이미지를 만들지 않는다. |
-| `IMG-M01-03` | Recovery `ArtLayer/Background` | `assets/backgrounds/afterlife_recovery.png` | `REPLACE_REQUIRED / USER_APPROVED_VISUAL_CANDIDATE / PRODUCT_ASSET_PROMOTION_PENDING` | `M01_RECOVERY_BACKGROUND_ADAPT_01`은 배경 전용 후보로 승인됐다. 현행 PNG 교체와 Godot 연결은 별도 Gate다. |
-| `IMG-M01-04` | Recovery `AnomalyVisual` B/C | `assets/anomalies/cutouts/afterlife_b_cutout.png` with `assets/anomalies/afterlife_b.png` fallback | `REPLACE_REQUIRED / USER_APPROVED_VISUAL_CANDIDATE / PRODUCT_ASSET_PROMOTION_PENDING` | `M01_ANOMALY_BC_ADAPT_01`은 투명 현현 후보로 승인됐다. 현행 컷아웃 교체와 Godot 연결은 별도 Gate다. |
-| `IMG-M01-05` | Recovery `AnomalyVisual` D | `assets/anomalies/cutouts/afterlife_d_cutout.png` with `assets/anomalies/afterlife_d.png` fallback | `REPLACE_REQUIRED / USER_APPROVED_VISUAL_CANDIDATE / PRODUCT_ASSET_PROMOTION_PENDING` | `M01_ANOMALY_D_ADAPT_01`은 단일 실루엣의 투명 고위험 현현 후보로 승인됐다. 현행 컷아웃 교체와 Godot 연결은 별도 Gate다. |
+| `IMG-M01-03` | Recovery `ArtLayer/Background` | `assets/backgrounds/afterlife_recovery.png` | `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_AND_HUMAN_QA_PENDING` | `M01_RECOVERY_BACKGROUND_ADAPT_01`의 exact bytes가 canonical PNG를 교체했다. Scene/catalog 연결은 기존 route를 재사용하며, import·runtime/Human evidence는 별도 Gate다. |
+| `IMG-M01-04` | Recovery `AnomalyVisual` B/C | `assets/anomalies/cutouts/afterlife_b_cutout.png` with `assets/anomalies/afterlife_b.png` fallback | `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_AND_HUMAN_QA_PENDING` | `M01_ANOMALY_BC_ADAPT_01`의 exact bytes가 canonical cutout을 교체했다. Scene/catalog/fallback은 변경하지 않으며, import·runtime/Human evidence는 별도 Gate다. |
+| `IMG-M01-05` | Recovery `AnomalyVisual` D | `assets/anomalies/cutouts/afterlife_d_cutout.png` with `assets/anomalies/afterlife_d.png` fallback | `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VALIDATED_1280 / HUMAN_QA_PENDING` | `M01_ANOMALY_D_ADAPT_01`은 canonical cutout으로 승격됐고 1280×720 live check가 통과했다. 1920×1080 capture와 Human QA는 별도 Gate다. |
 | `IMG-M01-06` | Investigation `ManualSurface: TextureRect` | `assets/ui/afterlife/manual_book_frame.png` | `REUSE_REVIEW` | 실제 live Godot text 뒤의 textless surface. |
 | `IMG-M01-07` | route-restore minigame full-screen surface | `assets/ui/afterlife/generated/afterlife_metal_panel_v1.png` | `REUSE_REVIEW` | 저승역 최종 노선 복원 runtime surface. |
 
@@ -163,12 +163,12 @@ Current status: `REUSE_REVIEW`.
 
 ### REUSE/REPLACE review order
 
-1. `IMG-M01-03` Afterlife Recovery background — `REPLACE_REQUIRED`; candidate result approved, product promotion 별도 대기.
-2. `IMG-M01-04` Afterlife anomaly B/C — candidate result approved; product promotion 별도 대기.
-3. `IMG-M01-05` Afterlife anomaly D — candidate result approved; product promotion 별도 대기.
-4. `IMG-M01-02` Afterlife Investigation background.
-5. `IMG-M01-01` Afterlife Entrance / Dialogue background.
-6. `IMG-M04-02` approved M04 Investigation Anchor vs current `red_crossroads` consumer.
+1. `IMG-M01-03` Afterlife Recovery background — `PROJECT_ASSET_APPROVED`; import/1280×720/1920×1080 runtime and Human QA evidence pending.
+2. `IMG-M01-04` Afterlife anomaly B/C — `PROJECT_ASSET_APPROVED`; import/1280×720/1920×1080 runtime and Human QA evidence pending.
+3. `IMG-M01-05` Afterlife anomaly D — `PROJECT_ASSET_APPROVED`; 1280×720 runtime evidence recorded, 1920×1080 and Human QA pending.
+4. `IMG-M04-02` approved M04 Investigation Anchor vs current `red_crossroads` consumer.
+5. `IMG-M01-02` Afterlife Investigation background.
+6. `IMG-M01-01` Afterlife Entrance / Dialogue background.
 7. M04 Recovery/anomaly consumers.
 8. Character/support/contact assets only when a current playable-slice consumer shows a visual gap.
 
@@ -189,7 +189,7 @@ No batch generation from checklist gaps.
 
 ## 10. Authority / evidence ceiling
 
-Root `ASSET_MANIFEST.yml` is the current tracked product-asset authority and currently has `assets: []`.
+Root `ASSET_MANIFEST.yml` is the current tracked product-asset authority and has three current approved M01 entries: Recovery background, B/C anomaly cutout, and D anomaly cutout.
 
 Legacy `assets/ASSET_MANIFEST.json`, tracked PNG presence, `.import` files, existing runtime wiring, and old QA labels do **not** independently grant `PROJECT_ASSET_APPROVED`.
 
