@@ -114,6 +114,15 @@ M01 상세 runtime predecessor는 `docs/M01_RECOVERY_SCENE_PACKET.md`에 남아 
 - 실제 product-reference 승격 전 layer/reuse, rights/provenance, 1280×720/1920×1080 runtime readability, runtime consumption을 검증한다.
 - Human QA와 product-reference asset Gate는 서로 독립이다.
 
+2026-08-26 M04 Investigation background adaptation은 별도 `USER_APPROVED_VISUAL_CANDIDATE`로 확정됐다.
+
+- candidate ID: `M04_INVESTIGATION_BACKGROUND_ADAPT_01`.
+- durable review source: `docs/visual/candidates/M04_INVESTIGATION_BACKGROUND_ADAPT_01.png`.
+- receipt: `1672x941`, `2,662,606` bytes, SHA-256 `874d3c531a45c9ddf670e9a8ff70a37443762dc24af640edac2ff45fea762f9d`.
+- actual consumer intent: `investigation_scene.tscn -> ArtLayer/Background` plus shared `LocationPreview`.
+- this is an approved visual adaptation candidate after current `red_crossroads.png` pixel comparison. It is **not** `PROJECT_ASSET_APPROVED`, a replacement of the tracked PNG, a Godot connection, runtime readability PASS, or Human QA PASS.
+- detailed approval/provenance record: Notion `M04_INVESTIGATION_BACKGROUND_ADAPT_01` Asset Library entry.
+
 Recovery visual history:
 
 - predecessor WIP: `REFERENCE_MOCKUP / REVISION_REQUIRED / NOT_PRODUCT_ASSET`.
@@ -188,8 +197,8 @@ actual Scene / Texture consumer
 13. actual visual consumer inventory — COMPLETE_FOR_CURRENT_CORE_SURFACES
 14. next visual review: `IMG-M01-03 afterlife_recovery.png` → current file pixel compare when available; no blind replacement
 15. then M01 anomaly B/C → D → Investigation/Entrance consumer review
-16. M04 approved Investigation Anchor vs actual `red_crossroads` consumer comparison
-17. only `REPLACE_REQUIRED` / `CREATE_REQUIRED` items receive one-image generation cycle
+16. M04 approved Investigation Anchor vs actual `red_crossroads` consumer comparison — `ADAPT_CANDIDATE` selected
+17. `M04_INVESTIGATION_BACKGROUND_ADAPT_01` one-image adaptation + user result approval — COMPLETE_AS_VISUAL_CANDIDATE
 18. M04 product-reference promotion + rights/provenance + 1280×720/1920×1080 runtime 검증
 19. M04 release-near visual/audio/VFX implementation — separate later authorization
 20. M04 actual runtime/input + Human player-experience QA — separate later gate
@@ -213,6 +222,7 @@ actual Scene / Texture consumer
 - M01/M04 화면 책임 분리
 - 공용 runtime/state/result implementation
 - M04 Investigation Anchor 1안 사용자 결과 승인
+- M04 Investigation background adaptation 01 사용자 결과 승인
 - 사람용 Notion Visual/Home 이미지 upload/readback
 - Composite Result information-hierarchy / causal visual references 1·2단계 사용자 승인
 - runtime-consumer-first visual asset production gate
