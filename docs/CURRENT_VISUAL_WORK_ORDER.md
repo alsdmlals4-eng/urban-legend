@@ -197,7 +197,7 @@ actual Scene / Texture consumer
 12. runtime-consumer-first image gate — APPROVED
 13. actual visual consumer inventory — COMPLETE_FOR_CURRENT_CORE_SURFACES
 14. `IMG-M01-03 afterlife_recovery.png` pixel compare + one background-only candidate result approval → product asset promotion — `PROJECT_ASSET_APPROVED / IMPLEMENTED`; runtime/Human evidence pending
-15. M01 anomaly B/C and D pixel compare → product asset promotion — B/C `PROJECT_ASSET_APPROVED / IMPLEMENTED`; D correction candidate promoted under Issue #280 as `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VALIDATED_1280 / RUNTIME_1920_PENDING`; Human QA remains separate
+15. M01 anomaly B/C and D pixel compare → product asset promotion — B/C `PROJECT_ASSET_APPROVED / IMPLEMENTED`; D correction candidate promoted under Issue #280 and verified in Issue #282 as `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED`; Human QA remains separate
 16. M04 approved Investigation Anchor vs actual `red_crossroads` consumer comparison — `ADAPT_CANDIDATE` selected
 17. `M04_INVESTIGATION_BACKGROUND_ADAPT_01` one-image adaptation + user result approval — COMPLETE_AS_VISUAL_CANDIDATE
 18. M04 product-reference promotion + rights/provenance — `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED`; 1280×720/1920×1080 runtime 검증 COMPLETE (PR #273)
