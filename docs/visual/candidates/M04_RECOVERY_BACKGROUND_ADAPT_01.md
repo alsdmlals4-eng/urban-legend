@@ -2,7 +2,7 @@
 
 ## Status
 
-`USER_AUTONOMOUSLY_AUTHORIZED_VISUAL_CANDIDATE / PRODUCT_ASSET_PROMOTION_PENDING`
+`CANDIDATE_NOT_PROMOTED / REUSE_REVIEW`
 
 The project's sole decision owner authorized continued visual work, automatic generation when a runtime consumer needs it, and preservation in both the repository and Notion. This receipt records that delegated approval boundary; it does not promote the image to a product asset.
 
@@ -33,4 +33,4 @@ The existing `red_recovery.png` was reviewed as a European lantern alley with st
 
 ## Promotion boundary
 
-This is a candidate only. It does not replace `assets/backgrounds/red_recovery.png`, add or change Godot wiring, alter existing transparent anomaly assets, grant `PROJECT_ASSET_APPROVED`, or pass 1280×720 / 1920×1080 runtime readability, accessibility, or Human QA. Promotion must first compare it with the current canonical background with the actual anomaly/UI overlays enabled.
+This candidate was compared on 2026-08-27 under GitHub Issue #295. It improves the Korean closed-shop geography and preserves the central area for the separate `AnomalyVisual`, but its literal photographic surface still misses the locked soft-anime-noir treatment. It therefore does not replace `assets/backgrounds/red_recovery.png`, add or change Godot wiring, alter existing transparent anomaly assets, grant `PROJECT_ASSET_APPROVED`, or pass 1280×720 / 1920×1080 runtime readability, accessibility, or Human QA. A Hera live capture could not be opened because all available editor bridge ports belonged to unrelated projects; that runtime comparison remains `NOT_RUN`. Any replacement must improve both style treatment and the verified layer separation.
