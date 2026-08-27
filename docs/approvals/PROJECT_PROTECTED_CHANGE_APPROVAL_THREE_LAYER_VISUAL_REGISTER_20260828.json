@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "artifact_role": "PROJECT_PROTECTED_CHANGE_APPROVAL",
+  "status": "APPROVED",
+  "protected_base_commit": "c0bc8a98ee40bf04d4953a834d9cd06c47e42efe",
+  "decision_ids": ["UL-ISSUE-315-THREE-LAYER-VISUAL-REGISTER"],
+  "approved_paths": [
+    "assets/anomalies/cutouts/afterlife_d_cutout.png",
+    "assets/anomalies/cutouts/red_umbrella_b_cutout.png",
+    "assets/backgrounds/afterlife_platform.png",
+    "scripts/scenes/battle_scene.gd",
+    "scripts/scenes/investigation_scene.gd",
+    "scripts/ui/canon_v2_operation_overlay.gd",
+    "scripts/ui/canon_v2_runtime_bridge.gd",
+    "scripts/ui/recovery_telegraph_audio.gd"
+  ],
+  "approval_source": "The sole decision owner requested a full three-layer visual asset audit, instructed that existing assets be confirmed and missing assets be produced only where actual consumers require them, and authorized safe current-task documentation/PR handling. This task changes none of the listed protected product paths.",
+  "approval_time": "2026-08-28T07:10:00+09:00",
+  "scope_summary": "Record the current runtime, production-reference, and release-promotion visual coverage with an exact 51/51 runtime texture-path presence audit. Preserve all product asset bytes, Scene/script/UI behavior, gameplay, data, saves, product-asset status, runtime evidence, and Human QA state."
+}
