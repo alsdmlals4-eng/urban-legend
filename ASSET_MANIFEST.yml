@@ -193,12 +193,11 @@ assets:
     statuses:
       - "PRODUCTION_READY"
       - "IMPLEMENTED"
-      - "VISUALLY_VALIDATED"
     vault_source_key: "M01_ANOMALY_D_ADAPT_01"
     canonical_path: "assets/anomalies/cutouts/afterlife_d_cutout.png"
     source_path: "docs/visual/candidates/M01_ANOMALY_D_ADAPT_01.png"
     runtime_path: "scenes/battle_scene.tscn -> CinematicStage/AnomalyPanel/Content/AnomalyVisual"
-    latest_capture_path: ""
+    latest_capture_path: "docs/qa/captures/m01/recovery_asset_runtime_20260827/m01-recovery-d-launch-1920x1080_capture-1920x1061.png"
     golden_screenshot_path: ""
     source_type: "AI_GENERATED"
     source_and_license: >
@@ -239,19 +238,21 @@ assets:
       prompt_core: "Anonymous Korean late-night station-attendant-like figure, one coherent single silhouette, cap and light-grey inner garment, unnaturally continuing coat hem, transparent cutout, restrained soft anime-noir ink/paper texture; no text, UI, scenery, logo, named character, duplicate face, or duplicate limbs."
       seed_or_reproduction: "Not exposed by the generation surface."
       manual_post_process: "None recorded."
-      known_remaining_issues: "Human visual QA and 1920x1080 runtime capture remain pending. The fixed 1280x720 logical viewport was verified in the live consumer."
+      known_remaining_issues: "The 1280x720 and 1920x1080 launch-profile consumer routes resolve, but the existing D figure does not visibly escalate the same apparition represented by B/C. M01_ANOMALY_D_RUNTIME_CORRECTION_CANDIDATE_20260827 is review-only until a separate promotion comparison and runtime import/readback complete. Human QA remains pending."
     validation:
       target_resolutions:
         - "1280x720"
         - "1920x1080"
       runtime_verified: true
-      visual_qa_verified: true
+      visual_qa_verified: false
       accessibility_verified: false
       evidence:
         - "docs/visual/candidates/M01_ANOMALY_D_ADAPT_01.md"
         - "docs/visual/candidates/M01_ANOMALY_D_RUNTIME_1280x720.png"
         - "GitHub Issue #246"
-      last_verified_commit: ""
+        - "docs/qa/M01_RECOVERY_APPROVED_ASSET_RUNTIME_EVIDENCE_20260827.md"
+        - "GitHub Issue #278"
+      last_verified_commit: "6a5ed26bf07756f0dd4a0b3e62aa2cfc2628b90c"
     next_review_triggers:
       - "After an AnomalyVisual layout or scaling change"
       - "Before release-rights sign-off"
