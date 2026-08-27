@@ -202,7 +202,7 @@ actual Scene / Texture consumer
 17. `M04_INVESTIGATION_BACKGROUND_ADAPT_01` one-image adaptation + user result approval — COMPLETE_AS_VISUAL_CANDIDATE
 18. M04 product-reference promotion + rights/provenance — `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED`; 1280×720/1920×1080 runtime 검증 COMPLETE (PR #273)
 19. `M01_INVESTIGATION_PLATFORM_ADAPT_01` review → `CANDIDATE_NOT_PROMOTED` (central pillar conflicts with shared preview); `M01_INVESTIGATION_PLATFORM_ADAPT_02_20260827` one-image correction → `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED` at the existing `afterlife_platform.png` path; 1280×720/1920×1080 Background + LocationPreview verified, Human QA pending
-20. `M01_ENTRANCE_BACKGROUND_ADAPT_01` one-image candidate — `USER_AUTONOMOUSLY_AUTHORIZED_VISUAL_CANDIDATE`; current `afterlife_entrance` dialogue/preview/Main Menu shared-consumer promotion compare pending
+20. `M01_ENTRANCE_BACKGROUND_ADAPT_01` one-image candidate — `CANDIDATE_NOT_PROMOTED / REUSE_REVIEW`; it turns the descending entry threshold into a generic platform corridor and its blank sign/pillars compete with compact shared previews. Preserve `afterlife_entrance.png`; any re-entry candidate must retain the threshold and shared-preview composition.
 21. M04 release-near visual/audio/VFX implementation — separate later authorization
 22. M04 Human player-experience QA — separate later gate
 23. `M04_RECOVERY_BACKGROUND_ADAPT_01` one-image candidate — `USER_AUTONOMOUSLY_AUTHORIZED_VISUAL_CANDIDATE`; current `red_recovery` background and separate transparent anomaly overlay promotion compare pending
