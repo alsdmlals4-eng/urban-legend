@@ -34,4 +34,4 @@ The first B/C generation attempt produced a 24-bit RGB PNG with a visual checker
 
 ## Promotion boundary
 
-Under GitHub Issue #299, the candidate's exact bytes now replace `assets/anomalies/cutouts/red_umbrella_b_cutout.png`. Existing Scene/catalog/fallback wiring is unchanged. Actual graphical Godot captures at 1280x720 and 1920x1080 resolved this cutout in the M04 Recovery `AnomalyVisual`; see `docs/qa/M04_BC_ANOMALY_PROMOTION_RUNTIME_20260827.md`. Human visual/accessibility QA is still pending, and D must be evaluated separately after the B/C identity is fixed.
+Under GitHub Issue #299, the candidate's exact bytes now replace `assets/anomalies/cutouts/red_umbrella_b_cutout.png`. Existing Scene/catalog/fallback wiring is unchanged. Actual graphical Godot captures at 1280x720 and 1920x1080 resolved this cutout in the M04 Recovery `AnomalyVisual`; their hash and runtime result are recorded in the root asset manifest. Human visual/accessibility QA is still pending, and D must be evaluated separately after the B/C identity is fixed.
