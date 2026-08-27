@@ -1,8 +1,8 @@
 # 괴이기록국 Current Decision Overlay
 
 > 문서 역할: `CURRENT_MUTABLE_DECISION_OVERLAY`
-> 상태: `CURRENT / PLANNING_COMPLETE / RUNTIME_RECONCILIATION_MERGED`
-> 갱신 기준: PR #226 merge commit `9073b4730993149f89970a13fbe32d49f8f473e7` + merged-main adapter readback (runtime merge `8d303f0f9414950273be934fd28c8fb1b3a21e18`)
+> 상태: `CURRENT / PLANNING_COMPLETE / USER_APPROVED_VISUAL_DIRECTION_LOCK / RUNTIME_RECONCILIATION_MERGED`
+> 갱신 기준: PR #322 merge commit `9fa32d32e8a5a2ad7d34a388695986b4ab81c6a7` + merged-main canon readback (runtime merge `8d303f0f9414950273be934fd28c8fb1b3a21e18`)
 > 상세 역사 결정 원장: `docs/CURRENT_CONFIRMED_DECISIONS.md`
 
 이 파일은 현재 작업자가 즉시 판단해야 하는 mutable decision과 verified successor state만 소유한다. 역사 원장이 current state와 충돌하면 최신 사용자 지시 → GitHub latest main → Notion current planning → `CURRENT_PLANNING_CANON.md` / `current-planning-canon.json` → 이 Overlay 순으로 해석한다.
@@ -19,6 +19,8 @@ release_near_vertical_slice: M04_RED_UMBRELLA
 core_flow: INVESTIGATION_DEDUCTION_MANUAL_RESCUE_RECOVERY_COMPOSITE_RESULT
 visual_treatment: SOFT_ANIME_NOIR_LOCKED
 presentation_language: DOSSIER_HYBRID_IS_PRESENTATION_LANGUAGE_NOT_MEDIUM
+visual_direction_lock: USER_APPROVED
+visual_direction_decision: D-2026-08-28-URBAN-NOIR-HYBRID-VISUAL-DIRECTION
 ```
 
 ## 2. 현재 Gate
@@ -28,6 +30,7 @@ PLANNING_COMPLETE: true
 USER_FINAL_PLANNING_DECLARATION_APPROVED: true
 non_visual_planning: COMPLETE
 visual_planning: COMPLETE
+visual_direction_lock: USER_APPROVED
 product_reference_asset: PENDING
 overall_plan: COMPLETE
 runtime_implementation: MERGED_MAIN
@@ -87,6 +90,14 @@ base_adapter_baseline_reconciliation: COMPLETE
 - Composite Result axes 공유.
 - M01 truth ID를 M04 current truth로 재사용하지 않는다.
 - `PRODUCT_REFERENCE_ASSET_PENDING`, `final_visuals_authorized=false` 유지.
+
+### Visual direction lock — 2026-08-28
+
+판정: `USER_APPROVED / PLANNING_ONLY`.
+
+- 현실적 한국 도시 누아르 환경 + 애니풍 인물·괴이 + 손그림 기록물 UI의 혼합 문법을 현행 `SOFT_ANIME_NOIR_LOCKED`의 구체화로 채택했다.
+- `docs/visual/VISUAL_DIRECTION_LOCK_PACKET_2026-08-28.md`의 Keep/Avoid/Do Not Drift가 후속 시각 자료에 적용된다.
+- `PROJECT_CORE_SCENE_VISUAL_BOARD`는 AI 이해/기획 검토용 생성 보드다. 자체로 product asset, Godot UI/Scene 구현, target-resolution PASS, Human/Player Experience PASS를 만들지 않는다.
 
 ## 4. 자동 검증
 

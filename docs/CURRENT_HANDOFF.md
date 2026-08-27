@@ -1,7 +1,7 @@
 # 괴이기록국 Current Handoff
 
-> 상태: `PLANNING_COMPLETE / RUNTIME_RECONCILIATION_MERGED / HUMAN_QA_PENDING`
-> 기준 main: `9073b4730993149f89970a13fbe32d49f8f473e7` · PR #226 (runtime implementation: `8d303f0f9414950273be934fd28c8fb1b3a21e18` · PR #224)
+> 상태: `PLANNING_COMPLETE / USER_APPROVED_VISUAL_DIRECTION_LOCK / RUNTIME_RECONCILIATION_MERGED / HUMAN_QA_PENDING`
+> latest-main reconciliation: PR #322 merge `9fa32d32e8a5a2ad7d34a388695986b4ab81c6a7` (runtime implementation: `8d303f0f9414950273be934fd28c8fb1b3a21e18` · PR #224)
 > 사람용 정본: Notion 괴이기록국 프로젝트 홈
 > 구조화 정본: `docs/CURRENT_PLANNING_CANON.md`, `docs/current-planning-canon.json`
 
@@ -15,6 +15,7 @@ plan_lock: RELEASED_TO_IMPLEMENTATION_GATE
 runtime_implementation: MERGED_MAIN
 runtime_merge_commit: 8d303f0f9414950273be934fd28c8fb1b3a21e18
 product_reference_asset: PENDING
+visual_direction_lock: USER_APPROVED
 human_qa: NOT_RUN
 poc_passed: NOT_DECLARED
 production_expansion: NOT_APPROVED
@@ -22,6 +23,8 @@ base_adapter_baseline_reconciliation: COMPLETE
 ```
 
 `PLAN_LOCK`은 predecessor 기획 잠금 식별자이며 현재 값은 `RELEASED_TO_IMPLEMENTATION_GATE`다. 이를 runtime 미승인 상태로 되돌려 해석하지 않는다.
+
+현재 시각 방향은 `D-2026-08-28-URBAN-NOIR-HYBRID-VISUAL-DIRECTION`의 **현실적 한국 도시 누아르 환경 + 애니풍 인물·괴이 + 손그림 기록물 UI**다. 이 방향은 `docs/visual/VISUAL_DIRECTION_LOCK_PACKET_2026-08-28.md`가 소유하며, 첨부 Core Scene Board는 기획 검증용 `GENERATED_EXPLORATION`일 뿐 runtime asset/Scene/UI/Human QA가 아니다.
 
 ## 1. 재개 순서
 

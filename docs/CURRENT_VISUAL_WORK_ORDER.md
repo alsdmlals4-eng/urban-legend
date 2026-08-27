@@ -2,10 +2,10 @@
 
 > Role: `CURRENT_VISUAL_WORK_ORDER`
 > Updated: `2026-08-28`
-> Status: `PLANNING_COMPLETE / RUNTIME_IMPLEMENTED / USER_APPROVED_VISUAL_CANDIDATES / RUNTIME_CONSUMER_FIRST_ASSET_GATE / M04_INVESTIGATION_RUNTIME_VERIFIED / PRODUCT_REFERENCE_ASSET_PENDING / HUMAN_QA_NOT_RUN`
+> Status: `PLANNING_COMPLETE / RUNTIME_IMPLEMENTED / USER_APPROVED_VISUAL_DIRECTION_LOCK / USER_APPROVED_VISUAL_CANDIDATES / RUNTIME_CONSUMER_FIRST_ASSET_GATE / M04_INVESTIGATION_RUNTIME_VERIFIED / PRODUCT_REFERENCE_ASSET_PENDING / HUMAN_QA_NOT_RUN`
 > Art treatment: `SOFT_ANIME_NOIR_LOCKED`
 > Presentation invariant: `DOSSIER_HYBRID_IS_PRESENTATION_LANGUAGE_NOT_MEDIUM`
-> Decisions: `D-2026-08-20-INVESTIGATION-SCENE-KEYWORD-DEDUCTION-LIMITED-CHARACTER-EXPOSURE`, `D-2026-08-25-RECOVERY-CONTEXT-ACTION-HIERARCHY`, `D-2026-08-26-RUNTIME-CONSUMER-FIRST-VISUAL-ASSET-GATE`
+> Decisions: `D-2026-08-20-INVESTIGATION-SCENE-KEYWORD-DEDUCTION-LIMITED-CHARACTER-EXPOSURE`, `D-2026-08-25-RECOVERY-CONTEXT-ACTION-HIERARCHY`, `D-2026-08-26-RUNTIME-CONSUMER-FIRST-VISUAL-ASSET-GATE`, `D-2026-08-28-URBAN-NOIR-HYBRID-VISUAL-DIRECTION`
 > Consumer checklist: `docs/CURRENT_VISUAL_ASSET_CONSUMER_CHECKLIST.md`
 > Screen coverage owner: `docs/CURRENT_SCREEN_SURFACE_INVENTORY_AND_VISUAL_COVERAGE.md`
 
@@ -14,6 +14,8 @@
 2026-08-26 사용자 결정에 따라 신규 이미지 제작은 **실제 게임 runtime consumer가 있는 asset**을 기준으로 한다. `PanelContainer`, `Label`, `Button`, `GridContainer`, Theme/StyleBox 등 Godot UI 구조를 설명하기 위한 component sheet는 이미지 backlog에서 제외한다. 실제 생성/교체 판단은 `CURRENT_VISUAL_ASSET_CONSUMER_CHECKLIST.md`가 소비처·기존 파일·Delete Test를 연결해 소유한다.
 
 현재 mutation 경계는 **runtime-consumed visual asset review, product-reference asset 승격, runtime 가독성 검증, release-near polish, Human evidence**다.
+
+2026-08-28에 사용자는 **현실적 한국 도시 누아르 환경 + 애니풍 인물·괴이 + 손그림 기록물 UI** 혼합 방향을 현재 시각 정본으로 승인했다. 상세 Keep/Avoid/Do Not Drift, provenance와 구현 제외 경계는 `docs/visual/VISUAL_DIRECTION_LOCK_PACKET_2026-08-28.md`가 소유한다. 이 이해 검증용 보드는 `docs/visual/PROJECT_CORE_SCENE_VISUAL_BOARD_2026-08-28.md`와 PNG에 남기며, runtime asset/UI/Scene/Human QA로 해석하지 않는다.
 
 ## 1. Current approved direction
 

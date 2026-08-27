@@ -1,5 +1,7 @@
 # 괴이기록국 현재 확정 결정
 
+> 2026-08-28 routing correction: 이 파일은 상세 승인·대체 **역사 원장**이다. 여기의 과거 Base SHA, 0건 asset count, 구현/QA 값은 current state를 소유하지 않는다. 최신 사용자 승인 → GitHub latest main → Notion current planning → `CURRENT_PLANNING_CANON.md` / `current-planning-canon.json` → `CURRENT_DECISION_OVERLAY.md`를 먼저 읽는다. 현재 개별 asset은 root `ASSET_MANIFEST.yml`, 현재 시각 방향은 `D-2026-08-28-URBAN-NOIR-HYBRID-VISUAL-DIRECTION`과 `docs/visual/VISUAL_DIRECTION_LOCK_PACKET_2026-08-28.md`가 소유한다.
+
 > 2026-08-20 supersession: 현재 제품 구조는 `월 1사건 M01+ / Signature 4 + Standard 8 / M01 First Session / M04 release-near Vertical Slice`다. 아래 1년차·분기 구조는 승인·병합 history와 기술 회귀 근거로 보존하되 현재 cadence를 소유하지 않는다. 최신 계획은 `docs/CURRENT_PLANNING_CANON.md`를 우선한다.
 > Workspace authority: Notion 사람용 정본 + Repository 구조화/구현 정본. Google Sheet는 migration-only다.
 
