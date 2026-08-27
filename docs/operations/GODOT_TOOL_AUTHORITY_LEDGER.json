@@ -153,6 +153,43 @@
         "protected_diff": "PASS",
         "recording_note": "Merged-main promotion evidence. Current exact-head authority must still be read from GitHub Actions and the synchronized Sheet."
       }
+    },
+    {
+      "tool_id": "hera_agent_godot",
+      "display_name": "Hera Agent Godot",
+      "plugin_cfg": "res://addons/hera_agent_godot/plugin.cfg",
+      "exact_version": "1.0.0",
+      "authority": "LIVE_EDITOR_OBSERVABILITY",
+      "authority_cardinality": "NON_AUTHORING",
+      "authority_state": "ACTIVE_EDITOR_OBSERVABILITY",
+      "allowed_operations": [
+        "inspect_live_editor",
+        "run_play_session",
+        "capture_runtime_state",
+        "perform_read_only_scene_node_resource_diagnostics"
+      ],
+      "allowed_product_mutations": [],
+      "forbidden_operations": [
+        "modify_project_canon",
+        "replace_higodot_authoring_authority",
+        "forge_test_pass",
+        "replace_human_qa"
+      ],
+      "consumption_paths": [
+        "Godot editor live-inspection and runtime QA workflow"
+      ],
+      "validation_requirements": [
+        "localhost-only editor connection",
+        "machine evidence must not be reported as Human QA",
+        "maintained regression after a task requires live-editor evidence"
+      ],
+      "ci_commands": [],
+      "rollback_steps": [
+        "Open a dedicated reviewed PR",
+        "Disable res://addons/hera_agent_godot/plugin.cfg through the authoring authority",
+        "Remove the Hera autoload only when the plugin is disabled",
+        "Run the maintained full regression matrix"
+      ]
     }
   ]
 }

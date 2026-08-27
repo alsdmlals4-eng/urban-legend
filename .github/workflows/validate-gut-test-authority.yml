@@ -185,12 +185,24 @@ jobs:
 
           gut_tests_match = re.search(r"^Tests\s+(\d+)\s*$", gut_output, re.MULTILINE)
           gut_assertions_match = re.search(r"^Asserts\s+(\d+)\s*$", gut_output, re.MULTILINE)
-          regression_match = re.search(
-              r"Godot regression suite:\s+(\d+)/(\d+) legacy entrypoints \+ "
-              r"(\d+)/(\d+) Canon v2 focused entrypoints passed",
-              regression_output,
+          maintained_entrypoints = len(
+              re.findall(r"^::group::Godot test:", regression_output, re.MULTILINE)
           )
-          if not gut_tests_match or not gut_assertions_match or not regression_match:
+          canon_v2_entrypoints = len(
+              re.findall(
+                  r"^::group::Afterlife Canon v2 test:",
+                  regression_output,
+                  re.MULTILINE,
+              )
+          )
+          regression_complete = "Godot regression suite: all configured entrypoints passed" in regression_output
+          if (
+              not gut_tests_match
+              or not gut_assertions_match
+              or not regression_complete
+              or not maintained_entrypoints
+              or not canon_v2_entrypoints
+          ):
               raise SystemExit("expected GUT or regression summary was not found")
 
           suites = list(junit_root.iter("testsuite"))
@@ -199,19 +211,12 @@ jobs:
           junit_errors = sum(int(suite.attrib.get("errors", 0)) for suite in suites)
           gut_tests = int(gut_tests_match.group(1))
           gut_assertions = int(gut_assertions_match.group(1))
-          legacy_passed, legacy_total, canon_passed, canon_total = map(
-              int, regression_match.groups()
-          )
-
           if junit_tests != gut_tests or junit_failures or junit_errors:
               raise SystemExit(
                   "JUnit and GUT summary disagree or contain failures: "
                   f"junit={junit_tests}, gut={gut_tests}, "
                   f"failures={junit_failures}, errors={junit_errors}"
               )
-          if legacy_passed != legacy_total or canon_passed != canon_total:
-              raise SystemExit("maintained regression summary is not fully passing")
-
           summary = {
               "candidate_sha": (artifact_dir / "candidate-sha.txt").read_text(
                   encoding="utf-8"
@@ -221,9 +226,9 @@ jobs:
               "junit_tests": junit_tests,
               "junit_failures": junit_failures,
               "junit_errors": junit_errors,
-              "legacy_entrypoints": legacy_passed,
-              "canon_v2_entrypoints": canon_passed,
-              "full_regression_entrypoints": legacy_passed + canon_passed,
+              "legacy_entrypoints": maintained_entrypoints,
+              "canon_v2_entrypoints": canon_v2_entrypoints,
+              "full_regression_entrypoints": maintained_entrypoints + canon_v2_entrypoints,
               "upstream_tree": (artifact_dir / "upstream-tree-result.txt").read_text(
                   encoding="utf-8"
               ).strip(),
