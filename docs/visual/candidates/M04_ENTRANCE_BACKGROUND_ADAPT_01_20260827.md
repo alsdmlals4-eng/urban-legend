@@ -8,9 +8,9 @@
 
 ## One-image brief and result
 
-The candidate keeps the rainy Korean side-alley opening and a collapsed crimson umbrella as the single anomaly cue. It removes text, logos, branded convenience-store striping, people, and UI, then leaves a clear leading path toward the center for both dialogue and compact preview uses.
+The candidate keeps the rainy Korean side-alley opening and a collapsed crimson umbrella as the single anomaly cue. It removes text, logos, branded convenience-store striping, people, and UI, then leaves a clear leading path toward the center for dialogue and **non-compact** preview use. `CurrentCasePreview` is intentionally hidden when the Main Menu is compact (below 1500×850).
 
-The current canonical image is strongly photoreal and includes convenience-store-like signage. This candidate improves provenance safety and focal hierarchy, but it remains non-promoted until the actual Dialogue and main-menu preview consumers are compared at supported resolutions. No canonical bytes, Scene/catalog wiring, UI, gameplay, save, or Human QA state changes in this candidate-only task.
+The current canonical image is strongly photoreal and includes convenience-store-like signage. This candidate improves provenance safety and focal hierarchy, but it remains non-promoted until actual Dialogue at 1280×720/1920×1080 and the non-compact main-menu preview at 1920×1080 are compared. No canonical bytes, Scene/catalog wiring, UI, gameplay, save, or Human QA state changes in this candidate-only task.
 
 ## Provenance
 
