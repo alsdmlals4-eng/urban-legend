@@ -1,14 +1,14 @@
 # 괴이기록국 · Current Visual Work Order
 
 > Role: `CURRENT_VISUAL_WORK_ORDER`
-> Updated: `2026-08-26`
-> Status: `PLANNING_COMPLETE / RUNTIME_IMPLEMENTED / USER_APPROVED_VISUAL_CANDIDATES / RUNTIME_CONSUMER_FIRST_ASSET_GATE / PRODUCT_REFERENCE_ASSET_PENDING / HUMAN_QA_NOT_RUN`
+> Updated: `2026-08-27`
+> Status: `PLANNING_COMPLETE / RUNTIME_IMPLEMENTED / USER_APPROVED_VISUAL_CANDIDATES / RUNTIME_CONSUMER_FIRST_ASSET_GATE / M04_INVESTIGATION_RUNTIME_VERIFIED / PRODUCT_REFERENCE_ASSET_PENDING / HUMAN_QA_NOT_RUN`
 > Art treatment: `SOFT_ANIME_NOIR_LOCKED`
 > Presentation invariant: `DOSSIER_HYBRID_IS_PRESENTATION_LANGUAGE_NOT_MEDIUM`
 > Decisions: `D-2026-08-20-INVESTIGATION-SCENE-KEYWORD-DEDUCTION-LIMITED-CHARACTER-EXPOSURE`, `D-2026-08-25-RECOVERY-CONTEXT-ACTION-HIERARCHY`, `D-2026-08-26-RUNTIME-CONSUMER-FIRST-VISUAL-ASSET-GATE`
 > Consumer checklist: `docs/CURRENT_VISUAL_ASSET_CONSUMER_CHECKLIST.md`
 
-이 문서는 현재 시각/화면 계약을 소유한다. 공유 runtime 구현은 PR #224를 통해 main에 반영됐고, M04 Investigation Anchor 1안은 사용자 결과 승인을 받았다. Recovery successor 전체 시안도 현재 대화에서 사용자 승인을 받았고, Composite Result 1·2단계 mockup은 사용자 승인 reference다. 다만 이 화면 mockup들은 자동으로 제품 PNG asset이 되지 않는다.
+이 문서는 현재 시각/화면 계약을 소유한다. 공유 runtime 구현은 PR #224를 통해 main에 반영됐고, M04 Investigation Anchor 1안은 사용자 결과 승인을 받았다. Recovery successor 전체 시안도 현재 대화에서 사용자 승인을 받았고, Composite Result 1·2단계 mockup은 사용자 승인 reference다. 다만 이 화면 mockup들은 자동으로 제품 PNG asset이 되지 않는다. `PRODUCT_REFERENCE_ASSET_PENDING`은 아직 promotion/runtime evidence가 남은 소비처에 적용되는 전역 게이트이며, M04 Investigation의 개별 `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED` 사실을 되돌리지 않는다.
 
 2026-08-26 사용자 결정에 따라 신규 이미지 제작은 **실제 게임 runtime consumer가 있는 asset**을 기준으로 한다. `PanelContainer`, `Label`, `Button`, `GridContainer`, Theme/StyleBox 등 Godot UI 구조를 설명하기 위한 component sheet는 이미지 backlog에서 제외한다. 실제 생성/교체 판단은 `CURRENT_VISUAL_ASSET_CONSUMER_CHECKLIST.md`가 소비처·기존 파일·Delete Test를 연결해 소유한다.
 
@@ -120,7 +120,7 @@ M01 상세 runtime predecessor는 `docs/M01_RECOVERY_SCENE_PACKET.md`에 남아 
 - durable review source: `docs/visual/candidates/M04_INVESTIGATION_BACKGROUND_ADAPT_01.png`.
 - receipt: `1672x941`, `2,662,606` bytes, SHA-256 `874d3c531a45c9ddf670e9a8ff70a37443762dc24af640edac2ff45fea762f9d`.
 - actual consumer intent: `investigation_scene.tscn -> ArtLayer/Background` plus shared `LocationPreview`.
-- this is an approved visual adaptation candidate after current `red_crossroads.png` pixel comparison. Its exact bytes are now `PROJECT_ASSET_APPROVED / IMPLEMENTED` at the existing `assets/backgrounds/red_crossroads.png` route; no Godot connection was added or changed. Runtime readability PASS and Human QA PASS remain pending.
+- this is an approved visual adaptation candidate after current `red_crossroads.png` pixel comparison. Its exact bytes are now `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED` at the existing `assets/backgrounds/red_crossroads.png` route; no Godot connection was added or changed. PR #273 verified actual Investigation + LocationPreview readability at 1280×720/1920×1080. Human QA remains pending.
 - detailed approval/provenance record: Notion `M04_INVESTIGATION_BACKGROUND_ADAPT_01` Asset Library entry.
 
 Recovery visual history:
@@ -200,11 +200,11 @@ actual Scene / Texture consumer
 15. M01 anomaly B/C and D pixel compare → product asset promotion — B/C `PROJECT_ASSET_APPROVED / IMPLEMENTED`, D `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VALIDATED_1280`; remaining evidence stays separate
 16. M04 approved Investigation Anchor vs actual `red_crossroads` consumer comparison — `ADAPT_CANDIDATE` selected
 17. `M04_INVESTIGATION_BACKGROUND_ADAPT_01` one-image adaptation + user result approval — COMPLETE_AS_VISUAL_CANDIDATE
-18. M04 product-reference promotion + rights/provenance — `PROJECT_ASSET_APPROVED / IMPLEMENTED`; 1280×720/1920×1080 runtime 검증 pending
+18. M04 product-reference promotion + rights/provenance — `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED`; 1280×720/1920×1080 runtime 검증 COMPLETE (PR #273)
 19. `M01_INVESTIGATION_PLATFORM_ADAPT_01` one-image candidate — `USER_AUTONOMOUSLY_AUTHORIZED_VISUAL_CANDIDATE`; current `afterlife_platform` consumer promotion compare pending
 20. `M01_ENTRANCE_BACKGROUND_ADAPT_01` one-image candidate — `USER_AUTONOMOUSLY_AUTHORIZED_VISUAL_CANDIDATE`; current `afterlife_entrance` dialogue/preview/Main Menu shared-consumer promotion compare pending
 21. M04 release-near visual/audio/VFX implementation — separate later authorization
-22. M04 actual runtime/input + Human player-experience QA — separate later gate
+22. M04 Human player-experience QA — separate later gate
 23. `M04_RECOVERY_BACKGROUND_ADAPT_01` one-image candidate — `USER_AUTONOMOUSLY_AUTHORIZED_VISUAL_CANDIDATE`; current `red_recovery` background and separate transparent anomaly overlay promotion compare pending
 ```
 
@@ -238,7 +238,7 @@ actual Scene / Texture consumer
 - M01-03 and M01 B/C Godot import plus 1280×720/1920×1080 runtime readability / Human QA
 - M01 D 1920×1080 runtime capture / Human QA
 - M01 actual Human QA / new-player validation
-- M04 1280×720/1920×1080 runtime visual QA
+- M04 Human player-experience / accessibility QA
 - 1280×720/1920×1080 최종 runtime 시각 PASS
 - M04 release-near visual/audio/VFX Human QA
 - Android

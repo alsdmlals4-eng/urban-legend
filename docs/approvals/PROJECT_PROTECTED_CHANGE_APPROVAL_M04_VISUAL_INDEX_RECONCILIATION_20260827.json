@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "artifact_role": "PROJECT_PROTECTED_CHANGE_APPROVAL",
+  "status": "APPROVED",
+  "protected_base_commit": "c0bc8a98ee40bf04d4953a834d9cd06c47e42efe",
+  "decision_ids": [
+    "UL-ISSUE-261-M04-RECOVERY-TELEGRAPH-AUDIO",
+    "UL-ISSUE-268-RECOVERY-OVERLAY-LAYERING",
+    "UL-ISSUE-270-INVESTIGATION-OVERLAY-REFLOW",
+    "UL-ISSUE-272-M04-INVESTIGATION-BACKGROUND-HIERARCHY",
+    "UL-ISSUE-274-M04-RUNTIME-EVIDENCE",
+    "UL-ISSUE-276-M04-VISUAL-INDEX-RECONCILIATION"
+  ],
+  "approved_paths": [
+    "scripts/scenes/battle_scene.gd",
+    "scripts/scenes/investigation_scene.gd",
+    "scripts/ui/canon_v2_operation_overlay.gd",
+    "scripts/ui/canon_v2_runtime_bridge.gd",
+    "scripts/ui/recovery_telegraph_audio.gd"
+  ],
+  "approval_source": "The project's sole decision owner authorized continuous autonomous implementation and direct Godot verification. This follow-up records documentation-only index reconciliation for already merged M04 runtime evidence; no second GitHub identity is required.",
+  "approval_time": "2026-08-27T12:05:00+09:00",
+  "scope_summary": "This approval covers only reconciliation of the current visual consumer checklist and work order with M04 Investigation runtime verification from PR #273 and durable evidence records from PR #275. Preserve asset bytes, runtime code, save data, M01 status, pending M04 Recovery/anomaly work, Human QA, accessibility, rights, Android, and POC gates."
+}
