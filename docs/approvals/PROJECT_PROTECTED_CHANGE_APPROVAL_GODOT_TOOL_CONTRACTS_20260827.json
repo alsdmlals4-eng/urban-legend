@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "artifact_role": "PROJECT_PROTECTED_CHANGE_APPROVAL",
+  "status": "APPROVED",
+  "protected_base_commit": "e92b6f25463b499044362517404002183add0cd5",
+  "decision_ids": [
+    "UL-ISSUE-262-GODOT-TOOL-CONTRACT-RESTORATION"
+  ],
+  "approved_paths": [
+    "addons/godot_ai/runtime/game_helper.gd",
+    "addons/godot_ai/runtime/game_helper_impl.gd"
+  ],
+  "approval_source": "The project's sole decision owner authorized continuous Codex implementation, automatic Godot use, and routine current-slice decisions. This manifest records the narrowly scoped restoration required by GitHub Issue #262; no second GitHub identity is required.",
+  "approval_time": "2026-08-26T21:10:00Z",
+  "scope_summary": "Restore the existing headless-safe Godot AI autoload wrapper while preserving the four current implementation improvements, and record the already-enabled Hera addon as a non-authoring live-editor observability tool. No gameplay, scene, asset, data, save, or visual changes."
+}

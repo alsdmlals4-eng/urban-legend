@@ -71,6 +71,9 @@ class GutTestAuthorityCiContractTests(unittest.TestCase):
         for marker in (
             "tee .artifacts/gut/gut-output.log",
             "tee .artifacts/gut/full-regression.log",
+            'r"^::group::Godot test:"',
+            'r"^::group::Afterlife Canon v2 test:"',
+            "Godot regression suite: all configured entrypoints passed",
             'artifact_dir / "summary.json"',
             "gut_assertions",
             "legacy_entrypoints",
