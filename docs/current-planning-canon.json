@@ -40,6 +40,13 @@
     "release_near_vertical_slice": "M04_RED_UMBRELLA",
     "visual_treatment": "SOFT_ANIME_NOIR_LOCKED",
     "presentation_language": "DOSSIER_HYBRID_IS_PRESENTATION_LANGUAGE_NOT_MEDIUM",
+    "visual_direction_lock": {
+      "decision_id": "D-2026-08-28-URBAN-NOIR-HYBRID-VISUAL-DIRECTION",
+      "status": "USER_APPROVED",
+      "selected_candidate": "A",
+      "global_style_anchor": "realistic Korean urban-noir environment + soft-anime player/anomaly identity + hand-drawn institutional dossier UI",
+      "core_scene_board": "GENERATED_EXPLORATION / NOT_PROJECT_ASSET / NOT_RUNTIME_ASSET"
+    },
     "content_budget": {
       "signature_cases": 4,
       "standard_cases": 8

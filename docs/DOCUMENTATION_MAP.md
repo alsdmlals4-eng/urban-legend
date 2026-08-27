@@ -85,7 +85,7 @@
 | Validation Router | `VALIDATION_TARGET_CANON.md` | Validation·제품 Target |
 | 상세 승인·대체 역사 | `CURRENT_CONFIRMED_DECISIONS.md` | 역사·근거 추적 |
 | 저승역 상세 정본 | `CURRENT_AFTERLIFE_STATION_CANON.md` | M01 규칙·runtime 정합화 |
-| 현재 시각 계약 | `CURRENT_VISUAL_WORK_ORDER.md`, `CURRENT_SCREEN_SURFACE_INVENTORY_AND_VISUAL_COVERAGE.md`, `VISUAL_ANCHOR_SPEC.md` | UI/아트/asset 작업 |
+| 현재 시각 계약 | `CURRENT_VISUAL_WORK_ORDER.md`, `CURRENT_SCREEN_SURFACE_INVENTORY_AND_VISUAL_COVERAGE.md`, `VISUAL_ANCHOR_SPEC.md`, `visual/VISUAL_DIRECTION_LOCK_PACKET_2026-08-28.md` | UI/아트/asset 작업 |
 | 상세 게임 설계 | `GAME_DESIGN_DOCUMENT.md` | 시스템·콘텐츠 상세 |
 | 운영 생명주기 | `OPERATING_MODEL.md` | L1 이상 |
 | Work Mode·Skill 라우팅 | `WORK_MODE_AND_SKILL_ROUTING.md` | Skill 선택·보고 |
@@ -104,7 +104,7 @@
 | M01 조사/추리/구출/회수 | `M01_*_SCENE_PACKET.md` | M01 implementation |
 | 저승역 current canon | `CURRENT_AFTERLIFE_STATION_CANON.md` | M01 content/runtime |
 | current Validation | `VALIDATION_TARGET_CANON.md` | M01/M04 검증 |
-| current visual | `CURRENT_VISUAL_WORK_ORDER.md`, `CURRENT_SCREEN_SURFACE_INVENTORY_AND_VISUAL_COVERAGE.md` | 화면·시각·asset |
+| current visual | `CURRENT_VISUAL_WORK_ORDER.md`, `CURRENT_SCREEN_SURFACE_INVENTORY_AND_VISUAL_COVERAGE.md`, `visual/VISUAL_DIRECTION_LOCK_PACKET_2026-08-28.md`, `visual/PROJECT_CORE_SCENE_VISUAL_BOARD_2026-08-28.md` | 화면·시각·asset |
 | reusable UI grammar | `UI_COMPONENT_REUSE_CONTRACT.md` | 공용 UI implementation |
 | 장기 방향·서사·아트 history | `planning/**` current owner files | 해당 분야 의미 변경 |
 | 구현 순서 | `../MVP_ROADMAP.md` + current implementation plan | 범위·우선순위 |

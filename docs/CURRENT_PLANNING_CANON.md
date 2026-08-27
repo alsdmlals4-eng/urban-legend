@@ -62,6 +62,8 @@
 - 일반 조사에서는 환경·사건·증거가 주체이며 캐릭터는 작은 지원 표현과 중요한 순간의 Cut-in으로 제한한다.
 - `SOFT_ANIME_NOIR_LOCKED`: 메인 캐릭터·중요 서사 일러스트 treatment.
 - `DOSSIER_HYBRID_IS_PRESENTATION_LANGUAGE_NOT_MEDIUM`: UI·정보 위계·현장/기록 구성 언어.
+- `D-2026-08-28-URBAN-NOIR-HYBRID-VISUAL-DIRECTION`: 현실적 한국 도시 누아르 환경 + 애니풍 인물·괴이 + 손그림 기록물 UI의 3층 문법을 사용자 승인했다. 이 결정은 기존 treatment를 구체화하며 product asset 교체를 뜻하지 않는다.
+- 시각 정본의 Keep/Avoid/Do Not Drift와 생성 보드의 권한 경계는 `docs/visual/VISUAL_DIRECTION_LOCK_PACKET_2026-08-28.md`와 `docs/visual/PROJECT_CORE_SCENE_VISUAL_BOARD_2026-08-28.md`가 소유한다.
 - M01~M12는 공용 화면 문법을 재사용하되 질문·반증·피해자 갈등·봉쇄 조건은 사건별로 구분한다.
 - 메인 메뉴는 중앙 `Ver 4.3` owner와 관제실형 3-rail 구조를 사용하며 Legacy / Validation 영역을 분리한다.
 
@@ -70,6 +72,7 @@
 `PRODUCT_REFERENCE_ASSET_PENDING`은 계속 유지된다.
 
 - 화면 구조·정보 위계·아트 treatment·캐릭터 노출·pixel 관측 언어는 기획 완료다.
+- `PROJECT_CORE_SCENE_VISUAL_BOARD`는 AI 이해 검증·사용자 기획 검토용 단일 `GENERATED_EXPLORATION`이다. 보드의 pseudo-text·장식 map/card/icon·프레임은 시스템, UI, runtime asset, Scene, Human QA를 승인하지 않는다.
 - 실제 M01/M04 이미지·레이어·권리·production reference 승격은 아직 승인되지 않았다.
 - product reference asset 승인은 runtime 구현이나 Human QA PASS를 의미하지 않는다.
 
@@ -103,6 +106,7 @@ PLANNING_COMPLETE: true
 USER_FINAL_PLANNING_DECLARATION_APPROVED: true
 non_visual_planning: COMPLETE
 visual_planning: COMPLETE
+visual_direction_lock: USER_APPROVED
 product_reference_asset: PENDING
 overall_plan: COMPLETE
 runtime_implementation: MERGED_MAIN

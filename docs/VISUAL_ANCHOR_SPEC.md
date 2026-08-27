@@ -4,6 +4,8 @@ Status: `PLANNING_COMPLETE / RUNTIME_IMPLEMENTED / RECOVERY_WIP_REVISION_REQUIRE
 Art treatment: `SOFT_ANIME_NOIR_LOCKED`
 Presentation invariant: `DOSSIER_HYBRID_IS_PRESENTATION_LANGUAGE_NOT_MEDIUM`
 
+Current visual-direction lock: `D-2026-08-28-URBAN-NOIR-HYBRID-VISUAL-DIRECTION` — realistic Korean urban-noir environment + soft-anime player/anomaly identity + hand-drawn institutional dossier UI. The full lock packet is `docs/visual/VISUAL_DIRECTION_LOCK_PACKET_2026-08-28.md`; its project-understanding board is planning-only and not a product asset.
+
 Source PR: #215 + successor decision `D-2026-08-25-RECOVERY-CONTEXT-ACTION-HIERARCHY`
 Parent canon: `docs/CURRENT_PLANNING_CANON.md`
 Closure contract: `docs/planning/2026-08-21-visual-ui-planning-closure.md`

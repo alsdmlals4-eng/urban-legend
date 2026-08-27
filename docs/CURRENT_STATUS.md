@@ -1,5 +1,7 @@
 # Current Project Status
 
+> 2026-08-28 routing correction: 아래의 2026-08-21 및 ANNUAL/CORE 표는 implementation/history ledger다. current product 상태를 재정의하지 않는다. 최신 상태는 `CURRENT_PLANNING_CANON.md` + `current-planning-canon.json` + `CURRENT_DECISION_OVERLAY.md` + `CURRENT_HANDOFF.md`와 GitHub latest main을 우선한다.
+
 > 문서 위치: `docs/CURRENT_STATUS.md`  
 > 프로젝트 코어: `docs/PROJECT_CORE.md`  
 > 상세 설계: `docs/GAME_DESIGN_DOCUMENT.md`  
@@ -10,7 +12,19 @@
 > 최신 구현 계획: `docs/superpowers/plans/2026-07-26-annual-mvp-002-vertical-slice-implementation-plan.md`  
 > 벤치마크 권장안: `docs/planning/ANNUAL_BENCHMARK_RECOMMENDATIONS.md`
 
-## 2026-08-21 현재 Overlay
+## 2026-08-28 current router
+
+| 항목 | 현재 값 |
+|---|---|
+| 최신 기획 정본 | `docs/CURRENT_PLANNING_CANON.md` + `docs/current-planning-canon.json` |
+| 현재 시각 방향 | `D-2026-08-28-URBAN-NOIR-HYBRID-VISUAL-DIRECTION` — 현실적 한국 도시 누아르 환경 + 애니풍 인물·괴이 + 손그림 기록물 UI |
+| 프로젝트 이해 보드 | `GENERATED_EXPLORATION / NOT_PROJECT_ASSET / NOT_RUNTIME_ASSET` |
+| runtime reconciliation | `MERGED_MAIN` (구현 merge PR #224); current documentation reconciliation PR #322 |
+| 개별 제품 asset | root `ASSET_MANIFEST.yml`의 6개 entry는 각자의 승인·구현·runtime evidence 범위를 보유; Human QA와 별개 |
+| Human/new-player/Player Experience | `NOT_RUN` |
+| production expansion | `NOT_APPROVED` |
+
+## 2026-08-21 historical Overlay — current authority 아님
 
 | 항목 | 현재 값 |
 |---|---|
