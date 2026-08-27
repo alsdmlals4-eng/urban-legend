@@ -28,13 +28,14 @@
 | six manifest asset entries | CURRENT | individual approved/implemented/runtime-evidence scope as declared by manifest/work order |
 | M04 D RGBA candidate | CURRENT_CANDIDATE | product promotion/runtime/Human QA pending |
 | `VISUAL_ANCHOR_SPEC.md` blanket pending language | SUPERSEDED_IN_PART | retained for historical anchor boundary; now explicitly routes individual status to current owners |
-| Notion Direction content for Switchy Express | CONFLICT | must be replaced by urban-legend direction |
+| foreign Switchy Direction page `3c51...ab76...` | CONFLICT / BLOCKED_RESTORE_SOURCE | it is not an urban-legend owner; original Switchy bytes are unavailable in this session, so no speculative restoration was made |
+| urban-legend Direction page `3c51...b18f...` | CURRENT | the current North Star, loop, evidence ceiling, and visual-decision boundary were inserted under the correct Home and read back |
 | Notion Home/Visual/Production pointers ending at `c5b4f4f` | HISTORICAL | retain dated history but add an explicit current override |
 
 ## Incident → solution → lesson
 
-- **Incident:** current human-facing Direction page contained a different project’s content, while multiple current documents collapsed individual asset status into a blanket pending label.
-- **Solution:** restore the project-specific Direction page; point individual asset claims to the manifest/work-order/checklist; retain historical statements as dated records.
+- **Incident:** a same-titled Direction page under another project was confused with the urban-legend Direction owner, while multiple current documents collapsed individual asset status into a blanket pending label.
+- **Solution:** insert the project-specific direction canon only in the verified urban-legend child page; leave the foreign page untouched pending its owner's recoverable source; point individual asset claims to the manifest/work-order/checklist; retain historical statements as dated records.
 - **Incident:** the Base adapter validator compared the PR to a protected baseline (`c0bc8a9`) older than protected changes already merged into current `main`, producing a false task-level failure.
 - **Solution:** advance only `skills/PROJECT_BASE_ADAPTER.json#/protected_baseline/commit` to immutable current main `a8a7e7f`; no protected product path was changed.
 - **Incident:** canonical adapter input changed, but its six deterministic generated views had not yet been refreshed.
