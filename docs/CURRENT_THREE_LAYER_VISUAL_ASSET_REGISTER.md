@@ -1,10 +1,10 @@
 # 괴이기록국 · Three-Layer Visual Asset Register
 
-> Role: `CURRENT_THREE_LAYER_VISUAL_ASSET_REGISTER`  
-> Updated: 2026-08-28  
-> Issue: #315  
-> Scope: M01 first session + M04 30–45 minute vertical slice  
-> Runtime authority: latest `main` Scene/script/catalog and `ASSET_MANIFEST.yml`  
+> Role: `CURRENT_THREE_LAYER_VISUAL_ASSET_REGISTER`
+> Updated: 2026-08-28
+> Issue: #315
+> Scope: M01 first session + M04 30–45 minute vertical slice
+> Runtime authority: latest `main` Scene/script/catalog and `ASSET_MANIFEST.yml`
 > Screen authority: `CURRENT_SCREEN_SURFACE_INVENTORY_AND_VISUAL_COVERAGE.md`  
 > Candidate authority: `CURRENT_VISUAL_ASSET_CONSUMER_CHECKLIST.md`
 
