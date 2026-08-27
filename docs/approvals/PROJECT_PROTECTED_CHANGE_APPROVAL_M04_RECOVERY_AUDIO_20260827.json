@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "artifact_role": "PROJECT_PROTECTED_CHANGE_APPROVAL",
+  "status": "APPROVED",
+  "protected_base_commit": "c0bc8a98ee40bf04d4953a834d9cd06c47e42efe",
+  "decision_ids": [
+    "UL-ISSUE-261-M04-RECOVERY-TELEGRAPH-AUDIO"
+  ],
+  "approved_paths": [
+    "scripts/scenes/battle_scene.gd",
+    "scripts/ui/recovery_telegraph_audio.gd"
+  ],
+  "approval_source": "The project's sole decision owner authorized continuous autonomous implementation, routine Godot use, and the approved M04 Recovery telegraph audio slice. This manifest records the narrow protected-path merge evidence; no second GitHub identity is required.",
+  "approval_time": "2026-08-27T10:16:00+09:00",
+  "scope_summary": "Add one M04 Recovery telegraph cue player and its bounded procedural cue-mode mapper. No gameplay rules, scene flow, save data, visual asset promotion, or additional audio assets."
+}
