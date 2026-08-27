@@ -50,7 +50,7 @@ actual consumer
 | ID | Actual consumer | Current file | Current status | Delete test / note |
 |---|---|---|---|---|
 | `IMG-M01-01` | Main Menu backdrop + Dialogue `ArtLayer/Background` + dialogue location preview | `assets/backgrounds/afterlife_entrance.png` | `REUSE_REVIEW / AUTO_AUTHORIZED_CANDIDATE_COMPARE_REQUIRED` | 현행 파일은 사진적 질감과 style contract 차이가 확인됐다. `M01_ENTRANCE_BACKGROUND_ADAPT_01`을 보관했으며, 기존 tracked file과 모든 shared consumer에서 promotion을 비교한다. Main Menu 전용 이미지는 만들지 않는다. |
-| `IMG-M01-02` | Investigation `ArtLayer/Background` + `LocationPreview` | `assets/backgrounds/afterlife_platform.png` | `REUSE_REVIEW / AUTO_AUTHORIZED_CANDIDATE_COMPARE_REQUIRED` | 현행 파일은 사진적 질감과 style contract 차이가 확인됐다. `M01_INVESTIGATION_PLATFORM_ADAPT_01`을 보관했으며, 기존 tracked file과 consumer promotion을 비교한다. 별도 location-card 이미지는 만들지 않는다. |
+| `IMG-M01-02` | Investigation `ArtLayer/Background` + `LocationPreview` | `assets/backgrounds/afterlife_platform.png` | `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED / HUMAN_QA_PENDING` | `M01_INVESTIGATION_PLATFORM_ADAPT_02_20260827` exact bytes가 canonical PNG를 교체했다. Adapt 01은 작은 preview를 막는 중앙 기둥 때문에 승격하지 않았고, Adapt 02는 1280×720·1920×1080의 실제 두 consumer에서 import·resolution·readability를 확인했다. 별도 location-card 이미지는 만들지 않는다. |
 | `IMG-M01-03` | Recovery `ArtLayer/Background` | `assets/backgrounds/afterlife_recovery.png` | `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED / HUMAN_QA_PENDING` | `M01_RECOVERY_BACKGROUND_ADAPT_01`의 exact bytes가 canonical PNG를 교체했다. 1280×720·1920×1080 launch profile 실제 consumer에서 import·resolution·readability를 확인했으며, Human QA는 별도 Gate다. |
 | `IMG-M01-04` | Recovery `AnomalyVisual` B/C | `assets/anomalies/cutouts/afterlife_b_cutout.png` with `assets/anomalies/afterlife_b.png` fallback | `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED / HUMAN_QA_PENDING` | `M01_ANOMALY_BC_ADAPT_01`의 exact bytes가 canonical cutout을 교체했다. B/C는 1280×720·1920×1080 launch profile 실제 consumer에서 import·resolution·readability를 확인했으며, Human QA는 별도 Gate다. |
 | `IMG-M01-05` | Recovery `AnomalyVisual` D | `assets/anomalies/cutouts/afterlife_d_cutout.png` with `assets/anomalies/afterlife_d.png` fallback | `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED / HUMAN_QA_PENDING` | `M01_ANOMALY_D_RUNTIME_CORRECTION_CANDIDATE_20260827` exact bytes가 canonical cutout을 교체했다. 1280×720·1920×1080 실제 D consumer에서 identity escalation과 transparent cutout 가독성을 확인했으며, Human QA는 별도 Gate다. |
@@ -167,7 +167,7 @@ Current status: `REUSE_REVIEW`.
 2. `IMG-M01-04` Afterlife anomaly B/C — `PROJECT_ASSET_APPROVED / RUNTIME_VERIFIED`; Human QA pending.
 3. `IMG-M01-05` Afterlife anomaly D — `PROJECT_ASSET_APPROVED / RUNTIME_VERIFIED`; Human QA pending.
 4. `IMG-M04-02` Investigation background — `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED`; Human QA pending.
-5. `IMG-M01-02` Afterlife Investigation background.
+5. `IMG-M01-02` Afterlife Investigation background — `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED`; Human QA pending.
 6. `IMG-M01-01` Afterlife Entrance / Dialogue background.
 7. M04 Recovery/anomaly consumers.
 8. Character/support/contact assets only when a current playable-slice consumer shows a visual gap.

@@ -201,7 +201,7 @@ actual Scene / Texture consumer
 16. M04 approved Investigation Anchor vs actual `red_crossroads` consumer comparison — `ADAPT_CANDIDATE` selected
 17. `M04_INVESTIGATION_BACKGROUND_ADAPT_01` one-image adaptation + user result approval — COMPLETE_AS_VISUAL_CANDIDATE
 18. M04 product-reference promotion + rights/provenance — `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED`; 1280×720/1920×1080 runtime 검증 COMPLETE (PR #273)
-19. `M01_INVESTIGATION_PLATFORM_ADAPT_01` one-image candidate — `USER_AUTONOMOUSLY_AUTHORIZED_VISUAL_CANDIDATE`; current `afterlife_platform` consumer promotion compare pending
+19. `M01_INVESTIGATION_PLATFORM_ADAPT_01` review → `CANDIDATE_NOT_PROMOTED` (central pillar conflicts with shared preview); `M01_INVESTIGATION_PLATFORM_ADAPT_02_20260827` one-image correction → `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED` at the existing `afterlife_platform.png` path; 1280×720/1920×1080 Background + LocationPreview verified, Human QA pending
 20. `M01_ENTRANCE_BACKGROUND_ADAPT_01` one-image candidate — `USER_AUTONOMOUSLY_AUTHORIZED_VISUAL_CANDIDATE`; current `afterlife_entrance` dialogue/preview/Main Menu shared-consumer promotion compare pending
 21. M04 release-near visual/audio/VFX implementation — separate later authorization
 22. M04 Human player-experience QA — separate later gate
@@ -235,8 +235,7 @@ actual Scene / Texture consumer
 ### Pending / not run
 - Composite Result 3단계 result approval
 - remaining runtime PNG pixel-quality comparisons against latest approved visual references
-- M01-03 and M01 B/C Godot import plus 1280×720/1920×1080 runtime readability / Human QA
-- M01 D 1920×1080 runtime capture / Human QA
+- M01 approved assets Human QA
 - M01 actual Human QA / new-player validation
 - M04 Human player-experience / accessibility QA
 - 1280×720/1920×1080 최종 runtime 시각 PASS
