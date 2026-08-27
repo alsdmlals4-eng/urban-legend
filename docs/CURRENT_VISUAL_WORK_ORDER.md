@@ -2,13 +2,13 @@
 
 > Role: `CURRENT_VISUAL_WORK_ORDER`
 > Updated: `2026-08-27`
-> Status: `PLANNING_COMPLETE / RUNTIME_IMPLEMENTED / USER_APPROVED_VISUAL_CANDIDATES / RUNTIME_CONSUMER_FIRST_ASSET_GATE / M04_INVESTIGATION_RUNTIME_VERIFIED / HUMAN_QA_NOT_RUN`
+> Status: `PLANNING_COMPLETE / RUNTIME_IMPLEMENTED / USER_APPROVED_VISUAL_CANDIDATES / RUNTIME_CONSUMER_FIRST_ASSET_GATE / M04_INVESTIGATION_RUNTIME_VERIFIED / PRODUCT_REFERENCE_ASSET_PENDING / HUMAN_QA_NOT_RUN`
 > Art treatment: `SOFT_ANIME_NOIR_LOCKED`
 > Presentation invariant: `DOSSIER_HYBRID_IS_PRESENTATION_LANGUAGE_NOT_MEDIUM`
 > Decisions: `D-2026-08-20-INVESTIGATION-SCENE-KEYWORD-DEDUCTION-LIMITED-CHARACTER-EXPOSURE`, `D-2026-08-25-RECOVERY-CONTEXT-ACTION-HIERARCHY`, `D-2026-08-26-RUNTIME-CONSUMER-FIRST-VISUAL-ASSET-GATE`
 > Consumer checklist: `docs/CURRENT_VISUAL_ASSET_CONSUMER_CHECKLIST.md`
 
-이 문서는 현재 시각/화면 계약을 소유한다. 공유 runtime 구현은 PR #224를 통해 main에 반영됐고, M04 Investigation Anchor 1안은 사용자 결과 승인을 받았다. Recovery successor 전체 시안도 현재 대화에서 사용자 승인을 받았고, Composite Result 1·2단계 mockup은 사용자 승인 reference다. 다만 이 화면 mockup들은 자동으로 제품 PNG asset이 되지 않는다.
+이 문서는 현재 시각/화면 계약을 소유한다. 공유 runtime 구현은 PR #224를 통해 main에 반영됐고, M04 Investigation Anchor 1안은 사용자 결과 승인을 받았다. Recovery successor 전체 시안도 현재 대화에서 사용자 승인을 받았고, Composite Result 1·2단계 mockup은 사용자 승인 reference다. 다만 이 화면 mockup들은 자동으로 제품 PNG asset이 되지 않는다. `PRODUCT_REFERENCE_ASSET_PENDING`은 아직 promotion/runtime evidence가 남은 소비처에 적용되는 전역 게이트이며, M04 Investigation의 개별 `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED` 사실을 되돌리지 않는다.
 
 2026-08-26 사용자 결정에 따라 신규 이미지 제작은 **실제 게임 runtime consumer가 있는 asset**을 기준으로 한다. `PanelContainer`, `Label`, `Button`, `GridContainer`, Theme/StyleBox 등 Godot UI 구조를 설명하기 위한 component sheet는 이미지 backlog에서 제외한다. 실제 생성/교체 판단은 `CURRENT_VISUAL_ASSET_CONSUMER_CHECKLIST.md`가 소비처·기존 파일·Delete Test를 연결해 소유한다.
 
