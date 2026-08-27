@@ -238,17 +238,18 @@ assets:
       prompt_core: "Same Korean urban-rail operator apparition with black peaked cap and dark long station coat; visibly escalated D state using fragmented afterimages, broken coat edges, black linear interference, restrained red-rust accents, and a genuinely transparent background; no text, UI, scenery, other character, boss pose, or gore."
       seed_or_reproduction: "Not exposed by the generation surface."
       manual_post_process: "None recorded."
-      known_remaining_issues: "The promoted D correction resolves and is readable at 1280x720. The 1920x1080 launch-profile capture and Human QA remain pending."
+      known_remaining_issues: "The promoted D correction resolves and is readable at 1280x720 and 1920x1080. Human QA remains pending."
     validation:
       target_resolutions:
         - "1280x720"
         - "1920x1080"
-      runtime_verified: false
+      runtime_verified: true
       visual_qa_verified: false
       accessibility_verified: false
       evidence:
         - "docs/visual/candidates/M01_ANOMALY_D_RUNTIME_CORRECTION_CANDIDATE_20260827.md"
         - "docs/qa/captures/m01/d_promotion_20260827/m01-d-promoted-1280x720.png"
+        - "docs/qa/captures/m01/d_promotion_20260827/m01-d-promoted-1920x1080.png"
         - "GitHub Issue #280"
       last_verified_commit: ""
     next_review_triggers:
