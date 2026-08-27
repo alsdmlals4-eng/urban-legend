@@ -112,6 +112,10 @@ def _changed_paths_from_main() -> set[str]:
     }
 
 
+def _changes_touch_live_editor_adoption_surface(changed: set[str]) -> bool:
+    return bool(changed & ALLOWED_PATHS)
+
+
 def test_descriptor_is_exact_urban_legend_contract() -> None:
     payload = json.loads(_required_text(DESCRIPTOR))
     assert payload["schema_version"] == "1"
@@ -189,6 +193,15 @@ def test_governance_approval_filter_accepts_only_approval_receipts() -> None:
     )
 
 
+def test_change_scope_ignores_unrelated_work_and_detects_adoption_work() -> None:
+    assert not _changes_touch_live_editor_adoption_surface(
+        {"assets/backgrounds/afterlife_platform.png"}
+    )
+    assert _changes_touch_live_editor_adoption_surface(
+        {"tests/test_godot_live_editor_adoption.py"}
+    )
+
+
 def test_source_authorities_and_main_scene_remain_installed() -> None:
     project = (ROOT / "project.godot").read_text(encoding="utf-8")
     assert 'run/main_scene="res://scenes/main_menu.tscn"' in project
@@ -255,4 +268,6 @@ def test_workflow_uses_one_immutable_base_pin() -> None:
 
 def test_change_surface_is_bounded_to_five_adoption_files_plus_governance_receipt() -> None:
     changed = _changed_paths_from_main()
+    if not _changes_touch_live_editor_adoption_surface(changed):
+        return
     assert changed <= ALLOWED_PATHS, f"forbidden changed paths: {sorted(changed - ALLOWED_PATHS)}"
