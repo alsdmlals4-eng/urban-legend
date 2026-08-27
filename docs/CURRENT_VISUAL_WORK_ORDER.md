@@ -206,7 +206,7 @@ actual Scene / Texture consumer
 21. M04 release-near visual/audio/VFX implementation — separate later authorization
 22. M04 Human player-experience QA — separate later gate
 23. `M04_RECOVERY_BACKGROUND_ADAPT_01` one-image candidate — `CANDIDATE_NOT_PROMOTED / REUSE_REVIEW`; it improves the Korean closed-shop geography and preserves the `AnomalyVisual` zone, but its literal photographic surface misses the locked soft-anime-noir treatment. Preserve `red_recovery.png` and the separate transparent B/C·D overlays; any re-entry candidate must improve both style and layer separation.
-24. `M04_ANOMALY_BC_ADAPT_01_20260827` one-image candidate — `USER_AUTONOMOUSLY_AUTHORIZED_VISUAL_CANDIDATE / PRODUCT_ASSET_PROMOTION_PENDING`; replace-required pixel review found the current B/C ordinary-person cutout and scenic fallback conflict with the single `AnomalyVisual` owner. Compare this alpha candidate before any canonical cutout promotion; D remains a separate later identity-escalation review.
+24. `M04_ANOMALY_BC_ADAPT_01_20260827` one-image candidate — `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED`; exact bytes now occupy the existing B/C cutout path and passed actual M04 Recovery `AnomalyVisual` captures at 1280×720/1920×1080. D remains a separate later identity-escalation review; Human QA remains pending.
 ```
 
 ## 7. Approval boundary

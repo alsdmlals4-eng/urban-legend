@@ -408,3 +408,78 @@ assets:
       - "After an ArtLayer Background or LocationPreview layout/scaling change"
       - "Before release-rights sign-off"
       - "When runtime or human QA reports weak umbrella, footprint, contrast, or UI-overlap readability"
+  - asset_id: "M04-ANOMALY-BC-001"
+    name: "Red Umbrella B/C anomaly cutout"
+    category: "anomaly_cutout"
+    purpose: "M04 Recovery B/C-risk anonymous red-umbrella apparition for the existing battle cinematic HUD."
+    owner_discipline: "Visual"
+    affected_disciplines:
+      - "Godot UI"
+      - "Narrative"
+      - "QA"
+    statuses:
+      - "PRODUCTION_READY"
+      - "IMPLEMENTED"
+    vault_source_key: "M04_ANOMALY_BC_ADAPT_01_20260827"
+    canonical_path: "assets/anomalies/cutouts/red_umbrella_b_cutout.png"
+    source_path: "docs/visual/candidates/M04_ANOMALY_BC_ADAPT_01_20260827.png"
+    runtime_path: "scenes/battle_scene.tscn -> CinematicStage/AnomalyPanel/Content/AnomalyVisual"
+    latest_capture_path: "docs/qa/captures/m04/bc_promotion_20260827/m04-bc-promoted-1280x720.png"
+    golden_screenshot_path: ""
+    source_type: "AI_GENERATED"
+    source_and_license: >
+      OpenAI built-in image generation output created on 2026-08-27 and promoted after sole-owner autonomous approval
+      plus exact current-consumer verification. The generation prompt contains no named third-party character, logo, or
+      requested imitation style. This record captures project provenance and an obvious-conflict review only; it is not
+      legal clearance. The user remains responsible for final distribution-rights review under the applicable service terms and law.
+    approved_reference: "docs/visual/candidates/M04_ANOMALY_BC_ADAPT_01_20260827.md"
+    supersedes: "Pre-promotion tracked red_umbrella_b_cutout.png (SHA-256 cd5a2d7371a414dba45a96cabcf1f23c18811930f111f8a3afcc112e17258c8d)"
+    superseded_by: ""
+    replacement_requires_approval: true
+    reference_elements:
+      use:
+        - "One anonymous human-like apparition beneath a crimson umbrella"
+        - "Pale blank face-void and restrained dissolving coat edge for B/C-risk identity"
+        - "One transparent cutout with no embedded environment or HUD"
+      do_not_use:
+        - "Named IP, logos, or copied character identity"
+        - "Scenery, reflection figure, crowd, UI, labels, text, or answer clues"
+        - "D-risk escalation, M01 station motifs, weapons, or gore"
+    visual_dna:
+      silhouette: "Centered umbrella and full-body anonymous apparition; the red umbrella carries the non-color-only shape cue."
+      proportion: "1672x941 ARGB landscape cutout filling the existing AnomalyVisual TextureRect."
+      camera: "Front-facing eye-level apparition read without a separate environment."
+      resolution_or_pixel_density: "1672x941 PNG; existing runtime node retains KEEP_ASPECT_COVERED."
+      palette: "Black/charcoal coat, one restrained crimson umbrella, and cool-grey ink-rain edge interference."
+      lighting: "Subdued anime-noir separation; no photoreal glare or baked scene light."
+      material_language: "Soft anime-noir ink/paper texture."
+      outline_and_readability: "Umbrella, blank face-void, shoulders, coat and controlled dissolving hem remain readable at B/C scale."
+      allowed_variation: "Existing scene modulation and UI scaling only."
+      forbidden_elements: "Additional figures, scenery, reflection, UI, labels, named insignia, text, or D-stage escalation."
+      post_process: "No baked screen effects; existing Godot UI owns display treatment."
+      engine_import: "Godot Texture2D import from the canonical PNG."
+      performance_budget: "One existing TextureRect and one 1672x941 alpha PNG; no new runtime nodes or scripts."
+      accessibility_fallback: "Existing risk label, telegraph copy, and HUD communicate B/C status independently of the image."
+    generation_record:
+      tool_and_model: "OpenAI built-in image generation (model identifier not exposed to this session)"
+      prompt_core: "Anonymous human-like apparition beneath a crimson umbrella, pale blank face-void, dissolving charcoal coat edge, soft anime-noir ink/paper texture, genuine transparent background; no text, UI, scenery, other people, clues, M01 motifs, D escalation, or gore."
+      seed_or_reproduction: "Not exposed by the generation surface."
+      manual_post_process: "None recorded."
+      known_remaining_issues: "Human visual/accessibility QA remains pending. D-risk identity escalation is a separate later review."
+    validation:
+      target_resolutions:
+        - "1280x720"
+        - "1920x1080"
+      runtime_verified: true
+      visual_qa_verified: true
+      accessibility_verified: false
+      evidence:
+        - "docs/visual/candidates/M04_ANOMALY_BC_ADAPT_01_20260827.md"
+        - "docs/qa/M04_ANOMALY_PIXEL_REVIEW_20260827.md"
+        - "docs/qa/M04_BC_ANOMALY_PROMOTION_RUNTIME_20260827.md"
+        - "GitHub Issue #299"
+      last_verified_commit: ""
+    next_review_triggers:
+      - "After an AnomalyVisual layout or scaling change"
+      - "Before release-rights sign-off"
+      - "When runtime or human QA reports clipping, ambiguity, or overlap"

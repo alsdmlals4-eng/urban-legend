@@ -2,7 +2,7 @@
 
 ## Status
 
-`USER_AUTONOMOUSLY_AUTHORIZED_VISUAL_CANDIDATE / PRODUCT_ASSET_PROMOTION_PENDING`
+`PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED / HUMAN_QA_PENDING`
 
 The sole decision owner authorized continuous current-slice visual work, automatic generation when an actual runtime consumer requires it, and dual preservation in the repository and Notion. This is a visual candidate, not a product-asset promotion.
 
@@ -17,7 +17,7 @@ The sole decision owner authorized continuous current-slice visual work, automat
 
 ## Consumer and visual boundary
 
-- Intended consumer: `scenes/battle_scene.tscn -> CinematicStage/AnomalyPanel/Content/AnomalyVisual` for M04 B/C risk stages.
+- Intended consumer: `scenes/battle_scene.tscn -> CinematicStage/AnomalyPanel/Content/AnomalyVisual` for M04 B/C risk stages, retaining the existing `KEEP_ASPECT_COVERED` presentation.
 - The candidate is one centered, anonymous human-like apparition beneath a crimson umbrella. Its small pale face-void and restrained dissolving coat edge establish an anomalous read without declaring a solution or a victim identity.
 - It contains no environment, reflection, other figure, text, UI, clue, footprint, M01 material, or D-stage escalation. Existing background, HUD, and separate D visual retain their owners.
 
@@ -34,4 +34,4 @@ The first B/C generation attempt produced a 24-bit RGB PNG with a visual checker
 
 ## Promotion boundary
 
-This candidate does not replace `assets/anomalies/cutouts/red_umbrella_b_cutout.png`, alter fallback paths, add scene/catalog/script wiring, grant `PROJECT_ASSET_APPROVED`, or pass 1280x720/1920x1080 runtime readability, accessibility, or Human QA. D must be evaluated separately after the B/C identity is fixed.
+Under GitHub Issue #299, the candidate's exact bytes now replace `assets/anomalies/cutouts/red_umbrella_b_cutout.png`. Existing Scene/catalog/fallback wiring is unchanged. Actual graphical Godot captures at 1280x720 and 1920x1080 resolved this cutout in the M04 Recovery `AnomalyVisual`; their hash and runtime result are recorded in the root asset manifest. Human visual/accessibility QA is still pending, and D must be evaluated separately after the B/C identity is fixed.
