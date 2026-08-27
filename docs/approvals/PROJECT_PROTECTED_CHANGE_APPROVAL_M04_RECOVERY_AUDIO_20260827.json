@@ -2,7 +2,7 @@
   "schema_version": 1,
   "artifact_role": "PROJECT_PROTECTED_CHANGE_APPROVAL",
   "status": "APPROVED",
-  "protected_base_commit": "5480ccf8993fe79fb070c745ae4deccdc3385dc0",
+  "protected_base_commit": "c0bc8a98ee40bf04d4953a834d9cd06c47e42efe",
   "decision_ids": [
     "UL-ISSUE-261-M04-RECOVERY-TELEGRAPH-AUDIO"
   ],
