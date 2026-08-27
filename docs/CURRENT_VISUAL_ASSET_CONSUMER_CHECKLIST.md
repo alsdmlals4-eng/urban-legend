@@ -76,7 +76,7 @@ actual consumer
 |---|---|---|---|---|
 | `IMG-M04-01` | Dialogue background + current-case preview | `assets/backgrounds/red_alley_entrance.png` | `REUSE_REVIEW` | 오프닝/preview surface. |
 | `IMG-M04-02` | Investigation `ArtLayer/Background` + shared `LocationPreview` | `assets/backgrounds/red_crossroads.png` | `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED / HUMAN_QA_PENDING` | `M04_INVESTIGATION_BACKGROUND_ADAPT_01` exact bytes가 canonical PNG를 교체했다. PR #273이 기존 route에서 1280×720/1920×1080 Background·LocationPreview와 배경 관찰성을 검증했다. Human evidence는 별도 Gate다. |
-| `IMG-M04-03` | Recovery `ArtLayer/Background` | `assets/backgrounds/red_recovery.png` | `REUSE_REVIEW / AUTO_AUTHORIZED_CANDIDATE_COMPARE_REQUIRED` | 현행 파일은 서양식 가로등 골목·강한 유광 반사로 M04의 한국 폐점 골목과 분리 `AnomalyVisual` 역할을 흐린다. `M04_RECOVERY_BACKGROUND_ADAPT_01`을 보관했으며 실제 Recovery overlay 아래에서 기존 file과 promotion을 비교한다. |
+| `IMG-M04-03` | Recovery `ArtLayer/Background` | `assets/backgrounds/red_recovery.png` | `CANDIDATE_NOT_PROMOTED / REUSE_REVIEW` | #295에서 `M04_RECOVERY_BACKGROUND_ADAPT_01`을 비교했다. 후보는 한국 폐점 골목과 AnomalyVisual용 중앙 여백을 개선하지만 사진적 표면이 잠긴 소프트 애니메 누아르에 미달해 승격하지 않았다. 현행 파일과 별도 B/C·D overlay는 유지한다. Hera live capture는 타 프로젝트 bridge port 점유로 `NOT_RUN`이다. |
 | `IMG-M04-04` | Recovery `AnomalyVisual` B/C | `assets/anomalies/cutouts/red_umbrella_b_cutout.png` with full fallback | `REUSE_REVIEW` | actual anomaly consumer. |
 | `IMG-M04-05` | Recovery `AnomalyVisual` D | `assets/anomalies/cutouts/red_umbrella_d_cutout.png` with full fallback | `REUSE_REVIEW` | actual high-risk anomaly consumer. |
 
