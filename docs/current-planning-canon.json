@@ -87,7 +87,7 @@
     "product_reference_asset": "PENDING",
     "m04_reference_text_brief": "RESULT_APPROVED",
     "m04_reference_visual_candidate": "USER_APPROVED_VISUAL_CANDIDATE",
-    "m04_runtime_visual_validation": "NOT_RUN_FOR_UNPROMOTED_M04_INVESTIGATION_ANCHOR_01",
+    "m04_runtime_visual_validation": "NOT_RUN",
     "base_adapter_protected_baseline": "6b4a9e8080898536139c8e825179b389f8bf9d64",
     "base_adapter_reconciliation_merge": "9073b4730993149f89970a13fbe32d49f8f473e7",
     "m04_individual_runtime_assets": "M04_INVESTIGATION_BACKGROUND_001 and M04_ANOMALY_BC_001 are PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED; Human QA remains NOT_RUN."
