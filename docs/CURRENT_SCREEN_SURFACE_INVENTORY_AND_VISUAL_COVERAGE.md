@@ -60,7 +60,7 @@ main_menu
 | `SCR-04` | D Investigation Field | P0 | prep/dialogue → manual/minigame/battle | 무엇이 사실이고 다음 관측은 무엇인가? | `investigation_scene.tscn` / `investigation_scene.gd`; `ArtLayer/Background`, `LocationPreview` | 1280/1920 captures; M01/M04 backgrounds | `COVERED_EXISTING`; M04 background runtime verified; Human QA pending |
 | `SCR-05` | G Manual / Deduction Overlay | P0 | investigation ↔ investigation | 어떤 근거로 규칙 문장을 완성할까? | `investigation_scene` Manual surface / live Control layer | 1920 reasoning capture; `manual_book_frame.png` | `COVERED_EXISTING`; `NO_NEW_IMAGE_FILE_REQUIRED` |
 | `SCR-06` | E Rescue Route Minigame | P0 | investigation → battle | 어떤 경로·순서로 피해자를 분리할까? | `minigame_scene.tscn` / `minigame_scene.gd` | 1280/1920 route capture; metal surface | `COVERED_EXISTING`; `NO_NEW_IMAGE_FILE_REQUIRED` |
-| `SCR-07` | E Recovery / Telegraph Battle | P0 | rescue → result/investigation | 지금 전조에 어떤 현장 행동으로 대응할까? | `battle_scene.tscn` / `battle_scene.gd`; Background, AnomalyVisual, ActionDock | M01/M04 1280/1920 captures | M04 D candidate now exists: `REPLACE_REQUIRED / USER_AUTHORIZED_VISUAL_CANDIDATE / PRODUCT_ASSET_PROMOTION_PENDING`; no runtime replacement yet |
+| `SCR-07` | E Recovery / Telegraph Battle | P0 | rescue → result/investigation | 지금 전조에 어떤 현장 행동으로 대응할까? | `battle_scene.tscn` / `battle_scene.gd`; Background, AnomalyVisual, ActionDock | M01/M04 1280/1920 captures | M04 D and recovery-background candidates now exist: `USER_AUTONOMOUSLY_AUTHORIZED_VISUAL_CANDIDATE / PRODUCT_ASSET_PROMOTION_PENDING`; no runtime replacement yet |
 | `SCR-08` | F Composite Result / Reward | P0 | recovery → prep/menu | 무엇이 구출·회수·기록에 남았나? | `result_scene.tscn` / `result_scene.gd` | 1280/1920 result capture; approved mockups | `COVERED_EXISTING`; mockups are `SCREEN_DESIGN_REFERENCE`, not product PNG |
 | `SCR-09` | F Return / Next Step | P0 | result → prep/menu | 다음 준비를 할까, 돌아갈까? | `result_scene.gd` explicit return routes | scene transition evidence | `COVERED_EXISTING`; same Result surface, no separate image |
 | `SCR-10` | G Case Data / Records | P1 | menu/prep → return route | 무엇을 이미 알고 있으며 무엇이 잠겼나? | `case_data_scene.tscn` / `case_data_scene.gd` | actual scene, records route | `COVERED_EXISTING`; no dedicated image requirement proven |
@@ -166,7 +166,7 @@ godot_validation:
 
 ```yaml
 blocking_gap:
-  - M04 D AnomalyVisual: candidate exists, but its product promotion, rights/provenance review, and runtime evidence are not run.
+  - M01 Entrance, M04 Recovery background, and M04 D AnomalyVisual: candidates exist, but each product promotion, rights/provenance review, and runtime evidence are not run.
 nonblocking_gap:
   - SCR-13 focused settings/accessibility runtime navigation and readability evidence.
   - Composite Result reference stage 3 remains in review; it is not a product PNG requirement.
@@ -175,7 +175,7 @@ user_decision_required:
 codex_implementation_required:
   - None for candidate storage. Future M04 D promotion is a separate implementation task.
 image_brief_approval_required:
-  - Complete for M04 D: the 2026-08-28 user request authorized its one-image candidate.
+  - Complete for M01 Entrance, M04 Recovery background, and M04 D: the 2026-08-28 user request authorized their bounded candidates.
 runtime_player_validation:
   - Existing automated captures reused; Human/new-player/accessibility playtest remains NOT_RUN.
 ```
