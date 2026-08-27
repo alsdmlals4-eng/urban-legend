@@ -14,4 +14,3 @@ not infer, repair, or execute a route. Then read only
 Resolve `effective_routes` exactly as generated. Project-local routes take
 precedence over same-name Base routes. Follow the selected recorded package at
 its path; this router contains no copied Base shared Skill body.
-
