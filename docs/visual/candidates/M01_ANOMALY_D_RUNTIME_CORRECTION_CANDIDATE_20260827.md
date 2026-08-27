@@ -1,8 +1,8 @@
 # M01 Anomaly D Runtime Correction Candidate — 2026-08-27
 
-Status: `USER_AUTONOMOUSLY_AUTHORIZED_VISUAL_CANDIDATE / NOT_PRODUCT_ASSET / RUNTIME_PROMOTION_PENDING`
+Status: `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VALIDATED_1280 / RUNTIME_1920_PENDING / HUMAN_QA_PENDING`
 
-Issue: `#278`
+Issues: `#278`, `#280`
 
 ## Why this candidate exists
 
@@ -22,7 +22,7 @@ Preserve the existing Korean urban-rail operator apparition as the same D-state 
 
 ## Boundary
 
-- This is a review candidate only. It does **not** replace `assets/anomalies/cutouts/afterlife_d_cutout.png`.
-- It does **not** change `UiAssetCatalog`, `SceneVisuals`, Godot scene wiring, B/C state, save data, or rules.
-- Product promotion requires a separate exact-byte comparison, import/readback, actual runtime capture, and documentation reconciliation.
+- The exact bytes now replace only `assets/anomalies/cutouts/afterlife_d_cutout.png`; the previous canonical SHA-256 was `a67933332cd5deb0f774553e3e785b87ac8646543caaa297a19c1acb17c96ad9`.
+- `UiAssetCatalog`, `SceneVisuals`, Godot scene wiring, B/C state, save data, and rules remain unchanged.
+- Godot imported the canonical PNG and the actual 1280×720 D consumer resolved the existing route. The 1920×1080 launch-profile capture remains pending.
 - Human/player-experience QA remains deferred.
