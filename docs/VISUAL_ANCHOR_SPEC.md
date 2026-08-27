@@ -12,6 +12,16 @@ Closure contract: `docs/planning/2026-08-21-visual-ui-planning-closure.md`
 
 현재 visual planning criteria와 product-reference 승격 경계를 정의한다. 공유 runtime은 이미 구현됐지만, generated/reviewed reference를 자동으로 product reference로 간주하지 않는다. Product-reference image selection, layer/reuse audit, rights review, 실제 해상도 가독성 및 Human QA는 별도 Gate다.
 
+
+
+## 0. 2026-08-28 current-status reconciliation
+
+이 문서의 2026-08-25 승격 대기 문구는 당시의 anchor/candidate 경계 기록이다. **현재 개별 제품 asset 상태는 반드시** `ASSET_MANIFEST.yml` → `CURRENT_VISUAL_WORK_ORDER.md` → `CURRENT_VISUAL_ASSET_CONSUMER_CHECKLIST.md` 순으로 읽는다.
+
+- root manifest에는 6개 `PROJECT_ASSET_APPROVED` entry가 있다: M01 Investigation/Recovery background, M01 B/C·D cutout, M04 Investigation background, M04 B/C cutout.
+- 이 개별 자산은 해당 consumer의 구현·runtime 검증 상태와 구분해 기록되며, 아직 승격되지 않은 M01 Entrance, M04 Entrance/Recovery, M04 D 후보나 Human/new-player QA를 자동으로 통과시키지 않는다.
+- 특히 `M04_INVESTIGATION_ANCHOR_01` reference candidate는 `USER_APPROVED_VISUAL_CANDIDATE / PRODUCT_REFERENCE_ASSET_PENDING`을 유지한다. 이것은 실제 `red_crossroads.png` adaptation의 별도 `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED` 상태와 다른 대상이다.
+
 ## Anchor order
 
 1. Investigation Scene Anchor

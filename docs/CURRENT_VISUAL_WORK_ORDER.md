@@ -1,7 +1,7 @@
 # 괴이기록국 · Current Visual Work Order
 
 > Role: `CURRENT_VISUAL_WORK_ORDER`
-> Updated: `2026-08-27`
+> Updated: `2026-08-28`
 > Status: `PLANNING_COMPLETE / RUNTIME_IMPLEMENTED / USER_APPROVED_VISUAL_CANDIDATES / RUNTIME_CONSUMER_FIRST_ASSET_GATE / M04_INVESTIGATION_RUNTIME_VERIFIED / PRODUCT_REFERENCE_ASSET_PENDING / HUMAN_QA_NOT_RUN`
 > Art treatment: `SOFT_ANIME_NOIR_LOCKED`
 > Presentation invariant: `DOSSIER_HYBRID_IS_PRESENTATION_LANGUAGE_NOT_MEDIUM`
@@ -257,7 +257,7 @@ actual Scene / Texture consumer
 
 ## 8. Asset authority warning
 
-Root `ASSET_MANIFEST.yml`가 current tracked product-asset authority이며, 현재 승인된 M01 Investigation/Recovery background·B/C cutout·D cutout 및 M04 Investigation background의 5개 entry를 가진다.
+Root `ASSET_MANIFEST.yml`가 current tracked product-asset authority이며, 현재 승인된 M01 Investigation/Recovery background·B/C cutout·D cutout 및 M04 Investigation background·B/C cutout의 6개 entry를 가진다.
 
 `assets/ASSET_MANIFEST.json`은 `LEGACY_MIGRATION_PENDING_NON_AUTHORITY`다. 과거 `stage=final`, QA 문구, tracked PNG, `.import`, runtime wiring은 existence/provenance/history evidence일 수 있지만 `PROJECT_ASSET_APPROVED`를 부여하지 않는다.
 
