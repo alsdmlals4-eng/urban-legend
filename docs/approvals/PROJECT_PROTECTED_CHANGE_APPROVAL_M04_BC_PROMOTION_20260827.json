@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "artifact_role": "PROJECT_PROTECTED_CHANGE_APPROVAL",
+  "status": "APPROVED",
+  "protected_base_commit": "12174a22092e9037f273661ad96788e4435161ba",
+  "decision_ids": ["UL-ISSUE-299-M04-BC-ANOMALY-PROMOTION"],
+  "approved_paths": [
+    "assets/anomalies/cutouts/red_umbrella_b_cutout.png"
+  ],
+  "approval_source": "The sole decision owner authorized continuous autonomous current-slice work, runtime-first candidate promotion after verification, and safe current-task PR handling. This receipt records the approval boundary; no second GitHub identity is required.",
+  "approval_time": "2026-08-27T22:45:00+09:00",
+  "scope_summary": "Promote the already-preserved M04 B/C visual candidate at the existing cutout path only, record exact runtime evidence, and preserve all scene/catalog/fallback/UI/gameplay/save behavior."
+}

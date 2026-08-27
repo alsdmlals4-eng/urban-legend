@@ -2,7 +2,7 @@
 
 ## Scope
 
-GitHub Issue #297 reviews the actual M04 risk-stage texture route only. `scripts/ui/ui_asset_catalog.gd` maps B/C to `red_umbrella_b_cutout` and D to `red_umbrella_d_cutout`; `scripts/ui/scene_presentation.gd::apply_anomaly()` loads the transparent cutout first and only then falls back to the full RGB image. `battle_scene.tscn` gives both stages the one `CinematicStage/AnomalyPanel/Content/AnomalyVisual` owner using `KEEP_ASPECT_CENTERED`.
+GitHub Issue #297 reviews the actual M04 risk-stage texture route only. `scripts/ui/ui_asset_catalog.gd` maps B/C to `red_umbrella_b_cutout` and D to `red_umbrella_d_cutout`; `scripts/ui/scene_presentation.gd::apply_anomaly()` loads the transparent cutout first and only then falls back to the full RGB image. `battle_scene.tscn` gives both stages the one `CinematicStage/AnomalyPanel/Content/AnomalyVisual` owner using the existing `KEEP_ASPECT_COVERED` presentation.
 
 ## Findings
 
