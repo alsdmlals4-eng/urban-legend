@@ -152,9 +152,9 @@ UI 텍스트, 선택지, Manual panel, 정답 강조는 이미지에 bake하지 
 → 사용자 결과 승인 — COMPLETE
 → Notion 사람용 Visual surface 업로드/readback — COMPLETE
 → product-reference promotion — COMPLETE (2026-08-27, existing canonical path only)
-→ layer/reuse provenance recorded + 1280×720/1920×1080 실제 검증 pending
+→ layer/reuse provenance recorded + 1280×720/1920×1080 실제 검증 — COMPLETE (PR #273)
 → M04 release-near visual/audio/VFX 구현
 → Human player-experience QA
 ```
 
-후속 승격은 별도 adaptation receipt `M04_INVESTIGATION_BACKGROUND_ADAPT_01`로 완료됐으며, 원 후보 `M04_INVESTIGATION_ANCHOR_01` 자체는 사람용 reference로 보존한다. `runtime_visual_validation: NOT_RUN`과 Human QA pending은 유지한다.
+후속 승격은 별도 adaptation receipt `M04_INVESTIGATION_BACKGROUND_ADAPT_01`로 완료됐으며, 원 후보 `M04_INVESTIGATION_ANCHOR_01` 자체는 사람용 reference로 보존한다. 위 receipt의 `runtime_visual_validation: NOT_RUN`은 원 후보 승인 시점의 역사적 상태이며, promoted adaptation의 현재 runtime evidence는 PR #273에서 1280×720/1920×1080 Investigation + LocationPreview 실제 consumer로 검증됐다. Human QA pending은 유지한다.
