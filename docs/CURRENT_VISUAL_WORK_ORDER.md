@@ -212,6 +212,7 @@ actual Scene / Texture consumer
 26. `M04_ENTRANCE_BACKGROUND_ADAPT_01_20260827` one-image candidate — `CANDIDATE_NOT_PROMOTED / REUSE_REVIEW`; it removes current branding-like signage and strengthens the collapsed red-umbrella opening cue, but actual Dialogue + **non-compact** current-case-preview comparison is still needed before promotion. `CurrentCasePreview` is hidden below 1500×850, so 1280×720 validates Dialogue only and 1920×1080 validates both consumers. Preserve `red_alley_entrance.png`; Human QA remains pending.
 27. M04 entrance consumer-resolution correction — repository and Notion readback complete under Issue #305 / PR #306 before any runtime comparison. No product asset, Scene/catalog/runtime, UI, gameplay, save, or Human QA state changed.
 28. M01 ManualSurface + route-restore surface reuse review — `REUSE_ACCEPTED / NO_NEW_IMAGE_REQUIRED / EXISTING_RUNTIME_EVIDENCE_REUSED`; both existing textless textures preserve the locked dossier treatment while live Godot text, controls, and route tiles retain ownership. No asset replacement or new image; Human QA remains pending (Issue #307).
+29. `M04_ANOMALY_D_ADAPT_01` one-image transparent candidate — `USER_AUTHORIZED_VISUAL_CANDIDATE / PRODUCT_ASSET_PROMOTION_PENDING`; exact RGBA candidate and receipt are retained in `docs/visual/candidates/`. It is not yet connected to `red_umbrella_d_cutout`, and 1280×720/1920×1080 runtime captures, rights/provenance review, and Human QA remain separate Gates.
 ```
 
 ## 7. Approval boundary
