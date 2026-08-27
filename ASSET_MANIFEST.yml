@@ -35,6 +35,79 @@ canonical_rules:
     - new
 
 assets:
+  - asset_id: "M01-INVESTIGATION-BACKGROUND-001"
+    name: "Afterlife Station Investigation background"
+    category: "environment_background"
+    purpose: "M01 Investigation platform environment behind the existing dossier UI and shared LocationPreview."
+    owner_discipline: "Visual"
+    affected_disciplines:
+      - "Godot UI"
+      - "Narrative"
+      - "QA"
+    statuses:
+      - "PRODUCTION_READY"
+      - "IMPLEMENTED"
+    vault_source_key: "M01_INVESTIGATION_PLATFORM_ADAPT_02_20260827"
+    canonical_path: "assets/backgrounds/afterlife_platform.png"
+    source_path: "docs/visual/candidates/M01_INVESTIGATION_PLATFORM_ADAPT_02_20260827.png"
+    runtime_path: "scenes/investigation_scene.tscn -> ArtLayer/Background; shared LocationPreview"
+    latest_capture_path: "docs/qa/M01_INVESTIGATION_PLATFORM_ADAPT_02_CANDIDATE_1280x720_20260827.png"
+    golden_screenshot_path: ""
+    source_type: "AI_GENERATED"
+    source_and_license: >
+      OpenAI built-in image generation output created on 2026-08-27 and promoted under the sole owner's current-slice autonomous approval.
+      The generation prompt contains no named third-party character, logo, or requested imitation style. This record
+      captures project provenance and an obvious-conflict review only; it is not legal clearance. The user remains
+      responsible for final distribution-rights review under the applicable service terms and law.
+    approved_reference: "docs/visual/candidates/M01_INVESTIGATION_PLATFORM_ADAPT_02_20260827.md"
+    supersedes: "Pre-promotion tracked afterlife_platform.png (SHA-256 d4b7bfd6e5cda3293bf5e37a8b050f29e03d88501c3b217e681714a4bde1bdad)"
+    superseded_by: ""
+    replacement_requires_approval: true
+    reference_elements:
+      use:
+        - "Textless and characterless late-night Korean station platform with an open shared-preview sightline"
+        - "Off-center station silhouette, tiled-wall rhythm, distant tunnel, and train confined to one side"
+        - "Soft anime-noir ink/paper texture with restrained warm lamps"
+      do_not_use:
+        - "Large central pillar, blank plaque, characters, anomaly, HUD, labels, or readable signage"
+        - "Named IP, logos, photoreal glare, neon-dominant color, or M04 motifs"
+    visual_dna:
+      silhouette: "Open late-night platform environment; no foreground feature competes with the small shared LocationPreview."
+      proportion: "1672x941 landscape background filling the existing ArtLayer Background TextureRect and shared LocationPreview."
+      camera: "Wide eye-level platform view with an open left-to-center sightline and right-side train depth."
+      resolution_or_pixel_density: "1672x941 PNG; existing runtime nodes own aspect fitting and modulation."
+      palette: "Charcoal, muted blue-grey, restrained warm practical lights, and readable midtone tile separation."
+      lighting: "Subdued nocturnal separation; no baked UI glow or focal object intended to replace the investigation content."
+      material_language: "Soft anime-noir ink/paper texture."
+      outline_and_readability: "Platform edge, wall rhythm, tunnel depth, and small off-center sign retain a location read at preview scale."
+      allowed_variation: "Existing scene modulation, layout, and UI scaling only."
+      forbidden_elements: "Characters, anomaly silhouette, readable text, UI, labels, named insignia, central pillar, or M04 motifs."
+      post_process: "No baked screen effects; existing Godot UI owns display treatment."
+      engine_import: "Godot Texture2D import from the canonical PNG."
+      performance_budget: "One existing landscape TextureRect and one 1672x941 PNG; no new runtime nodes or scripts."
+      accessibility_fallback: "Existing investigation copy, clue state, and UI communicate gameplay state independently of the background."
+    generation_record:
+      tool_and_model: "OpenAI built-in image generation (model identifier not exposed to this session)"
+      prompt_core: "Textless characterless Korean late-night subway platform, open shared-preview sightline, off-center small sign silhouette, tiled wall, distant tunnel, train only on one side, soft anime-noir ink/paper texture; no UI, readable text, large pillar, character, anomaly, M04 motif, photoreal glare, or neon."
+      seed_or_reproduction: "Not exposed by the generation surface."
+      manual_post_process: "None recorded."
+      known_remaining_issues: "Runtime consumer resolution and mechanical readability were verified at 1280x720 and 1920x1080. Human visual/accessibility QA remains pending."
+    validation:
+      target_resolutions:
+        - "1280x720"
+        - "1920x1080"
+      runtime_verified: true
+      visual_qa_verified: true
+      accessibility_verified: false
+      evidence:
+        - "docs/visual/candidates/M01_INVESTIGATION_PLATFORM_ADAPT_02_20260827.md"
+        - "docs/qa/M01_INVESTIGATION_PLATFORM_ADAPT_02_RUNTIME_EVIDENCE_20260827.md"
+        - "GitHub Issue #286"
+      last_verified_commit: ""
+    next_review_triggers:
+      - "After an ArtLayer Background or LocationPreview layout/scaling change"
+      - "Before release-rights sign-off"
+      - "When runtime or human QA reports low preview contrast or environment ambiguity"
   - asset_id: "M01-RECOVERY-BACKGROUND-001"
     name: "Afterlife Station Recovery background"
     category: "environment_background"
