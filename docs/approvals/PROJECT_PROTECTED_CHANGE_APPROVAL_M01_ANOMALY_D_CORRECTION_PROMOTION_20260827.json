@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "artifact_role": "PROJECT_PROTECTED_CHANGE_APPROVAL",
+  "status": "APPROVED",
+  "protected_base_commit": "c0bc8a98ee40bf04d4953a834d9cd06c47e42efe",
+  "decision_ids": [
+    "UL-ISSUE-261-M04-RECOVERY-TELEGRAPH-AUDIO",
+    "UL-ISSUE-268-RECOVERY-OVERLAY-LAYERING",
+    "UL-ISSUE-270-INVESTIGATION-OVERLAY-REFLOW",
+    "UL-ISSUE-272-M04-INVESTIGATION-BACKGROUND-HIERARCHY",
+    "UL-ISSUE-274-M04-RUNTIME-EVIDENCE",
+    "UL-ISSUE-278-M01-RECOVERY-RUNTIME-EVIDENCE",
+    "UL-ISSUE-280-M01-ANOMALY-D-CORRECTION-PROMOTION"
+  ],
+  "approved_paths": [
+    "assets/anomalies/cutouts/afterlife_d_cutout.png",
+    "scripts/scenes/battle_scene.gd",
+    "scripts/scenes/investigation_scene.gd",
+    "scripts/ui/canon_v2_operation_overlay.gd",
+    "scripts/ui/canon_v2_runtime_bridge.gd",
+    "scripts/ui/recovery_telegraph_audio.gd"
+  ],
+  "approval_source": "The project's sole decision owner authorized continuous autonomous work, automatic image creation when runtime evidence requires it, and direct Godot verification. This promotion uses the one generated D correction candidate only; no second GitHub identity is required.",
+  "approval_time": "2026-08-27T12:42:00+09:00",
+  "scope_summary": "Replace only the existing M01 D cutout's canonical bytes with M01_ANOMALY_D_RUNTIME_CORRECTION_CANDIDATE_20260827, then record its actual 1280x720 consumer evidence. Preserve B/C, background, catalog/scene routes, fallback, data, save compatibility, M04 assets, 1920x1080 evidence gate, Human QA, and all rights/accessibility gates."
+}
