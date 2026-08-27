@@ -51,7 +51,7 @@ assets:
     canonical_path: "assets/backgrounds/afterlife_recovery.png"
     source_path: "docs/visual/candidates/M01_RECOVERY_BACKGROUND_ADAPT_01.png"
     runtime_path: "scenes/battle_scene.tscn -> ArtLayer/Background"
-    latest_capture_path: ""
+    latest_capture_path: "docs/qa/captures/m01/recovery_asset_runtime_20260827/m01-recovery-b-1280x720.png"
     golden_screenshot_path: ""
     source_type: "AI_GENERATED"
     source_and_license: >
@@ -92,18 +92,20 @@ assets:
       prompt_core: "Textless characterless Korean late-night subway concourse for a recovery scene, wet platform floor, repeated station architecture, open central composition for a separate anomaly, soft anime-noir ink/paper texture, subdued blue-grey palette; no person, anomaly, UI, signage, logo, or M04 motifs."
       seed_or_reproduction: "Not exposed by the generation surface."
       manual_post_process: "None recorded."
-      known_remaining_issues: "Godot import and focused automated checks are required in this promotion. Live 1280x720/1920x1080 capture and Human visual/accessibility QA remain pending."
+      known_remaining_issues: "Runtime consumer resolution and readability were verified at 1280x720 and the 1920x1080 launch profile. Human visual/accessibility QA remains pending."
     validation:
       target_resolutions:
         - "1280x720"
         - "1920x1080"
-      runtime_verified: false
+      runtime_verified: true
       visual_qa_verified: false
       accessibility_verified: false
       evidence:
         - "docs/visual/candidates/M01_RECOVERY_BACKGROUND_ADAPT_01.md"
         - "GitHub Issue #250"
-      last_verified_commit: ""
+        - "docs/qa/M01_RECOVERY_APPROVED_ASSET_RUNTIME_EVIDENCE_20260827.md"
+        - "GitHub Issue #284"
+      last_verified_commit: "179f4c35bdf048957fbfc599bac2eb92be1ef055"
     next_review_triggers:
       - "After an ArtLayer Background layout or scaling change"
       - "Before release-rights sign-off"
@@ -124,7 +126,7 @@ assets:
     canonical_path: "assets/anomalies/cutouts/afterlife_b_cutout.png"
     source_path: "docs/visual/candidates/M01_ANOMALY_BC_ADAPT_01.png"
     runtime_path: "scenes/battle_scene.tscn -> CinematicStage/AnomalyPanel/Content/AnomalyVisual"
-    latest_capture_path: ""
+    latest_capture_path: "docs/qa/captures/m01/recovery_asset_runtime_20260827/m01-recovery-b-1280x720.png"
     golden_screenshot_path: ""
     source_type: "AI_GENERATED"
     source_and_license: >
@@ -165,18 +167,20 @@ assets:
       prompt_core: "Anonymous Korean late-night station-attendant-like humanoid, one coherent transparent silhouette, cap and dark uniform, subtly repeated and misaligned uniform details, restrained soft anime-noir ink/paper texture; no text, UI, scenery, logo, named character, duplicate face, or duplicate limbs."
       seed_or_reproduction: "Not exposed by the generation surface."
       manual_post_process: "None recorded."
-      known_remaining_issues: "Godot import and focused automated checks are required in this promotion. Live 1280x720/1920x1080 capture and Human visual/accessibility QA remain pending."
+      known_remaining_issues: "Runtime consumer resolution and readability were verified at 1280x720 and the 1920x1080 launch profile. Human visual/accessibility QA remains pending."
     validation:
       target_resolutions:
         - "1280x720"
         - "1920x1080"
-      runtime_verified: false
+      runtime_verified: true
       visual_qa_verified: false
       accessibility_verified: false
       evidence:
         - "docs/visual/candidates/M01_ANOMALY_BC_ADAPT_01.md"
         - "GitHub Issue #250"
-      last_verified_commit: ""
+        - "docs/qa/M01_RECOVERY_APPROVED_ASSET_RUNTIME_EVIDENCE_20260827.md"
+        - "GitHub Issue #284"
+      last_verified_commit: "179f4c35bdf048957fbfc599bac2eb92be1ef055"
     next_review_triggers:
       - "After an AnomalyVisual layout or scaling change"
       - "Before release-rights sign-off"
