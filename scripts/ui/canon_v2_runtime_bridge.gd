@@ -279,6 +279,8 @@ func _derive_protection_status(obligations: Array) -> String:
 func _mount_overlay(host: Node, runtime_state: Dictionary, mode: String) -> Node:
 	if host == null:
 		return null
+	if mode == "recovery":
+		_hide_legacy_recovery_hud(host)
 	var existing := host.get_node_or_null("CanonV2OperationOverlay")
 	if existing != null:
 		if existing.has_method("configure"):
@@ -289,6 +291,12 @@ func _mount_overlay(host: Node, runtime_state: Dictionary, mode: String) -> Node
 	host.add_child(overlay)
 	overlay.configure(runtime_state, mode)
 	return overlay
+
+
+func _hide_legacy_recovery_hud(host: Node) -> void:
+	var legacy_hud := host.get_node_or_null("RecoveryHud") as Control
+	if legacy_hud != null:
+		legacy_hud.visible = false
 
 
 func _build_overlay_state(mode: String) -> Dictionary:

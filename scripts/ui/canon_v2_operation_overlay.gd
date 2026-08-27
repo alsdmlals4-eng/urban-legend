@@ -8,6 +8,9 @@ var _mode := "recovery"
 var _manual_detail_panel: PanelContainer
 var _rule_summary_label: Label
 var _manual_toggle_button: Button
+var _detail_stack: VBoxContainer
+var _detail_toggle_button: Button
+var _detail_stack_open := false
 var _priority_label: Label
 var _obligation_list_label: Label
 var _termination_title_label: Label
@@ -121,6 +124,13 @@ func _ensure_ui() -> void:
 	_manual_toggle_button.tooltip_text = "현재 가설과 근거를 확인합니다. 정답을 자동으로 공개하지 않습니다."
 	_manual_toggle_button.pressed.connect(_toggle_manual_detail)
 	rule_strip.add_child(_manual_toggle_button)
+	_detail_toggle_button = Button.new()
+	_detail_toggle_button.name = "DetailToggleButton"
+	_detail_toggle_button.text = "작전 상태 열기"
+	_detail_toggle_button.focus_mode = Control.FOCUS_ALL
+	_detail_toggle_button.tooltip_text = "보호 의무와 종결 판단을 확인합니다."
+	_detail_toggle_button.pressed.connect(_toggle_detail_stack)
+	rule_strip.add_child(_detail_toggle_button)
 
 	_manual_detail_panel = PanelContainer.new()
 	_manual_detail_panel.name = "ManualDetailPanel"
@@ -143,14 +153,14 @@ func _ensure_ui() -> void:
 	spacer.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root_layout.add_child(spacer)
 
-	var detail_stack := VBoxContainer.new()
-	detail_stack.name = "DetailStack"
-	detail_stack.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	detail_stack.add_theme_constant_override("separation", 6)
-	root_layout.add_child(detail_stack)
+	_detail_stack = VBoxContainer.new()
+	_detail_stack.name = "DetailStack"
+	_detail_stack.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_detail_stack.add_theme_constant_override("separation", 6)
+	root_layout.add_child(_detail_stack)
 
 	var obligation_panel := _make_detail_panel("ObligationPanel", Color(0.72, 0.43, 0.33, 0.95))
-	detail_stack.add_child(obligation_panel)
+	_detail_stack.add_child(obligation_panel)
 	var obligation_content := VBoxContainer.new()
 	obligation_content.name = "ObligationContent"
 	obligation_panel.add_child(obligation_content)
@@ -164,7 +174,7 @@ func _ensure_ui() -> void:
 	obligation_content.add_child(_obligation_list_label)
 
 	var termination_panel := _make_detail_panel("TerminationPreviewPanel", Color(0.49, 0.53, 0.72, 0.95))
-	detail_stack.add_child(termination_panel)
+	_detail_stack.add_child(termination_panel)
 	var termination_content := VBoxContainer.new()
 	termination_content.name = "TerminationContent"
 	termination_panel.add_child(termination_content)
@@ -178,7 +188,7 @@ func _ensure_ui() -> void:
 	termination_content.add_child(_termination_detail_label)
 
 	var follow_up_panel := _make_detail_panel("FollowUpPanel", Color(0.42, 0.61, 0.51, 0.95))
-	detail_stack.add_child(follow_up_panel)
+	_detail_stack.add_child(follow_up_panel)
 	var follow_up_content := VBoxContainer.new()
 	follow_up_content.name = "FollowUpContent"
 	follow_up_panel.add_child(follow_up_content)
@@ -346,10 +356,13 @@ func _refresh_follow_up() -> void:
 
 
 func _apply_mode_visibility() -> void:
-	var detail_stack := get_node("SafeArea/RootLayout/DetailStack") as VBoxContainer
-	(detail_stack.get_node("ObligationPanel") as PanelContainer).visible = _mode in ["rescue", "recovery", "result"]
-	(detail_stack.get_node("TerminationPreviewPanel") as PanelContainer).visible = _mode in ["recovery", "result"]
-	(detail_stack.get_node("FollowUpPanel") as PanelContainer).visible = _mode == "result"
+	(_detail_stack.get_node("ObligationPanel") as PanelContainer).visible = _mode in ["rescue", "recovery", "result"]
+	(_detail_stack.get_node("TerminationPreviewPanel") as PanelContainer).visible = _mode in ["recovery", "result"]
+	(_detail_stack.get_node("FollowUpPanel") as PanelContainer).visible = _mode == "result"
+	_detail_toggle_button.visible = _mode in ["rescue", "recovery", "result"]
+	_detail_stack.visible = _detail_stack_open and _detail_toggle_button.visible
+	_detail_toggle_button.text = "작전 상태 닫기" if _detail_stack.visible else "작전 상태 열기"
+	_set_legacy_action_dock_visible(not _detail_stack.visible)
 	_manual_toggle_button.visible = _mode != "investigation"
 	if _mode == "investigation":
 		_manual_detail_panel.visible = false
@@ -362,6 +375,22 @@ func _toggle_manual_detail() -> void:
 		(_manual_detail_panel.get_node("ManualText") as RichTextLabel).grab_focus()
 	else:
 		_manual_toggle_button.grab_focus()
+
+
+func _toggle_detail_stack() -> void:
+	_detail_stack_open = not _detail_stack_open
+	_apply_mode_visibility()
+	if _detail_stack.visible:
+		_detail_toggle_button.grab_focus()
+
+
+func _set_legacy_action_dock_visible(is_visible: bool) -> void:
+	var host := get_parent()
+	if host == null:
+		return
+	var action_dock := host.get_node_or_null("ActionDock") as Control
+	if action_dock != null:
+		action_dock.visible = is_visible
 
 
 func _on_confirmation_confirmed() -> void:

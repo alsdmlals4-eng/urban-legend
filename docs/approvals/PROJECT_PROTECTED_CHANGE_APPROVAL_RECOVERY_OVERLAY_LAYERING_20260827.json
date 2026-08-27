@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "artifact_role": "PROJECT_PROTECTED_CHANGE_APPROVAL",
+  "status": "APPROVED",
+  "protected_base_commit": "c0bc8a98ee40bf04d4953a834d9cd06c47e42efe",
+  "decision_ids": [
+    "UL-ISSUE-268-RECOVERY-OVERLAY-LAYERING"
+  ],
+  "approved_paths": [
+    "scripts/ui/canon_v2_runtime_bridge.gd"
+  ],
+  "approval_source": "The project's sole decision owner authorized continuous autonomous implementation and direct Godot verification. This manifest records the narrow protected-path merge evidence for the visually reproduced recovery UI overlap; no second GitHub identity is required.",
+  "approval_time": "2026-08-27T11:05:00+09:00",
+  "scope_summary": "When the Canon V2 recovery overlay owns battle_scene, hide only the duplicate legacy recovery HUD, action dock, and clue drawer. Preserve the background, anomaly presentation, recovery semantics, save data, and Canon V2 interaction behavior."
+}

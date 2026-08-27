@@ -60,6 +60,14 @@ func _run() -> void:
 		_expect(not manual_button.text.is_empty(), "manual toggle lacks text label")
 	var summary_label := overlay.get_node_or_null("SafeArea/RootLayout/RuleStripPanel/RuleStrip/RuleSummaryLabel") as Label
 	_expect(summary_label != null and not summary_label.text.is_empty(), "rule strip lacks text summary")
+	var detail_toggle := overlay.get_node_or_null("SafeArea/RootLayout/RuleStripPanel/RuleStrip/DetailToggleButton") as Button
+	var detail_stack := overlay.get_node_or_null("SafeArea/RootLayout/DetailStack") as Control
+	_expect(detail_toggle != null, "recovery detail toggle missing")
+	_expect(detail_stack != null and not detail_stack.visible, "recovery detail must start collapsed to preserve the action dock")
+	if detail_toggle != null:
+		detail_toggle.emit_signal("pressed")
+		await process_frame
+		_expect(detail_stack != null and detail_stack.visible, "recovery detail toggle must reveal protection and termination status")
 	var priority_label := overlay.get_node_or_null("SafeArea/RootLayout/DetailStack/ObligationPanel/ObligationContent/PriorityLabel") as Label
 	_expect(priority_label != null and priority_label.text.contains("critical"), "priority is not expressed as text")
 

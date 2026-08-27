@@ -16,6 +16,12 @@ func _run() -> void:
 	var host := Control.new()
 	host.name = "BattleSceneTestHost"
 	root.add_child(host)
+	var legacy_hud := Control.new()
+	legacy_hud.name = "RecoveryHud"
+	host.add_child(legacy_hud)
+	var legacy_action_dock := Control.new()
+	legacy_action_dock.name = "ActionDock"
+	host.add_child(legacy_action_dock)
 	var mounted: Node = bridge.mount_overlay_for_test(host, {
 		"manual_state": {"pages": [], "active_rule_ids": []},
 		"active_protection_obligations": [],
@@ -24,6 +30,17 @@ func _run() -> void:
 	}, "recovery")
 	_expect(mounted != null, "bridge did not mount the operation overlay")
 	_expect(host.get_node_or_null("CanonV2OperationOverlay") != null, "mounted overlay is not attached to the scene host")
+	_expect(not legacy_hud.visible, "Canon V2 overlay must hide the duplicate legacy recovery HUD")
+	_expect(legacy_action_dock.visible, "Canon V2 overlay must preserve the legacy recovery action dock input")
+	var detail_toggle := mounted.get_node_or_null("SafeArea/RootLayout/RuleStripPanel/RuleStrip/DetailToggleButton") as Button
+	_expect(detail_toggle != null, "bridge-mounted overlay lacks the recovery detail toggle")
+	if detail_toggle != null:
+		detail_toggle.emit_signal("pressed")
+		await process_frame
+		_expect(not legacy_action_dock.visible, "opened recovery detail must replace the action dock instead of overlapping it")
+		detail_toggle.emit_signal("pressed")
+		await process_frame
+		_expect(legacy_action_dock.visible, "closing recovery detail must restore the action dock input")
 	var mounted_again: Node = bridge.mount_overlay_for_test(host, {}, "recovery")
 	_expect(mounted_again == mounted, "bridge mounted a duplicate overlay")
 	_expect(bridge.classify_scene_path("res://scenes/minigame_scene.tscn") == "rescue", "minigame scene was not classified as rescue")
