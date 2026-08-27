@@ -2,6 +2,7 @@
 extends Control
 
 const SceneVisuals = preload("res://scripts/ui/scene_presentation.gd")
+const ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")
 const RuntimeEditor = preload("res://scripts/ui/runtime_ui_editor.gd")
 const AssetCatalog = preload("res://scripts/ui/ui_asset_catalog.gd")
 const LogGuideScript = preload("res://scripts/ui/log_guide.gd")
@@ -13,6 +14,10 @@ const AccessibilitySettingsScript = preload("res://scripts/ui/accessibility_sett
 const AnomalyManualDrawerScript = preload("res://scripts/ui/anomaly_manual_drawer.gd")
 const AfterlifeManualCatalog = preload("res://scripts/ui/afterlife_manual_catalog.gd")
 const TeamStatusPopoverScene = preload("res://scenes/ui/team_status_popover.tscn")
+
+const M04_EPISODE_ID := "episode_002_red_umbrella_alley"
+const M04_INVESTIGATION_SHADE_ALPHA := 0.42
+const M04_INVESTIGATION_PANEL_ALPHA := 0.80
 
 const FALLBACK_INVESTIGATION_POINTS: Array[Dictionary] = [
 	{
@@ -121,6 +126,7 @@ func _build_ui() -> void:
 	_team_hud = %TeamHud
 	_dialogue_dock = %DialogueDock
 	_point_method_dock = %PointMethodDock
+	_apply_m04_investigation_visual_hierarchy()
 	_method_column = %MethodColumn
 	_manual_panel = %ManualPanel
 	_manual_body = %Body
@@ -727,6 +733,17 @@ func _select_field_choice(choice: Dictionary) -> void:
 	_field_next_button.visible = not _pending_next_field_node_id.is_empty()
 	_refresh_case_status()
 	_refresh_manual_drawer(true)
+
+
+func _apply_m04_investigation_visual_hierarchy() -> void:
+	if GameState.get_current_episode_id() != M04_EPISODE_ID:
+		return
+	var shade := get_node_or_null("ArtLayer/Shade") as ColorRect
+	if shade != null:
+		shade.color.a = M04_INVESTIGATION_SHADE_ALPHA
+	for dock in [_point_method_dock, _dialogue_dock]:
+		if dock != null:
+			dock.add_theme_stylebox_override("panel", ThemeFactory.panel_style(Color("293943"), M04_INVESTIGATION_PANEL_ALPHA))
 
 
 func _refresh_record_learning() -> void:
