@@ -10,7 +10,11 @@
     "UL-ISSUE-272-M04-INVESTIGATION-BACKGROUND-HIERARCHY"
   ],
   "approved_paths": [
-    "scripts/scenes/investigation_scene.gd"
+    "scripts/scenes/battle_scene.gd",
+    "scripts/scenes/investigation_scene.gd",
+    "scripts/ui/canon_v2_operation_overlay.gd",
+    "scripts/ui/canon_v2_runtime_bridge.gd",
+    "scripts/ui/recovery_telegraph_audio.gd"
   ],
   "approval_source": "The project's sole decision owner authorized continuous autonomous implementation, direct Godot verification, and treating in-scope approvals as granted. This manifest records the M04-only visual hierarchy correction found during actual-consumer runtime validation; no second GitHub identity is required.",
   "approval_time": "2026-08-27T11:45:00+09:00",
