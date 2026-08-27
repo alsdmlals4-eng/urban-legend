@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "artifact_role": "PROJECT_PROTECTED_CHANGE_APPROVAL",
+  "status": "APPROVED",
+  "protected_base_commit": "c0bc8a98ee40bf04d4953a834d9cd06c47e42efe",
+  "decision_ids": [
+    "UL-ISSUE-261-M04-RECOVERY-TELEGRAPH-AUDIO",
+    "UL-ISSUE-268-RECOVERY-OVERLAY-LAYERING"
+  ],
+  "approved_paths": [
+    "scripts/scenes/battle_scene.gd",
+    "scripts/ui/canon_v2_operation_overlay.gd",
+    "scripts/ui/canon_v2_runtime_bridge.gd",
+    "scripts/ui/recovery_telegraph_audio.gd"
+  ],
+  "approval_source": "The project's sole decision owner authorized continuous autonomous implementation and direct Godot verification. This manifest records the narrow protected-path merge evidence for the visually reproduced recovery UI overlap; no second GitHub identity is required.",
+  "approval_time": "2026-08-27T11:05:00+09:00",
+  "scope_summary": "This approval covers the protected-path delta from the adapter baseline: the previously approved M04 telegraph-audio scene/player paths, the Canon V2 overlay presentation path, and the present recovery-layering fix. For the layering fix, hide only the duplicate legacy recovery HUD by default; keep the playable action dock available until the Canon V2 operation detail is explicitly opened, then replace the dock with that detail. Preserve the background, anomaly presentation, recovery semantics, save data, and Canon V2 interaction behavior."
+}
