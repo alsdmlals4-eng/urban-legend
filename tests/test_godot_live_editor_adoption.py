@@ -20,6 +20,7 @@ UID_COMPANION_TEXT = "uid://ctcbx5pl1hwyl\n"
 APPROVED_EDITOR_PLUGINS = (
     "res://addons/godot_ai/plugin.cfg",
     "res://addons/gut/plugin.cfg",
+    "res://addons/hera_agent_godot/plugin.cfg",
 )
 ALLOWED_PATHS = {
     ".godot-live-editor/project-pilot.json",
@@ -132,12 +133,12 @@ def test_descriptor_is_exact_urban_legend_contract() -> None:
 
 
 def test_editor_plugin_contract_is_bounded_order_independent_and_fail_closed() -> None:
-    godot_ai, gut = APPROVED_EDITOR_PLUGINS
+    godot_ai, gut, hera = APPROVED_EDITOR_PLUGINS
     exact_reversed = f"""[application]
 config/name="{godot_ai}"
 
 [editor_plugins]
-enabled=PackedStringArray("{gut}", "{godot_ai}")
+enabled=PackedStringArray("{hera}", "{gut}", "{godot_ai}")
 
 [rendering]
 renderer/rendering_method="gl_compatibility"
@@ -149,10 +150,10 @@ renderer/rendering_method="gl_compatibility"
 enabled=PackedStringArray("{godot_ai}")
 """,
         f"""[editor_plugins]
-enabled=PackedStringArray("{godot_ai}", "{gut}", "res://addons/unapproved/plugin.cfg")
+enabled=PackedStringArray("{godot_ai}", "{gut}", "{hera}", "res://addons/unapproved/plugin.cfg")
 """,
         f"""[editor_plugins]
-enabled=PackedStringArray("{godot_ai}", "{gut}", "{gut}")
+enabled=PackedStringArray("{godot_ai}", "{gut}", "{hera}", "{gut}")
 """,
         f"""[application]
 config/name="{godot_ai}"
@@ -161,7 +162,7 @@ config/name="{godot_ai}"
 enabled=PackedStringArray("{gut}")
 """,
         f"""[editor_plugins]
-enabled=PackedStringArray("{godot_ai}", "{gut}", bare)
+enabled=PackedStringArray("{godot_ai}", "{gut}", "{hera}", bare)
 """,
     )
     for payload in invalid_payloads:
