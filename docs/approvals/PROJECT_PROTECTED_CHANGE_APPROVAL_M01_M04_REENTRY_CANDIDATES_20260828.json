@@ -1,0 +1,17 @@
+{
+  "decision_id": "ISSUE-313-M01-M04-REENTRY-CANDIDATES-20260828",
+  "scope": "Candidate-only visual storage and documentation for M01 entrance and M04 recovery.",
+  "authorized_by": "user automatic image authorization recorded 2026-08-28",
+  "approved_paths": [
+    "assets/anomalies/cutouts/afterlife_d_cutout.png",
+    "assets/anomalies/cutouts/red_umbrella_b_cutout.png",
+    "assets/backgrounds/afterlife_platform.png",
+    "scripts/scenes/battle_scene.gd",
+    "scripts/scenes/investigation_scene.gd",
+    "scripts/ui/canon_v2_operation_overlay.gd",
+    "scripts/ui/canon_v2_runtime_bridge.gd",
+    "scripts/ui/recovery_telegraph_audio.gd"
+  ],
+  "boundary": "No approved path is changed by this candidate-only task; this receipt satisfies the current Base-adapter protected-path baseline reconciliation gate.",
+  "product_promotion": "not authorized by this receipt"
+}
