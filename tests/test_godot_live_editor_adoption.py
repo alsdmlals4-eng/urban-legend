@@ -29,6 +29,9 @@ ALLOWED_PATHS = {
     "tests/gut/test_validation_route_mapper.gd.uid",
     ".github/workflows/validate-godot-live-editor-pilot.yml",
 }
+GOVERNANCE_APPROVAL_PATH = re.compile(
+    r"docs/approvals/PROJECT_PROTECTED_CHANGE_APPROVAL_[A-Z0-9_]+[.]json"
+)
 BEHAVIOR_TARGETS = [
     "res://tests/core_mvp_001_state_test.gd",
     "res://tests/core_mvp_001_scene_test.gd",
@@ -102,7 +105,11 @@ def _changed_paths_from_main() -> set[str]:
         capture_output=True,
         text=True,
     ).stdout
-    return {line.strip() for line in output.splitlines() if line.strip()}
+    return {
+        path
+        for line in output.splitlines()
+        if (path := line.strip()) and not GOVERNANCE_APPROVAL_PATH.fullmatch(path)
+    }
 
 
 def test_descriptor_is_exact_urban_legend_contract() -> None:
@@ -173,6 +180,15 @@ def test_validation_route_mapper_uid_companion_is_canonical() -> None:
     assert _required_text(UID_COMPANION) == UID_COMPANION_TEXT
 
 
+def test_governance_approval_filter_accepts_only_approval_receipts() -> None:
+    assert GOVERNANCE_APPROVAL_PATH.fullmatch(
+        "docs/approvals/PROJECT_PROTECTED_CHANGE_APPROVAL_GODOT_LIVE_EDITOR_CONTRACT_20260827.json"
+    )
+    assert not GOVERNANCE_APPROVAL_PATH.fullmatch(
+        "docs/approvals/PROJECT_PROTECTED_CHANGE_APPROVAL_GODOT_LIVE_EDITOR_CONTRACT_20260827.md"
+    )
+
+
 def test_source_authorities_and_main_scene_remain_installed() -> None:
     project = (ROOT / "project.godot").read_text(encoding="utf-8")
     assert 'run/main_scene="res://scenes/main_menu.tscn"' in project
@@ -237,6 +253,6 @@ def test_workflow_uses_one_immutable_base_pin() -> None:
     assert text.count(BASE_C0_SHA) == 2
 
 
-def test_change_surface_is_bounded_to_five_adoption_files() -> None:
+def test_change_surface_is_bounded_to_five_adoption_files_plus_governance_receipt() -> None:
     changed = _changed_paths_from_main()
     assert changed <= ALLOWED_PATHS, f"forbidden changed paths: {sorted(changed - ALLOWED_PATHS)}"
