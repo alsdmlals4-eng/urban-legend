@@ -6,6 +6,8 @@ const M01FirstSessionRuntimeSyncScript := preload("res://scripts/core/m01_first_
 
 const SYNC_INTERVAL_SECONDS := 0.25
 const FREE_INFORMATION_CHANNELS := ["observe", "open_manual", "preview_result"]
+const DEFAULT_RULE_STRIP_TOP_INSET := 14
+const INVESTIGATION_RULE_STRIP_TOP_INSET := 72
 
 var _elapsed := 0.0
 var _mounted_scene_instance_id := 0
@@ -281,15 +283,19 @@ func _mount_overlay(host: Node, runtime_state: Dictionary, mode: String) -> Node
 		return null
 	if mode == "recovery":
 		_hide_legacy_recovery_hud(host)
+	elif mode == "investigation":
+		_hide_legacy_investigation_log_bar(host)
 	var existing := host.get_node_or_null("CanonV2OperationOverlay")
 	if existing != null:
 		if existing.has_method("configure"):
 			existing.configure(runtime_state, mode)
+		_apply_overlay_host_layout(existing, mode)
 		return existing
 	var overlay = OperationOverlayScript.new()
 	overlay.name = "CanonV2OperationOverlay"
 	host.add_child(overlay)
 	overlay.configure(runtime_state, mode)
+	_apply_overlay_host_layout(overlay, mode)
 	return overlay
 
 
@@ -297,6 +303,19 @@ func _hide_legacy_recovery_hud(host: Node) -> void:
 	var legacy_hud := host.get_node_or_null("RecoveryHud") as Control
 	if legacy_hud != null:
 		legacy_hud.visible = false
+
+
+func _hide_legacy_investigation_log_bar(host: Node) -> void:
+	var legacy_log_bar := host.get_node_or_null("SafeFrame/MainColumn/LogBar") as Control
+	if legacy_log_bar != null:
+		legacy_log_bar.visible = false
+
+
+func _apply_overlay_host_layout(overlay: Node, mode: String) -> void:
+	if overlay == null or not overlay.has_method("set_rule_strip_top_inset"):
+		return
+	var top_inset := INVESTIGATION_RULE_STRIP_TOP_INSET if mode == "investigation" else DEFAULT_RULE_STRIP_TOP_INSET
+	overlay.call("set_rule_strip_top_inset", top_inset)
 
 
 func _build_overlay_state(mode: String) -> Dictionary:

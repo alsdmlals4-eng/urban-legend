@@ -43,6 +43,13 @@ func configure(runtime_state: Dictionary, mode: String) -> void:
 	_refresh()
 
 
+func set_rule_strip_top_inset(top_inset: int) -> void:
+	_ensure_ui()
+	var safe_area := get_node_or_null("SafeArea") as MarginContainer
+	if safe_area != null:
+		safe_area.add_theme_constant_override("margin_top", top_inset)
+
+
 func request_action_confirmation(
 	preview: Dictionary,
 	on_confirm: Callable,
