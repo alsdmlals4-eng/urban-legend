@@ -4,7 +4,7 @@
 > Date: `2026-08-28`
 > Scope: GitHub latest completed main `a8a7e7f80b36f86f7955095acca2ead5713e42a7`, Notion human-facing surfaces, and current implementation/asset evidence.
 > Issue: #321
-> Boundary: documentation and Notion reconciliation only; no Godot product mutation.
+> Boundary: documentation, Notion, and project-baseline metadata reconciliation only; no Godot product mutation.
 
 ## Current
 
@@ -22,6 +22,7 @@
 | local checkout `8bbcfc6` | HISTORICAL / UNKNOWN_UNVERIFIED | 46 commits behind and 418 uncommitted paths; preserved, not used as current fact |
 | Base main `7cfc75d` | CURRENT_BASE | current completed Base main; 11 open Base PRs remain read-only |
 | project PR #287, #231 | OPEN_READ_ONLY | not modified by this task |
+| adapter baseline `c0bc8a9` | SUPERSEDED | it predated protected changes already on current `main`; advanced to the immutable current-main SHA |
 | M01/M04 shared runtime | CURRENT | planning canon, code/Scene/test lineage and recorded automated evidence |
 | M04 Investigation Anchor 01 | CURRENT_CANDIDATE | user-approved visual candidate; not a promoted production asset |
 | six manifest asset entries | CURRENT | individual approved/implemented/runtime-evidence scope as declared by manifest/work order |
@@ -34,7 +35,9 @@
 
 - **Incident:** current human-facing Direction page contained a different project’s content, while multiple current documents collapsed individual asset status into a blanket pending label.
 - **Solution:** restore the project-specific Direction page; point individual asset claims to the manifest/work-order/checklist; retain historical statements as dated records.
-- **Lesson:** project identity must be checked before interpreting a human-facing page title, and global gates must name their exception/subject rather than hiding separately verified consumers. This is project-specific evidence only; **NO_BASE_PROMOTION** until another independent project reproduces the failure.
+- **Incident:** the Base adapter validator compared the PR to a protected baseline (`c0bc8a9`) older than protected changes already merged into current `main`, producing a false task-level failure.
+- **Solution:** advance only `skills/PROJECT_BASE_ADAPTER.json#/protected_baseline/commit` to immutable current main `a8a7e7f`; no protected product path was changed.
+- **Lesson:** project identity must be checked before interpreting a human-facing page title, global gates must name their exception/subject rather than hiding separately verified consumers, and every protected-path merge needs a matching baseline advance. This is project-specific evidence only; **NO_BASE_PROMOTION** until another independent project reproduces the failure.
 
 ## Evidence ceiling
 
