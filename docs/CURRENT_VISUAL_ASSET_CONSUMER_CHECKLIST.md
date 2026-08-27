@@ -4,7 +4,7 @@
 > Updated: `2026-08-27`
 > Decision: `D-2026-08-26-RUNTIME-CONSUMER-FIRST-VISUAL-ASSET-GATE`
 > Scope: planning / visual asset requirement inventory
-> Product asset approval: `4 CURRENT ROOT-MANIFEST ENTRIES (M01 Recovery background, B/C, D; M04 Investigation background)`
+> Product asset approval: `5 CURRENT ROOT-MANIFEST ENTRIES (M01 Investigation/Recovery backgrounds, B/C, D; M04 Investigation background)`
 > Runtime visual validation: `PARTIALLY_VERIFIED` — M04 Investigation Background + LocationPreview 1280×720/1920×1080 is verified by PR #273; the remaining approved M01/M04 consumers still require their own runtime gates.
 > Human QA: `NOT_RUN`
 
@@ -189,7 +189,7 @@ No batch generation from checklist gaps.
 
 ## 10. Authority / evidence ceiling
 
-Root `ASSET_MANIFEST.yml` is the current tracked product-asset authority and has four current approved entries: M01 Recovery background, B/C anomaly cutout, D anomaly cutout, and the M04 Investigation background.
+Root `ASSET_MANIFEST.yml` is the current tracked product-asset authority and has five current approved entries: M01 Investigation background, M01 Recovery background, B/C anomaly cutout, D anomaly cutout, and the M04 Investigation background.
 
 Legacy `assets/ASSET_MANIFEST.json`, tracked PNG presence, `.import` files, existing runtime wiring, and old QA labels do **not** independently grant `PROJECT_ASSET_APPROVED`.
 
