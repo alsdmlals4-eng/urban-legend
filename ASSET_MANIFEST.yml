@@ -313,18 +313,20 @@ assets:
       prompt_core: "Textless Korean closed-shop alley crossroads after rain, clear red umbrella, dry footprints that contrast with wet pavement, environment-to-anomaly-to-evidence eye path, restrained soft anime-noir ink/paper texture; no characters, UI, labels, rule answers, M01 motifs, photoreal glare, or neon HUD."
       seed_or_reproduction: "Not exposed by the generation surface."
       manual_post_process: "None recorded."
-      known_remaining_issues: "Godot import and focused automated checks are required in this promotion. Live 1280x720/1920x1080 capture and Human visual/accessibility QA remain pending."
+      known_remaining_issues: "Human player-experience and accessibility QA remain pending; runtime consumer readability is verified."
     validation:
       target_resolutions:
         - "1280x720"
         - "1920x1080"
-      runtime_verified: false
-      visual_qa_verified: false
+      runtime_verified: true
+      visual_qa_verified: true
       accessibility_verified: false
       evidence:
         - "docs/visual/candidates/M04_INVESTIGATION_BACKGROUND_ADAPT_01.md"
         - "GitHub Issue #253"
-      last_verified_commit: ""
+        - "GitHub Issue #272"
+        - "GitHub PR #273 (1280x720 and 1920x1080 actual Investigation + LocationPreview capture)"
+      last_verified_commit: "ea288a9b70fe3b0ab18d6fd08223e487e652f00c"
     next_review_triggers:
       - "After an ArtLayer Background or LocationPreview layout/scaling change"
       - "Before release-rights sign-off"
