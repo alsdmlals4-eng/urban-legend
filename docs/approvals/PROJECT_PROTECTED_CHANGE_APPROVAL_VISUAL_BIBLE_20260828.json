@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "artifact_role": "PROJECT_PROTECTED_CHANGE_APPROVAL",
+  "status": "APPROVED",
+  "protected_base_commit": "c0bc8a98ee40bf04d4953a834d9cd06c47e42efe",
+  "decision_ids": ["UL-ISSUE-319-VISUAL-BIBLE"],
+  "approved_paths": ["assets/anomalies/cutouts/afterlife_d_cutout.png", "assets/anomalies/cutouts/red_umbrella_b_cutout.png", "assets/backgrounds/afterlife_platform.png", "scripts/scenes/battle_scene.gd", "scripts/scenes/investigation_scene.gd", "scripts/ui/canon_v2_operation_overlay.gd", "scripts/ui/canon_v2_runtime_bridge.gd", "scripts/ui/recovery_telegraph_audio.gd"],
+  "approval_source": "The sole decision owner authorized the continued visual-production work and required the supplied dark dossier/soft-anime-noir reference treatment to remain the current visual basis. This task changes none of the listed protected product paths.",
+  "approval_time": "2026-08-28T07:40:00+09:00",
+  "scope_summary": "Consolidate current approved visual language in a documentation-only Production Visual Bible; preserve all runtime assets, scenes, scripts, UI, gameplay, data, product-promotion status, and QA state."
+}
