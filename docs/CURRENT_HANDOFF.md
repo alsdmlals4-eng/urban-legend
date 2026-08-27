@@ -79,6 +79,11 @@ PR #224 exact head에서 다음 계열이 GREEN이었다.
 
 ## 5. Product reference / Human gate
 
+### 2026-08-28 visual-status clarification
+
+`PRODUCT_REFERENCE_ASSET_PENDING`은 모든 자산이 미승격이라는 뜻이 아니다. 개별 제품 승인·runtime 상태는 `ASSET_MANIFEST.yml`과 `CURRENT_VISUAL_WORK_ORDER.md`가 소유한다. 현재 root manifest의 6개 entry 중 M01 Investigation/Recovery background, M01 B/C·D cutout, M04 Investigation background, M04 B/C cutout은 각각의 승인·구현·runtime evidence를 가진다. 반면 M01 Entrance, M04 Entrance/Recovery, M04 D 후보와 Human/new-player QA는 별도 Gate에 남는다.
+
+
 `PRODUCT_REFERENCE_ASSET_PENDING` 유지:
 - concrete M01/M04 이미지·레이어
 - rights/source approval
