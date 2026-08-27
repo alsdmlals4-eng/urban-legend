@@ -5,7 +5,7 @@
 > Issue: #315
 > Scope: M01 first session + M04 30–45 minute vertical slice
 > Runtime authority: latest `main` Scene/script/catalog and `ASSET_MANIFEST.yml`
-> Screen authority: `CURRENT_SCREEN_SURFACE_INVENTORY_AND_VISUAL_COVERAGE.md`  
+> Screen authority: `CURRENT_SCREEN_SURFACE_INVENTORY_AND_VISUAL_COVERAGE.md`
 > Candidate authority: `CURRENT_VISUAL_ASSET_CONSUMER_CHECKLIST.md`
 
 ## 1. Completion rule
