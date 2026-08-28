@@ -22,13 +22,15 @@ poc_passed: NOT_DECLARED
 production_expansion: NOT_APPROVED
 base_adapter_baseline_reconciliation: COMPLETE
 ten_day_half_day_cadence: USER_APPROVED / IMPLEMENTATION_CONTRACT_PENDING / NOT_IMPLEMENTED
+one_main_case_runtime_enforcement: NOT_IMPLEMENTED
+keyword_composition: APPROVED_DESIGN / NOT_IMPLEMENTED
 ```
 
 `PLAN_LOCK`은 predecessor 기획 잠금 식별자이며 현재 값은 `RELEASED_TO_IMPLEMENTATION_GATE`다. 이를 runtime 미승인 상태로 되돌려 해석하지 않는다.
 
 현재 시각 방향은 `D-2026-08-28-URBAN-NOIR-HYBRID-VISUAL-DIRECTION`의 **현실적 한국 도시 누아르 환경 + 애니풍 인물·괴이 + 손그림 기록물 UI**다. 이 방향은 `docs/visual/VISUAL_DIRECTION_LOCK_PACKET_2026-08-28.md`가 소유하며, 첨부 Core Scene Board는 기획 검증용 `GENERATED_EXPLORATION`일 뿐 runtime asset/Scene/UI/Human QA가 아니다.
 
-현재 accepted frontier는 `D-2026-08-28-TEN-DAY-HALF-DAY-CASE-CADENCE`, `D-2026-08-28-M04-SEQUENTIAL-NARRATIVE-RESULT-VIGNETTES`, `D-2026-08-28-VISUAL-CANDIDATE-GENERATION-LOCK-ONLY-APPROVAL`다. campaign은 10일·오전/오후이며 Day 1~9 해결은 조기, Day 10 해결은 정규다. 예전 M04 주차 수치와 tier bonus는 `SUPERSEDED`; 새 숫자는 user decision 전 `UNDEFINED`다. 결과는 `피해자 → 잔향 → 귀가 기억 → 기록국`의 짧은 순차 후일담으로 읽히며 한 화면의 점수판으로 합산하지 않는다. 남은 작업은 이 결정과 다른 approved planning을 하나의 구현 계약으로 묶는 것이며, Godot/asset/QA 구현 권한은 아직 열리지 않았다.
+현재 accepted frontier는 `D-2026-08-28-TEN-DAY-HALF-DAY-CASE-CADENCE`, `D-2026-08-28-M04-SEQUENTIAL-NARRATIVE-RESULT-VIGNETTES`, `D-2026-08-28-VISUAL-CANDIDATE-GENERATION-LOCK-ONLY-APPROVAL`다. campaign의 승인 규칙은 10일·오전/오후, 한 cycle 메인 사건 1개, Day 1~9 조기 해결 / Day 10 정규 해결이다. 하지만 current `CampaignState`는 M01·M04·M07을 한 demo cycle에 허용하므로 case-limit enforcement는 아직 없다. page-local keyword composition도 승인 설계이나 live data/Scene consumer가 없다. 예전 M04 주차 수치와 tier bonus는 `SUPERSEDED`; 새 숫자는 user decision 전 `UNDEFINED`다. 결과는 `피해자 → 잔향 → 귀가 기억 → 기록국`의 짧은 순차 후일담으로 읽히며 한 화면의 점수판으로 합산하지 않는다. 남은 작업은 이 결정과 다른 approved planning을 하나의 구현 계약으로 묶는 것이며, Godot/asset/QA 구현 권한은 아직 열리지 않았다.
 
 ## 1. 재개 순서
 
@@ -45,7 +47,7 @@ ten_day_half_day_cadence: USER_APPROVED / IMPLEMENTATION_CONTRACT_PENDING / NOT_
 
 ## 2. 현재 구현된 제품 계약
 
-- cadence: `ONE_MAIN_CASE_PER_TEN_DAY_CYCLE / TWO_HALF_DAY_SLOTS_PER_DAY`.
+- approved cadence: `ONE_MAIN_CASE_PER_TEN_DAY_CYCLE / TWO_HALF_DAY_SLOTS_PER_DAY`; runtime has the two-slot structure but not the one-case limit.
 - result authority: `COMPOSITE_RESULT`.
 - legacy S/A/B/S grade는 history/mastery compatibility이며 current incident result를 덮어쓰지 않는다.
 - additive optional `monthly_state`는 historical generic orchestration이며 case truth를 저장하지 않는다. 새 10일 timing consumer를 아직 소유하지 않는다.
@@ -54,6 +56,7 @@ ten_day_half_day_cadence: USER_APPROVED / IMPLEMENTATION_CONTRACT_PENDING / NOT_
 - 메인 메뉴 제품 버전은 `scripts/core/product_version.gd`의 `Ver 4.3`이 중앙 owner다.
 - 메인 메뉴는 관제실형 3-rail 구조를 사용하고 Legacy / Validation save·route 분리를 유지한다.
 - M04 빨간 우산은 shared Investigation/Manual/Rescue/Recovery/Composite Result validation baseline까지 구현됐다.
+- current keyword/manual state is split: evidence records and hypothesis/recovery evidence selection exist, while page-local keyword composition and mutated-candidate verification remain `APPROVED_DESIGN / NOT_IMPLEMENTED`.
 
 ## 3. PR #224 postmerge Reality Gate
 

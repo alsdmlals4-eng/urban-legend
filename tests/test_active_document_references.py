@@ -207,7 +207,8 @@ class ActiveDocumentReferenceTests(unittest.TestCase):
         spec = CORE_INTEGRATED_SPEC.read_text(encoding="utf-8")
         plan = CORE_IMPLEMENTATION_PLAN.read_text(encoding="utf-8")
 
-        self.assertIn("상세 게임 설계", doc_map)
+        self.assertIn("current master GDD", doc_map)
+        self.assertIn("historical detailed design", doc_map)
         self.assertIn("CORE-MVP-001 마일스톤 계약", doc_map)
         self.assertIn(CORE_INTEGRATED_SPEC.relative_to(ROOT / "docs").as_posix(), doc_map)
         self.assertIn(CORE_IMPLEMENTATION_PLAN.relative_to(ROOT).as_posix(), core)
@@ -292,7 +293,7 @@ class ActiveDocumentReferenceTests(unittest.TestCase):
         self.assertIn('preload("res://scripts/core/product_version.gd")', menu_test)
         self.assertIn("ProductVersion.display_text()", menu_test)
         self.assertNotIn('"Ver 4.2"', menu_test)
-        self.assertIn("MVP-043 + CORE-VALIDATION-001", builder)
+        self.assertIn("PROJECT_AI_PRODUCTION_SPEC.md", builder)
         self.assertIn("PRODUCT_VERSION_SOURCE", builder)
         self.assertIn("product_version.gd", builder)
         self.assertNotIn("Ver 4.2", builder)

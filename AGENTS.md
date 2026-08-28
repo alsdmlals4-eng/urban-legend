@@ -126,7 +126,8 @@
 - 저승역 current canon: `docs/CURRENT_AFTERLIFE_STATION_CANON.md`
 - 장기 구현·검증 역사: `docs/CURRENT_STATUS.md` (조건부)
 - 상세 승인·대체 역사: `docs/CURRENT_CONFIRMED_DECISIONS.md` (조건부)
-- 상세 게임 설계: `docs/GAME_DESIGN_DOCUMENT.md`
+- 사람용 current master GDD: `docs/design/PROJECT_AI_PRODUCTION_SPEC.md`
+- historical detailed design: `docs/GAME_DESIGN_DOCUMENT.md` (current requirement로 사용 금지)
 - 프로젝트 용어·표현: `docs/PROJECT_CONTEXT.md`
 - 구현 순서/검증 계약: `MVP_ROADMAP.md`, `TEST_CHECKLIST.md`
 - 문서 선택: `docs/DOCUMENTATION_MAP.md`
