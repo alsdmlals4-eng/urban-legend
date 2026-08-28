@@ -4,29 +4,21 @@
   "project": "urban-legend",
   "planning": {
     "cadence": {
-      "unit": "MONTH",
-      "main_cases_per_unit": 1,
-      "initial_slate_months": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12
-      ],
-      "signature_months": [
-        1,
-        4,
-        7,
-        10
-      ],
-      "continues_after_month_12": true
+      "unit": "TEN_DAY_CYCLE",
+      "days_per_cycle": 10,
+      "slots_per_day": 2,
+      "slot_ids": ["morning", "afternoon"],
+      "main_cases_per_cycle": 1,
+      "early_resolution_days": [1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "regular_resolution_day": 10,
+      "initial_slate_case_numbers": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+      "signature_case_numbers": [1, 4, 7, 10],
+      "continues_after_case_12": true,
+      "invariants": [
+        "DAY_10_IS_REGULAR_NOT_DELAYED_OR_FORCED",
+        "ONE_MAIN_CASE_PER_CYCLE",
+        "NO_SECOND_MAIN_CASE_AFTER_EARLY_RESOLUTION"
+      ]
     },
     "core_flow": [
       "INVESTIGATION",
@@ -48,71 +40,54 @@
       "core_scene_board": "GENERATED_EXPLORATION / NOT_PROJECT_ASSET / NOT_RUNTIME_ASSET"
     },
     "m04_time_tradeoff": {
-      "decision_id": "D-2026-08-28-M04-EARLY-DISPATCH-REGULAR-WEEK4-CADENCE",
-      "status": "USER_APPROVED / PLANNING_CANON / IMPLEMENTATION_NOT_AUTHORIZED",
-      "scope": "M04_RED_UMBRELLA_ONLY",
+      "decision_id": "D-2026-08-28-TEN-DAY-HALF-DAY-CASE-CADENCE",
+      "status": "USER_APPROVED / IMPLEMENTATION_CONTRACT_PENDING / NUMERIC_BALANCE_UNDEFINED",
+      "scope": "CAMPAIGN_GLOBAL_WITH_M04_RESULT_PRESENTATION",
       "dispatch_windows": [
         {
-          "id": "WEEK_2_EARLY",
+          "id": "DAYS_1_TO_9_EARLY",
           "dispatch_kind": "EARLY",
-          "victim_route_memory_exposure": 0,
-          "preparation_tier": 0
+          "days": [1, 2, 3, 4, 5, 6, 7, 8, 9],
+          "player_value": "EARLIER_VICTIM_PROTECTION",
+          "numeric_effect": "UNDEFINED"
         },
         {
-          "id": "WEEK_3_EARLY",
-          "dispatch_kind": "EARLY",
-          "victim_route_memory_exposure": 15,
-          "preparation_tier": 1
-        },
-        {
-          "id": "WEEK_4_REGULAR",
+          "id": "DAY_10_REGULAR",
           "dispatch_kind": "REGULAR",
-          "victim_route_memory_exposure": 30,
-          "preparation_tier": 2
+          "days": [10],
+          "player_value": "FULL_CYCLE_PREPARATION_OPPORTUNITY",
+          "numeric_effect": "UNDEFINED"
         }
       ],
-      "victim_route_memory_exposure": {
-        "result_axis_key": "victim_route_memory_exposure",
-        "meaning": "ACCUMULATED_EXPOSURE_AFTER_EARLY_PROTECTION_WINDOW_NOT_DELAY_PENALTY",
-        "consumer": "M04_COMPOSITE_RESULT_TIMING_AXIS / IMPLEMENTATION_PENDING",
+      "result_timing_record": {
+        "fields": ["dispatch_kind", "resolution_day", "resolution_slot"],
+        "consumer": "M04_COMPOSITE_RESULT_TIMING_VIGNETTE / IMPLEMENTATION_PENDING",
         "must_be_visible_before_confirmation": true
       },
       "invariants": [
-        "WEEK_4_IS_REGULAR_NOT_FORCED_OR_DELAYED",
+        "DAY_10_IS_REGULAR_NOT_FORCED_OR_DELAYED",
         "NO_HIDDEN_TRUTH_OR_CORRECT_SOLUTION_FROM_PREPARATION",
         "COMPOSITE_RESULT_EXPLAINS_TIMING_CAUSALITY_SEPARATELY",
         "M01_UNCHANGED"
-      ]
+      ],
+      "superseded_predecessor_values": ["WEEK_2_EARLY", "WEEK_3_EARLY", "WEEK_4_REGULAR", "EXPOSURE_0_15_30", "STABILITY_GAIN_0_4_8"]
     },
     "m04_route_memory_anchor_preparation_benefit": {
-      "decision_id": "D-2026-08-28-M04-EARLY-DISPATCH-REGULAR-WEEK4-CADENCE",
-      "status": "USER_APPROVED / PLANNING_CANON / IMPLEMENTATION_NOT_AUTHORIZED",
-      "scope": "M04_RED_UMBRELLA_ONLY",
+      "decision_id": "D-2026-08-28-TEN-DAY-HALF-DAY-CASE-CADENCE",
+      "status": "SUPERSEDED_NUMERIC_CONTRACT / BASE_RUNTIME_SUPPORT_REMAINS_UNCHANGED",
       "consumer": "support_kwon_return_route",
-      "must_be_visible_before_confirmation": true,
-      "week_2_early_effect": {
+      "actual_runtime_base_effect": {
         "fear_delta": -16,
         "threshold_delta": 2,
-        "stability_delta": 0
+        "timing_bonus": "NOT_IMPLEMENTED"
       },
-      "week_3_early_effect": {
-        "fear_delta": -16,
-        "threshold_delta": 2,
-        "stability_delta": -4,
-        "stability_gain": 4
-      },
-      "week_4_regular_effect": {
-        "fear_delta": -16,
-        "threshold_delta": 2,
-        "stability_delta": -8,
-        "stability_gain": 8
-      },
+      "replacement_timing_effect": "UNDEFINED_REQUIRES_SEPARATE_BALANCE_DECISION",
       "invariants": [
         "PLAYER_MUST_ACTIVELY_USE_EXISTING_KWON_RECOVERY_SUPPORT",
         "NO_ADDITIONAL_SUPPORT_USE_OR_AUTOMATIC_TRIGGER",
         "NO_CLUE_HINT_RULE_OR_ANSWER_MODIFICATION",
         "NO_OTHER_AGENT_SUPPORT_MODIFICATION",
-        "COMPOSITE_RESULT_EXPLAINS_TIMING_EXPOSURE_AND_ACTUAL_SUPPORT_USE"
+        "COMPOSITE_RESULT_EXPLAINS_TIMING_AND_ACTUAL_SUPPORT_USE"
       ]
     },
     "m04_sequential_narrative_result_vignettes": {
@@ -127,15 +102,16 @@
         "VIGNETTE_CASE_RECORD"
       ],
       "route_memory_payload": [
-        "dispatch_window",
-        "victim_route_memory_exposure",
+        "dispatch_kind",
+        "resolution_day",
+        "resolution_slot",
         "kwon_support_used",
-        "actual_stability_gain"
+        "actual_support_effect"
       ],
       "invariants": [
         "ONE_CAUSAL_RESULT_PER_PAGE",
         "NO_M04_RESULT_SCOREBOARD_OR_DASHBOARD_AGGREGATION",
-        "WEEK_4_REMAINS_REGULAR_NOT_A_PENALTY",
+        "DAY_10_REMAINS_REGULAR_NOT_A_PENALTY",
         "NO_RESCUE_RECOVERY_TRUTH_REWARD_OR_M01_SEMANTIC_CHANGE",
         "LOGICAL_PAGE_NOT_RUNTIME_SCENE_OR_ASSET"
       ]
@@ -157,6 +133,7 @@
     "runtime_implementation_authorized": true,
     "runtime_implementation": "MERGED_MAIN",
     "runtime_merge_commit": "8d303f0f9414950273be934fd28c8fb1b3a21e18",
+    "ten_day_half_day_cadence": "USER_APPROVED / IMPLEMENTATION_CONTRACT_PENDING / NOT_IMPLEMENTED",
     "human_qa": "NOT_RUN",
     "poc_passed": "NOT_DECLARED",
     "production_expansion": "NOT_APPROVED",
@@ -165,6 +142,8 @@
   "runtime_compatibility": {
     "monthly_state_key": "monthly_state",
     "monthly_state_status": "IMPLEMENTED_ADDITIVE_OPTIONAL",
+    "campaign_state_calendar": "TEN_DAYS_AND_TWO_SLOTS_IMPLEMENTED_STRUCTURALLY",
+    "ten_day_case_cadence_consumer": "NOT_IMPLEMENTED",
     "canon_v2_runtime_strategy": "REUSE_EXISTING_CANON_V2_RUNTIME",
     "current_result_authority": "COMPOSITE_RESULT",
     "legacy_s_rank_contract": "LEGACY_MASTERY_COMPATIBILITY_ONLY",
@@ -188,7 +167,7 @@
     "m04_reference_text_brief": "RESULT_APPROVED",
     "m04_reference_visual_candidate": "USER_APPROVED_VISUAL_CANDIDATE",
     "m04_runtime_visual_validation": "NOT_RUN",
-    "base_adapter_protected_baseline": "6b4a9e8080898536139c8e825179b389f8bf9d64",
+    "base_adapter_protected_baseline": "11876dd851a614e9475033c38486b2085894126c",
     "base_adapter_reconciliation_merge": "9073b4730993149f89970a13fbe32d49f8f473e7",
     "m04_individual_runtime_assets": "M04_INVESTIGATION_BACKGROUND_001 and M04_ANOMALY_BC_001 are PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED; Human QA remains NOT_RUN."
   },
@@ -200,17 +179,23 @@
       "width": 1672,
       "height": 941,
       "bytes": 2291020,
-      "notion_surface": "04 · Visual · UX · Assets",
+      "historical_notion_surface": "04 · Visual · UX · Assets",
       "product_asset_promoted": false,
       "runtime_visual_validation": "NOT_RUN"
     }
   },
   "workspace_authority": {
-    "human_facing": "NOTION",
+    "human_facing": "REPOSITORY",
+    "human_facing_documents": [
+      "docs/design/PROJECT_AI_PRODUCTION_SPEC.md",
+      "exports/urban-legend_MASTER_PRODUCTION_GDD_20260828.pdf"
+    ],
     "structured_implementation": "REPOSITORY",
-    "legacy_google_sheet": "MIGRATION_ONLY"
+    "legacy_google_sheet": "MIGRATION_ONLY",
+    "historical_notion": "HISTORICAL_READ_ONLY_NO_WRITE",
+    "notion_migration_receipt": "docs/migrations/NOTION_CURRENT_WORK_MIGRATION_2026-08-28.md"
   },
-  "notion_sources": {
+  "historical_notion_sources": {
     "project_home": "https://app.notion.com/p/3c01b237eb1c811c9d5ec512acad4f92",
     "core_systems": "https://app.notion.com/p/3c11b237eb1c81bf8390e5fcd22eb716",
     "vertical_slice": "https://app.notion.com/p/3c11b237eb1c81c291d8d45d2747451b",
@@ -218,6 +203,12 @@
     "first_session": "https://app.notion.com/p/3c11b237eb1c81c89490c01a3534818b",
     "closure_matrix": "https://app.notion.com/p/3c21b237eb1c8174892fd10a0948a61c",
     "five_loop_review": "https://app.notion.com/p/3c21b237eb1c81ed854be8e175d3618c"
+  },
+  "notion_migration": {
+    "status": "CURRENT_WORK_MIGRATED_REPOSITORY_ONLY",
+    "receipt": "docs/migrations/NOTION_CURRENT_WORK_MIGRATION_2026-08-28.md",
+    "notion_only_reference_directory": "docs/migrations/notion-reference-mockups",
+    "notion_write_policy": "HISTORICAL_READ_ONLY_NO_WRITE"
   },
   "integrated_pull_request_sources": {
     "211": "docs/CURRENT_DEDUCTION_RECOVERY_WORK_ORDER.md",

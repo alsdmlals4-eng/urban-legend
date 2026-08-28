@@ -15,7 +15,7 @@
 → GitHub latest main + open PR/Issue
 → docs/OPERATING_MODEL.md
 → docs/WORK_MODE_AND_SKILL_ROUTING.md
-→ Notion 괴이기록국 프로젝트 홈
+→ repository current GDD / decision / handoff
 → docs/CURRENT_PLANNING_CANON.md
 → docs/current-planning-canon.json
 → docs/CURRENT_DECISION_OVERLAY.md
@@ -38,7 +38,7 @@
 → GitHub latest main + open PR/Issue
 → docs/OPERATING_MODEL.md
 → docs/WORK_MODE_AND_SKILL_ROUTING.md
-→ Notion 괴이기록국 프로젝트 홈
+→ repository current GDD / decision / handoff
 → docs/CURRENT_PLANNING_CANON.md
 → docs/current-planning-canon.json
 → docs/CURRENT_DECISION_OVERLAY.md
@@ -57,8 +57,8 @@
 
 ## Current authority 규칙
 
-- 사람이 보는 전체 그림·Flow·비교표는 Notion, 구조화 기획·구현·테스트·runtime evidence는 Repository가 책임진다.
-- 최종 월간 기획은 `docs/CURRENT_PLANNING_CANON.md`와 `docs/current-planning-canon.json`이 소유한다.
+- 사람용·구조화 기획, 구현, 테스트, runtime evidence는 Repository가 책임진다. Notion은 `HISTORICAL_READ_ONLY_NO_WRITE`다.
+- 최종 10일·반일 캠페인 기획은 `docs/CURRENT_PLANNING_CANON.md`와 `docs/current-planning-canon.json`이 소유한다.
 - 현재 mutable decision·verified successor는 `docs/CURRENT_DECISION_OVERLAY.md`가 소유한다.
 - 현재 구현 continuation은 `docs/CURRENT_HANDOFF.md`가 소유한다.
 - current implementation handoff의 세 owner는 Reality Gate / 2026-08-22 design / 2026-08-22 implementation plan이다.
@@ -86,7 +86,7 @@
 - 새 구조를 만들기 전에 기존 해결책·컴포넌트·데이터·문서를 먼저 찾는다.
 - 가장 작은 end-to-end 변경을 구현하고 필요한 자동·수동 검증 뒤 통합한다.
 - 구조·구현 방법은 필요한 범위에서 공식 자료·현업 사례·실무 운영 사례와 실질 대안을 비교하고 `ADOPT / ADAPT / AVOID / TEST / DEFER` 근거를 남긴다.
-- 큰 통합은 최소 5회 whole-scope `attack → review → decision` 적대적 검토를 하고, 병합 뒤 GitHub·Notion exact readback·진행도·잔여 문제를 다시 확인한다.
+- 큰 통합은 최소 5회 whole-scope `attack → review → decision` 적대적 검토를 하고, 병합 뒤 GitHub remote exact readback·진행도·잔여 문제를 다시 확인한다. Notion write/readback은 현재 작업 범위 밖이다.
 - 승인 전 current source의 대량 이동·삭제·통합을 하지 않는다.
 - 구형 파일은 `CURRENT / UPDATE_IN_PLACE / MERGE_TO_CANONICAL / COMPATIBILITY_STUB / ARCHIVE_HISTORY / DELETE_APPROVED / KEEP_UNRESOLVED` 중 하나로 판정한다.
 - 생성·삭제·이동·대규모 수정은 이유, 참조 영향, rollback 근거를 기록한다.
@@ -115,8 +115,8 @@
 
 ## 문서 책임 원본
 
-- 사람용 전체 그림: Notion `괴이기록국 (urban-legend)` Project Home
-- 최종 월간 기획: `docs/CURRENT_PLANNING_CANON.md`, `docs/current-planning-canon.json`
+- 사람용 전체 그림: repository `docs/design/PROJECT_AI_PRODUCTION_SPEC.md`와 user PDF GDD
+- 최종 10일·반일 캠페인 기획: `docs/CURRENT_PLANNING_CANON.md`, `docs/current-planning-canon.json`
 - mutable 결정·successor: `docs/CURRENT_DECISION_OVERLAY.md`
 - 현재 continuation: `docs/CURRENT_HANDOFF.md`
 - current Reality Gate: `docs/audits/2026-08-22-final-planning-implementation-reality-gate.md`
@@ -143,7 +143,7 @@ GDD 의미가 변경되면 등록된 생성기로 DOCX mirror를 재생성·검�
 - 최종 기록 보상은 **괴이 매뉴얼 작성·갱신**이다.
 - 플레이어 노출 안내자는 **기록관 아카**다.
 - 괴이는 처치 대상이 아니라 규칙을 조사하고 현재 출현을 안정화·회수할 현상이다.
-- 제품 cadence는 1개월 메인 사건 1개다. M01~M12 뒤 M13+로 이어진다.
+- 제품 cadence는 **10일 × 하루 반일 2슬롯**이며, 한 10일 cycle에 메인 사건 1개를 해결한다. Day 1~9 해결은 조기 해결, Day 10 해결은 정규 해결이다. M01~M12는 초기 case slate이며 M13+로 이어진다.
 - M01 저승역은 First Session, M04 빨간 우산은 release-near player-experience Vertical Slice다.
 - 관측과 해석을 분리하고 오답 가설에는 관측 가능한 반증이 있어야 한다.
 - 필수 진실을 단일 RNG 성공에 잠그지 않는다.
@@ -181,7 +181,7 @@ Fresh-main Reality Gate는 existing Canon v2 runtime을 재사용하고 `LEGACY_
 
 - Base current pin은 `docs/BASE_RULES_VERSION.md`와 `skills/PROJECT_BASE_ADAPTER.json`만 소유한다.
 - Base remote latest를 자동 채택하지 않는다.
-- Notion은 사람용 기획, Repository는 구조화·구현·테스트·증거 정본이다. 의미 변경은 같은 범위에서 동기화하고 병합 뒤 readback한다.
+- Repository는 사람용·구조화 기획·구현·테스트·증거의 단일 정본이다. Notion은 삭제하지 않지만 `HISTORICAL_READ_ONLY_NO_WRITE`; 의미 변경은 repository에서만 commit/push/readback한다.
 - Google Sheet는 migration-only legacy inventory다.
 - 이미지 생성 결과는 자동 최종 자산이 아니며 `docs/IMAGE_ASSET_WORKFLOW.md`와 root `ASSET_MANIFEST.yml`의 검수·권리·승격 Gate를 통과해야 한다.
 

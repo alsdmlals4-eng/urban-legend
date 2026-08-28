@@ -1,7 +1,7 @@
 # TEST_CHECKLIST
 
-> 현재 월간 기획·Gate: `docs/CURRENT_PLANNING_CANON.md` + `docs/current-planning-canon.json`
-> 문서 역할: 병합된 CORE/ANNUAL runtime의 회귀 Checklist. 새 월간 구현 권한을 부여하지 않는다.
+> 현재 10일·반일 기획·Gate: `docs/CURRENT_PLANNING_CANON.md` + `docs/current-planning-canon.json` + `docs/design/PROJECT_AI_PRODUCTION_SPEC.md`
+> 문서 역할: 병합된 CORE/ANNUAL runtime의 회귀 Checklist. 새 10일 cadence 구현 권한을 부여하지 않는다.
 > 상태: `docs/CURRENT_STATUS.md`  
 > 코어: `docs/PROJECT_CORE.md`  
 > 로드맵: `MVP_ROADMAP.md`  
@@ -9,6 +9,10 @@
 > ANNUAL-MVP-002 계획: `docs/superpowers/plans/2026-07-26-annual-mvp-002-vertical-slice-implementation-plan.md`
 
 ## 현재 기준
+
+- current product cadence: 10일·오전/오후, Day 1~9 조기 해결 / Day 10 정규 해결.
+- calendar timing docket/save/result/numeric balance는 implementation contract 전 `NOT_IMPLEMENTED / UNDEFINED`.
+- 아래 ANNUAL 4주/7일 항목은 historical regression checklist이며 current product timing의 acceptance criteria가 아니다.
 
 - 구현 기준선: MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A
 - 화면 버전: Ver 4.2

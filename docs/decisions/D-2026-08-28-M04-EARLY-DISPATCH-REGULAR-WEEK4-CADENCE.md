@@ -1,10 +1,13 @@
 # D-2026-08-28 · M04 Early Dispatch / Regular Week-4 Cadence
 
-> Status: `USER_APPROVED / PLANNING_CANON / IMPLEMENTATION_NOT_AUTHORIZED`
+> Status: `SUPERSEDED / HISTORICAL_DECISION / IMPLEMENTATION_NOT_AUTHORIZED`
 > Decision ID: `D-2026-08-28-M04-EARLY-DISPATCH-REGULAR-WEEK4-CADENCE`
 > Issue: #331
 > Scope: `M04_RED_UMBRELLA`의 출동 전 timing, 권나래 지원의 M04 전용 준비 tier, Composite Result timing axis
 > Owner: `CURRENT_PLANNING_CANON.md`, `current-planning-canon.json`, `CURRENT_DECISION_OVERLAY.md`, `CURRENT_HANDOFF.md`, `M01_M04_VERTICAL_SLICE_FLOW.md`, Notion `01 · Direction · Planning`
+> Superseded by: `D-2026-08-28-TEN-DAY-HALF-DAY-CASE-CADENCE`
+
+> Historical record only. The former 2/3/4-week windows and all associated `0/15/30`, `0/+4/+8` values are not current numbers and must not be converted to Days by inference.
 > Supersedes current authority of: `D-2026-08-28-M04-ONE-DELAY-PREPARATION-VICTIM-RISK-TRADEOFF`, `D-2026-08-28-M04-ROUTE-MEMORY-ANCHOR-PREPARATION-BENEFIT`, `D-2026-08-28-M04-BOUNDED-FORCED-DISPATCH-REACHABILITY`
 
 ## Decision

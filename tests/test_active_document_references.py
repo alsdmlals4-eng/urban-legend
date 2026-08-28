@@ -117,7 +117,7 @@ class ActiveDocumentReferenceTests(unittest.TestCase):
         self.assertIn("주인공 육성 시뮬레이션 + 텍스트 노벨", core)
         self.assertIn("연도 결산", gdd)
         self.assertIn("POC_BUILD_READY", status)
-        self.assertIn("ONE_MAIN_CASE_PER_MONTH", handoff)
+        self.assertIn("ONE_MAIN_CASE_PER_TEN_DAY_CYCLE", handoff)
         self.assertIn("PLAN_LOCK", handoff)
 
     def test_active_status_docs_do_not_claim_old_merge_wait(self) -> None:
@@ -179,14 +179,18 @@ class ActiveDocumentReferenceTests(unittest.TestCase):
                     failures.append(f"{path.relative_to(ROOT)} -> {match.group(0)}")
         self.assertEqual([], failures)
 
-    def test_current_baseline_is_consistent(self) -> None:
-        failures: list[str] = []
-        for path in BASELINE_DOCS:
+    def test_historical_baseline_is_not_current_product_authority(self) -> None:
+        current_paths = (
+            ROOT / "docs/PROJECT_CONTEXT.md",
+            ROOT / "docs/GAME_DESIGN_DOCUMENT.md",
+            ROOT / "docs/CURRENT_STATUS.md",
+            ROOT / "MVP_ROADMAP.md",
+            ROOT / "TEST_CHECKLIST.md",
+        )
+        for path in current_paths:
             text = path.read_text(encoding="utf-8")
-            for required in ("CORE-VALIDATION-001", "Ver 4.2", "mvp-039"):
-                if required not in text:
-                    failures.append(f"{path.relative_to(ROOT)} missing {required}")
-        self.assertEqual([], failures)
+            self.assertIn("CURRENT_PLANNING_CANON", text, path.relative_to(ROOT))
+            self.assertIn("10일", text, path.relative_to(ROOT))
 
     def test_progressive_disclosure_baseline_is_consistent(self) -> None:
         failures: list[str] = []

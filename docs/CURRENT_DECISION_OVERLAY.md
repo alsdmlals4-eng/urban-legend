@@ -5,12 +5,12 @@
 > 갱신 기준: PR #322 merge commit `9fa32d32e8a5a2ad7d34a388695986b4ab81c6a7` + merged-main canon readback (runtime merge `8d303f0f9414950273be934fd28c8fb1b3a21e18`)
 > 상세 역사 결정 원장: `docs/CURRENT_CONFIRMED_DECISIONS.md`
 
-이 파일은 현재 작업자가 즉시 판단해야 하는 mutable decision과 verified successor state만 소유한다. 역사 원장이 current state와 충돌하면 최신 사용자 지시 → GitHub latest main → Notion current planning → `CURRENT_PLANNING_CANON.md` / `current-planning-canon.json` → 이 Overlay 순으로 해석한다.
+이 파일은 현재 작업자가 즉시 판단해야 하는 mutable decision과 verified successor state만 소유한다. 역사 원장이 current state와 충돌하면 최신 사용자 지시 → GitHub latest main → repository current GDD / `CURRENT_PLANNING_CANON.md` / `current-planning-canon.json` → 이 Overlay 순으로 해석한다.
 
 ## 1. 현재 제품 구조
 
 ```yaml
-cadence: ONE_MAIN_CASE_PER_MONTH
+cadence: TEN_DAY_CYCLE / TWO_HALF_DAY_SLOTS_PER_DAY / ONE_MAIN_CASE_PER_CYCLE
 initial_slate: M01_TO_M12
 continuous_after_m12: true
 signature_cases: [M01, M04, M07, M10]
@@ -21,8 +21,9 @@ visual_treatment: SOFT_ANIME_NOIR_LOCKED
 presentation_language: DOSSIER_HYBRID_IS_PRESENTATION_LANGUAGE_NOT_MEDIUM
 visual_direction_lock: USER_APPROVED
 visual_direction_decision: D-2026-08-28-URBAN-NOIR-HYBRID-VISUAL-DIRECTION
-m04_early_dispatch_regular_week4_cadence: USER_APPROVED
-m04_early_dispatch_regular_week4_decision: D-2026-08-28-M04-EARLY-DISPATCH-REGULAR-WEEK4-CADENCE
+ten_day_half_day_case_cadence: USER_APPROVED / IMPLEMENTATION_CONTRACT_PENDING
+ten_day_half_day_case_decision: D-2026-08-28-TEN-DAY-HALF-DAY-CASE-CADENCE
+m04_week4_numeric_cadence: SUPERSEDED
 m04_sequential_narrative_result_vignettes: USER_APPROVED
 m04_sequential_narrative_result_decision: D-2026-08-28-M04-SEQUENTIAL-NARRATIVE-RESULT-VIGNETTES
 ```
@@ -40,6 +41,7 @@ overall_plan: COMPLETE
 runtime_implementation: MERGED_MAIN
 runtime_merge_commit: 8d303f0f9414950273be934fd28c8fb1b3a21e18
 canonical_root_runtime_receipt: AUTOMATED_EXACT_HEAD_GREEN
+ten_day_half_day_cadence: USER_APPROVED / NOT_IMPLEMENTED
 human_qa: NOT_RUN
 new_player_validation: NOT_RUN
 poc_passed: NOT_DECLARED
@@ -95,26 +97,26 @@ base_adapter_baseline_reconciliation: COMPLETE
 - M01 truth ID를 M04 current truth로 재사용하지 않는다.
 - `PRODUCT_REFERENCE_ASSET_PENDING`, `final_visuals_authorized=false` 유지.
 
-### M04 early dispatch ↔ regular week-4 readiness trade-off — 2026-08-28
+### Ten-day half-day case cadence — 2026-08-28
 
-판정: `USER_APPROVED / PLANNING_CANON / IMPLEMENTATION_NOT_AUTHORIZED`.
+판정: `USER_APPROVED / PLANNING_CANON / IMPLEMENTATION_CONTRACT_PENDING`.
 
-- 2주차와 3주차는 조기 출동 창이며, 4주차는 정규 출동일이다. 4주차를 지연·강제 escalation이나 준비 상실로 표현하지 않는다.
-- 귀가 기억 노출은 2/3/4주차의 `+0/+15/+30`이며, M04 전용 `victim_route_memory_exposure` Composite Result 축으로 소비한다. 기존 공포 bar·조사 위험·피해자 이해도·resolution grade는 consumer가 아니다.
-- 권나래의 기존 한 번짜리 능동형 회수 지원은 기본 공포 `-16`·임계치 `+2`를 유지한다. 직접 사용 시 준비 tier 0/1/2는 안정화 `+0/+4/+8`만 추가한다.
-- Composite Result는 timing/exposure와 실제 지원 사용을 추리·구출·회수 결과와 분리해 설명한다. M01에는 이 선택을 추가하지 않는다.
+- 한 cycle은 10일, 하루는 오전/오후 두 반일 슬롯이며 메인 사건은 cycle마다 하나만 해결한다.
+- Day 1~9 해결은 조기 해결, Day 10 해결은 정규 해결이다. Day 10은 지연·강제 escalation·준비 상실이 아니다.
+- 조기 해결은 더 이른 보호, 정규 해결은 남은 반일 준비 기회의 선택이다. 새 numeric balance는 `UNDEFINED`; 옛 2/3/4주, `0/15/30`, `0/+4/+8`은 `SUPERSEDED`이며 날짜에 환산하지 않는다.
+- `CampaignState`의 10일/오전·오후 구조는 구현되어 있지만 timing record, Preparation docket, Day 10 판정, M04 result consumer는 구현되지 않았다.
 
 ### M04 sequential narrative result vignettes — 2026-08-28
 
 판정: `USER_APPROVED / PLANNING_CANON / IMPLEMENTATION_NOT_AUTHORIZED`.
 
 - M04 결과를 한 scroll surface의 카드·점수·목록으로 묶지 않는다. `피해자 → 잔향 → 귀가 기억 → 기록국`의 short narrative page를 순서대로 제시한다.
-- 각 페이지는 한 가지 원인과 그 여파만 다룬다. 귀가 기억 페이지에서는 출동 timing·노출·실제 권나래 지원 사용만 하나의 인과로 연결한다.
-- 4주차 정규 출동을 벌점으로 되돌리지 않고, 구출·회수·추리·보상·M01의 의미를 변경하지 않는다. logical page는 새 Godot Scene, asset, runtime/Human QA PASS가 아니다.
+- 각 페이지는 한 가지 원인과 그 여파만 다룬다. 귀가 기억 페이지에서는 조기/정규·해결일·실제 권나래 지원 사용만 하나의 인과로 연결한다.
+- Day 10 정규 해결을 벌점으로 되돌리지 않고, 구출·회수·추리·보상·M01의 의미를 변경하지 않는다. logical page는 새 Godot Scene, asset, runtime/Human QA PASS가 아니다.
 
 ### M04 predecessor decisions — 2026-08-28
 
-`D-2026-08-28-M04-ONE-DELAY-PREPARATION-VICTIM-RISK-TRADEOFF`, `D-2026-08-28-M04-ROUTE-MEMORY-ANCHOR-PREPARATION-BENEFIT`, `D-2026-08-28-M04-BOUNDED-FORCED-DISPATCH-REACHABILITY`는 `D-2026-08-28-M04-EARLY-DISPATCH-REGULAR-WEEK4-CADENCE`로 current authority를 넘긴 historical predecessor다. 원문·승인 계보는 각 decision file에 보존하고, 현재 판단에는 사용하지 않는다.
+`D-2026-08-28-M04-ONE-DELAY-PREPARATION-VICTIM-RISK-TRADEOFF`, `D-2026-08-28-M04-ROUTE-MEMORY-ANCHOR-PREPARATION-BENEFIT`, `D-2026-08-28-M04-BOUNDED-FORCED-DISPATCH-REACHABILITY`, `D-2026-08-28-M04-EARLY-DISPATCH-REGULAR-WEEK4-CADENCE`는 `D-2026-08-28-TEN-DAY-HALF-DAY-CASE-CADENCE`로 current authority를 넘긴 historical predecessor다. 원문·승인 계보는 각 decision file에 보존하고, 현재 판단에는 사용하지 않는다.
 
 ### Visual direction lock — 2026-08-28
 
@@ -124,6 +126,14 @@ base_adapter_baseline_reconciliation: COMPLETE
 - `docs/visual/VISUAL_DIRECTION_LOCK_PACKET_2026-08-28.md`의 Keep/Avoid/Do Not Drift가 후속 시각 자료에 적용된다.
 - `PROJECT_CORE_SCENE_VISUAL_BOARD`는 AI 이해/기획 검토용 생성 보드다. 자체로 product asset, Godot UI/Scene 구현, target-resolution PASS, Human/Player Experience PASS를 만들지 않는다.
 
+### Visual candidate generation / lock-only approval — 2026-08-28
+
+판정: `USER_APPROVED / PROJECT_WORKFLOW_POLICY`.
+
+- consumer brief·visual lock·reuse/rights preflight가 있으면 후보 이미지는 사전 건별 승인 없이 생성·검수한다.
+- 사용자에게는 후보의 `LOCK / REVISE / REJECT`만 요청한다.
+- 후보 생성은 product asset promotion, runtime wiring, Human QA를 의미하지 않는다.
+
 ## 4. 자동 검증
 
 PR #224 exact head에서 core/docs, full matrix, Canon v2 migration/runtime UX, ANNUAL/CORE, Windows platform preflight, documentation 및 visual capture 계열이 GREEN이었다.
@@ -132,11 +142,10 @@ PR #224 exact head에서 core/docs, full matrix, Canon v2 migration/runtime UX, 
 
 ## 5. Workspace authority
 
-- Notion: 사람이 보는 전체 그림, Flow, 비교표, 현재 승인 방향과 구현 상태 요약.
-- Repository: 구조화 기획 계약, 구현, 테스트, runtime evidence.
-- Google Sheet: migration-only legacy inventory.
+- Repository: 사람이 보는 전체 그림, Flow, 비교표, 구조화 기획 계약, 구현, 테스트, runtime evidence의 단일 owner.
+- Notion / Google Sheet: `HISTORICAL_READ_ONLY_NO_WRITE` legacy inventory. 현재 Notion 구조·작업물과 Notion-only reference mockup은 `docs/migrations/NOTION_CURRENT_WORK_MIGRATION_2026-08-28.md`에 이전·등록했다.
 
-Notion Home 및 `05 · Production · Validation`에 PR #224 구현 상태와 evidence ceiling을 동기화했다.
+Notion의 과거 상태 동기화는 historical record다. 신규 변경은 repository commit/push/remote readback으로만 확인한다.
 
 ## 6. Base authority / governance reconciliation
 

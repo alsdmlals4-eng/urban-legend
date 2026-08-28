@@ -1,30 +1,28 @@
 # Project Context
 
 > 문서 위치: `docs/PROJECT_CONTEXT.md`  
-> 현재 상태: `docs/CURRENT_STATUS.md`  
+> 현재 정본: `docs/CURRENT_PLANNING_CANON.md`, `docs/current-planning-canon.json`
 > 프로젝트 코어: `docs/PROJECT_CORE.md`
 
 ## 한 줄 정의
 
-`괴이 기록국`은 권나래의 1년 일정·역량·신념·관계를 육성하고, 텍스트 노벨형 조사에서 만든 괴이 규칙 가설을 조작형 미니게임과 턴제 회수 전투로 증명하며, 성공과 실패를 다음 연도의 괴이 매뉴얼로 축적하는 PC용 현대 오컬트 육성 RPG다.
+`괴이 기록국`은 권나래의 **10일·오전/오후 일정**을 준비하고, 관측 가능한 단서로 괴이 규칙을 추리해 피해자를 구출하고 잔향을 안정화·회수하며, 성공·실패·미확정을 다음 판단의 매뉴얼과 기록으로 남기는 PC용 현대 한국 오컬트 조사 RPG다.
 
 ## 현재 구현 기준
 
-- MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A
-- Ver 4.2
-- 저장 Schema `mvp-039` (`mvp-038` 이관 지원)
+- main menu product version `Ver 4.3`
+- current runtime: `CampaignState.MAX_DAYS = 10`, `TIME_SLOTS = [morning, afternoon]`
+- current product cadence: Day 1~9 조기 해결 / Day 10 정규 해결, 한 cycle 메인 사건 1개
 - Godot 4.7.1 / GDScript / PC·Steam 16:9 / 마우스·키보드
-- CORE-MVP-001 `POC_BUILD_READY`
-- 연도제 설계 `APPROVED_DESIGN_BASELINE`
-- ANNUAL-MVP-001 4주 구조 병합 완료
-- ANNUAL-MVP-001 7일 주간·가변 일정 구현 `MERGED / AUTOMATED_QA_PASSED` — Issue #75 / PR #76 / commit `57c1f3d92e0fdae658826a23e5c2326fe9efe478`
-- 플레이 증거 없음 / `POC_PASSED NOT_DECLARED`
+- M01 First Session와 M04 shared-system baseline은 merged main에 존재한다.
+- Day 10 정규 판정, timing save/result consumer, visible docket, new numeric balance는 `NOT_IMPLEMENTED`.
+- Human / Player Experience evidence 없음 / `POC_PASSED NOT_DECLARED`.
 
 ## 장르와 화면 문법
 
-> **권나래 연도제 육성 시뮬레이션 + 텍스트 노벨 + 규칙 추리 + 조작형 미니게임 + 턴제 회수 전투**
+> **10일·반일 준비 + 텍스트 조사·규칙 추리 + 피해자 구출 + 전조 기반 잔향 회수**
 
-텍스트 노벨은 일상·기관 업무·관계·사건 조사·전투 전조·결과·분기 정산·연도 결산을 연결하는 기본 표현 문법이다. 조작형 미니게임과 턴제 회수 전투를 제거하지 않는다.
+텍스트 노벨은 기관 업무·관계·사건 조사·전조·결과·기록을 연결하는 기본 표현 문법이다. 조작형 미니게임과 회수 전투를 제거하지 않는다. 연도제·분기 정산 문구는 historical runtime history이며 current cadence를 소유하지 않는다.
 
 ## 주인공
 
@@ -57,12 +55,12 @@
 | 위험 사례 | 잘못된 판단과 실패에서 얻은 다음 생존 근거 |
 | 괴이 매뉴얼 | 공식 규칙·관측 패턴·위험 사례·연구 대응의 영구 기록 |
 | 현장 이해도 | 현재 장소·환경·변형에 대한 출현별 이해 단계 |
-| 연도 결산 | 해당 연도의 갈등·진로 방향·신념·관계·세계 상태를 정리하는 중간 결과 |
+| 연도 결산 | `ANNUAL-MVP-*` history에서만 보존하는 historical runtime 용어; current campaign cadence의 owner가 아님 |
 
 ## 제품 핵심 루프
 
 ```text
-주간 일정·육성
+10일·반일 일정·육성
 → 관계·기관·연구·장비 준비
 → 사건 징후·출동 시점 판단
 → 텍스트 노벨형 조사
@@ -71,7 +69,7 @@
 → 전조 기반 턴제 회수
 → 안정화·잔향 회수
 → 괴이 매뉴얼·연구·동료 협업
-→ 분기 정산·연도 결산
+→ 후일담·연구·관계·다음 cycle 준비
 ```
 
 ## 조사와 회수의 불변 계약
@@ -109,13 +107,12 @@
 
 ## 현재 제작 경계
 
-현재 통합 기준은 `ANNUAL-MVP-001` 격리 수직절편의 시간 예산 구현·자동 검증을 완료했으며, 다음 사람 검증에서 아래 계약의 이해도와 체감을 확인한다.
+과거 `ANNUAL-MVP-*` 시간 예산 구현은 historical regression evidence다. current product timing은 `D-2026-08-28-TEN-DAY-HALF-DAY-CASE-CADENCE`가 소유하며, 다음 구현 계약에서 Day 1~9 조기 / Day 10 정규의 이해도와 체감을 검증한다.
 
-- 1개월 = 4주 × 주당 7일 = 28일
-- 일정별 1~3일 소비, 주차 경계 초과 금지
-- 미달 첫 확정은 자동 휴식 경고 후 편성 유지
-- 같은 편성 재확정은 남은 일수 자동 휴식
-- 직접 휴식은 자동 휴식보다 강함
+- 한 cycle = 10일 × 하루 2 반일 슬롯
+- Day 1~9 해결은 조기, Day 10 해결은 정규이며 두 선택 모두 정상 경로
+- 조기 해결 뒤에는 두 번째 메인 사건을 생성하지 않고 남은 반일을 후일담·치료·연구·관계·다음 준비에 쓴다
+- 구체 numeric balance와 timing save/result consumer는 implementation contract 전 `UNDEFINED / NOT_IMPLEMENTED`
 - 권나래 역량·피로
 - 동료 1명과 자동 보조
 - 기본 장비·모듈
@@ -123,15 +120,15 @@
 - 사건 결과 → 연구·분기 결산
 - 본편 `GameState`와 저장 `mvp-039` 비침범
 
-PR #62의 3주 구조와 PR #70의 4주×3슬롯 구조는 `HISTORICAL_REGRESSION_EVIDENCE`로 보존한다. 최신 구현은 PR #76 / commit `57c1f3d92e0fdae658826a23e5c2326fe9efe478`이며 문서 run #273, ANNUAL run #121, Visual run #51이 통과했다.
+PR #62의 3주 구조, PR #70의 4주×3슬롯 구조, PR #76의 7일 주간 구조는 `HISTORICAL_REGRESSION_EVIDENCE`로 보존한다. 새 calendar behavior의 runtime/Human verification은 아직 `NOT_RUN`이다.
 
 ## 책임 원본
 
 - 최소 코어: `docs/PROJECT_CORE.md`
 - 상세 시스템: `docs/GAME_DESIGN_DOCUMENT.md`
-- 현재 상태: `docs/CURRENT_STATUS.md`
+- current contract: `docs/design/PROJECT_AI_PRODUCTION_SPEC.md`
 - 구현 순서: `MVP_ROADMAP.md`
 - 검증: `TEST_CHECKLIST.md`
-- 최신 설계: `docs/superpowers/specs/2026-07-25-annual-mvp-001-seven-day-scheduling-design.md`
+- historical scheduling design: `docs/superpowers/specs/2026-07-25-annual-mvp-001-seven-day-scheduling-design.md`
 - 업데이트 프로토콜: `docs/PROJECT_UPDATE_PROTOCOL.md`
 - 결정 로그: `docs/DECISION_LOG.md`
