@@ -21,6 +21,8 @@ visual_treatment: SOFT_ANIME_NOIR_LOCKED
 presentation_language: DOSSIER_HYBRID_IS_PRESENTATION_LANGUAGE_NOT_MEDIUM
 visual_direction_lock: USER_APPROVED
 visual_direction_decision: D-2026-08-28-URBAN-NOIR-HYBRID-VISUAL-DIRECTION
+m04_time_tradeoff: USER_APPROVED
+m04_time_tradeoff_decision: D-2026-08-28-M04-ONE-DELAY-PREPARATION-VICTIM-RISK-TRADEOFF
 ```
 
 ## 2. 현재 Gate
@@ -90,6 +92,15 @@ base_adapter_baseline_reconciliation: COMPLETE
 - Composite Result axes 공유.
 - M01 truth ID를 M04 current truth로 재사용하지 않는다.
 - `PRODUCT_REFERENCE_ASSET_PENDING`, `final_visuals_authorized=false` 유지.
+
+### M04 one-delay preparation ↔ victim-risk trade-off — 2026-08-28
+
+판정: `USER_APPROVED / PLANNING_CANON / IMPLEMENTATION_NOT_AUTHORIZED`.
+
+- 즉시 출동은 위험 `+0`과 준비 이득 없음, 한 번만 지연 출동은 사전 공개된 준비 이득 1개와 피해자 위험 `+15`의 교환이다.
+- 4주차 강제 출동 `+30`은 별도·가시적 escalation boundary다.
+- 준비 이득은 히든 진실·정답·자동 규칙을 제공하지 않는다. 정확한 이득 내용은 `UNDECIDED`이며 다음 제품 결정의 owner다.
+- Composite Result는 timing causality를 추리·구출·회수 결과와 분리해 설명한다. M01에는 이 선택을 추가하지 않는다.
 
 ### Visual direction lock — 2026-08-28
 

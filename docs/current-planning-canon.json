@@ -47,6 +47,28 @@
       "global_style_anchor": "realistic Korean urban-noir environment + soft-anime player/anomaly identity + hand-drawn institutional dossier UI",
       "core_scene_board": "GENERATED_EXPLORATION / NOT_PROJECT_ASSET / NOT_RUNTIME_ASSET"
     },
+    "m04_time_tradeoff": {
+      "decision_id": "D-2026-08-28-M04-ONE-DELAY-PREPARATION-VICTIM-RISK-TRADEOFF",
+      "status": "USER_APPROVED / IMPLEMENTATION_NOT_AUTHORIZED",
+      "scope": "M04_RED_UMBRELLA_ONLY",
+      "immediate_dispatch": {
+        "victim_risk_delta": 0,
+        "preparation_benefit": "NONE"
+      },
+      "single_optional_delay": {
+        "victim_risk_delta": 15,
+        "preparation_benefit": "ONE_EXPLICIT_NON_TRUTH_BENEFIT_UNDECIDED",
+        "must_be_visible_before_confirmation": true
+      },
+      "week_4_forced_dispatch": {
+        "victim_risk_delta": 30,
+        "must_be_visible": true
+      },
+      "invariants": [
+        "NO_HIDDEN_TRUTH_OR_CORRECT_SOLUTION_FROM_PREPARATION",
+        "COMPOSITE_RESULT_EXPLAINS_TIMING_CAUSALITY_SEPARATELY"
+      ]
+    },
     "content_budget": {
       "signature_cases": 4,
       "standard_cases": 8

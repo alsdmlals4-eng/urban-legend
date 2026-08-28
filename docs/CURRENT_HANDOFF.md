@@ -26,6 +26,8 @@ base_adapter_baseline_reconciliation: COMPLETE
 
 현재 시각 방향은 `D-2026-08-28-URBAN-NOIR-HYBRID-VISUAL-DIRECTION`의 **현실적 한국 도시 누아르 환경 + 애니풍 인물·괴이 + 손그림 기록물 UI**다. 이 방향은 `docs/visual/VISUAL_DIRECTION_LOCK_PACKET_2026-08-28.md`가 소유하며, 첨부 Core Scene Board는 기획 검증용 `GENERATED_EXPLORATION`일 뿐 runtime asset/Scene/UI/Human QA가 아니다.
 
+M04의 현재 accepted frontier는 `D-2026-08-28-M04-ONE-DELAY-PREPARATION-VICTIM-RISK-TRADEOFF`다. 즉시 출동과 한 번 지연+준비 이득(+15 피해자 위험)의 교환은 승인됐으며, 다음 제품 결정은 그 준비 이득의 정확한 내용이다. Godot/asset/QA 구현 권한은 아직 열리지 않았다.
+
 ## 1. 재개 순서
 
 ```text
