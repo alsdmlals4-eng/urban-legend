@@ -1,12 +1,16 @@
 # 괴이 기록국 게임기획서
 
 > 편집 원본: `docs/GAME_DESIGN_DOCUMENT.md`  
-> 현재 구현 기준: **MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A / Ver 4.2 / save `mvp-039`**  
+> historical implementation baseline: **MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A / Ver 4.2 / save `mvp-039`**
 > 승인 설계: **연도제 육성·텍스트 노벨 통합 설계 / APPROVED_DESIGN_BASELINE**  
 > 현재 구현 상태: **CORE-MVP-001 POC_BUILD_READY / ANNUAL-MVP-001 SEVEN_DAY_SCHEDULING_MERGED / AUTOMATED_QA_PASSED**
-> 현재 제품 기획 Overlay: **월 1사건 M01+ / M01 First Session / M04 release-near Vertical Slice / PLAN_LOCK** — `docs/CURRENT_PLANNING_CANON.md`
+> current product contract: **10일·오전/오후 / 한 cycle 메인 사건 1개 / Day 1~9 조기·Day 10 정규 / M01 First Session / M04 release-near Vertical Slice** — `docs/CURRENT_PLANNING_CANON.md`
 
-이 v3.2 본문은 병합된 annual 기술 설계와 기존 상세 시스템을 보존한다. 현재 cadence·콘텐츠 예산·M01/M04 역할·다음 Gate가 충돌하면 `CURRENT_PLANNING_CANON.md`와 `current-planning-canon.json`을 우선한다. 현재 기획은 annual 문서의 즉시 전면 개작이 아니라 검증된 일정·육성 기술을 월간 사건 구조에 안전하게 재사용한다.
+이 v3.2 본문은 병합된 annual 기술 설계와 기존 상세 시스템을 보존한다. 현재 cadence·콘텐츠 예산·M01/M04 역할·다음 Gate가 충돌하면 `CURRENT_PLANNING_CANON.md`, `current-planning-canon.json`, `docs/design/PROJECT_AI_PRODUCTION_SPEC.md`를 우선한다. 본문 안의 연도/분기/4주/7일/`0/15/30`은 historical baseline이며 current product balance로 읽지 않는다.
+
+## Current cadence correction · 2026-08-28
+
+현재 campaign은 10일·오전/오후 반일 슬롯이며 cycle마다 메인 사건을 하나 해결한다. Day 1~9는 조기 해결, Day 10은 정규 해결이다. Day 10은 forced/deferred/penalty가 아니다. 현 runtime은 10일과 두 슬롯을 구조적으로 보유하지만 visible docket, timing save/result consumer, 새 numeric balance는 `NOT_IMPLEMENTED / UNDEFINED`다.
 
 | 항목 | 현재 값 |
 |---|---|

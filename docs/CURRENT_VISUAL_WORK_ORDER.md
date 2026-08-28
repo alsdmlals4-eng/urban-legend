@@ -221,6 +221,10 @@ actual Scene / Texture consumer
 
 ## 7. Approval boundary
 
+### Candidate generation policy — 2026-08-28
+
+`D-2026-08-28-VISUAL-CANDIDATE-GENERATION-LOCK-ONLY-APPROVAL`을 적용한다. 실제 consumer brief, visual lock, reuse/rights preflight가 완료된 bounded candidate는 사전 건별 승인 없이 생성·검수한다. 사용자에게는 후보의 `LOCK / REVISE / REJECT`만 요청한다. 이 흐름은 candidate를 product asset, runtime implementation, Human QA PASS로 승격하지 않는다.
+
 ### Complete
 - 조사/추리 화면 분리
 - 장면형 조사 문법

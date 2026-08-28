@@ -5,7 +5,7 @@ Base 공용 운영체계를 urban-legend의 기존 구조와 프로젝트 코어
 ## 우선순위
 
 1. 최신 사용자 지시.
-2. Notion 사람용 프로젝트 정본과 `docs/CURRENT_PLANNING_CANON.md`.
+2. Repository current GDD와 `docs/CURRENT_PLANNING_CANON.md`.
 3. `AGENTS.md`, `docs/PROJECT_CORE.md`, 보호·저장·엔진 계약.
 4. `docs/CURRENT_STATUS.md`와 승인 작업 계약.
 5. 프로젝트 책임 원본과 실제 코드·데이터·자산·테스트.
@@ -36,8 +36,8 @@ Base 공용 운영체계를 urban-legend의 기존 구조와 프로젝트 코어
 
 ```text
 현재 상태 → docs/CURRENT_STATUS.md
-현재 월간 기획 → docs/CURRENT_PLANNING_CANON.md + docs/current-planning-canon.json
-사람용 전체 그림·Flow·비교표 → Notion 괴이기록국 프로젝트 홈
+현재 10일·반일 기획 → docs/CURRENT_PLANNING_CANON.md + docs/current-planning-canon.json
+사람용 전체 그림·Flow·비교표 → docs/design/PROJECT_AI_PRODUCTION_SPEC.md + user PDF GDD
 프로젝트 코어·승인 상태 → docs/PROJECT_CORE.md
 문서 위치·조건 → docs/DOCUMENTATION_MAP.md
 프로젝트 Skill → skills/SKILL_REGISTRY.json
@@ -51,7 +51,7 @@ Base Skill 라우팅 → skills/BASE_SKILL_INDEX.json
 
 같은 사실을 여러 현행 원본으로 복제하지 않는다.
 
-Notion은 사람용 기획, Repository는 구조화 기획·구현·테스트·runtime evidence를 소유한다. Google Sheet는 migration-only이며 새 작업면으로 사용하지 않는다.
+Repository는 사람용·구조화 기획·구현·테스트·runtime evidence를 단독 소유한다. Notion과 Google Sheet는 migration/history only이며 새 작업면으로 사용하지 않는다.
 
 ## Skill 운영
 
@@ -65,7 +65,7 @@ Notion은 사람용 기획, Repository는 구조화 기획·구현·테스트·r
 
 ## 프로젝트 코어와 변경 권한
 
-`docs/PROJECT_CORE.md`가 제품 불변 코어를 소유하고 `docs/CURRENT_PLANNING_CANON.md`가 최신 월간 제품 구조를 소유한다. 현재는 `PLAN_LOCK`, Human QA `NOT_RUN`, Production gate `HOLD_UNTIL_PLAYER_EVIDENCE`다. 일반 리팩토링으로 코어를 바꾸거나 플레이 증거 없이 구현 완료·제작 확대를 선언하지 않는다.
+`docs/PROJECT_CORE.md`가 제품 불변 코어를 소유하고 `docs/CURRENT_PLANNING_CANON.md`가 최신 10일·반일 제품 구조를 소유한다. 현재는 `PLAN_LOCK`, Human QA `NOT_RUN`, Production gate `HOLD_UNTIL_PLAYER_EVIDENCE`다. 일반 리팩토링으로 코어를 바꾸거나 플레이 증거 없이 구현 완료·제작 확대를 선언하지 않는다.
 
 ## 가지치기·간소화·리팩토링
 
@@ -89,4 +89,4 @@ attack
 
 ## 검증과 보고
 
-변경 영향에 맞춰 contract, reference freshness, static, runtime, accessibility, performance, regression, evidence를 선택한다. Skill·Registry·운영 문서 변경은 전체 Python discovery와 관련 집중 계약을 실행한다. 통합 PR은 최소 5회 whole-scope 적대적 검토, exact-head CI, 병합 뒤 GitHub·Notion readback을 거친다. L1 이상 보고에는 실제 Work Mode·분야/로컬/Base Skill·Mode·이유·변경·증거·미검증·롤백을 포함한다.
+변경 영향에 맞춰 contract, reference freshness, static, runtime, accessibility, performance, regression, evidence를 선택한다. Skill·Registry·운영 문서 변경은 전체 Python discovery와 관련 집중 계약을 실행한다. 통합 PR은 최소 5회 whole-scope 적대적 검토, exact-head CI, 병합 뒤 GitHub remote readback을 거친다. Notion write/readback은 current scope 밖이다. L1 이상 보고에는 실제 Work Mode·분야/로컬/Base Skill·Mode·이유·변경·증거·미검증·롤백을 포함한다.

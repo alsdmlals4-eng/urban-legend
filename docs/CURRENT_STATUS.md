@@ -7,6 +7,7 @@
 > 상세 설계: `docs/GAME_DESIGN_DOCUMENT.md`  
 > 연도제 원설계: `docs/superpowers/specs/2026-07-25-annual-raising-visual-novel-design.md`  
 > 최신 시간 계약: `docs/superpowers/specs/2026-07-25-annual-mvp-001-seven-day-scheduling-design.md`  
+> current production GDD: `docs/design/PROJECT_AI_PRODUCTION_SPEC.md`
 > 확장 마스터 설계: `docs/superpowers/specs/2026-07-26-annual-expansion-master-design.md`  
 > ANNUAL-MVP-002 상세 설계: `docs/superpowers/specs/2026-07-26-annual-mvp-002-companion-equipment-research-design.md`  
 > 최신 구현 계획: `docs/superpowers/plans/2026-07-26-annual-mvp-002-vertical-slice-implementation-plan.md`  
@@ -18,7 +19,7 @@
 |---|---|
 | 최신 기획 정본 | `docs/CURRENT_PLANNING_CANON.md` + `docs/current-planning-canon.json` |
 | 현재 시각 방향 | `D-2026-08-28-URBAN-NOIR-HYBRID-VISUAL-DIRECTION` — 현실적 한국 도시 누아르 환경 + 애니풍 인물·괴이 + 손그림 기록물 UI |
-| 현재 M04 timing 결정 | `D-2026-08-28-M04-EARLY-DISPATCH-REGULAR-WEEK4-CADENCE` — 2주차 조기(+0·tier 0), 3주차 조기(+15·tier 1 안정화 +4), 4주차 정규(+30·tier 2 안정화 +8). `+15/+30`은 조기 보호를 놓친 귀가 기억 노출이며 지연·강제 벌점이 아니다. |
+| 현재 campaign timing 결정 | `D-2026-08-28-TEN-DAY-HALF-DAY-CASE-CADENCE` — 10일·오전/오후, Day 1~9 조기 해결 / Day 10 정규 해결. 옛 2/3/4주, `0/15/30`, `0/+4/+8`은 `SUPERSEDED`; replacement numeric balance는 `UNDEFINED`. |
 | 프로젝트 이해 보드 | `GENERATED_EXPLORATION / NOT_PROJECT_ASSET / NOT_RUNTIME_ASSET` |
 | runtime reconciliation | `MERGED_MAIN` (구현 merge PR #224); current documentation reconciliation PR #322 |
 | 개별 제품 asset | root `ASSET_MANIFEST.yml`의 6개 entry는 각자의 승인·구현·runtime evidence 범위를 보유; Human QA와 별개 |
@@ -40,7 +41,7 @@
 | Human QA | `NOT_RUN` |
 | POC_PASSED | `NOT_DECLARED` |
 
-아래 ANNUAL/CORE/MVP 상세는 병합된 기술·회귀·검증 계보를 보존하는 구현 Ledger다. 현재 제품 구조나 다음 Gate가 충돌하면 위 Overlay와 `CURRENT_PLANNING_CANON`을 우선한다.
+아래 ANNUAL/CORE/MVP 상세는 병합된 기술·회귀·검증 계보를 보존하는 구현 Ledger다. 현재 제품 구조나 다음 Gate가 충돌하면 위 current router와 `CURRENT_PLANNING_CANON`을 우선한다. 특히 아래의 4주/7일/M04 `0/15/30`는 historical evidence이며 current balance가 아니다.
 
 이 문서는 구현, 자동 검증, 렌더링·입력 QA, 신규 플레이어 검증을 분리한다. 자동 회귀와 화면 검증은 `POC_PASSED`, 연간 루프 통과, 제작 확대 승인을 뜻하지 않는다.
 

@@ -5,6 +5,7 @@
 > Issue: #333
 > Scope: `M04_RED_UMBRELLA` Composite Result presentation only
 > Owner: `CURRENT_PLANNING_CANON.md`, `current-planning-canon.json`, `CURRENT_DECISION_OVERLAY.md`, `CURRENT_HANDOFF.md`, `M01_M04_VERTICAL_SLICE_FLOW.md`, Notion `괴이기록국 · Home` and `01 · Direction · Planning`
+> Timing successor: `D-2026-08-28-TEN-DAY-HALF-DAY-CASE-CADENCE`
 
 ## Decision
 
@@ -25,7 +26,7 @@ M04의 복합 결과는 한 화면에서 점수·카드·목록으로 모두 나
 | --- | --- | --- | --- |
 | 1 `VIGNETTE_VICTIM_RESCUE` | 피해자 구출 결과 | 기존 `victim_rescue_result`와 `after_story`가 말하는 사람의 현재 상태 | 회수 등급이나 출동 시점을 이 결과로 환산하지 않음 |
 | 2 `VIGNETTE_RESONANCE_RECOVERY` | 잔향 회수 결과 | 기존 회수 설명·상태가 말하는 현상의 현재 상태 | 피해자 구출 결과를 덮어쓰지 않음 |
-| 3 `VIGNETTE_ROUTE_MEMORY` | 출동 타이밍과 실제 지원 사용 | 2·3주차 조기 / 4주차 정규, 귀가 기억 노출 `0/15/30`, 권나래 지원 사용 여부와 실제 안정화 `0/+4/+8`의 인과 | 4주차를 벌점·강제 출동으로 서술하거나 지원 미사용을 숨은 실패로 취급하지 않음 |
+| 3 `VIGNETTE_ROUTE_MEMORY` | 출동 타이밍과 실제 지원 사용 | 조기(Day 1~9) / 정규(Day 10), 실제 해결일, 권나래 지원 사용 여부와 실제 runtime 효과의 인과 | Day 10을 벌점·강제 출동으로 서술하거나 지원 미사용을 숨은 실패로 취급하지 않음. 옛 `0/15/30`, `0/+4/+8`은 표시하지 않음 |
 | 4 `VIGNETTE_CASE_RECORD` | 기록·연구·다음 행동 | 기존 기록물·연구 보상·다음 조사 연결을 짧은 기록국 후일담으로 제시 | 새 보상·단서·정답·관계 상태를 발명하지 않음 |
 
 `VIGNETTE_ROUTE_MEMORY`는 하나의 준비-결과 인과이므로, 타이밍과 그 타이밍에서 플레이어가 실제로 사용한 권나래 지원을 한 이야기 안에 연결한다. 지원을 쓰지 않았으면 해당 사실만 중립적으로 기록하며 빈 페이지나 자동 패널을 만들지 않는다.
@@ -50,7 +51,7 @@ M04의 복합 결과는 한 화면에서 점수·카드·목록으로 모두 나
 ## Actual evidence and implementation boundary
 
 - 현재 `scripts/scenes/result_scene.gd`는 하나의 `ScrollContainer` 안에서 결과·판단 근거·사건 보고서·저장·보상·다음 연결을 구성한다. 이 결정은 그 구조가 새 M04 결과 경험에 맞지 않는다는 planning finding이다.
-- `monthly_state.dispatch_risk`는 현재 `0/15/30` 문법만 보유하고 M04의 live consumer가 없다. 이 결정은 기존 공포·조사 위험·피해자 이해도·resolution grade를 재사용하지 않는다.
+- `monthly_state.dispatch_risk`는 현재 2/3/4주 `0/15/30` 문법만 보유하고 M04의 live consumer가 없다. 이는 historical generic policy이며 새 10일 timing을 대신하지 않는다.
 - 후속 통합 구현 계약은 M04 한정 logical-page state, skip/continue input, save round-trip, Korean copy, 1280×720·1920×1080 가독성, mouse/keyboard, M01 회귀, Human/new-player QA를 함께 명시해야 한다.
 - 이번 결정은 code/data/Scene/UI, save schema, asset, exact runtime copy, balance, runtime/Human QA PASS를 승인하지 않는다.
 

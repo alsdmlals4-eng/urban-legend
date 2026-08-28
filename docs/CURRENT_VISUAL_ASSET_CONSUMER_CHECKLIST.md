@@ -19,8 +19,9 @@ actual consumer
 → delete test
 → REUSE_REVIEW | REPLACE_REQUIRED | CREATE_REQUIRED
 → consumer-specific brief
-→ explicit image approval
-→ exactly one image
+→ bounded candidate generation (pre-approved workflow)
+→ visual-lock / rights / consumer inspection
+→ user LOCK | REVISE | REJECT
 ```
 
 설명용 component sheet는 이미지 backlog가 아니다.
@@ -32,6 +33,7 @@ actual consumer
 - `CREATE_REQUIRED`: 실제 consumer는 있으나 viable current file이 없다.
 - `UI_NOT_IMAGE`: Godot Control/Theme으로 구현되며 별도 이미지가 현재 필요하지 않다.
 - `REFERENCE_ONLY`: 승인/검토용 화면 reference이며 현재 texture consumer 파일 자체가 아니다.
+- `USER_AUTHORIZED_VISUAL_CANDIDATE`: `D-2026-08-28-VISUAL-CANDIDATE-GENERATION-LOCK-ONLY-APPROVAL`에 따른 생성 후보. 제품 승격이나 runtime 적용은 아니다.
 
 ## 2. Runtime consumer facts
 
@@ -176,16 +178,16 @@ If current binary pixels cannot be inspected in the active session, status remai
 
 ## 9. Image-generation rule
 
-Only after `REPLACE_REQUIRED` or `CREATE_REQUIRED` is supported:
+Only after `REPLACE_REQUIRED` or `CREATE_REQUIRED` is supported and a real consumer brief, visual lock, and rights/reuse preflight are present:
 
 ```text
 one consumer-specific text brief
-→ explicit user approval to generate
-→ exactly one image
-→ stop for result approval
+→ bounded candidate generation without per-image pre-approval
+→ inspect against visual lock / rights / actual consumer
+→ ask user to LOCK, REVISE, or REJECT
 ```
 
-No batch generation from checklist gaps.
+No batch generation from checklist gaps, and no candidate is auto-promoted to a product/runtime asset.
 
 ## 10. Authority / evidence ceiling
 

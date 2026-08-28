@@ -20,12 +20,17 @@ class CurrentPlanningCanonTests(unittest.TestCase):
     def setUp(self) -> None:
         self.canon = load(CANON_PATH)
 
-    def test_monthly_product_shape_and_slice_roles_are_unambiguous(self) -> None:
+    def test_ten_day_half_day_product_shape_and_slice_roles_are_unambiguous(self) -> None:
         cadence = self.canon["planning"]["cadence"]
-        self.assertEqual("MONTH", cadence["unit"])
-        self.assertEqual(1, cadence["main_cases_per_unit"])
-        self.assertEqual(list(range(1, 13)), cadence["initial_slate_months"])
-        self.assertEqual([1, 4, 7, 10], cadence["signature_months"])
+        self.assertEqual("TEN_DAY_CYCLE", cadence["unit"])
+        self.assertEqual(10, cadence["days_per_cycle"])
+        self.assertEqual(2, cadence["slots_per_day"])
+        self.assertEqual(["morning", "afternoon"], cadence["slot_ids"])
+        self.assertEqual(1, cadence["main_cases_per_cycle"])
+        self.assertEqual(list(range(1, 10)), cadence["early_resolution_days"])
+        self.assertEqual(10, cadence["regular_resolution_day"])
+        self.assertEqual(list(range(1, 13)), cadence["initial_slate_case_numbers"])
+        self.assertEqual([1, 4, 7, 10], cadence["signature_case_numbers"])
         self.assertEqual("M01_AFTERLIFE_STATION", self.canon["planning"]["first_session"])
         self.assertEqual("M04_RED_UMBRELLA", self.canon["planning"]["release_near_vertical_slice"])
 
@@ -57,36 +62,32 @@ class CurrentPlanningCanonTests(unittest.TestCase):
         self.assertEqual("APPROVED", gates["user_final_planning_declaration"])
         self.assertEqual("COMPLETE", gates["base_adapter_baseline_reconciliation"])
 
-    def test_m04_uses_two_early_dispatch_windows_and_a_regular_week_four(self) -> None:
+    def test_m04_uses_ten_day_early_and_regular_windows_without_fabricated_balance(self) -> None:
         planning = self.canon["planning"]
         timing = planning["m04_time_tradeoff"]
         support = planning["m04_route_memory_anchor_preparation_benefit"]
         self.assertEqual(
-            "D-2026-08-28-M04-EARLY-DISPATCH-REGULAR-WEEK4-CADENCE",
+            "D-2026-08-28-TEN-DAY-HALF-DAY-CASE-CADENCE",
             timing["decision_id"],
         )
         self.assertEqual(
-            ["WEEK_2_EARLY", "WEEK_3_EARLY", "WEEK_4_REGULAR"],
+            ["DAYS_1_TO_9_EARLY", "DAY_10_REGULAR"],
             [entry["id"] for entry in timing["dispatch_windows"]],
         )
         self.assertEqual(
-            [0, 15, 30],
-            [entry["victim_route_memory_exposure"] for entry in timing["dispatch_windows"]],
+            list(range(1, 10)),
+            timing["dispatch_windows"][0]["days"],
         )
         self.assertEqual(
-            [0, 1, 2],
-            [entry["preparation_tier"] for entry in timing["dispatch_windows"]],
+            "REGULAR", timing["dispatch_windows"][1]["dispatch_kind"]
         )
         self.assertEqual(
-            "REGULAR", timing["dispatch_windows"][2]["dispatch_kind"]
+            "M04_COMPOSITE_RESULT_TIMING_VIGNETTE / IMPLEMENTATION_PENDING",
+            timing["result_timing_record"]["consumer"],
         )
-        self.assertEqual(
-            "M04_COMPOSITE_RESULT_TIMING_AXIS / IMPLEMENTATION_PENDING",
-            timing["victim_route_memory_exposure"]["consumer"],
-        )
-        self.assertEqual(-16, support["week_2_early_effect"]["fear_delta"])
-        self.assertEqual(4, support["week_3_early_effect"]["stability_gain"])
-        self.assertEqual(8, support["week_4_regular_effect"]["stability_gain"])
+        self.assertEqual("UNDEFINED_REQUIRES_SEPARATE_BALANCE_DECISION", support["replacement_timing_effect"])
+        self.assertEqual(-16, support["actual_runtime_base_effect"]["fear_delta"])
+        self.assertEqual("NOT_IMPLEMENTED", support["actual_runtime_base_effect"]["timing_bonus"])
 
     def test_m04_result_vignettes_keep_one_causal_result_per_page(self) -> None:
         vignettes = self.canon["planning"]["m04_sequential_narrative_result_vignettes"]
@@ -108,10 +109,11 @@ class CurrentPlanningCanonTests(unittest.TestCase):
         )
         self.assertEqual(
             [
-                "dispatch_window",
-                "victim_route_memory_exposure",
+                "dispatch_kind",
+                "resolution_day",
+                "resolution_slot",
                 "kwon_support_used",
-                "actual_stability_gain",
+                "actual_support_effect",
             ],
             vignettes["route_memory_payload"],
         )
@@ -120,11 +122,14 @@ class CurrentPlanningCanonTests(unittest.TestCase):
             "NO_M04_RESULT_SCOREBOARD_OR_DASHBOARD_AGGREGATION",
             vignettes["invariants"],
         )
+        self.assertIn("DAY_10_REMAINS_REGULAR_NOT_A_PENALTY", vignettes["invariants"])
 
     def test_runtime_compatibility_uses_additive_monthly_orchestration(self) -> None:
         runtime = self.canon["runtime_compatibility"]
         self.assertEqual("monthly_state", runtime["monthly_state_key"])
         self.assertEqual("IMPLEMENTED_ADDITIVE_OPTIONAL", runtime["monthly_state_status"])
+        self.assertEqual("TEN_DAYS_AND_TWO_SLOTS_IMPLEMENTED_STRUCTURALLY", runtime["campaign_state_calendar"])
+        self.assertEqual("NOT_IMPLEMENTED", runtime["ten_day_case_cadence_consumer"])
         self.assertEqual("REUSE_EXISTING_CANON_V2_RUNTIME", runtime["canon_v2_runtime_strategy"])
         self.assertEqual("COMPOSITE_RESULT", runtime["current_result_authority"])
         self.assertEqual("LEGACY_MASTERY_COMPATIBILITY_ONLY", runtime["legacy_s_rank_contract"])
@@ -177,17 +182,19 @@ class CurrentPlanningCanonTests(unittest.TestCase):
         for key in ("reality_gate", "design", "implementation_plan"):
             self.assertTrue((ROOT / handoff[key]).is_file(), handoff[key])
 
-    def test_active_workspace_contract_is_notion_plus_repository(self) -> None:
+    def test_active_workspace_contract_is_repository_only_with_historical_notion(self) -> None:
         adapter = load(ADAPTER_PATH)
         workspace = adapter["project"]["workspace_authority"]
-        self.assertEqual("NOTION", workspace["human_facing"]["system"])
+        self.assertEqual("REPOSITORY", workspace["human_facing"]["system"])
         self.assertEqual("REPOSITORY", workspace["structured_implementation"]["system"])
+        self.assertEqual("HISTORICAL_READ_ONLY_NO_WRITE", adapter["project"]["historical_notion"]["role"])
         self.assertEqual("MIGRATION_ONLY", adapter["gdd_sheet"]["operational_role"])
         self.assertEqual("DO_NOT_USE_FOR_NEW_WORK", adapter["gdd_sheet"]["new_work_policy"])
 
         registry = load(REGISTRY_PATH)
-        self.assertEqual("NOTION", registry["workspace_authority"]["human_facing"])
+        self.assertEqual("REPOSITORY", registry["workspace_authority"]["human_facing"])
         self.assertEqual("REPOSITORY", registry["workspace_authority"]["structured_implementation"])
+        self.assertEqual("HISTORICAL_READ_ONLY_NO_WRITE", registry["workspace_authority"]["historical_notion"])
         self.assertEqual("MIGRATION_ONLY", registry["legacy_bca_visual_sheet"]["role"])
 
     def test_active_entrypoints_resolve_to_existing_files(self) -> None:
@@ -214,10 +221,10 @@ class CurrentPlanningCanonTests(unittest.TestCase):
                     failures.append(f"{path.relative_to(ROOT)} -> {value}")
         self.assertEqual([], failures)
 
-    def test_current_project_identity_is_monthly_not_year_gated(self) -> None:
+    def test_current_project_identity_is_ten_day_not_year_gated(self) -> None:
         core = (ROOT / "docs/PROJECT_CORE.md").read_text(encoding="utf-8")
-        self.assertIn("월간 사건 Slate와 주간 계획", core)
-        self.assertIn("월간 복합 결과", core)
+        self.assertIn("TEN_DAY_CYCLE", core)
+        self.assertIn("10일·반일 일정", core)
         self.assertIn("M13+", core)
 
         historical_roadmap = (

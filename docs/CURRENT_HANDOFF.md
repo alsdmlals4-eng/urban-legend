@@ -2,8 +2,9 @@
 
 > 상태: `PLANNING_COMPLETE / USER_APPROVED_VISUAL_DIRECTION_LOCK / RUNTIME_RECONCILIATION_MERGED / HUMAN_QA_PENDING`
 > latest-main reconciliation: PR #322 merge `9fa32d32e8a5a2ad7d34a388695986b4ab81c6a7` (runtime implementation: `8d303f0f9414950273be934fd28c8fb1b3a21e18` · PR #224)
-> 사람용 정본: Notion 괴이기록국 프로젝트 홈
+> 사람용 정본: repository `docs/design/PROJECT_AI_PRODUCTION_SPEC.md`와 user PDF GDD
 > 구조화 정본: `docs/CURRENT_PLANNING_CANON.md`, `docs/current-planning-canon.json`
+> Notion 이전 영수증: `docs/migrations/NOTION_CURRENT_WORK_MIGRATION_2026-08-28.md` (Notion은 `HISTORICAL_READ_ONLY_NO_WRITE`)
 
 이 문서는 다음 GPT/Codex가 구현 전 handoff나 과거 annual next-step을 현재 권한으로 오인하지 않도록 하는 continuation router다. 실제 구현 사실은 latest `main`의 code/data/Scene/test를 우선한다.
 
@@ -20,20 +21,21 @@ human_qa: NOT_RUN
 poc_passed: NOT_DECLARED
 production_expansion: NOT_APPROVED
 base_adapter_baseline_reconciliation: COMPLETE
+ten_day_half_day_cadence: USER_APPROVED / IMPLEMENTATION_CONTRACT_PENDING / NOT_IMPLEMENTED
 ```
 
 `PLAN_LOCK`은 predecessor 기획 잠금 식별자이며 현재 값은 `RELEASED_TO_IMPLEMENTATION_GATE`다. 이를 runtime 미승인 상태로 되돌려 해석하지 않는다.
 
 현재 시각 방향은 `D-2026-08-28-URBAN-NOIR-HYBRID-VISUAL-DIRECTION`의 **현실적 한국 도시 누아르 환경 + 애니풍 인물·괴이 + 손그림 기록물 UI**다. 이 방향은 `docs/visual/VISUAL_DIRECTION_LOCK_PACKET_2026-08-28.md`가 소유하며, 첨부 Core Scene Board는 기획 검증용 `GENERATED_EXPLORATION`일 뿐 runtime asset/Scene/UI/Human QA가 아니다.
 
-M04의 현재 accepted frontier는 `D-2026-08-28-M04-EARLY-DISPATCH-REGULAR-WEEK4-CADENCE`와 `D-2026-08-28-M04-SEQUENTIAL-NARRATIVE-RESULT-VIGNETTES`다. M04만 2주차 조기 출동(+0·tier 0), 3주차 조기 출동(+15·tier 1 안정화 +4), 4주차 정규 출동(+30·tier 2 안정화 +8)을 사용한다. 귀가 기억 노출은 M04 전용 Composite Result consumer로, 권나래의 안정화 이득은 기존 한 번짜리 능동 지원의 실제 사용으로만 소비한다. 결과는 `피해자 → 잔향 → 귀가 기억 → 기록국`의 짧은 순차 후일담으로 읽히며 한 화면의 점수판으로 합산하지 않는다. 남은 작업은 이 결정과 다른 approved planning을 하나의 구현 계약으로 묶는 것이며, Godot/asset/QA 구현 권한은 아직 열리지 않았다.
+현재 accepted frontier는 `D-2026-08-28-TEN-DAY-HALF-DAY-CASE-CADENCE`, `D-2026-08-28-M04-SEQUENTIAL-NARRATIVE-RESULT-VIGNETTES`, `D-2026-08-28-VISUAL-CANDIDATE-GENERATION-LOCK-ONLY-APPROVAL`다. campaign은 10일·오전/오후이며 Day 1~9 해결은 조기, Day 10 해결은 정규다. 예전 M04 주차 수치와 tier bonus는 `SUPERSEDED`; 새 숫자는 user decision 전 `UNDEFINED`다. 결과는 `피해자 → 잔향 → 귀가 기억 → 기록국`의 짧은 순차 후일담으로 읽히며 한 화면의 점수판으로 합산하지 않는다. 남은 작업은 이 결정과 다른 approved planning을 하나의 구현 계약으로 묶는 것이며, Godot/asset/QA 구현 권한은 아직 열리지 않았다.
 
 ## 1. 재개 순서
 
 ```text
 최신 사용자 지시
 → GitHub latest main + open PR/Issue + exact-head CI
-→ Notion Project Home
+→ repository current GDD / decision / handoff
 → docs/CURRENT_PLANNING_CANON.md
 → docs/current-planning-canon.json
 → docs/CURRENT_DECISION_OVERLAY.md
@@ -43,10 +45,10 @@ M04의 현재 accepted frontier는 `D-2026-08-28-M04-EARLY-DISPATCH-REGULAR-WEEK
 
 ## 2. 현재 구현된 제품 계약
 
-- cadence: `ONE_MAIN_CASE_PER_MONTH`.
+- cadence: `ONE_MAIN_CASE_PER_TEN_DAY_CYCLE / TWO_HALF_DAY_SLOTS_PER_DAY`.
 - result authority: `COMPOSITE_RESULT`.
 - legacy S/A/B/S grade는 history/mastery compatibility이며 current incident result를 덮어쓰지 않는다.
-- additive optional `monthly_state`가 월간 orchestration을 소유하며 case truth를 저장하지 않는다.
+- additive optional `monthly_state`는 historical generic orchestration이며 case truth를 저장하지 않는다. 새 10일 timing consumer를 아직 소유하지 않는다.
 - M01 저승역은 `M01_FIRST_SESSION` 10단계 causal orchestration과 `SERIAL_EXAM_FATIGUE_GUARD`를 사용한다.
 - M01은 기존 Canon v2 loader/save migration/result runtime을 재사용한다.
 - 메인 메뉴 제품 버전은 `scripts/core/product_version.gd`의 `Ver 4.3`이 중앙 owner다.

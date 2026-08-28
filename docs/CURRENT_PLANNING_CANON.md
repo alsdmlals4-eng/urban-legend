@@ -2,34 +2,35 @@
 
 > 역할: `CURRENT_PLANNING_CANON`
 > 상태: `PLANNING_COMPLETE / USER_FINAL_PLANNING_DECLARATION_APPROVED / RUNTIME_RECONCILIATION_MERGED`
-> 사람용 정본: Notion 프로젝트 홈과 하위 기획 페이지
+> 사람용 정본: repository `docs/design/PROJECT_AI_PRODUCTION_SPEC.md`와 user PDF GDD
 > 구조화·구현 정본: 이 저장소와 `docs/current-planning-canon.json`
 
-이 문서는 승인된 월간 기획과 2026-08-24 PR #224 runtime reconciliation merge를 현재 진입점에 연결한다. 과거의 `1년 4분기`, `분기 핵심 사건 4개`, `ANNUAL-MVP-*가 다음 기획 트랙`, `runtime_implementation: NOT_AUTHORIZED` 설명과 충돌하면 이 문서를 우선한다. `ANNUAL-MVP-001/002` 이름은 병합된 runtime·역사 식별자로 보존한다.
+이 문서는 승인된 **10일·반일 캠페인 기획**과 2026-08-24 PR #224 runtime reconciliation merge를 현재 진입점에 연결한다. 과거의 `1년 4분기`, `분기 핵심 사건 4개`, `월 1 메인 사건`, `4주 M04 timing`, `ANNUAL-MVP-*가 다음 기획 트랙`, `runtime_implementation: NOT_AUTHORIZED` 설명과 충돌하면 이 문서를 우선한다. `ANNUAL-MVP-001/002` 이름은 병합된 runtime·역사 식별자로 보존한다.
 
 ## 제품 약속
 
 플레이어는 권나래의 일정과 역량을 준비하고, 관측 가능한 단서로 괴이 규칙을 추리한 뒤 피해자를 구출하고 괴이를 안정화·회수한다. 성공·실패·미확정은 다음 판단에 쓰이는 기록과 매뉴얼로 남는다.
 
 ```text
-주간 일정·육성
-→ 월간 사건 징후·출동
+10일·반일 일정·육성
+→ 사건 징후·출동
 → 조사
 → 추리·괴이 매뉴얼
 → 피해자 구출
 → 전조 기반 회수
 → 복합 결과
 → 후일담·연구·관계
-→ 다음 달 사건
+→ 다음 10일 사건
 ```
 
-## 월간 cadence와 콘텐츠 예산
+## 10일·반일 cadence와 콘텐츠 예산
 
-- 1개월에 메인 사건 1개만 연다.
-- 월의 M04 docket은 `1주 준비 → 2주 조기 출동 I(귀가 기억 노출 +0) → 3주 조기 출동 II(+15) → 4주 정규 출동(+30)`이다. `+15/+30`은 조기 보호를 사용하지 않았을 때의 누적 노출이며, 4주차를 지연·강제 벌점으로 부르지 않는다. 수치는 Human QA 전 provisional이다.
-- `D-2026-08-28-M04-EARLY-DISPATCH-REGULAR-WEEK4-CADENCE`: M04에서 2·3주차 조기 출동과 4주차 정규 출동을 사용한다. 권나래의 기존 능동형 `귀가 기억 고정`은 실제 사용 시 tier 0/1/2에 따라 안정화 `+0/+4/+8`을 얻으며, 기본 공포 `-16`·임계치 `+2`는 유지한다. 귀가 기억 노출은 M04 전용 Composite Result 축에서 추리·구출·회수 결과와 분리한다.
-- `D-2026-08-28-M04-SEQUENTIAL-NARRATIVE-RESULT-VIGNETTES`: M04의 복합 결과는 한 화면의 점수·카드 나열이 아니라 `피해자 → 잔향 → 귀가 기억 → 기록국` 순서의 짧은 이야기 페이지로 전개한다. 한 원인당 한 페이지이며, 귀가 기억 페이지는 timing과 실제 권나래 지원 사용을 같은 인과로만 연결한다. M01과 기존 결과 의미·보상은 바꾸지 않는다.
-- 조기 해결 뒤 같은 달 두 번째 메인 사건을 생성하지 않는다. 남은 주는 후일담·치료·연구·관계·다음 달 준비로 환류한다.
+- 한 **10일 cycle**에 메인 사건 1개만 해결한다. 하루는 `오전 / 오후` 두 반일 슬롯으로 구성된다.
+- Day 1~9의 해결은 **조기 해결**이다. Day 10의 해결은 **정규 해결**이다. Day 10은 지연·강제·벌점의 다른 이름이 아니다.
+- 조기 해결은 더 이른 보호를, 정규 해결은 남은 반일 슬롯을 준비·조사·회복·관계에 쓸 수 있는 선택을 뜻한다. 두 선택 모두 정규 제품 경로이며 핵심 진실·정답·등급을 숨겨서 바꾸지 않는다.
+- `D-2026-08-28-TEN-DAY-HALF-DAY-CASE-CADENCE`가 전역 timing authority다. 이전 `D-2026-08-28-M04-EARLY-DISPATCH-REGULAR-WEEK4-CADENCE`의 `2/3/4주`, `0/15/30`, `0/+4/+8`은 **SUPERSEDED**이며 Day 값으로 임의 환산하지 않는다.
+- `D-2026-08-28-M04-SEQUENTIAL-NARRATIVE-RESULT-VIGNETTES`: M04의 복합 결과는 한 화면의 점수·카드 나열이 아니라 `피해자 → 잔향 → 귀가 기억 → 기록국` 순서의 짧은 이야기 페이지로 전개한다. 귀가 기억 페이지는 `조기/정규`, 해결일, 실제 권나래 지원 사용을 같은 인과로만 연결한다. M01과 기존 결과 의미·보상은 바꾸지 않는다.
+- 조기 해결 뒤 같은 cycle의 두 번째 메인 사건을 생성하지 않는다. 남은 반일은 후일담·치료·연구·관계·다음 사건 준비로 환류한다.
 - 초기 제작 Slate는 M01~M12이며 `1년차` 완료 Gate로 쓰지 않는다. M13+도 같은 cadence로 이어진다.
 - Signature 4개는 M01 저승역, M04 빨간 우산, M07 폐주파수 방송국, M10 기록되지 않은 병동이다.
 - Standard 8개도 조사·추리·구출·회수 중 한 단계를 생략하지 않는다.
@@ -55,7 +56,7 @@
 - M01 회수는 `docs/M01_RECOVERY_SCENE_PACKET.md`의 `목적지 합창 / 회귀 승강장 / 무정차 환송`을 재사용한다.
 - M01 runtime은 10단계 First Session orchestrator와 additive `monthly_state`를 사용하며 별도 hidden truth owner를 만들지 않는다.
 - `M04 빨간 우산`은 약 30~45분 release-near player-experience Vertical Slice다.
-- M04의 대표 고민은 `2주차에 가장 빠르게 보호할지, 3주차의 부분 준비를 택할지, 4주차 정규 출동까지 현장 준비를 완성할지`다. 귀가 기억 노출은 `+0/+15/+30`, 권나래의 직접 사용형 준비 이득은 안정화 `+0/+4/+8`으로 맞물린다. 결과는 Composite Result에서 추리·구출·회수와 분리된 출동 타이밍 인과로 설명하며, M04에서는 이를 한 화면에 합산하지 않고 순차 후일담으로 읽힌다.
+- M04의 대표 고민은 `Day 1~9에 더 이른 보호를 위해 출동할지, Day 10 정규 해결까지 반일 준비 기회를 사용할지`다. 구체적인 수치 효과는 새 구현 계약의 balance decision 전까지 `UNDEFINED`다. 결과는 Composite Result에서 추리·구출·회수와 분리된 출동 timing 인과로 설명하며, M04에서는 이를 한 화면에 합산하지 않고 순차 후일담으로 읽힌다.
 - M04 shared-system validation baseline은 구현됐지만 최종 제품 시각·Audio/VFX·Human QA는 아직 Gate 밖이다.
 
 ## 화면·재사용 계약
@@ -86,7 +87,7 @@
 - current result authority는 `COMPOSITE_RESULT`다.
 - M04의 `COMPOSITE_RESULT` 표현은 `VIGNETTE_VICTIM_RESCUE → VIGNETTE_RESONANCE_RECOVERY → VIGNETTE_ROUTE_MEMORY → VIGNETTE_CASE_RECORD` 순차 후일담이다. 이는 logical page contract이며 새 runtime Scene·asset·Human QA PASS를 뜻하지 않는다.
 - Legacy grade/S-rank는 history/mastery compatibility만 허용한다.
-- `monthly_state`는 top-level additive optional orchestration block으로 구현됐다.
+- `monthly_state`는 top-level additive optional orchestration block으로 구현됐지만 2/3/4주와 `dispatch_risk 0/15/30`만 아는 historical generic policy다. 새 10일 cadence와 M04 timing 결과 축의 live consumer는 아직 구현되지 않았다.
 - 기존 Episode ID, report, ANNUAL PoC state를 자동 rename·import·월 완료 추론하지 않는다.
 - current main의 Canon v2 migration/runtime을 재사용한다.
 
@@ -116,6 +117,7 @@ overall_plan: COMPLETE
 runtime_implementation: MERGED_MAIN
 runtime_merge_commit: 8d303f0f9414950273be934fd28c8fb1b3a21e18
 automated_exact_head: GREEN
+ten_day_half_day_cadence: USER_APPROVED / IMPLEMENTATION_CONTRACT_PENDING / NOT_IMPLEMENTED
 human_qa: NOT_RUN
 poc_passed: NOT_DECLARED
 production_expansion: NOT_APPROVED
@@ -136,7 +138,7 @@ base_adapter_baseline_reconciliation: COMPLETE
 ```text
 최신 사용자 승인
 → GitHub latest main
-→ Notion 프로젝트 홈·현재 하위 기획
+→ repository current GDD / decision / handoff
 → docs/current-planning-canon.json
 → 이 문서
 → CURRENT_DECISION_OVERLAY
@@ -145,4 +147,4 @@ base_adapter_baseline_reconciliation: COMPLETE
 → 구현 provenance·역사 문서·과거 PR·legacy Sheet
 ```
 
-Notion은 사람이 보는 전체 그림·Flow·비교표의 권위이고, Repository는 구조화된 계약·구현·테스트·runtime evidence의 권위다. Google Sheet는 migration-only 역사 자료다.
+Repository는 사람이 보는 전체 그림·Flow·비교표와 구조화 계약·구현·테스트·runtime evidence의 단일 권위다. Notion과 Google Sheet는 migration-only 역사 자료이며 `HISTORICAL_READ_ONLY_NO_WRITE`다. Notion current work의 이전 범위·source·destination·보존 reference는 `docs/migrations/NOTION_CURRENT_WORK_MIGRATION_2026-08-28.md`가 기록한다.
