@@ -280,7 +280,7 @@ The Red Umbrella Alley data contains three required observations: the red umbrel
 
 ### Why this system exists
 
-The keyword system is the bridge between “I found a clue” and “I can state a rule that changes what I do.” A keyword is a **non-consumable evidence reference with provenance**, not a colored loot card and not a currency. The intended manual makes the player compare the original source, its acquisition context, and the sentence/slot where it is used before committing to a rescue or recovery rule.
+The keyword system is the bridge between “I found a clue” and “I can state a rule that changes what I do.” A keyword is a **non-consumable evidence reference with provenance**, not a colored loot card and not a currency. The manual is a player-authored deduction tool: it presents pre-authored, readable inference sentences with blank keyword slots. The player recalls the investigation, compares original source/acquisition context, and fills those blanks before committing to a rescue or recovery rule.
 
 ```text
 Observed source and normal keyword
@@ -288,29 +288,31 @@ Observed source and normal keyword
 → compare source, acquisition context, and manual sentence
 → place a candidate in the relevant rule slot
 → reject only structural impossibilities immediately
+→ create a candidate rule, not a correct-answer result
+→ perform the rescue minigame and field recovery
 → keep semantic correctness unannounced until field verification
 ```
 
 ### Approved design contract — `APPROVED_DESIGN / NOT_IMPLEMENTED`
 
-The approved design defines a normal keyword as source-grounded wording. A mutated candidate is derived from that normal keyword by changing **one** meaningful variable (for example count, timing, order, direction, target, tool, or prohibition); it is not an independently acquired fake clue. The player sees normal and mutated candidates in the same page-local pool and uses memory, provenance, and the rest of the manual to distinguish them.
+The approved design defines a normal keyword as source-grounded wording acquired through investigation. A mutated candidate is derived from that normal keyword by changing **one** meaningful variable (for example count, timing, order, direction, target, tool, or prohibition); it is not an independently acquired fake clue and has no independent source. A factual helper candidate that does not belong in the slot is distinct from a mutation. The player sees the relevant candidates in the same page-local pool and uses investigation memory, provenance, and the rest of the manual to distinguish them.
 
-The pool is intentionally small and relevant: early pages begin around 5–6 candidates for three slots, standard pages 7–10, and major pages 9–12. Search/sort may use keyword name, original source, acquisition context, acquisition order, source grouping, or locale order. It must not filter by “correct,” “mutated,” “compatible with this slot,” or recommendation score. Structural errors can be blocked; a plausible but wrong reading must remain available for field learning.
+The pool is intentionally small and relevant: early pages begin around 5–6 candidates for three slots, standard pages 7–10, and major pages 9–12. Search/sort may use keyword name, original source, acquisition context, acquisition order, source grouping, or locale order. It must not filter by “correct,” “mutated,” “compatible with this slot,” or recommendation score. Structural errors can be blocked; a plausible but wrong reading must remain available for field learning. In particular, placing a plausible rule may set `candidate rule`; it cannot emit semantic correct/wrong or reveal the completed answer manual.
 
 ### Current runtime reality
 
-The current M01 Canon v2 manual already persists evidence records with source IDs and usage references, and the bridge preserves `candidate_keywords` and `semantic_relations`. But the checked M01 data has empty `candidate_keywords` / `semantic_relations`, and the current M04 case data has no keyword-composition schema. There is **no player-facing keyword-composition consumer** in the current scenes. Existing clue selection and hypothesis steps must not be mislabelled as the completed keyword system.
+The current M01 Canon v2 manual already persists evidence records with source IDs and usage references, and the bridge preserves `candidate_keywords` and `semantic_relations`. But the checked M01 data has empty `candidate_keywords` / `semantic_relations`, and the current M04 case data has no keyword-composition schema. The current investigation/recovery manual drawers show information and current evidence; there is **no player-facing keyword-composition consumer** that fills blank sentences. Existing clue selection and hypothesis steps must not be mislabelled as the completed keyword system. M01 also contains `normal_clear.reveal_complete_manual: true`; that legacy data behavior conflicts with the current no-auto-answer-reveal contract and remains a successor migration/replay requirement, not an accepted outcome.
 
 | layer | current status | evidence boundary |
 | --- | --- | --- |
 | evidence records / clue IDs | `IMPLEMENTED` | current M01/M04 data and manual/recovery UI |
 | competing hypotheses / support-rebuttal-unresolved records | `IMPLEMENTED / PARTIAL` | M01 case packet and shared reasoning grammar; Human clarity not tested |
-| page-local keyword candidate composition | `APPROVED_DESIGN / NOT_IMPLEMENTED` | no populated live candidate pool or composition UI |
-| mutated-keyword verification | `APPROVED_DESIGN / NOT_IMPLEMENTED` | no live M01/M04 consumer, save round-trip, or player validation |
+| player-authored blank-manual composition | `APPROVED_DESIGN / NOT_IMPLEMENTED` | no populated live candidate pool, input UI, or save round-trip |
+| mutated-keyword field verification | `APPROVED_DESIGN / NOT_IMPLEMENTED` | no live M01/M04 consumer or player validation; existing auto-reveal flag is stale successor data |
 
 ### Production boundary
 
-The next implementation contract must add this as one coherent vertical slice: source-backed candidate data → page-local UI → structural validation → save/load migration → a rescue/recovery consequence → accessibility and Human comprehension evidence. It may not invent new clues, let the UI reveal the answer, or replace M04's existing evidence truth.
+The next implementation contract must add this as one coherent vertical slice: source-backed candidate data → readable blank-manual input → structural validation only → save/load migration → direct rescue-minigame and recovery consequence → accessibility and Human comprehension evidence. It may not invent new clues, let the UI reveal the answer (including on normal clear), or replace M04's existing evidence truth. The two user-provided comparison images are planning UI references, not copied assets or runtime UI requirements.
 
 ## 10. Rescue and recovery phase
 
@@ -470,7 +472,7 @@ No approved current audio production plan or runtime evidence was found in the f
 | `QA-CAL-02` | exactly one main case resolves per cycle; early leaves no second main case | `NOT_RUN` |
 | `QA-SAVE-01` | new timing record save/load/old-save fallback | `NOT_RUN` |
 | `QA-INV-01` | M04 player can identify observation, selected method, acquired clue, and changed condition without a guide | `NOT_RUN` |
-| `QA-KEY-01` | page-local keyword data, structural validation, save/load, no answer recommendation, and accessible search/sort | `NOT_RUN` |
+| `QA-KEY-01` | player acquires normal keyword with source/memory, fills a readable blank manual, receives only structural validation, save/loads it, sees no answer/variant recommendation or normal-clear answer reveal, then verifies one rule through rescue and recovery | `NOT_RUN` |
 | `QA-REC-01` | player can explain the telegraph → hypothesis → evidence → response chain and learns from an intentional wrong response | `NOT_RUN` |
 | `QA-M04-01` | M04 route-memory vignette uses one cause per page | `NOT_RUN` |
 | `QA-M04-02` | M01 remains behaviourally unchanged | `NOT_RUN` for successor scope |
@@ -484,7 +486,7 @@ No approved current audio production plan or runtime evidence was found in the f
 Order is driven by primary player value, then dependency and risk. No item starts in this GDD phase. A calendar item may be technically necessary later, but its place in a contract never makes it primary fun.
 
 1. **Investigation → deduction → recovery vertical-slice contract:** preserve existing M01/M04 truth, define evidence/hypothesis/recovery feedback, and set primary Human/player validation.
-2. **Keyword/manual vertical slice:** source-backed candidate data, page-local composition, structural validation, save/load, and one M04 recovery consequence.
+2. **Keyword/manual vertical slice:** source-backed normal/mutated/helper candidate data, player-authored readable blank composition, structural-only validation, no-answer-reveal migration, save/load, one rescue-minigame consequence, and one M04 recovery consequence.
 3. **M04 sequential vignette UI:** logical page state, continue/skip, Korean copy, current result data reuse.
 4. **Unified calendar support contract:** enforce exactly one main case, preserve a ten-day/two-slot save, and obtain the one outstanding early/regular balance decision without changing core truth or recovery.
 5. **Preparation timing surface and save/result bridge:** read day/slot, early/regular meaning, remaining opportunity, and persist only the timing record needed for M04 route memory.
@@ -509,6 +511,8 @@ one_main_case_runtime_enforcement: NOT_IMPLEMENTED
 calendar_player_contract: NOT_IMPLEMENTED
 investigation_phase: IMPLEMENTED_SHARED_BASELINE
 keyword_composition: APPROVED_DESIGN / NOT_IMPLEMENTED
+player_authored_blank_manual: USER_APPROVED / NOT_IMPLEMENTED
+m01_complete_manual_auto_reveal: STALE_SUCCESSOR_DATA / MUST_NOT_SHIP_AS_CURRENT_CONTRACT
 recovery_phase: IMPLEMENTED_SHARED_BASELINE
 m04_timing_balance: UNDEFINED
 m04_sequential_result_presentation: CONFIRMED / NOT_IMPLEMENTED
@@ -532,3 +536,4 @@ production_expansion: NOT_APPROVED
 | 2026-08-28 | moved current project owner from Notion + repository to repository-only | direct user decision |
 | 2026-08-28 | corrected master-GDD core-system coverage; documented schedule, investigation, keyword/manual, and rescue/recovery flows with their actual implementation gaps | fresh source/code/data/test comparison after user finding |
 | 2026-08-29 | fixed player-experience hierarchy: investigation/deduction and recovery are primary; the calendar is supporting campaign context | direct user decision; `D-2026-08-29-CORE-LOOP-PRIORITY` |
+| 2026-08-29 | clarified that players acquire source-backed true keywords through investigation, complete blank manual sentences themselves, and verify without an answer UI through rescue/recovery | direct user decision; `D-2026-08-29-PLAYER-AUTHORED-MANUAL-KEYWORD-VERIFICATION` |

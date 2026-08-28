@@ -1,6 +1,6 @@
 # M01 저승역 Deduction Scene Packet
 
-Status: PLANNING_COMPLETE / CANON_V2_ALIGNED / IMPLEMENTATION_NOT_AUTHORIZED
+Status: PLANNING_COMPLETE / CANON_V2_ALIGNED / SUCCESSOR_KEYWORD_COMPOSITION_NOT_IMPLEMENTED
 
 Source PR: #217
 Parent canon: `docs/CURRENT_PLANNING_CANON.md`
@@ -28,6 +28,10 @@ Investigation
 5. 회수 대응
 
 저승역 Canon v2의 3장 매뉴얼은 이 5개 의미 슬롯을 단계적으로 학습시키는 사건별 chapter 구조다. M01 첫 튜토리얼에서 5개를 동시에 정답 처리하지 않고, 발생 조건·피해자 연결부터 열어 이후 조사로 금지 행동·구출 절차·회수 대응을 해금한다.
+
+### Current input clarification — `D-2026-08-29-PLAYER-AUTHORED-MANUAL-KEYWORD-VERIFICATION`
+
+이 packet의 `Keyword / Record collection → Rule writing`은 읽기 전용 가설 요약을 뜻하지 않는다. 후속 consumer는 조사로 얻은 정상 키워드의 원본 출처·획득 맥락을 보존하고, 플레이어가 빈칸이 있는 추리문에 후보를 배치하게 한다. UI는 구조 불가능만 막으며 정답/오답·변조·추천을 표시하지 않는다. 작성 규칙은 피해자 구출과 회수의 `전조 → 가설 → 근거 → 대응` 결과로만 검증된다. M01의 현 candidate array/input UI/normal-clear answer reveal은 `NOT_IMPLEMENTED` 또는 stale successor data이며 이 packet만으로 runtime 완료를 주장하지 않는다.
 
 ## M01 Initial Keywords
 
@@ -95,7 +99,7 @@ Weakness:
 - 추리는 규칙 작성이며 단순 정답 선택이 아님.
 - 정답 후보를 색·위치·크기로 미리 강조하지 않음.
 - 공식 승차권 구출 규칙과 검은 승차권 원인설을 혼동하지 않음.
-- planning은 완료됐지만 `runtime_implementation: NOT_AUTHORIZED` 동안 runtime mutation은 하지 않는다.
+- current M01 runtime baseline은 병합됐지만, 이 packet은 player-authored keyword composition의 data/UI/save successor mutation을 단독으로 승인하지 않는다.
 
 ## Next Gate
 
