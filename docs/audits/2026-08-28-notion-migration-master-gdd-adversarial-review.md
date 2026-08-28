@@ -19,7 +19,7 @@
 | 2 | Old 2/3/4-week rules or `0/15/30`, `0/+4/+8` could be mistaken for 10-day requirements. | Searched all current GDD, decision, handoff, flow, and migration owners. | Remaining matches are all explicitly `SUPERSEDED`/historical provenance. No day mapping found. | `PASS` |
 | 3 | Migrated reference mockups could accidentally become runtime/product assets. | Recomputed seven binary hashes, compared them to the retention register, and checked the product manifest for migration-path promotion. | Seven files and seven registered hashes; no manifest promotion; reference-only boundary is explicit. | `PASS` |
 | 4 | The GDD could be logically correct but unreadable after PDF generation. | Rendered every PDF page at 144 dpi and inspected the two contact sheets plus pages 01, 11, and 12. | Initial cover used pale text on white; corrected cover contrast, regenerated, and re-rendered all 12 pages. No clipping, missing page, or visible overlap remained. | `PASS_AFTER_CORRECTION` |
-| 5 | Stale automated expectations or document hygiene could conflict with the approved repository-only policy. | Ran the full test discovery suite. Investigated three failures back to exact legacy authority assertions, updated only the stale expectations, ran focused tests, then reran the whole suite. A staged `git diff --check` also found and removed three GDD trailing spaces. | `461` tests passed; staged diff is whitespace-clean after the local correction. | `PASS_AFTER_CORRECTION` |
+| 5 | Stale automated expectations, generated views, or document hygiene could conflict with the approved repository-only policy. | Ran the full test discovery suite. Investigated three failures back to exact legacy authority assertions, updated only the stale expectations, ran focused tests, then reran the whole suite. A staged `git diff --check` also found and removed three GDD trailing spaces. Exact-HEAD verification then exposed six stale deterministic operating views, because their hash test reads the committed adapter blob. Regenerated them with the pinned Base artifact generator and will re-run its `--check` plus the full suite. | Prior correction passed. Generated-view reconciliation is included in the successor commit; final exact-HEAD verification remains required. | `OPEN_RECHECK_REQUIRED` |
 
 ## Evidence ceiling
 
@@ -29,9 +29,9 @@
 ## Incident / solution / lesson
 
 - **Incident:** Legacy tests still encoded the former Notion+repository workspace model after the user changed the project to repository-only.
-- **Solution:** Trace each failure to the stale expected value; update only the authority assertions to match the current adapter, registry, and project decision; rerun the full suite.
-- **Lesson:** Workspace-owner transitions require both the metadata owner and its regression expectations to move together. This is a project-operational lesson tied to an explicit user workflow choice, so `NO_BASE_PROMOTION`.
+- **Solution:** Trace each failure to the stale expected value; update only the authority assertions to match the current adapter, registry, and project decision; then regenerate all adapter-derived views with the pinned generator before exact-HEAD verification.
+- **Lesson:** Workspace-owner transitions require the metadata owner, its regression expectations, and every generated operating view to move together. This is a project-operational lesson tied to an explicit user workflow choice, so `NO_BASE_PROMOTION`.
 
 ## Final disposition
 
-No remaining blocking finding was found within this documentation/migration scope. The only material product decision still open is the early-versus-regular numeric balance model. The current repository is ready to host that later single-question Grill Me decision and the unified implementation contract; this review does not authorize production mutations.
+The only material product decision still open is the early-versus-regular numeric balance model. The generator reconciliation requires its final exact-HEAD verification before this audit can return to `CLEAN_REVIEW_EXIT`; this review does not authorize production mutations.

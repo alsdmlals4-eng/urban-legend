@@ -41,7 +41,7 @@
     "version": "9.4.3"
   },
   "canonical_source": "skills/PROJECT_BASE_ADAPTER.json",
-  "canonical_source_sha256": "bcfb087c2e68fd77f93bbec31b91ae09441b5c7b1887460efc3ecceb79e13dc6",
+  "canonical_source_sha256": "a66244a7ae615734c1e748727908e499b2477579806b2a8b43d44f933603a2a4",
   "generated": true,
   "hash_definition": "RAW_FILE_BYTES_SHA256",
   "legacy_source": "docs/archive/base-v9-legacy-inputs/PROJECT_PATH_ADAPTER.json",
@@ -49,14 +49,24 @@
   "lifecycle": "ONE_CYCLE",
   "project": {
     "engine": "Godot 4.7",
+    "historical_notion": {
+      "migration_receipt": "docs/migrations/NOTION_CURRENT_WORK_MIGRATION_2026-08-28.md",
+      "project_page": "https://app.notion.com/p/3c01b237eb1c811c9d5ec512acad4f92",
+      "role": "HISTORICAL_READ_ONLY_NO_WRITE",
+      "system": "NOTION"
+    },
     "project_id": "urban-legend",
     "repository": "alsdmlals4-eng/urban-legend",
     "root": ".",
     "workspace_authority": {
       "human_facing": {
-        "project_page": "https://app.notion.com/p/3c01b237eb1c811c9d5ec512acad4f92",
-        "role": "HUMAN_FACING_PLANNING_CANON",
-        "system": "NOTION"
+        "documents": [
+          "docs/design/PROJECT_AI_PRODUCTION_SPEC.md",
+          "exports/urban-legend_MASTER_PRODUCTION_GDD_20260828.pdf"
+        ],
+        "repository": "alsdmlals4-eng/urban-legend",
+        "role": "HUMAN_FACING_GDD_AND_DECISION_CANON",
+        "system": "REPOSITORY"
       },
       "structured_implementation": {
         "repository": "alsdmlals4-eng/urban-legend",
