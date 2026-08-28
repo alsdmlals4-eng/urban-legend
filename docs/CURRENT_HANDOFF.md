@@ -26,7 +26,7 @@ base_adapter_baseline_reconciliation: COMPLETE
 
 현재 시각 방향은 `D-2026-08-28-URBAN-NOIR-HYBRID-VISUAL-DIRECTION`의 **현실적 한국 도시 누아르 환경 + 애니풍 인물·괴이 + 손그림 기록물 UI**다. 이 방향은 `docs/visual/VISUAL_DIRECTION_LOCK_PACKET_2026-08-28.md`가 소유하며, 첨부 Core Scene Board는 기획 검증용 `GENERATED_EXPLORATION`일 뿐 runtime asset/Scene/UI/Human QA가 아니다.
 
-M04의 현재 accepted frontier는 `D-2026-08-28-M04-EARLY-DISPATCH-REGULAR-WEEK4-CADENCE`다. M04만 2주차 조기 출동(+0·tier 0), 3주차 조기 출동(+15·tier 1 안정화 +4), 4주차 정규 출동(+30·tier 2 안정화 +8)을 사용한다. 귀가 기억 노출은 M04 전용 Composite Result consumer로, 권나래의 안정화 이득은 기존 한 번짜리 능동 지원의 실제 사용으로만 소비한다. 남은 작업은 이 결정과 다른 approved planning을 하나의 구현 계약으로 묶는 것이며, Godot/asset/QA 구현 권한은 아직 열리지 않았다.
+M04의 현재 accepted frontier는 `D-2026-08-28-M04-EARLY-DISPATCH-REGULAR-WEEK4-CADENCE`와 `D-2026-08-28-M04-SEQUENTIAL-NARRATIVE-RESULT-VIGNETTES`다. M04만 2주차 조기 출동(+0·tier 0), 3주차 조기 출동(+15·tier 1 안정화 +4), 4주차 정규 출동(+30·tier 2 안정화 +8)을 사용한다. 귀가 기억 노출은 M04 전용 Composite Result consumer로, 권나래의 안정화 이득은 기존 한 번짜리 능동 지원의 실제 사용으로만 소비한다. 결과는 `피해자 → 잔향 → 귀가 기억 → 기록국`의 짧은 순차 후일담으로 읽히며 한 화면의 점수판으로 합산하지 않는다. 남은 작업은 이 결정과 다른 approved planning을 하나의 구현 계약으로 묶는 것이며, Godot/asset/QA 구현 권한은 아직 열리지 않았다.
 
 ## 1. 재개 순서
 

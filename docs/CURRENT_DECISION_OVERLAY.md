@@ -23,6 +23,8 @@ visual_direction_lock: USER_APPROVED
 visual_direction_decision: D-2026-08-28-URBAN-NOIR-HYBRID-VISUAL-DIRECTION
 m04_early_dispatch_regular_week4_cadence: USER_APPROVED
 m04_early_dispatch_regular_week4_decision: D-2026-08-28-M04-EARLY-DISPATCH-REGULAR-WEEK4-CADENCE
+m04_sequential_narrative_result_vignettes: USER_APPROVED
+m04_sequential_narrative_result_decision: D-2026-08-28-M04-SEQUENTIAL-NARRATIVE-RESULT-VIGNETTES
 ```
 
 ## 2. 현재 Gate
@@ -101,6 +103,14 @@ base_adapter_baseline_reconciliation: COMPLETE
 - 귀가 기억 노출은 2/3/4주차의 `+0/+15/+30`이며, M04 전용 `victim_route_memory_exposure` Composite Result 축으로 소비한다. 기존 공포 bar·조사 위험·피해자 이해도·resolution grade는 consumer가 아니다.
 - 권나래의 기존 한 번짜리 능동형 회수 지원은 기본 공포 `-16`·임계치 `+2`를 유지한다. 직접 사용 시 준비 tier 0/1/2는 안정화 `+0/+4/+8`만 추가한다.
 - Composite Result는 timing/exposure와 실제 지원 사용을 추리·구출·회수 결과와 분리해 설명한다. M01에는 이 선택을 추가하지 않는다.
+
+### M04 sequential narrative result vignettes — 2026-08-28
+
+판정: `USER_APPROVED / PLANNING_CANON / IMPLEMENTATION_NOT_AUTHORIZED`.
+
+- M04 결과를 한 scroll surface의 카드·점수·목록으로 묶지 않는다. `피해자 → 잔향 → 귀가 기억 → 기록국`의 short narrative page를 순서대로 제시한다.
+- 각 페이지는 한 가지 원인과 그 여파만 다룬다. 귀가 기억 페이지에서는 출동 timing·노출·실제 권나래 지원 사용만 하나의 인과로 연결한다.
+- 4주차 정규 출동을 벌점으로 되돌리지 않고, 구출·회수·추리·보상·M01의 의미를 변경하지 않는다. logical page는 새 Godot Scene, asset, runtime/Human QA PASS가 아니다.
 
 ### M04 predecessor decisions — 2026-08-28
 

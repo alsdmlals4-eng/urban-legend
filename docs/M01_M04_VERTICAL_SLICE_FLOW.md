@@ -62,6 +62,13 @@ M04는 실제 사용 후보 UI/UX·시각·Audio/VFX·피드백·핵심 시스�
 - 권나래의 기존 한 번짜리 능동형 `귀가 기억 고정`은 기본 공포 `-16`·임계치 `+2`를 유지한다. 직접 사용 시 2/3/4주차 준비 tier는 안정화 `+0/+4/+8`을 추가한다.
 - `victim_route_memory_exposure`와 지원 실제 사용은 Composite Result에서 추리·구출·회수와 분리해 설명한다. M01 온보딩에는 이 복잡도를 추가하지 않는다.
 
+### M04 순차 후일담 결과 계약
+
+- M04의 결과는 한 화면의 카드·점수·목록이 아니라 `피해자 → 잔향 → 귀가 기억 → 기록국`의 짧은 logical page sequence로 읽는다.
+- 한 페이지에는 한 가지 인과와 1~3문장의 후일담만 둔다. 귀가 기억 페이지는 출동 timing·노출·실제 권나래 지원 사용을 같은 준비 인과로만 다룬다.
+- 페이지 이동은 명시적 다음 입력을 사용한다. 진행 위치는 알려도 결과 비교표나 점수판을 만들지 않는다.
+- 이는 M04의 presentation contract이며 M01·기존 결과 data·등급·보상·Scene 구조를 아직 변경하지 않는다.
+
 ## Visual / asset boundary
 
 - `SOFT_ANIME_NOIR_LOCKED`: main character/key narrative treatment.
