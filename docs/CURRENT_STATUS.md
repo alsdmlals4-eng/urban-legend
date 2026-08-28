@@ -18,7 +18,7 @@
 |---|---|
 | 최신 기획 정본 | `docs/CURRENT_PLANNING_CANON.md` + `docs/current-planning-canon.json` |
 | 현재 시각 방향 | `D-2026-08-28-URBAN-NOIR-HYBRID-VISUAL-DIRECTION` — 현실적 한국 도시 누아르 환경 + 애니풍 인물·괴이 + 손그림 기록물 UI |
-| 현재 M04 timing 결정 | `D-2026-08-28-M04-ONE-DELAY-PREPARATION-VICTIM-RISK-TRADEOFF` + `D-2026-08-28-M04-ROUTE-MEMORY-ANCHOR-PREPARATION-BENEFIT` + `D-2026-08-28-M04-BOUNDED-FORCED-DISPATCH-REACHABILITY` — 2주차 즉시(+0), 한 번 준비 뒤 3주차 지연(+15·귀가 기억 고정 `-16 → -24`), 추가 이득 없는 보류 뒤 4주차 강제(+30·modifier 없음) |
+| 현재 M04 timing 결정 | `D-2026-08-28-M04-EARLY-DISPATCH-REGULAR-WEEK4-CADENCE` — 2주차 조기(+0·tier 0), 3주차 조기(+15·tier 1 안정화 +4), 4주차 정규(+30·tier 2 안정화 +8). `+15/+30`은 조기 보호를 놓친 귀가 기억 노출이며 지연·강제 벌점이 아니다. |
 | 프로젝트 이해 보드 | `GENERATED_EXPLORATION / NOT_PROJECT_ASSET / NOT_RUNTIME_ASSET` |
 | runtime reconciliation | `MERGED_MAIN` (구현 merge PR #224); current documentation reconciliation PR #322 |
 | 개별 제품 asset | root `ASSET_MANIFEST.yml`의 6개 entry는 각자의 승인·구현·runtime evidence 범위를 보유; Human QA와 별개 |
@@ -96,9 +96,9 @@
 → 직접 휴식: 1일, 피로 -25, 상태 회복 가능
 → 자동 휴식: 하루당 피로 5만 회복
 → 자동 휴식은 관계 이벤트·특수 회복·추가 보상 없음
-→ 2주차 자율 출동 위험 0 또는 지연
-→ 3주차 자율 출동 위험 15 또는 지연
-→ 4주차 7일 결과 확인 후 긴급 강제 출동 위험 30
+→ M04 전용: 2주차 조기 출동 귀가 기억 노출 0 / 준비 tier 0
+→ M04 전용: 3주차 조기 출동 귀가 기억 노출 15 / 준비 tier 1
+→ M04 전용: 4주차 정규 출동 귀가 기억 노출 30 / 준비 tier 2
 → 기존 CORE-MVP-001 사건 → 연구·공용 스킬 → 월말/분기 결산 모형
 ```
 
@@ -258,7 +258,7 @@ PR #70의 4주 구조는 달력 월 보정과 위험 0/15/30의 근거로 유지
 ## 미실행 ANNUAL 사람 검증 backlog (현재 제품 다음 Gate 아님)
 
 1. 실제 사람의 7일 편성·템플릿·동료·장비 반복 사용성 평가
-2. 신규 플레이어의 2주차 조기·3주차 자율·4주차 강제 출동 플레이
+2. 신규 플레이어의 M04 2주차 조기·3주차 조기·4주차 정규 출동 플레이
 3. 동료별 장점, 지원 확률·준비도·보장 발동, 육성→사건→연구 인과 설명 수집
 4. 장비·동료가 사건 정답을 제공한다고 오인하지 않는지 확인
 5. `KEEP / AMPLIFY / CHANGE / RETEST / HOLD` 판정

@@ -1,6 +1,6 @@
 # D-2026-08-28 · M04 Route-Memory Anchor Preparation Benefit
 
-> Status: `USER_APPROVED / PLANNING_CANON / IMPLEMENTATION_NOT_AUTHORIZED`
+> Status: `SUPERSEDED_BY_D-2026-08-28-M04-EARLY-DISPATCH-REGULAR-WEEK4-CADENCE / HISTORICAL_DECISION`
 > Issue: #327
 > Scope: `M04_RED_UMBRELLA`의 한 번 지연 출동만
 > Owner: `CURRENT_PLANNING_CANON.md`, `current-planning-canon.json`, `CURRENT_DECISION_OVERLAY.md`, Notion `01 · Direction · Planning`
