@@ -28,6 +28,29 @@
       "RECOVERY",
       "COMPOSITE_RESULT"
     ],
+    "experience_priority": {
+      "decision_id": "D-2026-08-29-CORE-LOOP-PRIORITY",
+      "status": "USER_APPROVED / PLANNING_CANON / NO_RUNTIME_MUTATION",
+      "primary_playable_core": [
+        "INVESTIGATION",
+        "DEDUCTION",
+        "RECOVERY"
+      ],
+      "deduction_expression": [
+        "ANOMALY_MANUAL",
+        "KEYWORD_COMPOSITION"
+      ],
+      "human_consequence_bridge": [
+        "VICTIM_RESCUE",
+        "COMPOSITE_RESULT"
+      ],
+      "supporting_campaign_system": "TEN_DAY_HALF_DAY_CALENDAR",
+      "invariants": [
+        "CALENDAR_NEVER_REVEALS_CORE_TRUTH_OR_CORRECT_RESPONSE",
+        "CALENDAR_DOES_NOT_REPLACE_CORE_LOOP_PLAYER_VALIDATION",
+        "CORE_LOOP_MEANS_INVESTIGATION_DEDUCTION_AND_RECOVERY"
+      ]
+    },
     "first_session": "M01_AFTERLIFE_STATION",
     "release_near_vertical_slice": "M04_RED_UMBRELLA",
     "visual_treatment": "SOFT_ANIME_NOIR_LOCKED",

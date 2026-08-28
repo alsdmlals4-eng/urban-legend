@@ -29,6 +29,7 @@ The direct user instruction prevails over an attached work instruction. `PROJECT
 | --- | --- | --- |
 | `CURRENT` | `AGENTS.md`, `docs/CURRENT_PLANNING_CANON.md`, `docs/current-planning-canon.json`, `docs/CURRENT_DECISION_OVERLAY.md`, `docs/CURRENT_HANDOFF.md` | current project rules, decision, state, handoff |
 | `CURRENT` | `docs/decisions/D-2026-08-28-TEN-DAY-HALF-DAY-CASE-CADENCE.md` | 10-day / half-day calendar |
+| `CURRENT` | `docs/decisions/D-2026-08-29-CORE-LOOP-PRIORITY.md` | investigation/deduction and recovery as the primary playable core; calendar as support |
 | `CURRENT` | `docs/decisions/D-2026-08-28-M04-SEQUENTIAL-NARRATIVE-RESULT-VIGNETTES.md` | M04 result presentation |
 | `CURRENT` | `docs/decisions/D-2026-08-28-URBAN-NOIR-HYBRID-VISUAL-DIRECTION.md`, `docs/visual/VISUAL_DIRECTION_LOCK_PACKET_2026-08-28.md` | visual grammar |
 | `CURRENT` | `docs/decisions/D-2026-08-28-VISUAL-CANDIDATE-GENERATION-LOCK-ONLY-APPROVAL.md` | image candidate workflow |
@@ -79,22 +80,22 @@ visual direction: Korean urban noir environment + soft-anime people/anomalies + 
 
 ### Player promise
 
-**“나는 권나래로서, 시간이 지나기 전에 사람을 보호하되 준비를 포기하지 않고, 눈으로 확인한 근거로 괴이의 규칙을 밝혀 그 현상을 죽이지 않고 안정화·회수한다.”**
+**“나는 권나래로서, 눈으로 확인한 근거로 괴이의 규칙을 밝혀, 그 가설을 현장에서 검증하고 현상을 죽이지 않고 안정화·회수한다.”**
 
 ```text
 Player Promise
-→ 10일·반일을 준비하고 출동 시점을 정한다
 → 관측과 해석을 나누고 경쟁 가설을 비교한다
 → 피해자를 먼저 현상에서 분리한다
 → 전조에 맞는 대응으로 잔향을 안정화·회수한다
 → 사람·현상·기록에 남은 서로 다른 결과를 읽는다
-→ 다음 cycle에서 더 나은 보호와 판단을 시도한다
+→ 10일·반일의 준비·후일담을 거쳐 다음 사건에서 더 나은 판단을 시도한다
 ```
 
 | connection | intended experience | current state |
 | --- | --- | --- |
 | representative action | 관찰한 단서를 매뉴얼 가설·구출·회수 선택에 재사용한다 | `IMPLEMENTED` shared grammar |
-| meaningful choice | Day 1–9 조기 보호 vs Day 10 정규 해결까지 준비 기회 사용 | `CONFIRMED / NOT_IMPLEMENTED` as a visible contract |
+| meaningful choice | 관측을 보존/분석/억제할지, 어떤 가설·근거·전조 대응을 연결할지 | `IMPLEMENTED` shared grammar; Human clarity `NOT_RUN` |
+| supporting choice | Day 1–9 조기 보호 vs Day 10 정규 해결까지 준비 기회 사용 | `CONFIRMED / NOT_IMPLEMENTED` as a visible campaign contract |
 | observable outcome | 피해자 상태, 잔향 상태, 귀가 기억 timing, 기록/연구가 서로 덮어쓰이지 않는다 | result data partly `IMPLEMENTED`; new timing axis `NOT_IMPLEMENTED` |
 | reward / failure learning | 매뉴얼·위험 사례·연구가 다음 판단에 남고, 오답은 관측 가능한 반증으로 설명된다 | `PARTIAL` runtime/data; player validation `NOT_RUN` |
 | target emotion | 조용한 책임감, 규칙을 알아낸 안도, 피해자를 너무 늦기 전에 지켰다는 기억 | `CONFIRMED`; Human evidence `NOT_RUN` |
@@ -103,34 +104,33 @@ Player Promise
 
 ### Core fun check
 
-The pointed fun is not “many menus” or “a combat result.” It is the short causal chain in which the player sees a troubling urban detail, chooses what it means, risks an early rescue or uses the calendar to prepare, and later reads a human consequence that does not collapse into a single grade.
+The pointed fun is not “many menus,” a calendar puzzle, or “a combat result.” It is the short causal chain in which the player sees a troubling urban detail, investigates what it actually is, constructs a rule from competing evidence, and proves that rule under a live recovery telegraph. The calendar frames when the player prepares and reads aftermath; it never substitutes for the investigation/deduction or recovery judgment.
 
-**Risk hypothesis to validate in M04:** Does the player feel the pressure to protect the victim early while still valuing preparation, and can they explain why their evidence and recovery decisions caused the ending? This is `UNTESTED`.
+**Primary risk hypothesis to validate in M04:** Can the player explain which observed evidence supports the chosen rule and why the recovery response follows from the current telegraph? **Secondary support hypothesis:** does the calendar make preparation and aftermath legible without displacing that reasoning? Both are `UNTESTED`.
 
 ## 04. Loop contract
 
 ### Core loop — `CONFIRMED`
 
 ```text
-Prepare a half-day
-→ notice a case symptom / choose a case timing
+Notice a case symptom
 → investigate observable evidence
 → compare hypotheses in the anomaly manual
 → apply the rule to victim rescue
 → read telegraphs and stabilize/recover resonance
 → read composite result
-→ update manual, research, relationship, and next preparation
+→ update manual, research, relationship, and calendar-supported next preparation
 ```
 
 ### Session loop — M01 / M04
 
 | phase | player question | player action | feedback |
 | --- | --- | --- | --- |
-| preparation | “What can I do before I go?” | schedule, select team/case | remaining time, active preparation, case availability |
-| investigation | “What did I actually observe?” | choose observation/analysis/protection method | clue, flag, hint, explicit success/failure text |
-| deduction/manual | “Which rule has evidence, and what still contradicts it?” | compare support/rebuttal/unresolved slots | readable evidence state, not an auto-answer |
+| preparation (support) | “What can I do before I go?” | schedule, select team/case | remaining time, active preparation, case availability |
+| investigation (primary) | “What did I actually observe?” | choose observation/analysis/protection method | clue, flag, hint, explicit success/failure text |
+| deduction/manual (primary) | “Which rule has evidence, and what still contradicts it?” | compare support/rebuttal/unresolved slots | readable evidence state, not an auto-answer |
 | rescue | “How do I apply the rule to protect this person?” | rule-based rescue interaction | victim result remains separate |
-| recovery | “Which telegraph demands which response now?” | choose protection/support/contextual response | anomaly stability, support feedback, recovery result |
+| recovery (primary) | “Which telegraph demands which response now?” | choose protection/support/contextual response | anomaly stability, support feedback, recovery result |
 | result | “What happened to the person, phenomenon, memory, and record?” | advance one narrative page at a time | causal, non-scoreboard ending |
 
 ### Meta loop — `PARTIAL`
@@ -138,6 +138,12 @@ Prepare a half-day
 Records, research, agent support, and relationships should widen safe questions and response options without revealing the hidden truth. Current detailed long-term rank/economy values are provisional/historical. The live target is **not** a fully proven progression loop yet.
 
 ## 05. System registry
+
+### Experience hierarchy — `USER_APPROVED`
+
+- **Primary playable core:** `investigation → deduction/manual → recovery`. This is the chain that must make the Vertical Slice fun, clear, and memorable.
+- **Core-expression systems:** keyword/manual composition exposes the player’s deduction; victim rescue and composite result preserve the human consequence of that deduction and recovery.
+- **Supporting campaign system:** the 10-day / half-day calendar creates preparation and aftermath rhythm. It is not a separate primary fun loop, an answer source, or a substitute for core-loop validation.
 
 | ID | system | player value | state / owner |
 | --- | --- | --- | --- |
@@ -177,7 +183,7 @@ Records, research, agent support, and relationships should widen safe questions 
 - Existing result data already distinguishes temporary/standard/complete recovery outcomes.
 - The M04 validation map lists six generic composite-result axes and still marks final visuals as pending; it does not yet own a timing axis.
 
-## 07. 10-day schedule system
+## 07. 10-day schedule system — supporting campaign context
 
 ### What this phase is for
 
@@ -203,7 +209,7 @@ Regular resolution: Day 10
 After early resolution: no second main case; use remaining half-days for aftermath/preparation
 ```
 
-Day 1–9 is **early resolution**, and Day 10 is **regular resolution**. The latter is a normal route, not a late-state failure, penalty, or hidden bad ending. Early resolution has to protect earlier; regular resolution has to give more genuine preparation opportunities. The numerical effect that makes that trade-off tangible remains deliberately unapproved.
+Day 1–9 is **early resolution**, and Day 10 is **regular resolution**. The latter is a normal route, not a late-state failure, penalty, or hidden bad ending. Early resolution has to protect earlier; regular resolution has to give more genuine preparation opportunities. The numerical effect that makes that trade-off tangible remains deliberately unapproved. This calendar is supporting campaign context: it may shape when the player prepares or reads aftermath, but it may not supply the rule, select the recovery response, or be used as evidence that the primary investigation/deduction/recovery loop is fun.
 
 ### What current runtime actually does
 
@@ -475,14 +481,14 @@ No approved current audio production plan or runtime evidence was found in the f
 
 ## 18. Implementation queue — not authorization
 
-Order is driven by dependency, player value, and risk. No item starts in this GDD phase.
+Order is driven by primary player value, then dependency and risk. No item starts in this GDD phase. A calendar item may be technically necessary later, but its place in a contract never makes it primary fun.
 
-1. **Unified calendar contract:** enforce exactly one main case, preserve a ten-day/two-slot save, and obtain the one outstanding early/regular balance decision.
-2. **Preparation timing surface:** read day/slot, early/regular meaning, remaining opportunity, and the already-resolved-case state before confirmation.
-3. **Timing save/result bridge:** persist the timing record and feed it to M04 route-memory without legacy-week inference.
-4. **Keyword/manual vertical slice:** source-backed candidate data, page-local composition, structural validation, save/load, and one M04 rescue/recovery consequence.
-5. **M04 sequential vignette UI:** logical page state, continue/skip, Korean copy, current result data reuse.
-6. **Automated regression:** calendar limit, save, M01, M04, keyword integrity, intentional wrong-recovery learning, and target-resolution UI checks.
+1. **Investigation → deduction → recovery vertical-slice contract:** preserve existing M01/M04 truth, define evidence/hypothesis/recovery feedback, and set primary Human/player validation.
+2. **Keyword/manual vertical slice:** source-backed candidate data, page-local composition, structural validation, save/load, and one M04 recovery consequence.
+3. **M04 sequential vignette UI:** logical page state, continue/skip, Korean copy, current result data reuse.
+4. **Unified calendar support contract:** enforce exactly one main case, preserve a ten-day/two-slot save, and obtain the one outstanding early/regular balance decision without changing core truth or recovery.
+5. **Preparation timing surface and save/result bridge:** read day/slot, early/regular meaning, remaining opportunity, and persist only the timing record needed for M04 route memory.
+6. **Automated regression:** core evidence/hypothesis/recovery chain first, then calendar limit/save, M01/M04 compatibility, keyword integrity, intentional wrong-recovery learning, and target-resolution UI checks.
 7. **Visual/audio consumer work:** only after consumer-specific brief and final LOCK/promotion gates.
 8. **Human/new-player validation:** fun, clarity, memory, accessibility.
 
@@ -525,3 +531,4 @@ production_expansion: NOT_APPROVED
 | 2026-08-28 | candidate generation pre-authorized; final visual lock remains user-owned | direct user decision |
 | 2026-08-28 | moved current project owner from Notion + repository to repository-only | direct user decision |
 | 2026-08-28 | corrected master-GDD core-system coverage; documented schedule, investigation, keyword/manual, and rescue/recovery flows with their actual implementation gaps | fresh source/code/data/test comparison after user finding |
+| 2026-08-29 | fixed player-experience hierarchy: investigation/deduction and recovery are primary; the calendar is supporting campaign context | direct user decision; `D-2026-08-29-CORE-LOOP-PRIORITY` |

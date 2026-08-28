@@ -16,7 +16,10 @@ continuous_after_m12: true
 signature_cases: [M01, M04, M07, M10]
 first_session: M01_AFTERLIFE_STATION
 release_near_vertical_slice: M04_RED_UMBRELLA
+primary_playable_core: INVESTIGATION_DEDUCTION_AND_RECOVERY
+calendar_role: SUPPORTING_CAMPAIGN_CONTEXT_NOT_PRIMARY_FUN
 core_flow: INVESTIGATION_DEDUCTION_MANUAL_RESCUE_RECOVERY_COMPOSITE_RESULT
+core_loop_priority_decision: D-2026-08-29-CORE-LOOP-PRIORITY
 visual_treatment: SOFT_ANIME_NOIR_LOCKED
 presentation_language: DOSSIER_HYBRID_IS_PRESENTATION_LANGUAGE_NOT_MEDIUM
 visual_direction_lock: USER_APPROVED
@@ -109,6 +112,15 @@ base_adapter_baseline_reconciliation: COMPLETE
 - Day 1~9 해결은 조기 해결, Day 10 해결은 정규 해결이다. Day 10은 지연·강제 escalation·준비 상실이 아니다.
 - 조기 해결은 더 이른 보호, 정규 해결은 남은 반일 준비 기회의 선택이다. 새 numeric balance는 `UNDEFINED`; 옛 2/3/4주, `0/15/30`, `0/+4/+8`은 `SUPERSEDED`이며 날짜에 환산하지 않는다.
 - `CampaignState`의 10일/오전·오후 구조는 구현되어 있지만 timing record, Preparation docket, Day 10 판정, M04 result consumer는 구현되지 않았다.
+
+### Core-loop priority — 2026-08-29
+
+판정: `USER_APPROVED / PLANNING_CANON / NO_RUNTIME_MUTATION`.
+
+- **1차 플레이 경험은 조사·추리와 회수**다. 관찰 가능한 단서를 경쟁 가설과 매뉴얼에 연결하고, 전조에 맞는 대응으로 그 가설을 회수에서 검증한다.
+- 키워드/매뉴얼은 추리의 표현·검증 도구다. 피해자 구출과 복합 결과는 판단의 인간적 결과를 분리해 보존한다.
+- 10일·반일 일정은 준비·후일담·관계의 리듬을 제공하는 **보조 캠페인 시스템**이다. 일정은 핵심 진실/정답을 제공하거나 회수를 자동 해결하지 않으며, 일정만으로 Vertical Slice 핵심 재미를 검증하지 않는다.
+- 이 우선순위는 기존 cadence 규칙이나 M01/M04의 사건 의미를 바꾸지 않는다. runtime 구현, save, 숫자 밸런스, asset, Human QA는 이번 결정으로 승인되지 않는다.
 
 ### M04 sequential narrative result vignettes — 2026-08-28
 
