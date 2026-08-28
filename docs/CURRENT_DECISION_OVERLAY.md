@@ -27,6 +27,10 @@ visual_direction_decision: D-2026-08-28-URBAN-NOIR-HYBRID-VISUAL-DIRECTION
 ten_day_half_day_case_cadence: USER_APPROVED / IMPLEMENTATION_CONTRACT_PENDING
 one_main_case_runtime_enforcement: NOT_IMPLEMENTED / CURRENT_RUNTIME_ALLOWS_M01_M04_M07_IN_ONE_DEMO_CYCLE
 keyword_composition: APPROVED_DESIGN / NOT_IMPLEMENTED
+player_authored_manual_keyword_verification: USER_APPROVED / PLANNING_CANON / NOT_IMPLEMENTED
+player_authored_manual_decision: D-2026-08-29-PLAYER-AUTHORED-MANUAL-KEYWORD-VERIFICATION
+m01_manual_input_consumer: NOT_IMPLEMENTED / CURRENT_DRAWER_IS_READ_ONLY
+m01_normal_clear_manual_answer_reveal: STALE_RUNTIME_DATA / SUCCESSOR_CONTRACT_REQUIRES_NO_AUTO_REVEAL
 ten_day_half_day_case_decision: D-2026-08-28-TEN-DAY-HALF-DAY-CASE-CADENCE
 m04_week4_numeric_cadence: SUPERSEDED
 m04_sequential_narrative_result_vignettes: USER_APPROVED
@@ -49,6 +53,7 @@ canonical_root_runtime_receipt: AUTOMATED_EXACT_HEAD_GREEN
 ten_day_half_day_cadence: USER_APPROVED / NOT_IMPLEMENTED
 one_main_case_runtime_enforcement: NOT_IMPLEMENTED
 keyword_composition: APPROVED_DESIGN / NOT_IMPLEMENTED
+player_authored_manual_keyword_verification: USER_APPROVED / NOT_IMPLEMENTED
 human_qa: NOT_RUN
 new_player_validation: NOT_RUN
 poc_passed: NOT_DECLARED
@@ -121,6 +126,16 @@ base_adapter_baseline_reconciliation: COMPLETE
 - 키워드/매뉴얼은 추리의 표현·검증 도구다. 피해자 구출과 복합 결과는 판단의 인간적 결과를 분리해 보존한다.
 - 10일·반일 일정은 준비·후일담·관계의 리듬을 제공하는 **보조 캠페인 시스템**이다. 일정은 핵심 진실/정답을 제공하거나 회수를 자동 해결하지 않으며, 일정만으로 Vertical Slice 핵심 재미를 검증하지 않는다.
 - 이 우선순위는 기존 cadence 규칙이나 M01/M04의 사건 의미를 바꾸지 않는다. runtime 구현, save, 숫자 밸런스, asset, Human QA는 이번 결정으로 승인되지 않는다.
+
+### Player-authored manual keyword verification — 2026-08-29
+
+판정: `USER_APPROVED / PLANNING_CANON / IMPLEMENTATION_CONTRACT_PENDING / NOT_IMPLEMENTED`.
+
+- 조사는 정상 키워드의 원본 출처와 획득 맥락을 만들고, 플레이어는 빈칸이 있는 추리문에서 그 기억·출처·문맥으로 후보를 배치한다.
+- UI는 구조 불가능만 막는다. 정답/오답, 변조, 호환성, 추천 점수를 직접 알려 주지 않는다. 그럴듯한 오답은 구출 미니게임 및 회수의 `전조 → 가설 → 근거 → 대응` 결과로 검증·반증된다.
+- 한 변수만 달라진 변조 후보는 별도 가짜 단서를 갖지 않는다. 사실이지만 해당 슬롯에 쓰이지 않는 보조 후보와 구분한다.
+- M01의 `candidate_keywords`/`semantic_relations` 빈 배열, 읽기 전용 매뉴얼 consumer, `normal_clear.reveal_complete_manual: true`는 모두 successor runtime gap이다. 특히 answer reveal은 이 결정과 충돌하므로 후속 implementation contract에서 migration·replay semantics와 함께 교정한다.
+- 사용자 제공 비교 이미지는 planning UI reference일 뿐 asset, runtime UI, Scene, product approval이 아니다.
 
 ### M04 sequential narrative result vignettes — 2026-08-28
 

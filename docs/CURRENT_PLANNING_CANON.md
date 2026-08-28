@@ -28,6 +28,15 @@
 - **핵심을 표현하는 보조:** 키워드·매뉴얼은 추리의 근거를 표현한다. 피해자 구출과 복합 결과는 이 판단의 인간적 결과를 보존한다.
 - **캠페인 보조 시스템:** 10일·오전/오후 일정은 준비 기회·후일담·관계의 리듬을 제공한다. 일정은 단서·진실·정답을 주거나 회수의 판정을 대체하지 않으며, 이 시스템만으로 Vertical Slice의 핵심 재미 통과를 주장하지 않는다.
 
+### 플레이어가 완성하는 괴이 매뉴얼 — `D-2026-08-29-PLAYER-AUTHORED-MANUAL-KEYWORD-VERIFICATION`
+
+- 매뉴얼은 읽기 전용 요약이나 정답표가 아니라, **빈 키워드가 놓인 읽을 수 있는 추리문**을 플레이어가 직접 완성하는 추리 도구다.
+- 조사 선택으로 정상 키워드를 얻는다. 정상 키워드는 원본 출처·획득 행동·맥락을 보존한다. 한 변수만 달라진 변조 후보에는 독립 가짜 출처를 만들지 않으며, 사실이지만 쓰이지 않는 보조 후보와도 구분한다.
+- 플레이어는 조사 기억 + 정상 키워드 원본 + 매뉴얼 문맥으로 후보를 고른다. UI는 중복·미획득·타입 불일치 같은 구조 오류만 막고, semantic correct/wrong, 정답 추천, 변조 표식, 호환 점수는 표시하지 않는다.
+- 작성한 규칙은 구출 미니게임의 절차·순서·타이밍과 회수의 `전조 → 가설 → 근거 → 대응`에서 직접 검증한다. 매뉴얼 완성은 구출·회수를 자동 해결하지 않으며, 실패는 위험 사례·다음 조사 필요 기록이 된다.
+- M01의 현 `candidate_keywords` / `semantic_relations`는 비어 있고 Scene의 매뉴얼은 읽기 전용이다. 또한 `normal_clear.reveal_complete_manual: true`는 “정답 매뉴얼 자동 공개 금지”와 충돌하는 stale runtime data다. 둘 다 후속 implementation contract의 migration/QA 대상이며 이번 planning correction으로 runtime을 바꾸지 않는다.
+- 사용자가 제공한 두 비교 이미지는 `USER_PROVIDED_PLANNING_UI_REFERENCE`다. 빈칸 추리문·후보·출처 보조라는 정보 구조만 참고하며 `NOT_PROJECT_ASSET / NOT_RUNTIME_ASSET / NOT_COPIED_TO_REPOSITORY`다.
+
 ## 10일·반일 cadence와 콘텐츠 예산
 
 - 한 **10일 cycle**에 메인 사건 1개만 해결한다. 하루는 `오전 / 오후` 두 반일 슬롯으로 구성된다.

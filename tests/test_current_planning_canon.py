@@ -80,6 +80,31 @@ class CurrentPlanningCanonTests(unittest.TestCase):
             priority["invariants"],
         )
 
+    def test_player_authored_manual_requires_memory_and_field_verification(self) -> None:
+        manual = self.canon["planning"]["player_authored_manual_keyword_verification"]
+        decision_path = ROOT / "docs/decisions/D-2026-08-29-PLAYER-AUTHORED-MANUAL-KEYWORD-VERIFICATION.md"
+        self.assertTrue(decision_path.is_file(), decision_path)
+        self.assertEqual(
+            "D-2026-08-29-PLAYER-AUTHORED-MANUAL-KEYWORD-VERIFICATION",
+            manual["decision_id"],
+        )
+        self.assertIn(
+            "PLAYER_FILLS_READABLE_BLANK_MANUAL_SENTENCE",
+            manual["flow"],
+        )
+        self.assertIn(
+            "NO_IMMEDIATE_SEMANTIC_ANSWER_VERDICT",
+            manual["flow"],
+        )
+        self.assertIn(
+            "MANUAL_NEVER_AUTO_RESOLVES_RESCUE_OR_RECOVERY",
+            manual["invariants"],
+        )
+        self.assertIn(
+            "NORMAL_CLEAR_NEVER_AUTO_REVEALS_COMPLETE_ANSWER_MANUAL",
+            manual["invariants"],
+        )
+
     def test_m04_uses_ten_day_early_and_regular_windows_without_fabricated_balance(self) -> None:
         planning = self.canon["planning"]
         timing = planning["m04_time_tradeoff"]
@@ -155,6 +180,14 @@ class CurrentPlanningCanonTests(unittest.TestCase):
         self.assertEqual(
             "APPROVED_DESIGN_NOT_IMPLEMENTED_NO_LIVE_CANDIDATE_POOL_OR_SCENE_CONSUMER",
             runtime["keyword_composition"],
+        )
+        self.assertEqual(
+            "NOT_IMPLEMENTED_CURRENT_MANUAL_IS_READ_ONLY_INFORMATION_DRAWER",
+            runtime["m01_manual_player_input"],
+        )
+        self.assertEqual(
+            "STALE_RUNTIME_DATA_CONFLICTS_WITH_D_2026_08_29_SUCCESSOR_CONTRACT",
+            runtime["m01_normal_clear_manual_answer_reveal"],
         )
         self.assertEqual("REUSE_EXISTING_CANON_V2_RUNTIME", runtime["canon_v2_runtime_strategy"])
         self.assertEqual("COMPOSITE_RESULT", runtime["current_result_authority"])

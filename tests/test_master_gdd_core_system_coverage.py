@@ -42,6 +42,16 @@ class MasterGddCoreSystemCoverageTests(unittest.TestCase):
         ):
             self.assertIn(statement, self.text)
 
+    def test_keyword_flow_is_player_authored_and_never_an_answer_checker(self) -> None:
+        for statement in (
+            "readable inference sentences with blank keyword slots",
+            "investigation memory, provenance",
+            "semantic correct/wrong",
+            "rescue minigame and field recovery",
+            "normal-clear answer reveal",
+        ):
+            self.assertIn(statement, self.text)
+
     def test_recovery_explains_the_evidence_to_action_chain(self) -> None:
         for statement in (
             "telegraph → hypothesis → evidence → response",
