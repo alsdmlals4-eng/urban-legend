@@ -62,7 +62,24 @@
       },
       "week_4_forced_dispatch": {
         "victim_risk_delta": 30,
-        "must_be_visible": true
+        "must_be_visible": true,
+        "preparation_benefit": "NONE"
+      },
+      "bounded_reachability": {
+        "decision_id": "D-2026-08-28-M04-BOUNDED-FORCED-DISPATCH-REACHABILITY",
+        "status": "USER_APPROVED / IMPLEMENTATION_NOT_AUTHORIZED",
+        "scope": "M04_RED_UMBRELLA_ONLY",
+        "path": [
+          "WEEK_2_IMMEDIATE_DISPATCH_OR_SINGLE_PREPARATION",
+          "WEEK_3_DELAYED_DISPATCH_OR_NO_BENEFIT_DEFER",
+          "WEEK_4_VISIBLE_FORCED_DISPATCH"
+        ],
+        "week_3_defer": {
+          "grants_additional_preparation_benefit": false,
+          "immediately_transitions_to_week_4_forced_dispatch": true
+        },
+        "forced_dispatch_modifier": "NONE",
+        "victim_risk_runtime_consumer": "UNSPECIFIED_PENDING_UNIFIED_IMPLEMENTATION_CONTRACT"
       },
       "invariants": [
         "NO_HIDDEN_TRUTH_OR_CORRECT_SOLUTION_FROM_PREPARATION",
