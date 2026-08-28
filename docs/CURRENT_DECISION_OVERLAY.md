@@ -22,6 +22,8 @@ presentation_language: DOSSIER_HYBRID_IS_PRESENTATION_LANGUAGE_NOT_MEDIUM
 visual_direction_lock: USER_APPROVED
 visual_direction_decision: D-2026-08-28-URBAN-NOIR-HYBRID-VISUAL-DIRECTION
 ten_day_half_day_case_cadence: USER_APPROVED / IMPLEMENTATION_CONTRACT_PENDING
+one_main_case_runtime_enforcement: NOT_IMPLEMENTED / CURRENT_RUNTIME_ALLOWS_M01_M04_M07_IN_ONE_DEMO_CYCLE
+keyword_composition: APPROVED_DESIGN / NOT_IMPLEMENTED
 ten_day_half_day_case_decision: D-2026-08-28-TEN-DAY-HALF-DAY-CASE-CADENCE
 m04_week4_numeric_cadence: SUPERSEDED
 m04_sequential_narrative_result_vignettes: USER_APPROVED
@@ -42,6 +44,8 @@ runtime_implementation: MERGED_MAIN
 runtime_merge_commit: 8d303f0f9414950273be934fd28c8fb1b3a21e18
 canonical_root_runtime_receipt: AUTOMATED_EXACT_HEAD_GREEN
 ten_day_half_day_cadence: USER_APPROVED / NOT_IMPLEMENTED
+one_main_case_runtime_enforcement: NOT_IMPLEMENTED
+keyword_composition: APPROVED_DESIGN / NOT_IMPLEMENTED
 human_qa: NOT_RUN
 new_player_validation: NOT_RUN
 poc_passed: NOT_DECLARED

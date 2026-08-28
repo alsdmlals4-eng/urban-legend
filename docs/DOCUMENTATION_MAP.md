@@ -88,7 +88,8 @@
 | 저승역 상세 정본 | `CURRENT_AFTERLIFE_STATION_CANON.md` | M01 규칙·runtime 정합화 |
 | 현재 시각 계약 | `CURRENT_VISUAL_WORK_ORDER.md`, `CURRENT_SCREEN_SURFACE_INVENTORY_AND_VISUAL_COVERAGE.md`, `VISUAL_ANCHOR_SPEC.md`, `visual/VISUAL_DIRECTION_LOCK_PACKET_2026-08-28.md` | UI/아트/asset 작업 |
 | Notion-only 시각 reference 보존 | `migrations/notion-reference-mockups/README.md` | historical/reference mockup 확인; runtime/asset 승인에는 사용하지 않음 |
-| 상세 게임 설계 | `GAME_DESIGN_DOCUMENT.md` | 시스템·콘텐츠 상세 |
+| 사람용 current master GDD | `design/PROJECT_AI_PRODUCTION_SPEC.md` | 제품 약속·핵심 사건 흐름·핵심 시스템·구현/검증 경계 |
+| historical detailed design | `GAME_DESIGN_DOCUMENT.md` | legacy annual/weekly 상세과 provenance; current requirement로 사용 금지 |
 | 운영 생명주기 | `OPERATING_MODEL.md` | L1 이상 |
 | Work Mode·Skill 라우팅 | `WORK_MODE_AND_SKILL_ROUTING.md` | Skill 선택·보고 |
 | 프로젝트 Skill Registry | `../skills/SKILL_REGISTRY.json` | trigger 선택 |
@@ -100,6 +101,7 @@
 | 주제 | 현행 원본 | 읽기 조건 |
 |---|---|---|
 | 제품 약속·cadence·M01/M04·Gate | `CURRENT_PLANNING_CANON.md` | 모든 제품 변경 |
+| 사람용 current master GDD | `design/PROJECT_AI_PRODUCTION_SPEC.md` | 기획 검토·AI 이해·구현 계약 전 |
 | current mutable 결정 | `CURRENT_DECISION_OVERLAY.md` | 다음 행동·successor |
 | machine contract | `current-planning-canon.json` | 자동 검증·consumer |
 | M01/M04 역할 | `M01_M04_VERTICAL_SLICE_FLOW.md` | First Session·release-near Slice |

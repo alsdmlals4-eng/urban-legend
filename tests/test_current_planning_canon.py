@@ -130,6 +130,14 @@ class CurrentPlanningCanonTests(unittest.TestCase):
         self.assertEqual("IMPLEMENTED_ADDITIVE_OPTIONAL", runtime["monthly_state_status"])
         self.assertEqual("TEN_DAYS_AND_TWO_SLOTS_IMPLEMENTED_STRUCTURALLY", runtime["campaign_state_calendar"])
         self.assertEqual("NOT_IMPLEMENTED", runtime["ten_day_case_cadence_consumer"])
+        self.assertEqual(
+            "NOT_IMPLEMENTED_CURRENT_RUNTIME_ALLOWS_M01_M04_M07_IN_ONE_DEMO_CYCLE",
+            runtime["one_main_case_runtime_enforcement"],
+        )
+        self.assertEqual(
+            "APPROVED_DESIGN_NOT_IMPLEMENTED_NO_LIVE_CANDIDATE_POOL_OR_SCENE_CONSUMER",
+            runtime["keyword_composition"],
+        )
         self.assertEqual("REUSE_EXISTING_CANON_V2_RUNTIME", runtime["canon_v2_runtime_strategy"])
         self.assertEqual("COMPOSITE_RESULT", runtime["current_result_authority"])
         self.assertEqual("LEGACY_MASTERY_COMPATIBILITY_ONLY", runtime["legacy_s_rank_contract"])

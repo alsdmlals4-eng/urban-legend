@@ -35,6 +35,10 @@
 - Signature 4개는 M01 저승역, M04 빨간 우산, M07 폐주파수 방송국, M10 기록되지 않은 병동이다.
 - Standard 8개도 조사·추리·구출·회수 중 한 단계를 생략하지 않는다.
 
+### Runtime reality correction · 2026-08-28
+
+위 항목은 승인된 제품 계약이다. current `CampaignState`는 10일·오전/오후 구조와 반일 저장/재개를 구현했지만, 현재 `CASE_ORDER`의 M01·M04·M07을 같은 10일 demo 안에서 모두 시작·해결할 수 있다. 따라서 **한 cycle 메인 사건 1개**는 `CONFIRMED / NOT_IMPLEMENTED`이며, 현 three-case regression은 시간 구조의 회귀 증거일 뿐 product cadence 완료 증거가 아니다. Day 1~9 조기·Day 10 정규의 player-facing docket, timing save/result consumer, numeric balance도 계속 `NOT_IMPLEMENTED / UNDEFINED`다.
+
 ## 사건 공통 Core
 
 모든 사건은 다음 계약을 지킨다.
@@ -88,6 +92,7 @@
 - M04의 `COMPOSITE_RESULT` 표현은 `VIGNETTE_VICTIM_RESCUE → VIGNETTE_RESONANCE_RECOVERY → VIGNETTE_ROUTE_MEMORY → VIGNETTE_CASE_RECORD` 순차 후일담이다. 이는 logical page contract이며 새 runtime Scene·asset·Human QA PASS를 뜻하지 않는다.
 - Legacy grade/S-rank는 history/mastery compatibility만 허용한다.
 - `monthly_state`는 top-level additive optional orchestration block으로 구현됐지만 2/3/4주와 `dispatch_risk 0/15/30`만 아는 historical generic policy다. 새 10일 cadence와 M04 timing 결과 축의 live consumer는 아직 구현되지 않았다.
+- page-local keyword composition과 mutated-candidate verification은 승인된 설계이지만 current M01 `candidate_keywords` / `semantic_relations`는 비어 있고 M04에는 해당 data/Scene consumer가 없다. 기존 clue ID와 manual/recovery 근거 선택을 keyword system 완료로 승격하지 않는다.
 - 기존 Episode ID, report, ANNUAL PoC state를 자동 rename·import·월 완료 추론하지 않는다.
 - current main의 Canon v2 migration/runtime을 재사용한다.
 
@@ -118,6 +123,8 @@ runtime_implementation: MERGED_MAIN
 runtime_merge_commit: 8d303f0f9414950273be934fd28c8fb1b3a21e18
 automated_exact_head: GREEN
 ten_day_half_day_cadence: USER_APPROVED / IMPLEMENTATION_CONTRACT_PENDING / NOT_IMPLEMENTED
+one_main_case_runtime_enforcement: NOT_IMPLEMENTED
+keyword_composition: APPROVED_DESIGN / NOT_IMPLEMENTED
 human_qa: NOT_RUN
 poc_passed: NOT_DECLARED
 production_expansion: NOT_APPROVED

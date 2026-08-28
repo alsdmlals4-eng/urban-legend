@@ -4,7 +4,8 @@
 
 > 문서 위치: `docs/CURRENT_STATUS.md`  
 > 프로젝트 코어: `docs/PROJECT_CORE.md`  
-> 상세 설계: `docs/GAME_DESIGN_DOCUMENT.md`  
+> current master GDD: `docs/design/PROJECT_AI_PRODUCTION_SPEC.md`
+> historical detailed design archive: `docs/GAME_DESIGN_DOCUMENT.md`
 > 연도제 원설계: `docs/superpowers/specs/2026-07-25-annual-raising-visual-novel-design.md`  
 > 최신 시간 계약: `docs/superpowers/specs/2026-07-25-annual-mvp-001-seven-day-scheduling-design.md`  
 > current production GDD: `docs/design/PROJECT_AI_PRODUCTION_SPEC.md`
@@ -20,6 +21,7 @@
 | 최신 기획 정본 | `docs/CURRENT_PLANNING_CANON.md` + `docs/current-planning-canon.json` |
 | 현재 시각 방향 | `D-2026-08-28-URBAN-NOIR-HYBRID-VISUAL-DIRECTION` — 현실적 한국 도시 누아르 환경 + 애니풍 인물·괴이 + 손그림 기록물 UI |
 | 현재 campaign timing 결정 | `D-2026-08-28-TEN-DAY-HALF-DAY-CASE-CADENCE` — 10일·오전/오후, Day 1~9 조기 해결 / Day 10 정규 해결. 옛 2/3/4주, `0/15/30`, `0/+4/+8`은 `SUPERSEDED`; replacement numeric balance는 `UNDEFINED`. |
+| current runtime mismatch | 반일 구조는 구현됐지만 one-main-case 제한은 미구현이며, current regression은 M01·M04·M07을 같은 demo cycle에 허용한다. keyword composition은 `APPROVED_DESIGN / NOT_IMPLEMENTED`. |
 | 프로젝트 이해 보드 | `GENERATED_EXPLORATION / NOT_PROJECT_ASSET / NOT_RUNTIME_ASSET` |
 | runtime reconciliation | `MERGED_MAIN` (구현 merge PR #224); current documentation reconciliation PR #322 |
 | 개별 제품 asset | root `ASSET_MANIFEST.yml`의 6개 entry는 각자의 승인·구현·runtime evidence 범위를 보유; Human QA와 별개 |

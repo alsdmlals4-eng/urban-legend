@@ -1,4 +1,10 @@
-# 괴이 기록국 게임기획서
+# 괴이 기록국 게임기획서 — Historical Detailed Design Archive
+
+> 상태: `HISTORICAL_REFERENCE / NOT_CURRENT_PRODUCT_AUTHORITY`
+> current master GDD: `docs/design/PROJECT_AI_PRODUCTION_SPEC.md`
+> current cadence·핵심 시스템·구현 경계: `docs/CURRENT_PLANNING_CANON.md`, `docs/current-planning-canon.json`, `docs/CURRENT_HANDOFF.md`
+>
+> 이 문서는 이전 연도/분기/주간 상세 설계, 승인 provenance, 구현 계보를 보존한다. 본문의 1년·분기·4주·7일·주간 일정·기존 수치는 current requirement가 아니며, 현재 10일·반일 cadence, 조사/키워드/회수 시스템, 구현 상태는 위 current master GDD를 사용한다. 새 구현 계약은 이 archive에서 요구사항을 복원하지 않는다.
 
 > 편집 원본: `docs/GAME_DESIGN_DOCUMENT.md`  
 > historical implementation baseline: **MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A / Ver 4.2 / save `mvp-039`**

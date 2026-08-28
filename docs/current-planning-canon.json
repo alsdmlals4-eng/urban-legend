@@ -144,6 +144,8 @@
     "monthly_state_status": "IMPLEMENTED_ADDITIVE_OPTIONAL",
     "campaign_state_calendar": "TEN_DAYS_AND_TWO_SLOTS_IMPLEMENTED_STRUCTURALLY",
     "ten_day_case_cadence_consumer": "NOT_IMPLEMENTED",
+    "one_main_case_runtime_enforcement": "NOT_IMPLEMENTED_CURRENT_RUNTIME_ALLOWS_M01_M04_M07_IN_ONE_DEMO_CYCLE",
+    "keyword_composition": "APPROVED_DESIGN_NOT_IMPLEMENTED_NO_LIVE_CANDIDATE_POOL_OR_SCENE_CONSUMER",
     "canon_v2_runtime_strategy": "REUSE_EXISTING_CANON_V2_RUNTIME",
     "current_result_authority": "COMPOSITE_RESULT",
     "legacy_s_rank_contract": "LEGACY_MASTERY_COMPATIBILITY_ONLY",
