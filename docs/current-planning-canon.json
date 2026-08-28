@@ -57,7 +57,7 @@
       },
       "single_optional_delay": {
         "victim_risk_delta": 15,
-        "preparation_benefit": "ONE_EXPLICIT_NON_TRUTH_BENEFIT_UNDECIDED",
+        "preparation_benefit": "ROUTE_MEMORY_ANCHOR_ENHANCES_EXISTING_KWON_RECOVERY_SUPPORT",
         "must_be_visible_before_confirmation": true
       },
       "week_4_forced_dispatch": {
@@ -67,6 +67,31 @@
       "invariants": [
         "NO_HIDDEN_TRUTH_OR_CORRECT_SOLUTION_FROM_PREPARATION",
         "COMPOSITE_RESULT_EXPLAINS_TIMING_CAUSALITY_SEPARATELY"
+      ]
+    },
+    "m04_route_memory_anchor_preparation_benefit": {
+      "decision_id": "D-2026-08-28-M04-ROUTE-MEMORY-ANCHOR-PREPARATION-BENEFIT",
+      "status": "USER_APPROVED / IMPLEMENTATION_NOT_AUTHORIZED",
+      "scope": "M04_RED_UMBRELLA_SINGLE_OPTIONAL_DELAY_ONLY",
+      "consumer": "support_kwon_return_route",
+      "must_be_visible_before_confirmation": true,
+      "immediate_dispatch_effect": {
+        "fear_delta": -16,
+        "threshold_delta": 2,
+        "stability_delta": 0
+      },
+      "delayed_dispatch_effect": {
+        "fear_delta": -24,
+        "additional_fear_reduction": 8,
+        "threshold_delta": 2,
+        "stability_delta": 0
+      },
+      "invariants": [
+        "PLAYER_MUST_ACTIVELY_USE_EXISTING_KWON_RECOVERY_SUPPORT",
+        "NO_ADDITIONAL_SUPPORT_USE_OR_AUTOMATIC_TRIGGER",
+        "NO_CLUE_HINT_RULE_OR_ANSWER_MODIFICATION",
+        "NO_OTHER_AGENT_SUPPORT_MODIFICATION",
+        "COMPOSITE_RESULT_EXPLAINS_DELAY_RISK_AND_ACTUAL_SUPPORT_USE"
       ]
     },
     "content_budget": {
