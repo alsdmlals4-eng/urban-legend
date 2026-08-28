@@ -57,6 +57,37 @@ class CurrentPlanningCanonTests(unittest.TestCase):
         self.assertEqual("APPROVED", gates["user_final_planning_declaration"])
         self.assertEqual("COMPLETE", gates["base_adapter_baseline_reconciliation"])
 
+    def test_m04_uses_two_early_dispatch_windows_and_a_regular_week_four(self) -> None:
+        planning = self.canon["planning"]
+        timing = planning["m04_time_tradeoff"]
+        support = planning["m04_route_memory_anchor_preparation_benefit"]
+        self.assertEqual(
+            "D-2026-08-28-M04-EARLY-DISPATCH-REGULAR-WEEK4-CADENCE",
+            timing["decision_id"],
+        )
+        self.assertEqual(
+            ["WEEK_2_EARLY", "WEEK_3_EARLY", "WEEK_4_REGULAR"],
+            [entry["id"] for entry in timing["dispatch_windows"]],
+        )
+        self.assertEqual(
+            [0, 15, 30],
+            [entry["victim_route_memory_exposure"] for entry in timing["dispatch_windows"]],
+        )
+        self.assertEqual(
+            [0, 1, 2],
+            [entry["preparation_tier"] for entry in timing["dispatch_windows"]],
+        )
+        self.assertEqual(
+            "REGULAR", timing["dispatch_windows"][2]["dispatch_kind"]
+        )
+        self.assertEqual(
+            "M04_COMPOSITE_RESULT_TIMING_AXIS / IMPLEMENTATION_PENDING",
+            timing["victim_route_memory_exposure"]["consumer"],
+        )
+        self.assertEqual(-16, support["week_2_early_effect"]["fear_delta"])
+        self.assertEqual(4, support["week_3_early_effect"]["stability_gain"])
+        self.assertEqual(8, support["week_4_regular_effect"]["stability_gain"])
+
     def test_runtime_compatibility_uses_additive_monthly_orchestration(self) -> None:
         runtime = self.canon["runtime_compatibility"]
         self.assertEqual("monthly_state", runtime["monthly_state_key"])

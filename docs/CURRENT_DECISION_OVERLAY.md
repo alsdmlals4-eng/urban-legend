@@ -21,10 +21,8 @@ visual_treatment: SOFT_ANIME_NOIR_LOCKED
 presentation_language: DOSSIER_HYBRID_IS_PRESENTATION_LANGUAGE_NOT_MEDIUM
 visual_direction_lock: USER_APPROVED
 visual_direction_decision: D-2026-08-28-URBAN-NOIR-HYBRID-VISUAL-DIRECTION
-m04_time_tradeoff: USER_APPROVED
-m04_time_tradeoff_decision: D-2026-08-28-M04-ONE-DELAY-PREPARATION-VICTIM-RISK-TRADEOFF
-m04_route_memory_anchor_preparation_benefit: USER_APPROVED
-m04_route_memory_anchor_decision: D-2026-08-28-M04-ROUTE-MEMORY-ANCHOR-PREPARATION-BENEFIT
+m04_early_dispatch_regular_week4_cadence: USER_APPROVED
+m04_early_dispatch_regular_week4_decision: D-2026-08-28-M04-EARLY-DISPATCH-REGULAR-WEEK4-CADENCE
 ```
 
 ## 2. 현재 Gate
@@ -95,31 +93,18 @@ base_adapter_baseline_reconciliation: COMPLETE
 - M01 truth ID를 M04 current truth로 재사용하지 않는다.
 - `PRODUCT_REFERENCE_ASSET_PENDING`, `final_visuals_authorized=false` 유지.
 
-### M04 one-delay preparation ↔ victim-risk trade-off — 2026-08-28
+### M04 early dispatch ↔ regular week-4 readiness trade-off — 2026-08-28
 
 판정: `USER_APPROVED / PLANNING_CANON / IMPLEMENTATION_NOT_AUTHORIZED`.
 
-- 즉시 출동은 위험 `+0`과 준비 이득 없음, 한 번만 지연 출동은 사전 공개된 준비 이득 1개와 피해자 위험 `+15`의 교환이다.
-- 4주차 강제 출동 `+30`은 별도·가시적 escalation boundary다.
-- 준비 이득은 `D-2026-08-28-M04-ROUTE-MEMORY-ANCHOR-PREPARATION-BENEFIT`의 귀가 기억 고정 강화다. 지연 시 권나래의 기존 능동형 회수 지원은 공포 `-16 → -24`가 되며, 임계치 `+2`·안정화 변화 `0`·타 요원 지원은 바꾸지 않는다.
-- Composite Result는 timing causality를 추리·구출·회수 결과와 분리해 설명한다. M01에는 이 선택을 추가하지 않는다.
+- 2주차와 3주차는 조기 출동 창이며, 4주차는 정규 출동일이다. 4주차를 지연·강제 escalation이나 준비 상실로 표현하지 않는다.
+- 귀가 기억 노출은 2/3/4주차의 `+0/+15/+30`이며, M04 전용 `victim_route_memory_exposure` Composite Result 축으로 소비한다. 기존 공포 bar·조사 위험·피해자 이해도·resolution grade는 consumer가 아니다.
+- 권나래의 기존 한 번짜리 능동형 회수 지원은 기본 공포 `-16`·임계치 `+2`를 유지한다. 직접 사용 시 준비 tier 0/1/2는 안정화 `+0/+4/+8`만 추가한다.
+- Composite Result는 timing/exposure와 실제 지원 사용을 추리·구출·회수 결과와 분리해 설명한다. M01에는 이 선택을 추가하지 않는다.
 
-### M04 route-memory anchor preparation benefit — 2026-08-28
+### M04 predecessor decisions — 2026-08-28
 
-판정: `USER_APPROVED / PLANNING_CANON / IMPLEMENTATION_NOT_AUTHORIZED`.
-
-- M04 한 번 지연 출동에만 적용한다. 출동 확정 전 이득·대상·공포 `-24`·위험 `+15`를 함께 보인다.
-- 회수에서 플레이어가 기존 `support_kwon_return_route`를 직접 한 번 선택할 때만 강화한다. 자동 발동·추가 사용·무료 재시도는 없다.
-- 이득은 단서·힌트·가설·매뉴얼 정답·구출 절차·회수 전조를 변경하지 않는다. `+15`와 실제 사용 여부·보호 효과는 Composite Result의 별도 timing axis에 남긴다.
-
-### M04 bounded forced-dispatch reachability — 2026-08-28
-
-판정: `USER_APPROVED / PLANNING_CANON / IMPLEMENTATION_NOT_AUTHORIZED`.
-
-- M04에만 2주차 즉시 출동(`+0`) 또는 한 번 준비를 보이고, 준비 뒤 3주차에는 지연 출동(`+15`, 귀가 기억 고정 강화) 또는 보상 없는 출동 보류를 보인다.
-- 3주차 출동 보류는 두 번째 준비·추가 이득이 아니며 즉시 4주차 `+30` 강제 출동으로 transition한다. 강제 출동에는 준비 modifier가 없다.
-- 현재 `monthly_state_policy`의 2/3/4주차 risk grammar를 재사용하되 M01, 다른 사건, 범용 calendar UI와 post-week-4 transition으로 확장하지 않는다.
-- 위험 `+15`/`+30`의 concrete runtime consumer는 아직 `UNSPECIFIED_PENDING_UNIFIED_IMPLEMENTATION_CONTRACT`다. 이 결정은 code/data/Scene/UI/asset mutation이나 balance/runtime/Human QA PASS를 승인하지 않는다.
+`D-2026-08-28-M04-ONE-DELAY-PREPARATION-VICTIM-RISK-TRADEOFF`, `D-2026-08-28-M04-ROUTE-MEMORY-ANCHOR-PREPARATION-BENEFIT`, `D-2026-08-28-M04-BOUNDED-FORCED-DISPATCH-REACHABILITY`는 `D-2026-08-28-M04-EARLY-DISPATCH-REGULAR-WEEK4-CADENCE`로 current authority를 넘긴 historical predecessor다. 원문·승인 계보는 각 decision file에 보존하고, 현재 판단에는 사용하지 않는다.
 
 ### Visual direction lock — 2026-08-28
 
