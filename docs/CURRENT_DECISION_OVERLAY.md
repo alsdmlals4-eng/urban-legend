@@ -23,6 +23,8 @@ visual_direction_lock: USER_APPROVED
 visual_direction_decision: D-2026-08-28-URBAN-NOIR-HYBRID-VISUAL-DIRECTION
 m04_time_tradeoff: USER_APPROVED
 m04_time_tradeoff_decision: D-2026-08-28-M04-ONE-DELAY-PREPARATION-VICTIM-RISK-TRADEOFF
+m04_route_memory_anchor_preparation_benefit: USER_APPROVED
+m04_route_memory_anchor_decision: D-2026-08-28-M04-ROUTE-MEMORY-ANCHOR-PREPARATION-BENEFIT
 ```
 
 ## 2. 현재 Gate
@@ -99,8 +101,16 @@ base_adapter_baseline_reconciliation: COMPLETE
 
 - 즉시 출동은 위험 `+0`과 준비 이득 없음, 한 번만 지연 출동은 사전 공개된 준비 이득 1개와 피해자 위험 `+15`의 교환이다.
 - 4주차 강제 출동 `+30`은 별도·가시적 escalation boundary다.
-- 준비 이득은 히든 진실·정답·자동 규칙을 제공하지 않는다. 정확한 이득 내용은 `UNDECIDED`이며 다음 제품 결정의 owner다.
+- 준비 이득은 `D-2026-08-28-M04-ROUTE-MEMORY-ANCHOR-PREPARATION-BENEFIT`의 귀가 기억 고정 강화다. 지연 시 권나래의 기존 능동형 회수 지원은 공포 `-16 → -24`가 되며, 임계치 `+2`·안정화 변화 `0`·타 요원 지원은 바꾸지 않는다.
 - Composite Result는 timing causality를 추리·구출·회수 결과와 분리해 설명한다. M01에는 이 선택을 추가하지 않는다.
+
+### M04 route-memory anchor preparation benefit — 2026-08-28
+
+판정: `USER_APPROVED / PLANNING_CANON / IMPLEMENTATION_NOT_AUTHORIZED`.
+
+- M04 한 번 지연 출동에만 적용한다. 출동 확정 전 이득·대상·공포 `-24`·위험 `+15`를 함께 보인다.
+- 회수에서 플레이어가 기존 `support_kwon_return_route`를 직접 한 번 선택할 때만 강화한다. 자동 발동·추가 사용·무료 재시도는 없다.
+- 이득은 단서·힌트·가설·매뉴얼 정답·구출 절차·회수 전조를 변경하지 않는다. `+15`와 실제 사용 여부·보호 효과는 Composite Result의 별도 timing axis에 남긴다.
 
 ### Visual direction lock — 2026-08-28
 
