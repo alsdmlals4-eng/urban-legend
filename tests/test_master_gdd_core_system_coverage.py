@@ -50,6 +50,15 @@ class MasterGddCoreSystemCoverageTests(unittest.TestCase):
         ):
             self.assertIn(statement, self.text)
 
+    def test_experience_hierarchy_keeps_calendar_as_support_not_primary_fun(self) -> None:
+        for statement in (
+            "Primary playable core",
+            "investigation → deduction/manual → recovery",
+            "Supporting campaign system",
+            "not a separate primary fun loop",
+        ):
+            self.assertIn(statement, self.text)
+
 
 if __name__ == "__main__":
     unittest.main()

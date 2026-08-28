@@ -62,6 +62,24 @@ class CurrentPlanningCanonTests(unittest.TestCase):
         self.assertEqual("APPROVED", gates["user_final_planning_declaration"])
         self.assertEqual("COMPLETE", gates["base_adapter_baseline_reconciliation"])
 
+    def test_investigation_deduction_and_recovery_remain_primary_playable_core(self) -> None:
+        priority = self.canon["planning"]["experience_priority"]
+        decision_path = ROOT / "docs/decisions/D-2026-08-29-CORE-LOOP-PRIORITY.md"
+        self.assertTrue(decision_path.is_file(), decision_path)
+        self.assertEqual("D-2026-08-29-CORE-LOOP-PRIORITY", priority["decision_id"])
+        self.assertEqual(
+            ["INVESTIGATION", "DEDUCTION", "RECOVERY"],
+            priority["primary_playable_core"],
+        )
+        self.assertEqual(
+            "TEN_DAY_HALF_DAY_CALENDAR",
+            priority["supporting_campaign_system"],
+        )
+        self.assertIn(
+            "CALENDAR_DOES_NOT_REPLACE_CORE_LOOP_PLAYER_VALIDATION",
+            priority["invariants"],
+        )
+
     def test_m04_uses_ten_day_early_and_regular_windows_without_fabricated_balance(self) -> None:
         planning = self.canon["planning"]
         timing = planning["m04_time_tradeoff"]
