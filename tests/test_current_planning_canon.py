@@ -88,6 +88,39 @@ class CurrentPlanningCanonTests(unittest.TestCase):
         self.assertEqual(4, support["week_3_early_effect"]["stability_gain"])
         self.assertEqual(8, support["week_4_regular_effect"]["stability_gain"])
 
+    def test_m04_result_vignettes_keep_one_causal_result_per_page(self) -> None:
+        vignettes = self.canon["planning"]["m04_sequential_narrative_result_vignettes"]
+        decision_path = ROOT / "docs/decisions/D-2026-08-28-M04-SEQUENTIAL-NARRATIVE-RESULT-VIGNETTES.md"
+        self.assertTrue(decision_path.is_file(), decision_path)
+        self.assertEqual(
+            "D-2026-08-28-M04-SEQUENTIAL-NARRATIVE-RESULT-VIGNETTES",
+            vignettes["decision_id"],
+        )
+        self.assertEqual("M04_RED_UMBRELLA_ONLY", vignettes["scope"])
+        self.assertEqual(
+            [
+                "VIGNETTE_VICTIM_RESCUE",
+                "VIGNETTE_RESONANCE_RECOVERY",
+                "VIGNETTE_ROUTE_MEMORY",
+                "VIGNETTE_CASE_RECORD",
+            ],
+            vignettes["page_order"],
+        )
+        self.assertEqual(
+            [
+                "dispatch_window",
+                "victim_route_memory_exposure",
+                "kwon_support_used",
+                "actual_stability_gain",
+            ],
+            vignettes["route_memory_payload"],
+        )
+        self.assertIn("ONE_CAUSAL_RESULT_PER_PAGE", vignettes["invariants"])
+        self.assertIn(
+            "NO_M04_RESULT_SCOREBOARD_OR_DASHBOARD_AGGREGATION",
+            vignettes["invariants"],
+        )
+
     def test_runtime_compatibility_uses_additive_monthly_orchestration(self) -> None:
         runtime = self.canon["runtime_compatibility"]
         self.assertEqual("monthly_state", runtime["monthly_state_key"])

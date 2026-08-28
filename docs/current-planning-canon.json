@@ -115,6 +115,31 @@
         "COMPOSITE_RESULT_EXPLAINS_TIMING_EXPOSURE_AND_ACTUAL_SUPPORT_USE"
       ]
     },
+    "m04_sequential_narrative_result_vignettes": {
+      "decision_id": "D-2026-08-28-M04-SEQUENTIAL-NARRATIVE-RESULT-VIGNETTES",
+      "status": "USER_APPROVED / PLANNING_CANON / IMPLEMENTATION_NOT_AUTHORIZED",
+      "scope": "M04_RED_UMBRELLA_ONLY",
+      "presentation": "ONE_CAUSAL_RESULT_PER_SEQUENTIAL_NARRATIVE_PAGE",
+      "page_order": [
+        "VIGNETTE_VICTIM_RESCUE",
+        "VIGNETTE_RESONANCE_RECOVERY",
+        "VIGNETTE_ROUTE_MEMORY",
+        "VIGNETTE_CASE_RECORD"
+      ],
+      "route_memory_payload": [
+        "dispatch_window",
+        "victim_route_memory_exposure",
+        "kwon_support_used",
+        "actual_stability_gain"
+      ],
+      "invariants": [
+        "ONE_CAUSAL_RESULT_PER_PAGE",
+        "NO_M04_RESULT_SCOREBOARD_OR_DASHBOARD_AGGREGATION",
+        "WEEK_4_REMAINS_REGULAR_NOT_A_PENALTY",
+        "NO_RESCUE_RECOVERY_TRUTH_REWARD_OR_M01_SEMANTIC_CHANGE",
+        "LOGICAL_PAGE_NOT_RUNTIME_SCENE_OR_ASSET"
+      ]
+    },
     "content_budget": {
       "signature_cases": 4,
       "standard_cases": 8

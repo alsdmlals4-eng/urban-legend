@@ -28,6 +28,7 @@
 - 1개월에 메인 사건 1개만 연다.
 - 월의 M04 docket은 `1주 준비 → 2주 조기 출동 I(귀가 기억 노출 +0) → 3주 조기 출동 II(+15) → 4주 정규 출동(+30)`이다. `+15/+30`은 조기 보호를 사용하지 않았을 때의 누적 노출이며, 4주차를 지연·강제 벌점으로 부르지 않는다. 수치는 Human QA 전 provisional이다.
 - `D-2026-08-28-M04-EARLY-DISPATCH-REGULAR-WEEK4-CADENCE`: M04에서 2·3주차 조기 출동과 4주차 정규 출동을 사용한다. 권나래의 기존 능동형 `귀가 기억 고정`은 실제 사용 시 tier 0/1/2에 따라 안정화 `+0/+4/+8`을 얻으며, 기본 공포 `-16`·임계치 `+2`는 유지한다. 귀가 기억 노출은 M04 전용 Composite Result 축에서 추리·구출·회수 결과와 분리한다.
+- `D-2026-08-28-M04-SEQUENTIAL-NARRATIVE-RESULT-VIGNETTES`: M04의 복합 결과는 한 화면의 점수·카드 나열이 아니라 `피해자 → 잔향 → 귀가 기억 → 기록국` 순서의 짧은 이야기 페이지로 전개한다. 한 원인당 한 페이지이며, 귀가 기억 페이지는 timing과 실제 권나래 지원 사용을 같은 인과로만 연결한다. M01과 기존 결과 의미·보상은 바꾸지 않는다.
 - 조기 해결 뒤 같은 달 두 번째 메인 사건을 생성하지 않는다. 남은 주는 후일담·치료·연구·관계·다음 달 준비로 환류한다.
 - 초기 제작 Slate는 M01~M12이며 `1년차` 완료 Gate로 쓰지 않는다. M13+도 같은 cadence로 이어진다.
 - Signature 4개는 M01 저승역, M04 빨간 우산, M07 폐주파수 방송국, M10 기록되지 않은 병동이다.
@@ -54,7 +55,7 @@
 - M01 회수는 `docs/M01_RECOVERY_SCENE_PACKET.md`의 `목적지 합창 / 회귀 승강장 / 무정차 환송`을 재사용한다.
 - M01 runtime은 10단계 First Session orchestrator와 additive `monthly_state`를 사용하며 별도 hidden truth owner를 만들지 않는다.
 - `M04 빨간 우산`은 약 30~45분 release-near player-experience Vertical Slice다.
-- M04의 대표 고민은 `2주차에 가장 빠르게 보호할지, 3주차의 부분 준비를 택할지, 4주차 정규 출동까지 현장 준비를 완성할지`다. 귀가 기억 노출은 `+0/+15/+30`, 권나래의 직접 사용형 준비 이득은 안정화 `+0/+4/+8`으로 맞물린다. 결과는 Composite Result에서 추리·구출·회수와 분리된 출동 타이밍 인과로 설명한다.
+- M04의 대표 고민은 `2주차에 가장 빠르게 보호할지, 3주차의 부분 준비를 택할지, 4주차 정규 출동까지 현장 준비를 완성할지`다. 귀가 기억 노출은 `+0/+15/+30`, 권나래의 직접 사용형 준비 이득은 안정화 `+0/+4/+8`으로 맞물린다. 결과는 Composite Result에서 추리·구출·회수와 분리된 출동 타이밍 인과로 설명하며, M04에서는 이를 한 화면에 합산하지 않고 순차 후일담으로 읽힌다.
 - M04 shared-system validation baseline은 구현됐지만 최종 제품 시각·Audio/VFX·Human QA는 아직 Gate 밖이다.
 
 ## 화면·재사용 계약
@@ -83,6 +84,7 @@
 - 성장의 장기 방향은 0~5 Rank + 내부 숙련 진행도이며 threshold와 피로·연구 수치는 provisional이다.
 - 성장은 Clarity·Access·Tolerance·Support를 바꾸며 핵심 진실이나 정답을 자동 제공하지 않는다.
 - current result authority는 `COMPOSITE_RESULT`다.
+- M04의 `COMPOSITE_RESULT` 표현은 `VIGNETTE_VICTIM_RESCUE → VIGNETTE_RESONANCE_RECOVERY → VIGNETTE_ROUTE_MEMORY → VIGNETTE_CASE_RECORD` 순차 후일담이다. 이는 logical page contract이며 새 runtime Scene·asset·Human QA PASS를 뜻하지 않는다.
 - Legacy grade/S-rank는 history/mastery compatibility만 허용한다.
 - `monthly_state`는 top-level additive optional orchestration block으로 구현됐다.
 - 기존 Episode ID, report, ANNUAL PoC state를 자동 rename·import·월 완료 추론하지 않는다.
