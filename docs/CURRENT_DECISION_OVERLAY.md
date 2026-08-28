@@ -112,6 +112,15 @@ base_adapter_baseline_reconciliation: COMPLETE
 - 회수에서 플레이어가 기존 `support_kwon_return_route`를 직접 한 번 선택할 때만 강화한다. 자동 발동·추가 사용·무료 재시도는 없다.
 - 이득은 단서·힌트·가설·매뉴얼 정답·구출 절차·회수 전조를 변경하지 않는다. `+15`와 실제 사용 여부·보호 효과는 Composite Result의 별도 timing axis에 남긴다.
 
+### M04 bounded forced-dispatch reachability — 2026-08-28
+
+판정: `USER_APPROVED / PLANNING_CANON / IMPLEMENTATION_NOT_AUTHORIZED`.
+
+- M04에만 2주차 즉시 출동(`+0`) 또는 한 번 준비를 보이고, 준비 뒤 3주차에는 지연 출동(`+15`, 귀가 기억 고정 강화) 또는 보상 없는 출동 보류를 보인다.
+- 3주차 출동 보류는 두 번째 준비·추가 이득이 아니며 즉시 4주차 `+30` 강제 출동으로 transition한다. 강제 출동에는 준비 modifier가 없다.
+- 현재 `monthly_state_policy`의 2/3/4주차 risk grammar를 재사용하되 M01, 다른 사건, 범용 calendar UI와 post-week-4 transition으로 확장하지 않는다.
+- 위험 `+15`/`+30`의 concrete runtime consumer는 아직 `UNSPECIFIED_PENDING_UNIFIED_IMPLEMENTATION_CONTRACT`다. 이 결정은 code/data/Scene/UI/asset mutation이나 balance/runtime/Human QA PASS를 승인하지 않는다.
+
 ### Visual direction lock — 2026-08-28
 
 판정: `USER_APPROVED / PLANNING_ONLY`.

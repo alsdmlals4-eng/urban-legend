@@ -4,6 +4,7 @@
 > Issue: #325
 > Scope: `M04_RED_UMBRELLA` release-near Vertical Slice only
 > Owner: `CURRENT_PLANNING_CANON.md`, `current-planning-canon.json`, `CURRENT_DECISION_OVERLAY.md`, Notion `01 · Direction · Planning`
+> Reachability resolved by: `D-2026-08-28-M04-BOUNDED-FORCED-DISPATCH-REACHABILITY`
 
 ## Decision
 

@@ -18,7 +18,7 @@
 |---|---|
 | 최신 기획 정본 | `docs/CURRENT_PLANNING_CANON.md` + `docs/current-planning-canon.json` |
 | 현재 시각 방향 | `D-2026-08-28-URBAN-NOIR-HYBRID-VISUAL-DIRECTION` — 현실적 한국 도시 누아르 환경 + 애니풍 인물·괴이 + 손그림 기록물 UI |
-| 현재 M04 timing 결정 | `D-2026-08-28-M04-ONE-DELAY-PREPARATION-VICTIM-RISK-TRADEOFF` + `D-2026-08-28-M04-ROUTE-MEMORY-ANCHOR-PREPARATION-BENEFIT` — 즉시 출동 또는 한 번 지연(+15 피해자 위험); 지연은 권나래의 능동형 귀가 기억 고정 공포 감소를 `-16 → -24`로 강화 |
+| 현재 M04 timing 결정 | `D-2026-08-28-M04-ONE-DELAY-PREPARATION-VICTIM-RISK-TRADEOFF` + `D-2026-08-28-M04-ROUTE-MEMORY-ANCHOR-PREPARATION-BENEFIT` + `D-2026-08-28-M04-BOUNDED-FORCED-DISPATCH-REACHABILITY` — 2주차 즉시(+0), 한 번 준비 뒤 3주차 지연(+15·귀가 기억 고정 `-16 → -24`), 추가 이득 없는 보류 뒤 4주차 강제(+30·modifier 없음) |
 | 프로젝트 이해 보드 | `GENERATED_EXPLORATION / NOT_PROJECT_ASSET / NOT_RUNTIME_ASSET` |
 | runtime reconciliation | `MERGED_MAIN` (구현 merge PR #224); current documentation reconciliation PR #322 |
 | 개별 제품 asset | root `ASSET_MANIFEST.yml`의 6개 entry는 각자의 승인·구현·runtime evidence 범위를 보유; Human QA와 별개 |
