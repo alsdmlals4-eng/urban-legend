@@ -71,7 +71,7 @@ Primary action: 조사에서 확보한 후보 키워드를 사용해 번호가 �
 
 ### 기록철형 매뉴얼 작업대 적용 기준
 
-Status: `USER_DIRECTED_REVISION / GENERATED_CANDIDATE / BLUEPRINT_UI_REFERENCE / NOT_RUNTIME_IMPLEMENTED`
+Status: `USER_APPROVED / BLUEPRINT_UI_REFERENCE / NOT_RUNTIME_IMPLEMENTED`
 
 빈칸 추리는 현장 우측의 짧은 읽기 서랍을 늘리는 방식이 아니라, 현장 위에 여는
 전체 화면 기록철 작업대에서 수행한다. 이 오버레이는 다음 순서를 고정한다.

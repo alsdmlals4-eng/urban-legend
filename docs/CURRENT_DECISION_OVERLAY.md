@@ -139,7 +139,7 @@ base_adapter_baseline_reconciliation: COMPLETE
 
 ### Contextual Lume companion and scenario costume — 2026-08-30
 
-판정: `USER_DIRECTED / PLANNING_REFERENCE_ONLY / PRODUCT_ASSET_PENDING`.
+판정: `USER_APPROVED / BLUEPRINT_REFERENCE_ONLY / PRODUCT_ASSET_PENDING`.
 
 - CASE-01 조사 디바이스·현장·매뉴얼의 기록 보조 이름은 **루메**다. 전임
   블루프린트 후보에 들어간 ‘아카’ 표기는 정체성 오류로 `SUPERSEDED`다.
