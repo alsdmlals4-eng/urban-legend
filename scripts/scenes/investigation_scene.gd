@@ -14,6 +14,7 @@ const AccessibilitySettingsScript = preload("res://scripts/ui/accessibility_sett
 const AnomalyManualDrawerScript = preload("res://scripts/ui/anomaly_manual_drawer.gd")
 const AfterlifeManualCatalog = preload("res://scripts/ui/afterlife_manual_catalog.gd")
 const TeamStatusPopoverScene = preload("res://scenes/ui/team_status_popover.tscn")
+const ManualDeductionWorkbenchScene = preload("res://scenes/ui/manual_deduction_workbench.tscn")
 
 const M04_EPISODE_ID := "episode_002_red_umbrella_alley"
 const M04_INVESTIGATION_SHADE_ALPHA := 0.42
@@ -74,6 +75,7 @@ var _manual_panel: PanelContainer
 var _manual_toggle_button: Button
 var _manual_visible_by_user := false
 var _manual_drawer: AnomalyManualDrawer
+var _manual_workbench: Control
 var _result_toast: PanelContainer
 var _case_summary_label: Label
 var _mode_label: Label
@@ -186,13 +188,12 @@ func _build_ui() -> void:
 	if _is_afterlife_layout:
 		_record_button.pressed.connect(_toggle_record_drawer)
 		_build_afterlife_manual()
-		_manual_drawer = AnomalyManualDrawerScript.new()
-		add_child(_manual_drawer)
-		_manual_drawer.anchor_left = 0.70
-		_manual_drawer.anchor_top = 0.12
-		_manual_drawer.anchor_right = 0.986
-		_manual_drawer.anchor_bottom = 0.92
-		_manual_drawer.bind_toggle_button(_manual_toggle_button)
+		_manual_workbench = ManualDeductionWorkbenchScene.instantiate() as Control
+		_manual_workbench.z_index = 100
+		add_child(_manual_workbench)
+		_manual_workbench.connect("draft_slot_requested", _on_manual_draft_slot_requested)
+		_manual_workbench.connect("draft_slot_clear_requested", _on_manual_draft_slot_clear_requested)
+		_manual_toggle_button.pressed.connect(_open_manual_workbench)
 	else:
 		_manual_drawer = AnomalyManualDrawerScript.new()
 		add_child(_manual_drawer)
@@ -399,6 +400,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		_close_inline_result()
 	elif _resolution_confirm_panel != null and _resolution_confirm_panel.visible:
 		_resolution_confirm_panel.visible = false
+	elif _manual_workbench != null and _manual_workbench.visible:
+		_manual_workbench.call("dismiss")
 	elif _manual_drawer != null and _manual_drawer.is_open():
 		_manual_drawer.close_drawer()
 	elif _record_drawer != null and _record_drawer.visible:
@@ -1296,16 +1299,127 @@ func _set_ui_mode(mode: String) -> void:
 			point_column.visible = not uses_method_picker
 	if _dialogue_dock != null:
 		_dialogue_dock.visible = true
-	if uses_method_picker and _manual_drawer != null and _manual_drawer.is_open():
-		_manual_drawer.close_drawer()
+	if uses_method_picker:
+		if _manual_workbench != null and _manual_workbench.visible:
+			_manual_workbench.call("dismiss")
+		elif _manual_drawer != null and _manual_drawer.is_open():
+			_manual_drawer.close_drawer()
 	_refresh_manual_layout()
 	if _result_toast != null and mode != "RESULT":
 		_result_toast.visible = false
 
 
 func _toggle_manual_panel() -> void:
-	if _manual_drawer != null:
+	if _is_afterlife_layout:
+		_open_manual_workbench()
+	elif _manual_drawer != null:
 		_manual_drawer.toggle()
+
+
+func _open_manual_workbench() -> void:
+	if not _is_afterlife_layout or _manual_workbench == null:
+		return
+	var manual := _get_case01_workbench_manual()
+	if manual.is_empty():
+		return
+	_manual_workbench.call("set_view_model", _build_case01_workbench_model(manual))
+	_manual_workbench.call("open_workbench", _manual_toggle_button)
+
+
+func _on_manual_draft_slot_requested(slot_id: String, candidate_id: String) -> void:
+	var manual := _get_case01_workbench_manual()
+	if manual.is_empty():
+		return
+	GameState.set_manual_draft_slot(
+		manual,
+		_current_manual_page_id_for_slot(manual, slot_id),
+		slot_id,
+		candidate_id,
+		GameState.get_collected_clue_ids(),
+		GameState.get_current_episode_id()
+	)
+	_refresh_case01_workbench_model()
+
+
+func _on_manual_draft_slot_clear_requested(slot_id: String) -> void:
+	var manual := _get_case01_workbench_manual()
+	if manual.is_empty():
+		return
+	GameState.clear_manual_draft_slot(manual, slot_id, GameState.get_current_episode_id())
+	_refresh_case01_workbench_model()
+
+
+func _refresh_case01_workbench_model() -> void:
+	if _manual_workbench == null or not _manual_workbench.visible:
+		return
+	var manual := _get_case01_workbench_manual()
+	if not manual.is_empty():
+		_manual_workbench.call("set_view_model", _build_case01_workbench_model(manual))
+
+
+func _get_case01_workbench_manual() -> Dictionary:
+	if not _is_afterlife_layout:
+		return {}
+	var episode: Dictionary = GameState.get_current_episode()
+	var manual_value: Variant = episode.get("investigation_manual", {})
+	if manual_value is Dictionary:
+		var manual := manual_value as Dictionary
+		if not (manual.get("candidate_keywords", []) as Array).is_empty():
+			return manual.duplicate(true)
+	return {}
+
+
+func _build_case01_workbench_model(manual: Dictionary) -> Dictionary:
+	var source_titles: Dictionary = {}
+	for clue_value in GameState.get_clues():
+		if clue_value is Dictionary:
+			var clue := clue_value as Dictionary
+			source_titles[String(clue.get("id", ""))] = String(clue.get("title", "확보 기록"))
+	var earned_record_ids := GameState.get_collected_clue_ids()
+	var visible_candidates: Array[Dictionary] = []
+	for candidate_value in manual.get("candidate_keywords", []) as Array:
+		if not candidate_value is Dictionary:
+			continue
+		var candidate := candidate_value as Dictionary
+		var source_record_id := String(candidate.get("source_record_id", ""))
+		if not earned_record_ids.has(source_record_id):
+			continue
+		visible_candidates.append({
+			"id": String(candidate.get("id", "")),
+			"page_id": String(candidate.get("page_id", "")),
+			"display_label": String(candidate.get("display_label", "기록 후보")),
+			"source_label": "출처: %s" % String(source_titles.get(source_record_id, "확보 기록"))
+		})
+	return {
+		"case_label": "CASE-01 %s" % GameState.get_current_episode_title(),
+		"title": "괴이 매뉴얼",
+		"selected_page_id": _first_case01_manual_page_id(manual),
+		"pages": (manual.get("pages", []) as Array).duplicate(true),
+		"draft_slots": GameState.get_manual_draft_slots(manual, GameState.get_current_episode_id()),
+		"candidate_keywords": visible_candidates,
+		"lume": {
+			"name": "루메",
+			"message": "출처 기록과 문장을 함께 비교해 보세요. 판단은 현장 대응에서 확인할 수 있어요."
+		}
+	}
+
+
+func _first_case01_manual_page_id(manual: Dictionary) -> String:
+	for page_value in manual.get("pages", []) as Array:
+		if page_value is Dictionary:
+			return String((page_value as Dictionary).get("id", ""))
+	return ""
+
+
+func _current_manual_page_id_for_slot(manual: Dictionary, slot_id: String) -> String:
+	for page_value in manual.get("pages", []) as Array:
+		if not page_value is Dictionary:
+			continue
+		var page := page_value as Dictionary
+		for segment_value in page.get("deduction_segments", []) as Array:
+			if segment_value is Dictionary and String((segment_value as Dictionary).get("slot_id", "")) == slot_id:
+				return String(page.get("id", ""))
+	return ""
 
 
 func _refresh_manual_layout() -> void:

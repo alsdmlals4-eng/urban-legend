@@ -20,7 +20,7 @@ Closure contract: `docs/planning/2026-08-21-visual-ui-planning-closure.md`
 
 이 문서의 2026-08-25 승격 대기 문구는 당시의 anchor/candidate 경계 기록이다. **현재 개별 제품 asset 상태는 반드시** `ASSET_MANIFEST.yml` → `CURRENT_VISUAL_WORK_ORDER.md` → `CURRENT_VISUAL_ASSET_CONSUMER_CHECKLIST.md` 순으로 읽는다.
 
-- root manifest에는 6개 `PROJECT_ASSET_APPROVED` entry가 있다: M01 Investigation/Recovery background, M01 B/C·D cutout, M04 Investigation background, M04 B/C cutout.
+- root manifest에는 7개 `PROJECT_ASSET_APPROVED` entry가 있다: M01 Investigation/Recovery background, M01 B/C·D cutout, CASE-01 루메 매뉴얼 보조 초상, M04 Investigation background, M04 B/C cutout.
 - 이 개별 자산은 해당 consumer의 구현·runtime 검증 상태와 구분해 기록되며, 아직 승격되지 않은 M01 Entrance, M04 Entrance/Recovery, M04 D 후보나 Human/new-player QA를 자동으로 통과시키지 않는다.
 - 특히 `M04_INVESTIGATION_ANCHOR_01` reference candidate는 `USER_APPROVED_VISUAL_CANDIDATE / PRODUCT_REFERENCE_ASSET_PENDING`을 유지한다. 이것은 실제 `red_crossroads.png` adaptation의 별도 `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED` 상태와 다른 대상이다.
 
@@ -68,6 +68,56 @@ Required:
 - return to field
 
 Primary action: 조사에서 확보한 후보 키워드를 사용해 번호가 붙은 추리문 슬롯을 완성한다. 정답 후보를 시각 위계로 미리 알려주지 않는다.
+
+### 기록철형 매뉴얼 작업대 적용 기준
+
+Status: `USER_APPROVED / BLUEPRINT_UI_REFERENCE / NOT_RUNTIME_IMPLEMENTED`
+
+빈칸 추리는 현장 우측의 짧은 읽기 서랍을 늘리는 방식이 아니라, 현장 위에 여는
+전체 화면 기록철 작업대에서 수행한다. 이 오버레이는 다음 순서를 고정한다.
+
+화면은 카드가 서로 떠 있는 대시보드가 아니라, 얇은 이중 테두리와 절제된 금속
+장식으로 묶인 **하나의 기록철**이어야 한다. 문서 본문이 주인공이며, 모든 조작은
+그 문서를 읽고 대조하기 위한 보조 정보다.
+
+```text
+공용 상단: 기관/사건 표기 · 탭 · 현장 복귀
+왼쪽: 매뉴얼 INDEX와 선택 장, 문서 정보
+가운데: 긴 읽기형 추리문 + 번호 빈칸 + 추리 가설 + 구조 상태
+오른쪽 상단: 같은 위계의 2열 후보 키워드 + 원본 출처 + 획득 순서
+오른쪽 하단: 기록관 루메의 비정답형 기록 보조
+공용 하단: 후보 규칙은 현장 검증 전이라는 상태만 표시
+```
+
+- 본문은 키워드 카드나 상태 상자보다 충분히 크게, 여러 줄의 실제 추리문으로
+  읽혀야 한다. 화면의 목적이 메뉴 탐색이 아니라 근거 비교임을 즉시 보이게 한다.
+- 후보 키워드는 모두 동일한 외형의 컴팩트한 2열 버튼으로 놓고, 각 버튼에
+  `후보 ID / 표현 / 출처 ID / 획득 순서`를 함께 보인다. 정상·변형·추천을 색이나
+  크기로 구분하지 않는다.
+- 루메의 보조 칸은 긴 독립 캐릭터 일러스트가 아니라, 화면을 가리지 않는 작은
+  기록관 초상과 출처 재확인을 유도하는 말풍선으로 구성한다.
+
+#### 기록관 루메 · 사건 맥락 복장 원칙
+
+- 루메의 정체성은 **귀여운 소형 치비 비율, 은빛 웨이브 머리, 큰 호박빛 눈,
+  친근하지만 기록관다운 안내 태도**로 유지한다. 성숙한 전신 요원 체형으로 바꾸지
+  않는다.
+- 복장은 입장한 사건의 장소·시대·위협 형태에 맞춰 달라질 수 있다. 단, 임의의
+  자동 변형이 아니라 사건 ID가 붙은 별도 후보·별도 승인 자산으로 관리한다.
+- `CASE-01 저승역`용 루메는 밤의 도시철도 기록 보조를 읽히는 검정·금색 제복,
+  작은 랜턴, 표식·승차권 파우치와 잔향 같은 작은 유령 장식으로 구성한다. 이 복장은
+  다른 사건의 기본 복장이 아니다.
+- 어떤 복장에서도 루메는 정답, 미관측 단서, 후보 호환성, 변조 사실을 지목하지
+  않는다. 안내는 원문·출처·관측 순서를 다시 보게 하는 데에만 쓴다.
+
+- 후보 키워드의 강조는 현재 선택·포커스·배치 상태만 나타낼 수 있으며, 의미상 정답,
+  변조 후보, 호환 점수, 권장 선택을 표시해서는 안 된다.
+- 슬롯 상태는 `비어 있음 / 후보 배치 / 구조 오류`까지만 즉시 표시한다. `확인된 규칙`
+  또는 `위험 사례`는 구출·회수의 실제 결과 뒤에만 기록한다.
+- 기록관 루메의 문구는 원문·출처·관측 순서를 다시 보게 하는 안내여야 하며, 특정
+  후보를 정답처럼 지목하거나 현장 대응을 자동 선택하지 않는다.
+- 매뉴얼을 닫아도 현장에는 후보 규칙의 요약만 남긴다. 전체 출처와 반증 비교는
+  작업대 안에서 수행해 회수 HUD의 가독성을 보호한다.
 
 ## Rescue Anchor
 
@@ -127,6 +177,55 @@ Main treatment — `SOFT_ANIME_NOIR_LOCKED`:
 - Korean Urban Occult Dossier Hybrid describes UI metaphor, information hierarchy and field-record composition
 - it does not reopen the main art treatment as pixel / painterly / another competing medium
 - field terminal, case file, anomaly manual and validation marks share one institutional component language
+
+## 2026-08-30 Human Blueprint Visual Continuity Supplement
+
+Status: `USER_APPROVED / BLUEPRINT_REFERENCE_ONLY / NOT_PRODUCT_REFERENCE_ASSET / NOT_RUNTIME_IMPLEMENTED`
+
+The user approved the six-image human-blueprint reference pack at
+`docs/visual/blueprint-reference-pack/2026-08-30/`. It is a visual continuity
+anchor for future art planning and human documentation. It does **not** replace
+an existing runtime asset, alter a scene, or waive the product-reference,
+rights/provenance, resolution, or Human QA gates below.
+
+### Field-operation composition rule
+
+- A core-loop scene must show the actual incident location first. Archive
+  offices are appropriate for Main, records, and preparation surfaces, but not
+  as a substitute backdrop for Investigation, Rescue, or Recovery.
+- The player-facing action chain must remain readable without a UI overlay:
+  `observe / read the manual -> issue or choose a procedure -> protect a
+  victim -> constrain and stabilize the phenomenon -> record the composite
+  outcome`.
+- Recovery is not a disposal or boss-kill tableau. When an anomalous presence
+  is shown, its spread is constrained while a protection target remains
+  legible.
+
+### Character, colour, and material rule
+
+- Preserve `SOFT_ANIME_NOIR_LOCKED`: characters remain one notch more
+  anime-like than the grounded Korean urban environment, with coherent
+  silhouette, ink-line detail, and practical role-specific fieldwear.
+- Use charcoal / cold blue-green for place, restrained black-gold for Bureau
+  records and manuals, violet for analytical containment, amber for protection
+  equipment, and limited crimson for active anomaly danger. Colour may support
+  a role but cannot be the only cue.
+- Field personnel must read through their action and equipment: manual-led
+  command, containment analysis, or civilian protection. Do not reduce them to
+  static team-poster poses, wizard costumes, ungrounded religious display, or
+  glass-heavy sci-fi HUDs.
+- Dossier language belongs to physical records, manual pages, case tags, and
+  information hierarchy. It must not be baked into a scene as unreadable UI or
+  used to conceal relevant evidence.
+
+### Downstream application boundary
+
+When a new or revised in-game image is proposed, compare it against this
+supplement and the existing screen anchors before generation or implementation.
+Then keep the actual consumer, layer/reuse plan, `1280x720` / `1920x1080`
+readability evidence, provenance review, and Human QA as separate gates. No
+current approved runtime asset is retroactively invalidated or replaced by the
+blueprint pack.
 
 Pixel/dot:
 - supporting observation language only

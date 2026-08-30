@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "artifact_role": "PROJECT_PROTECTED_CHANGE_APPROVAL",
+  "status": "APPROVED",
+  "protected_base_commit": "11876dd851a614e9475033c38486b2085894126c",
+  "decision_ids": [
+    "D-2026-08-29-PLAYER-AUTHORED-MANUAL-KEYWORD-VERIFICATION"
+  ],
+  "approved_paths": [
+    "assets/ui/guides/lume_afterlife_station.png",
+    "assets/ui/guides/lume_afterlife_station.png.import",
+    "data/episodes/episode_001_afterlife_station_canon_v2.json",
+    "scenes/ui/manual_deduction_workbench.tscn",
+    "scripts/core/game_state.gd",
+    "scripts/core/manual_keyword_composition_policy.gd",
+    "scripts/core/manual_keyword_composition_policy.gd.uid",
+    "scripts/scenes/investigation_scene.gd",
+    "scripts/ui/manual_deduction_workbench.gd",
+    "scripts/ui/manual_deduction_workbench.gd.uid"
+  ],
+  "approval_source": "The sole decision owner explicitly approved the recommended CASE-01 manual workbench, instructed implementation to proceed, and then authorized continuation to resolve remaining in-scope work. This receipt records that approval for the already approved M01-only player-authored manual slice; it does not authorize M04, a global Aka replacement, new save versions, answer revelation, or unrelated protected-path changes.",
+  "approval_time": "2026-08-30T13:56:54+09:00",
+  "scope_summary": "Implement only the approved CASE-01 Afterlife Station player-authored manual workbench: the Lume guide portrait at its declared runtime path, Canon V2 deduction metadata, draft-only GameState persistence, one native workbench scene, its policy and presentation scripts, and narrow M01 InvestigationScene integration. Preserve existing save-version and filled-slots contracts, non-M01 manual behavior, rescue/recovery semantics, and all unrelated protected paths."
+}

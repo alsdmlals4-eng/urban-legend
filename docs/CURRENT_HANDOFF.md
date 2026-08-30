@@ -60,8 +60,8 @@ calendar_role: SUPPORTING_CAMPAIGN_CONTEXT_NOT_PRIMARY_FUN
 - 메인 메뉴 제품 버전은 `scripts/core/product_version.gd`의 `Ver 4.3`이 중앙 owner다.
 - 메인 메뉴는 관제실형 3-rail 구조를 사용하고 Legacy / Validation save·route 분리를 유지한다.
 - M04 빨간 우산은 shared Investigation/Manual/Rescue/Recovery/Composite Result validation baseline까지 구현됐다.
-- current keyword/manual state is split: evidence records and hypothesis/recovery evidence selection exist, while page-local keyword composition and mutated-candidate verification remain `APPROVED_DESIGN / NOT_IMPLEMENTED`.
-- clarified manual contract: the player must fill readable blank sentences from investigation memory and provenance; the UI cannot reveal semantic correctness. Rescue/minigame and recovery are the field verification, not an automatic answer checker. M01 candidate arrays/input consumer and its complete-manual auto-reveal remain `NOT_IMPLEMENTED` / stale-data follow-up.
+- current keyword/manual state is split: CASE-01 page-local keyword composition is `IMPLEMENTED / MACHINE_VERIFIED`, while M04/global rollout and any mutated-candidate verification remain outside this slice.
+- clarified manual contract: the player must fill readable blank sentences from investigation memory and provenance; the UI cannot reveal semantic correctness. Rescue/minigame and recovery are the field verification, not an automatic answer checker. CASE-01 candidate arrays/input consumer are implemented, its complete-manual auto-reveal is disabled, and the player draft remains separate from Canon migration slots.
 
 ## 3. PR #224 postmerge Reality Gate
 
@@ -96,7 +96,7 @@ PR #224 exact head에서 다음 계열이 GREEN이었다.
 
 ### 2026-08-28 visual-status clarification
 
-`PRODUCT_REFERENCE_ASSET_PENDING`은 모든 자산이 미승격이라는 뜻이 아니다. 개별 제품 승인·runtime 상태는 `ASSET_MANIFEST.yml`과 `CURRENT_VISUAL_WORK_ORDER.md`가 소유한다. 현재 root manifest의 6개 entry 중 M01 Investigation/Recovery background, M01 B/C·D cutout, M04 Investigation background, M04 B/C cutout은 각각의 승인·구현·runtime evidence를 가진다. 반면 M01 Entrance, M04 Entrance/Recovery, M04 D 후보와 Human/new-player QA는 별도 Gate에 남는다.
+`PRODUCT_REFERENCE_ASSET_PENDING`은 모든 자산이 미승격이라는 뜻이 아니다. 개별 제품 승인·runtime 상태는 `ASSET_MANIFEST.yml`과 `CURRENT_VISUAL_WORK_ORDER.md`가 소유한다. 현재 root manifest의 7개 entry 중 M01 Investigation/Recovery background, M01 B/C·D cutout, CASE-01 루메 매뉴얼 보조 초상, M04 Investigation background, M04 B/C cutout은 각각의 승인·구현·runtime evidence를 가진다. 반면 M01 Entrance, M04 Entrance/Recovery, M04 D 후보와 Human/new-player QA는 별도 Gate에 남는다.
 
 
 `PRODUCT_REFERENCE_ASSET_PENDING` 유지:

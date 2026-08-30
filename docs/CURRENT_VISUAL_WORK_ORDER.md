@@ -263,7 +263,7 @@ actual Scene / Texture consumer
 
 ## 8. Asset authority warning
 
-Root `ASSET_MANIFEST.yml`가 current tracked product-asset authority이며, 현재 승인된 M01 Investigation/Recovery background·B/C cutout·D cutout 및 M04 Investigation background·B/C cutout의 6개 entry를 가진다.
+Root `ASSET_MANIFEST.yml`가 current tracked product-asset authority이며, 현재 승인된 M01 Investigation/Recovery background·B/C cutout·D cutout·CASE-01 루메 매뉴얼 보조 초상 및 M04 Investigation background·B/C cutout의 7개 entry를 가진다.
 
 `assets/ASSET_MANIFEST.json`은 `LEGACY_MIGRATION_PENDING_NON_AUTHORITY`다. 과거 `stage=final`, QA 문구, tracked PNG, `.import`, runtime wiring은 existence/provenance/history evidence일 수 있지만 `PROJECT_ASSET_APPROVED`를 부여하지 않는다.
 
