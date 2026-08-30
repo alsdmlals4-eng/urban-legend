@@ -128,6 +128,55 @@ Main treatment — `SOFT_ANIME_NOIR_LOCKED`:
 - it does not reopen the main art treatment as pixel / painterly / another competing medium
 - field terminal, case file, anomaly manual and validation marks share one institutional component language
 
+## 2026-08-30 Human Blueprint Visual Continuity Supplement
+
+Status: `USER_APPROVED / BLUEPRINT_REFERENCE_ONLY / NOT_PRODUCT_REFERENCE_ASSET / NOT_RUNTIME_IMPLEMENTED`
+
+The user approved the six-image human-blueprint reference pack at
+`docs/visual/blueprint-reference-pack/2026-08-30/`. It is a visual continuity
+anchor for future art planning and human documentation. It does **not** replace
+an existing runtime asset, alter a scene, or waive the product-reference,
+rights/provenance, resolution, or Human QA gates below.
+
+### Field-operation composition rule
+
+- A core-loop scene must show the actual incident location first. Archive
+  offices are appropriate for Main, records, and preparation surfaces, but not
+  as a substitute backdrop for Investigation, Rescue, or Recovery.
+- The player-facing action chain must remain readable without a UI overlay:
+  `observe / read the manual -> issue or choose a procedure -> protect a
+  victim -> constrain and stabilize the phenomenon -> record the composite
+  outcome`.
+- Recovery is not a disposal or boss-kill tableau. When an anomalous presence
+  is shown, its spread is constrained while a protection target remains
+  legible.
+
+### Character, colour, and material rule
+
+- Preserve `SOFT_ANIME_NOIR_LOCKED`: characters remain one notch more
+  anime-like than the grounded Korean urban environment, with coherent
+  silhouette, ink-line detail, and practical role-specific fieldwear.
+- Use charcoal / cold blue-green for place, restrained black-gold for Bureau
+  records and manuals, violet for analytical containment, amber for protection
+  equipment, and limited crimson for active anomaly danger. Colour may support
+  a role but cannot be the only cue.
+- Field personnel must read through their action and equipment: manual-led
+  command, containment analysis, or civilian protection. Do not reduce them to
+  static team-poster poses, wizard costumes, ungrounded religious display, or
+  glass-heavy sci-fi HUDs.
+- Dossier language belongs to physical records, manual pages, case tags, and
+  information hierarchy. It must not be baked into a scene as unreadable UI or
+  used to conceal relevant evidence.
+
+### Downstream application boundary
+
+When a new or revised in-game image is proposed, compare it against this
+supplement and the existing screen anchors before generation or implementation.
+Then keep the actual consumer, layer/reuse plan, `1280x720` / `1920x1080`
+readability evidence, provenance review, and Human QA as separate gates. No
+current approved runtime asset is retroactively invalidated or replaced by the
+blueprint pack.
+
 Pixel/dot:
 - supporting observation language only
 - logs, sensors, CCTV, markers, interference effects
