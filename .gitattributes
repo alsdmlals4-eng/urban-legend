@@ -1,2 +1,9 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# The operating-contract generator deliberately hashes these source bytes.
+# Keep them identical across Windows worktrees and Linux CI.
+skills/PROJECT_BASE_ADAPTER.json text eol=lf
+docs/archive/base-v9-legacy-inputs/BASE_V9_ADAPTER.json text eol=lf
+docs/archive/base-v9-legacy-inputs/PROJECT_BASE_SKILL_ADAPTER.json text eol=lf
+docs/archive/base-v9-legacy-inputs/PROJECT_PATH_ADAPTER.json text eol=lf
