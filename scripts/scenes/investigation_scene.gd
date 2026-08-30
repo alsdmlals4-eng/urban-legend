@@ -87,6 +87,7 @@ var _safe_frame: MarginContainer
 var _location_preview: TextureRect
 var _is_afterlife_layout := false
 var _has_player_authored_workbench_manual := false
+var _manual_entry_available := false
 var _manual_body: VBoxContainer
 var _manual_page_label: Label
 var _manual_status_label: Label
@@ -120,6 +121,7 @@ func _build_ui() -> void:
 	_location_preview = %LocationPreview
 	_is_afterlife_layout = GameState.get_current_episode_id() == "episode_001_afterlife_station"
 	_has_player_authored_workbench_manual = not _get_player_authored_workbench_manual().is_empty()
+	_manual_entry_available = _is_afterlife_layout or _has_player_authored_workbench_manual
 	if _is_afterlife_layout:
 		theme = AfterlifeTheme.create_theme()
 	var background := get_node_or_null("ArtLayer/Background") as TextureRect
@@ -182,7 +184,7 @@ func _build_ui() -> void:
 	%LogUtilityButton.pressed.connect(_toggle_record_drawer)
 	%ResultCloseButton.pressed.connect(_close_inline_result)
 	%ResultNextButton.pressed.connect(_return_to_point_picker)
-	_manual_toggle_button.visible = _has_player_authored_workbench_manual
+	_manual_toggle_button.visible = _manual_entry_available
 	%SettingsButton.pressed.connect(_show_settings)
 	%ReturnHqButton.pressed.connect(_show_return_confirmation)
 	_return_field_button.pressed.connect(_return_to_field_choice)
@@ -1446,7 +1448,7 @@ func _refresh_manual_layout() -> void:
 	if _manual_panel != null:
 		_manual_panel.visible = false
 	if _manual_toggle_button != null:
-		_manual_toggle_button.visible = _has_player_authored_workbench_manual
+		_manual_toggle_button.visible = _manual_entry_available
 
 
 func _refresh_manual_drawer(mark_new: bool) -> void:
