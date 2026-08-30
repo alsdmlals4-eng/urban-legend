@@ -1,6 +1,6 @@
 # CASE-01 Player-Authored Manual Workbench Design
 
-> 상태: `USER_APPROVED / IMPLEMENTATION_AUTHORIZED / NOT_IMPLEMENTED`
+> 상태: `USER_APPROVED / M01_ONLY / IMPLEMENTED / MACHINE_VERIFIED / HUMAN_QA_NOT_RUN`
 > 승인 근거: 2026-08-30 사용자 지시 — “권장안 승인,진행해”
 > 범위: M01 저승역의 출처 기반 빈칸 매뉴얼 작성, 저장, 구출·회수 검증 연결
 > 시각 기준: `docs/VISUAL_ANCHOR_SPEC.md` 및 `HGB-UI-09`/`HGB-AUX-09`
@@ -30,10 +30,11 @@
 
 ## 2. 현재 구조와 채택 이유
 
-현재 `scripts/ui/anomaly_manual_drawer.gd`는 읽기 전용 우측 서랍이며,
+현재 `scripts/ui/anomaly_manual_drawer.gd`는 비-M01 surface의 읽기 전용 우측 서랍으로
+유지한다. CASE-01은 `ManualDeductionWorkbench`를 사용하며,
 `data/episodes/episode_001_afterlife_station_canon_v2.json`의
-`candidate_keywords` 및 `semantic_relations`는 비어 있다. Canon V2 이관 검증은
-`afterlife_canon_v2.manual.filled_slots`가 비어 있음을 보장한다.
+`candidate_keywords` 및 `deduction_segments`는 기존 evidence record ID만 참조한다.
+Canon V2 이관 검증은 `afterlife_canon_v2.manual.filled_slots`가 비어 있음을 보장한다.
 
 반면 `GameState.anomaly_manual_records`는 모든 저장본에 이미 직렬화되는
 플레이어 작성 매뉴얼 원장이다. 따라서 후보 데이터는 사건 Canon에 두고, 플레이어의

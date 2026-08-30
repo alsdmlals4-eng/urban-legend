@@ -81,6 +81,7 @@ const AGENT_TRUST_EVENTS: Array[Dictionary] = [
 ]
 const EpisodeLoaderScript := preload("res://scripts/data/episode_loader.gd")
 const CaseDataScript := preload("res://scripts/data/case_data.gd")
+const ManualKeywordCompositionPolicyScript := preload("res://scripts/core/manual_keyword_composition_policy.gd")
 const CampaignStateScript := preload("res://scripts/core/campaign_state.gd")
 const AgentCatalogScript := preload("res://scripts/data/agent_catalog.gd")
 const DailyEpisodeCatalogScript := preload("res://scripts/data/daily_episode_catalog.gd")
@@ -1454,6 +1455,106 @@ func get_current_anomaly_manual_record() -> Dictionary:
 	return get_anomaly_manual_record(get_current_episode_id())
 
 
+## Returns the current Canon-compatible player-authored draft slots for one episode.
+## Stale saved IDs are ignored here without modifying the original save payload.
+func get_manual_draft_slots(manual: Dictionary, episode_id: String = "") -> Dictionary:
+	var target_id := episode_id.strip_edges()
+	if target_id.is_empty():
+		target_id = get_current_episode_id()
+	if target_id.is_empty():
+		return {}
+	var record := get_anomaly_manual_record(target_id)
+	var policy = ManualKeywordCompositionPolicyScript.new()
+	var filtered: Dictionary = policy.filter_known_draft_slots(manual, record.get("draft_slots", {}))
+	if not bool(filtered.get("ok", false)):
+		return {}
+	return (filtered.get("draft_slots", {}) as Dictionary).duplicate(true)
+
+
+## Persists a source-gated player-authored manual placement inside the existing manual record.
+func set_manual_draft_slot(
+	manual: Dictionary,
+	page_id: String,
+	slot_id: String,
+	candidate_id: String,
+	earned_record_ids: Variant,
+	episode_id: String = ""
+) -> Dictionary:
+	var target_id := episode_id.strip_edges()
+	if target_id.is_empty():
+		target_id = get_current_episode_id()
+	if target_id.is_empty():
+		return {"ok": false, "code": "EPISODE_ID_REQUIRED"}
+	var policy = ManualKeywordCompositionPolicyScript.new()
+	var drafts := get_manual_draft_slots(manual, target_id)
+	var placement: Dictionary = policy.validate_draft_slot(
+		manual,
+		page_id,
+		slot_id,
+		candidate_id,
+		earned_record_ids,
+		drafts
+	)
+	if not bool(placement.get("ok", false)):
+		return placement
+	var had_previous := anomaly_manual_records.has(target_id)
+	var previous_value: Variant = anomaly_manual_records.get(target_id, {})
+	var previous_record: Dictionary = previous_value.duplicate(true) if typeof(previous_value) == TYPE_DICTIONARY else {}
+	var title := get_current_episode_title() if target_id == get_current_episode_id() else String(previous_record.get("episode_title", target_id))
+	var record := _ensure_anomaly_manual_record(target_id, title)
+	drafts[slot_id] = candidate_id
+	record["draft_slots"] = drafts
+	record["draft_updated_at_label"] = Time.get_datetime_string_from_system(false, true)
+	anomaly_manual_records[target_id] = record
+	if not save_game():
+		if had_previous:
+			anomaly_manual_records[target_id] = previous_record
+		else:
+			anomaly_manual_records.erase(target_id)
+		return {"ok": false, "code": "DRAFT_PERSISTENCE_FAILED"}
+	return {
+		"ok": true,
+		"code": "DRAFT_SLOT_SAVED",
+		"draft_slots": drafts.duplicate(true),
+		"source_record_id": String(placement.get("source_record_id", ""))
+	}
+
+
+## Removes one player-authored placement while preserving all Canon migration state.
+func clear_manual_draft_slot(manual: Dictionary, slot_id: String, episode_id: String = "") -> Dictionary:
+	var target_id := episode_id.strip_edges()
+	if target_id.is_empty():
+		target_id = get_current_episode_id()
+	if target_id.is_empty():
+		return {"ok": false, "code": "EPISODE_ID_REQUIRED"}
+	var policy = ManualKeywordCompositionPolicyScript.new()
+	var validation: Dictionary = policy.validate_manual(manual)
+	if not bool(validation.get("ok", false)):
+		return validation
+	var slot_pages := validation.get("slot_pages", {}) as Dictionary
+	if not slot_pages.has(slot_id):
+		return {"ok": false, "code": "UNKNOWN_SLOT", "slot_id": slot_id}
+	var drafts := get_manual_draft_slots(manual, target_id)
+	if not drafts.has(slot_id):
+		return {"ok": true, "code": "DRAFT_SLOT_ALREADY_EMPTY", "draft_slots": drafts}
+	var had_previous := anomaly_manual_records.has(target_id)
+	var previous_value: Variant = anomaly_manual_records.get(target_id, {})
+	var previous_record: Dictionary = previous_value.duplicate(true) if typeof(previous_value) == TYPE_DICTIONARY else {}
+	var title := get_current_episode_title() if target_id == get_current_episode_id() else String(previous_record.get("episode_title", target_id))
+	var record := _ensure_anomaly_manual_record(target_id, title)
+	drafts.erase(slot_id)
+	record["draft_slots"] = drafts
+	record["draft_updated_at_label"] = Time.get_datetime_string_from_system(false, true)
+	anomaly_manual_records[target_id] = record
+	if not save_game():
+		if had_previous:
+			anomaly_manual_records[target_id] = previous_record
+		else:
+			anomaly_manual_records.erase(target_id)
+		return {"ok": false, "code": "DRAFT_PERSISTENCE_FAILED"}
+	return {"ok": true, "code": "DRAFT_SLOT_CLEARED", "draft_slots": drafts.duplicate(true)}
+
+
 func _ensure_anomaly_manual_record(episode_id: String, episode_title: String) -> Dictionary:
 	var value: Variant = anomaly_manual_records.get(episode_id, {})
 	var record: Dictionary = value.duplicate(true) if typeof(value) == TYPE_DICTIONARY else {}
@@ -1462,6 +1563,7 @@ func _ensure_anomaly_manual_record(episode_id: String, episode_title: String) ->
 	record["verified_rules"] = _to_dictionary(record.get("verified_rules", {}))
 	record["candidate_rules"] = _to_dictionary(record.get("candidate_rules", {}))
 	record["danger_cases"] = _to_dictionary_array(record.get("danger_cases", []))
+	record["draft_slots"] = _to_dictionary(record.get("draft_slots", {}))
 	return record
 
 

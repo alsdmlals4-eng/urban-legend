@@ -26,11 +26,11 @@ visual_direction_lock: USER_APPROVED
 visual_direction_decision: D-2026-08-28-URBAN-NOIR-HYBRID-VISUAL-DIRECTION
 ten_day_half_day_case_cadence: USER_APPROVED / IMPLEMENTATION_CONTRACT_PENDING
 one_main_case_runtime_enforcement: NOT_IMPLEMENTED / CURRENT_RUNTIME_ALLOWS_M01_M04_M07_IN_ONE_DEMO_CYCLE
-keyword_composition: APPROVED_DESIGN / NOT_IMPLEMENTED
-player_authored_manual_keyword_verification: USER_APPROVED / PLANNING_CANON / NOT_IMPLEMENTED
+keyword_composition: IMPLEMENTED_M01_ONLY / AUTOMATED_REGRESSION_GREEN
+player_authored_manual_keyword_verification: USER_APPROVED / M01_IMPLEMENTED / MACHINE_VERIFIED
 player_authored_manual_decision: D-2026-08-29-PLAYER-AUTHORED-MANUAL-KEYWORD-VERIFICATION
-m01_manual_input_consumer: NOT_IMPLEMENTED / CURRENT_DRAWER_IS_READ_ONLY
-m01_normal_clear_manual_answer_reveal: STALE_RUNTIME_DATA / SUCCESSOR_CONTRACT_REQUIRES_NO_AUTO_REVEAL
+m01_manual_input_consumer: IMPLEMENTED / FULLSCREEN_DOSSIER_WORKBENCH / DRAFT_ONLY
+m01_normal_clear_manual_answer_reveal: IMPLEMENTED_FALSE / NO_AUTO_REVEAL
 ten_day_half_day_case_decision: D-2026-08-28-TEN-DAY-HALF-DAY-CASE-CADENCE
 m04_week4_numeric_cadence: SUPERSEDED
 m04_sequential_narrative_result_vignettes: USER_APPROVED
@@ -52,8 +52,8 @@ runtime_merge_commit: 8d303f0f9414950273be934fd28c8fb1b3a21e18
 canonical_root_runtime_receipt: AUTOMATED_EXACT_HEAD_GREEN
 ten_day_half_day_cadence: USER_APPROVED / NOT_IMPLEMENTED
 one_main_case_runtime_enforcement: NOT_IMPLEMENTED
-keyword_composition: APPROVED_DESIGN / NOT_IMPLEMENTED
-player_authored_manual_keyword_verification: USER_APPROVED / NOT_IMPLEMENTED
+keyword_composition: M01_IMPLEMENTED / MACHINE_VERIFIED
+player_authored_manual_keyword_verification: USER_APPROVED / M01_IMPLEMENTED / MACHINE_VERIFIED
 human_qa: NOT_RUN
 new_player_validation: NOT_RUN
 poc_passed: NOT_DECLARED
@@ -129,17 +129,19 @@ base_adapter_baseline_reconciliation: COMPLETE
 
 ### Player-authored manual keyword verification — 2026-08-29
 
-판정: `USER_APPROVED / PLANNING_CANON / IMPLEMENTATION_CONTRACT_PENDING / NOT_IMPLEMENTED`.
+판정: `USER_APPROVED / M01_IMPLEMENTED / MACHINE_VERIFIED / HUMAN_QA_NOT_RUN`.
 
 - 조사는 정상 키워드의 원본 출처와 획득 맥락을 만들고, 플레이어는 빈칸이 있는 추리문에서 그 기억·출처·문맥으로 후보를 배치한다.
 - UI는 구조 불가능만 막는다. 정답/오답, 변조, 호환성, 추천 점수를 직접 알려 주지 않는다. 그럴듯한 오답은 구출 미니게임 및 회수의 `전조 → 가설 → 근거 → 대응` 결과로 검증·반증된다.
 - 한 변수만 달라진 변조 후보는 별도 가짜 단서를 갖지 않는다. 사실이지만 해당 슬롯에 쓰이지 않는 보조 후보와 구분한다.
-- M01의 `candidate_keywords`/`semantic_relations` 빈 배열, 읽기 전용 매뉴얼 consumer, `normal_clear.reveal_complete_manual: true`는 모두 successor runtime gap이다. 특히 answer reveal은 이 결정과 충돌하므로 후속 implementation contract에서 migration·replay semantics와 함께 교정한다.
+- M01에는 Canon record ID를 source로 갖는 candidate pool과 deduction segment가 구현돼 있다. source record가 확보된 후보만 표시되며, 정답/오답, 변조, 호환성, 추천 점수는 UI·저장 데이터·policy 결과에 없다.
+- full-screen dossier workbench는 `anomaly_manual_records[episode_id].draft_slots`만 저장한다. Canon V2 이관 보호 상태인 `afterlife_canon_v2.manual.filled_slots`는 빈 상태를 보존하고, `normal_clear.reveal_complete_manual`은 `false`다.
+- 실제 GameState/조사 씬 통합·저장 재로딩·1280×720/1920×1080 frame containment은 automated runtime-scene test로 검증했다. Human comprehension, visual acceptance, accessibility observation은 `NOT_RUN`이다.
 - 사용자 제공 비교 이미지는 planning UI reference일 뿐 asset, runtime UI, Scene, product approval이 아니다.
 
 ### Contextual Lume companion and scenario costume — 2026-08-30
 
-판정: `USER_APPROVED / BLUEPRINT_REFERENCE_ONLY / PRODUCT_ASSET_PENDING`.
+판정: `USER_APPROVED / CASE-01_ASSET_IMPLEMENTED / SCENARIO_BOUND / HUMAN_QA_NOT_RUN`.
 
 - CASE-01 조사 디바이스·현장·매뉴얼의 기록 보조 이름은 **루메**다. 전임
   블루프린트 후보에 들어간 ‘아카’ 표기는 정체성 오류로 `SUPERSEDED`다.
@@ -153,19 +155,21 @@ base_adapter_baseline_reconciliation: COMPLETE
 
 ### CASE-01 player-authored manual workbench implementation — 2026-08-30
 
-판정: `USER_APPROVED / IMPLEMENTATION_AUTHORIZED / M01_ONLY / NOT_IMPLEMENTED`.
+판정: `USER_APPROVED / M01_ONLY / IMPLEMENTED / MACHINE_VERIFIED / HUMAN_QA_NOT_RUN`.
 
 - 사용자는 2026-08-30 저승역의 기록철형 루메 매뉴얼 권장안을 승인하고 구현을
   지시했다. 세부 계약은
   `docs/superpowers/specs/2026-08-30-case01-player-authored-manual-workbench-design.md`가
   소유한다.
-- 최초 slice는 M01의 후보 키워드, 빈칸 작성, 출처 표시, `anomaly_manual_records` 저장,
-  기존 구출·회수 결과 연결까지다. M04와 전역 화면은 이 승인에 포함하지 않는다.
+- 최초 slice는 M01의 후보 키워드, 빈칸 작성, 출처 표시, `anomaly_manual_records` 저장까지 구현됐다. 후보 선택은 source record 획득만 gate로 삼으며, 기존 구출·회수의 semantic evaluation을 새로 자동 해결하지 않는다. M04와 전역 화면은 이 승인에 포함하지 않는다.
 - Canon V2 이관 보호 상태인 `afterlife_canon_v2.manual.filled_slots`와 save version은
   바꾸지 않는다. player-authored draft는 기존 persistent
   `anomaly_manual_records[episode_id].draft_slots`에서만 소유한다.
-- `HGB-AUX-09` 루메 초상은 CASE-01 매뉴얼 UI에 한해 product asset promotion을
-  허용한다. 전체 `HGB-UI-09` screenshot은 계속 blueprint reference-only다.
+- `HGB-AUX-09` 루메 초상은 CASE-01 매뉴얼 UI의 `LumePortrait`에 product asset으로 적용됐다. 전체 `HGB-UI-09` screenshot은 계속 blueprint reference-only다.
+- 현재 자동 증거: `tests/case01_ui/manual_keyword_composition_policy_test.gd`,
+  `m01_manual_canon_contract_test.gd`, `manual_draft_persistence_test.gd`,
+  `manual_deduction_workbench_test.gd`, `m01_manual_workbench_integration_test.gd`.
+  Visual/human approval, device input observation, release-rights sign-off는 아직 완료 증거가 아니다.
 
 ### M04 sequential narrative result vignettes — 2026-08-28
 
@@ -229,7 +233,7 @@ Issue #181은 merged-main readback 뒤 `completed`로 닫혔다. 새 Issue/PR의
 
 ## 9. 다음 검증 진입점
 
-- M01: 실제 First Session comprehension / input / fatigue Human QA.
+- M01: player-authored manual의 실제 First Session comprehension / input / fatigue Human QA와 visual acceptance.
 - M04: product-reference asset 승인 후 release-near player-experience Human QA.
 - Base adapter: PR #226 merged-main readback 완료; runtime reconciliation 관련 추가 technical gate 없음.
 
