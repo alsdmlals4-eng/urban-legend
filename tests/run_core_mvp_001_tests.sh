@@ -8,6 +8,7 @@ LOG_ROOT="$RUN_ROOT/focused-logs"
 mkdir -p "$LOG_ROOT"
 
 tests=(
+  validation/windows_user_data_isolation_test
   core_mvp_001_case_data_test
   core_mvp_001_playtest_log_test
   core_mvp_001_state_test
@@ -15,8 +16,9 @@ tests=(
 )
 
 for name in "${tests[@]}"; do
-  home_dir="$RUN_ROOT/focused-home/$name"
-  log_file="$LOG_ROOT/$name.log"
+  safe_name="${name//\//_}"
+  home_dir="$RUN_ROOT/focused-home/$safe_name"
+  log_file="$LOG_ROOT/$safe_name.log"
   rm -rf "$home_dir"
   mkdir -p "$home_dir"
   echo "::group::CORE-MVP-001 focused test: $name"
@@ -37,4 +39,4 @@ for name in "${tests[@]}"; do
   echo "::endgroup::"
 done
 
-echo "CORE-MVP-001 focused suite: 4/4 passed"
+echo "CORE-MVP-001 focused suite: ${#tests[@]}/${#tests[@]} passed"

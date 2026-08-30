@@ -9,6 +9,7 @@ LOG_ROOT="$RUN_ROOT/focused-logs"
 mkdir -p "$LOG_ROOT"
 
 script_tests=(
+  validation/windows_user_data_isolation_test
   validation/validation_save_repository_test
   validation/validation_session_test
   validation/validation_game_state_adapter_test
@@ -41,5 +42,5 @@ for test_path in "${script_tests[@]}"; do
   echo "::endgroup::"
 done
 
-echo "Validation Package 1 focused suite: 4/4 test entrypoints passed"
+echo "Validation Package 1 focused suite: ${#script_tests[@]}/${#script_tests[@]} test entrypoints passed"
 echo "Logs: $LOG_ROOT"

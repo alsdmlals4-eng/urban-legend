@@ -17,16 +17,17 @@ func _run() -> void:
 		_expect(not localappdata.is_empty(), "Windows test process must receive LOCALAPPDATA")
 		_expect(not user_profile.is_empty(), "Windows test process must receive USERPROFILE")
 		if not user_profile.is_empty():
+			var live_appdata_root := user_profile + "/appdata/"
 			_expect(
-				appdata != user_profile + "/appdata/roaming",
-				"test process APPDATA must not point to the live user profile"
+				not appdata.begins_with(live_appdata_root),
+				"test process APPDATA must not resolve under the live user profile"
 			)
 			_expect(
-				localappdata != user_profile + "/appdata/local",
-				"test process LOCALAPPDATA must not point to the live user profile"
+				not localappdata.begins_with(live_appdata_root),
+				"test process LOCALAPPDATA must not resolve under the live user profile"
 			)
 			_expect(
-				not user_data_dir.begins_with(user_profile + "/appdata/roaming/"),
+				not user_data_dir.begins_with(live_appdata_root),
 				"Godot user:// must not resolve under the live user profile"
 			)
 	_finish()

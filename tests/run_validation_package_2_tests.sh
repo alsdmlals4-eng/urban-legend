@@ -9,13 +9,13 @@ LOG_ROOT="$RUN_ROOT/focused-logs"
 mkdir -p "$LOG_ROOT"
 
 script_tests=(
+  validation/windows_user_data_isolation_test
   validation/validation_persistence_summary_test
   validation/validation_route_mapper_test
   validation/validation_runtime_initializer_test
   validation/validation_entry_coordinator_test
   validation/validation_main_menu_contract_test
   validation/main_menu_window_breakpoint_test
-  validation/windows_user_data_isolation_test
 )
 
 for test_path in "${script_tests[@]}"; do

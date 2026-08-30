@@ -9,6 +9,7 @@ LOG_ROOT="$RUN_ROOT/afterlife-canon-v2-logs"
 mkdir -p "$LOG_ROOT"
 
 entrypoints=(
+  "res://tests/validation/windows_user_data_isolation_test.gd"
   "res://tests/afterlife_migration/afterlife_canon_v2_loader_test.gd"
   "res://tests/afterlife_migration/afterlife_id_migration_registry_test.gd"
   "res://tests/afterlife_migration/afterlife_legacy_save_inspector_test.gd"
@@ -65,5 +66,5 @@ for entrypoint in "${entrypoints[@]}"; do
   run_entrypoint "$entrypoint"
 done
 
-echo "Afterlife canon v2 migration: 14/14 entrypoints passed"
+echo "Afterlife canon v2 migration: ${#entrypoints[@]}/${#entrypoints[@]} entrypoints passed"
 echo "Logs: $LOG_ROOT"
