@@ -151,6 +151,22 @@ base_adapter_baseline_reconciliation: COMPLETE
 - `CASE-01 저승역` 예시의 검정·금색 도시철도 기록 보조 복장은 저승역 전용이다.
   루메는 어느 복장에서도 정답·변조·후보 적합성·미관측 정보를 알려주지 않는다.
 
+### CASE-01 player-authored manual workbench implementation — 2026-08-30
+
+판정: `USER_APPROVED / IMPLEMENTATION_AUTHORIZED / M01_ONLY / NOT_IMPLEMENTED`.
+
+- 사용자는 2026-08-30 저승역의 기록철형 루메 매뉴얼 권장안을 승인하고 구현을
+  지시했다. 세부 계약은
+  `docs/superpowers/specs/2026-08-30-case01-player-authored-manual-workbench-design.md`가
+  소유한다.
+- 최초 slice는 M01의 후보 키워드, 빈칸 작성, 출처 표시, `anomaly_manual_records` 저장,
+  기존 구출·회수 결과 연결까지다. M04와 전역 화면은 이 승인에 포함하지 않는다.
+- Canon V2 이관 보호 상태인 `afterlife_canon_v2.manual.filled_slots`와 save version은
+  바꾸지 않는다. player-authored draft는 기존 persistent
+  `anomaly_manual_records[episode_id].draft_slots`에서만 소유한다.
+- `HGB-AUX-09` 루메 초상은 CASE-01 매뉴얼 UI에 한해 product asset promotion을
+  허용한다. 전체 `HGB-UI-09` screenshot은 계속 blueprint reference-only다.
+
 ### M04 sequential narrative result vignettes — 2026-08-28
 
 판정: `USER_APPROVED / PLANNING_CANON / IMPLEMENTATION_NOT_AUTHORIZED`.
