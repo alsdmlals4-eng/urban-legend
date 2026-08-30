@@ -51,6 +51,16 @@ class MasterGddCoreSystemCoverageTests(unittest.TestCase):
         self.assertIn("IMPLEMENTED / FOCUSED_MACHINE_VERIFIED", self.text)
         self.assertNotIn("M04 vignette successor `NOT_IMPLEMENTED`", self.text)
 
+    def test_m07_runtime_readback_is_not_left_as_unevaluated(self) -> None:
+        for statement in (
+            "CNT-M07",
+            "episode_003_dead_frequency_station.json",
+            "MVP-040 dead frequency slice: 20 passed, 0 failed",
+            "IMPLEMENTED / RUNTIME_VERIFIED / HUMAN_QA_NOT_RUN",
+        ):
+            self.assertIn(statement, self.text)
+        self.assertNotIn("PARTIAL / not evaluated this session", self.text)
+
     def test_keyword_flow_is_player_authored_and_never_an_answer_checker(self) -> None:
         for statement in (
             "readable inference sentences with blank keyword slots",
