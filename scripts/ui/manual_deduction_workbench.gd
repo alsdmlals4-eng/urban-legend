@@ -1,6 +1,6 @@
 extends Control
 
-## Presentation-only CASE-01 manual workbench.
+## Presentation-only player-authored manual workbench.
 ## The owning scene supplies earned candidates and persists the emitted draft intent.
 
 signal draft_slot_requested(slot_id: String, candidate_id: String)
@@ -32,6 +32,8 @@ var _deduction_content: VBoxContainer
 var _candidate_grid: GridContainer
 var _lume_name_label: Label
 var _lume_message_label: Label
+var _guide_panel: PanelContainer
+var _guide_portrait: TextureRect
 var _selection_status_label: Label
 var _slot_buttons: Dictionary = {}
 
@@ -227,6 +229,7 @@ func _build_lume_panel() -> Control:
 	lume_panel.name = "LumeGuidePanel"
 	lume_panel.custom_minimum_size = Vector2(0, 184)
 	lume_panel.add_theme_stylebox_override("panel", _panel_style(Color("#171713"), COLOR_GOLD, 1, 5))
+	_guide_panel = lume_panel
 	var lume_row := HBoxContainer.new()
 	lume_row.add_theme_constant_override("separation", 8)
 	lume_panel.add_child(lume_row)
@@ -238,6 +241,7 @@ func _build_lume_panel() -> Control:
 	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	lume_row.add_child(portrait)
+	_guide_portrait = portrait
 	var text_stack := VBoxContainer.new()
 	text_stack.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	text_stack.add_theme_constant_override("separation", 5)
@@ -351,12 +355,25 @@ func _render_candidates() -> void:
 
 
 func _render_lume() -> void:
-	var lume_value: Variant = _view_model.get("lume", {})
-	if not lume_value is Dictionary:
-		return
-	var lume: Dictionary = lume_value
-	_lume_name_label.text = String(lume.get("name", "루메"))
-	_lume_message_label.text = String(lume.get("message", "출처 기록과 문장을 함께 비교해 보세요."))
+	var guide := _guide_view_model()
+	_lume_name_label.text = String(guide.get("name", "루메"))
+	_lume_message_label.text = String(guide.get("message", "출처 기록과 문장을 함께 비교해 보세요."))
+	var portrait_visible := bool(guide.get("portrait_visible", true))
+	if is_instance_valid(_guide_portrait):
+		_guide_portrait.visible = portrait_visible
+	if is_instance_valid(_guide_panel):
+		_guide_panel.custom_minimum_size = Vector2(0, 184 if portrait_visible else 96)
+
+
+func _guide_view_model() -> Dictionary:
+	var guide_value: Variant = _view_model.get("guide", _view_model.get("lume", {}))
+	if guide_value is Dictionary:
+		return (guide_value as Dictionary).duplicate(true)
+	return {
+		"name": "루메",
+		"message": "출처 기록과 문장을 함께 비교해 보세요.",
+		"portrait_visible": true
+	}
 
 
 func _render_selection_status() -> void:

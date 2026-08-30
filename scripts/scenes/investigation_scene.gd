@@ -86,6 +86,8 @@ var _accessibility := AccessibilitySettingsScript.new()
 var _safe_frame: MarginContainer
 var _location_preview: TextureRect
 var _is_afterlife_layout := false
+var _has_player_authored_workbench_manual := false
+var _manual_entry_available := false
 var _manual_body: VBoxContainer
 var _manual_page_label: Label
 var _manual_status_label: Label
@@ -118,6 +120,8 @@ func _build_ui() -> void:
 	_safe_frame = %SafeFrame
 	_location_preview = %LocationPreview
 	_is_afterlife_layout = GameState.get_current_episode_id() == "episode_001_afterlife_station"
+	_has_player_authored_workbench_manual = not _get_player_authored_workbench_manual().is_empty()
+	_manual_entry_available = _is_afterlife_layout or _has_player_authored_workbench_manual
 	if _is_afterlife_layout:
 		theme = AfterlifeTheme.create_theme()
 	var background := get_node_or_null("ArtLayer/Background") as TextureRect
@@ -180,7 +184,7 @@ func _build_ui() -> void:
 	%LogUtilityButton.pressed.connect(_toggle_record_drawer)
 	%ResultCloseButton.pressed.connect(_close_inline_result)
 	%ResultNextButton.pressed.connect(_return_to_point_picker)
-	_manual_toggle_button.visible = _is_afterlife_layout
+	_manual_toggle_button.visible = _manual_entry_available
 	%SettingsButton.pressed.connect(_show_settings)
 	%ReturnHqButton.pressed.connect(_show_return_confirmation)
 	_return_field_button.pressed.connect(_return_to_field_choice)
@@ -188,6 +192,7 @@ func _build_ui() -> void:
 	if _is_afterlife_layout:
 		_record_button.pressed.connect(_toggle_record_drawer)
 		_build_afterlife_manual()
+	if _has_player_authored_workbench_manual:
 		_manual_workbench = ManualDeductionWorkbenchScene.instantiate() as Control
 		_manual_workbench.z_index = 100
 		add_child(_manual_workbench)
@@ -1310,24 +1315,24 @@ func _set_ui_mode(mode: String) -> void:
 
 
 func _toggle_manual_panel() -> void:
-	if _is_afterlife_layout:
+	if _has_player_authored_workbench_manual:
 		_open_manual_workbench()
 	elif _manual_drawer != null:
 		_manual_drawer.toggle()
 
 
 func _open_manual_workbench() -> void:
-	if not _is_afterlife_layout or _manual_workbench == null:
+	if not _has_player_authored_workbench_manual or _manual_workbench == null:
 		return
-	var manual := _get_case01_workbench_manual()
+	var manual := _get_player_authored_workbench_manual()
 	if manual.is_empty():
 		return
-	_manual_workbench.call("set_view_model", _build_case01_workbench_model(manual))
+	_manual_workbench.call("set_view_model", _build_player_authored_workbench_model(manual))
 	_manual_workbench.call("open_workbench", _manual_toggle_button)
 
 
 func _on_manual_draft_slot_requested(slot_id: String, candidate_id: String) -> void:
-	var manual := _get_case01_workbench_manual()
+	var manual := _get_player_authored_workbench_manual()
 	if manual.is_empty():
 		return
 	GameState.set_manual_draft_slot(
@@ -1338,28 +1343,26 @@ func _on_manual_draft_slot_requested(slot_id: String, candidate_id: String) -> v
 		GameState.get_collected_clue_ids(),
 		GameState.get_current_episode_id()
 	)
-	_refresh_case01_workbench_model()
+	_refresh_player_authored_workbench_model()
 
 
 func _on_manual_draft_slot_clear_requested(slot_id: String) -> void:
-	var manual := _get_case01_workbench_manual()
+	var manual := _get_player_authored_workbench_manual()
 	if manual.is_empty():
 		return
 	GameState.clear_manual_draft_slot(manual, slot_id, GameState.get_current_episode_id())
-	_refresh_case01_workbench_model()
+	_refresh_player_authored_workbench_model()
 
 
-func _refresh_case01_workbench_model() -> void:
+func _refresh_player_authored_workbench_model() -> void:
 	if _manual_workbench == null or not _manual_workbench.visible:
 		return
-	var manual := _get_case01_workbench_manual()
+	var manual := _get_player_authored_workbench_manual()
 	if not manual.is_empty():
-		_manual_workbench.call("set_view_model", _build_case01_workbench_model(manual))
+		_manual_workbench.call("set_view_model", _build_player_authored_workbench_model(manual))
 
 
-func _get_case01_workbench_manual() -> Dictionary:
-	if not _is_afterlife_layout:
-		return {}
+func _get_player_authored_workbench_manual() -> Dictionary:
 	var episode: Dictionary = GameState.get_current_episode()
 	var manual_value: Variant = episode.get("investigation_manual", {})
 	if manual_value is Dictionary:
@@ -1369,7 +1372,7 @@ func _get_case01_workbench_manual() -> Dictionary:
 	return {}
 
 
-func _build_case01_workbench_model(manual: Dictionary) -> Dictionary:
+func _build_player_authored_workbench_model(manual: Dictionary) -> Dictionary:
 	var source_titles: Dictionary = {}
 	for clue_value in GameState.get_clues():
 		if clue_value is Dictionary:
@@ -1391,24 +1394,43 @@ func _build_case01_workbench_model(manual: Dictionary) -> Dictionary:
 			"source_label": "출처: %s" % String(source_titles.get(source_record_id, "확보 기록"))
 		})
 	return {
-		"case_label": "CASE-01 %s" % GameState.get_current_episode_title(),
+		"case_label": _player_authored_manual_case_label(),
 		"title": "괴이 매뉴얼",
-		"selected_page_id": _first_case01_manual_page_id(manual),
+		"selected_page_id": _first_player_authored_manual_page_id(manual),
 		"pages": (manual.get("pages", []) as Array).duplicate(true),
 		"draft_slots": GameState.get_manual_draft_slots(manual, GameState.get_current_episode_id()),
 		"candidate_keywords": visible_candidates,
-		"lume": {
-			"name": "루메",
-			"message": "출처 기록과 문장을 함께 비교해 보세요. 판단은 현장 대응에서 확인할 수 있어요."
-		}
+		"guide": _player_authored_manual_guide()
 	}
 
 
-func _first_case01_manual_page_id(manual: Dictionary) -> String:
+func _first_player_authored_manual_page_id(manual: Dictionary) -> String:
 	for page_value in manual.get("pages", []) as Array:
 		if page_value is Dictionary:
 			return String((page_value as Dictionary).get("id", ""))
 	return ""
+
+
+func _player_authored_manual_case_label() -> String:
+	if _is_afterlife_layout:
+		return "CASE-01 %s" % GameState.get_current_episode_title()
+	if GameState.get_current_episode_id() == M04_EPISODE_ID:
+		return "CASE-04 %s" % GameState.get_current_episode_title()
+	return GameState.get_current_episode_title()
+
+
+func _player_authored_manual_guide() -> Dictionary:
+	if _is_afterlife_layout:
+		return {
+			"name": "루메",
+			"message": "출처 기록과 문장을 함께 비교해 보세요. 판단은 현장 대응에서 확인할 수 있어요.",
+			"portrait_visible": true
+		}
+	return {
+		"name": "기록관 아카",
+		"message": "확보한 기록과 문장을 대조하세요. 판단은 피해자 보호와 회수 대응에서 확인됩니다.",
+		"portrait_visible": false
+	}
 
 
 func _current_manual_page_id_for_slot(manual: Dictionary, slot_id: String) -> String:
@@ -1426,7 +1448,7 @@ func _refresh_manual_layout() -> void:
 	if _manual_panel != null:
 		_manual_panel.visible = false
 	if _manual_toggle_button != null:
-		_manual_toggle_button.visible = _is_afterlife_layout
+		_manual_toggle_button.visible = _manual_entry_available
 
 
 func _refresh_manual_drawer(mark_new: bool) -> void:

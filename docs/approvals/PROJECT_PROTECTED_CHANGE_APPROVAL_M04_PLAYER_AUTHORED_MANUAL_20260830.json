@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "artifact_role": "PROJECT_PROTECTED_CHANGE_APPROVAL",
+  "status": "APPROVED",
+  "protected_base_commit": "2e0116e7e59a3e64709ee8d1d4275fb67c5b9180",
+  "decision_ids": [
+    "D-2026-08-28-URBAN-NOIR-HYBRID-VISUAL-DIRECTION",
+    "D-2026-08-29-PLAYER-AUTHORED-MANUAL-KEYWORD-VERIFICATION"
+  ],
+  "approved_paths": [
+    "data/episodes/episode_002_red_umbrella_alley.json",
+    "data/episodes/episode_002_red_umbrella_alley_validation_map.json",
+    "scripts/scenes/investigation_scene.gd",
+    "scripts/ui/main_menu.gd",
+    "scripts/ui/manual_deduction_workbench.gd"
+  ],
+  "approval_source": "The decision owner explicitly approved the previously merged physical-window main-menu correction and then approved the recommended continuation, directing the approved Godot plans to be implemented without pausing. Because the current project adapter still pins the protected baseline before that already approved main-menu receipt, this receipt carries forward that exact path together with the M04 Red Umbrella player-authored manual slice. It does not re-authorize unrelated protected changes.",
+  "approval_time": "2026-08-30T16:30:00+09:00",
+  "scope_summary": "Carry forward the already merged main-menu physical-window breakpoint correction from PROJECT_PROTECTED_CHANGE_APPROVAL_MAIN_MENU_EFFECTIVE_RESOLUTION_20260830.json without changing it in this PR. Then implement M04's existing three-clue manual and its existing rule/rescue context through the existing draft-only workbench, moving the runtime manual facts out of the validation map so the episode remains the sole owner. Use text-only Archivist Aka for M04; preserve Lume portrait and M01 semantics as CASE-01-only. Do not create new clues, rules, save fields, semantic answer evaluation, release claims, M05+ content, or asset promotion."
+}

@@ -63,7 +63,7 @@ func _test_native_dossier_hierarchy(workbench: Control) -> void:
 	var lume_panel := workbench.find_child("LumeGuidePanel", true, false) as Control
 	var lume_portrait := workbench.find_child("LumePortrait", true, false) as TextureRect
 	_expect(lume_panel != null, "workbench has no Lume guide panel")
-	_expect(lume_portrait != null and lume_portrait.texture != null, "workbench has no approved Lume portrait texture")
+	_expect(lume_portrait != null and lume_portrait.visible and lume_portrait.texture != null, "CASE-01 workbench has no visible approved Lume portrait texture")
 	var first_slot := workbench.find_child("Slot_slot_a", true, false) as Button
 	_expect(first_slot != null and first_slot.focus_mode != Control.FOCUS_NONE, "first writable slot must be keyboard focusable")
 	_expect(root.gui_get_focus_owner() == first_slot, "first writable slot should receive focus on open")

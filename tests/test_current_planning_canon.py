@@ -181,16 +181,20 @@ class CurrentPlanningCanonTests(unittest.TestCase):
             runtime["one_main_case_runtime_enforcement"],
         )
         self.assertEqual(
-            "APPROVED_DESIGN_NOT_IMPLEMENTED_NO_LIVE_CANDIDATE_POOL_OR_SCENE_CONSUMER",
+            "IMPLEMENTED_M01_M04_DRAFT_ONLY_WORKBENCH_FOCUSED_MACHINE_VERIFIED_OTHER_CASES_PENDING",
             runtime["keyword_composition"],
         )
         self.assertEqual(
-            "NOT_IMPLEMENTED_CURRENT_MANUAL_IS_READ_ONLY_INFORMATION_DRAWER",
+            "IMPLEMENTED_FULLSCREEN_DOSSIER_WORKBENCH_DRAFT_ONLY",
             runtime["m01_manual_player_input"],
         )
         self.assertEqual(
-            "STALE_RUNTIME_DATA_CONFLICTS_WITH_D_2026_08_29_SUCCESSOR_CONTRACT",
+            "IMPLEMENTED_FALSE_NO_AUTO_REVEAL",
             runtime["m01_normal_clear_manual_answer_reveal"],
+        )
+        self.assertEqual(
+            "IMPLEMENTED_FULLSCREEN_DOSSIER_WORKBENCH_EXISTING_THREE_CLUE_SOURCE_ONLY_TEXT_ONLY_ARCHIVIST_AKA",
+            runtime["m04_manual_player_input"],
         )
         self.assertEqual("REUSE_EXISTING_CANON_V2_RUNTIME", runtime["canon_v2_runtime_strategy"])
         self.assertEqual("COMPOSITE_RESULT", runtime["current_result_authority"])

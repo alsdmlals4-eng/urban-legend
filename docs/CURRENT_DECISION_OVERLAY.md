@@ -26,10 +26,12 @@ visual_direction_lock: USER_APPROVED
 visual_direction_decision: D-2026-08-28-URBAN-NOIR-HYBRID-VISUAL-DIRECTION
 ten_day_half_day_case_cadence: USER_APPROVED / IMPLEMENTED_NON_NUMERIC_CONTEXT / FOCUSED_MACHINE_VERIFIED
 one_main_case_runtime_enforcement: IMPLEMENTED / CYCLE_LOCK_REJECTS_SECOND_OPERATION / FOCUSED_MACHINE_VERIFIED
-keyword_composition: IMPLEMENTED_M01_ONLY / AUTOMATED_REGRESSION_GREEN
-player_authored_manual_keyword_verification: USER_APPROVED / M01_IMPLEMENTED / MACHINE_VERIFIED
+keyword_composition: IMPLEMENTED_M01_M04 / AUTOMATED_REGRESSION_GREEN / OTHER_CASES_PENDING
+player_authored_manual_keyword_verification: USER_APPROVED / IMPLEMENTED_M01_M04 / MACHINE_VERIFIED
 player_authored_manual_decision: D-2026-08-29-PLAYER-AUTHORED-MANUAL-KEYWORD-VERIFICATION
 m01_manual_input_consumer: IMPLEMENTED / FULLSCREEN_DOSSIER_WORKBENCH / DRAFT_ONLY
+m04_manual_input_consumer: IMPLEMENTED / FULLSCREEN_DOSSIER_WORKBENCH / DRAFT_ONLY / EXISTING_THREE_CLUE_SOURCE_ONLY
+m04_manual_guide: IMPLEMENTED / TEXT_ONLY_ARCHIVIST_AKA / NO_LUME_PORTRAIT
 m01_normal_clear_manual_answer_reveal: IMPLEMENTED_FALSE / NO_AUTO_REVEAL
 ten_day_half_day_case_decision: D-2026-08-28-TEN-DAY-HALF-DAY-CASE-CADENCE
 m04_week4_numeric_cadence: SUPERSEDED
@@ -52,8 +54,8 @@ runtime_merge_commit: 8d303f0f9414950273be934fd28c8fb1b3a21e18
 canonical_root_runtime_receipt: AUTOMATED_EXACT_HEAD_GREEN
 ten_day_half_day_cadence: USER_APPROVED / IMPLEMENTED_NON_NUMERIC_CONTEXT / FOCUSED_MACHINE_VERIFIED
 one_main_case_runtime_enforcement: IMPLEMENTED / FOCUSED_MACHINE_VERIFIED
-keyword_composition: M01_IMPLEMENTED / MACHINE_VERIFIED
-player_authored_manual_keyword_verification: USER_APPROVED / M01_IMPLEMENTED / MACHINE_VERIFIED
+keyword_composition: IMPLEMENTED_M01_M04 / MACHINE_VERIFIED / OTHER_CASES_PENDING
+player_authored_manual_keyword_verification: USER_APPROVED / IMPLEMENTED_M01_M04 / MACHINE_VERIFIED
 human_qa: NOT_RUN
 new_player_validation: NOT_RUN
 poc_passed: NOT_DECLARED
@@ -102,9 +104,11 @@ base_adapter_baseline_reconciliation: COMPLETE
 
 ### M04 release-near preparation
 
-판정: `SHARED_SYSTEM_BASELINE_IMPLEMENTED / FINAL_VISUAL_GATE_PENDING`.
+판정: `SHARED_SYSTEM_BASELINE_AND_PLAYER_AUTHORED_MANUAL_IMPLEMENTED / FINAL_VISUAL_GATE_PENDING`.
 
 - M04-specific record/investigation/minigame/recovery IDs를 shared grammar에 연결.
+- M04의 실제 사건 데이터가 세 기존 clue ID, 두 기존 rule page, rescue gate, candidate provenance를 단일 source로 보유하고 fullscreen dossier workbench가 draft-only placement를 소비한다.
+- M04 guide는 **기록관 아카** 텍스트만 표시한다. CASE-01의 루메 초상/이름은 M04에 노출하지 않는다.
 - Composite Result axes 공유.
 - M01 truth ID를 M04 current truth로 재사용하지 않는다.
 - `PRODUCT_REFERENCE_ASSET_PENDING`, `final_visuals_authorized=false` 유지.
@@ -129,13 +133,13 @@ base_adapter_baseline_reconciliation: COMPLETE
 
 ### Player-authored manual keyword verification — 2026-08-29
 
-판정: `USER_APPROVED / M01_IMPLEMENTED / MACHINE_VERIFIED / HUMAN_QA_NOT_RUN`.
+판정: `USER_APPROVED / IMPLEMENTED_M01_M04 / MACHINE_VERIFIED / HUMAN_QA_NOT_RUN`.
 
 - 조사는 정상 키워드의 원본 출처와 획득 맥락을 만들고, 플레이어는 빈칸이 있는 추리문에서 그 기억·출처·문맥으로 후보를 배치한다.
 - UI는 구조 불가능만 막는다. 정답/오답, 변조, 호환성, 추천 점수를 직접 알려 주지 않는다. 그럴듯한 오답은 구출 미니게임 및 회수의 `전조 → 가설 → 근거 → 대응` 결과로 검증·반증된다.
 - 한 변수만 달라진 변조 후보는 별도 가짜 단서를 갖지 않는다. 사실이지만 해당 슬롯에 쓰이지 않는 보조 후보와 구분한다.
-- M01에는 Canon record ID를 source로 갖는 candidate pool과 deduction segment가 구현돼 있다. source record가 확보된 후보만 표시되며, 정답/오답, 변조, 호환성, 추천 점수는 UI·저장 데이터·policy 결과에 없다.
-- full-screen dossier workbench는 `anomaly_manual_records[episode_id].draft_slots`만 저장한다. Canon V2 이관 보호 상태인 `afterlife_canon_v2.manual.filled_slots`는 빈 상태를 보존하고, `normal_clear.reveal_complete_manual`은 `false`다.
+- M01에는 Canon record ID를 source로 갖는 candidate pool과 deduction segment가 구현돼 있고, M04에는 세 기존 clue ID만 source로 갖는 두 rule page와 candidate pool이 구현돼 있다. source record가 확보된 후보만 표시되며, 정답/오답, 변조, 호환성, 추천 점수는 UI·저장 데이터·policy 결과에 없다.
+- full-screen dossier workbench는 `anomaly_manual_records[episode_id].draft_slots`만 저장한다. Canon V2 이관 보호 상태인 `afterlife_canon_v2.manual.filled_slots`는 빈 상태를 보존하고, `normal_clear.reveal_complete_manual`은 `false`다. M04는 별도 save version이나 answer-state를 추가하지 않는다.
 - 실제 GameState/조사 씬 통합·저장 재로딩·1280×720/1920×1080 frame containment은 automated runtime-scene test로 검증했다. Human comprehension, visual acceptance, accessibility observation은 `NOT_RUN`이다.
 - 사용자 제공 비교 이미지는 planning UI reference일 뿐 asset, runtime UI, Scene, product approval이 아니다.
 
@@ -145,6 +149,7 @@ base_adapter_baseline_reconciliation: COMPLETE
 
 - CASE-01 조사 디바이스·현장·매뉴얼의 기록 보조 이름은 **루메**다. 전임
   블루프린트 후보에 들어간 ‘아카’ 표기는 정체성 오류로 `SUPERSEDED`다.
+- M04의 전역 기관 보조는 **기록관 아카**의 텍스트 안내다. 이는 CASE-01 루메의 대체나 새 초상 asset이 아니며, M04 workbench에는 루메의 이름·초상을 노출하지 않는다.
 - 루메는 귀여운 소형 치비 비율, 은빛 웨이브 머리, 큰 호박빛 눈의 정체성을
   유지한다. 성숙한 전신 요원 체형으로 대체하지 않는다.
 - 복장은 입장한 사건의 장소·분위기와 맞춰 달라질 수 있다. 단, 구현 중 임의로
