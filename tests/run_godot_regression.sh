@@ -75,6 +75,8 @@ script_tests=(
   shared_system/shared_investigation_manual_test
   shared_system/shared_rescue_recovery_test
   m04/m04_validation_baseline_test
+  m04/m04_player_authored_manual_contract_test
+  m04/m04_manual_workbench_integration_test
   m04/m04_current_campaign_cadence_test
   m04/m04_preparation_docket_test
   m04/m04_sequential_result_vignette_test
