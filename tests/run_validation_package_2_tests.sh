@@ -15,6 +15,7 @@ script_tests=(
   validation/validation_entry_coordinator_test
   validation/validation_main_menu_contract_test
   validation/main_menu_window_breakpoint_test
+  validation/windows_user_data_isolation_test
 )
 
 for test_path in "${script_tests[@]}"; do
