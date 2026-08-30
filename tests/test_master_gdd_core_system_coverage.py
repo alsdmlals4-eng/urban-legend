@@ -25,22 +25,31 @@ class MasterGddCoreSystemCoverageTests(unittest.TestCase):
         for section in required_sections:
             self.assertIn(section, self.text)
 
-    def test_schedule_truth_distinguishes_product_contract_from_runtime(self) -> None:
+    def test_schedule_truth_reports_the_verified_runtime_consumer(self) -> None:
         for statement in (
             "exactly one main case per cycle",
             "Day 1–9",
             "Day 10",
-            "current runtime does not enforce the one-main-case limit",
+            "cycle main case lock",
+            "IMPLEMENTED / FOCUSED_MACHINE_VERIFIED",
         ):
             self.assertIn(statement, self.text)
+        self.assertNotIn("current runtime does not enforce the one-main-case limit", self.text)
 
-    def test_keyword_truth_never_promotes_a_design_only_system(self) -> None:
+    def test_keyword_truth_reports_the_m01_m04_player_authored_slice(self) -> None:
         for statement in (
             "candidate_keywords",
-            "APPROVED_DESIGN / NOT_IMPLEMENTED",
-            "no player-facing keyword-composition consumer",
+            "IMPLEMENTED_M01_M04",
+            "player-facing keyword-composition consumer",
+            "draft-only",
         ):
             self.assertIn(statement, self.text)
+        self.assertNotIn("no player-facing keyword-composition consumer", self.text)
+
+    def test_m04_vignette_status_is_not_left_at_the_preimplementation_state(self) -> None:
+        self.assertIn("M04 sequential narrative vignettes", self.text)
+        self.assertIn("IMPLEMENTED / FOCUSED_MACHINE_VERIFIED", self.text)
+        self.assertNotIn("M04 vignette successor `NOT_IMPLEMENTED`", self.text)
 
     def test_keyword_flow_is_player_authored_and_never_an_answer_checker(self) -> None:
         for statement in (
