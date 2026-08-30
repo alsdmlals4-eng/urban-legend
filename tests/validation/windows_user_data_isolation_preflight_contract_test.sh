@@ -31,5 +31,9 @@ if ! grep -Fqx 'bash "$PROJECT_ROOT/tests/validation/windows_user_data_isolation
   echo "FAILED: run_godot_regression.sh must invoke the preflight through PROJECT_ROOT" >&2
   exit 1
 fi
+if ! grep -Fqx '    bash "$PROJECT_ROOT/tests/run_afterlife_canon_v2_migration_tests.sh"' "$PROJECT_ROOT/tests/run_godot_regression.sh"; then
+  echo "FAILED: run_godot_regression.sh must invoke the nested Afterlife suite through PROJECT_ROOT" >&2
+  exit 1
+fi
 
 echo "WINDOWS USER DATA ISOLATION PREFLIGHT CONTRACT: PASS"

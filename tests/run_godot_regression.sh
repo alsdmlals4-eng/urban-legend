@@ -14,7 +14,7 @@ if [[ "${SKIP_AFTERLIFE_CANON_V2_FOCUSED:-0}" != "1" ]]; then
   GODOT_BIN="$GODOT_BIN" \
     GODOT_TEST_TIMEOUT="$GODOT_TEST_TIMEOUT" \
     GODOT_TEST_TMP="$RUN_ROOT/afterlife-canon-v2-focused" \
-    bash tests/run_afterlife_canon_v2_migration_tests.sh
+    bash "$PROJECT_ROOT/tests/run_afterlife_canon_v2_migration_tests.sh"
 fi
 
 script_tests=(
