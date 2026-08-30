@@ -11,7 +11,7 @@
 ## 현재 기준
 
 - current product cadence: 10일·오전/오후, Day 1~9 조기 해결 / Day 10 정규 해결.
-- calendar timing docket/save/result/numeric balance는 implementation contract 전 `NOT_IMPLEMENTED / UNDEFINED`.
+- cycle main-case lock, non-numeric dispatch context save/result, Preparation docket, and M04 sequential result are implemented with focused automated evidence; numeric balance remains `UNDEFINED`.
 - 아래 ANNUAL 4주/7일 항목은 historical regression checklist이며 current product timing의 acceptance criteria가 아니다.
 
 - 구현 기준선: MVP-043 + CORE-VALIDATION-001 + UX-PD-001 2A

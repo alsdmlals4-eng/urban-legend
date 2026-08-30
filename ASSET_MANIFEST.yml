@@ -551,3 +551,147 @@ assets:
       - "After an AnomalyVisual layout or scaling change"
       - "Before release-rights sign-off"
       - "When runtime or human QA reports clipping, ambiguity, or overlap"
+  - asset_id: "M04-RECOVERY-BACKGROUND-001"
+    name: "Red Umbrella Recovery background"
+    category: "environment_background"
+    purpose: "M04 Recovery's environment-only background behind the existing cinematic anomaly stage and ActionDock."
+    owner_discipline: "Visual"
+    affected_disciplines:
+      - "Godot UI"
+      - "Narrative"
+      - "QA"
+    statuses:
+      - "PROJECT_ASSET_APPROVED"
+      - "PRODUCTION_READY"
+      - "IMPLEMENTED"
+    vault_source_key: "M04_RECOVERY_BACKGROUND_ADAPT_02_20260828"
+    canonical_path: "assets/backgrounds/red_recovery.png"
+    source_path: "docs/visual/candidates/M04_RECOVERY_BACKGROUND_ADAPT_02_20260828.png"
+    runtime_path: "scenes/battle_scene.tscn -> ArtLayer/Background"
+    latest_capture_path: ""
+    golden_screenshot_path: ""
+    source_type: "AI_GENERATED"
+    source_and_license: >
+      OpenAI built-in image generation output created on 2026-08-28 and promoted under the sole owner's approved
+      current M04 implementation continuation. The generation prompt contains no named third-party character, logo,
+      or requested imitation style. This record captures project provenance and an obvious-conflict review only; it
+      is not legal clearance. The user remains responsible for final distribution-rights review under the applicable
+      service terms and law.
+    approved_reference: "docs/visual/candidates/M04_RECOVERY_BACKGROUND_ADAPT_02_20260828.md"
+    supersedes: "Pre-promotion tracked red_recovery.png (SHA-256 727d5a19cddeb614b50feac238a61fc8ffa8af67b719cabcd0be5c18620d779c)"
+    superseded_by: ""
+    replacement_requires_approval: true
+    reference_elements:
+      use:
+        - "Textless Korean closed-shop alley with restrained warm practical light"
+        - "Quiet upper-middle anomaly zone and low-detail lower ActionDock zone"
+        - "Environment-only composition; the separate AnomalyVisual owns the D umbrella"
+      do_not_use:
+        - "Readable text, UI, umbrella, people, creature, M01 station motifs, or copied character identity"
+        - "A baked action panel, score, rule, clue answer, or screen effect"
+    visual_dna:
+      silhouette: "Environment-first closed-shop alley; no figure or anomaly is baked into the background."
+      proportion: "1672x941 landscape PNG filling the existing ArtLayer Background TextureRect."
+      camera: "Eye-level wideshot with clear upper-middle anomaly separation and a quiet lower interaction zone."
+      resolution_or_pixel_density: "1672x941 PNG; the existing runtime node retains KEEP_ASPECT_COVERED."
+      palette: "Charcoal wet ground, muted warm practical lights, restrained noir contrast, and no neon wash."
+      material_language: "Soft anime-noir ink/paper texture aligned with the approved current M04 direction."
+      engine_import: "Godot Texture2D import from the exact canonical PNG."
+      accessibility_fallback: "The existing telegraph, risk label, and ActionDock state communicate gameplay independently of the background."
+    generation_record:
+      tool_and_model: "OpenAI built-in image generation (model identifier not exposed to this session)"
+      prompt_core: "Textless Korean closed-shop alley after rain, quiet upper-middle anomaly zone and low-detail lower ActionDock zone, restrained soft anime-noir ink/paper texture; no umbrella, people, creature, UI, labels, rule answer, M01 motifs, photoreal glare, or neon HUD."
+      seed_or_reproduction: "Not exposed by the generation surface."
+      manual_post_process: "None; the canonical bytes match the approved candidate exactly."
+      known_remaining_issues: "Automated target-scene verification passed at 1280x720 and 1920x1080. Human visual/accessibility QA and release-rights review remain pending."
+    validation:
+      sha256: "2e1f1a9ebf4f7c72a88aa95e535e397b07be2701bb9245fe99648a910b40dc5e"
+      target_resolutions:
+        - "1280x720"
+        - "1920x1080"
+      runtime_verified: true
+      visual_qa_verified: false
+      accessibility_verified: false
+      evidence:
+        - "docs/visual/candidates/M04_RECOVERY_BACKGROUND_ADAPT_02_20260828.md"
+        - "docs/approvals/PROJECT_PROTECTED_CHANGE_APPROVAL_M04_CURRENT_IMPLEMENTATION_20260830.json"
+        - "tests/test_m04_current_asset_promotion.py"
+        - "tests/m04/m04_recovery_promoted_asset_runtime_test.gd"
+      last_verified_commit: ""
+    next_review_triggers:
+      - "After an ArtLayer Background, ActionDock, or cinematic-stage layout/scaling change"
+      - "At human visual review of the target resolutions"
+      - "Before release-rights sign-off"
+  - asset_id: "M04-ANOMALY-D-001"
+    name: "Red Umbrella D-risk anomaly cutout"
+    category: "anomaly_cutout"
+    purpose: "M04 Recovery D-risk single-umbrella anomaly for the existing battle cinematic HUD."
+    owner_discipline: "Visual"
+    affected_disciplines:
+      - "Godot UI"
+      - "Narrative"
+      - "QA"
+    statuses:
+      - "PROJECT_ASSET_APPROVED"
+      - "PRODUCTION_READY"
+      - "IMPLEMENTED"
+    vault_source_key: "M04_ANOMALY_D_ADAPT_01"
+    canonical_path: "assets/anomalies/cutouts/red_umbrella_d_cutout.png"
+    source_path: "docs/visual/candidates/M04_ANOMALY_D_ADAPT_01.png"
+    runtime_path: "scenes/battle_scene.tscn -> CinematicStage/AnomalyPanel/Content/AnomalyVisual"
+    latest_capture_path: ""
+    golden_screenshot_path: ""
+    source_type: "AI_GENERATED"
+    source_and_license: >
+      OpenAI built-in image generation output created on 2026-08-28 and promoted under the sole owner's approved
+      current M04 implementation continuation. The generation prompt contains no named third-party character, logo,
+      or requested imitation style. This record captures project provenance and an obvious-conflict review only; it
+      is not legal clearance. The user remains responsible for final distribution-rights review under the applicable
+      service terms and law.
+    approved_reference: "docs/visual/candidates/M04_ANOMALY_D_ADAPT_01.md"
+    supersedes: "Pre-promotion tracked red_umbrella_d_cutout.png (SHA-256 29137409dad49ec149d84f9dafeb5483c6eefb37035815f196ac9a5c8cd6c98d)"
+    superseded_by: ""
+    replacement_requires_approval: true
+    reference_elements:
+      use:
+        - "One suspended crimson umbrella with a bent black handle and sparse soot-like residue"
+        - "Genuine transparent margin and an uncropped default D-risk presentation"
+        - "The existing risk label, modulation, and telegraph UI rather than baked gameplay text"
+      do_not_use:
+        - "Human figure, crowd, scenery, UI, labels, text, duplicate umbrella, named IP, weapon, or gore"
+        - "A B/C ordinary-person silhouette or the prior full-image fallback composition"
+    visual_dna:
+      silhouette: "One isolated D-risk red umbrella; it reads as an anomaly identity without a human body or environment."
+      proportion: "1024x1536 RGBA portrait cutout inside the existing AnomalyVisual TextureRect."
+      camera: "Centered object portrait with deliberate alpha-zero margin rather than a scene crop."
+      resolution_or_pixel_density: "1024x1536 PNG; D-risk default uses KEEP_ASPECT_CENTERED while a player-set F2 crop preference remains respected."
+      palette: "Crimson umbrella, black handle, charcoal residue, and restrained D-risk warm modulation from the existing scene."
+      material_language: "Soft anime-noir ink/paper texture with no embedded screen effect."
+      engine_import: "Godot Texture2D import from the exact canonical PNG."
+      accessibility_fallback: "Existing risk label, telegraph copy, and HUD communicate D-risk independently of the cutout."
+    generation_record:
+      tool_and_model: "OpenAI built-in image generation (model identifier not exposed to this session)"
+      prompt_core: "One suspended crimson umbrella with bent black handle, sparse water and soot-like residue, genuine transparent margin, restrained urban-legend soft anime-noir; no human figure, scene, crowd, text, UI, duplicate umbrella, weapon, or gore."
+      seed_or_reproduction: "Not exposed by the generation surface."
+      manual_post_process: "None; the canonical bytes match the approved candidate exactly."
+      known_remaining_issues: "Automated target-scene verification passed at 1280x720 and 1920x1080. Human visual/accessibility QA and release-rights review remain pending."
+    validation:
+      sha256: "0e52f8c02e2ce5a24684603b6280f131224fc02ea661c22275564e327d66541f"
+      pixel_format: "RGBA"
+      transparent_margin: "alpha-zero at the four tested corners"
+      target_resolutions:
+        - "1280x720"
+        - "1920x1080"
+      runtime_verified: true
+      visual_qa_verified: false
+      accessibility_verified: false
+      evidence:
+        - "docs/visual/candidates/M04_ANOMALY_D_ADAPT_01.md"
+        - "docs/approvals/PROJECT_PROTECTED_CHANGE_APPROVAL_M04_CURRENT_IMPLEMENTATION_20260830.json"
+        - "tests/test_m04_current_asset_promotion.py"
+        - "tests/m04/m04_recovery_promoted_asset_runtime_test.gd"
+      last_verified_commit: ""
+    next_review_triggers:
+      - "After an AnomalyVisual layout, scaling, or runtime-editor crop-default change"
+      - "At human visual review of the target resolutions"
+      - "Before release-rights sign-off"

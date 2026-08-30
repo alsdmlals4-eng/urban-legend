@@ -71,6 +71,10 @@ script_tests=(
   shared_system/shared_investigation_manual_test
   shared_system/shared_rescue_recovery_test
   m04/m04_validation_baseline_test
+  m04/m04_current_campaign_cadence_test
+  m04/m04_preparation_docket_test
+  m04/m04_sequential_result_vignette_test
+  m04/m04_recovery_promoted_asset_runtime_test
   recovery_telegraph_audio_test
 )
 

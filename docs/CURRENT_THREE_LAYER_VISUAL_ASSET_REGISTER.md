@@ -26,8 +26,8 @@ Visual work has three independent deliverable layers. A record in one layer neve
 |---|---|---|---|---|---|
 | `AF-BG-ENTRANCE` | SCR-01, SCR-02 | Main Menu + Dialogue `ArtLayer/Background` + preview | M01/M04 location variant | `PNG` background | existing product files; M01 Adapt 02 and M04 Adapt 01 remain separate candidates |
 | `AF-BG-INVESTIGATION` | SCR-04 | Investigation background + `LocationPreview` | M01/M04 location variant | `PNG` background | M01/M04 product assets runtime verified; Human QA pending |
-| `AF-BG-RECOVERY` | SCR-07 | Battle `ArtLayer/Background` | M01/M04 environment | `PNG` background | M01 product asset verified; M04 Adapt 02 candidate only |
-| `AF-ANOMALY` | SCR-07 | `AnomalyVisual` B/C/D | risk stage B/C/D, fallback/full and cutout paths | `PNG`, RGBA cutout where required | B/C product assets verified; M04 D candidate only |
+| `AF-BG-RECOVERY` | SCR-07 | Battle `ArtLayer/Background` | M01/M04 environment | `PNG` background | M01 and M04 product assets runtime verified; Human QA pending |
+| `AF-ANOMALY` | SCR-07 | `AnomalyVisual` B/C/D | risk stage B/C/D, fallback/full and cutout paths | `PNG`, RGBA cutout where required | M04 B/C and D product assets runtime verified; D defaults to uncropped only when no player crop preference exists; Human QA pending |
 | `AF-AGENT` | SCR-03, SCR-04, SCR-07, support UI | catalog agent/contact textures | portrait, full body, investigation support, recovery support, HQ contact as exposed | `PNG` | all catalog paths present; state expansion is limited to actual runtime consumers |
 | `AF-LEGACY-AGENT` | existing menu/dialogue support | expression and cutout sheets | current scripted expression/cutout use | `PNG` sheets | all declared paths present |
 | `AF-UI-SURFACE` | SCR-05, SCR-06, SCR-10–14 | Manual frame, metal panel, route tile, log icons | normal/focus/warning or procedural state | `PNG` + Godot Control/Theme/line drawing | all declared paths present; dynamic text/button states remain engine-rendered |
@@ -38,8 +38,8 @@ Visual work has three independent deliverable layers. A record in one layer neve
 | asset family | target screen | existing product source remains | candidate file | status | next completion gate |
 |---|---|---|---|---|---|
 | M01 entrance | SCR-01/02 | `assets/backgrounds/afterlife_entrance.png` | `M01_ENTRANCE_BACKGROUND_ADAPT_02_20260828.png` | `USER_AUTONOMOUSLY_AUTHORIZED_VISUAL_CANDIDATE / PRODUCT_ASSET_PROMOTION_PENDING` | shared main-menu, dialogue, and preview comparison |
-| M04 recovery | SCR-07 | `assets/backgrounds/red_recovery.png` | `M04_RECOVERY_BACKGROUND_ADAPT_02_20260828.png` | `USER_AUTONOMOUSLY_AUTHORIZED_VISUAL_CANDIDATE / PRODUCT_ASSET_PROMOTION_PENDING` | composited background + anomaly + ActionDock comparison |
-| M04 anomaly D | SCR-07 | `assets/anomalies/cutouts/red_umbrella_d_cutout.png` | `M04_ANOMALY_D_ADAPT_01.png` | `USER_AUTHORIZED_VISUAL_CANDIDATE / PRODUCT_ASSET_PROMOTION_PENDING` | alpha, target-size, and telegraph readability comparison |
+| M04 recovery | SCR-07 | `assets/backgrounds/red_recovery.png` | `M04_RECOVERY_BACKGROUND_ADAPT_02_20260828.png` | `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED / HUMAN_QA_PENDING` | Human visual/accessibility review plus release-rights review |
+| M04 anomaly D | SCR-07 | `assets/anomalies/cutouts/red_umbrella_d_cutout.png` | `M04_ANOMALY_D_ADAPT_01.png` | `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED / HUMAN_QA_PENDING` | Human readability/occlusion review plus release-rights review |
 
 ## 3. Screen-surface register
 
@@ -84,7 +84,7 @@ The screen owner already contains the canonical screen list. This register norma
 
 ## 6. Remaining work, ordered by evidence
 
-1. Run candidate promotion comparisons for M01 entrance, M04 recovery background, and M04 D only after opening the exact actual Godot consumers.
+1. Run the remaining M01 entrance promotion comparison after opening its exact actual Godot consumers; M04 Recovery background and D are now promoted but still need Human visual/accessibility review.
 2. Capture the P1 settings/accessibility navigation and readability audit at 1280×720 and 1920×1080.
 3. Consolidate the existing approved art anchors into the human-facing Visual Bible page without changing runtime or product asset status.
 4. Begin the release-promotion asset package only after the shipping platform/specification is part of the approved project scope.

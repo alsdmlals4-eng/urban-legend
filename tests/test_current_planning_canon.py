@@ -125,7 +125,7 @@ class CurrentPlanningCanonTests(unittest.TestCase):
             "REGULAR", timing["dispatch_windows"][1]["dispatch_kind"]
         )
         self.assertEqual(
-            "M04_COMPOSITE_RESULT_TIMING_VIGNETTE / IMPLEMENTATION_PENDING",
+            "M04_COMPOSITE_RESULT_TIMING_VIGNETTE / IMPLEMENTED_FOCUSED_MACHINE_VERIFIED",
             timing["result_timing_record"]["consumer"],
         )
         self.assertEqual("UNDEFINED_REQUIRES_SEPARATE_BALANCE_DECISION", support["replacement_timing_effect"])
@@ -172,9 +172,12 @@ class CurrentPlanningCanonTests(unittest.TestCase):
         self.assertEqual("monthly_state", runtime["monthly_state_key"])
         self.assertEqual("IMPLEMENTED_ADDITIVE_OPTIONAL", runtime["monthly_state_status"])
         self.assertEqual("TEN_DAYS_AND_TWO_SLOTS_IMPLEMENTED_STRUCTURALLY", runtime["campaign_state_calendar"])
-        self.assertEqual("NOT_IMPLEMENTED", runtime["ten_day_case_cadence_consumer"])
         self.assertEqual(
-            "NOT_IMPLEMENTED_CURRENT_RUNTIME_ALLOWS_M01_M04_M07_IN_ONE_DEMO_CYCLE",
+            "IMPLEMENTED_DISPATCH_CONTEXT_AND_PREPARATION_DOCKET_FOCUSED_MACHINE_VERIFIED",
+            runtime["ten_day_case_cadence_consumer"],
+        )
+        self.assertEqual(
+            "IMPLEMENTED_CYCLE_MAIN_CASE_LOCK_REJECTS_SECOND_OPERATION_FOCUSED_MACHINE_VERIFIED",
             runtime["one_main_case_runtime_enforcement"],
         )
         self.assertEqual(

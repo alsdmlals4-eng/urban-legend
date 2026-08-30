@@ -1,12 +1,11 @@
 extends SceneTree
 
-## Reproducible full-campaign QA for the two implemented cases.
+## Reproducible one-main-case-per-cycle QA using the two implemented cases.
 ## The run uses the same campaign state, scene transition, save, report, and
 ## request APIs as play, while TestSaveGuard restores the player's save.
 
 const TestSaveGuard = preload("res://tests/test_save_guard.gd")
 const AFTERLIFE_PATH := "res://data/episodes/episode_001_afterlife_station.json"
-const RED_UMBRELLA_PATH := "res://data/episodes/episode_002_red_umbrella_alley.json"
 const AFTERLIFE_ID := "episode_001_afterlife_station"
 const RED_UMBRELLA_ID := "episode_002_red_umbrella_alley"
 const TEAM := ["agent_kang_ijun", "agent_kwon_narae", "agent_oh_hyun"]
@@ -38,7 +37,7 @@ func _run() -> void:
 	_check(_same_members(_game_state.get_selected_agent_ids(), TEAM), "temporary three-agent team including Oh Hyun is selectable")
 
 	await _run_afterlife_with_hq_return()
-	await _run_red_umbrella_case()
+	_assert_red_umbrella_waits_for_next_cycle()
 	_run_faction_request()
 	_run_remaining_half_days_to_demo_end()
 
@@ -73,17 +72,13 @@ func _run_afterlife_with_hq_return() -> void:
 	_complete_rest_slot("afterlife afternoon")
 
 
-func _run_red_umbrella_case() -> void:
-	_check(int(_game_state.get_campaign_snapshot().get("day", 0)) == 2, "red umbrella starts on day 2 morning")
-	_check(_game_state.load_episode(RED_UMBRELLA_PATH), "red umbrella episode loads without resetting campaign")
-	_check(_assign_current_slot("investigation"), "day 2 morning schedules the full team for investigation")
-	_check(_game_state.set_campaign_planned_case(RED_UMBRELLA_ID), "red umbrella is planned")
-	_check(_game_state.begin_campaign_operation(RED_UMBRELLA_ID), "red umbrella operation begins")
-	_complete_current_case(RED_UMBRELLA_ID)
-	_check(_game_state.finish_campaign_operation_day().get("advanced", false), "red umbrella completes one morning slot")
-	var advance: Dictionary = _game_state.acknowledge_campaign_slot_result()
-	_check(String(advance.get("time_slot", "")) == "afternoon" and int(advance.get("day", 0)) == 2, "red umbrella result advances to day 2 afternoon")
-	_complete_rest_slot("red umbrella afternoon")
+func _assert_red_umbrella_waits_for_next_cycle() -> void:
+	var snapshot: Dictionary = _game_state.get_campaign_snapshot()
+	_check(int(snapshot.get("day", 0)) == 2 and String(snapshot.get("time_slot", "")) == "morning", "red umbrella is considered on day 2 morning after the resolved first case")
+	_check(String(snapshot.get("cycle_main_case_id", "")) == AFTERLIFE_ID, "the first operation remains the current cycle main case")
+	_check(not _game_state.set_campaign_planned_case(RED_UMBRELLA_ID), "red umbrella cannot be planned in the resolved first-case cycle")
+	_check(not _game_state.begin_campaign_operation(RED_UMBRELLA_ID), "red umbrella cannot begin as a second main operation")
+	_check(not _has_report(RED_UMBRELLA_ID), "rejected second operation does not write a red umbrella report")
 
 
 func _complete_current_case(expected_episode_id: String) -> void:
@@ -100,7 +95,7 @@ func _complete_current_case(expected_episode_id: String) -> void:
 
 func _run_faction_request() -> void:
 	var board: Array = _game_state.get_faction_request_board()
-	_check(board.size() == 3, "request board keeps three slots after two cases")
+	_check(board.size() == 3, "request board keeps three slots after one resolved main case")
 	var request := _first_offered_request(board)
 	_check(not request.is_empty(), "an offered faction request is available")
 	if request.is_empty():
@@ -122,7 +117,7 @@ func _run_remaining_half_days_to_demo_end() -> void:
 	_check(int(final_state.get("day", 0)) == 10 and bool(final_state.get("demo_ended", false)), "day 10 completion ends the demo")
 	var cases: Dictionary = final_state.get("cases", {})
 	_check(String(cases.get(AFTERLIFE_ID, {}).get("resolution_state", "")) == "resolved", "afterlife stays resolved through the campaign")
-	_check(String(cases.get(RED_UMBRELLA_ID, {}).get("resolution_state", "")) == "resolved", "red umbrella stays resolved through the campaign")
+	_check(String(cases.get(RED_UMBRELLA_ID, {}).get("resolution_state", "")) != "resolved", "red umbrella remains for a later cycle")
 
 
 func _complete_rest_slot(label: String) -> void:

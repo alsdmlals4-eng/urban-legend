@@ -24,8 +24,8 @@ visual_treatment: SOFT_ANIME_NOIR_LOCKED
 presentation_language: DOSSIER_HYBRID_IS_PRESENTATION_LANGUAGE_NOT_MEDIUM
 visual_direction_lock: USER_APPROVED
 visual_direction_decision: D-2026-08-28-URBAN-NOIR-HYBRID-VISUAL-DIRECTION
-ten_day_half_day_case_cadence: USER_APPROVED / IMPLEMENTATION_CONTRACT_PENDING
-one_main_case_runtime_enforcement: NOT_IMPLEMENTED / CURRENT_RUNTIME_ALLOWS_M01_M04_M07_IN_ONE_DEMO_CYCLE
+ten_day_half_day_case_cadence: USER_APPROVED / IMPLEMENTED_NON_NUMERIC_CONTEXT / FOCUSED_MACHINE_VERIFIED
+one_main_case_runtime_enforcement: IMPLEMENTED / CYCLE_LOCK_REJECTS_SECOND_OPERATION / FOCUSED_MACHINE_VERIFIED
 keyword_composition: IMPLEMENTED_M01_ONLY / AUTOMATED_REGRESSION_GREEN
 player_authored_manual_keyword_verification: USER_APPROVED / M01_IMPLEMENTED / MACHINE_VERIFIED
 player_authored_manual_decision: D-2026-08-29-PLAYER-AUTHORED-MANUAL-KEYWORD-VERIFICATION
@@ -33,7 +33,7 @@ m01_manual_input_consumer: IMPLEMENTED / FULLSCREEN_DOSSIER_WORKBENCH / DRAFT_ON
 m01_normal_clear_manual_answer_reveal: IMPLEMENTED_FALSE / NO_AUTO_REVEAL
 ten_day_half_day_case_decision: D-2026-08-28-TEN-DAY-HALF-DAY-CASE-CADENCE
 m04_week4_numeric_cadence: SUPERSEDED
-m04_sequential_narrative_result_vignettes: USER_APPROVED
+m04_sequential_narrative_result_vignettes: IMPLEMENTED_M04_ONLY / FOCUSED_MACHINE_VERIFIED / HUMAN_QA_PENDING
 m04_sequential_narrative_result_decision: D-2026-08-28-M04-SEQUENTIAL-NARRATIVE-RESULT-VIGNETTES
 ```
 
@@ -50,8 +50,8 @@ overall_plan: COMPLETE
 runtime_implementation: MERGED_MAIN
 runtime_merge_commit: 8d303f0f9414950273be934fd28c8fb1b3a21e18
 canonical_root_runtime_receipt: AUTOMATED_EXACT_HEAD_GREEN
-ten_day_half_day_cadence: USER_APPROVED / NOT_IMPLEMENTED
-one_main_case_runtime_enforcement: NOT_IMPLEMENTED
+ten_day_half_day_cadence: USER_APPROVED / IMPLEMENTED_NON_NUMERIC_CONTEXT / FOCUSED_MACHINE_VERIFIED
+one_main_case_runtime_enforcement: IMPLEMENTED / FOCUSED_MACHINE_VERIFIED
 keyword_composition: M01_IMPLEMENTED / MACHINE_VERIFIED
 player_authored_manual_keyword_verification: USER_APPROVED / M01_IMPLEMENTED / MACHINE_VERIFIED
 human_qa: NOT_RUN
@@ -111,12 +111,12 @@ base_adapter_baseline_reconciliation: COMPLETE
 
 ### Ten-day half-day case cadence — 2026-08-28
 
-판정: `USER_APPROVED / PLANNING_CANON / IMPLEMENTATION_CONTRACT_PENDING`.
+판정: `USER_APPROVED / IMPLEMENTED_NON_NUMERIC_CONTEXT / FOCUSED_MACHINE_VERIFIED / HUMAN_QA_PENDING`.
 
 - 한 cycle은 10일, 하루는 오전/오후 두 반일 슬롯이며 메인 사건은 cycle마다 하나만 해결한다.
 - Day 1~9 해결은 조기 해결, Day 10 해결은 정규 해결이다. Day 10은 지연·강제 escalation·준비 상실이 아니다.
 - 조기 해결은 더 이른 보호, 정규 해결은 남은 반일 준비 기회의 선택이다. 새 numeric balance는 `UNDEFINED`; 옛 2/3/4주, `0/15/30`, `0/+4/+8`은 `SUPERSEDED`이며 날짜에 환산하지 않는다.
-- `CampaignState`의 10일/오전·오후 구조는 구현되어 있지만 timing record, Preparation docket, Day 10 판정, M04 result consumer는 구현되지 않았다.
+- `CampaignState`는 첫 실제 operation에서 cycle main case를 고정하고 다른 사건의 same-cycle 계획/시작을 거부한다. dispatch kind/day/slot은 resolution까지 보존되고 Preparation docket과 M04 결과의 귀가 기억 페이지가 이를 소비한다. Day 10은 정규 대응으로 기록되며 새 수치 보정은 만들지 않는다.
 
 ### Core-loop priority — 2026-08-29
 
@@ -173,7 +173,7 @@ base_adapter_baseline_reconciliation: COMPLETE
 
 ### M04 sequential narrative result vignettes — 2026-08-28
 
-판정: `USER_APPROVED / PLANNING_CANON / IMPLEMENTATION_NOT_AUTHORIZED`.
+판정: `USER_APPROVED / IMPLEMENTED_M04_ONLY / FOCUSED_MACHINE_VERIFIED / HUMAN_QA_PENDING`.
 
 - M04 결과를 한 scroll surface의 카드·점수·목록으로 묶지 않는다. `피해자 → 잔향 → 귀가 기억 → 기록국`의 short narrative page를 순서대로 제시한다.
 - 각 페이지는 한 가지 원인과 그 여파만 다룬다. 귀가 기억 페이지에서는 조기/정규·해결일·실제 권나래 지원 사용만 하나의 인과로 연결한다.

@@ -1,8 +1,8 @@
 extends SceneTree
 
-## Reproducible MVP-041 campaign QA. It proves the third case is discovered
-## through normal 10-day campaign risk, then uses the real investigation and
-## recovery scene handlers. TestSaveGuard restores the player's save.
+## Reproducible 10-day campaign QA. It proves later cases may be discovered
+## through normal campaign risk, but cannot replace the one main case already
+## resolved in the same cycle. TestSaveGuard restores the player's save.
 
 const TestSaveGuard = preload("res://tests/test_save_guard.gd")
 const AFTERLIFE_ID := "episode_001_afterlife_station"
@@ -41,10 +41,10 @@ func _run() -> void:
 	_check(_case_discovery_state(DEAD_FREQUENCY_ID) == "unknown", "dead frequency begins hidden without a test risk hook")
 
 	await _run_afterlife_with_hq_return()
-	await _run_red_umbrella_case()
+	_assert_red_umbrella_waits_for_next_cycle()
 	_run_faction_request()
-	await _advance_to_natural_dead_frequency_discovery()
-	await _run_dead_frequency_with_wrong_response()
+	await _advance_to_day_eight_without_second_case_discovery()
+	_assert_dead_frequency_waits_for_next_cycle()
 	_run_remaining_half_days_to_demo_end()
 
 	var restore_error := _guard.restore()
@@ -76,20 +76,18 @@ func _run_afterlife_with_hq_return() -> void:
 	_complete_rest_slot("afterlife afternoon")
 
 
-func _run_red_umbrella_case() -> void:
-	_check(int(_game_state.get_campaign_snapshot().get("day", 0)) == 2, "red umbrella starts on day 2 morning")
-	_check(_assign_current_slot("investigation"), "day 2 morning schedules the full team for investigation")
-	_check(_game_state.set_campaign_planned_case(RED_UMBRELLA_ID), "red umbrella is planned")
-	_check(_game_state.start_episode_from_preparation(RED_UMBRELLA_PATH), "red umbrella loads from preparation")
-	_check(_game_state.begin_campaign_operation(RED_UMBRELLA_ID), "red umbrella operation begins")
-	_complete_current_case(RED_UMBRELLA_ID)
-	_finish_morning_case(RED_UMBRELLA_ID, 2)
-	_complete_rest_slot("red umbrella afternoon")
+func _assert_red_umbrella_waits_for_next_cycle() -> void:
+	var snapshot: Dictionary = _game_state.get_campaign_snapshot()
+	_check(int(snapshot.get("day", 0)) == 2 and String(snapshot.get("time_slot", "")) == "morning", "red umbrella is considered on day 2 morning after the resolved first case")
+	_check(String(snapshot.get("cycle_main_case_id", "")) == AFTERLIFE_ID, "the first operation remains the current cycle main case")
+	_check(not _game_state.set_campaign_planned_case(RED_UMBRELLA_ID), "red umbrella cannot be planned as a second main case")
+	_check(not _game_state.begin_campaign_operation(RED_UMBRELLA_ID), "red umbrella cannot begin as a second main operation")
+	_check(not _has_report(RED_UMBRELLA_ID), "rejected red umbrella operation does not write a report")
 
 
 func _run_faction_request() -> void:
 	var board: Array = _game_state.get_faction_request_board()
-	_check(board.size() == 3, "request board keeps three slots after two cases")
+	_check(board.size() == 3, "request board keeps three slots after one resolved main case")
 	var request := _first_offered_request(board)
 	_check(not request.is_empty(), "an offered faction request is available")
 	if request.is_empty():
@@ -101,7 +99,7 @@ func _run_faction_request() -> void:
 	_check(_game_state.get_completed_faction_requests().has(instance_id), "faction request completion is recorded")
 
 
-func _advance_to_natural_dead_frequency_discovery() -> void:
+func _advance_to_day_eight_without_second_case_discovery() -> void:
 	while int(_game_state.get_campaign_snapshot().get("day", 0)) < 8:
 		var snapshot: Dictionary = _game_state.get_campaign_snapshot()
 		_complete_rest_slot("day %d %s before dead frequency discovery" % [int(snapshot.get("day", 0)), String(snapshot.get("time_slot", ""))])
@@ -110,81 +108,21 @@ func _advance_to_natural_dead_frequency_discovery() -> void:
 			_check(_case_discovery_state(DEAD_FREQUENCY_ID) == "unknown", "dead frequency remains hidden before day 8")
 	var discovered: Dictionary = _game_state.get_campaign_snapshot()
 	_check(int(discovered.get("day", 0)) == 8 and String(discovered.get("time_slot", "")) == "morning", "normal half-day flow reaches day 8 morning")
-	_check(_case_discovery_state(DEAD_FREQUENCY_ID) == "lead", "dead frequency reaches natural risk-60 discovery")
-	_check(_has_preparation_entry(DEAD_FREQUENCY_ID), "naturally discovered dead frequency appears in preparation")
-	_check(_game_state.save_game(), "natural discovery saves")
+	_check(_case_discovery_state(DEAD_FREQUENCY_ID) == "unknown", "without a second main investigation, dead frequency stays hidden in the current cycle")
+	_check(not _has_preparation_entry(DEAD_FREQUENCY_ID), "hidden dead frequency is not exposed as a same-cycle preparation option")
+	_check(_game_state.save_game(), "hidden later-case state saves")
 	_game_state.reset_run_state()
-	_check(_game_state.load_game(), "natural discovery resumes")
-	_check(_case_discovery_state(DEAD_FREQUENCY_ID) == "lead" and _has_preparation_entry(DEAD_FREQUENCY_ID), "saved discovery remains selectable")
+	_check(_game_state.load_game(), "hidden later-case state resumes")
+	_check(_case_discovery_state(DEAD_FREQUENCY_ID) == "unknown" and not _has_preparation_entry(DEAD_FREQUENCY_ID), "saved hidden later-case state remains unavailable")
 
 
-func _run_dead_frequency_with_wrong_response() -> void:
-	_check(_assign_current_slot("investigation"), "day 8 morning schedules the full team for investigation")
-	_check(_game_state.set_campaign_planned_case(DEAD_FREQUENCY_ID), "dead frequency is planned after discovery")
-	_check(_game_state.start_episode_from_preparation(DEAD_FREQUENCY_PATH), "dead frequency loads from preparation")
-	_check(_game_state.begin_campaign_operation(DEAD_FREQUENCY_ID), "dead frequency operation begins")
-	await _change_scene("res://scenes/investigation_scene.tscn")
-	var investigation := current_scene
-	var point := _first_method_point()
-	_check(not point.is_empty(), "dead frequency has an investigation method")
-	if not point.is_empty():
-		var methods: Array = point.get("method_options", [])
-		var method: Dictionary = methods[0].duplicate(true) if not methods.is_empty() else {}
-		investigation.call("_show_method_options", point)
-		investigation.call("_run_method_option", point, method)
-		await process_frame
-		var method_result: Dictionary = _game_state.get_method_results().get(String(point.get("id", "")), {})
-		var investigation_text := String(investigation.call("_make_method_result_text", method_result))
-		_check(_contains_all(investigation_text, ["현재 상황", "확보 근거", "추론 방향", "다음 판단"]), "investigation displays the current text-novel judgment")
-
-	_prepare_complete_evidence()
-	_check(_game_state.start_resolution_phase(), "dead frequency enters recovery with complete evidence")
-	await _change_scene("res://scenes/battle_scene.tscn")
-	var battle := current_scene
-	var first_pattern: Dictionary = battle.get("_current_pattern")
-	_check(not first_pattern.is_empty(), "dead frequency displays a recovery telegraph")
-	var opening_evidence := String(battle.call("_make_recovery_evidence_text"))
-	_check(_contains_all(opening_evidence, ["전조", "연결 단서", "오대응 학습", "다음 판단"]), "recovery distinguishes decision evidence")
-	var wrong_response := _find_wrong_response(first_pattern)
-	_check(not wrong_response.is_empty(), "dead frequency has an intentional wrong response")
-	if not wrong_response.is_empty():
-		battle.call("_select_pattern_response", wrong_response)
-		await process_frame
-		var learning: Dictionary = _game_state.get_recovery_pattern_learning().get(String(first_pattern.get("id", "")), {})
-		_check(not learning.is_empty() and not bool(learning.get("correct", true)), "wrong response records its reason")
-		var result_label := battle.get("_result_label") as Label
-		_check(result_label != null and result_label.text.contains(String(first_pattern.get("failure_reason", ""))), "wrong response remains visible beside the automatically exposed next telegraph")
-		_check(not Dictionary(battle.get("_current_pattern")).is_empty(), "the next recovery telegraph appears without another input")
-
-	for turn in range(8):
-		if bool(battle.call("_can_recover")):
-			break
-		var pattern: Dictionary = battle.get("_current_pattern")
-		var correct_response := _find_correct_response(pattern)
-		_check(not correct_response.is_empty(), "dead frequency has a supported correct response on turn %d" % [turn + 1])
-		if correct_response.is_empty():
-			break
-		battle.call("_select_pattern_response", correct_response)
-		await process_frame
-		if not bool(battle.call("_can_recover")):
-			battle.call("_begin_recovery_turn")
-			await process_frame
-
-	_check(bool(battle.call("_can_recover")), "dead frequency reaches recovery through evidence-supported responses")
-	battle.call("_recover_anomaly_core")
-	await process_frame
-	await process_frame
-	var result := current_scene
-	_check(result.find_child("ReasoningSummary", true, false) != null, "result shows the reasoning summary")
-	_check(_has_report(DEAD_FREQUENCY_ID), "dead frequency report appears in the database")
-	var report := _report_for_episode(DEAD_FREQUENCY_ID)
-	_check(not Array(report.get("selected_agents", [])).is_empty() and not Array(report.get("next_case_notes", [])).is_empty(), "report preserves agent contribution and next judgment")
-	_check(_game_state.save_game(), "dead frequency result and database save")
-	_game_state.reset_run_state()
-	_check(_game_state.load_game(), "dead frequency result and database resume")
-	_check(_has_report(DEAD_FREQUENCY_ID), "dead frequency report survives the result save")
-	_finish_morning_case(DEAD_FREQUENCY_ID, 8)
-	_complete_rest_slot("dead frequency afternoon")
+func _assert_dead_frequency_waits_for_next_cycle() -> void:
+	var snapshot: Dictionary = _game_state.get_campaign_snapshot()
+	_check(_case_discovery_state(DEAD_FREQUENCY_ID) == "unknown", "dead frequency stays unavailable until a later cycle's discovery path")
+	_check(String(snapshot.get("cycle_main_case_id", "")) == AFTERLIFE_ID, "later discovery does not replace the current cycle main case")
+	_check(not _game_state.set_campaign_planned_case(DEAD_FREQUENCY_ID), "discovered dead frequency cannot be planned in the resolved first-case cycle")
+	_check(not _game_state.begin_campaign_operation(DEAD_FREQUENCY_ID), "discovered dead frequency cannot begin as a second main operation")
+	_check(not _has_report(DEAD_FREQUENCY_ID), "rejected dead frequency operation does not write a report")
 
 
 func _complete_current_case(expected_episode_id: String) -> void:
@@ -213,8 +151,10 @@ func _run_remaining_half_days_to_demo_end() -> void:
 	var final_state: Dictionary = _game_state.get_campaign_snapshot()
 	_check(safety <= 8, "campaign completion loop remains bounded")
 	_check(int(final_state.get("day", 0)) == 10 and bool(final_state.get("demo_ended", false)), "day 10 completion ends the demo")
-	for case_id in [AFTERLIFE_ID, RED_UMBRELLA_ID, DEAD_FREQUENCY_ID]:
-		_check(String(final_state.get("cases", {}).get(case_id, {}).get("resolution_state", "")) == "resolved", "%s stays resolved through the campaign" % case_id)
+	var cases: Dictionary = final_state.get("cases", {})
+	_check(String(cases.get(AFTERLIFE_ID, {}).get("resolution_state", "")) == "resolved", "the selected first main case stays resolved through the campaign")
+	_check(String(cases.get(RED_UMBRELLA_ID, {}).get("resolution_state", "")) != "resolved", "red umbrella remains for a later cycle")
+	_check(String(cases.get(DEAD_FREQUENCY_ID, {}).get("resolution_state", "")) != "resolved", "dead frequency remains for a later cycle")
 
 
 func _complete_rest_slot(label: String) -> void:

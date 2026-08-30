@@ -60,7 +60,7 @@ main_menu
 | `SCR-04` | D Investigation Field | P0 | prep/dialogue → manual/minigame/battle | 무엇이 사실이고 다음 관측은 무엇인가? | `investigation_scene.tscn` / `investigation_scene.gd`; `ArtLayer/Background`, `LocationPreview` | 1280/1920 captures; M01/M04 backgrounds | `COVERED_EXISTING`; M04 background runtime verified; Human QA pending |
 | `SCR-05` | G Manual / Deduction Overlay | P0 | investigation ↔ investigation | 어떤 근거로 규칙 문장을 완성할까? | `investigation_scene` Manual surface / live Control layer | 1920 reasoning capture; `manual_book_frame.png` | `COVERED_EXISTING`; `NO_NEW_IMAGE_FILE_REQUIRED` |
 | `SCR-06` | E Rescue Route Minigame | P0 | investigation → battle | 어떤 경로·순서로 피해자를 분리할까? | `minigame_scene.tscn` / `minigame_scene.gd` | 1280/1920 route capture; metal surface | `COVERED_EXISTING`; `NO_NEW_IMAGE_FILE_REQUIRED` |
-| `SCR-07` | E Recovery / Telegraph Battle | P0 | rescue → result/investigation | 지금 전조에 어떤 현장 행동으로 대응할까? | `battle_scene.tscn` / `battle_scene.gd`; Background, AnomalyVisual, ActionDock | M01/M04 1280/1920 captures | M04 D and recovery-background candidates now exist: `USER_AUTONOMOUSLY_AUTHORIZED_VISUAL_CANDIDATE / PRODUCT_ASSET_PROMOTION_PENDING`; no runtime replacement yet |
+| `SCR-07` | E Recovery / Telegraph Battle | P0 | rescue → result/investigation | 지금 전조에 어떤 현장 행동으로 대응할까? | `battle_scene.tscn` / `battle_scene.gd`; Background, AnomalyVisual, ActionDock | M01/M04 target-scene runtime checks at 1280×720 / 1920×1080 | M04 Recovery background and D cutout are `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED`; Human/accessibility/release QA remains pending |
 | `SCR-08` | F Composite Result / Reward | P0 | recovery → prep/menu | 무엇이 구출·회수·기록에 남았나? | `result_scene.tscn` / `result_scene.gd` | 1280/1920 result capture; approved mockups | `COVERED_EXISTING`; mockups are `SCREEN_DESIGN_REFERENCE`, not product PNG |
 | `SCR-09` | F Return / Next Step | P0 | result → prep/menu | 다음 준비를 할까, 돌아갈까? | `result_scene.gd` explicit return routes | scene transition evidence | `COVERED_EXISTING`; same Result surface, no separate image |
 | `SCR-10` | G Case Data / Records | P1 | menu/prep → return route | 무엇을 이미 알고 있으며 무엇이 잠겼나? | `case_data_scene.tscn` / `case_data_scene.gd` | actual scene, records route | `COVERED_EXISTING`; no dedicated image requirement proven |
@@ -87,7 +87,7 @@ main_menu
 | `SCR-04` | environment → evidence → choice | Background `EXISTING_APPROVED`, location preview reuse, panels/HUD/manual `GODOT_UI` | field choice, record, risk/warning, HQ/settings, current episode | 16:9 + preview crop; M04 1280/1920 runtime evidence | covered |
 | `SCR-05` | provenance / sentence slots / candidate keywords | paper frame `REUSE_PROJECT`, all copy/slot controls `GODOT_UI` + `TEXT_LAYER` | candidate/selected/locked; page navigation; focus | 1920 visual evidence; localizable text not baked | covered |
 | `SCR-06` | rule/route board and current route consequence | metal panel `REUSE_PROJECT`, grid/path `PROCEDURAL_DRAW`/Godot UI, text `TEXT_LAYER` | selectable, invalid, target, warning, completion | 1280/1920 route capture; keyboard focus | covered |
-| `SCR-07` | anomaly → next telegraph → protect target → action | Background / AnomalyVisual / optional cut-in `RASTER_IMAGE`; ActionDock, telegraph, HUD `GODOT_UI` | B/C/D risk, telegraph active, contextual action, normal/disabled/focus, success/failure | alpha cutouts, `KEEP_ASPECT_COVERED`, 1280/1920 capture | M04 D has a transparent candidate; promotion/runtime review remains |
+| `SCR-07` | anomaly → next telegraph → protect target → action | Background / AnomalyVisual / optional cut-in `RASTER_IMAGE`; ActionDock, telegraph, HUD `GODOT_UI` | B/C/D risk, telegraph active, contextual action, normal/disabled/focus, success/failure | alpha cutouts; B/C keeps `KEEP_ASPECT_COVERED`, D defaults `KEEP_ASPECT_CENTERED`; 1280/1920 target-scene check | M04 Recovery background and D promoted/runtime verified; Human QA pending |
 | `SCR-08/09` | multi-axis outcome then next action | panels/cards/buttons `GODOT_UI`, result text `TEXT_LAYER`; mockup `SCREEN_DESIGN_REFERENCE` | rescue/recovery/record outcome, return to prep/menu | 1280/1920 capture; no baked result sheet | covered |
 | `SCR-10–14` | current question before secondary controls | existing panels/icons/text `GODOT_UI`, selective existing textures | selected/locked/empty/error/focus where consumer exposes it | source-level evidence; targeted runtime audit remains P1 | covered / P1 audit noted |
 
@@ -99,9 +99,9 @@ main_menu
 | `AF-BG-INVESTIGATION` | 04 | Investigation Background + LocationPreview | M01/M04 location | `EXISTING_APPROVED` | covered; M04 runtime verified |
 | `AF-UI-MANUAL` | 05 | Investigation `ManualSurface` | textless paper surface | `REUSE_PROJECT` + live UI | covered |
 | `AF-UI-ROUTE` | 06 | minigame full rect background | textless metal board | `REUSE_PROJECT` + procedural/live UI | covered |
-| `AF-BG-RECOVERY` | 07 | Battle `ArtLayer/Background` | M01/M04 environment | `REUSE_PROJECT` | M04 remains reuse review; no raster gap auto-created |
+| `AF-BG-RECOVERY` | 07 | Battle `ArtLayer/Background` | M01/M04 environment | `RASTER_IMAGE` | M04 promoted/runtime verified; no extra raster gap auto-created |
 | `AF-ANOMALY-BC` | 07 | Battle `AnomalyVisual` | B/C transparent apparition | `EXISTING_APPROVED` | covered/runtime verified |
-| `AF-ANOMALY-D` | 07 | Battle `AnomalyVisual` | D escalation transparent apparition | `RASTER_IMAGE` | M04 `USER_AUTHORIZED_VISUAL_CANDIDATE / PRODUCT_ASSET_PROMOTION_PENDING` |
+| `AF-ANOMALY-D` | 07 | Battle `AnomalyVisual` | D escalation transparent apparition | `RASTER_IMAGE` | M04 promoted/runtime verified; Human QA pending |
 | `AF-REPRESENTATIVE` | 03,07 | preparation portrait; battle cut-in | limited character presence | `EXISTING_APPROVED` | covered; no broader portrait batch |
 
 No asset family is added merely to decorate documentation. `SCR-01` UI, `SCR-05` text, `SCR-06` route lines, `SCR-08` result cards, and status feedback remain engine-rendered rather than image-generation requirements.
@@ -113,7 +113,7 @@ No asset family is added merely to decorate documentation. `SCR-01` UI, `SCR-05`
 | `SCR-01` | Main Menu | no new reference | approved control-room reference + actual UI | maintain hierarchy at 1280/1920 | P0 |
 | `SCR-04/05` | Investigation / Manual | no new reference | approved manual and current captures | preserve field-first / manual separate hierarchy | P0 |
 | `SCR-06` | Rescue | no new reference | approved rescue reference + route capture | readable path/feedback at both targets | P0 |
-| `SCR-07` | Recovery | no whole-screen image required | approved successor mockup + live capture; `M04_ANOMALY_D_ADAPT_01` | candidate must not overlap UI; product promotion requires future runtime capture | P0 candidate ready |
+| `SCR-07` | Recovery | no whole-screen image required | approved successor mockup + live target-scene checks; promoted `M04_ANOMALY_D_ADAPT_01` | Human review must confirm D does not overlap UI; no new full-screen image | P0 runtime verified / Human QA pending |
 | `SCR-08` | Composite Result | reference refinement only | user-approved stages 1–2 | stage 3 remains in review; live UI stays source of runtime truth | P1 |
 | `SCR-13` | Settings/accessibility | no image reference | live controls | focused navigation/readability test | P1 |
 
@@ -124,7 +124,7 @@ No asset family is added merely to decorate documentation. `SCR-01` UI, `SCR-05`
 | Asset-first checklist existed but no target screen owner | created this screen-first owner and linked existing asset owners | prevents a missing screen/overlay from being mistaken for an image count problem | latest main Scene/script route readback |
 | Main-menu preview was previously described as compact | preserve current correction: preview is hidden below 1500×850 | M04 entrance comparison uses dialogue at 1280/1920 and preview at non-compact 1920 only | Issue #305 / PR #306 |
 | Manual and rescue board could be mistaken for missing art | marked `NO_NEW_IMAGE_FILE_REQUIRED` with actual surface consumers | text/control/route remain editable and localizable | Issue #307 / PR #308; inspected captures |
-| M04 Recovery D role is not met by current/fallback image | generated one user-authorized RGBA candidate containing a single umbrella only | separates D-risk identity review from the ordinary-person/multi-figure fallback | `M04_ANOMALY_D_ADAPT_01` receipt; runtime promotion remains separate |
+| M04 Recovery D role was not met by current/fallback image | exact RGBA single-umbrella candidate promoted to the existing D cutout route with a consumer-specific no-crop default | removes ordinary-person/multi-figure ambiguity without replacing the fallback or player layout preference | candidate/canonical SHA equality and 1280×720 / 1920×1080 target-scene test; Human QA pending |
 | Base screen-inventory subordinate contract is absent from current Base main | recorded fact without restoring historical Base content | avoids silently treating old guidance as authority | Base `7cfc75d` path readback |
 
 ## 6. Codex Implementation Handoff
@@ -140,12 +140,12 @@ non_goals:
   - No full-screen mockup bitmap as UI.
   - No new image from a coverage gap.
   - No Human QA or product-asset approval inference.
-only_blocking_visual_handoff:
+remaining_visual_gate:
   screen_id: SCR-07
-  issue: M04 D AnomalyVisual candidate promotion
-  consumer: scenes/battle_scene.tscn -> CinematicStage/AnomalyPanel/Content/AnomalyVisual
-  acceptance: candidate must retain genuine RGBA transparency and a single D-risk escalation identity with no scenery/UI/extra figures; then complete separate product promotion and 1280x720/1920x1080 runtime captures
-  current_status: USER_AUTHORIZED_VISUAL_CANDIDATE / PRODUCT_ASSET_PROMOTION_PENDING
+  issue: M04 Recovery promoted-asset human readability and occlusion review
+  consumer: scenes/battle_scene.tscn -> ArtLayer/Background; CinematicStage/AnomalyPanel/Content/AnomalyVisual
+  acceptance: human review at 1280x720/1920x1080 confirms the background, D umbrella, telegraph, and ActionDock remain mutually readable; release-rights is a separate review
+  current_status: PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED / HUMAN_QA_PENDING
 godot_validation:
   - Start from the exact target Scene route, not a fabricated mockup.
   - Check 1280x720 and 1920x1080, mouse/keyboard focus, selected/disabled/warning states.
@@ -166,14 +166,15 @@ godot_validation:
 
 ```yaml
 blocking_gap:
-  - M01 Entrance, M04 Recovery background, and M04 D AnomalyVisual: candidates exist, but each product promotion, rights/provenance review, and runtime evidence are not run.
+  - M01 Entrance remains candidate-only and needs its exact Dialogue plus non-compact preview comparison.
+  - M04 Recovery background and D AnomalyVisual need Human/accessibility and release-rights review; their product promotion and automated target-scene evidence are complete.
 nonblocking_gap:
   - SCR-13 focused settings/accessibility runtime navigation and readability evidence.
   - Composite Result reference stage 3 remains in review; it is not a product PNG requirement.
 user_decision_required:
-  - No decision needed for candidate generation under the 2026-08-28 automatic image authorization. Product promotion remains a separate protected-path decision.
+  - No product-promotion decision remains for M04 Recovery background or D under the approved current implementation. Human/release review remains a separate evidence gate.
 codex_implementation_required:
-  - None for candidate storage. Future M04 D promotion is a separate implementation task.
+  - Complete the M04 campaign, preparation, and result implementation contract; promotion itself no longer requires a separate task.
 image_brief_approval_required:
   - Complete for M01 Entrance, M04 Recovery background, and M04 D: the 2026-08-28 user request authorized their bounded candidates.
 runtime_player_validation:
