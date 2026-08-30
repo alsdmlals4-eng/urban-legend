@@ -1,10 +1,10 @@
 # 괴이기록국 · Current Visual Asset Consumer Checklist
 
 > Role: `CURRENT_VISUAL_ASSET_CONSUMER_CHECKLIST`
-> Updated: `2026-08-27`
+> Updated: `2026-08-30`
 > Decision: `D-2026-08-26-RUNTIME-CONSUMER-FIRST-VISUAL-ASSET-GATE`
 > Scope: planning / visual asset requirement inventory
-> Product asset approval: `6 CURRENT ROOT-MANIFEST ENTRIES (M01 Investigation/Recovery backgrounds, B/C, D; M04 Investigation background, B/C)`
+> Product asset approval: `9 CURRENT ROOT-MANIFEST ENTRIES (M01 Investigation/Recovery backgrounds, B/C, D, CASE-01 Lume guide; M04 Investigation/Recovery backgrounds, B/C, D)`
 > Runtime visual validation: `PARTIALLY_VERIFIED` — M04 Investigation Background + LocationPreview 1280×720/1920×1080 is verified by PR #273; the remaining approved M01/M04 consumers still require their own runtime gates.
 > Human QA: `NOT_RUN`
 
@@ -191,7 +191,7 @@ No batch generation from checklist gaps, and no candidate is auto-promoted to a 
 
 ## 10. Authority / evidence ceiling
 
-Root `ASSET_MANIFEST.yml` is the current tracked product-asset authority and has seven current approved entries: M01 Investigation background, M01 Recovery background, B/C anomaly cutout, D anomaly cutout, the CASE-01 Lume manual guide portrait, the M04 Investigation background, and the M04 B/C anomaly cutout.
+Root `ASSET_MANIFEST.yml` is the current tracked product-asset authority and has nine current approved entries: M01 Investigation background, M01 Recovery background, B/C anomaly cutout, D anomaly cutout, the CASE-01 Lume manual guide portrait, the M04 Investigation/Recovery background assets, and the M04 B/C·D cutout assets.
 
 Legacy `assets/ASSET_MANIFEST.json`, tracked PNG presence, `.import` files, existing runtime wiring, and old QA labels do **not** independently grant `PROJECT_ASSET_APPROVED`.
 
