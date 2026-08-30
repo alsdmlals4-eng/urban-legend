@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "artifact_role": "PROJECT_PROTECTED_CHANGE_APPROVAL",
+  "status": "APPROVED",
+  "protected_base_commit": "08e77964f4fe7c08728793036766a24ed49c78df",
+  "decision_ids": [
+    "D-2026-08-30-M04-BOUNDED-PREPARATION-CAPACITY"
+  ],
+  "approved_paths": [
+    "scripts/core/campaign_state.gd",
+    "scripts/core/game_state.gd",
+    "scripts/scenes/battle_scene.gd",
+    "scripts/scenes/preparation_scene.gd",
+    "scripts/scenes/result_scene.gd",
+    "scripts/ui/canon_v2_operation_overlay.gd",
+    "scripts/ui/canon_v2_runtime_bridge.gd"
+  ],
+  "approval_source": "The sole decision owner explicitly approved the recommended bounded M04 preparation-capacity model, authorized implementation to proceed, and authorized continuing until the approved Godot-plan work is implemented. This receipt covers only the exact protected paths needed to persist the case-local 0/1 gate, expose the existing Kwon support in the active recovery surface, and preserve the same causal result context.",
+  "approval_time": "2026-08-31T00:00:00+09:00",
+  "scope_summary": "Implement only the user-approved M04 completed-rest preparation gate: persist one non-numeric preparation ledger entry, copy that fact into M04 dispatch context, condition only the existing support_kwon_return_route availability, and display locked, available, and used status in Preparation, the active Canon V2 Recovery overlay, and the M04 route-memory vignette. Preserve every existing support value and one-use behavior; do not add a save-version bump, numerical timing effect, clue, answer, victim outcome, automatic activation, extra support use, or an M01/other-agent behavior change."
+}

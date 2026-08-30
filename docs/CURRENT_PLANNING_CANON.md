@@ -44,6 +44,7 @@
 - 조기 해결은 더 이른 보호를, 정규 해결은 남은 반일 슬롯을 준비·조사·회복·관계에 쓸 수 있는 선택을 뜻한다. 두 선택 모두 정규 제품 경로이며 핵심 진실·정답·등급을 숨겨서 바꾸지 않는다.
 - `D-2026-08-28-TEN-DAY-HALF-DAY-CASE-CADENCE`가 전역 timing authority다. 이전 `D-2026-08-28-M04-EARLY-DISPATCH-REGULAR-WEEK4-CADENCE`의 `2/3/4주`, `0/15/30`, `0/+4/+8`은 **SUPERSEDED**이며 Day 값으로 임의 환산하지 않는다.
 - `D-2026-08-28-M04-SEQUENTIAL-NARRATIVE-RESULT-VIGNETTES`: M04의 복합 결과는 한 화면의 점수·카드 나열이 아니라 `피해자 → 잔향 → 귀가 기억 → 기록국` 순서의 짧은 이야기 페이지로 전개한다. 귀가 기억 페이지는 `조기/정규`, 해결일, 실제 권나래 지원 사용을 같은 인과로만 연결한다. M01과 기존 결과 의미·보상은 바꾸지 않는다.
+- `D-2026-08-30-M04-BOUNDED-PREPARATION-CAPACITY`: M04에서 실제로 완료한 `대기·회복` 반일 하나는 `현장 준비 1/1`을 만든다. 이 상태는 기존 권나래 `귀가 기억 고정` 회수 지원의 가용 조건일 뿐 수치 보너스·정답·단서·자동 지원을 추가하지 않는다. Preparation → Recovery → 귀가 기억 페이지가 같은 dispatch 사실을 읽으며, legacy save는 `0/1`으로 호환된다.
 - 조기 해결 뒤 같은 cycle의 두 번째 메인 사건을 생성하지 않는다. 남은 반일은 후일담·치료·연구·관계·다음 사건 준비로 환류한다.
 - 초기 제작 Slate는 M01~M12이며 `1년차` 완료 Gate로 쓰지 않는다. M13+도 같은 cadence로 이어진다.
 - Signature 4개는 M01 저승역, M04 빨간 우산, M07 폐주파수 방송국, M10 기록되지 않은 병동이다.
@@ -51,7 +52,7 @@
 
 ### Runtime implementation readback · 2026-08-30
 
-위 항목은 승인된 제품 계약이다. `CampaignState`는 이제 첫 실제 `begin_operation()`에서 `cycle_main_case_id`를 고정하고, 같은 cycle의 다른 메인 사건 계획·시작을 거부한다. `dispatch_kind / dispatch_day / dispatch_slot`은 active operation에서 resolution context로 보존되며, Preparation은 조기/정규 출동 문서와 다음 cycle 대기 이유를 보여 준다. M04 결과는 이 실제 context와 실제 `귀가 기억 고정` 지원 사용을 네 개의 native Godot logical page에 연결한다. 이는 focused automated evidence가 있는 구현 상태이며, Day 1~9/Day 10의 **numeric balance**와 Human/accessibility/release QA는 계속 `UNDEFINED / NOT_RUN`이다.
+위 항목은 승인된 제품 계약이다. `CampaignState`는 이제 첫 실제 `begin_operation()`에서 `cycle_main_case_id`를 고정하고, 같은 cycle의 다른 메인 사건 계획·시작을 거부한다. `dispatch_kind / dispatch_day / dispatch_slot`은 active operation에서 resolution context로 보존되며, Preparation은 조기/정규 출동 문서와 다음 cycle 대기 이유를 보여 준다. M04에서 완료한 `대기·회복` 반일은 dispatch context의 `m04_preparation_capacity: 1`로 보존되어 기존 권나래 지원의 가용 여부와 귀가 기억 페이지에 같은 사실로 나타난다. 이는 focused automated evidence가 있는 구현 상태이며, Day 1~9/Day 10의 **numeric balance**와 Human/accessibility/release QA는 계속 `UNDEFINED / NOT_RUN`이다.
 
 ## 사건 공통 Core
 
@@ -76,7 +77,7 @@
 - M01 회수는 `docs/M01_RECOVERY_SCENE_PACKET.md`의 `목적지 합창 / 회귀 승강장 / 무정차 환송`을 재사용한다.
 - M01 runtime은 10단계 First Session orchestrator와 additive `monthly_state`를 사용하며 별도 hidden truth owner를 만들지 않는다.
 - `M04 빨간 우산`은 약 30~45분 release-near player-experience Vertical Slice다.
-- M04의 대표 고민은 `Day 1~9에 더 이른 보호를 위해 출동할지, Day 10 정규 해결까지 반일 준비 기회를 사용할지`다. 구체적인 수치 효과는 새 구현 계약의 balance decision 전까지 `UNDEFINED`다. 결과는 Composite Result에서 추리·구출·회수와 분리된 출동 timing 인과로 설명하며, M04에서는 이를 한 화면에 합산하지 않고 순차 후일담으로 읽힌다.
+- M04의 대표 고민은 `Day 1~9에 더 이른 보호를 위해 출동할지, 가능한 반일 중 하나를 대기·회복으로 완료해 기존 귀가 지원을 준비한 뒤 출동할지`다. `D-2026-08-30-M04-BOUNDED-PREPARATION-CAPACITY`는 후자의 **비수치적 가용 조건**만 확정한다. 통계/피해/정답의 day-based numeric balance는 여전히 `UNDEFINED`다. 결과는 Composite Result에서 추리·구출·회수와 분리된 출동·준비 인과로 설명하며, M04에서는 이를 한 화면에 합산하지 않고 순차 후일담으로 읽힌다.
 - M04 shared-system validation baseline과 플레이어 작성 매뉴얼은 구현됐지만 최종 제품 시각·Audio/VFX·Human QA는 아직 Gate 밖이다.
 
 ## 화면·재사용 계약
@@ -105,7 +106,7 @@
 - 성장의 장기 방향은 0~5 Rank + 내부 숙련 진행도이며 threshold와 피로·연구 수치는 provisional이다.
 - 성장은 Clarity·Access·Tolerance·Support를 바꾸며 핵심 진실이나 정답을 자동 제공하지 않는다.
 - current result authority는 `COMPOSITE_RESULT`다.
-- M04의 `COMPOSITE_RESULT` 표현은 `VIGNETTE_VICTIM_RESCUE → VIGNETTE_RESONANCE_RECOVERY → VIGNETTE_ROUTE_MEMORY → VIGNETTE_CASE_RECORD` 순차 후일담이다. `result_scene.gd`가 이를 native Godot logical page로 구현했고 M01/legacy direct result는 기존 surface를 유지한다. 이는 새 runtime Scene이나 정적 UI 이미지가 아니며 Human QA PASS를 뜻하지 않는다.
+- M04의 `COMPOSITE_RESULT` 표현은 `VIGNETTE_VICTIM_RESCUE → VIGNETTE_RESONANCE_RECOVERY → VIGNETTE_ROUTE_MEMORY → VIGNETTE_CASE_RECORD` 순차 후일담이다. `result_scene.gd`가 실제 dispatch의 `현장 준비 0/1 또는 1/1`과 기존 권나래 지원 사용을 native Godot logical page로 구현했고 M01/legacy direct result는 기존 surface를 유지한다. 이는 새 runtime Scene이나 정적 UI 이미지가 아니며 Human QA PASS를 뜻하지 않는다.
 - Legacy grade/S-rank는 history/mastery compatibility만 허용한다.
 - `monthly_state`는 top-level additive optional orchestration block으로 남아 있는 historical generic policy다. 새 10일 cadence의 live consumer는 `CampaignState`의 cycle lock/dispatch context, Preparation docket, M04 route-memory result page가 소유하며, 역사적 `dispatch_risk 0/15/30`을 새 날짜 효과로 환산하지 않는다.
 - M01과 M04의 page-local keyword composition은 구현됐다. M04는 실제 사건 데이터의 세 기존 단서·두 기존 rule page·기존 rescue-gate를 그대로 사용하며, M01은 Canon V2 input을 유지한다. 이 두 사건의 draft placement는 구조 오류만 막고 semantic verdict를 내지 않는다. M05+ 및 변조 후보의 field-verification 확장은 여전히 별도 구현 계약이다.

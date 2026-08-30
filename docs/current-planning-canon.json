@@ -122,20 +122,44 @@
     },
     "m04_route_memory_anchor_preparation_benefit": {
       "decision_id": "D-2026-08-28-TEN-DAY-HALF-DAY-CASE-CADENCE",
-      "status": "SUPERSEDED_NUMERIC_CONTRACT / BASE_RUNTIME_SUPPORT_REMAINS_UNCHANGED",
+      "status": "SUPERSEDED_NUMERIC_CONTRACT / BASE_RUNTIME_SUPPORT_REMAINS_UNCHANGED / BOUNDED_PREPARATION_GATE_SUCCESSOR_IMPLEMENTED",
       "consumer": "support_kwon_return_route",
       "actual_runtime_base_effect": {
         "fear_delta": -16,
         "threshold_delta": 2,
         "timing_bonus": "NOT_IMPLEMENTED"
       },
-      "replacement_timing_effect": "UNDEFINED_REQUIRES_SEPARATE_BALANCE_DECISION",
+      "replacement_timing_effect": "SUPERSEDED_BY_D-2026-08-30-M04-BOUNDED-PREPARATION-CAPACITY",
       "invariants": [
         "PLAYER_MUST_ACTIVELY_USE_EXISTING_KWON_RECOVERY_SUPPORT",
         "NO_ADDITIONAL_SUPPORT_USE_OR_AUTOMATIC_TRIGGER",
         "NO_CLUE_HINT_RULE_OR_ANSWER_MODIFICATION",
         "NO_OTHER_AGENT_SUPPORT_MODIFICATION",
         "COMPOSITE_RESULT_EXPLAINS_TIMING_AND_ACTUAL_SUPPORT_USE"
+      ]
+    },
+    "m04_bounded_preparation_capacity": {
+      "decision_id": "D-2026-08-30-M04-BOUNDED-PREPARATION-CAPACITY",
+      "status": "USER_APPROVED / IMPLEMENTED_M04_ONLY / FOCUSED_MACHINE_VERIFIED / HUMAN_QA_NOT_RUN",
+      "scope": "M04_RED_UMBRELLA_ONLY / EXISTING_KWON_SUPPORT_ONLY",
+      "preparation_rule": "ONE_COMPLETED_REST_HALF_DAY_CREATES_VISIBLE_CAPACITY_1_OF_1",
+      "gate": "support_kwon_return_route_IS_AVAILABLE_ONLY_WHEN_M04_DISPATCH_CONTEXT_HAS_CAPACITY_1",
+      "persistence": {
+        "campaign_field": "preparation_ledger",
+        "dispatch_fields": ["m04_preparation_capacity", "m04_preparation_provenance"],
+        "legacy_fallback": "MISSING_LEDGER_DEFAULTS_TO_0_WITHOUT_SAVE_VERSION_BUMP"
+      },
+      "player_visible_consumers": [
+        "PREPARATION_M04_DOCKET",
+        "CANON_V2_OPERATION_OVERLAY_RECOVERY_SUPPORT_BUTTON_AND_STATUS",
+        "M04_ROUTE_MEMORY_RESULT_PAGE"
+      ],
+      "invariants": [
+        "NO_STAT_BONUS_OR_TIMING_NUMERIC_BALANCE",
+        "NO_CLUE_HINT_TRUTH_OR_ANSWER_CHANGE",
+        "NO_EXTRA_SUPPORT_USE_OR_AUTOMATIC_TRIGGER",
+        "NO_M01_OR_OTHER_AGENT_SUPPORT_CHANGE",
+        "ONLY_COMPLETED_REST_RECORDS_GRANT_CAPACITY"
       ]
     },
     "m04_sequential_narrative_result_vignettes": {
@@ -153,6 +177,7 @@
         "dispatch_kind",
         "resolution_day",
         "resolution_slot",
+        "m04_preparation_capacity",
         "kwon_support_used",
         "actual_support_effect"
       ],
