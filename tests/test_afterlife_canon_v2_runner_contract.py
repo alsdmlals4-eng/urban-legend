@@ -46,16 +46,22 @@ class AfterlifeCanonV2RunnerContractTests(unittest.TestCase):
         self.assertEqual(text.count("res://tests/afterlife_migration/"), 9)
         self.assertEqual(text.count("res://tests/monthly_state/"), 3)
         self.assertEqual(text.count("res://tests/first_session/"), 2)
+        self.assertIn("res://tests/validation/windows_user_data_isolation_test.gd", text)
         self.assertIn("set -euo pipefail", text)
         self.assertIn("GODOT_TEST_TMP", text)
         self.assertIn("XDG_DATA_HOME", text)
-        self.assertIn("Afterlife canon v2 migration: 14/14 entrypoints passed", text)
+        self.assertIn("Afterlife canon v2 migration: ${#entrypoints[@]}/${#entrypoints[@]} entrypoints passed", text)
 
     def test_full_regression_and_ci_call_the_focused_runner(self) -> None:
-        for path in (REGRESSION, DEDICATED_WORKFLOW, ANNUAL_WORKFLOW):
+        expected_calls = {
+            REGRESSION: 'bash "$PROJECT_ROOT/tests/run_afterlife_canon_v2_migration_tests.sh"',
+            DEDICATED_WORKFLOW: "bash tests/run_afterlife_canon_v2_migration_tests.sh",
+            ANNUAL_WORKFLOW: "bash tests/run_afterlife_canon_v2_migration_tests.sh",
+        }
+        for path, expected_call in expected_calls.items():
             text = path.read_text(encoding="utf-8")
             self.assertIn(
-                "bash tests/run_afterlife_canon_v2_migration_tests.sh",
+                expected_call,
                 text,
                 str(path),
             )
