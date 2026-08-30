@@ -216,10 +216,16 @@ func _setup_runtime_editor() -> void:
 		"minimum_size": Vector2(420, 260),
 		"free_layout": true,
 		"image_target": _anomaly_image,
+		"default_crop_mode": _get_initial_anomaly_crop_mode(),
 		"style_target": _anomaly_panel
 	})
 	_runtime_editor.register_element("cinematic_action_dock", _action_panel, {"minimum_size": Vector2(720, 220), "free_layout": true})
 	_runtime_editor.risk_preview_changed.connect(_preview_risk_stage)
+
+
+func _get_initial_anomaly_crop_mode() -> int:
+	var stage := AssetCatalog.new().get_risk_stage(GameState.get_anomaly_risk())
+	return TextureRect.STRETCH_KEEP_ASPECT_CENTERED if stage == "D" else TextureRect.STRETCH_KEEP_ASPECT_COVERED
 
 
 func _preview_risk_stage(stage: String) -> void:

@@ -6,6 +6,16 @@ const ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")
 const MinigameResultFormatter = preload("res://scripts/minigames/minigame_result_formatter.gd")
 const LogGuideScript = preload("res://scripts/ui/log_guide.gd")
 const LogTutorialCatalog = preload("res://scripts/ui/log_tutorial_catalog.gd")
+const M04_EPISODE_ID := "episode_002_red_umbrella_alley"
+
+var _m04_vignette_pages: Array[Dictionary] = []
+var _m04_page_index := 0
+var _m04_progress_label: Label
+var _m04_title_label: Label
+var _m04_body_label: Label
+var _m04_reasoning_summary: Label
+var _m04_continue_button: Button
+var _m04_preparation_button: Button
 
 
 func _ready() -> void:
@@ -19,6 +29,10 @@ func _ready() -> void:
 
 
 func _build_ui() -> void:
+	if GameState.get_current_episode_id() == M04_EPISODE_ID and _has_m04_dispatch_context():
+		_build_m04_narrative_result()
+		return
+
 	var background := ColorRect.new()
 	background.color = Color(0.045, 0.048, 0.06, 1.0)
 	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -60,6 +74,171 @@ func _build_ui() -> void:
 	_add_case_report_panel(root)
 	_add_save_state_panel(root)
 	_add_navigation_buttons(root)
+
+
+func _build_m04_narrative_result() -> void:
+	var background := ColorRect.new()
+	background.color = Color(0.035, 0.04, 0.052, 1.0)
+	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	add_child(background)
+
+	var root := VBoxContainer.new()
+	root.name = "M04NarrativeResult"
+	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	root.offset_left = 64
+	root.offset_top = 42
+	root.offset_right = -64
+	root.offset_bottom = -42
+	root.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	root.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	root.add_theme_constant_override("separation", 14)
+	add_child(root)
+
+	var case_label := Label.new()
+	case_label.text = "괴이기록국 / CASE-02 붉은 우산 골목"
+	case_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	root.add_child(case_label)
+
+	var divider := HSeparator.new()
+	root.add_child(divider)
+
+	_m04_progress_label = Label.new()
+	_m04_progress_label.name = "PageProgress"
+	_m04_progress_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	root.add_child(_m04_progress_label)
+
+	_m04_title_label = Label.new()
+	_m04_title_label.name = "VignetteTitle"
+	_m04_title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_m04_title_label.add_theme_font_size_override("font_size", 30)
+	root.add_child(_m04_title_label)
+
+	_m04_body_label = Label.new()
+	_m04_body_label.name = "VignetteBody"
+	_m04_body_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_m04_body_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_m04_body_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_m04_body_label.add_theme_font_size_override("font_size", 19)
+	root.add_child(_m04_body_label)
+
+	_m04_reasoning_summary = Label.new()
+	_m04_reasoning_summary.name = "ReasoningSummary"
+	_m04_reasoning_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_m04_reasoning_summary.add_theme_font_size_override("font_size", 15)
+	_m04_reasoning_summary.text = _make_m04_reasoning_summary_text()
+	root.add_child(_m04_reasoning_summary)
+
+	_m04_continue_button = Button.new()
+	_m04_continue_button.name = "ContinueButton"
+	_m04_continue_button.text = "다음 기록"
+	_m04_continue_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	_m04_continue_button.pressed.connect(_advance_m04_vignette)
+	root.add_child(_m04_continue_button)
+	_m04_preparation_button = Button.new()
+	_m04_preparation_button.name = "PreparationButton"
+	_m04_preparation_button.text = "준비실로 돌아가기"
+	_m04_preparation_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	_m04_preparation_button.visible = false
+	_m04_preparation_button.pressed.connect(_return_to_preparation_from_m04_result)
+	root.add_child(_m04_preparation_button)
+
+	_m04_vignette_pages = _make_m04_vignette_pages()
+	_m04_page_index = 0
+	_render_m04_vignette()
+
+
+func _make_m04_vignette_pages() -> Array[Dictionary]:
+	var report := GameState.get_case_report_summary()
+	var rescue_text := GameState.get_current_victim_rescue_result()
+	var after_story := GameState.get_current_victim_after_story()
+	var recovery_text := _make_report_recovery_text(report.get("recovery_result", {}))
+	var dispatch_context := _get_m04_dispatch_context()
+	var dispatch_kind := String(dispatch_context.get("dispatch_kind", "EARLY"))
+	var dispatch_day := int(dispatch_context.get("dispatch_day", 1))
+	var dispatch_slot := String(dispatch_context.get("dispatch_slot", "morning"))
+	var dispatch_label := "조기 해결" if dispatch_kind == "EARLY" else "정규 대응"
+	var slot_label := "오전" if dispatch_slot == "morning" else "오후"
+	var return_route_support_used := GameState.get_used_agent_supports().has("support_kwon_return_route")
+	var support_text := "권나래의 ‘귀가 기억 고정’ 보조가 피해자의 귀가 경로와 일상 기억을 붙들어, 안전 구역 이탈 뒤에도 귀환 순서를 유지했습니다." if return_route_support_used else "권나래의 ‘귀가 기억 고정’ 보조는 이번 회수에 배치되지 않았습니다. 귀가 경로는 회수 절차의 기본 보호 기록으로만 남습니다."
+	return [
+		{
+			"title": "피해자",
+			"body": "%s\n\n%s" % [rescue_text, after_story]
+		},
+		{
+			"title": "잔향",
+			"body": "%s\n\n붉은 우산에 남아 있던 반복 잔향은 현장 규칙에 따라 분리되어, 다음 피해자에게 이어질 연결 고리를 끊었습니다." % recovery_text
+		},
+		{
+			"title": "귀가 기억",
+			"body": "%s · %d일차 %s 출동 기록입니다.\n\n%s" % [dispatch_label, dispatch_day, slot_label, support_text]
+		},
+		{
+			"title": "기록국",
+			"body": "CASE-02 붉은 우산 골목의 회수 기록이 사건 보고서에 봉인되었습니다.\n\n이번 판단의 근거와 회수 절차는 기록국 DB에서 다시 확인할 수 있습니다."
+		}
+	]
+
+
+func _make_m04_reasoning_summary_text() -> String:
+	var report := GameState.get_case_report_summary()
+	var clue_titles: Array[String] = []
+	for clue_value in report.get("collected_clues", []):
+		if typeof(clue_value) != TYPE_DICTIONARY:
+			continue
+		var title := String((clue_value as Dictionary).get("title", "")).strip_edges()
+		if not title.is_empty():
+			clue_titles.append(title)
+		if clue_titles.size() >= 3:
+			break
+	var evidence_text := ", ".join(clue_titles) if not clue_titles.is_empty() else "현장 기록과 회수 로그"
+	return "이번 판단의 근거 · %s" % evidence_text
+
+
+func _get_m04_dispatch_context() -> Dictionary:
+	var campaign := GameState.get_campaign_snapshot()
+	var cases: Dictionary = campaign.get("cases", {})
+	var case_state: Dictionary = cases.get(M04_EPISODE_ID, {})
+	var resolution_context: Variant = case_state.get("resolution_context", {})
+	if typeof(resolution_context) == TYPE_DICTIONARY and not (resolution_context as Dictionary).is_empty():
+		return (resolution_context as Dictionary).duplicate(true)
+	var operation := GameState.get_active_campaign_operation()
+	var operation_context: Variant = operation.get("dispatch_context", {})
+	return (operation_context as Dictionary).duplicate(true) if typeof(operation_context) == TYPE_DICTIONARY else {}
+
+
+func _has_m04_dispatch_context() -> bool:
+	var context := _get_m04_dispatch_context()
+	return ["EARLY", "REGULAR"].has(String(context.get("dispatch_kind", ""))) \
+		and int(context.get("dispatch_day", 0)) >= 1 \
+		and ["morning", "afternoon"].has(String(context.get("dispatch_slot", "")))
+
+
+func _advance_m04_vignette() -> void:
+	if _m04_page_index >= _m04_vignette_pages.size() - 1:
+		return
+	_m04_page_index += 1
+	_render_m04_vignette()
+
+
+func _render_m04_vignette() -> void:
+	if _m04_vignette_pages.is_empty() or _m04_progress_label == null or _m04_title_label == null or _m04_body_label == null:
+		return
+	var page: Dictionary = _m04_vignette_pages[_m04_page_index]
+	_m04_progress_label.text = "%d / %d" % [_m04_page_index + 1, _m04_vignette_pages.size()]
+	_m04_title_label.text = String(page.get("title", "기록"))
+	_m04_body_label.text = String(page.get("body", ""))
+	var is_last_page := _m04_page_index >= _m04_vignette_pages.size() - 1
+	_m04_continue_button.visible = not is_last_page
+	_m04_preparation_button.visible = is_last_page
+
+
+func _return_to_preparation_from_m04_result() -> void:
+	if GameState.get_campaign_slot_phase() == "in_progress":
+		GameState.complete_campaign_slot({"kind": "investigation", "episode_id": M04_EPISODE_ID})
+	GameState.set_current_scene_path(GameState.SCENE_PREPARATION)
+	GameState.save_game()
+	get_tree().change_scene_to_file(GameState.SCENE_PREPARATION)
 
 
 func _add_result_panel(parent: Control) -> void:

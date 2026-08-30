@@ -576,14 +576,14 @@ func _refresh_schedule() -> void:
 		slot_label,
 		int(campaign.get("max_days", 10)),
 		{"planning": "일정 선택", "in_progress": "진행 중", "result": "결과 확인"}.get(phase, phase)
-	]
+	] + "\n" + _make_cycle_docket_text(campaign)
 	_clear_children(_schedule_list)
 	if phase == "result":
 		_schedule_list.add_child(_make_label(_make_slot_result_text(GameState.get_campaign_slot_result(), slot_label)))
 		return
 	if phase == "in_progress":
 		var operation := GameState.get_active_campaign_operation()
-		_schedule_list.add_child(_make_label("%s 현장 조사가 %s 상태입니다.\n사건: %s" % [slot_label, "일시 중단" if String(operation.get("status", "")) == "suspended" else "진행 중", String(operation.get("case_id", ""))]))
+		_schedule_list.add_child(_make_label("%s 현장 조사가 %s 상태입니다.\n사건: %s\n%s" % [slot_label, "일시 중단" if String(operation.get("status", "")) == "suspended" else "진행 중", String(operation.get("case_id", "")), _make_dispatch_docket_text(operation)]))
 		return
 	var protagonist := GameState.get_agent_by_id(GameState.get_protagonist_agent_id())
 	for agent in [protagonist]:
@@ -758,6 +758,7 @@ func _refresh_episode_selection() -> void:
 	var campaign := GameState.get_campaign_snapshot()
 	var cases: Dictionary = campaign.get("cases", {})
 	var emergency_case_id := String(campaign.get("emergency_case_id", ""))
+	var cycle_main_case_id := String(campaign.get("cycle_main_case_id", ""))
 	if _current_case_label != null:
 		_current_case_label.text = "계획 사건: %s\n%s" % [GameState.get_current_episode_title() if not planned_case_id.is_empty() else "선택되지 않음", GameState.get_project_core_sentence()]
 	for entry in GameState.get_preparation_episode_entries():
@@ -769,10 +770,17 @@ func _refresh_episode_selection() -> void:
 		var case_state: Dictionary = cases.get(episode_id, {})
 		var resolved := String(case_state.get("resolution_state", "unresolved")) == "resolved"
 		var emergency_locked := not emergency_case_id.is_empty() and episode_id != emergency_case_id
+		var cycle_locked := not cycle_main_case_id.is_empty() and episode_id != cycle_main_case_id
 		var button := Button.new()
-		button.text = "%s: %s" % ["해결 완료" if resolved else ("선택됨" if active else "사건 선택"), String(entry.get("title", "사건"))]
-		button.disabled = resolved or emergency_locked or active or phase != "planning" or not has_investigation
-		button.tooltip_text = "현장 편성 요원을 조사 일정에 배치하면 선택할 수 있습니다." if not has_investigation else ""
+		var button_status := "해결 완료" if resolved else ("선택됨" if active else ("다음 cycle 대기" if cycle_locked else "사건 선택"))
+		button.text = "%s: %s" % [button_status, String(entry.get("title", "사건"))]
+		button.disabled = resolved or emergency_locked or cycle_locked or active or phase != "planning" or not has_investigation
+		if not has_investigation:
+			button.tooltip_text = "현장 편성 요원을 조사 일정에 배치하면 선택할 수 있습니다."
+		elif cycle_locked:
+			button.tooltip_text = "이번 10일 cycle의 메인 사건은 %s으로 확정되었습니다. 다른 메인 사건은 다음 cycle에서 배정합니다." % _get_case_title(cycle_main_case_id)
+		else:
+			button.tooltip_text = ""
 		button.pressed.connect(_select_episode.bind(episode_path, episode_id))
 		_episode_list.add_child(button)
 
@@ -923,6 +931,31 @@ func _selected_team_has_investigation() -> bool:
 	var slot := String(GameState.get_campaign_snapshot().get("time_slot", "morning"))
 	var protagonist_id := GameState.get_protagonist_agent_id()
 	return not protagonist_id.is_empty() and String(GameState.get_campaign_agent_schedule(protagonist_id).get(slot, "")) == "investigation"
+
+
+func _make_cycle_docket_text(campaign: Dictionary) -> String:
+	var cycle_main_case_id := String(campaign.get("cycle_main_case_id", ""))
+	if cycle_main_case_id.is_empty():
+		return "이번 10일 cycle 메인 사건: 미배정 · 첫 현장 조사 시작 시 확정됩니다."
+	return "이번 10일 cycle 메인 사건: %s · 다른 메인 사건은 다음 cycle에서 배정합니다." % _get_case_title(cycle_main_case_id)
+
+
+func _make_dispatch_docket_text(operation: Dictionary) -> String:
+	var context: Variant = operation.get("dispatch_context", {})
+	if typeof(context) != TYPE_DICTIONARY:
+		return "출동 기록: 현재 반일의 현장 대응"
+	var dispatch: Dictionary = context
+	var kind := String(dispatch.get("dispatch_kind", "EARLY"))
+	var day := int(dispatch.get("dispatch_day", 1))
+	var slot := "오전" if String(dispatch.get("dispatch_slot", "morning")) == "morning" else "오후"
+	return "출동 기록: %s · %d일차 %s · 수치 보정 없음" % ["조기 출동" if kind == "EARLY" else "정규 대응", day, slot]
+
+
+func _get_case_title(case_id: String) -> String:
+	for entry in GameState.get_preparation_episode_entries():
+		if typeof(entry) == TYPE_DICTIONARY and String(entry.get("id", "")) == case_id:
+			return String(entry.get("title", case_id))
+	return case_id
 
 
 func _add_request_card(parent: Control, request: Dictionary) -> void:

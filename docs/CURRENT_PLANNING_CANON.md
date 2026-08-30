@@ -49,9 +49,9 @@
 - Signature 4개는 M01 저승역, M04 빨간 우산, M07 폐주파수 방송국, M10 기록되지 않은 병동이다.
 - Standard 8개도 조사·추리·구출·회수 중 한 단계를 생략하지 않는다.
 
-### Runtime reality correction · 2026-08-28
+### Runtime implementation readback · 2026-08-30
 
-위 항목은 승인된 제품 계약이다. current `CampaignState`는 10일·오전/오후 구조와 반일 저장/재개를 구현했지만, 현재 `CASE_ORDER`의 M01·M04·M07을 같은 10일 demo 안에서 모두 시작·해결할 수 있다. 따라서 **한 cycle 메인 사건 1개**는 `CONFIRMED / NOT_IMPLEMENTED`이며, 현 three-case regression은 시간 구조의 회귀 증거일 뿐 product cadence 완료 증거가 아니다. Day 1~9 조기·Day 10 정규의 player-facing docket, timing save/result consumer, numeric balance도 계속 `NOT_IMPLEMENTED / UNDEFINED`다.
+위 항목은 승인된 제품 계약이다. `CampaignState`는 이제 첫 실제 `begin_operation()`에서 `cycle_main_case_id`를 고정하고, 같은 cycle의 다른 메인 사건 계획·시작을 거부한다. `dispatch_kind / dispatch_day / dispatch_slot`은 active operation에서 resolution context로 보존되며, Preparation은 조기/정규 출동 문서와 다음 cycle 대기 이유를 보여 준다. M04 결과는 이 실제 context와 실제 `귀가 기억 고정` 지원 사용을 네 개의 native Godot logical page에 연결한다. 이는 focused automated evidence가 있는 구현 상태이며, Day 1~9/Day 10의 **numeric balance**와 Human/accessibility/release QA는 계속 `UNDEFINED / NOT_RUN`이다.
 
 ## 사건 공통 Core
 
@@ -105,9 +105,9 @@
 - 성장의 장기 방향은 0~5 Rank + 내부 숙련 진행도이며 threshold와 피로·연구 수치는 provisional이다.
 - 성장은 Clarity·Access·Tolerance·Support를 바꾸며 핵심 진실이나 정답을 자동 제공하지 않는다.
 - current result authority는 `COMPOSITE_RESULT`다.
-- M04의 `COMPOSITE_RESULT` 표현은 `VIGNETTE_VICTIM_RESCUE → VIGNETTE_RESONANCE_RECOVERY → VIGNETTE_ROUTE_MEMORY → VIGNETTE_CASE_RECORD` 순차 후일담이다. 이는 logical page contract이며 새 runtime Scene·asset·Human QA PASS를 뜻하지 않는다.
+- M04의 `COMPOSITE_RESULT` 표현은 `VIGNETTE_VICTIM_RESCUE → VIGNETTE_RESONANCE_RECOVERY → VIGNETTE_ROUTE_MEMORY → VIGNETTE_CASE_RECORD` 순차 후일담이다. `result_scene.gd`가 이를 native Godot logical page로 구현했고 M01/legacy direct result는 기존 surface를 유지한다. 이는 새 runtime Scene이나 정적 UI 이미지가 아니며 Human QA PASS를 뜻하지 않는다.
 - Legacy grade/S-rank는 history/mastery compatibility만 허용한다.
-- `monthly_state`는 top-level additive optional orchestration block으로 구현됐지만 2/3/4주와 `dispatch_risk 0/15/30`만 아는 historical generic policy다. 새 10일 cadence와 M04 timing 결과 축의 live consumer는 아직 구현되지 않았다.
+- `monthly_state`는 top-level additive optional orchestration block으로 남아 있는 historical generic policy다. 새 10일 cadence의 live consumer는 `CampaignState`의 cycle lock/dispatch context, Preparation docket, M04 route-memory result page가 소유하며, 역사적 `dispatch_risk 0/15/30`을 새 날짜 효과로 환산하지 않는다.
 - page-local keyword composition과 mutated-candidate verification은 승인된 설계이지만 current M01 `candidate_keywords` / `semantic_relations`는 비어 있고 M04에는 해당 data/Scene consumer가 없다. 기존 clue ID와 manual/recovery 근거 선택을 keyword system 완료로 승격하지 않는다.
 - 기존 Episode ID, report, ANNUAL PoC state를 자동 rename·import·월 완료 추론하지 않는다.
 - current main의 Canon v2 migration/runtime을 재사용한다.
@@ -138,8 +138,8 @@ overall_plan: COMPLETE
 runtime_implementation: MERGED_MAIN
 runtime_merge_commit: 8d303f0f9414950273be934fd28c8fb1b3a21e18
 automated_exact_head: GREEN
-ten_day_half_day_cadence: USER_APPROVED / IMPLEMENTATION_CONTRACT_PENDING / NOT_IMPLEMENTED
-one_main_case_runtime_enforcement: NOT_IMPLEMENTED
+ten_day_half_day_cadence: USER_APPROVED / IMPLEMENTED_NON_NUMERIC_CONTEXT / FOCUSED_MACHINE_VERIFIED
+one_main_case_runtime_enforcement: IMPLEMENTED / FOCUSED_MACHINE_VERIFIED
 keyword_composition: APPROVED_DESIGN / NOT_IMPLEMENTED
 human_qa: NOT_RUN
 poc_passed: NOT_DECLARED

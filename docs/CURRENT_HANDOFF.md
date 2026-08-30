@@ -21,8 +21,8 @@ human_qa: NOT_RUN
 poc_passed: NOT_DECLARED
 production_expansion: NOT_APPROVED
 base_adapter_baseline_reconciliation: COMPLETE
-ten_day_half_day_cadence: USER_APPROVED / IMPLEMENTATION_CONTRACT_PENDING / NOT_IMPLEMENTED
-one_main_case_runtime_enforcement: NOT_IMPLEMENTED
+ten_day_half_day_cadence: USER_APPROVED / IMPLEMENTED_NON_NUMERIC_CONTEXT / FOCUSED_MACHINE_VERIFIED
+one_main_case_runtime_enforcement: IMPLEMENTED / FOCUSED_MACHINE_VERIFIED
 keyword_composition: APPROVED_DESIGN / NOT_IMPLEMENTED
 player_authored_manual_keyword_verification: USER_APPROVED / IMPLEMENTATION_CONTRACT_PENDING / NOT_IMPLEMENTED
 primary_playable_core: INVESTIGATION_DEDUCTION_AND_RECOVERY
@@ -33,7 +33,7 @@ calendar_role: SUPPORTING_CAMPAIGN_CONTEXT_NOT_PRIMARY_FUN
 
 현재 시각 방향은 `D-2026-08-28-URBAN-NOIR-HYBRID-VISUAL-DIRECTION`의 **현실적 한국 도시 누아르 환경 + 애니풍 인물·괴이 + 손그림 기록물 UI**다. 이 방향은 `docs/visual/VISUAL_DIRECTION_LOCK_PACKET_2026-08-28.md`가 소유하며, 첨부 Core Scene Board는 기획 검증용 `GENERATED_EXPLORATION`일 뿐 runtime asset/Scene/UI/Human QA가 아니다.
 
-현재 accepted frontier는 `D-2026-08-29-PLAYER-AUTHORED-MANUAL-KEYWORD-VERIFICATION`, `D-2026-08-29-CORE-LOOP-PRIORITY`, `D-2026-08-28-TEN-DAY-HALF-DAY-CASE-CADENCE`, `D-2026-08-28-M04-SEQUENTIAL-NARRATIVE-RESULT-VIGNETTES`, `D-2026-08-28-VISUAL-CANDIDATE-GENERATION-LOCK-ONLY-APPROVAL`다. **1차 플레이 경험은 조사·추리와 회수**이며, 조사는 원본 출처가 남은 정상 키워드를 만들고 플레이어는 빈칸 추리문을 직접 채운다. 매뉴얼은 정답·변조·호환 점수를 알려 주지 않으며, 구출 미니게임과 `전조 → 가설 → 근거 → 대응` 회수 결과에서만 후보 규칙을 검증한다. 10일·반일 일정은 준비·후일담·관계의 리듬을 주는 보조 캠페인 시스템이다. campaign의 승인 규칙은 10일·오전/오후, 한 cycle 메인 사건 1개, Day 1~9 조기 해결 / Day 10 정규 해결이다. 하지만 current `CampaignState`는 M01·M04·M07을 한 demo cycle에 허용하므로 case-limit enforcement는 아직 없다. M01의 `candidate_keywords`/`semantic_relations`는 비어 있고 manual drawer는 읽기 전용이며 `normal_clear.reveal_complete_manual: true`는 current successor contract와 충돌한다. 이들은 모두 후속 keyword/manual implementation contract의 data/UI/save/replay QA 대상이다. 예전 M04 주차 수치와 tier bonus는 `SUPERSEDED`; 새 숫자는 user decision 전 `UNDEFINED`다. 결과는 `피해자 → 잔향 → 귀가 기억 → 기록국`의 짧은 순차 후일담으로 읽히며 한 화면의 점수판으로 합산하지 않는다. 남은 작업은 조사·추리→회수 vertical slice를 우선으로 하여 기존 승인 planning을 하나의 구현 계약으로 묶는 것이며, Godot/asset/QA 구현 권한은 아직 열리지 않았다.
+현재 accepted frontier는 `D-2026-08-29-PLAYER-AUTHORED-MANUAL-KEYWORD-VERIFICATION`, `D-2026-08-29-CORE-LOOP-PRIORITY`, `D-2026-08-28-TEN-DAY-HALF-DAY-CASE-CADENCE`, `D-2026-08-28-M04-SEQUENTIAL-NARRATIVE-RESULT-VIGNETTES`, `D-2026-08-28-VISUAL-CANDIDATE-GENERATION-LOCK-ONLY-APPROVAL`다. **1차 플레이 경험은 조사·추리와 회수**이며, 조사는 원본 출처가 남은 정상 키워드를 만들고 플레이어는 빈칸 추리문을 직접 채운다. 매뉴얼은 정답·변조·호환 점수를 알려 주지 않으며, 구출 미니게임과 `전조 → 가설 → 근거 → 대응` 회수 결과에서만 후보 규칙을 검증한다. 10일·반일 일정은 준비·후일담·관계의 리듬을 주는 보조 캠페인 시스템이다. 현재 `CampaignState`는 첫 operation을 cycle main case로 고정하고 다른 사건의 same-cycle 계획/시작을 거부하며, dispatch kind/day/slot을 M04의 `피해자 → 잔향 → 귀가 기억 → 기록국` 순차 후일담까지 보존한다. 예전 M04 주차 수치와 tier bonus는 `SUPERSEDED`; 새 숫자는 user decision 전 `UNDEFINED`다. M01 global keyword/manual 확장, M01/M04 entrance candidate 비교, Human/new-player/accessibility/release QA는 여전히 별도 Gate다.
 
 ## 1. 재개 순서
 
@@ -51,7 +51,7 @@ calendar_role: SUPPORTING_CAMPAIGN_CONTEXT_NOT_PRIMARY_FUN
 ## 2. 현재 구현된 제품 계약
 
 - primary playable core: `INVESTIGATION → DEDUCTION / MANUAL → RECOVERY`; the calendar is supporting campaign context, not primary fun.
-- approved cadence: `ONE_MAIN_CASE_PER_TEN_DAY_CYCLE / TWO_HALF_DAY_SLOTS_PER_DAY`; runtime has the two-slot structure but not the one-case limit.
+- approved cadence: `ONE_MAIN_CASE_PER_TEN_DAY_CYCLE / TWO_HALF_DAY_SLOTS_PER_DAY`; runtime implements the first-operation cycle lock, persisted non-numeric dispatch context, and Preparation docket; numeric balance remains undefined.
 - result authority: `COMPOSITE_RESULT`.
 - legacy S/A/B/S grade는 history/mastery compatibility이며 current incident result를 덮어쓰지 않는다.
 - additive optional `monthly_state`는 historical generic orchestration이며 case truth를 저장하지 않는다. 새 10일 timing consumer를 아직 소유하지 않는다.
@@ -96,7 +96,7 @@ PR #224 exact head에서 다음 계열이 GREEN이었다.
 
 ### 2026-08-28 visual-status clarification
 
-`PRODUCT_REFERENCE_ASSET_PENDING`은 모든 자산이 미승격이라는 뜻이 아니다. 개별 제품 승인·runtime 상태는 `ASSET_MANIFEST.yml`과 `CURRENT_VISUAL_WORK_ORDER.md`가 소유한다. 현재 root manifest의 7개 entry 중 M01 Investigation/Recovery background, M01 B/C·D cutout, CASE-01 루메 매뉴얼 보조 초상, M04 Investigation background, M04 B/C cutout은 각각의 승인·구현·runtime evidence를 가진다. 반면 M01 Entrance, M04 Entrance/Recovery, M04 D 후보와 Human/new-player QA는 별도 Gate에 남는다.
+`PRODUCT_REFERENCE_ASSET_PENDING`은 모든 자산이 미승격이라는 뜻이 아니다. 개별 제품 승인·runtime 상태는 `ASSET_MANIFEST.yml`과 `CURRENT_VISUAL_WORK_ORDER.md`가 소유한다. 현재 root manifest의 9개 entry 중 M01 Investigation/Recovery background, M01 B/C·D cutout, CASE-01 루메 매뉴얼 보조 초상, M04 Investigation/Recovery background, M04 B/C·D cutout은 각각의 승인·구현·runtime evidence를 가진다. 반면 M01 Entrance, M04 Entrance와 Human/new-player/accessibility/release QA는 별도 Gate에 남는다.
 
 
 `PRODUCT_REFERENCE_ASSET_PENDING` 유지:

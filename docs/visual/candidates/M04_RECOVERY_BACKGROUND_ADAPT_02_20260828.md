@@ -1,6 +1,6 @@
 # M04 Recovery Background Adapt 02 — Candidate Receipt
 
-- **Status:** `USER_AUTONOMOUSLY_AUTHORIZED_VISUAL_CANDIDATE / PRODUCT_ASSET_PROMOTION_PENDING`
+- **Status:** `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED / HUMAN_QA_PENDING`
 - **Generated:** 2026-08-28
 - **Issue:** #313
 - **Candidate file:** `M04_RECOVERY_BACKGROUND_ADAPT_02_20260828.png`
@@ -10,7 +10,7 @@
 
 ## Actual consumer
 
-`assets/backgrounds/red_recovery.png` is the M04 Recovery `ArtLayer/Background`. This file is a review candidate only; it does not replace that product path or the separate B/C/D `AnomalyVisual` overlays.
+`assets/backgrounds/red_recovery.png` is the M04 Recovery `ArtLayer/Background`. On 2026-08-30 the exact candidate bytes were promoted to that existing product path; the separate B/C/D `AnomalyVisual` overlays remain independently owned.
 
 ## Intended read
 
@@ -18,7 +18,6 @@ An empty Korean closed-shop alley remains dark and wet, with restrained warm pra
 
 ## Boundaries and next gate
 
-- Preserve the existing canonical PNG, B/C/D overlays, Scene mappings, and scripts.
-- Compare the candidate with the separate anomaly overlay at required runtime resolutions before any product promotion.
-- Confirm provenance/rights and the target-build import/readability in a separately authorized promotion task.
-- No runtime or Human QA evidence is claimed here.
+- Exact candidate/canonical SHA-256 equality and the actual Battle `Background` consumer passed at 1280×720 and 1920×1080.
+- The product promotion preserves the existing Scene mappings, B/C overlays, full fallback, and live Godot UI ownership.
+- Human visual/accessibility QA and release-rights clearance remain separate, uncompleted gates.

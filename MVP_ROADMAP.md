@@ -1,9 +1,9 @@
 # MVP_ROADMAP
 
 > Current planning overlay: `docs/CURRENT_PLANNING_CANON.md` / `docs/current-planning-canon.json` / `docs/design/PROJECT_AI_PRODUCTION_SPEC.md`
-> current product gate: `TEN_DAY_HALF_DAY_CADENCE_USER_APPROVED / IMPLEMENTATION_CONTRACT_PENDING / HUMAN_QA_NOT_RUN`
+> current product gate: `TEN_DAY_HALF_DAY_CADENCE_IMPLEMENTED_NON_NUMERIC_CONTEXT / FOCUSED_MACHINE_VERIFIED / HUMAN_QA_NOT_RUN`
 
-이 문서의 CORE/ANNUAL 단계는 병합된 기술·검증·회귀 계보를 보존한다. current product는 10일·오전/오후, 한 cycle 메인 사건 1개, Day 1~9 조기 / Day 10 정규이며 새 implementation contract 전 runtime change를 시작하지 않는다. 아래 ANNUAL-MVP-003 이후 순서는 current execution authority가 아니다.
+이 문서의 CORE/ANNUAL 단계는 병합된 기술·검증·회귀 계보를 보존한다. current product는 10일·오전/오후, 한 cycle 메인 사건 1개, Day 1~9 조기 / Day 10 정규이며, current M04 slice는 cycle lock·dispatch context·Preparation docket·순차 결과를 구현했다. 아래 ANNUAL-MVP-003 이후 순서는 current execution authority가 아니다.
 
 > 상태 원본: `docs/CURRENT_STATUS.md`  
 > 프로젝트 코어: `docs/PROJECT_CORE.md`  
