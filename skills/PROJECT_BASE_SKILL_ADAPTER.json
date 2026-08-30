@@ -13,7 +13,7 @@
     "version": "9.4.3"
   },
   "canonical_source": "skills/PROJECT_BASE_ADAPTER.json",
-  "canonical_source_sha256": "5b1acfe968a404c94c33f0ad3fe67313ff299f949f7e8eff75393f688a663999",
+  "canonical_source_sha256": "9dbd0eed4712539910f5bfe298a0c26a892681c1517688c42a3a7864998e8d1a",
   "canonical_sources": [
     "docs/PROJECT_CORE.md",
     "docs/GAME_DESIGN_DOCUMENT.md",
@@ -34,7 +34,7 @@
   "generated": true,
   "hash_definition": "RAW_FILE_BYTES_SHA256",
   "legacy_source": "docs/archive/base-v9-legacy-inputs/PROJECT_BASE_SKILL_ADAPTER.json",
-  "legacy_source_sha256": "859f658d97a26f98b052a90c4fbef2373172fafabf266c7812ddd2d7d77429ca",
+  "legacy_source_sha256": "2017216809b3aad71a46ef2f0db357e3ee4ad9e383b955f6ac1e6118c4182b91",
   "license_record": "docs/technical/THIRD_PARTY_LICENSES.md",
   "lifecycle": "ONE_CYCLE",
   "project": {
