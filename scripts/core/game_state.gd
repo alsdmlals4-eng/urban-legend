@@ -4,6 +4,8 @@ extends Node
 const DEFAULT_EPISODE_PATH := "res://data/episodes/episode_001_afterlife_station.json"
 const RED_UMBRELLA_ALLEY_EPISODE_PATH := "res://data/episodes/episode_002_red_umbrella_alley.json"
 const DEAD_FREQUENCY_STATION_EPISODE_PATH := "res://data/episodes/episode_003_dead_frequency_station.json"
+const M04_EPISODE_ID := "episode_002_red_umbrella_alley"
+const M04_PREPARATION_SUPPORT_ID := "support_kwon_return_route"
 const SAVE_FILE_PATH := "user://urban_legend_save.json"
 const SAVE_VERSION := "mvp-039"
 const DEFAULT_DIALOGUE_NODE_ID := "dialogue_intro"
@@ -1083,8 +1085,32 @@ func get_selected_recovery_supports() -> Array:
 		entry["agent_name"] = String(agent.get("name", ""))
 		entry["temperament"] = String(agent.get("temperament", ""))
 		entry["temperament_label"] = String(agent.get("temperament_label", ""))
+		var availability := _get_recovery_support_availability(support_id)
+		entry["available"] = bool(availability.get("available", true))
+		entry["unavailable_reason"] = String(availability.get("reason", ""))
+		entry["used"] = has_used_agent_support(support_id)
 		supports.append(entry)
 	return supports
+
+
+## Keeps M04 preparation as a visible, case-local support gate rather than a stat bonus.
+func _get_recovery_support_availability(support_id: String) -> Dictionary:
+	if get_current_episode_id() != M04_EPISODE_ID or support_id != M04_PREPARATION_SUPPORT_ID:
+		return {"available": true, "reason": ""}
+
+	var operation := get_active_campaign_operation()
+	if String(operation.get("case_id", "")) != M04_EPISODE_ID:
+		return {"available": true, "reason": ""}
+
+	var context: Variant = operation.get("dispatch_context", {})
+	var dispatch_context: Dictionary = context if typeof(context) == TYPE_DICTIONARY else {}
+	if int(dispatch_context.get("m04_preparation_capacity", 0)) >= 1:
+		return {"available": true, "reason": ""}
+
+	return {
+		"available": false,
+		"reason": "현장 준비가 없습니다. 준비실에서 ‘대기·회복’ 반일을 한 번 완료하면 권나래의 귀가 기억 고정 보조를 사용할 수 있습니다."
+	}
 
 
 ## Returns true when an agent recovery support has already been used.

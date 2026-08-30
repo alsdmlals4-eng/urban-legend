@@ -1243,8 +1243,10 @@ func _add_agent_recovery_support_actions(parent: Control) -> void:
 			String(support_copy.get("temperament_label", "")),
 			String(support_copy.get("label", "지원"))
 		]
-		button.tooltip_text = String(support_copy.get("description", ""))
-		button.disabled = GameState.has_used_agent_support(support_id)
+		var available := bool(support_copy.get("available", true))
+		var unavailable_reason := String(support_copy.get("unavailable_reason", ""))
+		button.tooltip_text = unavailable_reason if not available else String(support_copy.get("description", ""))
+		button.disabled = GameState.has_used_agent_support(support_id) or not available
 		button.pressed.connect(func() -> void:
 			_use_agent_recovery_support(support_copy, button)
 		)
@@ -1254,6 +1256,9 @@ func _add_agent_recovery_support_actions(parent: Control) -> void:
 
 func _use_agent_recovery_support(support: Dictionary, button: Button) -> void:
 	var support_id := String(support.get("id", ""))
+	if not bool(support.get("available", true)):
+		_update_battle_view(String(support.get("unavailable_reason", "지원 조건을 먼저 확인하세요.")))
+		return
 	if GameState.has_used_agent_support(support_id):
 		_update_battle_view("이미 사용한 요원 지원입니다. 같은 지원은 중복 적용되지 않습니다.")
 		return
@@ -1272,6 +1277,9 @@ func _use_agent_recovery_support(support: Dictionary, button: Button) -> void:
 		MAX_RECOVERY_THRESHOLD
 	)
 	button.disabled = true
+	var operation_overlay := get_node_or_null("CanonV2OperationOverlay")
+	if operation_overlay != null and operation_overlay.has_method("mark_recovery_support_used"):
+		operation_overlay.call("mark_recovery_support_used", support_id)
 	_update_battle_view("%s의 %s 지원 발동\n%s" % [
 		String(support.get("agent_name", "")),
 		String(support.get("role", "회수")),

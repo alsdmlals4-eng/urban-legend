@@ -15,6 +15,8 @@ var _priority_label: Label
 var _obligation_list_label: Label
 var _termination_title_label: Label
 var _termination_detail_label: Label
+var _recovery_support_panel: PanelContainer
+var _recovery_support_content: VBoxContainer
 var _follow_up_label: Label
 var _mode_label: Label
 var _confirmation_layer: CenterContainer
@@ -194,6 +196,14 @@ func _ensure_ui() -> void:
 	_termination_detail_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	termination_content.add_child(_termination_detail_label)
 
+	_recovery_support_panel = _make_detail_panel("RecoverySupportPanel", Color(0.34, 0.62, 0.62, 0.95))
+	_detail_stack.add_child(_recovery_support_panel)
+	_detail_stack.move_child(_recovery_support_panel, 1)
+	_recovery_support_content = VBoxContainer.new()
+	_recovery_support_content.name = "RecoverySupportContent"
+	_recovery_support_content.add_theme_constant_override("separation", 6)
+	_recovery_support_panel.add_child(_recovery_support_content)
+
 	var follow_up_panel := _make_detail_panel("FollowUpPanel", Color(0.42, 0.61, 0.51, 0.95))
 	_detail_stack.add_child(follow_up_panel)
 	var follow_up_content := VBoxContainer.new()
@@ -280,6 +290,7 @@ func _refresh() -> void:
 	_refresh_manual_detail()
 	_refresh_obligations()
 	_refresh_termination()
+	_refresh_recovery_supports()
 	_refresh_follow_up()
 	_apply_mode_visibility()
 
@@ -344,6 +355,87 @@ func _refresh_termination() -> void:
 	_termination_detail_label.text = "\n".join(lines) if not lines.is_empty() else "추가 차단 또는 비차단 결과가 없습니다."
 
 
+func _refresh_recovery_supports() -> void:
+	if _recovery_support_content == null:
+		return
+	for child in _recovery_support_content.get_children():
+		_recovery_support_content.remove_child(child)
+		child.queue_free()
+
+	var title := Label.new()
+	title.name = "RecoverySupportTitleLabel"
+	title.text = "요원 지원"
+	title.add_theme_font_size_override("font_size", 15)
+	_recovery_support_content.add_child(title)
+
+	var supports := _array_copy(_runtime_state.get("recovery_supports"))
+	if supports.is_empty():
+		var empty_label := Label.new()
+		empty_label.name = "RecoverySupportEmptyLabel"
+		empty_label.text = "현재 편성에 사용할 수 있는 요원 지원이 없습니다."
+		empty_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		_recovery_support_content.add_child(empty_label)
+		return
+
+	for support_value in supports:
+		if typeof(support_value) != TYPE_DICTIONARY:
+			continue
+		var support: Dictionary = (support_value as Dictionary).duplicate(true)
+		var available := bool(support.get("available", true))
+		var used := bool(support.get("used", false))
+		var support_id := String(support.get("id", "support"))
+		var support_row := VBoxContainer.new()
+		support_row.name = "RecoverySupportRow_%s" % support_id
+		support_row.add_theme_constant_override("separation", 2)
+		_recovery_support_content.add_child(support_row)
+		var button := Button.new()
+		button.name = "RecoverySupportButton_%s" % support_id
+		button.text = "%s [%s] · %s" % [
+			String(support.get("agent_name", "요원")),
+			String(support.get("temperament_label", "지원")),
+			String(support.get("label", "지원"))
+		]
+		button.disabled = not available or used
+		button.focus_mode = Control.FOCUS_ALL
+		button.tooltip_text = "이미 사용한 요원 지원입니다." if used else String(support.get("unavailable_reason", "")) if not available else String(support.get("description", ""))
+		button.pressed.connect(_activate_recovery_support.bind(support, button))
+		support_row.add_child(button)
+		var status_label := Label.new()
+		status_label.name = "RecoverySupportStatus_%s" % support_id
+		status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		status_label.add_theme_font_size_override("font_size", 13)
+		if used:
+			status_label.text = "사용 완료 · 이번 회수에서 이미 사용한 요원 지원입니다."
+		elif not available:
+			status_label.text = "잠김 이유 · %s" % String(support.get("unavailable_reason", "조건이 충족되지 않았습니다."))
+		else:
+			status_label.text = "사용 가능 · %s" % String(support.get("description", "현재 회수 단계에서 사용할 수 있습니다."))
+		support_row.add_child(status_label)
+
+
+func _activate_recovery_support(support: Dictionary, button: Button) -> void:
+	if not bool(support.get("available", true)) or bool(support.get("used", false)):
+		return
+	var host := get_parent()
+	if host != null and host.has_method("_use_agent_recovery_support"):
+		host.call("_use_agent_recovery_support", support, button)
+
+
+func mark_recovery_support_used(support_id: String) -> void:
+	var supports := _array_copy(_runtime_state.get("recovery_supports"))
+	for index in range(supports.size()):
+		if typeof(supports[index]) != TYPE_DICTIONARY:
+			continue
+		var support: Dictionary = (supports[index] as Dictionary).duplicate(true)
+		if String(support.get("id", "")) != support_id:
+			continue
+		support["used"] = true
+		supports[index] = support
+		_runtime_state["recovery_supports"] = supports
+		_refresh_recovery_supports()
+		return
+
+
 func _refresh_follow_up() -> void:
 	var records := _array_copy(_runtime_state.get("follow_up_records"))
 	if records.is_empty():
@@ -365,6 +457,7 @@ func _refresh_follow_up() -> void:
 func _apply_mode_visibility() -> void:
 	(_detail_stack.get_node("ObligationPanel") as PanelContainer).visible = _mode in ["rescue", "recovery", "result"]
 	(_detail_stack.get_node("TerminationPreviewPanel") as PanelContainer).visible = _mode in ["recovery", "result"]
+	_recovery_support_panel.visible = _mode == "recovery"
 	(_detail_stack.get_node("FollowUpPanel") as PanelContainer).visible = _mode == "result"
 	_detail_toggle_button.visible = _mode in ["rescue", "recovery", "result"]
 	_detail_stack.visible = _detail_stack_open and _detail_toggle_button.visible

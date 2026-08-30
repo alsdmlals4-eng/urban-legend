@@ -935,9 +935,27 @@ func _selected_team_has_investigation() -> bool:
 
 func _make_cycle_docket_text(campaign: Dictionary) -> String:
 	var cycle_main_case_id := String(campaign.get("cycle_main_case_id", ""))
-	if cycle_main_case_id.is_empty():
-		return "이번 10일 cycle 메인 사건: 미배정 · 첫 현장 조사 시작 시 확정됩니다."
-	return "이번 10일 cycle 메인 사건: %s · 다른 메인 사건은 다음 cycle에서 배정합니다." % _get_case_title(cycle_main_case_id)
+	var docket_text := "이번 10일 cycle 메인 사건: 미배정 · 첫 현장 조사 시작 시 확정됩니다." if cycle_main_case_id.is_empty() else "이번 10일 cycle 메인 사건: %s · 다른 메인 사건은 다음 cycle에서 배정합니다." % _get_case_title(cycle_main_case_id)
+	var planned_case_id := GameState.get_campaign_planned_case()
+	if cycle_main_case_id != "episode_002_red_umbrella_alley" and planned_case_id != "episode_002_red_umbrella_alley":
+		return docket_text
+
+	var capacity := _get_m04_preparation_capacity(campaign)
+	var support_status := "권나래의 ‘귀가 기억 고정’ 보조를 회수 단계에서 선택할 수 있습니다." if capacity >= 1 else "준비실에서 ‘대기·회복’ 반일을 한 번 완료하면 권나래의 ‘귀가 기억 고정’ 보조를 회수 단계에서 선택할 수 있습니다."
+	return "%s\nM04 현장 준비 %d/1 · %s · 수치 보정 없음" % [docket_text, capacity, support_status]
+
+
+func _get_m04_preparation_capacity(campaign: Dictionary) -> int:
+	var ledger: Variant = campaign.get("preparation_ledger", [])
+	if typeof(ledger) != TYPE_ARRAY:
+		return 0
+	for entry_value in ledger:
+		if typeof(entry_value) != TYPE_DICTIONARY:
+			continue
+		var entry: Dictionary = entry_value
+		if String(entry.get("activity", "")) == "rest":
+			return 1
+	return 0
 
 
 func _make_dispatch_docket_text(operation: Dictionary) -> String:
@@ -948,7 +966,12 @@ func _make_dispatch_docket_text(operation: Dictionary) -> String:
 	var kind := String(dispatch.get("dispatch_kind", "EARLY"))
 	var day := int(dispatch.get("dispatch_day", 1))
 	var slot := "오전" if String(dispatch.get("dispatch_slot", "morning")) == "morning" else "오후"
-	return "출동 기록: %s · %d일차 %s · 수치 보정 없음" % ["조기 출동" if kind == "EARLY" else "정규 대응", day, slot]
+	var docket_text := "출동 기록: %s · %d일차 %s · 수치 보정 없음" % ["조기 출동" if kind == "EARLY" else "정규 대응", day, slot]
+	if String(operation.get("case_id", "")) != "episode_002_red_umbrella_alley":
+		return docket_text
+	var capacity := int(dispatch.get("m04_preparation_capacity", 0))
+	var support_status := "권나래의 ‘귀가 기억 고정’ 보조가 회수 단계에서 해금됩니다." if capacity >= 1 else "귀가 기억 고정 보조는 아직 잠겨 있습니다."
+	return "%s\nM04 현장 준비 %d/1 · %s" % [docket_text, capacity, support_status]
 
 
 func _get_case_title(case_id: String) -> String:

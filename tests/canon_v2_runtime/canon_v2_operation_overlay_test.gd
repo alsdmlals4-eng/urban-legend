@@ -45,6 +45,16 @@ func _run() -> void:
 			}
 		]
 	}
+	var locked_support_state := {}
+	locked_support_state["id"] = "support_kwon_return_route"
+	locked_support_state["agent_name"] = "권나래"
+	locked_support_state["temperament_label"] = "공감"
+	locked_support_state["label"] = "귀가 기억 고정"
+	locked_support_state["description"] = "피해자의 귀가 기억을 붙잡습니다."
+	locked_support_state["available"] = false
+	locked_support_state["unavailable_reason"] = "현장 준비 0/1이어서 귀가 기억 고정을 사용할 수 없습니다."
+	locked_support_state["used"] = false
+	runtime_state["recovery_supports"] = [locked_support_state]
 	overlay.configure_for_test(runtime_state, "recovery")
 	await process_frame
 
@@ -52,7 +62,11 @@ func _run() -> void:
 	_expect(overlay.get_node_or_null("SafeArea/RootLayout/RuleStripPanel") != null, "rule strip panel missing")
 	_expect(overlay.get_node_or_null("SafeArea/RootLayout/DetailStack/ObligationPanel") != null, "protection obligation panel missing")
 	_expect(overlay.get_node_or_null("SafeArea/RootLayout/DetailStack/TerminationPreviewPanel") != null, "termination preview panel missing")
+	_expect(overlay.get_node_or_null("SafeArea/RootLayout/DetailStack/RecoverySupportPanel") != null, "recovery support panel missing")
 	_expect(overlay.get_node_or_null("SafeArea/RootLayout/DetailStack/FollowUpPanel") != null, "follow-up panel missing")
+	var recovery_support_panel := overlay.get_node_or_null("SafeArea/RootLayout/DetailStack/RecoverySupportPanel") as Control
+	var termination_preview_panel := overlay.get_node_or_null("SafeArea/RootLayout/DetailStack/TerminationPreviewPanel") as Control
+	_expect(recovery_support_panel != null and termination_preview_panel != null and recovery_support_panel.get_index() < termination_preview_panel.get_index(), "recovery support must stay before termination detail so its state remains on-screen at 1280×720")
 	var manual_button := overlay.get_node_or_null("SafeArea/RootLayout/RuleStripPanel/RuleStrip/ManualToggleButton") as Button
 	_expect(manual_button != null, "manual toggle button missing")
 	if manual_button != null:
@@ -68,8 +82,30 @@ func _run() -> void:
 		detail_toggle.emit_signal("pressed")
 		await process_frame
 		_expect(detail_stack != null and detail_stack.visible, "recovery detail toggle must reveal protection and termination status")
+	var locked_support := overlay.get_node_or_null("SafeArea/RootLayout/DetailStack/RecoverySupportPanel/RecoverySupportContent/RecoverySupportRow_support_kwon_return_route/RecoverySupportButton_support_kwon_return_route") as Button
+	_expect(locked_support != null, "recovery support must be reachable from the active operation detail")
+	if locked_support != null:
+		_expect(locked_support.disabled, "zero-capacity recovery support must stay disabled")
+		_expect(locked_support.focus_mode == Control.FOCUS_ALL, "recovery support lacks keyboard/gamepad focus")
+		_expect(locked_support.tooltip_text.contains("현장 준비 0/1"), "recovery support must explain its preparation-capacity lock")
+	var locked_status := overlay.get_node_or_null("SafeArea/RootLayout/DetailStack/RecoverySupportPanel/RecoverySupportContent/RecoverySupportRow_support_kwon_return_route/RecoverySupportStatus_support_kwon_return_route") as Label
+	_expect(locked_status != null and locked_status.text.contains("잠김 이유") and locked_status.text.contains("현장 준비 0/1"), "recovery support must show its preparation-capacity lock without hover")
 	var priority_label := overlay.get_node_or_null("SafeArea/RootLayout/DetailStack/ObligationPanel/ObligationContent/PriorityLabel") as Label
 	_expect(priority_label != null and priority_label.text.contains("critical"), "priority is not expressed as text")
+
+	var used_runtime_state: Dictionary = runtime_state.duplicate(true)
+	var used_supports: Array = used_runtime_state.get("recovery_supports", []) as Array
+	if not used_supports.is_empty() and typeof(used_supports[0]) == TYPE_DICTIONARY:
+		used_supports[0]["available"] = true
+		used_supports[0]["unavailable_reason"] = ""
+		used_supports[0]["used"] = true
+	overlay.configure_for_test(used_runtime_state, "recovery")
+	await process_frame
+	var used_support := overlay.get_node_or_null("SafeArea/RootLayout/DetailStack/RecoverySupportPanel/RecoverySupportContent/RecoverySupportRow_support_kwon_return_route/RecoverySupportButton_support_kwon_return_route") as Button
+	_expect(used_support != null and used_support.disabled, "used recovery support must remain disabled after an overlay refresh")
+	_expect(used_support != null and used_support.tooltip_text.contains("이미 사용한"), "used recovery support must explain its one-use state")
+	var used_status := overlay.get_node_or_null("SafeArea/RootLayout/DetailStack/RecoverySupportPanel/RecoverySupportContent/RecoverySupportRow_support_kwon_return_route/RecoverySupportStatus_support_kwon_return_route") as Label
+	_expect(used_status != null and used_status.text.contains("사용 완료"), "used recovery support must show its one-use state without hover")
 
 	overlay.configure_for_test(runtime_state, "investigation")
 	await process_frame

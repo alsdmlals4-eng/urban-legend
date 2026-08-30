@@ -37,6 +37,8 @@ ten_day_half_day_case_decision: D-2026-08-28-TEN-DAY-HALF-DAY-CASE-CADENCE
 m04_week4_numeric_cadence: SUPERSEDED
 m04_sequential_narrative_result_vignettes: IMPLEMENTED_M04_ONLY / FOCUSED_MACHINE_VERIFIED / HUMAN_QA_PENDING
 m04_sequential_narrative_result_decision: D-2026-08-28-M04-SEQUENTIAL-NARRATIVE-RESULT-VIGNETTES
+m04_bounded_preparation_capacity: USER_APPROVED / IMPLEMENTED_M04_ONLY / FOCUSED_MACHINE_VERIFIED / HUMAN_QA_NOT_RUN
+m04_bounded_preparation_capacity_decision: D-2026-08-30-M04-BOUNDED-PREPARATION-CAPACITY
 ```
 
 ## 2. 현재 Gate
@@ -122,6 +124,16 @@ base_adapter_baseline_reconciliation: COMPLETE
 - 조기 해결은 더 이른 보호, 정규 해결은 남은 반일 준비 기회의 선택이다. 새 numeric balance는 `UNDEFINED`; 옛 2/3/4주, `0/15/30`, `0/+4/+8`은 `SUPERSEDED`이며 날짜에 환산하지 않는다.
 - `CampaignState`는 첫 실제 operation에서 cycle main case를 고정하고 다른 사건의 same-cycle 계획/시작을 거부한다. dispatch kind/day/slot은 resolution까지 보존되고 Preparation docket과 M04 결과의 귀가 기억 페이지가 이를 소비한다. Day 10은 정규 대응으로 기록되며 새 수치 보정은 만들지 않는다.
 
+### M04 bounded preparation capacity — 2026-08-30
+
+판정: `USER_APPROVED / IMPLEMENTED_M04_ONLY / FOCUSED_MACHINE_VERIFIED / HUMAN_QA_NOT_RUN`.
+
+- 공식 자료 13개를 대상으로 한 추리·사건기록·조사/지원 흐름의 역공학은 `docs/benchmarks/M04_BOUNDED_PREPARATION_CAPACITY_2026-08-30.md`가 소유한다. 이 프로젝트에는 player-authored evidence, 명시적 가용 조건, 결과의 인과 기록만 **ADAPT**하며 타 게임의 아트·서사·정확한 화면 구조는 채택하지 않는다.
+- M04에서만 실제 완료된 `대기·회복` 반일이 `현장 준비 1/1`을 만든다. 아직 완료하지 않았거나 legacy save에 기록이 없으면 명시적으로 `0/1`이다.
+- `support_kwon_return_route`의 기존 `fear_delta: -16 / threshold_delta: 2`와 one-use 성격은 바꾸지 않는다. 단, M04에서는 출동 context가 `1/1`일 때만 **Canon V2 작전 상태의 요원 지원 버튼**이 활성화되고, `0/1`이면 이유를 tooltip과 버튼 아래 상태 메시지로 함께 보여 준다. 이미 쓴 지원은 같은 surface에서 `사용 완료`로 남는다.
+- `CampaignState` preparation ledger와 dispatch context가 이 상태를 저장한다. Preparation docket, Recovery support, M04 귀가 기억 결과 페이지가 같은 `0/1` 또는 `1/1` 사실을 소비한다.
+- 이것은 수치 보너스·정답/키워드·단서·피해자 구조 결과·추가 지원 횟수·자동 발동을 만들지 않으며 M01과 다른 요원 지원을 바꾸지 않는다.
+
 ### Core-loop priority — 2026-08-29
 
 판정: `USER_APPROVED / PLANNING_CANON / NO_RUNTIME_MUTATION`.
@@ -181,7 +193,7 @@ base_adapter_baseline_reconciliation: COMPLETE
 판정: `USER_APPROVED / IMPLEMENTED_M04_ONLY / FOCUSED_MACHINE_VERIFIED / HUMAN_QA_PENDING`.
 
 - M04 결과를 한 scroll surface의 카드·점수·목록으로 묶지 않는다. `피해자 → 잔향 → 귀가 기억 → 기록국`의 short narrative page를 순서대로 제시한다.
-- 각 페이지는 한 가지 원인과 그 여파만 다룬다. 귀가 기억 페이지에서는 조기/정규·해결일·실제 권나래 지원 사용만 하나의 인과로 연결한다.
+- 각 페이지는 한 가지 원인과 그 여파만 다룬다. 귀가 기억 페이지에서는 조기/정규·해결일·실제 `현장 준비 0/1 또는 1/1`·실제 권나래 지원 사용만 하나의 인과로 연결한다.
 - Day 10 정규 해결을 벌점으로 되돌리지 않고, 구출·회수·추리·보상·M01의 의미를 변경하지 않는다. logical page는 새 Godot Scene, asset, runtime/Human QA PASS가 아니다.
 
 ### M04 predecessor decisions — 2026-08-28

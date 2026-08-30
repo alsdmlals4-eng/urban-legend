@@ -38,6 +38,8 @@ func _run() -> void:
 	var day_label := current_scene.find_child("CampaignDayLabel", true, false) as Label
 	_expect(day_label != null and day_label.text.contains("이번 10일 cycle 메인 사건"), "Preparation explains the one-main-case rule")
 	_expect(day_label != null and day_label.text.contains("비 오는 골목의 빨간 우산"), "Preparation names the active M04 docket")
+	_expect(day_label != null and day_label.text.contains("현장 준비 0/1"), "Preparation shows the current M04 preparation capacity before the next dispatch")
+	_expect(day_label != null and day_label.text.contains("귀가 기억 고정"), "Preparation explains what the M04 capacity controls without implying a stat bonus")
 	var waiting_button := _find_button("저승역")
 	_expect(waiting_button != null and waiting_button.disabled and waiting_button.text.contains("다음 cycle 대기"), "Preparation disables another main case with a next-cycle explanation")
 	_finish()

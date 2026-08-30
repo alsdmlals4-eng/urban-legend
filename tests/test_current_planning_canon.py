@@ -128,9 +128,31 @@ class CurrentPlanningCanonTests(unittest.TestCase):
             "M04_COMPOSITE_RESULT_TIMING_VIGNETTE / IMPLEMENTED_FOCUSED_MACHINE_VERIFIED",
             timing["result_timing_record"]["consumer"],
         )
-        self.assertEqual("UNDEFINED_REQUIRES_SEPARATE_BALANCE_DECISION", support["replacement_timing_effect"])
+        self.assertEqual("SUPERSEDED_BY_D-2026-08-30-M04-BOUNDED-PREPARATION-CAPACITY", support["replacement_timing_effect"])
         self.assertEqual(-16, support["actual_runtime_base_effect"]["fear_delta"])
         self.assertEqual("NOT_IMPLEMENTED", support["actual_runtime_base_effect"]["timing_bonus"])
+
+    def test_m04_completed_rest_is_a_case_local_non_numeric_support_gate(self) -> None:
+        capacity = self.canon["planning"]["m04_bounded_preparation_capacity"]
+        decision_path = ROOT / "docs/decisions/D-2026-08-30-M04-BOUNDED-PREPARATION-CAPACITY.md"
+        self.assertTrue(decision_path.is_file(), decision_path)
+        self.assertEqual("D-2026-08-30-M04-BOUNDED-PREPARATION-CAPACITY", capacity["decision_id"])
+        self.assertEqual("M04_RED_UMBRELLA_ONLY / EXISTING_KWON_SUPPORT_ONLY", capacity["scope"])
+        self.assertEqual("ONE_COMPLETED_REST_HALF_DAY_CREATES_VISIBLE_CAPACITY_1_OF_1", capacity["preparation_rule"])
+        self.assertEqual("support_kwon_return_route_IS_AVAILABLE_ONLY_WHEN_M04_DISPATCH_CONTEXT_HAS_CAPACITY_1", capacity["gate"])
+        self.assertEqual("preparation_ledger", capacity["persistence"]["campaign_field"])
+        self.assertEqual("MISSING_LEDGER_DEFAULTS_TO_0_WITHOUT_SAVE_VERSION_BUMP", capacity["persistence"]["legacy_fallback"])
+        self.assertEqual(
+            [
+                "PREPARATION_M04_DOCKET",
+                "CANON_V2_OPERATION_OVERLAY_RECOVERY_SUPPORT_BUTTON_AND_STATUS",
+                "M04_ROUTE_MEMORY_RESULT_PAGE",
+            ],
+            capacity["player_visible_consumers"],
+        )
+        self.assertIn("NO_STAT_BONUS_OR_TIMING_NUMERIC_BALANCE", capacity["invariants"])
+        self.assertIn("NO_CLUE_HINT_TRUTH_OR_ANSWER_CHANGE", capacity["invariants"])
+        self.assertIn("NO_M01_OR_OTHER_AGENT_SUPPORT_CHANGE", capacity["invariants"])
 
     def test_m04_result_vignettes_keep_one_causal_result_per_page(self) -> None:
         vignettes = self.canon["planning"]["m04_sequential_narrative_result_vignettes"]
@@ -155,6 +177,7 @@ class CurrentPlanningCanonTests(unittest.TestCase):
                 "dispatch_kind",
                 "resolution_day",
                 "resolution_slot",
+                "m04_preparation_capacity",
                 "kwon_support_used",
                 "actual_support_effect",
             ],

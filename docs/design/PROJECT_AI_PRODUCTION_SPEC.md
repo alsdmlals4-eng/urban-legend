@@ -1,7 +1,7 @@
 # 괴이 기록국 · Master GDD
 
 > Artifact role: `PROJECT_AI_PRODUCTION_SPEC`
-> Version: `2026-08-30 · M01/M04 runtime readback reconciliation`
+> Version: `2026-08-30 · M01/M04 runtime readback + M04 bounded preparation gate`
 > Status: `CURRENT / REPOSITORY_ONLY_CANON / M01_M04_RUNTIME_IMPLEMENTED / HUMAN_QA_NOT_RUN`
 > Runtime readback: M04 player-authored manual workbench merged to main in PR #347; the Project Base protected baseline was advanced in PR #348.
 > Scope: project truth, player-experience contract, design verification, production boundary
@@ -31,6 +31,7 @@ The direct user instruction prevails over an attached work instruction. `PROJECT
 | `CURRENT` | `docs/decisions/D-2026-08-28-TEN-DAY-HALF-DAY-CASE-CADENCE.md` | 10-day / half-day calendar |
 | `CURRENT` | `docs/decisions/D-2026-08-29-CORE-LOOP-PRIORITY.md` | investigation/deduction and recovery as the primary playable core; calendar as support |
 | `CURRENT` | `docs/decisions/D-2026-08-28-M04-SEQUENTIAL-NARRATIVE-RESULT-VIGNETTES.md` | M04 result presentation |
+| `CURRENT` | `docs/decisions/D-2026-08-30-M04-BOUNDED-PREPARATION-CAPACITY.md` | M04 completed-rest `0/1` support gate |
 | `CURRENT` | `docs/decisions/D-2026-08-28-URBAN-NOIR-HYBRID-VISUAL-DIRECTION.md`, `docs/visual/VISUAL_DIRECTION_LOCK_PACKET_2026-08-28.md` | visual grammar |
 | `CURRENT` | `docs/decisions/D-2026-08-28-VISUAL-CANDIDATE-GENERATION-LOCK-ONLY-APPROVAL.md` | image candidate workflow |
 | `CURRENT` | `docs/decisions/D-2026-08-28-REPOSITORY-ONLY-PROJECT-CANON.md` | workspace ownership |
@@ -71,7 +72,7 @@ visual direction: Korean urban noir environment + soft-anime people/anomalies + 
 | stage | state | evidence ceiling |
 | --- | --- | --- |
 | 1. Direction / product promise | `CONFIRMED` | M01/M04 role documents and user decisions |
-| 2. Core systems / content contract | `IMPLEMENTED_M01_M04` | shared runtime, cycle lock, player-authored manual, and M04 result pages have focused machine evidence; numeric balance remains undefined |
+| 2. Core systems / content contract | `IMPLEMENTED_M01_M04` | shared runtime, cycle lock, player-authored manual, M04 completed-rest `0/1` support gate, and M04 result pages have focused machine evidence; numeric balance remains undefined |
 | 3. Visual direction / screen grammar | `CONFIRMED` | user visual lock; planning board only |
 | 4. Production implementation | `IMPLEMENTED_M01_M04` | M01 and M04 use the current cycle/docket, manual, rescue/recovery, and M04 logical-vignette consumers on the active local implementation branch |
 | 5. Player validation / production expansion | `NOT_RUN` | Human/new-player/accessibility evidence absent |
@@ -95,8 +96,8 @@ Player Promise
 | --- | --- | --- |
 | representative action | 관찰한 단서를 매뉴얼 가설·구출·회수 선택에 재사용한다 | `IMPLEMENTED` shared grammar |
 | meaningful choice | 관측을 보존/분석/억제할지, 어떤 가설·근거·전조 대응을 연결할지 | `IMPLEMENTED` shared grammar; Human clarity `NOT_RUN` |
-| supporting choice | Day 1–9 조기 보호 vs Day 10 정규 해결까지 준비 기회 사용 | `IMPLEMENTED / FOCUSED_MACHINE_VERIFIED`; Preparation docket and dispatch context explain the non-numeric route, while balance remains `UNDEFINED` |
-| observable outcome | 피해자 상태, 잔향 상태, 귀가 기억 timing, 기록/연구가 서로 덮어쓰이지 않는다 | M04 uses separate logical result pages for rescue, resonance, route memory, and case record; Human recall remains `NOT_RUN` |
+| supporting choice | M04에서 더 이른 보호를 택할지, 실제 반일 하나를 `대기·회복`으로 완료해 기존 귀가 지원을 준비할지 | `IMPLEMENTED / FOCUSED_MACHINE_VERIFIED`; Preparation docket states `현장 준비 0/1` or `1/1`, without a stat/answer bonus |
+| observable outcome | 피해자 상태, 잔향 상태, 귀가 기억 timing/준비 상태, 기록/연구가 서로 덮어쓰이지 않는다 | M04 uses separate logical result pages for rescue, resonance, route memory, and case record; the route-memory page preserves the actual `0/1` or `1/1` capacity and support use; Human recall remains `NOT_RUN` |
 | reward / failure learning | 매뉴얼·위험 사례·연구가 다음 판단에 남고, 오답은 관측 가능한 반증으로 설명된다 | `PARTIAL` runtime/data; player validation `NOT_RUN` |
 | target emotion | 조용한 책임감, 규칙을 알아낸 안도, 피해자를 너무 늦기 전에 지켰다는 기억 | `CONFIRMED`; Human evidence `NOT_RUN` |
 | next-action motive | 남은 반일을 후일담·치료·연구·관계·다음 사건 준비에 쓴다 | `IMPLEMENTED` cycle lock and Preparation docket; player motivation quality remains `NOT_RUN` |
@@ -148,6 +149,7 @@ Records, research, agent support, and relationships should widen safe questions 
 | ID | system | player value | state / owner |
 | --- | --- | --- | --- |
 | `SYS-CAL-01` | 10-day / half-day calendar | clear preparation opportunity and protection timing | `IMPLEMENTED / FOCUSED_MACHINE_VERIFIED`; first-operation cycle lock, dispatch context, and Preparation docket exist; numeric balance is `UNDEFINED` |
+| `SYS-M04-03` | bounded preparation capacity | turn one completed rest into a visible, non-numeric condition for an existing recovery support | `IMPLEMENTED_M04_ONLY / FOCUSED_MACHINE_VERIFIED`; `0/1` or `1/1` is visible in Preparation, Recovery, and route-memory result; Human clarity `NOT_RUN` |
 | `SYS-INV-01` | evidence-led investigation | read a situation before choosing a method | `IMPLEMENTED` shared scene/data grammar |
 | `SYS-DED-01` | anomaly manual / competing hypotheses | prove a rule instead of selecting a lucky answer | `IMPLEMENTED` shared grammar; Human clarity `NOT_RUN` |
 | `SYS-KEY-01` | page-local keyword / slot composition | compare source-grounded candidate wording without an answer recommender | `IMPLEMENTED_M01_M04 / DRAFT_ONLY / FOCUSED_MACHINE_VERIFIED`; no semantic answer verdict and no M05+ consumer |
@@ -171,7 +173,7 @@ Records, research, agent support, and relationships should widen safe questions 
 | ID | content role | current evidence | state |
 | --- | --- | --- | --- |
 | `CNT-M01` | Afterlife Station, first complete learning case | episode `episode_001_afterlife_station`; M01 packets | `IMPLEMENTED / AUTOMATED_REGRESSION_GREEN` provenance; Human QA `NOT_RUN` |
-| `CNT-M04` | Red Umbrella Alley, release-near player-experience slice | `episode_002_red_umbrella_alley.json` | shared baseline, player-authored manual, non-numeric timing context, and sequential vignettes `IMPLEMENTED / FOCUSED_MACHINE_VERIFIED`; Human QA pending |
+| `CNT-M04` | Red Umbrella Alley, release-near player-experience slice | `episode_002_red_umbrella_alley.json` | shared baseline, player-authored manual, non-numeric timing context, completed-rest `0/1` support gate, and sequential vignettes `IMPLEMENTED / FOCUSED_MACHINE_VERIFIED`; Human QA pending |
 | `CNT-M07` | Dead Frequency Station, third campaign case | `episode_003_dead_frequency_station.json` + `test_mvp040_dead_frequency_slice.gd` | `IMPLEMENTED / RUNTIME_VERIFIED / HUMAN_QA_NOT_RUN`; Godot 4.7.2 isolated latest-main run completed `MVP-040 dead frequency slice: 20 passed, 0 failed` across preparation, investigation, recovery, report, and save/load. |
 | `CNT-SLATE` | M01–M12 initial case slate, M13+ continuation | current planning canon | `CONFIRMED` as content budget, not a year-completion gate |
 
@@ -220,8 +222,9 @@ Day 1–9 is **early resolution**, and Day 10 is **regular resolution**. The lat
 | schedule assignment | only the active planning slot accepts a valid activity; the operation stores day, slot, and suspended/in-progress state | a player can plan the current half-day and resume it after save/load | `IMPLEMENTED` |
 | case selection | the first actual `begin_operation()` stores `cycle_main_case_id` and rejects another main case during that cycle | exactly one main case per cycle is enforced without renaming historical case IDs | `IMPLEMENTED / FOCUSED_MACHINE_VERIFIED` |
 | early/regular presentation | Preparation reads dispatch kind/day/slot and the result retains the non-numeric route-memory context | the player sees early/regular context and remaining-cycle reason; numerical reward or penalty remains undefined | `IMPLEMENTED / FOCUSED_MACHINE_VERIFIED / HUMAN_QA_NOT_RUN` |
+| M04 preparation gate | only a completed `대기·회복` half-day records `현장 준비 1/1`; no completed record remains `0/1` | the player can see whether the existing `귀가 기억 고정` recovery support is available before dispatch, in `작전 상태 → 요원 지원` during Recovery, and in the result; the same panel visibly states lock/use-complete reason | `IMPLEMENTED_M04_ONLY / FOCUSED_MACHINE_VERIFIED / HUMAN_QA_NOT_RUN` |
 
-This is a deliberate truth boundary: **exactly one main case per cycle** is an enforced runtime rule. The current cycle lock, dispatch context, Preparation docket, and M04 route-memory page prove the non-numeric product path; they do not define numerical timing balance or replace Human QA.
+This is a deliberate truth boundary: **exactly one main case per cycle** is an enforced runtime rule. The current cycle lock, dispatch context, Preparation docket, M04-only bounded preparation gate, and M04 route-memory page prove the non-numeric product path; they do not define numerical timing balance or replace Human QA.
 
 ### What the player must understand before confirming a future dispatch
 
@@ -234,13 +237,13 @@ This is a deliberate truth boundary: **exactly one main case per cycle** is an e
 
 ### Intentionally unresolved balance decision
 
-The old M04 values `0/15/30` exposure and `0/+4/+8` stability gain were superseded. No day-based replacement exists. The future implementation contract must choose one of at least three genuinely different balance models and user-lock the selected one:
+The old M04 values `0/15/30` exposure and `0/+4/+8` stability gain were superseded. No day-based numeric replacement exists. The user-approved `D-2026-08-30-M04-BOUNDED-PREPARATION-CAPACITY` has adopted one **non-numeric availability** model: only an actually completed rest half-day provides `현장 준비 1/1`, which unlocks the existing one-use Kwon recovery support in M04. It does not set a numeric day bonus or penalty.
 
 | option | player value | production / risk | disposition now |
 | --- | --- | --- | --- |
-| A. narrative-only timing record | clearest, no fake math | may make early/regular feel too soft | `TEST` |
-| B. bounded preparation capacity | a visible fewer-slots vs more-slots trade-off | needs data/save/UI clarity; no answer leakage | `RECOMMENDED FOR GRILL ME` |
-| C. victim-memory condition band | strong human consequence | needs careful copy so Day 10 does not read as punishment | `TEST` |
+| A. narrative-only timing record | clearest, no fake math | may make early/regular feel too soft | `REJECTED_FOR_THIS_M04_GATE` |
+| B. bounded preparation capacity | a visible fewer-slots vs more-slots trade-off | data/save/UI are scoped; no answer leakage | `ADOPTED / IMPLEMENTED_M04_ONLY` |
+| C. victim-memory condition band | strong human consequence | needs careful copy so Day 10 does not read as punishment | `NOT_ADOPTED` |
 
 No option is implemented or approved as a numeric contract.
 
@@ -360,7 +363,7 @@ M04 avoids a single dense result page with logical pages inside the current Godo
 | --- | --- | --- | --- |
 | `VIGNETTE_VICTIM_RESCUE` | what happened to the victim | existing rescue result / after-story | overwriting it with recovery grade |
 | `VIGNETTE_RESONANCE_RECOVERY` | what happened to the anomaly/resonance | existing recovery state | treating the victim as an enemy-health outcome |
-| `VIGNETTE_ROUTE_MEMORY` | early/regular, resolution day/slot, actual Kwon support use | persisted dispatch context plus actual support use | old weekly numbers, hidden support-failure judgement |
+| `VIGNETTE_ROUTE_MEMORY` | early/regular, resolution day/slot, actual `현장 준비 0/1 또는 1/1`, actual Kwon support use | persisted dispatch context plus actual support use | old weekly numbers, hidden support-failure judgement |
 | `VIGNETTE_CASE_RECORD` | record/research/next action | existing unlock/research data | inventing rewards, clues, or relation state |
 
 `result_scene.gd` keeps the legacy direct result surface, and adds the M04-only logical vignette path. The four pages are Control content within the current result scene, with explicit continuation rather than a new result schema.
@@ -372,7 +375,7 @@ M04 avoids a single dense result page with logical pages inside the current Godo
 | surface | player needs first | UI rule | status |
 | --- | --- | --- | --- |
 | main/menu | case identity, resume/enter path | director-room 3-rail language, not a poster | `IMPLEMENTED` baseline; Human usability `NOT_RUN` |
-| preparation | calendar and meaningful next choice | day/slot/early/regular and one-case limit are readable before confirm | `IMPLEMENTED / FOCUSED_MACHINE_VERIFIED`; Human usability `NOT_RUN` |
+| preparation | calendar and meaningful next choice | day/slot/early/regular, one-case limit, and M04 `현장 준비 0/1 또는 1/1` are readable before confirm | `IMPLEMENTED / FOCUSED_MACHINE_VERIFIED`; Human usability `NOT_RUN` |
 | investigation | scene evidence and method trade-off | 2–4 choices; evidence before character spectacle | `IMPLEMENTED` baseline |
 | manual / keyword | competing claims, provenance, and counter-evidence | separate observation from interpretation; never use answer-recommendation UI | `IMPLEMENTED_M01_M04 / DRAFT_ONLY`; Human comprehension `NOT_RUN` |
 | rescue/recovery | protected subject and telegraph | protection/response priority over damage fantasy; show hypothesis → evidence → response | `IMPLEMENTED` baseline |
@@ -418,10 +421,10 @@ No approved current audio production plan or runtime evidence was found in the f
 | investigation scene | shows method choice, visible result, clue/hint/state change | current evidence-led investigation baseline is usable and must be preserved |
 | keyword composition | M01 and M04 use source-backed candidate data, readable slots, and existing draft records | player-facing workbench exists; structural validation only and no semantic answer field |
 | `monthly_state_policy.gd` | validates only `dispatch_risk` 0/15/30 and week index | historical generic state; do not reuse as new timing meaning |
-| battle scene | telegraph, hypothesis, evidence, response, wrong-response learning, stability threshold, and one-time agent support | actual recovery baseline exists; timing bonus does not |
-| result scene | legacy direct surface plus M04 logical vignette path | M04 four-page causal result is implemented without a new Scene |
+| battle scene | telegraph, hypothesis, evidence, response, wrong-response learning, stability threshold, and one-time agent support | M04 conditionally enables only the existing Kwon support when dispatch context has `1/1`; no timing bonus exists |
+| result scene | legacy direct surface plus M04 logical vignette path | M04 four-page causal result includes actual `0/1` or `1/1` preparation state without a new Scene |
 | M04 JSON | existing clues, methods, rescue/recovery outcomes, manual pages, candidate provenance, and rescue gate | preserve existing case truth/content IDs and use one live manual owner |
-| save state | additive monthly state, agent-support usage, dispatch context, and draft-slot records exist | no new save version or M04 answer-state field was added |
+| save state | additive monthly state, agent-support usage, dispatch context, draft-slot records, and M04 preparation ledger exist | legacy saves without the ledger default to `0/1`; no save version or M04 answer-state field was added |
 | headless runtime QA | Godot 4.7.2 editor import, then `test_three_case_campaign_manual_qa.gd` (136 pass / 0 fail), `mvp043_investigation_ui_test.gd` (PASS), and `mvp043_recovery_loop_test.gd` (PASS) | a fresh worktree needs the Godot import/class-cache preflight before direct script execution; a pre-import missing-class/texture-cache error is a test-environment failure, not product evidence |
 
 ### Architecture guardrails
@@ -444,11 +447,11 @@ No approved current audio production plan or runtime evidence was found in the f
 | Product documents previously contradicted the runtime calendar with 4-week values | `WEAKNESS` | fresh source comparison | `VERIFIED` | player copy could be false | schema/UI migration risk | `IMPROVE` | current-doc and runtime contract tests |
 | The approved one-case-per-cycle rule is enforced by the first-operation cycle lock | `STRENGTH` | `campaign_state.gd`, M04 cadence tests | `FOCUSED_MACHINE_VERIFIED` | a player cannot receive a second main case in the same cycle | preserves existing IDs and enables the intended aftermath rhythm | `PROTECT` | Human explanation of early/regular trade-off |
 | Keyword composition has source-backed M01/M04 data and a shared scene consumer | `STRENGTH` | M01/M04 manual tests, live episode data, `InvestigationScene` | `FOCUSED_MACHINE_VERIFIED` | source-comparison deduction is playable without answer UI | existing draft-save path avoids a new schema | `PROTECT` | Human comprehension and accessibility test |
-| Day 10 and early/regular presentation, timing persistence, and M04 result pages exist; numeric balance remains undefined | `PARTIAL` | preparation/result scenes, campaign state | `FOCUSED_MACHINE_VERIFIED` | player can read the route context but its numerical weight remains unvalidated | balance needs a later decision, not another core refactor | `TEST` | one-at-a-time balance decision + Human QA |
+| M04 has a completed-rest `0/1` gate for its existing Kwon support; no numeric balance exists | `STRENGTH` | campaign state, preparation/battle/result consumers, focused M04 tests | `FOCUSED_MACHINE_VERIFIED` | the player can exchange one completed preparation half-day for a visible recovery choice without receiving an answer or stat boost | scope is case-local and preserves existing values | `PROTECT` | Human clarity and trade-off test |
 | M04 result scene uses logical narrative pages while legacy direct result stays compatible | `STRENGTH` | `result_scene.gd`, M04 vignette tests | `FOCUSED_MACHINE_VERIFIED` | M04 outcome can be read as a causal memory | no new Scene or result schema needed | `PROTECT` | M04 readability and emotional recall playtest |
 | Korean urban-noir/dossier visual grammar is user-locked | `OPPORTUNITY` | visual lock packet and board | `VERIFIED` | recognizable first impression | reusable UI/asset grammar | `PROTECT` | target-resolution runtime comparisons |
 | Deduction games demonstrate value in traceable evidence and player-built theory | `OPPORTUNITY` | official pages for [Return of the Obra Dinn](https://store.steampowered.com/app/653530/Return_of_the_Obra_Dinn/) and [The Case of the Golden Idol](https://store.steampowered.com/app/1677770/The_Case_of_the_Golden_Idol/) | `INFERENCE` | validates evidence clarity, not copied presentation | adapt information traceability only | `ADAPT` | player can explain why a hypothesis is supported/rebutted |
-| Unfinalized timing balance can make early and regular choices feel cosmetic or punitive | `THREAT` | numeric contract is intentionally undefined | `PARTIAL` | erodes trust in a core choice | risk of repeated rebalance | `MITIGATE` | one-at-a-time Grill Me balance lock before coding |
+| The M04 preparation gate can still feel opaque if players do not notice the same `0/1` state across Preparation, Recovery, and Result | `THREAT` | Human clarity is not yet observed | `PARTIAL` | erodes trust in a support choice | copy and input UX could require adjustment | `MITIGATE` | first-time Human M04 trace test |
 | Generated visual candidates can be confused with approved runtime assets | `THREAT` | current planning board/candidate policy boundaries | `VERIFIED` | visual promise could overstate playable quality | rights/promotion/rework risk | `MITIGATE` | manifest/provenance/runtime-capture gate |
 
 ## 16. Benchmark decision
@@ -462,7 +465,7 @@ No approved current audio production plan or runtime evidence was found in the f
 **Adopt:** evidence traceability.
 **Adapt:** theory slots and causal feedback, only in the project's own language.
 **Reject:** copied identity, presentation, case structure, or art expression.
-**Remaining uncertainty:** whether the 10-day timing choice adds meaningful pressure without becoming a hidden penalty.
+**Remaining uncertainty:** whether a first-time player notices the M04 `0/1` gate early enough to understand the trade-off without perceiving it as a hidden penalty.
 
 ## 17. Validation and QA matrix
 
@@ -470,11 +473,11 @@ No approved current audio production plan or runtime evidence was found in the f
 | --- | --- | --- |
 | `QA-CAL-01` | Day 1–9 and Day 10 labels are correct before confirmation | `NOT_RUN` |
 | `QA-CAL-02` | exactly one main case resolves per cycle; early leaves no second main case | `NOT_RUN` |
-| `QA-SAVE-01` | new timing record save/load/old-save fallback | `NOT_RUN` |
+| `QA-SAVE-01` | M04 preparation ledger and dispatch `0/1` save/load/old-save fallback | `NOT_RUN` |
 | `QA-INV-01` | M04 player can identify observation, selected method, acquired clue, and changed condition without a guide | `NOT_RUN` |
 | `QA-KEY-01` | player acquires normal keyword with source/memory, fills a readable blank manual, receives only structural validation, save/loads it, sees no answer/variant recommendation or normal-clear answer reveal, then verifies one rule through rescue and recovery | `NOT_RUN` |
 | `QA-REC-01` | player can explain the telegraph → hypothesis → evidence → response chain and learns from an intentional wrong response | `NOT_RUN` |
-| `QA-M04-01` | M04 route-memory vignette uses one cause per page | `NOT_RUN` |
+| `QA-M04-01` | M04 route-memory vignette uses one cause per page and preserves actual `0/1` capacity | `NOT_RUN` |
 | `QA-M04-02` | M01 remains behaviourally unchanged | `NOT_RUN` for successor scope |
 | `QA-UI-01` | 1280×720 / 1920×1080 Korean readability, mouse and keyboard | `NOT_RUN` |
 | `QA-VIS-01` | consumer-specific asset provenance and runtime capture | `PARTIAL`; do not generalize |
@@ -488,8 +491,8 @@ Order is driven by primary player value, then dependency and risk. No item start
 1. **Investigation → deduction → recovery vertical slice:** `IMPLEMENTED_M01_M04`; retain focused regression and obtain Human/player validation.
 2. **Keyword/manual vertical slice:** `IMPLEMENTED_M01_M04`; retain structural-only validation and add no mutation-label or answer-reveal shortcut.
 3. **M04 sequential vignette UI:** `IMPLEMENTED_M04_ONLY`; retain logical pages and collect Human readability evidence.
-4. **Unified calendar support contract:** cycle lock, ten-day/two-slot save context, and docket are implemented; only the numerical early/regular balance decision remains open.
-5. **Preparation timing surface and save/result bridge:** `IMPLEMENTED`; preserve non-numeric dispatch context and M04 route memory.
+4. **Unified calendar support contract:** cycle lock, ten-day/two-slot save context, and docket are implemented; M04 has the separate, case-local completed-rest `0/1` gate; only numerical early/regular balance remains open.
+5. **Preparation timing surface and save/result bridge:** `IMPLEMENTED`; preserve non-numeric dispatch context, M04 `0/1` capacity, and route memory.
 6. **Automated regression:** `IMPLEMENTED / FOCUSED_MACHINE_VERIFIED`; rerun for each successor change before Human QA.
 7. **Visual/audio consumer work:** only after consumer-specific brief and final LOCK/promotion gates.
 8. **Human/new-player validation:** fun, clarity, memory, accessibility.

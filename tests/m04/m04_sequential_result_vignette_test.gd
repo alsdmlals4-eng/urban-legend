@@ -29,6 +29,9 @@ func _run() -> void:
 	_game_state.reset_run_state()
 	_expect(_game_state.load_episode(M04_EPISODE_PATH), "M04 case data loads for the sequential-result path")
 	_game_state.set_selected_agent_ids(["agent_kwon_narae"])
+	_expect(_game_state.set_campaign_schedule("agent_kwon_narae", "morning", "rest"), "a completed M04 preparation rest can be scheduled")
+	_expect(_game_state.complete_campaign_slot({"kind": "schedule", "results": [{"agent_id": "agent_kwon_narae", "activity": "rest"}]}), "the scheduled M04 preparation rest completes")
+	_expect(bool(_game_state.acknowledge_campaign_slot_result().get("advanced", false)), "the preparation rest advances before M04 dispatch")
 	_expect(_game_state.set_campaign_planned_case(M04_ID), "M04 is planned for the sequential-result path")
 	_expect(_game_state.begin_campaign_operation(M04_ID), "M04 operation begins before recovery")
 	_game_state.mark_agent_support_used("support_kwon_return_route")
@@ -58,7 +61,7 @@ func _run() -> void:
 		await process_frame
 	_expect(progress != null and progress.text == "3 / 4", "M04 reaches the route-memory page in order")
 	_expect(title != null and title.text == "귀가 기억", "M04 third page explains the dispatch context")
-	_expect(body != null and body.text.contains("조기 해결") and body.text.contains("귀가 기억 고정"), "route-memory page uses actual timing and Kwon support facts")
+	_expect(body != null and body.text.contains("조기 해결") and body.text.contains("귀가 기억 고정") and body.text.contains("현장 준비 1/1"), "route-memory page preserves actual timing, Kwon support, and preparation facts")
 	if continue_button != null:
 		continue_button.emit_signal("pressed")
 		await process_frame

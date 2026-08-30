@@ -78,7 +78,10 @@ script_tests=(
   m04/m04_player_authored_manual_contract_test
   m04/m04_manual_workbench_integration_test
   m04/m04_current_campaign_cadence_test
+  m04/m04_bounded_preparation_capacity_test
   m04/m04_preparation_docket_test
+  m04/m04_preparation_support_gate_test
+  m04/m04_preparation_support_ui_test
   m04/m04_sequential_result_vignette_test
   m04/m04_recovery_promoted_asset_runtime_test
   recovery_telegraph_audio_test

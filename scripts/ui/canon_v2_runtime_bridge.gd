@@ -324,7 +324,8 @@ func _build_overlay_state(mode: String) -> Dictionary:
 		"active_protection_obligations": [],
 		"termination_preview": {},
 		"follow_up_records": [],
-		"evaluation_packet": {}
+		"evaluation_packet": {},
+		"recovery_supports": []
 	}
 	var game_state := get_node_or_null("/root/GameState")
 	if game_state == null:
@@ -350,6 +351,8 @@ func _build_overlay_state(mode: String) -> Dictionary:
 		state["termination_preview"] = _dictionary_copy(runtime.get("termination_preview"))
 		state["follow_up_records"] = _array_copy(runtime.get("follow_up_records"))
 		state["evaluation_packet"] = _dictionary_copy(runtime.get("evaluation_packet"))
+	if mode == "recovery" and game_state.has_method("get_selected_recovery_supports"):
+		state["recovery_supports"] = _array_copy(game_state.get_selected_recovery_supports())
 	return state
 
 
