@@ -14,6 +14,7 @@ script_tests=(
   validation/validation_runtime_initializer_test
   validation/validation_entry_coordinator_test
   validation/validation_main_menu_contract_test
+  validation/main_menu_window_breakpoint_test
 )
 
 for test_path in "${script_tests[@]}"; do
@@ -27,6 +28,8 @@ for test_path in "${script_tests[@]}"; do
   if ! HOME="$home_dir" \
       XDG_DATA_HOME="$home_dir/.local/share" \
       XDG_CONFIG_HOME="$home_dir/.config" \
+      APPDATA="$home_dir/AppData/Roaming" \
+      LOCALAPPDATA="$home_dir/AppData/Local" \
       GODOT_SILENCE_ROOT_WARNING=1 \
       timeout "$GODOT_TEST_TIMEOUT" "$GODOT_BIN" \
       --headless --path "$PROJECT_ROOT" \

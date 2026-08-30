@@ -8,7 +8,7 @@ func _init() -> void:
 
 
 func _run() -> void:
-	root.size = Vector2i(1920, 1080)
+	root.size = Vector2i(1280, 720)
 	var packed := load("res://scenes/main_menu.tscn") as PackedScene
 	_expect(packed != null, "main menu scene must load")
 	if packed == null:
@@ -23,8 +23,21 @@ func _run() -> void:
 	for _frame in range(4):
 		await process_frame
 	var preview := menu.find_child("CurrentCasePreview", true, false) as Control
+	var summary := menu.find_child("CurrentCaseSummary", true, false) as Control
 	_expect(preview != null, "main menu must provide the current-case preview")
-	_expect(preview != null and preview.visible, "1920x1080 window must show the current-case preview even with a 1280x720 canvas baseline")
+	_expect(summary != null, "main menu must provide the current-case summary")
+	_expect(preview != null and not preview.visible, "1280x720 must hide the current-case preview")
+	_expect(summary != null and not summary.visible, "1280x720 must hide the current-case summary")
+	_expect(menu.has_method("_is_compact_for_sizes"), "main menu must expose a physical-window breakpoint helper")
+	if menu.has_method("_is_compact_for_sizes"):
+		_expect(
+			bool(menu.call("_is_compact_for_sizes", Vector2(1280.0, 720.0), Vector2(1280.0, 720.0))),
+			"1280x720 logical and physical sizes must use the compact layout"
+		)
+		_expect(
+			not bool(menu.call("_is_compact_for_sizes", Vector2(1280.0, 720.0), Vector2(1920.0, 1080.0))),
+			"1920x1080 physical window must override the 1280x720 canvas baseline"
+		)
 	menu.queue_free()
 	for _frame in range(3):
 		await process_frame

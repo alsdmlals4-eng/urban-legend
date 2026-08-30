@@ -493,8 +493,11 @@ func _apply_responsive_layout() -> void:
 
 
 func _is_compact_layout() -> bool:
-	var window_size := Vector2(DisplayServer.window_get_size())
-	var effective_size := Vector2(maxf(size.x, window_size.x), maxf(size.y, window_size.y))
+	return _is_compact_for_sizes(size, Vector2(DisplayServer.window_get_size()))
+
+
+func _is_compact_for_sizes(control_size: Vector2, window_size: Vector2) -> bool:
+	var effective_size := Vector2(maxf(control_size.x, window_size.x), maxf(control_size.y, window_size.y))
 	return effective_size.x < 1500.0 or effective_size.y < 850.0
 
 

@@ -23,6 +23,8 @@ for name in "${tests[@]}"; do
   if ! HOME="$home_dir" \
       XDG_DATA_HOME="$home_dir/.local/share" \
       XDG_CONFIG_HOME="$home_dir/.config" \
+      APPDATA="$home_dir/AppData/Roaming" \
+      LOCALAPPDATA="$home_dir/AppData/Local" \
       GODOT_SILENCE_ROOT_WARNING=1 \
       timeout 90 "$GODOT_BIN" --headless --path "$PROJECT_ROOT" \
       --script "res://tests/$name.gd" >"$log_file" 2>&1; then
