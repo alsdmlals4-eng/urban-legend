@@ -172,7 +172,7 @@ Records, research, agent support, and relationships should widen safe questions 
 | --- | --- | --- | --- |
 | `CNT-M01` | Afterlife Station, first complete learning case | episode `episode_001_afterlife_station`; M01 packets | `IMPLEMENTED / AUTOMATED_REGRESSION_GREEN` provenance; Human QA `NOT_RUN` |
 | `CNT-M04` | Red Umbrella Alley, release-near player-experience slice | `episode_002_red_umbrella_alley.json` | shared baseline, player-authored manual, non-numeric timing context, and sequential vignettes `IMPLEMENTED / FOCUSED_MACHINE_VERIFIED`; Human QA pending |
-| `CNT-M07` | Dead Frequency Station | campaign case ID list | `PARTIAL / not evaluated this session` |
+| `CNT-M07` | Dead Frequency Station, third campaign case | `episode_003_dead_frequency_station.json` + `test_mvp040_dead_frequency_slice.gd` | `IMPLEMENTED / RUNTIME_VERIFIED / HUMAN_QA_NOT_RUN`; Godot 4.7.2 isolated latest-main run completed `MVP-040 dead frequency slice: 20 passed, 0 failed` across preparation, investigation, recovery, report, and save/load. |
 | `CNT-SLATE` | M01–M12 initial case slate, M13+ continuation | current planning canon | `CONFIRMED` as content budget, not a year-completion gate |
 
 ### M04 verified content facts
