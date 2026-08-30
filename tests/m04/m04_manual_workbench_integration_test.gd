@@ -60,6 +60,10 @@ func _run() -> void:
 	if workbench == null:
 		_finish()
 		return
+	var lume_portrait := workbench.find_child("LumePortrait", true, false) as TextureRect
+	_expect(lume_portrait != null and not lume_portrait.visible, "M04 guide must not display the CASE-01 Lume portrait")
+	_expect(_visible_text_contains(workbench, "기록관 아카"), "M04 guide identity must be Archivist Aka")
+	_expect(not _visible_text_contains(workbench, "루메"), "M04 workbench must not expose the CASE-01 Lume identity")
 	for viewport_size in [Vector2i(1280, 720), Vector2i(1920, 1080)]:
 		root.size = viewport_size
 		for _frame in range(2):
