@@ -137,6 +137,20 @@ base_adapter_baseline_reconciliation: COMPLETE
 - M01의 `candidate_keywords`/`semantic_relations` 빈 배열, 읽기 전용 매뉴얼 consumer, `normal_clear.reveal_complete_manual: true`는 모두 successor runtime gap이다. 특히 answer reveal은 이 결정과 충돌하므로 후속 implementation contract에서 migration·replay semantics와 함께 교정한다.
 - 사용자 제공 비교 이미지는 planning UI reference일 뿐 asset, runtime UI, Scene, product approval이 아니다.
 
+### Contextual Lume companion and scenario costume — 2026-08-30
+
+판정: `USER_DIRECTED / PLANNING_REFERENCE_ONLY / PRODUCT_ASSET_PENDING`.
+
+- CASE-01 조사 디바이스·현장·매뉴얼의 기록 보조 이름은 **루메**다. 전임
+  블루프린트 후보에 들어간 ‘아카’ 표기는 정체성 오류로 `SUPERSEDED`다.
+- 루메는 귀여운 소형 치비 비율, 은빛 웨이브 머리, 큰 호박빛 눈의 정체성을
+  유지한다. 성숙한 전신 요원 체형으로 대체하지 않는다.
+- 복장은 입장한 사건의 장소·분위기와 맞춰 달라질 수 있다. 단, 구현 중 임의로
+  costume/face/silhouette/pose를 자동 변경하지 않고, 각 사건 ID별 독립 후보와
+  사용자 승인·asset manifest·consumer 검증을 거친다.
+- `CASE-01 저승역` 예시의 검정·금색 도시철도 기록 보조 복장은 저승역 전용이다.
+  루메는 어느 복장에서도 정답·변조·후보 적합성·미관측 정보를 알려주지 않는다.
+
 ### M04 sequential narrative result vignettes — 2026-08-28
 
 판정: `USER_APPROVED / PLANNING_CANON / IMPLEMENTATION_NOT_AUTHORIZED`.
