@@ -30,8 +30,10 @@ EXPECTED_FIRST_SESSION_ENTRYPOINTS = (
     "res://tests/first_session/m01_first_session_orchestration_test.gd",
     "res://tests/first_session/m01_first_session_runtime_sync_test.gd",
 )
+WINDOWS_USER_DATA_ISOLATION_ENTRYPOINT = "res://tests/validation/windows_user_data_isolation_test.gd"
 EXPECTED_ENTRYPOINTS = (
-    EXPECTED_AFTERLIFE_ENTRYPOINTS
+    (WINDOWS_USER_DATA_ISOLATION_ENTRYPOINT,)
+    + EXPECTED_AFTERLIFE_ENTRYPOINTS
     + EXPECTED_MONTHLY_ENTRYPOINTS
     + EXPECTED_FIRST_SESSION_ENTRYPOINTS
 )
@@ -41,12 +43,17 @@ class AfterlifeCanonV2RunnerContractTests(unittest.TestCase):
     def test_focused_runner_has_all_runtime_reconciliation_entrypoints(self) -> None:
         self.assertTrue(RUNNER.is_file(), RUNNER)
         text = RUNNER.read_text(encoding="utf-8")
-        for entrypoint in EXPECTED_ENTRYPOINTS:
-            self.assertIn(entrypoint, text)
+        declared_entrypoints = tuple(
+            line.strip().strip('"')
+            for line in text.splitlines()
+            if line.strip().startswith('"res://tests/')
+        )
+        self.assertEqual(declared_entrypoints, EXPECTED_ENTRYPOINTS)
+        self.assertEqual(declared_entrypoints[0], WINDOWS_USER_DATA_ISOLATION_ENTRYPOINT)
+        self.assertEqual(len(declared_entrypoints), 15)
         self.assertEqual(text.count("res://tests/afterlife_migration/"), 9)
         self.assertEqual(text.count("res://tests/monthly_state/"), 3)
         self.assertEqual(text.count("res://tests/first_session/"), 2)
-        self.assertIn("res://tests/validation/windows_user_data_isolation_test.gd", text)
         self.assertIn("set -euo pipefail", text)
         self.assertIn("GODOT_TEST_TMP", text)
         self.assertIn("XDG_DATA_HOME", text)
