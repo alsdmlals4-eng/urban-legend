@@ -479,7 +479,7 @@ func _focus_initial_action() -> void:
 
 
 func _apply_responsive_layout() -> void:
-	var compact := size.x < 1500.0 or size.y < 850.0
+	var compact := _is_compact_layout()
 	if _current_case_preview != null:
 		_current_case_preview.visible = not compact and _current_case_preview.texture != null
 	if _current_case_summary != null:
@@ -490,6 +490,15 @@ func _apply_responsive_layout() -> void:
 		_action_rail.add_theme_constant_override("separation", 8 if compact else 12)
 	if _intelligence_rail != null:
 		_intelligence_rail.add_theme_constant_override("separation", 8 if compact else 12)
+
+
+func _is_compact_layout() -> bool:
+	return _is_compact_for_sizes(size, Vector2(DisplayServer.window_get_size()))
+
+
+func _is_compact_for_sizes(control_size: Vector2, window_size: Vector2) -> bool:
+	var effective_size := Vector2(maxf(control_size.x, window_size.x), maxf(control_size.y, window_size.y))
+	return effective_size.x < 1500.0 or effective_size.y < 850.0
 
 
 func _refresh_intelligence_rail() -> void:

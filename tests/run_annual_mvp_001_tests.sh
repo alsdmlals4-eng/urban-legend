@@ -9,6 +9,7 @@ LOG_ROOT="$RUN_ROOT/focused-logs"
 mkdir -p "$LOG_ROOT"
 
 script_tests=(
+  validation/windows_user_data_isolation_test
   annual_mvp_001_data_test
   annual_mvp_001_state_test
   annual_mvp_001_support_resolver_test
@@ -19,14 +20,17 @@ script_tests=(
 
 run_test() {
   local name="$1"
-  local home_dir="$RUN_ROOT/home/$name"
-  local log_file="$LOG_ROOT/$name.log"
+  local safe_name="${name//\//_}"
+  local home_dir="$RUN_ROOT/home/$safe_name"
+  local log_file="$LOG_ROOT/$safe_name.log"
   rm -rf "$home_dir"
   mkdir -p "$home_dir"
   echo "::group::ANNUAL-MVP-001 test: $name"
   if ! HOME="$home_dir" \
       XDG_DATA_HOME="$home_dir/.local/share" \
       XDG_CONFIG_HOME="$home_dir/.config" \
+      APPDATA="$home_dir/AppData/Roaming" \
+      LOCALAPPDATA="$home_dir/AppData/Local" \
       GODOT_SILENCE_ROOT_WARNING=1 \
       timeout "$GODOT_TEST_TIMEOUT" "$GODOT_BIN" \
       --headless --path "$PROJECT_ROOT" --script "res://tests/$name.gd" >"$log_file" 2>&1; then
@@ -43,5 +47,5 @@ for test_name in "${script_tests[@]}"; do
   run_test "$test_name"
 done
 
-echo "ANNUAL-MVP-001 focused suite: 6/6 test entrypoints passed"
+echo "ANNUAL-MVP-001 focused suite: ${#script_tests[@]}/${#script_tests[@]} test entrypoints passed"
 echo "Logs: $LOG_ROOT"

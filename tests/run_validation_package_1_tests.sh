@@ -9,6 +9,7 @@ LOG_ROOT="$RUN_ROOT/focused-logs"
 mkdir -p "$LOG_ROOT"
 
 script_tests=(
+  validation/windows_user_data_isolation_test
   validation/validation_save_repository_test
   validation/validation_session_test
   validation/validation_game_state_adapter_test
@@ -26,6 +27,8 @@ for test_path in "${script_tests[@]}"; do
   if ! HOME="$home_dir" \
       XDG_DATA_HOME="$home_dir/.local/share" \
       XDG_CONFIG_HOME="$home_dir/.config" \
+      APPDATA="$home_dir/AppData/Roaming" \
+      LOCALAPPDATA="$home_dir/AppData/Local" \
       GODOT_SILENCE_ROOT_WARNING=1 \
       timeout "$GODOT_TEST_TIMEOUT" "$GODOT_BIN" \
       --headless --path "$PROJECT_ROOT" \
@@ -39,5 +42,5 @@ for test_path in "${script_tests[@]}"; do
   echo "::endgroup::"
 done
 
-echo "Validation Package 1 focused suite: 4/4 test entrypoints passed"
+echo "Validation Package 1 focused suite: ${#script_tests[@]}/${#script_tests[@]} test entrypoints passed"
 echo "Logs: $LOG_ROOT"
