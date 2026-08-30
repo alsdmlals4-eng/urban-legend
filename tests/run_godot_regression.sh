@@ -8,7 +8,7 @@ RUN_ROOT="${GODOT_TEST_TMP:-$(mktemp -d)}"
 LOG_ROOT="$RUN_ROOT/logs"
 mkdir -p "$LOG_ROOT"
 
-bash tests/validation/windows_user_data_isolation_preflight_contract_test.sh
+bash "$PROJECT_ROOT/tests/validation/windows_user_data_isolation_preflight_contract_test.sh"
 
 if [[ "${SKIP_AFTERLIFE_CANON_V2_FOCUSED:-0}" != "1" ]]; then
   GODOT_BIN="$GODOT_BIN" \

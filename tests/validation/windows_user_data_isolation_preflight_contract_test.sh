@@ -27,4 +27,9 @@ assert_first_entry "$PROJECT_ROOT/tests/run_godot_regression.sh" "script_tests" 
 assert_first_entry "$PROJECT_ROOT/tests/run_validation_package_1_tests.sh" "script_tests" "validation/windows_user_data_isolation_test"
 assert_first_entry "$PROJECT_ROOT/tests/run_validation_package_2_tests.sh" "script_tests" "validation/windows_user_data_isolation_test"
 
+if ! grep -Fqx 'bash "$PROJECT_ROOT/tests/validation/windows_user_data_isolation_preflight_contract_test.sh"' "$PROJECT_ROOT/tests/run_godot_regression.sh"; then
+  echo "FAILED: run_godot_regression.sh must invoke the preflight through PROJECT_ROOT" >&2
+  exit 1
+fi
+
 echo "WINDOWS USER DATA ISOLATION PREFLIGHT CONTRACT: PASS"
