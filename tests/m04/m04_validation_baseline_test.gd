@@ -23,7 +23,7 @@ func _init() -> void:
 		var mapping := _read_dict(MAP_PATH)
 		_test_identity_and_visual_gate(mapping)
 		_test_live_reference_integrity(episode, mapping)
-		_test_shared_manual_contract(mapping)
+		_test_shared_manual_contract(episode)
 		_test_shared_rescue_adapter(mapping)
 		_test_composite_result_axes(mapping)
 	_finish()
@@ -48,12 +48,16 @@ func _test_live_reference_integrity(episode: Dictionary, mapping: Dictionary) ->
 	_expect("minigame_rain_sync" in live_ids, "M04 core input missing")
 
 
-func _test_shared_manual_contract(mapping: Dictionary) -> void:
+func _test_shared_manual_contract(episode: Dictionary) -> void:
 	var script_value: Variant = load(MANUAL_POLICY_PATH)
 	_expect(script_value is Script, "shared manual policy failed to load")
 	if not script_value is Script:
 		return
-	var result: Dictionary = (script_value as Script).new().validate_contract(mapping.get("investigation_manual", {}) as Dictionary)
+	var manual_value: Variant = episode.get("investigation_manual", {})
+	_expect(manual_value is Dictionary and not (manual_value as Dictionary).is_empty(), "M04 runtime episode manual missing")
+	if not manual_value is Dictionary or (manual_value as Dictionary).is_empty():
+		return
+	var result: Dictionary = (script_value as Script).new().validate_contract(manual_value as Dictionary)
 	_expect(bool(result.get("ok", false)), "M04 shared investigation/manual contract invalid")
 
 
