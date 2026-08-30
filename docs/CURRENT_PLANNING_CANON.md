@@ -34,7 +34,7 @@
 - 조사 선택으로 정상 키워드를 얻는다. 정상 키워드는 원본 출처·획득 행동·맥락을 보존한다. 한 변수만 달라진 변조 후보에는 독립 가짜 출처를 만들지 않으며, 사실이지만 쓰이지 않는 보조 후보와도 구분한다.
 - 플레이어는 조사 기억 + 정상 키워드 원본 + 매뉴얼 문맥으로 후보를 고른다. UI는 중복·미획득·타입 불일치 같은 구조 오류만 막고, semantic correct/wrong, 정답 추천, 변조 표식, 호환 점수는 표시하지 않는다.
 - 작성한 규칙은 구출 미니게임의 절차·순서·타이밍과 회수의 `전조 → 가설 → 근거 → 대응`에서 직접 검증한다. 매뉴얼 완성은 구출·회수를 자동 해결하지 않으며, 실패는 위험 사례·다음 조사 필요 기록이 된다.
-- M01의 현 `candidate_keywords` / `semantic_relations`는 비어 있고 Scene의 매뉴얼은 읽기 전용이다. 또한 `normal_clear.reveal_complete_manual: true`는 “정답 매뉴얼 자동 공개 금지”와 충돌하는 stale runtime data다. 둘 다 후속 implementation contract의 migration/QA 대상이며 이번 planning correction으로 runtime을 바꾸지 않는다.
+- M01과 M04는 source-backed `candidate_keywords`와 빈칸 추리문을 실제 scene의 draft-only workbench로 소비한다. M01의 `normal_clear.reveal_complete_manual`은 `false`이며, M04는 같은 3개 기존 단서와 기존 rescue-gate를 사건 데이터 하나에서 소비한다. M05+ 또는 변조 후보의 field-verification 확장은 data·consumer가 없어 아직 구현되지 않았다.
 - 사용자가 제공한 두 비교 이미지는 `USER_PROVIDED_PLANNING_UI_REFERENCE`다. 빈칸 추리문·후보·출처 보조라는 정보 구조만 참고하며 `NOT_PROJECT_ASSET / NOT_RUNTIME_ASSET / NOT_COPIED_TO_REPOSITORY`다.
 
 ## 10일·반일 cadence와 콘텐츠 예산
@@ -77,7 +77,7 @@
 - M01 runtime은 10단계 First Session orchestrator와 additive `monthly_state`를 사용하며 별도 hidden truth owner를 만들지 않는다.
 - `M04 빨간 우산`은 약 30~45분 release-near player-experience Vertical Slice다.
 - M04의 대표 고민은 `Day 1~9에 더 이른 보호를 위해 출동할지, Day 10 정규 해결까지 반일 준비 기회를 사용할지`다. 구체적인 수치 효과는 새 구현 계약의 balance decision 전까지 `UNDEFINED`다. 결과는 Composite Result에서 추리·구출·회수와 분리된 출동 timing 인과로 설명하며, M04에서는 이를 한 화면에 합산하지 않고 순차 후일담으로 읽힌다.
-- M04 shared-system validation baseline은 구현됐지만 최종 제품 시각·Audio/VFX·Human QA는 아직 Gate 밖이다.
+- M04 shared-system validation baseline과 플레이어 작성 매뉴얼은 구현됐지만 최종 제품 시각·Audio/VFX·Human QA는 아직 Gate 밖이다.
 
 ## 화면·재사용 계약
 
@@ -108,7 +108,7 @@
 - M04의 `COMPOSITE_RESULT` 표현은 `VIGNETTE_VICTIM_RESCUE → VIGNETTE_RESONANCE_RECOVERY → VIGNETTE_ROUTE_MEMORY → VIGNETTE_CASE_RECORD` 순차 후일담이다. `result_scene.gd`가 이를 native Godot logical page로 구현했고 M01/legacy direct result는 기존 surface를 유지한다. 이는 새 runtime Scene이나 정적 UI 이미지가 아니며 Human QA PASS를 뜻하지 않는다.
 - Legacy grade/S-rank는 history/mastery compatibility만 허용한다.
 - `monthly_state`는 top-level additive optional orchestration block으로 남아 있는 historical generic policy다. 새 10일 cadence의 live consumer는 `CampaignState`의 cycle lock/dispatch context, Preparation docket, M04 route-memory result page가 소유하며, 역사적 `dispatch_risk 0/15/30`을 새 날짜 효과로 환산하지 않는다.
-- page-local keyword composition과 mutated-candidate verification은 승인된 설계이지만 current M01 `candidate_keywords` / `semantic_relations`는 비어 있고 M04에는 해당 data/Scene consumer가 없다. 기존 clue ID와 manual/recovery 근거 선택을 keyword system 완료로 승격하지 않는다.
+- M01과 M04의 page-local keyword composition은 구현됐다. M04는 실제 사건 데이터의 세 기존 단서·두 기존 rule page·기존 rescue-gate를 그대로 사용하며, M01은 Canon V2 input을 유지한다. 이 두 사건의 draft placement는 구조 오류만 막고 semantic verdict를 내지 않는다. M05+ 및 변조 후보의 field-verification 확장은 여전히 별도 구현 계약이다.
 - 기존 Episode ID, report, ANNUAL PoC state를 자동 rename·import·월 완료 추론하지 않는다.
 - current main의 Canon v2 migration/runtime을 재사용한다.
 
@@ -140,7 +140,8 @@ runtime_merge_commit: 8d303f0f9414950273be934fd28c8fb1b3a21e18
 automated_exact_head: GREEN
 ten_day_half_day_cadence: USER_APPROVED / IMPLEMENTED_NON_NUMERIC_CONTEXT / FOCUSED_MACHINE_VERIFIED
 one_main_case_runtime_enforcement: IMPLEMENTED / FOCUSED_MACHINE_VERIFIED
-keyword_composition: APPROVED_DESIGN / NOT_IMPLEMENTED
+keyword_composition: IMPLEMENTED_M01_M04 / DRAFT_ONLY / FOCUSED_MACHINE_VERIFIED / OTHER_CASES_PENDING
+player_authored_manual_keyword_verification: USER_APPROVED / IMPLEMENTED_M01_M04 / FOCUSED_MACHINE_VERIFIED / HUMAN_QA_NOT_RUN
 human_qa: NOT_RUN
 poc_passed: NOT_DECLARED
 production_expansion: NOT_APPROVED

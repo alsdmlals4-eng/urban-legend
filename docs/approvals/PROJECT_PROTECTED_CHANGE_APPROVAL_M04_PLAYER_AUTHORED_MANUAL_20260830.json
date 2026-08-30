@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "artifact_role": "PROJECT_PROTECTED_CHANGE_APPROVAL",
+  "status": "APPROVED",
+  "protected_base_commit": "522d9af75ea90cecd58fe3fe6afa9de0520990a8",
+  "decision_ids": [
+    "D-2026-08-29-PLAYER-AUTHORED-MANUAL-KEYWORD-VERIFICATION"
+  ],
+  "approved_paths": [
+    "data/episodes/episode_002_red_umbrella_alley.json",
+    "scripts/scenes/investigation_scene.gd",
+    "scripts/ui/manual_deduction_workbench.gd"
+  ],
+  "approval_source": "The decision owner approved the recommended continuation and directed the approved Godot plans to be implemented without pausing. This receipt records that authorization only for the M04 Red Umbrella player-authored manual slice, after confirming that prior M01 and M04 receipts did not include this exact protected data and shared presentation scope.",
+  "approval_time": "2026-08-30T16:30:00+09:00",
+  "scope_summary": "Implement M04's existing three-clue manual and its existing rule/rescue context through the existing draft-only workbench. Use text-only Archivist Aka for M04; preserve Lume portrait and M01 semantics as CASE-01-only. Do not create new clues, rules, save fields, semantic answer evaluation, release claims, M05+ content, or asset promotion."
+}
