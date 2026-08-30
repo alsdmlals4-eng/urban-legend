@@ -166,17 +166,19 @@ visual_planning: COMPLETE
 product_reference_asset: PENDING
 overall_plan: COMPLETE
 plan_lock: RELEASED_TO_IMPLEMENTATION_GATE
-implementation_reality_gate: HANDOFF_READY_WITH_KNOWN_REALIGNMENT
-implementation_contract: READY
-runtime_implementation: NOT_AUTHORIZED
+implementation_reality_gate: RUNTIME_RECONCILIATION_MERGED
+implementation_contract: COMPLETE_FOR_MERGED_SCOPE
+runtime_implementation: MERGED_MAIN
+runtime_merge_commit: 8d303f0f9414950273be934fd28c8fb1b3a21e18
+automated_exact_head: GREEN
 human_qa: NOT_RUN
 poc_passed: NOT_DECLARED
 production_expansion: NOT_APPROVED
 ```
 
-Planning은 완료됐다. 현재 mutation 경계는 **runtime implementation authorization**이다.
+Planning은 완료됐고, current main에는 Canon v2/Composite Result 재정합, M01 First Session orchestration, M04 shared-system baseline이 병합되어 있다. 현재 mutation 경계는 새 제품 범위·product-reference asset·최종 visual/audio/VFX·Human QA이며, 과거의 `NOT_AUTHORIZED` 문구는 current runtime authority가 아니다.
 
-Fresh-main Reality Gate는 existing Canon v2 runtime을 재사용하고 `LEGACY_S_RANK_CONTRACT_REALIGNMENT_REQUIRED`와 `MONTHLY_STATE_NOT_IMPLEMENTED`를 다음 구현의 우선 교정으로 둔다.
+Fresh-main Reality Gate의 `LEGACY_S_RANK_CONTRACT_REALIGNMENT_REQUIRED`와 `MONTHLY_STATE_NOT_IMPLEMENTED`는 PR #224 current-main reconciliation에서 처리됐다. 실제 사람·기기·가독성·오디오 검증은 계속 별도 `NOT_RUN` 증거다.
 
 ## Base·Workspace·이미지 생성·검수
 
