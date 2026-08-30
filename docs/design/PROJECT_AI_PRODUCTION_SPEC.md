@@ -2,9 +2,8 @@
 
 > Artifact role: `PROJECT_AI_PRODUCTION_SPEC`
 > Version: `2026-08-30 · M01/M04 runtime readback reconciliation`
-> Status: `CURRENT / REPOSITORY_ONLY_CANON / M01_M04_LOCAL_RUNTIME_IMPLEMENTED / HUMAN_QA_NOT_RUN`
-> Baseline main: `522d9af75ea90cecd58fe3fe6afa9de0520990a8` (`fix: preserve main menu panels at wide resolutions`)
-> Active local implementation head: `544857824f4afd0d5d9cf0549ced3b138dedfba6` (M04 player-authored manual slice; not merged)
+> Status: `CURRENT / REPOSITORY_ONLY_CANON / M01_M04_RUNTIME_IMPLEMENTED / HUMAN_QA_NOT_RUN`
+> Runtime readback: M04 player-authored manual workbench merged to main in PR #347; the Project Base protected baseline was advanced in PR #348.
 > Scope: project truth, player-experience contract, design verification, production boundary
 > Excludes: M05+ case production, timing-balance finalization, unpromoted asset replacement, and Human QA PASS
 
@@ -538,4 +537,4 @@ production_expansion: NOT_APPROVED
 | 2026-08-28 | corrected master-GDD core-system coverage; documented schedule, investigation, keyword/manual, and rescue/recovery flows with their actual implementation gaps | fresh source/code/data/test comparison after user finding |
 | 2026-08-29 | fixed player-experience hierarchy: investigation/deduction and recovery are primary; the calendar is supporting campaign context | direct user decision; `D-2026-08-29-CORE-LOOP-PRIORITY` |
 | 2026-08-29 | clarified that players acquire source-backed true keywords through investigation, complete blank manual sentences themselves, and verify without an answer UI through rescue/recovery | direct user decision; `D-2026-08-29-PLAYER-AUTHORED-MANUAL-KEYWORD-VERIFICATION` |
-| 2026-08-30 | reconciled the human-facing GDD with verified M01/M04 cycle lock, dispatch docket, player-authored manual, and M04 logical-vignette runtime | current canon, exact local implementation head, focused machine evidence; Human QA remains not run |
+| 2026-08-30 | reconciled the human-facing GDD with verified M01/M04 cycle lock, dispatch docket, player-authored manual, and M04 logical-vignette runtime | current canon, merged main PR #347, focused machine evidence; Human QA remains not run |
