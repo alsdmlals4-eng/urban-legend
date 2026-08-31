@@ -145,11 +145,11 @@ assets:
         - "Named third-party logos, character identity, or a replacement for the native accessible title text"
     visual_dna:
       silhouette: "Compact vertical archival emblem with enough transparent margin to read as a mark rather than a card."
-      proportion: "1224x1285 RGBA PNG displayed by a 72x72 KEEP_ASPECT_CENTERED TextureRect."
+      proportion: "1224x1285 RGBA PNG displayed by an 84x84 KEEP_ASPECT_CENTERED TextureRect."
       palette: "Selected candidate's aged-gold archival linework with its existing restrained dark accents."
       material_language: "Detailed ritual-record engraving used only as a compact bureau identifier."
       engine_import: "Godot Texture2D import from the exact canonical PNG."
-      performance_budget: "One 1224x1285 transparent PNG and one additional 72x72 TextureRect in the existing main-menu title lockup."
+      performance_budget: "One 1224x1285 transparent PNG and one additional 84x84 TextureRect in the existing main-menu title lockup."
       accessibility_fallback: "Native Korean title, subtitle, menu labels, focus order, and state information remain text controls independent of the emblem."
     generation_record:
       tool_and_model: "OpenAI built-in image generation (model identifier not exposed to this session)"
@@ -195,7 +195,7 @@ assets:
     canonical_path: "assets/ui/bureau_archive_wordmark.png"
     source_path: "assets/source/wordmarks/ULAB-MAIN-MENU-WORDMARK-001-locked-source.png; OPENAI_BUILT_IN_IMAGE_GENERATION: exec-e5cce94a-8456-4c88-ad47-5120b438e961.png"
     runtime_path: "scenes/main_menu.tscn -> scripts/ui/main_menu.gd -> WorldTitleLockup/WorldTitleWordmark"
-    latest_capture_path: "docs/qa/captures/main-menu/separate-action-rows-20260901/main-menu-separate-action-rows-1280x720.png"
+    latest_capture_path: "docs/qa/captures/main-menu/identity-and-action-plates-20260901/main-menu-identity-and-action-plates-1280x720.png"
     golden_screenshot_path: ""
     source_type: "AI_GENERATED_WITH_DETERMINISTIC_ALPHA_DERIVATIVE"
     source_and_license: >
@@ -216,7 +216,7 @@ assets:
         - "A replacement for stable native title node IDs and their text values"
     visual_dna:
       silhouette: "Wide, single-line Korean title typography with transparent margins."
-      proportion: "1969x799 RGBA PNG displayed by an existing-title-rail TextureRect with 252x102 minimum size."
+      proportion: "1969x799 RGBA PNG displayed by an existing-title-rail TextureRect with 328x148 minimum size."
       palette: "User-locked antique gold letters with restrained dark outline and ink texture."
       material_language: "Formal bureau record title, distinct from in-game document body typography."
       engine_import: "Godot Texture2D import from the exact canonical PNG."
@@ -243,7 +243,7 @@ assets:
         - "docs/visual/receipts/ULAB_MAIN_MENU_WORDMARK_20260901.md"
         - "tests/test_main_menu_control_room_static_contract.py"
         - "tests/validation/validation_main_menu_contract_test.gd"
-        - "docs/qa/captures/main-menu/separate-action-rows-20260901/main-menu-separate-action-rows-1280x720.png"
+        - "docs/qa/captures/main-menu/identity-and-action-plates-20260901/main-menu-identity-and-action-plates-1280x720.png"
       last_verified_commit: ""
     next_review_triggers:
       - "After a WorldTitleLockup or title-rail layout/scaling change"

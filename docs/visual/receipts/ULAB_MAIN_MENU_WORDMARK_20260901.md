@@ -21,7 +21,7 @@
 
 ## Consumer and evidence boundary
 
-- Consumer: `scripts/ui/main_menu.gd → WorldTitleLockup/WorldTitleWordmark`.
+- Consumer: `scripts/ui/main_menu.gd → WorldTitleLockup/WorldTitleWordmark` with a `328 × 148` minimum identity-lockup treatment at the 1280×720 menu breakpoint.
 - The visual wordmark replaces duplicate visible Korean title labels. `WorldTitle` and `WorldTitleSuffix` keep their established node IDs and exact text values for compatibility and semantic fallback.
-- Current 1280×720 runtime capture after the approved separate-action-row menu layout: `docs/qa/captures/main-menu/separate-action-rows-20260901/main-menu-separate-action-rows-1280x720.png`.
+- Current 1280×720 runtime capture after the refined identity-and-action-plate menu layout: `docs/qa/captures/main-menu/identity-and-action-plates-20260901/main-menu-identity-and-action-plates-1280x720.png` (SHA-256 `83f66626145ed675bb2783693dcd10fbd9ed3af03690c621ca7cdd5e5b3032fc`).
 - Machine/runtime verification is recorded only after the Godot import and main-menu contract run. Human visual review, accessibility observation, distribution-rights clearance, and release approval remain `NOT_RUN`.
