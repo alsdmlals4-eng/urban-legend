@@ -156,7 +156,7 @@ assets:
       prompt_core: "Original candidate prompt was not retained in the repository; exact source filename and SHA-256 are recorded instead."
       seed_or_reproduction: "Not exposed by the generation surface."
       manual_post_process: "None; the canonical project copy exactly matches the user-selected generated candidate bytes."
-      known_remaining_issues: "Human visual/accessibility QA and distribution-rights review remain pending. The separate Korean word-typography image is still a generated candidate and is not consumed here."
+      known_remaining_issues: "Human visual/accessibility QA and distribution-rights review remain pending. The separately locked Korean wordmark is tracked and consumed by its companion ULAB-MAIN-MENU-WORDMARK-001 record."
     validation:
       sha256: "2c8722ca8c5e73140752b9fb4a540c672835315464b8b14cab5daa0448982d0c"
       pixel_size: "1224x1285"
@@ -172,6 +172,78 @@ assets:
         - "tests/test_main_menu_control_room_static_contract.py"
         - "tests/validation/validation_main_menu_contract_test.gd"
         - "docs/qa/captures/main-menu/bureau-emblem-20260831/main-menu-emblem-1280x720.png"
+      last_verified_commit: ""
+    next_review_triggers:
+      - "After a WorldTitleLockup or title-rail layout/scaling change"
+      - "At the first human visual/accessibility review at target resolutions"
+      - "Before distribution-rights sign-off"
+  - asset_id: "ULAB-MAIN-MENU-WORDMARK-001"
+    name: "Bureau Archive main-menu Korean wordmark"
+    category: "brand_wordmark"
+    purpose: "The user-locked Korean title typography rendered between the compact bureau emblem and the English subtitle in the live main-menu identity lockup."
+    owner_discipline: "Visual"
+    affected_disciplines:
+      - "Godot UI"
+      - "UX"
+      - "Accessibility"
+    statuses:
+      - "PROJECT_ASSET_APPROVED"
+      - "PRODUCTION_READY"
+      - "IMPLEMENTED"
+      - "RUNTIME_VERIFIED"
+    vault_source_key: "ULAB_MAIN_MENU_WORDMARK_01_20260901"
+    canonical_path: "assets/ui/bureau_archive_wordmark.png"
+    source_path: "assets/source/wordmarks/ULAB-MAIN-MENU-WORDMARK-001-locked-source.png; OPENAI_BUILT_IN_IMAGE_GENERATION: exec-e5cce94a-8456-4c88-ad47-5120b438e961.png"
+    runtime_path: "scenes/main_menu.tscn -> scripts/ui/main_menu.gd -> WorldTitleLockup/WorldTitleWordmark"
+    latest_capture_path: "docs/qa/captures/main-menu/bureau-wordmark-20260901/main-menu-wordmark-1280x720.png"
+    golden_screenshot_path: ""
+    source_type: "AI_GENERATED_WITH_DETERMINISTIC_ALPHA_DERIVATIVE"
+    source_and_license: >
+      The user explicitly locked the word-typography candidate on 2026-09-01. The locked source contained an opaque neutral
+      checkerboard background, so the runtime derivative changes only pixels with R/G/B all within 5 values and all at least 240
+      to alpha 0; remaining source pixels retain their original color and alpha. This provenance receipt is not distribution-rights
+      or legal clearance and does not assert a named third-party logo or character as input.
+    approved_reference: "docs/visual/receipts/ULAB_MAIN_MENU_WORDMARK_20260901.md"
+    supersedes: ""
+    superseded_by: ""
+    replacement_requires_approval: true
+    reference_elements:
+      use:
+        - "The user-locked aged-gold Korean word typography for 괴이기록국: 잔향 보고서"
+        - "A transparent title image alongside the separately locked bureau emblem"
+      do_not_use:
+        - "A white/checkerboard background, second emblem, menu buttons, case-specific M01/M04 motif, or added copy"
+        - "A replacement for stable native title node IDs and their text values"
+    visual_dna:
+      silhouette: "Wide, single-line Korean title typography with transparent margins."
+      proportion: "1969x799 RGBA PNG displayed by an existing-title-rail TextureRect with 252x102 minimum size."
+      palette: "User-locked antique gold letters with restrained dark outline and ink texture."
+      material_language: "Formal bureau record title, distinct from in-game document body typography."
+      engine_import: "Godot Texture2D import from the exact canonical PNG."
+      performance_budget: "One 1969x799 transparent PNG and one non-interactive TextureRect in the existing main-menu title lockup."
+      accessibility_fallback: "The stable WorldTitle and WorldTitleSuffix native labels retain their canonical Korean text values while the wordmark owns visual title presentation."
+    generation_record:
+      tool_and_model: "OpenAI built-in image generation (model identifier not exposed to this session)"
+      prompt_core: "Wide Korean title logo reading exactly 괴이기록국: 잔향 보고서, antique-gold archival bureau typography, no extra copy or emblem."
+      seed_or_reproduction: "Not exposed by the generation surface."
+      manual_post_process: "Deterministic neutral-checkerboard alpha cleanup only; source image preserved under assets/source/wordmarks."
+      known_remaining_issues: "Human visual/accessibility QA and distribution-rights review remain pending."
+    validation:
+      source_sha256: "36c20c3538486d4423a907652153c741149de980c73ef18375d455b984699dfc"
+      sha256: "ac49625f3f5febac55837ac3dc6624dbd514d3e3ea2bae8f03c36210d8157225"
+      pixel_size: "1969x799"
+      transparent_margin: "All four corner pixels have alpha 0 after the documented neutral-checkerboard cleanup."
+      target_resolutions:
+        - "1280x720"
+        - "1920x1080"
+      runtime_verified: true
+      visual_qa_verified: false
+      accessibility_verified: false
+      evidence:
+        - "docs/visual/receipts/ULAB_MAIN_MENU_WORDMARK_20260901.md"
+        - "tests/test_main_menu_control_room_static_contract.py"
+        - "tests/validation/validation_main_menu_contract_test.gd"
+        - "docs/qa/captures/main-menu/bureau-wordmark-20260901/main-menu-wordmark-1280x720.png"
       last_verified_commit: ""
     next_review_triggers:
       - "After a WorldTitleLockup or title-rail layout/scaling change"

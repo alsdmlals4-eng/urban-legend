@@ -39,7 +39,7 @@ func _run() -> void:
 
 	for node_name in [
 		"MenuShell", "IdentityRail", "ActionRail", "IntelligenceRail",
-		"WorldTitleLockup", "WorldTitleEmblem", "WorldTitle", "WorldTitleSuffix", "WorldSubtitle", "VersionLabel", "PrimaryActionHint", "CurrentCaseTitle",
+		"WorldTitleLockup", "WorldTitleEmblem", "WorldTitleWordmark", "WorldTitle", "WorldTitleSuffix", "WorldSubtitle", "VersionLabel", "PrimaryActionHint", "CurrentCaseTitle",
 		"CurrentCaseMeta", "CurrentCaseSummary", "CurrentCasePreview",
 		"LegacyIntelStatus", "ValidationIntelStatus",
 		"SettingsButton", "SettingsPanel", "ExitButton",
@@ -73,6 +73,7 @@ func _run() -> void:
 	var version_label := menu.find_child("VersionLabel", true, false) as Label
 	var world_title := menu.find_child("WorldTitle", true, false) as Label
 	var world_title_emblem := menu.find_child("WorldTitleEmblem", true, false) as TextureRect
+	var world_title_wordmark := menu.find_child("WorldTitleWordmark", true, false) as TextureRect
 	var world_title_suffix := menu.find_child("WorldTitleSuffix", true, false) as Label
 	var world_subtitle := menu.find_child("WorldSubtitle", true, false) as Label
 	var primary_hint := menu.find_child("PrimaryActionHint", true, false) as Label
@@ -86,6 +87,7 @@ func _run() -> void:
 	_expect(version_label != null and version_label.text == "Ver 4.3", "menu must display canonical Ver 4.3")
 	_expect(world_title != null and world_title.text == "괴이기록국", "product title keeps the established bureau wordmark")
 	_expect(world_title_emblem != null and world_title_emblem.texture != null, "user-locked bureau emblem must render as the main-menu identity mark")
+	_expect(world_title_wordmark != null and world_title_wordmark.texture != null, "user-locked bureau wordmark must render in the main-menu identity lockup")
 	_expect(world_title_suffix != null and world_title_suffix.text == "잔향 보고서", "product title displays the approved report subtitle")
 	_expect(world_subtitle != null and world_subtitle.text == "BUREAU OF ANOMALIES: ECHO REPORT", "English subtitle mirrors the product title without changing runtime IDs")
 	_expect(bureau_backdrop != null and bureau_backdrop.texture != null, "user-approved bureau archive must render as the menu backdrop")
@@ -101,6 +103,7 @@ func _run() -> void:
 	_expect(root.gui_get_focus_owner() == legacy_new_button, "no-save initial focus must match the primary new-campaign action")
 	_expect(_inside_viewport(version_label), "Ver 4.3 must fit inside 1280x720")
 	_expect(_inside_viewport(world_title_emblem), "bureau emblem must fit inside 1280x720")
+	_expect(_inside_viewport(world_title_wordmark), "bureau wordmark must fit inside 1280x720")
 	_expect(_inside_viewport(legacy_new_button), "primary Legacy action must fit inside 1280x720")
 	_expect(m04_entry_button.focus_neighbor_top == m04_entry_button.get_path_to(legacy_new_button), "M04 entry must follow the standard new-campaign action in keyboard focus order")
 	_expect(m04_entry_button.focus_neighbor_bottom == m04_entry_button.get_path_to(validation_button), "M04 entry must lead to the Validation action in keyboard focus order")
@@ -149,7 +152,7 @@ func _run() -> void:
 	await process_frame
 	_expect(case_preview.visible, "1920x1080 may expose the existing case preview")
 	_expect(case_summary.visible, "1920x1080 may expose the existing case summary")
-	for node_name in ["WorldTitleEmblem", "M04CampaignEntryButton", "DatabaseButton", "SettingsButton", "ExitButton"]:
+	for node_name in ["WorldTitleEmblem", "WorldTitleWordmark", "M04CampaignEntryButton", "DatabaseButton", "SettingsButton", "ExitButton"]:
 		var action := menu.find_child(node_name, true, false) as Control
 		_expect(action != null and _inside_viewport(action), "%s must remain reachable inside 1920x1080" % node_name)
 

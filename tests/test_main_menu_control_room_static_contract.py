@@ -5,6 +5,7 @@ ROOT = Path(__file__).resolve().parents[1]
 MENU = ROOT / "scripts" / "ui" / "main_menu.gd"
 VERSION_OWNER = ROOT / "scripts" / "core" / "product_version.gd"
 MAIN_MENU_EMBLEM = ROOT / "assets" / "ui" / "bureau_archive_emblem.png"
+MAIN_MENU_WORDMARK = ROOT / "assets" / "ui" / "bureau_archive_wordmark.png"
 
 
 class MainMenuControlRoomStaticContract(unittest.TestCase):
@@ -64,6 +65,19 @@ class MainMenuControlRoomStaticContract(unittest.TestCase):
         self.assertIn('bureau_emblem.texture = MAIN_MENU_EMBLEM_TEXTURE', menu)
         self.assertIn('asset_id: "ULAB-MAIN-MENU-EMBLEM-001"', manifest)
         self.assertIn('canonical_path: "assets/ui/bureau_archive_emblem.png"', manifest)
+
+    def test_user_locked_bureau_wordmark_is_registered_and_replaces_duplicate_visual_title_text(self) -> None:
+        menu = MENU.read_text(encoding="utf-8")
+        manifest = (ROOT / "ASSET_MANIFEST.yml").read_text(encoding="utf-8")
+
+        self.assertTrue(MAIN_MENU_WORDMARK.is_file(), "selected bureau wordmark must be a project-owned runtime asset")
+        self.assertIn('preload("res://assets/ui/bureau_archive_wordmark.png")', menu)
+        self.assertIn('wordmark.name = "WorldTitleWordmark"', menu)
+        self.assertIn('wordmark.texture = MAIN_MENU_WORDMARK_TEXTURE', menu)
+        self.assertIn('title.visible = false', menu)
+        self.assertIn('report_title.visible = false', menu)
+        self.assertIn('asset_id: "ULAB-MAIN-MENU-WORDMARK-001"', manifest)
+        self.assertIn('canonical_path: "assets/ui/bureau_archive_wordmark.png"', manifest)
 
     def test_world_title_lockup_displays_the_approved_product_title_without_renaming_the_agency(self) -> None:
         menu = MENU.read_text(encoding="utf-8")

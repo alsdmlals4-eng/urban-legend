@@ -12,6 +12,7 @@ const ValidationRouteMapperScript = preload("res://scripts/core/validation_route
 const ProductVersion = preload("res://scripts/core/product_version.gd")
 const MAIN_MENU_BACKGROUND_ID := "bureau_archive_menu"
 const MAIN_MENU_EMBLEM_TEXTURE := preload("res://assets/ui/bureau_archive_emblem.png")
+const MAIN_MENU_WORDMARK_TEXTURE := preload("res://assets/ui/bureau_archive_wordmark.png")
 const TITLE_SERIF_FONT := preload("res://assets/fonts/noto/NotoSerifKR-VF.ttf")
 
 var _start_episode_button: Button
@@ -164,9 +165,20 @@ func _build_identity_rail(parent: VBoxContainer) -> void:
 	bureau_emblem.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	title_lockup.add_child(bureau_emblem)
 
+	var wordmark := TextureRect.new()
+	wordmark.name = "WorldTitleWordmark"
+	wordmark.texture = MAIN_MENU_WORDMARK_TEXTURE
+	wordmark.custom_minimum_size = Vector2(252, 102)
+	wordmark.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	wordmark.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	wordmark.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	wordmark.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	title_lockup.add_child(wordmark)
+
 	var title := Label.new()
 	title.name = "WorldTitle"
 	title.text = "괴이기록국"
+	title.visible = false
 	title.add_theme_font_override("font", TITLE_SERIF_FONT)
 	title.add_theme_font_size_override("font_size", 46)
 	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -175,6 +187,7 @@ func _build_identity_rail(parent: VBoxContainer) -> void:
 	var report_title := Label.new()
 	report_title.name = "WorldTitleSuffix"
 	report_title.text = "잔향 보고서"
+	report_title.visible = false
 	report_title.add_theme_font_override("font", TITLE_SERIF_FONT)
 	report_title.add_theme_font_size_override("font_size", 26)
 	report_title.add_theme_color_override("font_color", ThemeFactory.COLOR_AMBER)
