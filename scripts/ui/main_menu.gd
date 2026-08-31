@@ -27,6 +27,7 @@ var _validation_secondary_button: Button
 var _menu_panel_style_cache: Dictionary = {}
 var _menu_action_rows: Dictionary = {}
 var _menu_section_contents: Array[VBoxContainer] = []
+var _action_context_labels: Array[Control] = []
 var _validation_status_label: Label
 var _validation_badge_label: Label
 var _database_button: Button
@@ -276,56 +277,29 @@ func _build_action_rail(parent: VBoxContainer) -> void:
 
 	_build_entry_cards(parent)
 
-	var utility := _add_section(parent, "기록국 도구")
-	_database_button = Button.new()
-	_database_button.name = "DatabaseButton"
-	_database_button.text = "기록 보관실"
-	_database_button.focus_mode = Control.FOCUS_ALL
-	_database_button.pressed.connect(_open_database)
-	utility.add_child(_database_button)
-	_prepare_menu_action_row(_database_button, "수집한 기록과 문서를 확인합니다.", ThemeFactory.COLOR_TEAL)
-
-	_settings_button = Button.new()
-	_settings_button.name = "SettingsButton"
-	_settings_button.text = "설정 / 접근성"
-	_settings_button.focus_mode = Control.FOCUS_ALL
-	_settings_button.pressed.connect(_toggle_settings_panel)
-	utility.add_child(_settings_button)
-	_prepare_menu_action_row(_settings_button, "화면 연출과 접근성 설정을 조절합니다.", Color("536772"))
-
-	_exit_button = Button.new()
-	_exit_button.name = "ExitButton"
-	_exit_button.text = "종료"
-	_exit_button.focus_mode = Control.FOCUS_ALL
-	_exit_button.pressed.connect(func() -> void: get_tree().quit())
-	utility.add_child(_exit_button)
-	_prepare_menu_action_row(_exit_button, "기록국 시스템을 종료합니다.", Color("536772"))
-
 
 func _build_entry_cards(parent: Control) -> void:
 	var entry_cards := VBoxContainer.new()
 	entry_cards.name = "EntryCards"
 	entry_cards.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	entry_cards.add_theme_constant_override("separation", 10)
+	entry_cards.add_theme_constant_override("separation", 12)
 	parent.add_child(entry_cards)
 
-	var legacy_content := _add_section(
-		entry_cards,
-		"본편",
-		"기존 캠페인 기록입니다. Validation 기록과 서로 영향을 주지 않습니다."
-	)
+	_add_menu_group_heading(entry_cards, "LegacyMenuGroupHeading", "본편", ThemeFactory.COLOR_AMBER)
 	_legacy_status_label = Label.new()
 	_legacy_status_label.name = "LegacyStatusLabel"
-	_legacy_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	_legacy_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_legacy_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	legacy_content.add_child(_legacy_status_label)
+	_legacy_status_label.add_theme_color_override("font_color", ThemeFactory.COLOR_MUTED)
+	entry_cards.add_child(_legacy_status_label)
+	_action_context_labels.append(_legacy_status_label)
 
 	_legacy_continue_button = Button.new()
 	_legacy_continue_button.name = "LegacyContinueButton"
 	_legacy_continue_button.text = "이어하기"
 	_legacy_continue_button.focus_mode = Control.FOCUS_ALL
 	_legacy_continue_button.pressed.connect(_continue_saved_game)
-	legacy_content.add_child(_legacy_continue_button)
+	entry_cards.add_child(_legacy_continue_button)
 	_prepare_menu_action_row(_legacy_continue_button, "이전 조사 기록을 이어서 확인합니다.", ThemeFactory.COLOR_AMBER)
 
 	_legacy_new_campaign_button = Button.new()
@@ -333,7 +307,7 @@ func _build_entry_cards(parent: Control) -> void:
 	_legacy_new_campaign_button.text = "새 캠페인 시작"
 	_legacy_new_campaign_button.focus_mode = Control.FOCUS_ALL
 	_legacy_new_campaign_button.pressed.connect(_start_afterlife_station)
-	legacy_content.add_child(_legacy_new_campaign_button)
+	entry_cards.add_child(_legacy_new_campaign_button)
 	_prepare_menu_action_row(_legacy_new_campaign_button, "새로운 사건을 조사합니다.", ThemeFactory.COLOR_AMBER)
 
 	_m04_campaign_entry_button = Button.new()
@@ -342,36 +316,35 @@ func _build_entry_cards(parent: Control) -> void:
 	_m04_campaign_entry_button.tooltip_text = "새 본편 기록으로 준비실에서 시작합니다. 대기·회복 반일 뒤 M04를 선택해 조사와 회수까지 진행합니다."
 	_m04_campaign_entry_button.focus_mode = Control.FOCUS_ALL
 	_m04_campaign_entry_button.pressed.connect(_start_red_umbrella_campaign)
-	legacy_content.add_child(_m04_campaign_entry_button)
+	entry_cards.add_child(_m04_campaign_entry_button)
 	_prepare_menu_action_row(_m04_campaign_entry_button, "빨간 우산의 조사와 회수 루트로 진입합니다.", Color("9a7184"))
 
 	_start_episode_button = _legacy_new_campaign_button
 	_continue_button = _legacy_continue_button
 	_save_status_label = _legacy_status_label
 
-	var validation_content := _add_section(
-		entry_cards,
-		"Validation 기록",
-		"저승역 검증 흐름을 위한 독립 기록입니다."
-	)
+	_add_menu_group_heading(entry_cards, "ValidationMenuGroupHeading", "Validation 기록", ThemeFactory.COLOR_TEAL)
 	_validation_badge_label = Label.new()
 	_validation_badge_label.name = "ValidationBadgeLabel"
 	_validation_badge_label.text = "본편과 별도 기록"
-	_validation_badge_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	_validation_badge_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_validation_badge_label.add_theme_color_override("font_color", ThemeFactory.COLOR_TEAL)
-	validation_content.add_child(_validation_badge_label)
+	entry_cards.add_child(_validation_badge_label)
+	_action_context_labels.append(_validation_badge_label)
 
 	_validation_status_label = Label.new()
 	_validation_status_label.name = "ValidationStatusLabel"
-	_validation_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	_validation_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_validation_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	validation_content.add_child(_validation_status_label)
+	_validation_status_label.add_theme_color_override("font_color", ThemeFactory.COLOR_MUTED)
+	entry_cards.add_child(_validation_status_label)
+	_action_context_labels.append(_validation_status_label)
 
 	_validation_primary_button = Button.new()
 	_validation_primary_button.name = "ValidationPrimaryButton"
 	_validation_primary_button.focus_mode = Control.FOCUS_ALL
 	_validation_primary_button.pressed.connect(_on_validation_primary_pressed)
-	validation_content.add_child(_validation_primary_button)
+	entry_cards.add_child(_validation_primary_button)
 	_prepare_menu_action_row(_validation_primary_button, "검증 기록을 검토하거나 새 기록을 시작합니다.", ThemeFactory.COLOR_TEAL)
 
 	_validation_secondary_button = Button.new()
@@ -379,8 +352,33 @@ func _build_entry_cards(parent: Control) -> void:
 	_validation_secondary_button.text = "새 기록 시작"
 	_validation_secondary_button.focus_mode = Control.FOCUS_ALL
 	_validation_secondary_button.pressed.connect(_on_validation_secondary_pressed)
-	validation_content.add_child(_validation_secondary_button)
+	entry_cards.add_child(_validation_secondary_button)
 	_prepare_menu_action_row(_validation_secondary_button, "현재 검증 기록을 대체하고 처음부터 시작합니다.", ThemeFactory.COLOR_TEAL)
+
+	_add_menu_group_heading(entry_cards, "ToolsMenuGroupHeading", "기록국 도구", Color("536772"))
+	_database_button = Button.new()
+	_database_button.name = "DatabaseButton"
+	_database_button.text = "기록 보관실"
+	_database_button.focus_mode = Control.FOCUS_ALL
+	_database_button.pressed.connect(_open_database)
+	entry_cards.add_child(_database_button)
+	_prepare_menu_action_row(_database_button, "수집한 기록과 문서를 확인합니다.", ThemeFactory.COLOR_TEAL)
+
+	_settings_button = Button.new()
+	_settings_button.name = "SettingsButton"
+	_settings_button.text = "설정 / 접근성"
+	_settings_button.focus_mode = Control.FOCUS_ALL
+	_settings_button.pressed.connect(_toggle_settings_panel)
+	entry_cards.add_child(_settings_button)
+	_prepare_menu_action_row(_settings_button, "화면 연출과 접근성 설정을 조절합니다.", Color("536772"))
+
+	_exit_button = Button.new()
+	_exit_button.name = "ExitButton"
+	_exit_button.text = "종료"
+	_exit_button.focus_mode = Control.FOCUS_ALL
+	_exit_button.pressed.connect(func() -> void: get_tree().quit())
+	entry_cards.add_child(_exit_button)
+	_prepare_menu_action_row(_exit_button, "기록국 시스템을 종료합니다.", Color("536772"))
 
 
 func _build_intelligence_rail(parent: VBoxContainer) -> void:
@@ -543,6 +541,33 @@ func _meaningful_primary_action() -> Button:
 	return null
 
 
+func _add_menu_group_heading(parent: VBoxContainer, node_name: String, title_text: String, accent: Color) -> HBoxContainer:
+	var heading := HBoxContainer.new()
+	heading.name = node_name
+	heading.custom_minimum_size.y = 20
+	heading.add_theme_constant_override("separation", 8)
+	parent.add_child(heading)
+
+	var left_rule := HSeparator.new()
+	left_rule.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	left_rule.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	heading.add_child(left_rule)
+
+	var title := Label.new()
+	title.text = title_text
+	title.add_theme_font_override("font", TITLE_SERIF_FONT)
+	title.add_theme_font_size_override("font_size", 15)
+	title.add_theme_color_override("font_color", accent)
+	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	heading.add_child(title)
+
+	var right_rule := HSeparator.new()
+	right_rule.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	right_rule.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	heading.add_child(right_rule)
+	return heading
+
+
 func _prepare_menu_action_row(button: Button, description_text: String, accent: Color) -> void:
 	# Keep Button.text as the stable semantic/action label, while the child labels
 	# below own the visible title-and-description composition.
@@ -703,6 +728,9 @@ func _apply_responsive_layout() -> void:
 		_intelligence_rail.add_theme_constant_override("separation", 4 if dense else 12)
 	if _record_boundary_notice != null:
 		_record_boundary_notice.visible = not dense
+	for context_label in _action_context_labels:
+		if is_instance_valid(context_label):
+			context_label.visible = not dense
 	for section_content in _menu_section_contents:
 		if is_instance_valid(section_content):
 			section_content.add_theme_constant_override("separation", 4 if dense else 8)
@@ -742,7 +770,7 @@ func _apply_compact_menu_density(compact: bool) -> void:
 
 	var entry_cards := _action_rail.get_node_or_null("EntryCards") as VBoxContainer if _action_rail != null else null
 	if entry_cards != null:
-		entry_cards.add_theme_constant_override("separation", 2 if compact else 10)
+		entry_cards.add_theme_constant_override("separation", 8 if compact else 14)
 
 
 func _is_compact_layout() -> bool:

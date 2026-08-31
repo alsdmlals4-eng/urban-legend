@@ -40,6 +40,7 @@ func _run() -> void:
 	for node_name in [
 		"MenuShell", "IdentityRail", "ActionRail", "IntelligenceRail",
 		"ActionMenuPanel", "IntelligenceControlPanel", "CentralMenuHeader", "ControlPanelHeader",
+		"EntryCards", "LegacyMenuGroupHeading", "ValidationMenuGroupHeading", "ToolsMenuGroupHeading",
 		"WorldTitleLockup", "WorldTitleEmblem", "WorldTitleWordmark", "WorldTitle", "WorldTitleSuffix", "WorldSubtitle", "VersionLabel", "PrimaryActionHint", "CurrentCaseTitle",
 		"RecordBoundaryNotice",
 		"CurrentCaseMeta", "CurrentCaseSummary", "CurrentCasePreview",
@@ -92,6 +93,7 @@ func _run() -> void:
 	var intelligence_rail := menu.find_child("IntelligenceRail", true, false) as VBoxContainer
 	var action_panel := menu.find_child("ActionMenuPanel", true, false) as PanelContainer
 	var intelligence_panel := menu.find_child("IntelligenceControlPanel", true, false) as PanelContainer
+	var entry_cards := menu.find_child("EntryCards", true, false) as VBoxContainer
 
 	_expect(version_label != null and version_label.text == "Ver 4.3", "menu must display canonical Ver 4.3")
 	_expect(world_title != null and world_title.text == "괴이기록국", "product title keeps the established bureau wordmark")
@@ -104,6 +106,9 @@ func _run() -> void:
 	_expect(menu_shell != null and identity_rail != null and identity_rail.get_parent() == menu_shell, "brand rail must stay open over the archive room instead of becoming a third opaque panel")
 	_expect(action_panel != null and action_rail != null and action_rail.get_parent() == action_panel, "main actions must live in the central menu panel")
 	_expect(intelligence_panel != null and intelligence_rail != null and intelligence_rail.get_parent() == intelligence_panel, "current-case information must live in the right control panel")
+	_expect(entry_cards != null and legacy_new_button != null and legacy_new_button.get_parent() == entry_cards, "each Legacy action must be an independent menu row instead of a child of a shared card")
+	_expect(entry_cards != null and validation_button != null and validation_button.get_parent() == entry_cards, "each Validation action must be an independent menu row instead of a child of a shared card")
+	_expect(entry_cards != null and db_button != null and db_button.get_parent() == entry_cards, "each tool action must be an independent menu row instead of a child of a shared card")
 	_expect(primary_hint != null and "새 캠페인 시작" in primary_hint.text, "no-save state must name new campaign as primary")
 	_expect(current_case_title != null and "저승역" in current_case_title.text, "current case must use loaded canonical episode data")
 	_expect(settings_button != null and settings_button.focus_mode == Control.FOCUS_ALL, "settings must accept keyboard focus")
@@ -119,6 +124,9 @@ func _run() -> void:
 	_expect(_inside_viewport(world_title_wordmark), "bureau wordmark must fit inside 1280x720")
 	_expect(_inside_viewport(legacy_new_button), "primary Legacy action must fit inside 1280x720")
 	_expect(legacy_new_button.size.y >= 72.0, "primary campaign action must read as a full menu row, not a compact utility button")
+	_expect(_vertical_gap(legacy_button, legacy_new_button) >= 8.0, "Legacy actions must retain a visible independent-row gap at 720p")
+	_expect(_vertical_gap(legacy_new_button, m04_entry_button) >= 8.0, "the M04 entry must remain visually separate from the primary campaign row")
+	_expect(_vertical_gap(validation_button, db_button) >= 16.0, "the Validation and tool groups must be separated by a distinct group gap")
 	_expect(exit_button != null and exit_button.get_global_rect().end.y <= float(root.size.y) - 8.0, "720p exit row must retain an eight-pixel safe margin below the clean menu stack")
 	_expect(m04_entry_button.focus_neighbor_top == m04_entry_button.get_path_to(legacy_new_button), "M04 entry must follow the standard new-campaign action in keyboard focus order")
 	_expect(m04_entry_button.focus_neighbor_bottom == m04_entry_button.get_path_to(validation_button), "M04 entry must lead to the Validation action in keyboard focus order")
@@ -179,6 +187,12 @@ func _inside_viewport(control: Control) -> bool:
 	if control == null:
 		return false
 	return Rect2(Vector2.ZERO, Vector2(root.size)).encloses(control.get_global_rect())
+
+
+func _vertical_gap(upper: Control, lower: Control) -> float:
+	if upper == null or lower == null:
+		return -1.0
+	return lower.get_global_rect().position.y - upper.get_global_rect().end.y
 
 
 func _write_payload(lifecycle: String, flow_stage: String) -> void:

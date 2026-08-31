@@ -195,7 +195,7 @@ assets:
     canonical_path: "assets/ui/bureau_archive_wordmark.png"
     source_path: "assets/source/wordmarks/ULAB-MAIN-MENU-WORDMARK-001-locked-source.png; OPENAI_BUILT_IN_IMAGE_GENERATION: exec-e5cce94a-8456-4c88-ad47-5120b438e961.png"
     runtime_path: "scenes/main_menu.tscn -> scripts/ui/main_menu.gd -> WorldTitleLockup/WorldTitleWordmark"
-    latest_capture_path: "docs/qa/captures/main-menu/reference-layout-20260901/main-menu-reference-layout-1280x720.png"
+    latest_capture_path: "docs/qa/captures/main-menu/separate-action-rows-20260901/main-menu-separate-action-rows-1280x720.png"
     golden_screenshot_path: ""
     source_type: "AI_GENERATED_WITH_DETERMINISTIC_ALPHA_DERIVATIVE"
     source_and_license: >
@@ -243,7 +243,7 @@ assets:
         - "docs/visual/receipts/ULAB_MAIN_MENU_WORDMARK_20260901.md"
         - "tests/test_main_menu_control_room_static_contract.py"
         - "tests/validation/validation_main_menu_contract_test.gd"
-        - "docs/qa/captures/main-menu/reference-layout-20260901/main-menu-reference-layout-1280x720.png"
+        - "docs/qa/captures/main-menu/separate-action-rows-20260901/main-menu-separate-action-rows-1280x720.png"
       last_verified_commit: ""
     next_review_triggers:
       - "After a WorldTitleLockup or title-rail layout/scaling change"
