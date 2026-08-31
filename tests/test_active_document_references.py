@@ -40,6 +40,7 @@ ANNUAL_CANONICAL_PLAN = ROOT / "docs/superpowers/plans/2026-07-25-annual-design-
 ANNUAL_VERTICAL_SLICE_PLAN = ROOT / "docs/superpowers/plans/2026-07-25-annual-raising-vertical-slice-implementation-plan.md"
 CORE_VALIDATION_QA = ROOT / "docs/qa/CORE_VALIDATION_SLICE_001.md"
 PROGRESSIVE_DISCLOSURE_QA = ROOT / "docs/qa/PROGRESSIVE_DISCLOSURE_SLICE_001.md"
+M04_HUMAN_QA_PACKET = ROOT / "docs/qa/M04_RELEASE_NEAR_HUMAN_QA_PACKET.md"
 ALL_ROUTED_DOCS = ACTIVE_DOCS + OPERATING_DOCS
 STALE_REFERENCE_DOCS = [
     path
@@ -315,12 +316,32 @@ class ActiveDocumentReferenceTests(unittest.TestCase):
                 continue
             text = path.read_text(encoding="utf-8")
             for match in re.finditer(r"docs/qa/[A-Za-z0-9_.-]+\.md", text):
-                if match.group(0) == "docs/qa/M01_FIRST_SESSION_HUMAN_QA_PACKET.md":
+                if match.group(0) in {
+                    "docs/qa/M01_FIRST_SESSION_HUMAN_QA_PACKET.md",
+                    "docs/qa/M04_RELEASE_NEAR_HUMAN_QA_PACKET.md",
+                }:
                     continue
                 failures.append(f"{relative} -> {match.group(0)}")
             for match in re.finditer(r"docs/CODEX_GOAL_[A-Za-z0-9_.-]+\.md", text):
                 failures.append(f"{relative} -> {match.group(0)}")
         self.assertEqual([], failures)
+
+    def test_m04_human_qa_packet_is_ready_without_claiming_human_pass(self) -> None:
+        self.assertTrue(M04_HUMAN_QA_PACKET.is_file(), M04_HUMAN_QA_PACKET.relative_to(ROOT))
+        router = (ROOT / "docs/VALIDATION_TARGET_CANON.md").read_text(encoding="utf-8")
+        packet = M04_HUMAN_QA_PACKET.read_text(encoding="utf-8")
+
+        self.assertIn("docs/qa/M04_RELEASE_NEAR_HUMAN_QA_PACKET.md", router)
+        self.assertIn("M04_HUMAN_QA_PACKET_READY", router)
+        self.assertIn("HUMAN_QA_NOT_RUN", router)
+        for required in (
+            "BEHAVIOR_FIRST_SELF_REPORT_SECOND",
+            "main menu → M04 dispatch → investigation → player-authored manual → rescue → recovery clocks → composite result",
+            "루메는 정답",
+            "repository commit SHA",
+            "PASS / FAIL / BLOCKED / NOT_RUN",
+        ):
+            self.assertIn(required, packet)
 
     def test_tracked_tree_has_no_generated_or_bootstrap_files(self) -> None:
         result = subprocess.run(

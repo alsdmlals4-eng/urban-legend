@@ -125,6 +125,14 @@ RUNTIME_VISUAL_VALIDATION_NOT_RUN
 
 Human 세션에서는 첫인상, 추리 고민, 지식 재사용 만족감, 괴이의 규칙 문제로서의 차별성, 다음 사건 기대, 기억에 남는 장면·판단·판매 포인트를 확인한다.
 
+### M04 actual Human QA 실행 패킷
+
+현재 사람 검증의 실행 owner:
+
+- 절차·행동 관찰·사후 자기보고·판정: docs/qa/M04_RELEASE_NEAR_HUMAN_QA_PACKET.md
+
+이 패킷은 실행 가능한 M04의 조사 → 플레이어 작성 매뉴얼 → 피해자 보호 → 회수 이중 시계 → Composite Result 경로를 사람에게 관찰하도록 준비한다. 실제 사람이 해당 경로를 끝내기 전에는 자동 테스트·GPU 캡처·문서로 Human 결과를 채우지 않는다.
+
 현재 판정:
 
 ```text
@@ -133,6 +141,7 @@ M04_REFERENCE_VISUAL_CANDIDATE: USER_APPROVED
 PRODUCT_REFERENCE_ASSET_PENDING
 RUNTIME_VISUAL_VALIDATION: NOT_RUN
 RELEASE_NEAR_VISUAL_READY: BLOCKED_BY_ASSET_GATE
+M04_HUMAN_QA_PACKET_READY
 HUMAN_PLAYER_EXPERIENCE: NOT_RUN
 ```
 
