@@ -358,10 +358,29 @@
       "telegraph": "빗소리가 두 번 멀어진다. 세 번째 소리는 바로 귓가에서 다시 시작된다.",
       "description": "세 번째 박자에 골목의 표지와 발자국이 이전 위치로 돌아간다.",
       "related_clue_ids": ["clue_reverse_rain_flow", "clue_repeating_alley_sign"],
+      "question": "세 번째 빗소리가 되감기는 순간, 반복 골목을 벗어나기 위해 어떤 규칙을 적용해야 할까?",
       "responses": [
-        {"id": "wait", "label": "세 번째 빗소리가 끝날 때까지 멈춘 뒤 경로를 고정한다", "ability": "analysis", "stability_gain": 18},
-        {"id": "run_on_third", "label": "세 번째 빗소리에 맞춰 다음 모퉁이로 이동한다", "ability": "suppression"},
-        {"id": "silence_rain", "label": "빗소리를 차단하고 같은 속도로 이동한다", "ability": "protection"}
+        {
+          "id": "wait", "label": "세 번째 빗소리가 끝날 때까지 멈춘 뒤 경로를 고정한다", "ability": "analysis", "stability_gain": 18,
+          "hypothesis": "세 번째 박자는 이동 신호가 아니라 경로가 되감기는 경계다. 그 순간에는 멈춰 실제 경로를 고정해야 한다.",
+          "supporting_clue_ids": ["clue_reverse_rain_flow", "clue_repeating_alley_sign"],
+          "contradicted_clue_ids": [],
+          "reasoning": "표지판은 피해자의 이동 순서를 거꾸로 표시하고, 빗물은 세 번째 소리 뒤에만 역류한다. 세 번째 박자에 이동하면 같은 골목으로 되감긴다."
+        },
+        {
+          "id": "run_on_third", "label": "세 번째 빗소리에 맞춰 다음 모퉁이로 이동한다", "ability": "suppression",
+          "hypothesis": "세 번째 빗소리는 반복이 끝나고 다음 모퉁이가 열리는 신호다.",
+          "supporting_clue_ids": [],
+          "contradicted_clue_ids": ["clue_reverse_rain_flow", "clue_repeating_alley_sign"],
+          "reasoning": "역류하는 빗물과 되감긴 표지판은 전진이 아니라 경로 반복을 가리킨다."
+        },
+        {
+          "id": "silence_rain", "label": "빗소리를 차단하고 같은 속도로 이동한다", "ability": "protection",
+          "hypothesis": "빗소리 자체만 차단하면 표지판과 경로 되감기도 함께 멈춘다.",
+          "supporting_clue_ids": [],
+          "contradicted_clue_ids": ["clue_repeating_alley_sign"],
+          "reasoning": "반복 표지는 빗소리와 별개로 이미 경로를 되감기 시작했다."
+        }
       ],
       "correct_response_id": "wait", "failure_reason": "세 번째 박자에 이동하면 같은 골목으로 되감긴다."
     },
@@ -370,10 +389,29 @@
       "telegraph": "물웅덩이 속 반사상이 현실보다 반 박자 먼저 반대 방향을 바라본다.",
       "description": "반사상이 현실보다 먼저 반대 방향의 움직임을 보여 준다.",
       "related_clue_ids": ["clue_reverse_rain_flow", "clue_red_umbrella_fabric"],
+      "question": "현실보다 먼저 움직이는 반사상 앞에서, 어떤 흔적을 현실 경로로 취급해야 할까?",
       "responses": [
-        {"id": "block_reflection", "label": "현실보다 먼저 움직이는 반사상을 가려 경로를 차단한다", "ability": "analysis", "stability_gain": 17},
-        {"id": "copy_reflection", "label": "반사상이 먼저 바라본 방향으로 몸을 돌린다", "ability": "rapport"},
-        {"id": "step_into_puddle", "label": "물웅덩이를 밟아 반사상을 흩뜨린다", "ability": "suppression"}
+        {
+          "id": "block_reflection", "label": "현실보다 먼저 움직이는 반사상을 가려 경로를 차단한다", "ability": "analysis", "stability_gain": 17,
+          "hypothesis": "반사상은 다음 경로를 예고하는 것이 아니라 현실의 움직임을 반전시키는 유인이다. 선행 반사를 가려 경로를 차단한다.",
+          "supporting_clue_ids": ["clue_reverse_rain_flow", "clue_red_umbrella_fabric"],
+          "contradicted_clue_ids": [],
+          "reasoning": "역류하는 빗물과 젖지 않는 우산 천은 반사상이 현실을 앞서도록 만든 유인임을 보여 준다."
+        },
+        {
+          "id": "copy_reflection", "label": "반사상이 먼저 바라본 방향으로 몸을 돌린다", "ability": "rapport",
+          "hypothesis": "반사상이 먼저 바라보는 방향이 실제 안전 경로다.",
+          "supporting_clue_ids": [],
+          "contradicted_clue_ids": ["clue_reverse_rain_flow", "clue_red_umbrella_fabric"],
+          "reasoning": "반사상은 현실과 반대 방향의 움직임을 먼저 보여 주는 유인이다."
+        },
+        {
+          "id": "step_into_puddle", "label": "물웅덩이를 밟아 반사상을 흩뜨린다", "ability": "suppression",
+          "hypothesis": "물웅덩이를 밟아 반사상을 흩뜨리면 우산의 연결도 끊긴다.",
+          "supporting_clue_ids": [],
+          "contradicted_clue_ids": ["clue_reverse_rain_flow", "clue_red_umbrella_fabric"],
+          "reasoning": "웅덩이 표면을 흔들어도 현실과 반사상의 반전 규칙은 유지된다."
+        }
       ],
       "correct_response_id": "block_reflection", "failure_reason": "반사상의 움직임을 현실로 판단하면 대응 방향이 반전된다."
     },
@@ -382,10 +420,29 @@
       "telegraph": "빨간 우산이 바람과 반대로 기울어진다. 손잡이가 피해자의 손 높이까지 내려온다.",
       "description": "우산 손잡이가 피해자의 손 높이로 내려오며 귀가 흔적과 겹친다.",
       "related_clue_ids": ["clue_red_umbrella_fabric", "clue_repeating_alley_sign"],
+      "question": "우산이 피해자의 손 높이까지 내려올 때, 피해자의 귀가 기억을 어떻게 보호해야 할까?",
       "responses": [
-        {"id": "separate_victim_route", "label": "우산의 손자국과 피해자의 귀가 경로를 분리한다", "ability": "rapport", "stability_gain": 19},
-        {"id": "break_umbrella", "label": "우산 손잡이를 붙잡아 강제로 부순다", "ability": "suppression"},
-        {"id": "hand_umbrella", "label": "피해자의 손에 우산을 쥐여 준다", "ability": "treatment"}
+        {
+          "id": "separate_victim_route", "label": "우산의 손자국과 피해자의 귀가 경로를 분리한다", "ability": "rapport", "stability_gain": 19,
+          "hypothesis": "우산의 손자국은 피해자의 실제 귀가 경로를 덮어쓰려는 연결이다. 손자국과 반복 표지를 분리해야 한다.",
+          "supporting_clue_ids": ["clue_red_umbrella_fabric", "clue_repeating_alley_sign"],
+          "contradicted_clue_ids": [],
+          "reasoning": "젖지 않는 우산 천과 되감기는 표지는 우산이 피해자의 기억에 새 경로를 겹치려는 흔적임을 드러낸다."
+        },
+        {
+          "id": "break_umbrella", "label": "우산 손잡이를 붙잡아 강제로 부순다", "ability": "suppression",
+          "hypothesis": "우산을 부수면 피해자 기억에 남은 경로도 같이 사라진다.",
+          "supporting_clue_ids": [],
+          "contradicted_clue_ids": ["clue_red_umbrella_fabric", "clue_repeating_alley_sign"],
+          "reasoning": "우산의 물질을 파괴해도 기억에 겹쳐진 반복 경로는 남는다."
+        },
+        {
+          "id": "hand_umbrella", "label": "피해자의 손에 우산을 쥐여 준다", "ability": "treatment",
+          "hypothesis": "우산을 피해자에게 돌려주면 기억이 안정되어 귀가 경로가 회복된다.",
+          "supporting_clue_ids": [],
+          "contradicted_clue_ids": ["clue_red_umbrella_fabric", "clue_repeating_alley_sign"],
+          "reasoning": "우산은 피해자의 귀가 기억을 회복시키는 물건이 아니라 그 기억을 덮어쓰는 매개다."
+        }
       ],
       "correct_response_id": "separate_victim_route", "failure_reason": "우산을 파괴해도 피해자 기억과 연결된 경로는 남는다."
     },
@@ -394,10 +451,29 @@
       "telegraph": "빗물 위에 마른 발자국이 생긴다. 흔적이 가장 가까운 요원의 발끝을 향한다.",
       "description": "마른 발자국이 가장 가까운 요원을 향해 이어진다.",
       "related_clue_ids": ["clue_reverse_rain_flow", "clue_red_umbrella_fabric"],
+      "question": "가장 가까운 요원에게 향하는 마른 발자국을 발견했을 때, 무엇을 격리해야 할까?",
       "responses": [
-        {"id": "isolate_dry_trace", "label": "젖은 현실 흔적과 마른 발자국을 분리해 격리한다", "ability": "protection", "stability_gain": 20},
-        {"id": "follow_dry_steps", "label": "마른 발자국을 따라 골목 안쪽으로 이동한다", "ability": "analysis"},
-        {"id": "erase_steps", "label": "마른 발자국을 밟아 흔적을 지운다", "ability": "suppression"}
+        {
+          "id": "isolate_dry_trace", "label": "젖은 현실 흔적과 마른 발자국을 분리해 격리한다", "ability": "protection", "stability_gain": 20,
+          "hypothesis": "마른 발자국은 현실의 젖은 흔적과 다른 표적 전이 규칙이다. 두 흔적을 분리해 격리해야 한다.",
+          "supporting_clue_ids": ["clue_reverse_rain_flow", "clue_red_umbrella_fabric"],
+          "contradicted_clue_ids": [],
+          "reasoning": "현실의 빗물은 역류하고 우산 천은 젖지 않는다. 마른 발자국은 같은 경로가 아니라 요원을 향한 별도 전이 흔적이다."
+        },
+        {
+          "id": "follow_dry_steps", "label": "마른 발자국을 따라 골목 안쪽으로 이동한다", "ability": "analysis",
+          "hypothesis": "마른 발자국이 가리키는 안쪽 길이 우산의 근원으로 가는 안전한 추적 경로다.",
+          "supporting_clue_ids": [],
+          "contradicted_clue_ids": ["clue_reverse_rain_flow", "clue_red_umbrella_fabric"],
+          "reasoning": "마른 발자국은 골목 안쪽이 아니라 가장 가까운 요원을 향해 표적을 옮긴다."
+        },
+        {
+          "id": "erase_steps", "label": "마른 발자국을 밟아 흔적을 지운다", "ability": "suppression",
+          "hypothesis": "발자국을 밟아 지우면 표적 전이도 즉시 끝난다.",
+          "supporting_clue_ids": [],
+          "contradicted_clue_ids": ["clue_reverse_rain_flow", "clue_red_umbrella_fabric"],
+          "reasoning": "발자국의 형태를 지워도 젖은 현실과 마른 전이 흔적의 분리는 해제되지 않는다."
+        }
       ],
       "correct_response_id": "isolate_dry_trace", "failure_reason": "젖지 않은 발자국을 따라가면 경로가 요원에게 전이된다."
     }

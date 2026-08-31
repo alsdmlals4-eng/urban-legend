@@ -129,6 +129,25 @@ func _run() -> void:
 	await _wait_frames(6)
 	_expect(current_scene.scene_file_path == _game_state.SCENE_BATTLE, "M04 authored recovery confirmation must open the real recovery scene")
 	_expect(current_scene.find_child("TelegraphLabel", true, false) != null, "M04 recovery scene must render a live anomaly telegraph")
+	_expect(bool(current_scene.call("_uses_guided_decision_flow")), "M04 recovery must turn the player-authored manual into the shared hypothesis-evidence-response field procedure")
+	if not bool(current_scene.call("_uses_guided_decision_flow")):
+		_finish()
+		return
+	for turn_index in range(4):
+		var recover_button := current_scene.find_child("RecoverButton", true, false) as Button
+		if recover_button != null and not recover_button.disabled:
+			break
+		_expect(await _complete_current_guided_recovery_turn(current_scene), "M04 recovery turn %d must be completable through visible hypothesis, evidence, and response controls" % (turn_index + 1))
+		await _wait_frames(3)
+	var recover_button := current_scene.find_child("RecoverButton", true, false) as Button
+	_expect(recover_button != null and not recover_button.disabled, "M04 field recovery must become executable after the player answers its live telegraphs")
+	if recover_button == null or recover_button.disabled:
+		_finish()
+		return
+	recover_button.pressed.emit()
+	await _wait_frames(5)
+	_expect(current_scene.scene_file_path == _game_state.SCENE_RESULT, "M04 completed recovery must open the composite result scene")
+	_expect(await _advance_m04_narrative_result(), "M04 completed recovery must let the player advance through the four causal result records")
 	_finish()
 
 
@@ -201,6 +220,84 @@ func _author_victim_tether_rule(workbench: Control) -> bool:
 		candidate.pressed.emit()
 		await _wait_frames(2)
 	return true
+
+
+func _complete_current_guided_recovery_turn(recovery_scene: Node) -> bool:
+	if recovery_scene == null or not bool(recovery_scene.call("_uses_guided_decision_flow")):
+		return false
+	var pattern_value: Variant = recovery_scene.get("_current_pattern")
+	if not pattern_value is Dictionary:
+		return false
+	var pattern := pattern_value as Dictionary
+	var correct_response := _find_response(pattern, String(pattern.get("correct_response_id", "")))
+	if correct_response.is_empty():
+		return false
+	var response_grid := recovery_scene.find_child("ResponseGrid", true, false) as Container
+	var hypothesis_button := _find_enabled_button(response_grid, String(correct_response.get("hypothesis", "")))
+	if hypothesis_button == null:
+		return false
+	hypothesis_button.pressed.emit()
+	await _wait_frames(2)
+
+	for clue_id_value in pattern.get("related_clue_ids", []):
+		var clue_id := String(clue_id_value)
+		if not _game_state.has_collected_clue(clue_id):
+			continue
+		response_grid = recovery_scene.find_child("ResponseGrid", true, false) as Container
+		var evidence_button := _find_enabled_button(response_grid, _clue_title(clue_id))
+		if evidence_button == null:
+			return false
+		evidence_button.pressed.emit()
+		await _wait_frames(2)
+
+	var confirm := recovery_scene.find_child("DecisionConfirmButton", true, false) as Button
+	if confirm == null or not confirm.visible or confirm.disabled:
+		return false
+	confirm.pressed.emit()
+	await _wait_frames(2)
+	response_grid = recovery_scene.find_child("ResponseGrid", true, false) as Container
+	var response_button := _find_enabled_button(response_grid, String(correct_response.get("label", "")))
+	if response_button == null:
+		return false
+	response_button.pressed.emit()
+	await _wait_frames(2)
+	return true
+
+
+func _advance_m04_narrative_result() -> bool:
+	var narrative_root := current_scene.get_node_or_null("M04NarrativeResult") as Control
+	var title := current_scene.get_node_or_null("M04NarrativeResult/VignetteTitle") as Label
+	var continue_button := current_scene.get_node_or_null("M04NarrativeResult/ContinueButton") as Button
+	if narrative_root == null or title == null or continue_button == null or title.text != "피해자":
+		return false
+	for expected_title in ["잔향", "귀가 기억", "기록국"]:
+		if not continue_button.visible:
+			return false
+		continue_button.pressed.emit()
+		await _wait_frames(2)
+		if title.text != expected_title:
+			return false
+	return not continue_button.visible
+
+
+func _find_response(pattern: Dictionary, response_id: String) -> Dictionary:
+	for response_value in pattern.get("responses", []):
+		if typeof(response_value) != TYPE_DICTIONARY:
+			continue
+		var response := response_value as Dictionary
+		if String(response.get("id", "")) == response_id:
+			return response.duplicate(true)
+	return {}
+
+
+func _clue_title(clue_id: String) -> String:
+	for clue_value in _game_state.get_clues():
+		if typeof(clue_value) != TYPE_DICTIONARY:
+			continue
+		var clue := clue_value as Dictionary
+		if String(clue.get("id", "")) == clue_id:
+			return String(clue.get("title", ""))
+	return ""
 
 
 func _find_enabled_button(scope: Node, text_fragment: String) -> Button:

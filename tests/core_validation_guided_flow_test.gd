@@ -3,7 +3,7 @@ extends SceneTree
 
 const TestSaveGuard = preload("res://tests/test_save_guard.gd")
 const AFTERLIFE_PATH := "res://data/episodes/episode_001_afterlife_station.json"
-const RED_UMBRELLA_PATH := "res://data/episodes/episode_002_red_umbrella_alley.json"
+const DEAD_FREQUENCY_PATH := "res://data/episodes/episode_003_dead_frequency_station.json"
 const TEAM := ["agent_kang_ijun", "agent_kwon_narae", "agent_oh_hyun"]
 
 var _guard := TestSaveGuard.new()
@@ -109,7 +109,7 @@ func _test_afterlife_guided_flow() -> void:
 
 func _test_non_target_direct_fallback() -> void:
 	_game_state.reset_run_state()
-	_expect(_game_state.load_episode(RED_UMBRELLA_PATH), "non-target episode loads")
+	_expect(_game_state.load_episode(DEAD_FREQUENCY_PATH), "non-target episode loads")
 	_game_state.set_selected_agent_ids(TEAM)
 	if change_scene_to_file(_game_state.SCENE_BATTLE) != OK:
 		_failures.append("fallback recovery scene failed to load")
