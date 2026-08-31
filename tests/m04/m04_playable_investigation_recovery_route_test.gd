@@ -129,24 +129,27 @@ func _run() -> void:
 	await _wait_frames(6)
 	_expect(current_scene.scene_file_path == _game_state.SCENE_BATTLE, "M04 authored recovery confirmation must open the real recovery scene")
 	_expect(current_scene.find_child("TelegraphLabel", true, false) != null, "M04 recovery scene must render a live anomaly telegraph")
+	var overlay := current_scene.get_node_or_null("CanonV2OperationOverlay") as Control
+	var clock_cluster := overlay.get_node_or_null("SafeArea/RootLayout/RuleStripPanel/RuleStrip/RecoveryClockCluster") if overlay != null else null
+	var stability_clock := clock_cluster.get_node_or_null("StabilityClock") if clock_cluster != null else null
+	var danger_clock := clock_cluster.get_node_or_null("DangerClock") if clock_cluster != null else null
+	_expect(stability_clock != null and stability_clock.has_method("set_clock"), "M04 recovery must render the live stability clock in its actual overlay")
+	_expect(danger_clock != null and danger_clock.has_method("set_clock"), "M04 recovery must render the live danger clock in its actual overlay")
+	_expect(current_scene.get_node_or_null("ActionDock/Content/Footer/ManualQuickButton") != null, "M04 recovery must place the manual in the lower-right footer")
+	_expect(current_scene.find_child("RepresentativeSwitchButton", true, false) == null, "M04 recovery must keep Kwon Narae as the direct lead")
+	_expect(current_scene.find_child("RecoverButton", true, false) == null, "M04 recovery must not expose a separate recover execution button")
 	_expect(bool(current_scene.call("_uses_guided_decision_flow")), "M04 recovery must turn the player-authored manual into the shared hypothesis-evidence-response field procedure")
 	if not bool(current_scene.call("_uses_guided_decision_flow")):
 		_finish()
 		return
 	for turn_index in range(4):
-		var recover_button := current_scene.find_child("RecoverButton", true, false) as Button
-		if recover_button != null and not recover_button.disabled:
+		if current_scene.scene_file_path == _game_state.SCENE_RESULT:
 			break
 		_expect(await _complete_current_guided_recovery_turn(current_scene), "M04 recovery turn %d must be completable through visible hypothesis, evidence, and response controls" % (turn_index + 1))
-		await _wait_frames(3)
-	var recover_button := current_scene.find_child("RecoverButton", true, false) as Button
-	_expect(recover_button != null and not recover_button.disabled, "M04 field recovery must become executable after the player answers its live telegraphs")
-	if recover_button == null or recover_button.disabled:
-		_finish()
-		return
-	recover_button.pressed.emit()
-	await _wait_frames(5)
-	_expect(current_scene.scene_file_path == _game_state.SCENE_RESULT, "M04 completed recovery must open the composite result scene")
+		await _wait_frames(5)
+		var clock_state: Dictionary = _game_state.get_recovery_clock_state()
+		_expect(int(clock_state.get("danger", 7)) <= 1, "M04 correct field response must offset danger before the next telegraph (turn %d, danger %d)" % [turn_index + 1, int(clock_state.get("danger", 7))])
+	_expect(current_scene.scene_file_path == _game_state.SCENE_RESULT, "M04 completed recovery must automatically open the composite result scene")
 	_expect(await _advance_m04_narrative_result(), "M04 completed recovery must let the player advance through the four causal result records")
 	_finish()
 

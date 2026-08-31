@@ -14,6 +14,13 @@ func _run() -> void:
 	var overlay = OverlayScript.new()
 	root.add_child(overlay)
 	var runtime_state := {
+		"recovery_clock": {
+			"stability_segments": 5,
+			"stability_total": 8,
+			"danger_segments": 3,
+			"danger_total": 6,
+			"danger_urgent": false
+		},
 		"manual_state": {
 			"pages": [
 				{"id": "manual_afterlife_page_02_boundary_reset", "title": "안내 종료 전 이동은 공간만 되감는다"},
@@ -67,11 +74,13 @@ func _run() -> void:
 	var recovery_support_panel := overlay.get_node_or_null("SafeArea/RootLayout/DetailStack/RecoverySupportPanel") as Control
 	var termination_preview_panel := overlay.get_node_or_null("SafeArea/RootLayout/DetailStack/TerminationPreviewPanel") as Control
 	_expect(recovery_support_panel != null and termination_preview_panel != null and recovery_support_panel.get_index() < termination_preview_panel.get_index(), "recovery support must stay before termination detail so its state remains on-screen at 1280×720")
-	var manual_button := overlay.get_node_or_null("SafeArea/RootLayout/RuleStripPanel/RuleStrip/ManualToggleButton") as Button
-	_expect(manual_button != null, "manual toggle button missing")
-	if manual_button != null:
-		_expect(manual_button.focus_mode == Control.FOCUS_ALL, "manual toggle lacks keyboard/gamepad focus")
-		_expect(not manual_button.text.is_empty(), "manual toggle lacks text label")
+	var clock_cluster := overlay.get_node_or_null("SafeArea/RootLayout/RuleStripPanel/RuleStrip/RecoveryClockCluster") as Control
+	_expect(clock_cluster != null, "visible overlay must own the recovery clock cluster")
+	var stability_clock := clock_cluster.get_node_or_null("StabilityClock") if clock_cluster != null else null
+	var danger_clock := clock_cluster.get_node_or_null("DangerClock") if clock_cluster != null else null
+	_expect(stability_clock != null and int(stability_clock.get("total_segments")) == 8, "overlay stability clock must expose eight segments")
+	_expect(danger_clock != null and int(danger_clock.get("total_segments")) == 6, "overlay danger clock must expose six segments")
+	_expect(overlay.get_node_or_null("SafeArea/RootLayout/RuleStripPanel/RuleStrip/ManualToggleButton") == null, "manual control must not occupy the top rule strip")
 	var summary_label := overlay.get_node_or_null("SafeArea/RootLayout/RuleStripPanel/RuleStrip/RuleSummaryLabel") as Label
 	_expect(summary_label != null and not summary_label.text.is_empty(), "rule strip lacks text summary")
 	var detail_toggle := overlay.get_node_or_null("SafeArea/RootLayout/RuleStripPanel/RuleStrip/DetailToggleButton") as Button

@@ -60,6 +60,7 @@ calendar_role: SUPPORTING_CAMPAIGN_CONTEXT_NOT_PRIMARY_FUN
 - M01은 기존 Canon v2 loader/save migration/result runtime을 재사용한다.
 - 메인 메뉴 제품 버전은 `scripts/core/product_version.gd`의 `Ver 4.3`이 중앙 owner다.
 - 메인 메뉴는 관제실형 3-rail 구조를 사용하고 Legacy / Validation save·route 분리를 유지한다.
+- 플레이어 노출 제품 제목은 `괴이기록국: 잔향 보고서`이며, world-internal 공식 기관명 `괴이 기록국`, 저장 identity, Episode/Case/asset ID는 유지한다. 메인 메뉴는 `ULAB-MAIN-MENU-BACKGROUND-001`의 승인된 연구실/보관실 환경을 `MainMenuBackdrop`으로 사용하고 title/control은 native Godot UI로 렌더한다.
 - M04 빨간 우산은 shared Investigation/Manual/Rescue/Recovery/Composite Result validation baseline까지 구현됐다.
 - current keyword/manual state is split by coverage: CASE-01 and M04 page-local keyword composition are `IMPLEMENTED / MACHINE_VERIFIED`, while M05+ rollout and any mutated-candidate field-verification extension remain outside this slice.
 - clarified manual contract: the player must fill readable blank sentences from investigation memory and provenance; the UI cannot reveal semantic correctness. Rescue/minigame and recovery are the field verification, not an automatic answer checker. CASE-01 and M04 candidate arrays/input consumers are implemented, CASE-01 complete-manual auto-reveal is disabled, and every player draft remains separate from Canon migration slots.

@@ -2,6 +2,7 @@ class_name UiAssetCatalog
 extends RefCounted
 
 const ASSET_PATHS := {
+	"bureau_archive_menu": "res://assets/backgrounds/bureau_archive_menu.png",
 	"afterlife_entrance": "res://assets/backgrounds/afterlife_entrance.png",
 	"afterlife_platform": "res://assets/backgrounds/afterlife_platform.png",
 	"afterlife_recovery": "res://assets/backgrounds/afterlife_recovery.png",
@@ -22,9 +23,6 @@ const ASSET_PATHS := {
 	"afterlife_d_cutout": "res://assets/anomalies/cutouts/afterlife_d_cutout.png",
 	"red_umbrella_b_cutout": "res://assets/anomalies/cutouts/red_umbrella_b_cutout.png",
 	"red_umbrella_d_cutout": "res://assets/anomalies/cutouts/red_umbrella_d_cutout.png",
-	"log_normal": "res://assets/log/log_normal.png",
-	"log_focus": "res://assets/log/log_focus.png",
-	"log_warning": "res://assets/log/log_warning.png",
 	"kwon_narae_full_body": "res://assets/characters/mvp043/agents/kwon_narae/full_body.png",
 	"kwon_narae_portrait": "res://assets/characters/mvp043/agents/kwon_narae/portrait.png",
 	"kwon_narae_investigation_support": "res://assets/characters/mvp043/agents/kwon_narae/investigation_support.png",
@@ -204,7 +202,4 @@ func get_contact_texture(contact_id: String, role: String) -> Texture2D:
 		return null
 	return get_texture("%s_%s" % [slug, role])
 
-
-func get_log_expression(expression: String = "normal") -> Texture2D:
-	var clean_expression := expression if expression in ["normal", "focus", "warning"] else "normal"
-	return get_texture("log_%s" % clean_expression)
+# Contact texture lookup is the final active catalog surface.

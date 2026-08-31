@@ -10,7 +10,6 @@ const LogTutorialCatalog = preload("res://scripts/ui/log_tutorial_catalog.gd")
 const RecoveryTelegraphAudio = preload("res://scripts/ui/recovery_telegraph_audio.gd")
 const ActionChoiceCardScene = preload("res://scenes/ui/action_choice_card.tscn")
 const TeamStatusChipScene = preload("res://scenes/ui/team_status_chip.tscn")
-const AnomalyManualDrawerScript = preload("res://scripts/ui/anomaly_manual_drawer.gd")
 
 const BASE_ANOMALY_STABILITY := 0
 const BASE_RECOVERY_THRESHOLD := 70
@@ -34,17 +33,12 @@ var _active_effects: Array = []
 var _minigame_recovery_messages: Array[String] = []
 var _action_buttons: Array[Button] = []
 var _agent_support_buttons: Array[Button] = []
-var _representative_agent_index := 0
 var _target_agent_index := 0
+var _recovery_completion_queued := false
 
-var _stability_bar: ProgressBar
-var _fear_bar: ProgressBar
 var _threshold_label: Label
 var _prediction_label: Label
-var _auto_effect_label: Label
 var _result_label: Label
-var _recover_button: Button
-var _representative_agent_label: Label
 var _representative_agent_image: TextureRect
 var _representative_cut_in_generation := 0
 var _anomaly_panel: PanelContainer
@@ -55,15 +49,11 @@ var _runtime_editor: RuntimeUiEditor
 var _current_pattern: Dictionary = {}
 var _telegraph_label: Label
 var _prediction_summary_label: Label
-var _evidence_label: Label
 var _response_box: GridContainer
 var _consumable_row: HBoxContainer
 var _turn_auto_success_agents: Dictionary = {}
 var _turn_locked := false
 var _log_guide: LogGuide
-var _manual_drawer: AnomalyManualDrawer
-var _manual_prediction_label: Label
-var _last_result_detail_label: Label
 var _decision_progress_label: Label
 var _decision_instruction_label: Label
 var _decision_back_button: Button
@@ -91,11 +81,6 @@ func _build_scene_ui() -> void:
 	var shade := get_node_or_null("ArtLayer/Shade") as ColorRect
 	if shade != null:
 		shade.color = Color(0.08, 0.015, 0.025, 0.14)
-	_representative_agent_label = %RepresentativeAgentLabel
-	_stability_bar = %StabilityBar
-	_stability_bar.max_value = 100
-	_fear_bar = %FearBar
-	_fear_bar.max_value = 100
 	_representative_agent_image = %RepresentativeVisual
 	_representative_agent_image.visible = false
 	_anomaly_panel = %AnomalyPanel
@@ -111,10 +96,8 @@ func _build_scene_ui() -> void:
 	_response_box.columns = 3
 	_consumable_row = %ConsumableRow
 	_result_label = %ResultLabel
-	_recover_button = %RecoverButton
 	_threshold_label = %ThresholdLabel
 	_prediction_label = %PredictionLabel
-	_auto_effect_label = %ClueSummaryLabel
 	_decision_back_button = %DecisionBackButton
 	_decision_confirm_button = %DecisionConfirmButton
 	_telegraph_audio_player = AudioStreamPlayer.new()
@@ -123,37 +106,9 @@ func _build_scene_ui() -> void:
 
 	var initial_stage := SceneVisuals.apply_anomaly(_anomaly_image, GameState.get_anomaly_risk())
 	_anomaly_stage_label.text = "관측 위험 단계 %s · %s" % [initial_stage, _make_resolution_phase_text()]
-	_auto_effect_label.text = _make_clue_summary()
-	_auto_effect_label.tooltip_text = "괴이 매뉴얼에서 확보 단서와 회수 효과를 확인합니다."
-	_recover_button.pressed.connect(_recover_anomaly_core)
 	_decision_back_button.pressed.connect(_go_back_decision_step)
 	_decision_confirm_button.pressed.connect(_confirm_evidence_step)
-	%RepresentativeSwitchButton.pressed.connect(_switch_representative)
-	(%ClueDrawer as PanelContainer).visible = false
-	_manual_drawer = AnomalyManualDrawerScript.new()
-	add_child(_manual_drawer)
-	_manual_drawer.anchor_left = 0.66
-	_manual_drawer.anchor_top = 0.12
-	_manual_drawer.anchor_right = 0.985
-	_manual_drawer.anchor_bottom = 0.60
-	_manual_drawer.set_sections([
-		{"title": "회수 자동 반영 단서", "text": _make_auto_effect_text()},
-		{"title": "요원 지원", "text": "대표 교체와 지원 행동은 현재 전조를 확인한 뒤 선택할 수 있습니다."}
-	])
-	_manual_drawer.bind_toggle_button(%ClueDrawerButton)
-	_manual_prediction_label = _make_label("")
-	_manual_drawer.add_detail_control(_manual_prediction_label)
-	_last_result_detail_label = _make_label("직전 판단 상세\n아직 실행한 대응이 없습니다.")
-	_manual_drawer.add_detail_control(_last_result_detail_label)
-	_evidence_label = _make_label("")
-	_manual_drawer.add_detail_control(_evidence_label)
-	# 기존 회수 지원과 이동 조작은 화면 기본 정보에서는 숨기되, 기능을 제거하지 않고
-	# 상세 매뉴얼 안에서 계속 제공한다.
-	var manual_actions := VBoxContainer.new()
-	manual_actions.add_theme_constant_override("separation", 6)
-	_manual_drawer.add_detail_control(manual_actions)
-	_add_agent_recovery_support_actions(manual_actions)
-	_add_navigation(manual_actions)
+	%ManualQuickButton.pressed.connect(_open_recovery_manual)
 
 	_log_guide = LogGuideScript.new()
 	_log_guide.set_compact(true)
@@ -163,28 +118,10 @@ func _build_scene_ui() -> void:
 	_refresh_representative_agent()
 
 
-func _make_clue_summary() -> String:
-	if _active_effects.is_empty():
-		return "핵심 단서 없음 · 매뉴얼 확인"
-	return "핵심 단서 %d개 · 매뉴얼 확인" % _active_effects.size()
-
-
-func _toggle_clue_drawer() -> void:
-	var drawer := %ClueDrawer as PanelContainer
-	drawer.visible = not drawer.visible
-	%ClueDrawerButton.text = "근거 ▲" if drawer.visible else "근거 ▼"
-
-
-func _switch_representative() -> void:
-	var agents := GameState.get_selected_agents()
-	if agents.size() <= 1:
-		_result_label.text = "교체할 지원 요원이 없습니다."
-		return
-	_representative_agent_index = (_representative_agent_index + 1) % agents.size()
-	_refresh_representative_agent()
-	_populate_team_strip()
-	_show_representative_cut_in()
-	_result_label.text = "%s이(가) 대표 대응을 맡습니다." % String(_get_representative_agent().get("name", "요원"))
+func _open_recovery_manual() -> void:
+	var operation_overlay := get_node_or_null("CanonV2OperationOverlay")
+	if operation_overlay != null and operation_overlay.has_method("toggle_manual_from_quick_action"):
+		operation_overlay.call("toggle_manual_from_quick_action")
 
 
 func _populate_team_strip() -> void:
@@ -192,8 +129,12 @@ func _populate_team_strip() -> void:
 	_clear_children(strip)
 	var catalog := AssetCatalog.new()
 	var agents := GameState.get_selected_agents()
-	for index in range(agents.size()):
-		var agent: Dictionary = agents[index]
+	var representative := _get_representative_agent()
+	var representative_id := String(representative.get("id", ""))
+	for agent_value in agents:
+		if typeof(agent_value) != TYPE_DICTIONARY:
+			continue
+		var agent: Dictionary = agent_value
 		var agent_id := String(agent.get("id", ""))
 		var chip := TeamStatusChipScene.instantiate()
 		strip.add_child(chip)
@@ -203,7 +144,7 @@ func _populate_team_strip() -> void:
 			"mental": GameState.get_agent_current_mental(agent_id),
 			"max_mental": GameState.get_agent_max_mental(agent_id),
 			"active": GameState.is_agent_active(agent_id),
-			"representative": index == _representative_agent_index,
+			"representative": agent_id == representative_id,
 			"texture": catalog.get_agent_expression(agent_id, 1)
 		})
 
@@ -224,8 +165,9 @@ func _setup_runtime_editor() -> void:
 
 
 func _get_initial_anomaly_crop_mode() -> int:
-	var stage := AssetCatalog.new().get_risk_stage(GameState.get_anomaly_risk())
-	return TextureRect.STRETCH_KEEP_ASPECT_CENTERED if stage == "D" else TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	# 회수 페이즈의 괴이는 위협 단계와 무관하게 완전한 실루엣을 보여 준다.
+	# 잘린 B/C 단계는 플레이어가 현상 전체와 그 행동 단서를 읽지 못하게 한다.
+	return TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 
 
 func _preview_risk_stage(stage: String) -> void:
@@ -392,18 +334,6 @@ func _find_response_by_id(response_id: String) -> Dictionary:
 	return {}
 
 
-func _refresh_recovery_evidence() -> void:
-	if _evidence_label != null:
-		_evidence_label.text = _make_recovery_evidence_text()
-	if _manual_drawer != null:
-		_manual_drawer.mark_new_entries()
-
-
-func _refresh_manual_prediction() -> void:
-	if _manual_prediction_label != null:
-		_manual_prediction_label.text = "예측·지원 상세\n%s" % _prediction_summary_label.text
-
-
 func _make_minigame_recovery_text() -> String:
 	if _minigame_recovery_messages.is_empty():
 		return ""
@@ -483,9 +413,11 @@ func _begin_recovery_turn(last_result: String = "") -> void:
 		_telegraph_label.text = "전조 데이터를 찾지 못했습니다."
 		_decision_progress_label.text = "판단 중단"
 		_decision_instruction_label.text = "현장 기록을 다시 확인해 주세요."
-		_refresh_recovery_evidence()
 		_log_guide.show_compact_hint("전조 기록을 찾지 못했습니다. 현장 기록을 다시 확인해 주세요.")
 		return
+	var clock_before := GameState.get_recovery_clock_state()
+	var clock_after := GameState.begin_recovery_clock_turn()
+	var danger_advanced := int(clock_after.get("danger", 0)) > int(clock_before.get("danger", 0))
 	_play_telegraph_cue()
 	var first_telegraph := not GameState.has_seen_log_tutorial("recovery_first_telegraph")
 	if first_telegraph:
@@ -521,13 +453,18 @@ func _begin_recovery_turn(last_result: String = "") -> void:
 		_show_hypothesis_step()
 	else:
 		_show_direct_response_step()
-	_refresh_manual_prediction()
-	_refresh_recovery_evidence()
 	if last_result.is_empty():
-		_update_battle_view("판단 절차: 가설을 세우고 확보 기록으로 검증한 뒤 현장 대응을 선택합니다.")
+		var opening_message := "판단 절차: 가설을 세우고 확보 기록으로 검증한 뒤 현장 대응을 선택합니다."
+		if danger_advanced:
+			opening_message += "\n현장 시간 +1 · 위험 %d/6" % int(clock_after.get("danger", 0))
+		_update_battle_view(opening_message)
 	else:
-		_last_result_detail_label.text = "직전 판단 상세\n%s" % last_result
-		_update_battle_view(_make_compact_last_result(last_result))
+		var continued_message := _make_compact_last_result(last_result)
+		if danger_advanced:
+			continued_message += "\n현장 시간 +1 · 위험 %d/6" % int(clock_after.get("danger", 0))
+		_update_battle_view(continued_message)
+	if danger_advanced:
+		_play_recovery_clock_feedback("danger")
 
 
 func _play_telegraph_cue() -> void:
@@ -600,7 +537,6 @@ func _show_hypothesis_step() -> void:
 			"compact": true
 		}, "이 가설을 선택하면 다음 단계에서 확보 기록을 직접 대조합니다.", _select_hypothesis.bind(response_copy))
 	_focus_first_enabled_decision_card()
-	_refresh_recovery_evidence()
 
 
 func _select_hypothesis(response: Dictionary) -> void:
@@ -640,7 +576,6 @@ func _show_evidence_step() -> void:
 	_decision_confirm_button.text = "근거 없이 대응으로 진행" if can_continue_without_evidence else "선택 근거 확정"
 	_decision_confirm_button.disabled = not can_continue_without_evidence and _selected_evidence_ids.is_empty()
 	_focus_first_enabled_decision_card()
-	_refresh_recovery_evidence()
 
 
 func _toggle_evidence(clue_id: String) -> void:
@@ -689,7 +624,6 @@ func _show_response_step() -> void:
 			"compact": true
 		}, "선택한 가설과 근거에 이 대응이 일치하는지 판단합니다.", _select_pattern_response.bind(response_copy))
 	_focus_first_enabled_decision_card()
-	_refresh_recovery_evidence()
 
 
 func _show_direct_response_step() -> void:
@@ -808,6 +742,8 @@ func _select_pattern_response(response: Dictionary) -> void:
 	var reason := _make_recovery_learning_reason(response, correct, decision_evaluation)
 	var manual_context := _make_manual_decision_context(response, decision_evaluation)
 	GameState.record_recovery_pattern_outcome(String(_current_pattern.get("id", "")), response_id, correct, reason, manual_context)
+	var complete_manual_verification := bool(decision_evaluation.get("guided", false)) and bool(decision_evaluation.get("verified", false))
+	var clock_outcome := _resolve_recovery_clock_outcome(correct, complete_manual_verification, lines)
 	if not correct:
 		if not GameState.has_seen_log_tutorial("recovery_first_learning"):
 			_present_log_tutorial("recovery_first_learning")
@@ -818,12 +754,17 @@ func _select_pattern_response(response: Dictionary) -> void:
 		lines.append("판단 근거 기록: 가설·근거·대응이 일치해 매뉴얼 후보 규칙으로 검증했습니다.")
 	else:
 		lines.append("판단 근거 기록: 현장 대응은 맞았지만 가설 또는 근거가 충분히 검증되지 않았습니다.")
-	_refresh_recovery_evidence()
 	lines.append_array(_run_auto_window("treatment"))
 	lines.append_array(_run_auto_window("rapport"))
 	GameState.save_game()
 	var result_text := "\n".join(lines)
 	_update_battle_view(result_text)
+	if bool(clock_outcome.get("surge_triggered", false)):
+		_play_recovery_clock_feedback("surge")
+	elif correct:
+		_play_recovery_clock_feedback("relief")
+	elif not correct:
+		_play_recovery_clock_feedback("danger")
 	if _can_recover():
 		_clear_children(_response_box)
 		_telegraph_label.text = "회수 실행 가능\n안정화 기준을 충족했습니다. 현재 규칙을 고정하고 잔향 회수를 실행하십시오."
@@ -1201,22 +1142,6 @@ func _add_support_action(parent: Control) -> void:
 	_action_buttons.append(button)
 
 
-func _add_representative_switch_action(parent: Control) -> void:
-	var button := Button.new()
-	button.text = "대표 요원 교체"
-	button.pressed.connect(func() -> void:
-		var agents := GameState.get_selected_agents()
-		if agents.size() < 2:
-			_update_battle_view("대표 요원 교체: 전환할 다른 요원이 없습니다.")
-			return
-		_representative_agent_index = (_representative_agent_index + 1) % agents.size()
-		_refresh_representative_agent()
-		_update_battle_view("현장 지휘 / 회수 담당을 전환했습니다. 팀 지원과 회수 조건은 유지됩니다.")
-	)
-	parent.add_child(button)
-	_action_buttons.append(button)
-
-
 func _add_agent_recovery_support_actions(parent: Control) -> void:
 	var title := Label.new()
 	title.text = "요원 지원"
@@ -1271,6 +1196,9 @@ func _use_agent_recovery_support(support: Dictionary, button: Button) -> void:
 		0,
 		100
 	)
+	var clock_delta := _clock_delta_from_fear_delta(int(support.get("fear_delta", 0)))
+	if clock_delta != 0:
+		GameState.change_recovery_clock_danger(clock_delta)
 	_recovery_threshold = clampi(
 		_recovery_threshold + int(support.get("threshold_delta", 0)),
 		30,
@@ -1280,11 +1208,21 @@ func _use_agent_recovery_support(support: Dictionary, button: Button) -> void:
 	var operation_overlay := get_node_or_null("CanonV2OperationOverlay")
 	if operation_overlay != null and operation_overlay.has_method("mark_recovery_support_used"):
 		operation_overlay.call("mark_recovery_support_used", support_id)
-	_update_battle_view("%s의 %s 지원 발동\n%s" % [
+	var clock_note := ""
+	if clock_delta != 0:
+		var clock_state := GameState.get_recovery_clock_state()
+		clock_note = "\n위험 시계: %s%d · 현재 %d/6" % ["+" if clock_delta > 0 else "", clock_delta, int(clock_state.get("danger", 0))]
+	_update_battle_view("%s의 %s 지원 발동\n%s%s" % [
 		String(support.get("agent_name", "")),
 		String(support.get("role", "회수")),
-		String(support.get("description", ""))
+		String(support.get("description", "")),
+		clock_note
 	])
+	GameState.save_game()
+	if clock_delta < 0:
+		_play_recovery_clock_feedback("relief")
+	elif clock_delta > 0:
+		_play_recovery_clock_feedback("danger")
 	if _representative_agent_image != null:
 		var support_texture := AssetCatalog.new().get_agent_production_texture(
 			String(support.get("agent_id", "")),
@@ -1295,15 +1233,74 @@ func _use_agent_recovery_support(support: Dictionary, button: Button) -> void:
 			_show_representative_cut_in(false)
 
 
+func _resolve_recovery_clock_outcome(correct: bool, verified: bool, lines: Array[String]) -> Dictionary:
+	var outcome := GameState.resolve_recovery_clock_outcome(correct, verified)
+	var danger := int(outcome.get("danger", 0))
+	if correct:
+		lines.append("현장 대응: 위험 -1 · 현재 %d/6" % danger)
+		if verified:
+			lines.append("매뉴얼 검증: 추가 위험 -1 · 현재 %d/6" % danger)
+	else:
+		lines.append("오대응 누적: 위험 +2 · 현재 %d/6" % danger)
+	if not bool(outcome.get("surge_triggered", false)):
+		return outcome
+
+	var target := _get_representative_agent()
+	var target_id := String(target.get("id", ""))
+	var surge_damage := int(outcome.get("surge_damage", 0))
+	var remaining := surge_damage
+	if not target_id.is_empty():
+		remaining = GameState.consume_protection(target_id, surge_damage)
+		if remaining > 0:
+			GameState.change_agent_mental(target_id, -remaining)
+	lines.append("공명 폭주: %s 정신력 -%d · 위험 3/6으로 후퇴" % [
+		String(target.get("name", "대표 요원")),
+		remaining
+	])
+	return outcome
+
+
+func _clock_delta_from_fear_delta(fear_delta: int) -> int:
+	if fear_delta == 0:
+		return 0
+	var magnitude := maxi(1, int(ceil(float(abs(fear_delta)) / 16.0)))
+	return magnitude if fear_delta > 0 else -magnitude
+
+
+func get_recovery_clock_presentation() -> Dictionary:
+	var stability_segments := 0
+	if _recovery_threshold > 0:
+		stability_segments = clampi(int(ceil(float(_anomaly_stability) / float(_recovery_threshold) * 8.0)), 0, 8)
+	var clock_state := GameState.get_recovery_clock_state()
+	var danger_segments := int(clock_state.get("danger", 0))
+	var danger_urgent := danger_segments >= 6
+	return {
+		"stability_segments": stability_segments,
+		"stability_total": 8,
+		"danger_segments": danger_segments,
+		"danger_total": 6,
+		"danger_urgent": danger_urgent,
+		"stability_value": _anomaly_stability,
+		"stability_threshold": _recovery_threshold
+	}
+
+
+func _refresh_recovery_clock_hud() -> void:
+	var operation_overlay := get_node_or_null("CanonV2OperationOverlay")
+	if operation_overlay != null and operation_overlay.has_method("set_recovery_clock_presentation"):
+		operation_overlay.call("set_recovery_clock_presentation", get_recovery_clock_presentation())
+
+
+func _play_recovery_clock_feedback(kind: String) -> void:
+	var operation_overlay := get_node_or_null("CanonV2OperationOverlay")
+	if operation_overlay != null and operation_overlay.has_method("set_recovery_clock_feedback"):
+		operation_overlay.call("set_recovery_clock_feedback", kind)
+
+
 func _update_battle_view(message: String) -> void:
 	_refresh_representative_agent()
 	_populate_team_strip()
-	if _auto_effect_label != null:
-		_auto_effect_label.text = _make_clue_summary()
-	if _stability_bar != null:
-		_stability_bar.value = _anomaly_stability
-	if _fear_bar != null:
-		_fear_bar.value = _fear_level
+	_refresh_recovery_clock_hud()
 	if _threshold_label != null:
 		_threshold_label.text = "회수 가능 조건: 괴이 안정도 %d 이상 / 현재 %d" % [
 			_recovery_threshold,
@@ -1319,9 +1316,6 @@ func _update_battle_view(message: String) -> void:
 			int(status.get("prediction_success_streak", 0)),
 			int(status.get("prediction_failure_streak", 0))
 		]
-	if _recover_button != null:
-		_recover_button.disabled = _recovery_completed or not _can_recover()
-
 	var status_message := message
 	if not _recovery_completed and _can_recover():
 		status_message += "\n괴이의 핵이 회수 가능한 상태입니다."
@@ -1331,6 +1325,9 @@ func _update_battle_view(message: String) -> void:
 		if GameState.are_all_agents_inactive():
 			_result_label.text += "\n\n모든 요원이 행동 불능 상태입니다. 조사 화면으로 돌아가 재정비합니다."
 			call_deferred("_return_to_investigation")
+	if not _recovery_completed and _can_recover() and not _recovery_completion_queued:
+		_recovery_completion_queued = true
+		call_deferred("_complete_recovery_when_ready")
 
 
 func _show_representative_cut_in(refresh_portrait: bool = true) -> void:
@@ -1347,16 +1344,9 @@ func _show_representative_cut_in(refresh_portrait: bool = true) -> void:
 
 
 func _refresh_representative_agent() -> void:
-	if _representative_agent_label == null:
+	var representative := _get_representative_agent()
+	if representative.is_empty():
 		return
-
-	var agents := GameState.get_selected_agents()
-	if agents.is_empty():
-		_representative_agent_label.text = "대표 요원: 미지정\n팀 상태: 요원 편성이 필요합니다."
-		return
-
-	_representative_agent_index = posmod(_representative_agent_index, agents.size())
-	var representative: Dictionary = agents[_representative_agent_index]
 	if _representative_agent_image != null:
 		var catalog := AssetCatalog.new()
 		_representative_agent_image.texture = catalog.get_agent_expression(String(representative.get("id", "")), 1)
@@ -1364,30 +1354,22 @@ func _refresh_representative_agent() -> void:
 			String(representative.get("name", "요원")),
 			String(representative.get("temperament_label", representative.get("temperament", "")))
 		]
-	var rep_id := String(representative.get("id", ""))
-	var hp_info := ""
-	if not rep_id.is_empty():
-		hp_info = " · 체력 %d/%d · 정신 %d/%d%s" % [
-			GameState.get_agent_current_hp(rep_id),
-			GameState.get_agent_max_hp(rep_id),
-			GameState.get_agent_current_mental(rep_id),
-			GameState.get_agent_max_mental(rep_id),
-			" [방호]" if GameState.has_protection(rep_id) else ""
-		]
-	_representative_agent_label.text = "대표: %s%s" % [
-		String(representative.get("name", representative.get("id", "요원"))),
-		hp_info,
-	]
 
 
 func _get_representative_agent() -> Dictionary:
 	var agents := GameState.get_selected_agents()
 	if agents.is_empty():
 		return {}
-	_representative_agent_index = posmod(_representative_agent_index, agents.size())
-	var agent: Variant = agents[_representative_agent_index]
-	if typeof(agent) == TYPE_DICTIONARY:
-		return agent
+	var protagonist_id := GameState.get_protagonist_agent_id()
+	for agent_value in agents:
+		if typeof(agent_value) != TYPE_DICTIONARY:
+			continue
+		var agent := agent_value as Dictionary
+		if String(agent.get("id", "")) == protagonist_id:
+			return agent
+	var first_agent: Variant = agents[0]
+	if typeof(first_agent) == TYPE_DICTIONARY:
+		return first_agent
 	return {}
 
 
@@ -1406,9 +1388,13 @@ func _can_recover() -> bool:
 	return _anomaly_stability >= _recovery_threshold
 
 
-func _recover_anomaly_core() -> void:
-	if not _can_recover():
-		_update_battle_view("아직 괴이의 핵이 충분히 안정화되지 않았습니다.")
+func is_recovery_ready_for_resolution() -> bool:
+	return not _recovery_completed and _can_recover()
+
+
+func _complete_recovery_when_ready() -> void:
+	_recovery_completion_queued = false
+	if not is_recovery_ready_for_resolution():
 		return
 	_recovery_completed = true
 	GameState.save_recovery_result(true, "core_recovered", _anomaly_stability)
@@ -1418,8 +1404,15 @@ func _recover_anomaly_core() -> void:
 		button.disabled = true
 	for button in _agent_support_buttons:
 		button.disabled = true
-	_recover_button.disabled = true
 	get_tree().change_scene_to_file("res://scenes/result_scene.tscn")
+
+
+func _recover_anomaly_core() -> void:
+	# 레거시 테스트·저장 호환 호출점. 실제 화면에는 별도 회수 실행 조작을 만들지 않는다.
+	if not _can_recover():
+		_update_battle_view("아직 괴이의 핵이 충분히 안정화되지 않았습니다.")
+		return
+	_complete_recovery_when_ready()
 
 
 func _return_to_investigation() -> void:

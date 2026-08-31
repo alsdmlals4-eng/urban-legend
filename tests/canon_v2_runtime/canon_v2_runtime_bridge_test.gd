@@ -16,9 +16,6 @@ func _run() -> void:
 	var host := Control.new()
 	host.name = "BattleSceneTestHost"
 	root.add_child(host)
-	var legacy_hud := Control.new()
-	legacy_hud.name = "RecoveryHud"
-	host.add_child(legacy_hud)
 	var legacy_action_dock := Control.new()
 	legacy_action_dock.name = "ActionDock"
 	host.add_child(legacy_action_dock)
@@ -30,8 +27,9 @@ func _run() -> void:
 	}, "recovery")
 	_expect(mounted != null, "bridge did not mount the operation overlay")
 	_expect(host.get_node_or_null("CanonV2OperationOverlay") != null, "mounted overlay is not attached to the scene host")
-	_expect(not legacy_hud.visible, "Canon V2 overlay must hide the duplicate legacy recovery HUD")
+	_expect(host.get_node_or_null("RecoveryHud") == null, "recovery host must not retain a duplicate legacy HUD")
 	_expect(legacy_action_dock.visible, "Canon V2 overlay must preserve the legacy recovery action dock input")
+	_expect(mounted.get_node_or_null("SafeArea/RootLayout/RuleStripPanel/RuleStrip/RecoveryClockCluster") != null, "bridge-mounted overlay must own the recovery clocks")
 	var detail_toggle := mounted.get_node_or_null("SafeArea/RootLayout/RuleStripPanel/RuleStrip/DetailToggleButton") as Button
 	_expect(detail_toggle != null, "bridge-mounted overlay lacks the recovery detail toggle")
 	if detail_toggle != null:

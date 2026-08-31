@@ -39,10 +39,11 @@ func _run() -> void:
 
 	for node_name in [
 		"MenuShell", "IdentityRail", "ActionRail", "IntelligenceRail",
-		"VersionLabel", "PrimaryActionHint", "CurrentCaseTitle",
+		"WorldTitleLockup", "WorldTitle", "WorldTitleSuffix", "WorldSubtitle", "VersionLabel", "PrimaryActionHint", "CurrentCaseTitle",
 		"CurrentCaseMeta", "CurrentCaseSummary", "CurrentCasePreview",
 		"LegacyIntelStatus", "ValidationIntelStatus",
-		"SettingsButton", "SettingsPanel", "ExitButton"
+		"SettingsButton", "SettingsPanel", "ExitButton",
+		"MainMenuBackdrop", "MainMenuBackdropShade"
 	]:
 		_expect(menu.find_child(node_name, true, false) != null, "%s must exist" % node_name)
 
@@ -70,13 +71,23 @@ func _run() -> void:
 			return
 
 	var version_label := menu.find_child("VersionLabel", true, false) as Label
+	var world_title := menu.find_child("WorldTitle", true, false) as Label
+	var world_title_suffix := menu.find_child("WorldTitleSuffix", true, false) as Label
+	var world_subtitle := menu.find_child("WorldSubtitle", true, false) as Label
 	var primary_hint := menu.find_child("PrimaryActionHint", true, false) as Label
 	var current_case_title := menu.find_child("CurrentCaseTitle", true, false) as Label
 	var settings_button := menu.find_child("SettingsButton", true, false) as Button
 	var settings_panel := menu.find_child("SettingsPanel", true, false) as Control
 	var exit_button := menu.find_child("ExitButton", true, false) as Button
+	var bureau_backdrop := menu.find_child("MainMenuBackdrop", true, false) as TextureRect
+	var bureau_backdrop_shade := menu.find_child("MainMenuBackdropShade", true, false) as ColorRect
 
 	_expect(version_label != null and version_label.text == "Ver 4.3", "menu must display canonical Ver 4.3")
+	_expect(world_title != null and world_title.text == "괴이기록국", "product title keeps the established bureau wordmark")
+	_expect(world_title_suffix != null and world_title_suffix.text == "잔향 보고서", "product title displays the approved report subtitle")
+	_expect(world_subtitle != null and world_subtitle.text == "BUREAU OF ANOMALIES: ECHO REPORT", "English subtitle mirrors the product title without changing runtime IDs")
+	_expect(bureau_backdrop != null and bureau_backdrop.texture != null, "user-approved bureau archive must render as the menu backdrop")
+	_expect(bureau_backdrop_shade != null and bureau_backdrop_shade.color.a < 0.82, "bureau backdrop shade must preserve the research room read")
 	_expect(primary_hint != null and "새 캠페인 시작" in primary_hint.text, "no-save state must name new campaign as primary")
 	_expect(current_case_title != null and "저승역" in current_case_title.text, "current case must use loaded canonical episode data")
 	_expect(settings_button != null and settings_button.focus_mode == Control.FOCUS_ALL, "settings must accept keyboard focus")
@@ -135,6 +146,9 @@ func _run() -> void:
 	await process_frame
 	_expect(case_preview.visible, "1920x1080 may expose the existing case preview")
 	_expect(case_summary.visible, "1920x1080 may expose the existing case summary")
+	for node_name in ["M04CampaignEntryButton", "DatabaseButton", "SettingsButton", "ExitButton"]:
+		var action := menu.find_child(node_name, true, false) as Control
+		_expect(action != null and _inside_viewport(action), "%s must remain reachable inside 1920x1080" % node_name)
 
 	_cleanup(menu)
 	_finish()

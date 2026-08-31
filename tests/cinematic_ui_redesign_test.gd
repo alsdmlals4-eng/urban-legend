@@ -69,8 +69,8 @@ func _run() -> void:
 	if not _test_investigation_decision_context():
 		return
 	if not await _test_scene_contract("res://scenes/battle_scene.tscn", [
-		"CinematicStage", "RecoveryHud", "RepresentativeVisual", "AnomalyVisual",
-		"ClueDrawer", "ActionDock", "ResponseGrid", "RepresentativeSwitchButton"
+		"CinematicStage", "RepresentativeVisual", "AnomalyVisual",
+		"ActionDock", "ResponseGrid", "ManualQuickButton"
 	]):
 		return
 	var representative_visual := current_scene.find_child("RepresentativeVisual", true, false) as Control

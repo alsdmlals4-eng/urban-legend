@@ -26,6 +26,10 @@ class MainMenuControlRoomStaticContract(unittest.TestCase):
             "IdentityRail",
             "ActionRail",
             "IntelligenceRail",
+            "WorldTitleLockup",
+            "WorldTitle",
+            "WorldTitleSuffix",
+            "WorldSubtitle",
             "VersionLabel",
             "PrimaryActionHint",
             "SettingsButton",
@@ -37,6 +41,27 @@ class MainMenuControlRoomStaticContract(unittest.TestCase):
         menu = MENU.read_text(encoding="utf-8")
         for forbidden in ["김하람", "SYSTEM ALERT", "슬롯 01", "매우 높음", "2011. 08. 11"]:
             self.assertNotIn(forbidden, menu)
+
+    def test_user_approved_bureau_archive_background_is_the_runtime_menu_backdrop(self) -> None:
+        menu = MENU.read_text(encoding="utf-8")
+        catalog = (ROOT / "scripts" / "ui" / "ui_asset_catalog.gd").read_text(encoding="utf-8")
+        manifest = (ROOT / "ASSET_MANIFEST.yml").read_text(encoding="utf-8")
+
+        self.assertIn('MAIN_MENU_BACKGROUND_ID := "bureau_archive_menu"', menu)
+        self.assertIn('get_texture(MAIN_MENU_BACKGROUND_ID)', menu)
+        self.assertIn('"bureau_archive_menu": "res://assets/backgrounds/bureau_archive_menu.png"', catalog)
+        self.assertIn('asset_id: "ULAB-MAIN-MENU-BACKGROUND-001"', manifest)
+        self.assertIn('canonical_path: "assets/backgrounds/bureau_archive_menu.png"', manifest)
+
+    def test_world_title_lockup_displays_the_approved_product_title_without_renaming_the_agency(self) -> None:
+        menu = MENU.read_text(encoding="utf-8")
+        self.assertIn('title_lockup.name = "WorldTitleLockup"', menu)
+        self.assertIn('title.name = "WorldTitle"', menu)
+        self.assertIn('title.text = "괴이기록국"', menu)
+        self.assertIn('report_title.name = "WorldTitleSuffix"', menu)
+        self.assertIn('report_title.text = "잔향 보고서"', menu)
+        self.assertIn('subtitle.name = "WorldSubtitle"', menu)
+        self.assertIn('subtitle.text = "BUREAU OF ANOMALIES: ECHO REPORT"', menu)
 
 
 if __name__ == "__main__":

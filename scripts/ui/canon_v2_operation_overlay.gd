@@ -2,12 +2,17 @@ class_name CanonV2OperationOverlay
 extends Control
 
 const ObligationPolicyScript := preload("res://scripts/core/protection_obligation_policy.gd")
+const RecoveryClockScript := preload("res://scripts/ui/recovery_clock.gd")
 
 var _runtime_state: Dictionary = {}
 var _mode := "recovery"
 var _manual_detail_panel: PanelContainer
 var _rule_summary_label: Label
-var _manual_toggle_button: Button
+var _recovery_clock_cluster: HBoxContainer
+var _stability_clock: RecoveryClock
+var _danger_clock: RecoveryClock
+var _stability_clock_label: Label
+var _danger_clock_label: Label
 var _detail_stack: VBoxContainer
 var _detail_toggle_button: Button
 var _detail_stack_open := false
@@ -73,6 +78,29 @@ func close_action_confirmation() -> void:
 	_hide_confirmation(true)
 
 
+func toggle_manual_from_quick_action() -> void:
+	_ensure_ui()
+	if _mode != "recovery":
+		return
+	_toggle_manual_detail()
+
+
+func set_recovery_clock_feedback(kind: String) -> void:
+	_ensure_ui()
+	if _mode != "recovery":
+		return
+	if _stability_clock != null and kind == "relief":
+		_stability_clock.play_feedback(kind)
+	if _danger_clock != null:
+		_danger_clock.play_feedback(kind)
+
+
+func set_recovery_clock_presentation(clock: Dictionary) -> void:
+	_ensure_ui()
+	_runtime_state["recovery_clock"] = clock.duplicate(true)
+	_refresh_recovery_clocks()
+
+
 func _ensure_ui() -> void:
 	if get_node_or_null("SafeArea") != null:
 		return
@@ -126,13 +154,48 @@ func _ensure_ui() -> void:
 	_rule_summary_label.add_theme_font_size_override("font_size", 15)
 	rule_strip.add_child(_rule_summary_label)
 
-	_manual_toggle_button = Button.new()
-	_manual_toggle_button.name = "ManualToggleButton"
-	_manual_toggle_button.text = "괴이 매뉴얼 열기"
-	_manual_toggle_button.focus_mode = Control.FOCUS_ALL
-	_manual_toggle_button.tooltip_text = "현재 가설과 근거를 확인합니다. 정답을 자동으로 공개하지 않습니다."
-	_manual_toggle_button.pressed.connect(_toggle_manual_detail)
-	rule_strip.add_child(_manual_toggle_button)
+	_recovery_clock_cluster = HBoxContainer.new()
+	_recovery_clock_cluster.name = "RecoveryClockCluster"
+	_recovery_clock_cluster.add_theme_constant_override("separation", 4)
+	rule_strip.add_child(_recovery_clock_cluster)
+	var stability_title := Label.new()
+	stability_title.name = "StabilityTitle"
+	stability_title.text = "안정"
+	stability_title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_recovery_clock_cluster.add_child(stability_title)
+	_stability_clock = RecoveryClockScript.new()
+	_stability_clock.name = "StabilityClock"
+	_stability_clock.custom_minimum_size = Vector2(34, 34)
+	_stability_clock.tooltip_text = "현재 괴이 안정도를 회수 기준에 맞춘 8칸 시계입니다."
+	_stability_clock.total_segments = 8
+	_stability_clock.active_color = Color(0.67, 0.8, 0.65, 1)
+	_stability_clock.inactive_color = Color(0.18, 0.24, 0.22, 0.95)
+	_stability_clock.urgent_color = Color(0.78, 0.72, 0.45, 1)
+	_recovery_clock_cluster.add_child(_stability_clock)
+	_stability_clock_label = Label.new()
+	_stability_clock_label.name = "StabilityClockLabel"
+	_stability_clock_label.text = "0/8"
+	_stability_clock_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_recovery_clock_cluster.add_child(_stability_clock_label)
+	var danger_title := Label.new()
+	danger_title.name = "DangerTitle"
+	danger_title.text = "위험"
+	danger_title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_recovery_clock_cluster.add_child(danger_title)
+	_danger_clock = RecoveryClockScript.new()
+	_danger_clock.name = "DangerClock"
+	_danger_clock.custom_minimum_size = Vector2(34, 34)
+	_danger_clock.tooltip_text = "새 전조와 오대응으로 누적되는 6칸 위험 시계입니다."
+	_danger_clock.total_segments = 6
+	_danger_clock.active_color = Color(0.74, 0.28, 0.24, 1)
+	_danger_clock.inactive_color = Color(0.25, 0.15, 0.15, 0.95)
+	_danger_clock.urgent_color = Color(0.95, 0.22, 0.18, 1)
+	_recovery_clock_cluster.add_child(_danger_clock)
+	_danger_clock_label = Label.new()
+	_danger_clock_label.name = "DangerClockLabel"
+	_danger_clock_label.text = "0/6"
+	_danger_clock_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_recovery_clock_cluster.add_child(_danger_clock_label)
 	_detail_toggle_button = Button.new()
 	_detail_toggle_button.name = "DetailToggleButton"
 	_detail_toggle_button.text = "작전 상태 열기"
@@ -145,16 +208,46 @@ func _ensure_ui() -> void:
 	_manual_detail_panel.name = "ManualDetailPanel"
 	_manual_detail_panel.visible = false
 	_manual_detail_panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	_manual_detail_panel.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	_manual_detail_panel.anchor_left = 0.58
+	_manual_detail_panel.anchor_top = 0.10
+	_manual_detail_panel.anchor_right = 0.985
+	_manual_detail_panel.anchor_bottom = 0.58
+	_manual_detail_panel.offset_left = 0.0
+	_manual_detail_panel.offset_top = 0.0
+	_manual_detail_panel.offset_right = 0.0
+	_manual_detail_panel.offset_bottom = 0.0
+	_manual_detail_panel.z_index = 120
 	_manual_detail_panel.add_theme_stylebox_override("panel", _panel_style(Color(0.055, 0.06, 0.075, 0.97), Color(0.34, 0.46, 0.54, 0.85)))
-	root_layout.add_child(_manual_detail_panel)
+	add_child(_manual_detail_panel)
+	var manual_content := VBoxContainer.new()
+	manual_content.name = "ManualContent"
+	manual_content.add_theme_constant_override("separation", 6)
+	_manual_detail_panel.add_child(manual_content)
+	var manual_header := HBoxContainer.new()
+	manual_header.name = "ManualHeader"
+	manual_content.add_child(manual_header)
+	var manual_title := Label.new()
+	manual_title.name = "ManualTitle"
+	manual_title.text = "괴이 매뉴얼 · 현장 참조"
+	manual_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	manual_title.add_theme_font_size_override("font_size", 16)
+	manual_header.add_child(manual_title)
+	var manual_close := Button.new()
+	manual_close.name = "ManualCloseButton"
+	manual_close.text = "닫기"
+	manual_close.focus_mode = Control.FOCUS_ALL
+	manual_close.pressed.connect(_toggle_manual_detail)
+	manual_header.add_child(manual_close)
 	var manual_text := RichTextLabel.new()
 	manual_text.name = "ManualText"
-	manual_text.custom_minimum_size = Vector2(0, 138)
-	manual_text.fit_content = true
+	manual_text.custom_minimum_size = Vector2(0, 190)
+	manual_text.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	manual_text.fit_content = false
 	manual_text.bbcode_enabled = true
 	manual_text.scroll_active = true
 	manual_text.focus_mode = Control.FOCUS_ALL
-	_manual_detail_panel.add_child(manual_text)
+	manual_content.add_child(manual_text)
 
 	var spacer := Control.new()
 	spacer.name = "FlexibleSpacer"
@@ -287,6 +380,7 @@ func _refresh() -> void:
 		return
 	_mode_label.text = _mode_title(_mode)
 	_rule_summary_label.text = _make_rule_summary()
+	_refresh_recovery_clocks()
 	_refresh_manual_detail()
 	_refresh_obligations()
 	_refresh_termination()
@@ -296,7 +390,7 @@ func _refresh() -> void:
 
 
 func _refresh_manual_detail() -> void:
-	var manual_text := _manual_detail_panel.get_node("ManualText") as RichTextLabel
+	var manual_text := _manual_detail_panel.get_node("ManualContent/ManualText") as RichTextLabel
 	var manual_state := _dictionary_copy(_runtime_state.get("manual_state"))
 	var pages := _array_copy(manual_state.get("pages"))
 	var active_ids := _string_array(manual_state.get("active_rule_ids"))
@@ -314,6 +408,21 @@ func _refresh_manual_detail() -> void:
 	lines.append("")
 	lines.append("이 패널은 플레이어가 확보한 가설과 근거만 보여 주며 공식 정답을 자동 공개하지 않습니다.")
 	manual_text.text = "\n".join(lines)
+
+
+func _refresh_recovery_clocks() -> void:
+	if _recovery_clock_cluster == null:
+		return
+	var clock := _dictionary_copy(_runtime_state.get("recovery_clock"))
+	var stability_segments := clampi(int(clock.get("stability_segments", 0)), 0, int(clock.get("stability_total", 8)))
+	var stability_total := maxi(1, int(clock.get("stability_total", 8)))
+	var danger_segments := clampi(int(clock.get("danger_segments", 0)), 0, int(clock.get("danger_total", 6)))
+	var danger_total := maxi(1, int(clock.get("danger_total", 6)))
+	var danger_urgent := bool(clock.get("danger_urgent", false))
+	_stability_clock.set_clock(stability_segments, stability_total, false)
+	_danger_clock.set_clock(danger_segments, danger_total, danger_urgent)
+	_stability_clock_label.text = "안정 %d/%d" % [stability_segments, stability_total]
+	_danger_clock_label.text = "위험 %d/%d%s" % [danger_segments, danger_total, " · 폭주 임박" if danger_urgent else ""]
 
 
 func _refresh_obligations() -> void:
@@ -463,18 +572,15 @@ func _apply_mode_visibility() -> void:
 	_detail_stack.visible = _detail_stack_open and _detail_toggle_button.visible
 	_detail_toggle_button.text = "작전 상태 닫기" if _detail_stack.visible else "작전 상태 열기"
 	_set_legacy_action_dock_visible(not _detail_stack.visible)
-	_manual_toggle_button.visible = _mode != "investigation"
-	if _mode == "investigation":
+	_recovery_clock_cluster.visible = _mode == "recovery"
+	if _mode != "recovery":
 		_manual_detail_panel.visible = false
 
 
 func _toggle_manual_detail() -> void:
 	_manual_detail_panel.visible = not _manual_detail_panel.visible
-	_manual_toggle_button.text = "괴이 매뉴얼 닫기" if _manual_detail_panel.visible else "괴이 매뉴얼 열기"
 	if _manual_detail_panel.visible:
-		(_manual_detail_panel.get_node("ManualText") as RichTextLabel).grab_focus()
-	else:
-		_manual_toggle_button.grab_focus()
+		(_manual_detail_panel.get_node("ManualContent/ManualText") as RichTextLabel).grab_focus()
 
 
 func _toggle_detail_stack() -> void:

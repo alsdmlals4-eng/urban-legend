@@ -1,23 +1,21 @@
-# 로그의 초상, 대사 순서, 표정과 접속 시그니처를 표시한다.
+# 루메의 절차 통신, 대사 순서와 접속 시그니처를 표시한다.
 class_name LogGuide
 extends PanelContainer
 
 signal sequence_finished
 
-const AssetCatalog = preload("res://scripts/ui/ui_asset_catalog.gd")
 const ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")
 const TutorialCatalog = preload("res://scripts/ui/log_tutorial_catalog.gd")
 
 const VALID_EXPRESSIONS := ["normal", "focus", "warning"]
 const MIX_RATE := 22050
 
-var _portrait: TextureRect
-var _portrait_frame: Control
 var _speaker_label: Label
 var _dialogue_label: Label
 var _next_button: Button
 var _audio_player: AudioStreamPlayer
 var _status_line: ColorRect
+var _status_label: Label
 var _lines: Array = []
 var _line_index := 0
 var _current_expression := "normal"
@@ -103,8 +101,8 @@ func set_compact(compact: bool) -> void:
 	_compact = compact
 	if not _built:
 		return
-	_portrait_frame.custom_minimum_size = Vector2(92, 92) if compact else Vector2(156, 156)
-	_portrait.custom_minimum_size = Vector2.ZERO
+	_status_line.custom_minimum_size = Vector2(4, 24) if compact else Vector2(5, 32)
+	_status_label.add_theme_font_size_override("font_size", 12 if compact else 14)
 	_dialogue_label.custom_minimum_size.y = 44 if compact else 72
 
 
@@ -155,40 +153,35 @@ func _ensure_ui() -> void:
 	name = "LogGuide"
 	add_theme_stylebox_override("panel", ThemeFactory.panel_style(Color("3d7184"), 0.88))
 
-	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 12)
-	add_child(row)
-
-	_portrait_frame = Control.new()
-	_portrait_frame.custom_minimum_size = Vector2(156, 156)
-	row.add_child(_portrait_frame)
-
-	_portrait = TextureRect.new()
-	_portrait.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	_portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	_portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-	_portrait_frame.add_child(_portrait)
-
-	_status_line = ColorRect.new()
-	_status_line.set_anchors_preset(Control.PRESET_TOP_WIDE)
-	_status_line.offset_bottom = 4
-	_status_line.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_portrait_frame.add_child(_status_line)
-
 	var copy := VBoxContainer.new()
+	copy.name = "ProcedureCommunication"
 	copy.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	copy.add_theme_constant_override("separation", 6)
-	row.add_child(copy)
+	add_child(copy)
 
 	var header := HBoxContainer.new()
+	header.name = "CommunicationHeader"
 	header.add_theme_constant_override("separation", 8)
 	copy.add_child(header)
 
+	_status_line = ColorRect.new()
+	_status_line.name = "StatusLine"
+	_status_line.custom_minimum_size = Vector2(5, 32)
+	_status_line.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	header.add_child(_status_line)
+
 	_speaker_label = Label.new()
-	_speaker_label.text = "루메 · 괴이 기록국 기록 보조"
+	_speaker_label.name = "ProcedureSpeaker"
+	_speaker_label.text = "루메 · 절차 통신"
 	_speaker_label.add_theme_color_override("font_color", ThemeFactory.COLOR_TEAL)
 	_speaker_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(_speaker_label)
+
+	_status_label = Label.new()
+	_status_label.name = "ProcedureStatus"
+	_status_label.text = "기록 대조"
+	_status_label.add_theme_color_override("font_color", ThemeFactory.COLOR_MUTED)
+	header.add_child(_status_label)
 
 	_next_button = Button.new()
 	_next_button.text = "루메 안내 계속"
@@ -212,11 +205,10 @@ func _apply_current_line() -> void:
 	if _current_expression not in VALID_EXPRESSIONS:
 		_current_expression = "normal"
 	_dialogue_label.text = String(line.get("text", ""))
-	_portrait.texture = AssetCatalog.new().get_log_expression(_current_expression)
 	_next_button.visible = _internal_advance_enabled
 	_next_button.text = "루메 안내 계속" if _line_index + 1 < _lines.size() else "닫기"
 	_status_line.color = _expression_color(_current_expression)
-	_portrait.modulate = Color.WHITE
+	_status_label.text = _expression_status(_current_expression)
 
 
 func _play_signature(mode: String) -> void:
@@ -226,9 +218,10 @@ func _play_signature(mode: String) -> void:
 	_signature_play_count += 1
 	_current_expression = clean_mode
 	_status_line.color = _expression_color(clean_mode)
-	_portrait.modulate = Color(0.64, 0.86, 1.0, 0.72)
+	_status_label.text = _expression_status(clean_mode)
+	_status_line.modulate = Color(0.64, 0.86, 1.0, 0.72)
 	var tween := create_tween()
-	tween.tween_property(_portrait, "modulate", Color.WHITE, 0.22)
+	tween.tween_property(_status_line, "modulate", Color.WHITE, 0.22)
 
 
 func _expression_color(expression: String) -> Color:
@@ -237,3 +230,11 @@ func _expression_color(expression: String) -> Color:
 	if expression == "focus":
 		return Color("55d6ef")
 	return Color("68b8c8")
+
+
+func _expression_status(expression: String) -> String:
+	if expression == "warning":
+		return "현장 경보"
+	if expression == "focus":
+		return "근거 대조"
+	return "기록 대조"

@@ -18,6 +18,7 @@ status_definitions:
   - PROJECT_ASSET_APPROVED
   - PRODUCTION_READY
   - IMPLEMENTED
+  - RUNTIME_VERIFIED
   - VISUALLY_VALIDATED
   - PARTIAL_REFERENCE
   - SUPERSEDED
@@ -36,6 +37,76 @@ canonical_rules:
     - new
 
 assets:
+  - asset_id: "ULAB-MAIN-MENU-BACKGROUND-001"
+    name: "Bureau Archive Research Room main-menu background"
+    category: "environment_background"
+    purpose: "The user-approved characterless archive-research-room environment behind the live main-menu UI."
+    owner_discipline: "Visual"
+    affected_disciplines:
+      - "Godot UI"
+      - "UX"
+      - "Accessibility"
+    statuses:
+      - "PROJECT_ASSET_APPROVED"
+      - "PRODUCTION_READY"
+      - "IMPLEMENTED"
+      - "RUNTIME_VERIFIED"
+    vault_source_key: "ULAB_MAIN_MENU_BUREAU_ARCHIVE_20260831"
+    canonical_path: "assets/backgrounds/bureau_archive_menu.png"
+    source_path: "USER_ATTACHMENT: codex-clipboard-e2893934-18b7-424f-9dd4-557eb92db1ec.png"
+    runtime_path: "scenes/main_menu.tscn -> scripts/ui/main_menu.gd -> MainMenuBackdrop"
+    latest_capture_path: "docs/qa/captures/main-menu/bureau-archive-20260831/main-menu-bureau-1280x720.png"
+    golden_screenshot_path: ""
+    source_type: "USER_PROVIDED"
+    source_and_license: >
+      User-provided image attached in this Codex task and explicitly locked for the main-menu background on 2026-08-31.
+      This receipt records provenance and the current approved runtime use; it is not legal clearance for distribution.
+    approved_reference: "docs/visual/receipts/ULAB_MAIN_MENU_BACKGROUND_20260831.md"
+    supersedes: ""
+    superseded_by: ""
+    replacement_requires_approval: true
+    reference_elements:
+      use:
+        - "Textless archive research room with an open central passage for live menu controls"
+        - "Restrained eastern and western occult-research objects integrated into a modern bureau space"
+        - "No baked interaction labels; Godot owns the live menu and status information"
+      do_not_use:
+        - "Baked menus, fictional operator identity, fake live event data, or copied case details from reference mockups"
+        - "Characters, active anomaly combat, scenario-specific subject matter, or a route-specific scene"
+    visual_dna:
+      silhouette: "Deep archive laboratory with a clear central aisle and quieter negative space for the action rail."
+      proportion: "1672x941 landscape PNG, fitted by MainMenuBackdrop with KEEP_ASPECT_COVERED."
+      camera: "Wide eye-level interior view with archive shelves framing both sides and the work area receding into depth."
+      palette: "Near-black charcoal, muted cyan containment glow, warm brass practicals, and restrained gold detail."
+      material_language: "The supplied soft anime-noir research-room image; the runtime UI remains separately rendered."
+      engine_import: "Godot Texture2D import from the exact canonical PNG."
+      accessibility_fallback: "All menu actions, save state, current-case state, and settings remain readable in native Godot controls independently of the image."
+    generation_record:
+      tool_and_model: "User-provided image attachment; creation model and prompt not asserted by this repository."
+      prompt_core: "Not supplied as provenance."
+      seed_or_reproduction: "Not supplied."
+      manual_post_process: "None; canonical bytes are the approved attached source."
+      known_remaining_issues: "Focused machine/runtime capture is complete; human visual/accessibility QA and distribution-rights review remain pending."
+    validation:
+      sha256: "dab2c35a06cbce5d2a4b4b1d071ed0589e77bf801f35457ed97c329fa238a504"
+      target_resolutions:
+        - "1280x720"
+        - "1920x1080"
+      runtime_verified: true
+      visual_qa_verified: false
+      accessibility_verified: false
+      evidence:
+        - "docs/visual/receipts/ULAB_MAIN_MENU_BACKGROUND_20260831.md"
+        - "tests/test_main_menu_control_room_static_contract.py"
+        - "tests/validation/validation_main_menu_contract_test.gd"
+        - "tests/validation/main_menu_window_breakpoint_test.gd"
+        - "docs/qa/captures/main-menu/bureau-archive-20260831/main-menu-bureau-1280x720.png"
+        - "docs/qa/captures/main-menu/bureau-archive-20260831/main-menu-bureau-window-1920x1061.png"
+      last_verified_commit: ""
+    next_review_triggers:
+      - "After a MainMenuBackdrop, rail layout, or background scaling change"
+      - "At the first visual review at target resolutions"
+      - "Before distribution-rights sign-off"
   - asset_id: "M01-INVESTIGATION-BACKGROUND-001"
     name: "Afterlife Station Investigation background"
     category: "environment_background"
@@ -565,7 +636,7 @@ assets:
     canonical_path: "assets/anomalies/cutouts/red_umbrella_b_cutout.png"
     source_path: "docs/visual/candidates/M04_ANOMALY_BC_ADAPT_01_20260827.png"
     runtime_path: "scenes/battle_scene.tscn -> CinematicStage/AnomalyPanel/Content/AnomalyVisual"
-    latest_capture_path: "docs/qa/captures/m04/bc_promotion_20260827/m04-bc-promoted-1280x720.png"
+    latest_capture_path: "docs/qa/captures/m04/recovery-operation-20260831/m04-bc-promoted-1280x720.png"
     golden_screenshot_path: ""
     source_type: "AI_GENERATED"
     source_and_license: >

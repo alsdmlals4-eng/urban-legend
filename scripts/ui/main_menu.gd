@@ -10,6 +10,8 @@ const ValidationInspectorScript = preload("res://scripts/core/validation_persist
 const ValidationEntryCoordinatorScript = preload("res://scripts/ui/validation_entry_coordinator.gd")
 const ValidationRouteMapperScript = preload("res://scripts/core/validation_route_mapper.gd")
 const ProductVersion = preload("res://scripts/core/product_version.gd")
+const MAIN_MENU_BACKGROUND_ID := "bureau_archive_menu"
+const TITLE_SERIF_FONT := preload("res://assets/fonts/noto/NotoSerifKR-VF.ttf")
 
 var _start_episode_button: Button
 var _continue_button: Button
@@ -77,7 +79,8 @@ func _make_validation_coordinator() -> Object:
 
 func _build_ui() -> void:
 	var backdrop := TextureRect.new()
-	backdrop.texture = AssetCatalog.new().get_texture("afterlife_entrance")
+	backdrop.name = "MainMenuBackdrop"
+	backdrop.texture = AssetCatalog.new().get_texture(MAIN_MENU_BACKGROUND_ID)
 	backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	backdrop.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	backdrop.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
@@ -85,7 +88,8 @@ func _build_ui() -> void:
 	add_child(backdrop)
 
 	var background := ColorRect.new()
-	background.color = Color(0.025, 0.035, 0.05, 0.82)
+	background.name = "MainMenuBackdropShade"
+	background.color = Color(0.018, 0.026, 0.035, 0.54)
 	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	background.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(background)
@@ -138,24 +142,46 @@ func _make_menu_rail(parent: Control, node_name: String, minimum_width: float, s
 
 
 func _build_identity_rail(parent: VBoxContainer) -> void:
+	var title_lockup := VBoxContainer.new()
+	title_lockup.name = "WorldTitleLockup"
+	title_lockup.add_theme_constant_override("separation", 3)
+	parent.add_child(title_lockup)
+
 	var bureau_mark := Label.new()
-	bureau_mark.text = "RECORD / CONTAIN / RETURN"
+	bureau_mark.name = "WorldTitleMark"
+	bureau_mark.text = "기록 · 봉쇄 · 귀환"
 	bureau_mark.add_theme_color_override("font_color", ThemeFactory.COLOR_TEAL)
 	bureau_mark.add_theme_font_size_override("font_size", 12)
-	parent.add_child(bureau_mark)
+	title_lockup.add_child(bureau_mark)
 
 	var title := Label.new()
-	title.name = "BureauTitle"
+	title.name = "WorldTitle"
 	title.text = "괴이기록국"
-	title.add_theme_font_size_override("font_size", 42)
+	title.add_theme_font_override("font", TITLE_SERIF_FONT)
+	title.add_theme_font_size_override("font_size", 46)
 	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	parent.add_child(title)
+	title_lockup.add_child(title)
 
-	var english := Label.new()
-	english.text = "Urban Legend Archive Bureau"
-	english.add_theme_color_override("font_color", ThemeFactory.COLOR_MUTED)
-	english.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	parent.add_child(english)
+	var report_title := Label.new()
+	report_title.name = "WorldTitleSuffix"
+	report_title.text = "잔향 보고서"
+	report_title.add_theme_font_override("font", TITLE_SERIF_FONT)
+	report_title.add_theme_font_size_override("font_size", 26)
+	report_title.add_theme_color_override("font_color", ThemeFactory.COLOR_AMBER)
+	report_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	title_lockup.add_child(report_title)
+
+	var subtitle := Label.new()
+	subtitle.name = "WorldSubtitle"
+	subtitle.text = "BUREAU OF ANOMALIES: ECHO REPORT"
+	subtitle.add_theme_font_override("font", TITLE_SERIF_FONT)
+	subtitle.add_theme_color_override("font_color", ThemeFactory.COLOR_AMBER)
+	subtitle.add_theme_font_size_override("font_size", 15)
+	subtitle.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	title_lockup.add_child(subtitle)
+
+	var title_rule := HSeparator.new()
+	title_lockup.add_child(title_rule)
 
 	var version_label := Label.new()
 	version_label.name = "VersionLabel"
@@ -492,17 +518,21 @@ func _focus_initial_action() -> void:
 
 func _apply_responsive_layout() -> void:
 	var compact := _is_compact_layout()
+	# A 1080p desktop window can have a smaller client height once its frame is
+	# accounted for. Keep the information preview, but use compact control density
+	# before any keyboard-reachable menu action falls below the client area.
+	var dense := compact or _uses_dense_vertical_layout()
 	if _current_case_preview != null:
 		_current_case_preview.visible = not compact and _current_case_preview.texture != null
 	if _current_case_summary != null:
 		_current_case_summary.visible = not compact and not _current_case_summary.text.is_empty()
 	if _identity_rail != null:
-		_identity_rail.add_theme_constant_override("separation", 4 if compact else 12)
+		_identity_rail.add_theme_constant_override("separation", 4 if dense else 12)
 	if _action_rail != null:
-		_action_rail.add_theme_constant_override("separation", 4 if compact else 12)
+		_action_rail.add_theme_constant_override("separation", 4 if dense else 12)
 	if _intelligence_rail != null:
-		_intelligence_rail.add_theme_constant_override("separation", 4 if compact else 12)
-	_apply_compact_menu_density(compact)
+		_intelligence_rail.add_theme_constant_override("separation", 4 if dense else 12)
+	_apply_compact_menu_density(dense)
 
 
 func _apply_compact_menu_density(compact: bool) -> void:
@@ -556,6 +586,12 @@ func _apply_compact_menu_density(compact: bool) -> void:
 
 func _is_compact_layout() -> bool:
 	return _is_compact_for_sizes(size, Vector2(DisplayServer.window_get_size()))
+
+
+func _uses_dense_vertical_layout() -> bool:
+	var physical_size := Vector2(DisplayServer.window_get_size())
+	var effective_height := maxf(size.y, physical_size.y)
+	return effective_height < 1120.0
 
 
 func _is_compact_for_sizes(control_size: Vector2, window_size: Vector2) -> bool:

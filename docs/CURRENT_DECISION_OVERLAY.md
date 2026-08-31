@@ -104,6 +104,16 @@ base_adapter_baseline_reconciliation: COMPLETE
 - keyboard focus 계약 유지.
 - Human/UI usability는 `NOT_RUN`.
 
+### 제품 표시 제목 및 Bureau archive 메뉴 배경 — 2026-08-31
+
+판정: `USER_APPROVED / IMPLEMENTED / FOCUSED_MACHINE_VERIFIED / GPU_RUNTIME_CAPTURED / HUMAN_QA_NOT_RUN`.
+
+- 플레이어 노출 제품 제목은 **`괴이기록국: 잔향 보고서`**다. 메인 메뉴의 네이티브 `WorldTitle`과 `WorldTitleSuffix`가 이를 조합해 표시하며, 영문 표기는 `BUREAU OF ANOMALIES: ECHO REPORT`다.
+- 세계관의 공식 기관명은 계속 **괴이 기록국**이다. 이 표시 제목 결정은 저장 위치, 프로젝트 설정의 application identity, Episode/Case/asset ID, 기존 매뉴얼·보고서 정본 용어를 바꾸지 않는다.
+- `ULAB-MAIN-MENU-BACKGROUND-001`은 사용자가 제공·승인한 연구실/보관실 환경 PNG이며 `UiAssetCatalog → MainMenuBackdrop` 소비처로만 사용한다. 메뉴와 상태 정보는 Godot 네이티브 UI가 소유한다.
+- 1280×720 및 1920×1061 GPU runtime capture와 menu contract/breakpoint 테스트는 기록했으나, 사람 시각·접근성 검수와 배포 권리 검토는 여전히 `NOT_RUN` / pending이다.
+- 이전에 생성했으나 선택되지 않은 메뉴 배경 후보는 `REJECTED / NOT_SELECTED`이며 프로젝트 자산·매니페스트·런타임 소비자가 아니다.
+
 ### M04 release-near preparation
 
 판정: `SHARED_SYSTEM_BASELINE_AND_PLAYER_AUTHORED_MANUAL_IMPLEMENTED / FINAL_VISUAL_GATE_PENDING`.

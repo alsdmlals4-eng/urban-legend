@@ -58,6 +58,7 @@ func _run_component_tests() -> void:
 	], "normal", false)
 	_check(guide.get_current_text() == "접속 완료", "guide presents first line")
 	_check(guide.get_current_expression() == "normal", "guide presents normal expression")
+	_check(guide.find_child("Portrait", true, false) == null, "shared procedure communication must not render deprecated Log portrait art")
 	guide.advance()
 	_check(guide.get_current_text() == "기록 대조 중", "guide advances sequence")
 	_check(guide.get_current_expression() == "focus", "guide changes expression")
@@ -76,9 +77,9 @@ func _run_component_tests() -> void:
 	_check(LogTutorialCatalog.get_entry("unknown").is_empty(), "unknown tutorial is safe")
 	_check(LogTutorialCatalog.get_repeat_hint("main_welcome").length() > 0, "repeat hint exists")
 	var catalog := AssetCatalog.new()
-	_check(catalog.get_asset_path("log_normal").ends_with("log_normal.png"), "normal Log asset path registered")
-	_check(catalog.get_asset_path("log_focus").ends_with("log_focus.png"), "focus Log asset path registered")
-	_check(catalog.get_asset_path("log_warning").ends_with("log_warning.png"), "warning Log asset path registered")
+	_check(catalog.get_asset_path("log_normal").is_empty(), "normal deprecated Log portrait has no active catalog path")
+	_check(catalog.get_asset_path("log_focus").is_empty(), "focus deprecated Log portrait has no active catalog path")
+	_check(catalog.get_asset_path("log_warning").is_empty(), "warning deprecated Log portrait has no active catalog path")
 	guide.queue_free()
 
 
