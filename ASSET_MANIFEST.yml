@@ -107,6 +107,76 @@ assets:
       - "After a MainMenuBackdrop, rail layout, or background scaling change"
       - "At the first visual review at target resolutions"
       - "Before distribution-rights sign-off"
+  - asset_id: "ULAB-MAIN-MENU-EMBLEM-001"
+    name: "Bureau Archive main-menu emblem"
+    category: "brand_emblem"
+    purpose: "The user-selected first archival emblem rendered as the compact identity mark in the live main-menu title lockup."
+    owner_discipline: "Visual"
+    affected_disciplines:
+      - "Godot UI"
+      - "UX"
+      - "Accessibility"
+    statuses:
+      - "PROJECT_ASSET_APPROVED"
+      - "PRODUCTION_READY"
+      - "IMPLEMENTED"
+      - "RUNTIME_VERIFIED"
+    vault_source_key: "ULAB_MAIN_MENU_EMBLEM_MARK_01_20260831"
+    canonical_path: "assets/ui/bureau_archive_emblem.png"
+    source_path: "OPENAI_BUILT_IN_IMAGE_GENERATION: exec-e0f90e1d-4e28-4c12-b310-f759a0034360.png; canonical path is the sole repository copy"
+    runtime_path: "scenes/main_menu.tscn -> scripts/ui/main_menu.gd -> WorldTitleLockup/WorldTitleEmblem"
+    latest_capture_path: "docs/qa/captures/main-menu/bureau-emblem-20260831/main-menu-emblem-1280x720.png"
+    golden_screenshot_path: ""
+    source_type: "AI_GENERATED"
+    source_and_license: >
+      Generated through the OpenAI built-in image generation surface, then the user explicitly selected the first candidate
+      for use on 2026-08-31. The candidate is recorded with its exact SHA-256 and no named third-party logo or character is
+      asserted as an input. This provenance receipt is not distribution-rights or legal clearance.
+    approved_reference: "docs/visual/receipts/ULAB_MAIN_MENU_EMBLEM_20260831.md"
+    supersedes: ""
+    superseded_by: ""
+    replacement_requires_approval: true
+    reference_elements:
+      use:
+        - "The user-selected first compact archival-occult bureau emblem"
+        - "Transparent mark rendered beside the live native Korean title without baked menu interaction"
+      do_not_use:
+        - "Readable title text, English copy, buttons, HUD, a second crest, or case-specific M01/M04 motifs"
+        - "Named third-party logos, character identity, or a replacement for the native accessible title text"
+    visual_dna:
+      silhouette: "Compact vertical archival emblem with enough transparent margin to read as a mark rather than a card."
+      proportion: "1224x1285 RGBA PNG displayed by a 72x72 KEEP_ASPECT_CENTERED TextureRect."
+      palette: "Selected candidate's aged-gold archival linework with its existing restrained dark accents."
+      material_language: "Detailed ritual-record engraving used only as a compact bureau identifier."
+      engine_import: "Godot Texture2D import from the exact canonical PNG."
+      performance_budget: "One 1224x1285 transparent PNG and one additional 72x72 TextureRect in the existing main-menu title lockup."
+      accessibility_fallback: "Native Korean title, subtitle, menu labels, focus order, and state information remain text controls independent of the emblem."
+    generation_record:
+      tool_and_model: "OpenAI built-in image generation (model identifier not exposed to this session)"
+      prompt_core: "Original candidate prompt was not retained in the repository; exact source filename and SHA-256 are recorded instead."
+      seed_or_reproduction: "Not exposed by the generation surface."
+      manual_post_process: "None; the canonical project copy exactly matches the user-selected generated candidate bytes."
+      known_remaining_issues: "Human visual/accessibility QA and distribution-rights review remain pending. The separate Korean word-typography image is still a generated candidate and is not consumed here."
+    validation:
+      sha256: "2c8722ca8c5e73140752b9fb4a540c672835315464b8b14cab5daa0448982d0c"
+      pixel_size: "1224x1285"
+      transparent_margin: "All four tested corner pixels have alpha 0."
+      target_resolutions:
+        - "1280x720"
+        - "1920x1080"
+      runtime_verified: true
+      visual_qa_verified: false
+      accessibility_verified: false
+      evidence:
+        - "docs/visual/receipts/ULAB_MAIN_MENU_EMBLEM_20260831.md"
+        - "tests/test_main_menu_control_room_static_contract.py"
+        - "tests/validation/validation_main_menu_contract_test.gd"
+        - "docs/qa/captures/main-menu/bureau-emblem-20260831/main-menu-emblem-1280x720.png"
+      last_verified_commit: ""
+    next_review_triggers:
+      - "After a WorldTitleLockup or title-rail layout/scaling change"
+      - "At the first human visual/accessibility review at target resolutions"
+      - "Before distribution-rights sign-off"
   - asset_id: "M01-INVESTIGATION-BACKGROUND-001"
     name: "Afterlife Station Investigation background"
     category: "environment_background"

@@ -11,6 +11,7 @@ const ValidationEntryCoordinatorScript = preload("res://scripts/ui/validation_en
 const ValidationRouteMapperScript = preload("res://scripts/core/validation_route_mapper.gd")
 const ProductVersion = preload("res://scripts/core/product_version.gd")
 const MAIN_MENU_BACKGROUND_ID := "bureau_archive_menu"
+const MAIN_MENU_EMBLEM_TEXTURE := preload("res://assets/ui/bureau_archive_emblem.png")
 const TITLE_SERIF_FONT := preload("res://assets/fonts/noto/NotoSerifKR-VF.ttf")
 
 var _start_episode_button: Button
@@ -153,6 +154,15 @@ func _build_identity_rail(parent: VBoxContainer) -> void:
 	bureau_mark.add_theme_color_override("font_color", ThemeFactory.COLOR_TEAL)
 	bureau_mark.add_theme_font_size_override("font_size", 12)
 	title_lockup.add_child(bureau_mark)
+
+	var bureau_emblem := TextureRect.new()
+	bureau_emblem.name = "WorldTitleEmblem"
+	bureau_emblem.texture = MAIN_MENU_EMBLEM_TEXTURE
+	bureau_emblem.custom_minimum_size = Vector2(72, 72)
+	bureau_emblem.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	bureau_emblem.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	bureau_emblem.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	title_lockup.add_child(bureau_emblem)
 
 	var title := Label.new()
 	title.name = "WorldTitle"

@@ -4,6 +4,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 MENU = ROOT / "scripts" / "ui" / "main_menu.gd"
 VERSION_OWNER = ROOT / "scripts" / "core" / "product_version.gd"
+MAIN_MENU_EMBLEM = ROOT / "assets" / "ui" / "bureau_archive_emblem.png"
 
 
 class MainMenuControlRoomStaticContract(unittest.TestCase):
@@ -52,6 +53,17 @@ class MainMenuControlRoomStaticContract(unittest.TestCase):
         self.assertIn('"bureau_archive_menu": "res://assets/backgrounds/bureau_archive_menu.png"', catalog)
         self.assertIn('asset_id: "ULAB-MAIN-MENU-BACKGROUND-001"', manifest)
         self.assertIn('canonical_path: "assets/backgrounds/bureau_archive_menu.png"', manifest)
+
+    def test_user_locked_bureau_emblem_is_registered_and_rendered_in_the_main_menu_identity_lockup(self) -> None:
+        menu = MENU.read_text(encoding="utf-8")
+        manifest = (ROOT / "ASSET_MANIFEST.yml").read_text(encoding="utf-8")
+
+        self.assertTrue(MAIN_MENU_EMBLEM.is_file(), "selected bureau emblem must be a project-owned runtime asset")
+        self.assertIn('preload("res://assets/ui/bureau_archive_emblem.png")', menu)
+        self.assertIn('bureau_emblem.name = "WorldTitleEmblem"', menu)
+        self.assertIn('bureau_emblem.texture = MAIN_MENU_EMBLEM_TEXTURE', menu)
+        self.assertIn('asset_id: "ULAB-MAIN-MENU-EMBLEM-001"', manifest)
+        self.assertIn('canonical_path: "assets/ui/bureau_archive_emblem.png"', manifest)
 
     def test_world_title_lockup_displays_the_approved_product_title_without_renaming_the_agency(self) -> None:
         menu = MENU.read_text(encoding="utf-8")
