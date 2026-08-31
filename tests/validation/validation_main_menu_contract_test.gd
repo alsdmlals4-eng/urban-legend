@@ -39,7 +39,9 @@ func _run() -> void:
 
 	for node_name in [
 		"MenuShell", "IdentityRail", "ActionRail", "IntelligenceRail",
+		"ActionMenuPanel", "IntelligenceControlPanel", "CentralMenuHeader", "ControlPanelHeader",
 		"WorldTitleLockup", "WorldTitleEmblem", "WorldTitleWordmark", "WorldTitle", "WorldTitleSuffix", "WorldSubtitle", "VersionLabel", "PrimaryActionHint", "CurrentCaseTitle",
+		"RecordBoundaryNotice",
 		"CurrentCaseMeta", "CurrentCaseSummary", "CurrentCasePreview",
 		"LegacyIntelStatus", "ValidationIntelStatus",
 		"SettingsButton", "SettingsPanel", "ExitButton",
@@ -81,8 +83,15 @@ func _run() -> void:
 	var settings_button := menu.find_child("SettingsButton", true, false) as Button
 	var settings_panel := menu.find_child("SettingsPanel", true, false) as Control
 	var exit_button := menu.find_child("ExitButton", true, false) as Button
+	var record_boundary_notice := menu.find_child("RecordBoundaryNotice", true, false) as Label
 	var bureau_backdrop := menu.find_child("MainMenuBackdrop", true, false) as TextureRect
 	var bureau_backdrop_shade := menu.find_child("MainMenuBackdropShade", true, false) as ColorRect
+	var menu_shell := menu.find_child("MenuShell", true, false) as HBoxContainer
+	var identity_rail := menu.find_child("IdentityRail", true, false) as VBoxContainer
+	var action_rail := menu.find_child("ActionRail", true, false) as VBoxContainer
+	var intelligence_rail := menu.find_child("IntelligenceRail", true, false) as VBoxContainer
+	var action_panel := menu.find_child("ActionMenuPanel", true, false) as PanelContainer
+	var intelligence_panel := menu.find_child("IntelligenceControlPanel", true, false) as PanelContainer
 
 	_expect(version_label != null and version_label.text == "Ver 4.3", "menu must display canonical Ver 4.3")
 	_expect(world_title != null and world_title.text == "괴이기록국", "product title keeps the established bureau wordmark")
@@ -91,12 +100,16 @@ func _run() -> void:
 	_expect(world_title_suffix != null and world_title_suffix.text == "잔향 보고서", "product title displays the approved report subtitle")
 	_expect(world_subtitle != null and world_subtitle.text == "BUREAU OF ANOMALIES: ECHO REPORT", "English subtitle mirrors the product title without changing runtime IDs")
 	_expect(bureau_backdrop != null and bureau_backdrop.texture != null, "user-approved bureau archive must render as the menu backdrop")
-	_expect(bureau_backdrop_shade != null and bureau_backdrop_shade.color.a < 0.82, "bureau backdrop shade must preserve the research room read")
+	_expect(bureau_backdrop_shade != null and bureau_backdrop_shade.color.a <= 0.34, "bureau backdrop shade must preserve the approved research-room read")
+	_expect(menu_shell != null and identity_rail != null and identity_rail.get_parent() == menu_shell, "brand rail must stay open over the archive room instead of becoming a third opaque panel")
+	_expect(action_panel != null and action_rail != null and action_rail.get_parent() == action_panel, "main actions must live in the central menu panel")
+	_expect(intelligence_panel != null and intelligence_rail != null and intelligence_rail.get_parent() == intelligence_panel, "current-case information must live in the right control panel")
 	_expect(primary_hint != null and "새 캠페인 시작" in primary_hint.text, "no-save state must name new campaign as primary")
 	_expect(current_case_title != null and "저승역" in current_case_title.text, "current case must use loaded canonical episode data")
 	_expect(settings_button != null and settings_button.focus_mode == Control.FOCUS_ALL, "settings must accept keyboard focus")
 	_expect(settings_panel != null and not settings_panel.visible, "settings panel must start collapsed")
 	_expect(exit_button != null and exit_button.focus_mode == Control.FOCUS_ALL, "exit must accept keyboard focus")
+	_expect(record_boundary_notice != null and not record_boundary_notice.visible, "720p must hide the duplicate identity-rail boundary notice before it can clip at the viewport edge")
 	_expect(menu.find_children("*", "ScrollContainer", true, false).is_empty(), "main menu must not contain a document-wall ScrollContainer")
 
 	await process_frame
@@ -105,6 +118,8 @@ func _run() -> void:
 	_expect(_inside_viewport(world_title_emblem), "bureau emblem must fit inside 1280x720")
 	_expect(_inside_viewport(world_title_wordmark), "bureau wordmark must fit inside 1280x720")
 	_expect(_inside_viewport(legacy_new_button), "primary Legacy action must fit inside 1280x720")
+	_expect(legacy_new_button.size.y >= 72.0, "primary campaign action must read as a full menu row, not a compact utility button")
+	_expect(exit_button != null and exit_button.get_global_rect().end.y <= float(root.size.y) - 8.0, "720p exit row must retain an eight-pixel safe margin below the clean menu stack")
 	_expect(m04_entry_button.focus_neighbor_top == m04_entry_button.get_path_to(legacy_new_button), "M04 entry must follow the standard new-campaign action in keyboard focus order")
 	_expect(m04_entry_button.focus_neighbor_bottom == m04_entry_button.get_path_to(validation_button), "M04 entry must lead to the Validation action in keyboard focus order")
 
@@ -143,7 +158,7 @@ func _run() -> void:
 
 	var case_preview := menu.find_child("CurrentCasePreview", true, false) as Control
 	var case_summary := menu.find_child("CurrentCaseSummary", true, false) as Control
-	_expect(case_preview != null and not case_preview.visible, "1280x720 must compact secondary preview first")
+	_expect(case_preview != null and case_preview.visible and _inside_viewport(case_preview), "1280x720 must retain the current-case preview in the right control panel")
 	_expect(case_summary != null and not case_summary.visible, "1280x720 must compact secondary summary first")
 
 	root.size = Vector2i(1920, 1080)

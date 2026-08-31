@@ -23,5 +23,5 @@
 
 - Consumer: `scripts/ui/main_menu.gd → WorldTitleLockup/WorldTitleWordmark`.
 - The visual wordmark replaces duplicate visible Korean title labels. `WorldTitle` and `WorldTitleSuffix` keep their established node IDs and exact text values for compatibility and semantic fallback.
-- 1280×720 runtime capture: `docs/qa/captures/main-menu/bureau-wordmark-20260901/main-menu-wordmark-1280x720.png`.
+- Current 1280×720 runtime capture after the approved three-zone menu layout: `docs/qa/captures/main-menu/reference-layout-20260901/main-menu-reference-layout-1280x720.png`.
 - Machine/runtime verification is recorded only after the Godot import and main-menu contract run. Human visual review, accessibility observation, distribution-rights clearance, and release approval remain `NOT_RUN`.

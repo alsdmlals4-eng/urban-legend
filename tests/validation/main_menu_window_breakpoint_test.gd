@@ -26,7 +26,7 @@ func _run() -> void:
 	var summary := menu.find_child("CurrentCaseSummary", true, false) as Control
 	_expect(preview != null, "main menu must provide the current-case preview")
 	_expect(summary != null, "main menu must provide the current-case summary")
-	_expect(preview != null and not preview.visible, "1280x720 must hide the current-case preview")
+	_expect(preview != null and preview.visible and _inside_viewport(preview), "1280x720 must retain the current-case preview for the right control panel")
 	_expect(summary != null and not summary.visible, "1280x720 must hide the current-case summary")
 	_expect(menu.has_method("_is_compact_for_sizes"), "main menu must expose a physical-window breakpoint helper")
 	if menu.has_method("_is_compact_for_sizes"):
