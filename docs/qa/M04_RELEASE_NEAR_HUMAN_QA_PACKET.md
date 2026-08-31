@@ -1,10 +1,10 @@
 # 괴이기록국 M04 Release-near Human QA Packet
 
-> Route: M04_RELEASE_NEAR_VERTICAL_SLICE  
-> Evidence mode: BEHAVIOR_FIRST_SELF_REPORT_SECOND  
-> Current status: M04_HUMAN_QA_PACKET_READY / HUMAN_QA_NOT_RUN  
-> Automation boundary: NO_AUTOMATIC_PASS  
-> Scope: M04 빨간 우산의 조사·플레이어 작성 매뉴얼·피해자 보호·회수 시계·Composite Result  
+> Route: M04_RELEASE_NEAR_VERTICAL_SLICE
+> Evidence mode: BEHAVIOR_FIRST_SELF_REPORT_SECOND
+> Current status: M04_HUMAN_QA_PACKET_READY / HUMAN_QA_NOT_RUN
+> Automation boundary: NO_AUTOMATIC_PASS
+> Scope: M04 빨간 우산의 조사·플레이어 작성 매뉴얼·피해자 보호·회수 시계·Composite Result
 > Excludes: product-reference asset 승격, release visual/audio/VFX PASS, 접근성·출시 PASS
 
 ## 1. 목적
