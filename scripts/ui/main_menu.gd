@@ -20,6 +20,7 @@ var _legacy_continue_button: Button
 var _legacy_status_label: Label
 var _validation_primary_button: Button
 var _validation_secondary_button: Button
+var _menu_panel_style_cache: Dictionary = {}
 var _validation_status_label: Label
 var _validation_badge_label: Label
 var _database_button: Button
@@ -418,6 +419,7 @@ func _rebuild_focus_chain() -> void:
 	var candidates: Array[Button] = [
 		_legacy_continue_button,
 		_legacy_new_campaign_button,
+		_m04_campaign_entry_button,
 		_validation_primary_button,
 		_validation_secondary_button,
 		_database_button,
@@ -457,6 +459,7 @@ func _apply_primary_action_emphasis() -> void:
 	var buttons: Array[Button] = [
 		_legacy_continue_button,
 		_legacy_new_campaign_button,
+		_m04_campaign_entry_button,
 		_validation_primary_button,
 		_validation_secondary_button,
 		_database_button,
@@ -494,11 +497,61 @@ func _apply_responsive_layout() -> void:
 	if _current_case_summary != null:
 		_current_case_summary.visible = not compact and not _current_case_summary.text.is_empty()
 	if _identity_rail != null:
-		_identity_rail.add_theme_constant_override("separation", 8 if compact else 12)
+		_identity_rail.add_theme_constant_override("separation", 4 if compact else 12)
 	if _action_rail != null:
-		_action_rail.add_theme_constant_override("separation", 8 if compact else 12)
+		_action_rail.add_theme_constant_override("separation", 4 if compact else 12)
 	if _intelligence_rail != null:
-		_intelligence_rail.add_theme_constant_override("separation", 8 if compact else 12)
+		_intelligence_rail.add_theme_constant_override("separation", 4 if compact else 12)
+	_apply_compact_menu_density(compact)
+
+
+func _apply_compact_menu_density(compact: bool) -> void:
+	if _menu_shell != null:
+		_menu_shell.add_theme_constant_override("separation", 10 if compact else 18)
+	for panel_value in _menu_shell.find_children("*", "PanelContainer", true, false) if _menu_shell != null else []:
+		var panel := panel_value as PanelContainer
+		if panel == null:
+			continue
+		var panel_id := panel.get_instance_id()
+		if not _menu_panel_style_cache.has(panel_id):
+			var base_style := panel.get_theme_stylebox("panel") as StyleBoxFlat
+			if base_style == null:
+				continue
+			_menu_panel_style_cache[panel_id] = base_style.duplicate() as StyleBoxFlat
+		var cached_style := _menu_panel_style_cache.get(panel_id) as StyleBoxFlat
+		if cached_style == null:
+			continue
+		var adjusted_style := cached_style.duplicate() as StyleBoxFlat
+		if compact:
+			adjusted_style.content_margin_top = 6
+			adjusted_style.content_margin_bottom = 6
+			adjusted_style.content_margin_left = 10
+			adjusted_style.content_margin_right = 10
+		panel.add_theme_stylebox_override("panel", adjusted_style)
+
+	var entry_cards := _action_rail.get_node_or_null("EntryCards") as VBoxContainer if _action_rail != null else null
+	if entry_cards != null:
+		entry_cards.add_theme_constant_override("separation", 4 if compact else 10)
+	var button_height := 36.0 if compact else 46.0
+	var button_font_size := 15 if compact else 16
+	for button in [
+		_legacy_continue_button,
+		_legacy_new_campaign_button,
+		_m04_campaign_entry_button,
+		_validation_primary_button,
+		_validation_secondary_button,
+		_database_button,
+		_settings_button,
+		_exit_button,
+	]:
+		if button == null:
+			continue
+		button.custom_minimum_size.y = button_height
+		button.add_theme_font_size_override("font_size", button_font_size)
+	var primary := _meaningful_primary_action()
+	if primary != null:
+		primary.custom_minimum_size.y = 48.0 if compact else 62.0
+		primary.add_theme_font_size_override("font_size", 18 if compact else 20)
 
 
 func _is_compact_layout() -> bool:

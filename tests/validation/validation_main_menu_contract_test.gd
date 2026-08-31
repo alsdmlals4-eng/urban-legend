@@ -61,7 +61,8 @@ func _run() -> void:
 	var validation_secondary := menu.find_child("ValidationSecondaryButton", true, false) as Button
 	var validation_status := menu.find_child("ValidationStatusLabel", true, false) as Label
 	var db_button := menu.find_child("DatabaseButton", true, false) as Button
-	for required_control in [badge, legacy_button, legacy_new_button, validation_button, validation_secondary, validation_status, db_button]:
+	var m04_entry_button := menu.find_child("M04CampaignEntryButton", true, false) as Button
+	for required_control in [badge, legacy_button, legacy_new_button, m04_entry_button, validation_button, validation_secondary, validation_status, db_button]:
 		if required_control == null:
 			_expect(false, "all named controls must have expected types")
 			_cleanup(menu)
@@ -87,6 +88,8 @@ func _run() -> void:
 	_expect(root.gui_get_focus_owner() == legacy_new_button, "no-save initial focus must match the primary new-campaign action")
 	_expect(_inside_viewport(version_label), "Ver 4.3 must fit inside 1280x720")
 	_expect(_inside_viewport(legacy_new_button), "primary Legacy action must fit inside 1280x720")
+	_expect(m04_entry_button.focus_neighbor_top == m04_entry_button.get_path_to(legacy_new_button), "M04 entry must follow the standard new-campaign action in keyboard focus order")
+	_expect(m04_entry_button.focus_neighbor_bottom == m04_entry_button.get_path_to(validation_button), "M04 entry must lead to the Validation action in keyboard focus order")
 
 	_expect("별도 기록" in badge.text, "Validation badge must explain persistence separation")
 	_expect(legacy_button.focus_mode == Control.FOCUS_ALL, "Legacy primary must accept keyboard focus")

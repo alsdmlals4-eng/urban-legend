@@ -38,6 +38,9 @@ func _run() -> void:
 			not bool(menu.call("_is_compact_for_sizes", Vector2(1280.0, 720.0), Vector2(1920.0, 1080.0))),
 			"1920x1080 physical window must override the 1280x720 canvas baseline"
 		)
+	for node_name in ["M04CampaignEntryButton", "DatabaseButton", "SettingsButton", "ExitButton"]:
+		var action := menu.find_child(node_name, true, false) as Control
+		_expect(action != null and _inside_viewport(action), "%s must remain reachable inside 1280x720 compact layout" % node_name)
 	menu.queue_free()
 	for _frame in range(3):
 		await process_frame
@@ -47,6 +50,12 @@ func _run() -> void:
 func _expect(condition: bool, message: String) -> void:
 	if not condition:
 		_failures.append(message)
+
+
+func _inside_viewport(control: Control) -> bool:
+	if control == null or not control.is_visible_in_tree():
+		return false
+	return Rect2(Vector2.ZERO, Vector2(root.size)).encloses(control.get_global_rect())
 
 
 func _finish() -> void:
