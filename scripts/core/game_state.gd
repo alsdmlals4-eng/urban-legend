@@ -184,6 +184,17 @@ func restart_afterlife_station_flow(agent_ids: Array = []) -> bool:
 	return not current_episode_data.is_empty()
 
 
+## Starts a new campaign at the real preparation screen so a player can choose
+## an incident before dispatching. The standard M01 opening remains separate.
+func begin_campaign_case_selection(agent_ids: Array = []) -> bool:
+	reset_run_state()
+	var preparation_team := agent_ids if not agent_ids.is_empty() else ["agent_kwon_narae", "agent_oh_hyun", "agent_kang_ijun"]
+	set_selected_agent_ids(preparation_team)
+	_ensure_kwon_protagonist()
+	current_scene_path = SCENE_PREPARATION
+	return not current_episode_data.is_empty()
+
+
 ## Starts another episode while preserving unlocked preparation rewards and the current team.
 func start_episode_from_preparation(file_path: String) -> bool:
 	if not load_episode(file_path):
@@ -2742,12 +2753,12 @@ func get_investigation_point_support_text(point: Dictionary) -> Array:
 	var lines: Array = []
 	var tags := _to_string_array(point.get("tags", []))
 	if tags.has("frequency_related") and has_equipped_item(EQUIP_FREQUENCY_FILTER):
-		lines.append("아카 장비 안내: 폐주파수 필터가 잡음을 분리할 준비를 마쳤습니다. 이 조사 포인트의 주파수 패턴에서 힌트 1회를 사용할 수 있습니다.")
+		lines.append("루메 장비 안내: 폐주파수 필터가 잡음을 분리할 준비를 마쳤습니다. 이 조사 포인트의 주파수 패턴에서 힌트 1회를 사용할 수 있습니다.")
 
 	if has_unlocked_record("record_repeating_announcement"):
-		lines.append("아카 기록물 참고: 저승역의 반복 안내방송 기록과 유사한 잡음 패턴입니다.")
+		lines.append("루메 기록물 참고: 저승역의 반복 안내방송 기록과 유사한 잡음 패턴입니다.")
 	elif has_unlocked_record("record_black_ticket_core"):
-		lines.append("아카 기록물 참고: 검은 승차권의 핵 기록에서 확인한 반복 경로 규칙을 대조하세요.")
+		lines.append("루메 기록물 참고: 검은 승차권의 핵 기록에서 확인한 반복 경로 규칙을 대조하세요.")
 	return lines
 
 
@@ -2759,7 +2770,7 @@ func get_project_core_sentence() -> String:
 ## Returns mascot guide lines for the case preparation screen.
 func get_preparation_log_lines() -> Array:
 	var lines: Array = [
-		"기록관 아카: 괴이 기록국 관제 AI입니다. 장비, 기록물, 위험 안내를 조사 시작 전에 정리합니다.",
+		"루메: 괴이 기록국 기록 보조입니다. 장비, 기록물, 위험 안내를 조사 시작 전에 정리합니다.",
 		"핵심 원칙: %s" % get_project_core_sentence()
 	]
 	if has_equipped_item(EQUIP_FREQUENCY_FILTER):
@@ -2782,15 +2793,88 @@ func get_preparation_log_lines() -> Array:
 	return lines
 
 
-## Returns true when the current clue rate allows entering the resolution phase.
+## Returns the current manual-derived rescue gate without judging which authored
+## candidate is true. Recovery is where the player-facing hypothesis receives
+## its observable confirmation or danger-case feedback.
+func get_current_manual_rescue_gate_status() -> Dictionary:
+	var episode: Dictionary = get_current_episode()
+	var manual_value: Variant = episode.get("investigation_manual", {})
+	if not (manual_value is Dictionary):
+		return {"required": false, "ready": true, "minimum_earned_records": 0, "minimum_completed_rules": 0, "earned_record_count": 0, "completed_rule_count": 0}
+	var manual := manual_value as Dictionary
+	var rescue_gate_value: Variant = manual.get("rescue_gate", {})
+	if not (rescue_gate_value is Dictionary):
+		return {"required": false, "ready": true, "minimum_earned_records": 0, "minimum_completed_rules": 0, "earned_record_count": 0, "completed_rule_count": 0}
+	var rescue_gate := rescue_gate_value as Dictionary
+	var minimum_earned_records := maxi(0, int(rescue_gate.get("minimum_earned_records", 0)))
+	var minimum_completed_rules := maxi(0, int(rescue_gate.get("minimum_completed_rules", 0)))
+	if minimum_earned_records <= 0 and minimum_completed_rules <= 0:
+		return {"required": false, "ready": true, "minimum_earned_records": 0, "minimum_completed_rules": 0, "earned_record_count": 0, "completed_rule_count": 0}
+	var earned_record_count := get_collected_clue_ids().size()
+	var completed_rule_ids := _get_completed_manual_rule_ids(manual)
+	return {
+		"required": true,
+		"ready": earned_record_count >= minimum_earned_records and completed_rule_ids.size() >= minimum_completed_rules,
+		"minimum_earned_records": minimum_earned_records,
+		"minimum_completed_rules": minimum_completed_rules,
+		"earned_record_count": earned_record_count,
+		"completed_rule_count": completed_rule_ids.size(),
+		"completed_rule_ids": completed_rule_ids
+	}
+
+
+func _get_completed_manual_rule_ids(manual: Dictionary) -> Array[String]:
+	var policy = ManualKeywordCompositionPolicyScript.new()
+	var validation: Dictionary = policy.validate_manual(manual)
+	if not bool(validation.get("ok", false)):
+		return []
+	var slot_pages := validation.get("slot_pages", {}) as Dictionary
+	var candidate_sources := validation.get("candidate_sources", {}) as Dictionary
+	var drafts := get_manual_draft_slots(manual, get_current_episode_id())
+	var earned_records: Dictionary = {}
+	for record_id_value in get_collected_clue_ids():
+		earned_records[String(record_id_value)] = true
+	var required_slots_by_page: Dictionary = {}
+	var filled_slots_by_page: Dictionary = {}
+	for slot_id_value in slot_pages.keys():
+		var slot_id := String(slot_id_value)
+		var page_id := String(slot_pages.get(slot_id_value, ""))
+		if page_id.is_empty():
+			continue
+		required_slots_by_page[page_id] = int(required_slots_by_page.get(page_id, 0)) + 1
+		var candidate_id := String(drafts.get(slot_id, ""))
+		var source_record_id := String(candidate_sources.get(candidate_id, ""))
+		if not candidate_id.is_empty() and earned_records.has(source_record_id):
+			filled_slots_by_page[page_id] = int(filled_slots_by_page.get(page_id, 0)) + 1
+	var completed_rule_ids: Array[String] = []
+	for page_id_value in required_slots_by_page.keys():
+		var page_id := String(page_id_value)
+		if int(required_slots_by_page.get(page_id, 0)) > 0 and int(filled_slots_by_page.get(page_id, 0)) == int(required_slots_by_page.get(page_id, 0)):
+			completed_rule_ids.append(page_id)
+	completed_rule_ids.sort()
+	return completed_rule_ids
+
+
+## Returns true when the current evidence grade and player-authored manual meet
+## the case's declared recovery gate. A forced recovery remains available as an
+## explicit loss-pressure fallback.
 func can_enter_resolution_phase() -> bool:
-	return forced_recovery_phase or get_resolution_grade() != "unavailable"
+	if forced_recovery_phase:
+		return true
+	if get_resolution_grade() == "unavailable":
+		return false
+	return bool(get_current_manual_rescue_gate_status().get("ready", true))
 
 
 ## Returns a warning message for the current resolution grade.
 func get_resolution_phase_warning() -> String:
 	if forced_recovery_phase:
 		return "괴이 위험도가 한계에 도달해 강제 회수전으로 밀려나고 있습니다. 단서가 부족하면 피해자 후유증과 회수 부담이 커집니다."
+	var manual_gate := get_current_manual_rescue_gate_status()
+	if bool(manual_gate.get("required", false)) and not bool(manual_gate.get("ready", false)):
+		var record_message := "확보 기록 %d/%d" % [int(manual_gate.get("earned_record_count", 0)), int(manual_gate.get("minimum_earned_records", 0))]
+		var rule_message := "작성한 매뉴얼 규칙 %d/%d" % [int(manual_gate.get("completed_rule_count", 0)), int(manual_gate.get("minimum_completed_rules", 0))]
+		return "회수 전 %s와 %s이 필요합니다. 후보를 채워도 정답 판정은 회수 대응에서만 확인됩니다." % [record_message, rule_message]
 
 	var grade := get_resolution_grade()
 	match grade:

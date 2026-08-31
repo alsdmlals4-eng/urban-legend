@@ -1344,6 +1344,7 @@ func _on_manual_draft_slot_requested(slot_id: String, candidate_id: String) -> v
 		GameState.get_current_episode_id()
 	)
 	_refresh_player_authored_workbench_model()
+	_refresh_case_status()
 
 
 func _on_manual_draft_slot_clear_requested(slot_id: String) -> void:
@@ -1352,6 +1353,7 @@ func _on_manual_draft_slot_clear_requested(slot_id: String) -> void:
 		return
 	GameState.clear_manual_draft_slot(manual, slot_id, GameState.get_current_episode_id())
 	_refresh_player_authored_workbench_model()
+	_refresh_case_status()
 
 
 func _refresh_player_authored_workbench_model() -> void:
@@ -1359,7 +1361,7 @@ func _refresh_player_authored_workbench_model() -> void:
 		return
 	var manual := _get_player_authored_workbench_manual()
 	if not manual.is_empty():
-		_manual_workbench.call("set_view_model", _build_player_authored_workbench_model(manual))
+		_manual_workbench.call("set_view_model", _build_player_authored_workbench_model(manual, String(_manual_workbench.call("get_selected_page_id"))))
 
 
 func _get_player_authored_workbench_manual() -> Dictionary:
@@ -1372,7 +1374,7 @@ func _get_player_authored_workbench_manual() -> Dictionary:
 	return {}
 
 
-func _build_player_authored_workbench_model(manual: Dictionary) -> Dictionary:
+func _build_player_authored_workbench_model(manual: Dictionary, selected_page_id: String = "") -> Dictionary:
 	var source_titles: Dictionary = {}
 	for clue_value in GameState.get_clues():
 		if clue_value is Dictionary:
@@ -1396,7 +1398,7 @@ func _build_player_authored_workbench_model(manual: Dictionary) -> Dictionary:
 	return {
 		"case_label": _player_authored_manual_case_label(),
 		"title": "괴이 매뉴얼",
-		"selected_page_id": _first_player_authored_manual_page_id(manual),
+		"selected_page_id": selected_page_id if not selected_page_id.is_empty() else _first_player_authored_manual_page_id(manual),
 		"pages": (manual.get("pages", []) as Array).duplicate(true),
 		"draft_slots": GameState.get_manual_draft_slots(manual, GameState.get_current_episode_id()),
 		"candidate_keywords": visible_candidates,
@@ -1427,9 +1429,10 @@ func _player_authored_manual_guide() -> Dictionary:
 			"portrait_visible": true
 		}
 	return {
-		"name": "기록관 아카",
+		"name": "루메",
 		"message": "확보한 기록과 문장을 대조하세요. 판단은 피해자 보호와 회수 대응에서 확인됩니다.",
-		"portrait_visible": false
+		"portrait_visible": true,
+		"portrait_variant": "red_umbrella_alley"
 	}
 
 
@@ -1604,7 +1607,7 @@ func _refresh_case_status() -> void:
 			_team_label.text += "\n팀 반응: 아직 별도 보조 기록이 없습니다."
 		else:
 			_team_label.text += "\n팀 보조: %s" % " / ".join(support_texts)
-	_preparation_modifier_label.text = "아카 준비 안내: %s" % GameState.get_next_investigation_modifier_text()
+	_preparation_modifier_label.text = "루메 준비 안내: %s" % GameState.get_next_investigation_modifier_text()
 	if not support_texts.is_empty():
 		_preparation_modifier_label.text += "\n수사 파트너 보조: %s" % " / ".join(support_texts)
 	_refresh_resolution_attempt_button()
@@ -1711,7 +1714,7 @@ func _refresh_resolution_attempt_button() -> void:
 
 func _show_resolution_confirm_panel() -> void:
 	if not GameState.can_enter_resolution_phase():
-		_result_label.text = "회수/안정화 불가: 아직 괴이의 핵에 접근할 근거가 부족합니다.\n다음 행동: 단서를 더 수집해야 합니다."
+		_result_label.text = "회수/안정화 불가: %s\n다음 행동: 확보 기록과 괴이 매뉴얼의 작성 상태를 확인하세요." % GameState.get_resolution_phase_warning()
 		_resolution_confirm_panel.visible = false
 		return
 
@@ -1727,7 +1730,7 @@ func _show_resolution_confirm_panel() -> void:
 
 func _start_resolution_attempt() -> void:
 	if not GameState.start_resolution_phase():
-		_result_label.text = "회수/안정화 불가: 단서 수집률이 40% 이상이어야 합니다."
+		_result_label.text = "회수/안정화 불가: %s" % GameState.get_resolution_phase_warning()
 		_resolution_confirm_panel.visible = false
 		_refresh_case_status()
 		return

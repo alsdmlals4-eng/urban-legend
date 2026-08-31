@@ -141,7 +141,7 @@ theme_override_constants/separation = 8
 unique_name_in_owner = true
 custom_minimum_size = Vector2(54, 0)
 layout_mode = 2
-text = "아카 안내"
+text = "루메 안내"
 
 [node name="LogHost" type="VBoxContainer" parent="SafeFrame/MainColumn/LogBar/LogRow"]
 unique_name_in_owner = true
@@ -152,7 +152,7 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"AfterlifeMeta"
-text = "현재 관찰과 확보 기록을 비교하십시오. 기록관 아카는 관련 사례의 위치만 안내합니다."
+text = "현재 관찰과 확보 기록을 비교하십시오. 루메는 관련 사례의 위치만 안내합니다."
 vertical_alignment = 1
 text_overrun_behavior = 3
 

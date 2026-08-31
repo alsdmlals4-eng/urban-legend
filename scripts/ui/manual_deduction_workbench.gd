@@ -8,6 +8,7 @@ signal draft_slot_clear_requested(slot_id: String)
 signal dismiss_requested
 
 const LUME_AFTERLIFE_TEXTURE := preload("res://assets/ui/guides/lume_afterlife_station.png")
+const LUME_RED_UMBRELLA_TEXTURE := preload("res://assets/ui/guides/lume_red_umbrella_alley.png")
 
 const COLOR_INK := Color("#090d0f")
 const COLOR_PANEL := Color("#111719")
@@ -54,6 +55,10 @@ func set_view_model(model: Dictionary) -> void:
 	_rebuild_candidate_lookup()
 	if is_node_ready():
 		_render()
+
+
+func get_selected_page_id() -> String:
+	return _selected_page_id
 
 
 func open_workbench(opener: Control = null) -> void:
@@ -360,9 +365,14 @@ func _render_lume() -> void:
 	_lume_message_label.text = String(guide.get("message", "출처 기록과 문장을 함께 비교해 보세요."))
 	var portrait_visible := bool(guide.get("portrait_visible", true))
 	if is_instance_valid(_guide_portrait):
+		_guide_portrait.texture = _guide_texture_for_variant(String(guide.get("portrait_variant", "afterlife_station")))
 		_guide_portrait.visible = portrait_visible
 	if is_instance_valid(_guide_panel):
 		_guide_panel.custom_minimum_size = Vector2(0, 184 if portrait_visible else 96)
+
+
+func _guide_texture_for_variant(variant: String) -> Texture2D:
+	return LUME_RED_UMBRELLA_TEXTURE if variant == "red_umbrella_alley" else LUME_AFTERLIFE_TEXTURE
 
 
 func _guide_view_model() -> Dictionary:

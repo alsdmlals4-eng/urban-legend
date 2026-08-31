@@ -185,13 +185,13 @@ func _ensure_ui() -> void:
 	copy.add_child(header)
 
 	_speaker_label = Label.new()
-	_speaker_label.text = "기록관 아카 · 괴이 기록국 관제 AI"
+	_speaker_label.text = "루메 · 괴이 기록국 기록 보조"
 	_speaker_label.add_theme_color_override("font_color", ThemeFactory.COLOR_TEAL)
 	_speaker_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(_speaker_label)
 
 	_next_button = Button.new()
-	_next_button.text = "아카 안내 계속"
+	_next_button.text = "루메 안내 계속"
 	_next_button.pressed.connect(advance)
 	header.add_child(_next_button)
 
@@ -214,7 +214,7 @@ func _apply_current_line() -> void:
 	_dialogue_label.text = String(line.get("text", ""))
 	_portrait.texture = AssetCatalog.new().get_log_expression(_current_expression)
 	_next_button.visible = _internal_advance_enabled
-	_next_button.text = "아카 안내 계속" if _line_index + 1 < _lines.size() else "닫기"
+	_next_button.text = "루메 안내 계속" if _line_index + 1 < _lines.size() else "닫기"
 	_status_line.color = _expression_color(_current_expression)
 	_portrait.modulate = Color.WHITE
 

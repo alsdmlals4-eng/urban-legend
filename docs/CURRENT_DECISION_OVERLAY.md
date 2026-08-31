@@ -109,8 +109,8 @@ base_adapter_baseline_reconciliation: COMPLETE
 판정: `SHARED_SYSTEM_BASELINE_AND_PLAYER_AUTHORED_MANUAL_IMPLEMENTED / FINAL_VISUAL_GATE_PENDING`.
 
 - M04-specific record/investigation/minigame/recovery IDs를 shared grammar에 연결.
-- M04의 실제 사건 데이터가 세 기존 clue ID, 두 기존 rule page, rescue gate, candidate provenance를 단일 source로 보유하고 fullscreen dossier workbench가 draft-only placement를 소비한다.
-- M04 guide는 **기록관 아카** 텍스트만 표시한다. CASE-01의 루메 초상/이름은 M04에 노출하지 않는다.
+- M04의 실제 사건 데이터가 세 기존 clue ID, 두 기존 rule page, rescue gate, candidate provenance를 단일 source로 보유하고 fullscreen dossier workbench가 draft-only placement를 소비한다. 강제 위험 전환을 제외한 자발 회수는 확보 기록 `2`개와 출처가 유효한 완성 매뉴얼 규칙 `1`개를 요구하며, 이 gate는 정답·오답 판정 없이 준비 정도만 표시한다.
+- M04 guide는 **루메**를 표시한다. CASE-04 전용 현장 복장 초상과 짧은 비정답성 절차 안내를 사용하며, CASE-01 저승역 복장을 재사용하지 않는다.
 - Composite Result axes 공유.
 - M01 truth ID를 M04 current truth로 재사용하지 않는다.
 - `PRODUCT_REFERENCE_ASSET_PENDING`, `final_visuals_authorized=false` 유지.
@@ -157,16 +157,16 @@ base_adapter_baseline_reconciliation: COMPLETE
 
 ### Contextual Lume companion and scenario costume — 2026-08-30
 
-판정: `USER_APPROVED / CASE-01_ASSET_IMPLEMENTED / SCENARIO_BOUND / HUMAN_QA_NOT_RUN`.
+판정: `USER_APPROVED / CASE-01_AND_CASE-04_ASSET_IMPLEMENTED / SCENARIO_BOUND / HUMAN_QA_NOT_RUN`.
 
 - CASE-01 조사 디바이스·현장·매뉴얼의 기록 보조 이름은 **루메**다. 전임
   블루프린트 후보에 들어간 ‘아카’ 표기는 정체성 오류로 `SUPERSEDED`다.
-- M04의 전역 기관 보조는 **기록관 아카**의 텍스트 안내다. 이는 CASE-01 루메의 대체나 새 초상 asset이 아니며, M04 workbench에는 루메의 이름·초상을 노출하지 않는다.
+- M04의 전역 기관 보조도 **루메**다. M04 workbench에는 동일한 루메 정체성을 유지한 CASE-04 전용 현장 복장 초상을 표시하며, CASE-01 저승역 복장은 재사용하지 않는다.
 - 루메는 귀여운 소형 치비 비율, 은빛 웨이브 머리, 큰 호박빛 눈의 정체성을
   유지한다. 성숙한 전신 요원 체형으로 대체하지 않는다.
-- 복장은 입장한 사건의 장소·분위기와 맞춰 달라질 수 있다. 단, 구현 중 임의로
-  costume/face/silhouette/pose를 자동 변경하지 않고, 각 사건 ID별 독립 후보와
-  사용자 승인·asset manifest·consumer 검증을 거친다.
+- 복장은 입장한 사건의 장소·분위기와 맞춰 달라질 수 있다. CASE-04 빨간 우산 골목에는
+  사용자 전체 승인 범위의 독립 현장 복장 후보 `M04-LUME-GUIDE-001`을 적용한다. 후속 사건은
+  각 사건 ID별 독립 후보와 사용자 승인·asset manifest·consumer 검증을 거친다.
 - `CASE-01 저승역` 예시의 검정·금색 도시철도 기록 보조 복장은 저승역 전용이다.
   루메는 어느 복장에서도 정답·변조·후보 적합성·미관측 정보를 알려주지 않는다.
 

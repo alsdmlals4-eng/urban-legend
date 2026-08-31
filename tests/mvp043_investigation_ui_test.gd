@@ -48,7 +48,7 @@ func _run() -> void:
 			var member_list := popover.find_child("MemberList", true, false) as Container
 			_expect(member_list != null and member_list.get_child_count() == maxi(1, game_state.get_selected_agents().size()), "team status should list every deployed protagonist/support or an explicit empty state")
 			popover.call("close")
-	_expect(not _visible_text_contains(current_scene, "LOG") and not _visible_text_contains(current_scene, "로그"), "player-facing investigation UI should use Aka instead of LOG/log")
+	_expect(not _visible_text_contains(current_scene, "LOG") and not _visible_text_contains(current_scene, "로그"), "player-facing investigation UI should use Lume instead of LOG/log")
 
 	var return_field_button := current_scene.find_child("ReturnFieldButton", true, false) as Button
 	_expect(return_field_button != null and return_field_button.visible, "afterlife point picker should always offer a return path")

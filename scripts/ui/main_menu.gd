@@ -15,6 +15,7 @@ var _start_episode_button: Button
 var _continue_button: Button
 var _save_status_label: Label
 var _legacy_new_campaign_button: Button
+var _m04_campaign_entry_button: Button
 var _legacy_continue_button: Button
 var _legacy_status_label: Label
 var _validation_primary_button: Button
@@ -255,6 +256,14 @@ func _build_entry_cards(parent: Control) -> void:
 	_legacy_new_campaign_button.focus_mode = Control.FOCUS_ALL
 	_legacy_new_campaign_button.pressed.connect(_start_afterlife_station)
 	legacy_content.add_child(_legacy_new_campaign_button)
+
+	_m04_campaign_entry_button = Button.new()
+	_m04_campaign_entry_button.name = "M04CampaignEntryButton"
+	_m04_campaign_entry_button.text = "빨간 우산 현장 기록 시작"
+	_m04_campaign_entry_button.tooltip_text = "새 본편 기록으로 준비실에서 시작합니다. 대기·회복 반일 뒤 M04를 선택해 조사와 회수까지 진행합니다."
+	_m04_campaign_entry_button.focus_mode = Control.FOCUS_ALL
+	_m04_campaign_entry_button.pressed.connect(_start_red_umbrella_campaign)
+	legacy_content.add_child(_m04_campaign_entry_button)
 
 	_start_episode_button = _legacy_new_campaign_button
 	_continue_button = _legacy_continue_button
@@ -717,6 +726,8 @@ func _set_entry_mutation_enabled(enabled: bool) -> void:
 		_legacy_continue_button.disabled = not enabled or not GameState.has_save_file()
 	if _legacy_new_campaign_button != null:
 		_legacy_new_campaign_button.disabled = not enabled
+	if _m04_campaign_entry_button != null:
+		_m04_campaign_entry_button.disabled = not enabled
 	if _validation_primary_button != null:
 		_validation_primary_button.disabled = not enabled
 	if _validation_secondary_button != null:
@@ -817,6 +828,15 @@ func _start_afterlife_station() -> void:
 	GameState.restart_afterlife_station_flow(["agent_oh_hyun", "agent_kwon_narae", "agent_kang_ijun"])
 	GameState.save_game()
 	get_tree().change_scene_to_file(GameState.SCENE_DIALOGUE)
+
+
+func _start_red_umbrella_campaign() -> void:
+	GameState.clear_save_file()
+	if not GameState.begin_campaign_case_selection(["agent_kwon_narae", "agent_oh_hyun", "agent_kang_ijun"]):
+		_refresh_entry_cards()
+		return
+	GameState.save_game()
+	get_tree().change_scene_to_file(GameState.SCENE_PREPARATION)
 
 
 func _continue_saved_game() -> void:

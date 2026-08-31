@@ -567,7 +567,7 @@ func _get_line_text(line: Dictionary) -> String:
 
 
 func _display_speaker_name(source: String) -> String:
-	return "기록관 아카 · 괴이 기록국 관제 AI" if source == "로그" else source
+	return "루메 · 괴이 기록국 기록 보조" if source == "로그" else source
 
 
 func _make_team_status_entries() -> Array:

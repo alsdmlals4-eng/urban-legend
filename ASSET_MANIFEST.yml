@@ -326,6 +326,79 @@ assets:
     next_review_triggers:
       - "At human visual review of 1280x720 and 1920x1080 runtime captures"
       - "Before release-rights sign-off or another scenario costume request"
+  - asset_id: "M04-LUME-GUIDE-001"
+    name: "Lume Red Umbrella Alley manual guide"
+    category: "guide_portrait"
+    purpose: "CASE-04 player-authored manual workbench procedural guide portrait; it keeps Lume's approved chibi identity while presenting a scenario-specific rainy field costume and never marks answers or mutations."
+    owner_discipline: "Godot UI"
+    affected_disciplines:
+      - "Visual"
+      - "Narrative"
+      - "QA"
+    statuses:
+      - "USER_APPROVED"
+      - "PROJECT_ASSET_APPROVED"
+      - "PRODUCTION_READY"
+      - "IMPLEMENTED"
+    vault_source_key: "HGB-AUX-10-LUME-RED-UMBRELLA-ALLEY-20260831"
+    canonical_path: "assets/ui/guides/lume_red_umbrella_alley.png"
+    source_path: "docs/visual/blueprint-reference-pack/2026-08-31/10-lume-red-umbrella-alley-guide.png"
+    runtime_path: "scenes/ui/manual_deduction_workbench.tscn -> LumeGuidePanel/LumePortrait (CASE-04 view model)"
+    latest_capture_path: ""
+    golden_screenshot_path: ""
+    source_type: "AI_GENERATED_VARIANT_FROM_APPROVED_REFERENCE"
+    source_and_license: >
+      OpenAI built-in image generation output created from the approved CASE-01 Lume identity reference after the user approved
+      scenario-specific Lume costumes and the full current asset scope. The prompt contains no named third-party character or
+      requested imitation style. This receipt records project provenance and an obvious-conflict review only; it is not legal
+      clearance. The user remains responsible for final distribution-rights review under applicable service terms and law.
+    approved_reference: "docs/CURRENT_DECISION_OVERLAY.md#contextual-lume-companion-and-scenario-costume--2026-08-30"
+    approval_scope: "CASE-04 Red Umbrella Alley manual workbench only; same Lume identity, scenario-specific rainy field costume, and no reuse of CASE-01 station costume."
+    sha256: "22f39deaf1a0a538159b465b21f43e8e48f0727e2a25b6eaf04658055158b050"
+    pixel_size: "1024x1536"
+    alpha: false
+    supersedes: ""
+    superseded_by: ""
+    replacement_requires_approval: true
+    reference_elements:
+      use:
+        - "Cute small chibi proportion, silver wavy hair, large amber eyes, and friendly procedural-guide expression matching approved Lume identity"
+        - "Charcoal rain field coat with restrained burgundy lining, small bureau crest, talisman tag, compact receiver, lantern, and sealed case file"
+        - "Lower-right dossier companion role with source-and-sentence comparison guidance only"
+      do_not_use:
+        - "CASE-01 station cap or railway motifs, adult field-agent anatomy, answer revelation, mutation labels, another scenario costume, or a full-screen UI baked into the texture"
+        - "Red umbrella, alley environment, weapon, readable text, named logo, watermark, or gore"
+    visual_dna:
+      silhouette: "Small full-figure chibi archive guide with lantern and sealed case file; opaque charcoal rainy-night background is intentional for the dossier frame."
+      proportion: "1024x1536 opaque portrait PNG used by one lower-right TextureRect."
+      camera: "Front three-quarter companion portrait; runtime UI, not the image, owns all readable text and interaction."
+      palette: "Charcoal, aged gold, burgundy rain accents, silver hair, amber eyes, and restrained cool blue-green motes."
+      material_language: "Cute hand-drawn soft anime-noir companion within the established Urban Legend Archive Bureau visual direction."
+      engine_import: "Godot Texture2D imported from the exact canonical PNG through the CASE-04 view model."
+      accessibility_fallback: "Lume's non-answer procedural copy is duplicated as ordinary UI text and is not conveyed by the portrait alone."
+    generation_record:
+      tool_and_model: "OpenAI built-in image generation (model identifier not exposed to this session)"
+      prompt_core: "Preserve approved cute chibi Lume identity; create CASE-04 rainy urban-anomaly field coat with burgundy lining, bureau crest, talisman tag, compact receiver, lantern, sealed file, opaque charcoal background; no station motifs, umbrella, alley, UI, readable text, watermark, adult anatomy, weapon, or gore."
+      seed_or_reproduction: "Not exposed by the generation surface."
+      manual_post_process: "None; canonical bytes match the generated source exactly."
+      known_remaining_issues: "Mechanical receipt and scene wiring are covered by focused tests; human visual acceptance, device accessibility observation, and release-rights sign-off remain unverified."
+    validation:
+      target_resolutions:
+        - "1280x720"
+        - "1920x1080"
+      runtime_verified: true
+      visual_qa_verified: false
+      accessibility_verified: false
+      evidence:
+        - "docs/CURRENT_DECISION_OVERLAY.md"
+        - "tests/m04/m04_lume_guide_asset_receipt_test.gd"
+        - "tests/m04/m04_manual_workbench_integration_test.gd"
+        - "tests/m04/m04_playable_investigation_recovery_route_test.gd"
+      last_verified_commit: ""
+    next_review_triggers:
+      - "After a LumeGuidePanel layout or scenario-view-model change"
+      - "At human visual review of 1280x720 and 1920x1080 runtime captures"
+      - "Before release-rights sign-off or another scenario costume request"
   - asset_id: "M01-ANOMALY-D-001"
     name: "Afterlife Station D-risk anomaly cutout"
     category: "anomaly_cutout"

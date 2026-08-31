@@ -10,6 +10,12 @@ const EPISODES := [
 	{"id": "episode_002_red_umbrella_alley", "label": "red_umbrella_alley", "path": "res://data/episodes/episode_002_red_umbrella_alley.json"}
 ]
 const STANDARD_TEAM := ["agent_kang_ijun", "agent_kwon_narae", "agent_oh_hyun"]
+const M04_EPISODE_ID := "episode_002_red_umbrella_alley"
+const M04_RULE_ID := "rule_m04_victim_tether"
+const M04_FABRIC_SLOT := "slot_m04_victim_tether_fabric"
+const M04_SIGN_SLOT := "slot_m04_victim_tether_sign"
+const M04_FABRIC_CANDIDATE := "kw_m04_tether_fabric_inner_dry"
+const M04_SIGN_CANDIDATE := "kw_m04_tether_sign_reverse_route"
 
 var _guard := TestSaveGuard.new()
 var _game_state: Node
@@ -139,6 +145,26 @@ func _prepare_complete_evidence() -> void:
 	for hint in _game_state.get_hints():
 		if typeof(hint) == TYPE_DICTIONARY:
 			_game_state.mark_hint_seen(String(hint.get("id", "")))
+	_author_m04_recovery_rule_when_required()
+
+
+## MVP-039 prepares the state needed to test the recovery UI. M04's declared
+## rescue gate is structural: it needs one source-valid completed player rule,
+## but must not grade that rule as semantically correct before field recovery.
+func _author_m04_recovery_rule_when_required() -> void:
+	if _game_state.get_current_episode_id() != M04_EPISODE_ID:
+		return
+	var episode: Dictionary = _game_state.get_current_episode()
+	var manual_value: Variant = episode.get("investigation_manual", {})
+	if not (manual_value is Dictionary):
+		_check(false, "M04 recovery test fixture has an investigation manual")
+		return
+	var manual := manual_value as Dictionary
+	var earned_records: Array = _game_state.get_collected_clue_ids()
+	var fabric_result: Dictionary = _game_state.set_manual_draft_slot(manual, M04_RULE_ID, M04_FABRIC_SLOT, M04_FABRIC_CANDIDATE, earned_records, M04_EPISODE_ID)
+	_check(bool(fabric_result.get("ok", false)), "M04 recovery test fixture authors the fabric-backed manual slot")
+	var sign_result: Dictionary = _game_state.set_manual_draft_slot(manual, M04_RULE_ID, M04_SIGN_SLOT, M04_SIGN_CANDIDATE, earned_records, M04_EPISODE_ID)
+	_check(bool(sign_result.get("ok", false)), "M04 recovery test fixture authors the sign-backed manual slot")
 
 
 func _resolve_pattern_choice(battle: Node, response: Dictionary, prefer_contradiction: bool) -> void:

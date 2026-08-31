@@ -156,7 +156,7 @@ class BaseOperatingSyncTests(unittest.TestCase):
     def test_project_invariants_and_protected_paths_remain(self) -> None:
         agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
         core = (ROOT / "docs/PROJECT_CORE.md").read_text(encoding="utf-8")
-        for term in ("괴이 기록국", "안정화 상태", "위험 사례", "잔향", "괴이 매뉴얼", "기록관 아카"):
+        for term in ("괴이 기록국", "안정화 상태", "위험 사례", "잔향", "괴이 매뉴얼", "루메"):
             self.assertIn(term, agents + core)
         for path in ("scripts/core/game_state.gd", "data/episodes", "project.godot", "knowledge/base-pack"):
             self.assertIn(path, agents + core)

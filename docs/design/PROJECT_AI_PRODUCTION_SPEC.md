@@ -56,7 +56,7 @@ platform: PC 16:9
 input: mouse + keyboard
 protagonist: 권나래
 institution: 괴이 기록국
-guide: 기록관 아카
+guide: 루메
 case rule: investigate → infer rule → rescue victim → stabilize/recover anomaly → record composite result
 calendar: 10 days × 2 half-day slots
 main case: 1 resolved per cycle
@@ -304,7 +304,7 @@ The pool is intentionally small and relevant: early pages begin around 5–6 can
 
 ### Current runtime reality
 
-M01 has source-backed candidate data and a full-screen dossier workbench. M04 owns its existing three clues, two rule pages, rescue gate, provenance records, and candidate pool directly in the live episode; `InvestigationScene` opens the same player-facing keyword-composition consumer for either authored manual. Both cases persist only existing `anomaly_manual_records[episode_id].draft_slots`, block structural impossibilities only, and never show a semantic answer verdict. M01 sets `normal_clear.reveal_complete_manual: false`; M04 adds no answer state or save-schema field.
+M01 has source-backed candidate data and a full-screen dossier workbench. M04 owns its existing three clues, two rule pages, rescue gate, provenance records, and candidate pool directly in the live episode; `InvestigationScene` opens the same player-facing keyword-composition consumer for either authored manual. M04 voluntary recovery requires its declared two earned records and one source-valid completed manual rule; forced risk escalation remains available and the gate never emits an answer verdict. Both cases persist only existing `anomaly_manual_records[episode_id].draft_slots`, block structural impossibilities only, and never show a semantic answer verdict. M01 sets `normal_clear.reveal_complete_manual: false`; M04 adds no answer state or save-schema field.
 
 | layer | current status | evidence boundary |
 | --- | --- | --- |

@@ -4,7 +4,7 @@
 > Updated: `2026-08-30`
 > Decision: `D-2026-08-26-RUNTIME-CONSUMER-FIRST-VISUAL-ASSET-GATE`
 > Scope: planning / visual asset requirement inventory
-> Product asset approval: `9 CURRENT ROOT-MANIFEST ENTRIES (M01 Investigation/Recovery backgrounds, B/C, D, CASE-01 Lume guide; M04 Investigation/Recovery backgrounds, B/C, D)`
+> Product asset approval: `10 CURRENT ROOT-MANIFEST ENTRIES (M01 Investigation/Recovery backgrounds, B/C, D, CASE-01 Lume guide; M04 Investigation/Recovery backgrounds, B/C, D, CASE-04 Lume guide)` — CASE-04 루메 매뉴얼 보조 초상은 사건 전용 view model로만 소비한다.
 > Runtime visual validation: `PARTIALLY_VERIFIED` — M04 Investigation Background + LocationPreview 1280×720/1920×1080 is verified by PR #273; the remaining approved M01/M04 consumers still require their own runtime gates.
 > Human QA: `NOT_RUN`
 
@@ -81,6 +81,7 @@ actual consumer
 | `IMG-M04-03` | Recovery `ArtLayer/Background` | `assets/backgrounds/red_recovery.png` | `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED / HUMAN_QA_PENDING` | `M04_RECOVERY_BACKGROUND_ADAPT_02_20260828` exact bytes가 canonical PNG를 교체했다. 실제 Battle `Background`가 1280×720·1920×1080에서 경로·환경 크롭을 유지하는 자동 검증을 통과했다. separate B/C·D overlay, Scene mapping, live UI ownership은 유지하며 Human evidence와 release-rights review는 별도 Gate다. |
 | `IMG-M04-04` | Recovery `AnomalyVisual` B/C | `assets/anomalies/cutouts/red_umbrella_b_cutout.png` with full fallback | `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED / HUMAN_QA_PENDING` | `M04_ANOMALY_BC_ADAPT_01_20260827` exact bytes가 canonical cutout을 교체했다. 1280×720·1920×1080 actual M04 Recovery `AnomalyVisual`에서 import·resolution·readability를 확인했고, scene/catalog/fallback 경로는 변경하지 않았다. Human QA는 별도 Gate다. |
 | `IMG-M04-05` | Recovery `AnomalyVisual` D | `assets/anomalies/cutouts/red_umbrella_d_cutout.png` with full fallback | `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED / HUMAN_QA_PENDING` | `M04_ANOMALY_D_ADAPT_01` exact RGBA bytes가 canonical cutout을 교체했다. D 단계는 기본적으로 `KEEP_ASPECT_CENTERED`로 투명 여백을 보존하되, 플레이어가 F2 runtime editor에서 저장한 crop preference는 존중한다. 실제 Battle `AnomalyVisual` 경로가 1280×720·1920×1080 자동 검증을 통과했고, Human QA·release-rights는 별도 Gate다. |
+| `IMG-M04-06` | Player-authored manual `LumeGuidePanel/LumePortrait` | `assets/ui/guides/lume_red_umbrella_alley.png` | `USER_APPROVED / PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED / HUMAN_QA_PENDING` | M04의 루메는 CASE-01 저승역 복장을 재사용하지 않는다. 같은 치비 정체성을 유지한 빨간 우산 골목 전용 우천 현장 복장을 `M04-LUME-GUIDE-001`의 view model로 연결했다. 1280×720·1920×1080 workbench와 실제 M04 진입→조사→매뉴얼→회수 전환 자동 경로에서 texture/view-model을 확인했다. 초상은 절차 안내만 보조하고 정답·후보 적합성·미관측 정보를 제공하지 않는다. Human visual/accessibility QA는 별도 Gate다. |
 
 ### M04 layer caution
 
@@ -191,7 +192,7 @@ No batch generation from checklist gaps, and no candidate is auto-promoted to a 
 
 ## 10. Authority / evidence ceiling
 
-Root `ASSET_MANIFEST.yml` is the current tracked product-asset authority and has nine current approved entries: M01 Investigation background, M01 Recovery background, B/C anomaly cutout, D anomaly cutout, the CASE-01 Lume manual guide portrait, the M04 Investigation/Recovery background assets, and the M04 B/C·D cutout assets.
+Root `ASSET_MANIFEST.yml` is the current tracked product-asset authority and has ten current approved entries: M01 Investigation background, M01 Recovery background, B/C anomaly cutout, D anomaly cutout, the CASE-01 Lume manual guide portrait, the M04 Investigation/Recovery background assets, the M04 B/C·D cutout assets, and the CASE-04 Lume manual guide portrait.
 
 Legacy `assets/ASSET_MANIFEST.json`, tracked PNG presence, `.import` files, existing runtime wiring, and old QA labels do **not** independently grant `PROJECT_ASSET_APPROVED`.
 
