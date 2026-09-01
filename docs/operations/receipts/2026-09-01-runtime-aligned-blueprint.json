@@ -1,0 +1,122 @@
+{
+  "schema_version": 1,
+  "artifact_role": "PROJECT_WORK_CONTRACT_RECEIPT",
+  "receipt_id": "URBAN-LEGEND-RUNTIME-ALIGNED-HUMAN-BLUEPRINT-2026-09-01",
+  "work_level": "L1",
+  "request": "승인된 권장안에 따라 사람용 블루프린트, 와이어프레임, 플로우 맵, 벤치마크와 필요한 UI/asset 작업을 진행한다.",
+  "scope": {
+    "included": [
+      "Existing human blueprint runtime-alignment",
+      "Ten official-source product comparisons",
+      "Text-native main/manual/recovery wireframes and causal flow",
+      "Current-main versus active-M04-worktree status boundary",
+      "Repository-first visual workflow correction and focused documentation test"
+    ],
+    "excluded": [
+      "Runtime Scene, save, data, asset, or add-on mutation",
+      "Absorbing or mutating the separate M04 active worktree",
+      "New raster explanatory UI image creation",
+      "Human, device, accessibility, release, or player-experience acceptance"
+    ],
+    "protected_paths_changed": false
+  },
+  "fresh_read": {
+    "current_main": "a03f17585f8e027f7dbafac23315b56c197ed780",
+    "active_m04_worktree": {
+      "path": "_worktrees/m04-playable-vertical-slice-20260831",
+      "branch": "codex/m04-playable-vertical-slice-20260831",
+      "head": "677b53dba4c2ae79b9e37b75b7761ca4f3016d61",
+      "disposition": "PRESERVE_SEPARATE_WORKTREE / PENDING_MAIN_RECONCILIATION"
+    },
+    "authorities_read": [
+      "AGENTS.md",
+      "docs/DOCUMENTATION_MAP.md",
+      "docs/CURRENT_PLANNING_CANON.md",
+      "docs/CURRENT_DECISION_OVERLAY.md",
+      "docs/design/PROJECT_AI_PRODUCTION_SPEC.md",
+      "docs/design/URBAN_LEGEND_HUMAN_GAME_BLUEPRINT_20260830.md",
+      "docs/CURRENT_VISUAL_WORK_ORDER.md",
+      "scripts/ui/manual_deduction_workbench.gd",
+      "scripts/scenes/battle_scene.gd"
+    ]
+  },
+  "reuse_preflight": {
+    "gate": "REUSE_FIRST_PREFLIGHT_REQUIRED",
+    "selected_modules": [
+      "Existing human blueprint and approved reference pack",
+      "Current M01/M04 manual implementation and existing M04 active-worktree evidence",
+      "Current master GDD and visual workflow contract",
+      "Ten official product sources in docs/research/2026-09-01-runtime-aligned-blueprint-benchmark.md"
+    ],
+    "reuse_mode": "ADAPT",
+    "asset_decision": "REUSE_ACCEPTED / NO_NEW_IMAGE_REQUIRED",
+    "reason": "The requested clocks, action plates, manual presentation, and diagrams are native Godot Control/text consumers. No unfilled Texture consumer was found."
+  },
+  "state_boundary": {
+    "current_main": "M01/M04 player-authored manual is IMPLEMENTED_M01_M04 / DRAFT_ONLY / MACHINE_VERIFIED. The current battle surface retains legacy representative/recover controls.",
+    "active_target": "The approved M04 dual-clock, lower-right manual quick action, and refined menu plates were observed only on the separate active worktree and are not asserted as main truth.",
+    "required_label": "PENDING_MAIN_RECONCILIATION"
+  },
+  "verification_plan": {
+    "focused_test": "python -m unittest tests/test_runtime_aligned_human_blueprint.py",
+    "expected_red_before_docs": "Document contract test fails before the new benchmark, target-state labeling, and Lume/Aka corrections exist.",
+    "evidence_ceiling": "Documentation/static verification only. Runtime, device, accessibility, Human QA, player experience, and release acceptance remain NOT_RUN.",
+    "rollback": "Revert the dedicated documentation commit; no product path or separate worktree is changed."
+  },
+  "validation": {
+    "red_to_green": "Focused contract test failed before source changes and passed after them.",
+    "focused_document_contract": "PASS: 4 tests in tests/test_runtime_aligned_human_blueprint.py.",
+    "broader_current_doc_regression": "PASS: 35 tests across runtime-aligned blueprint, active-document references, and current planning canon.",
+    "visual_and_handoff_regression": "PASS: 9 tests across visual asset authority, visual planning closure, and final planning handoff.",
+    "json_and_local_links": "PASS: receipt parsed and local Markdown links resolved.",
+    "diff_hygiene": "PASS: git diff --check; no scripts/scenes/data/assets/addons/project.godot paths changed.",
+    "publication_route": "SOURCE_ONLY / PDF_NOT_PUBLISHED: the only discovered builder mirrors PROJECT_AI_PRODUCTION_SPEC.md to an absent untracked DOCX. No blueprint registry or dedicated PDF generator exists, so no derivative file was invented."
+  },
+  "adversarial_review": {
+    "skill": "running-adversarial-review-and-refinement",
+    "required_full_loops": 5,
+    "loops": [
+      {
+        "loop": 1,
+        "full_scope_result": "PASS",
+        "validated_findings": [],
+        "verification": "Focused contract, JSON parse, diff hygiene, scope, current-main, and separate-M04-head checks passed."
+      },
+      {
+        "loop": 2,
+        "full_scope_result": "PASS",
+        "validated_findings": [],
+        "verification": "Re-attacked authority routing, Lume/Aka separation, dual-clock wording, benchmark dispositions, and no-product-path boundary."
+      },
+      {
+        "loop": 3,
+        "full_scope_result": "PASS",
+        "validated_findings": [],
+        "verification": "Re-attacked stale manual claims, main-versus-worktree implementation overclaim, receipt syntax, and long-term source-only publication decision."
+      },
+      {
+        "loop": 4,
+        "full_scope_result": "PASS",
+        "validated_findings": [],
+        "verification": "Re-attacked user direction, consumer-first asset boundary, open-worktree preservation, and document-reference propagation."
+      },
+      {
+        "loop": 5,
+        "full_scope_result": "PASS",
+        "validated_findings": [],
+        "verification": "Re-ran complete static scope and regression checks; no MUST_FIX or scope-safe better alternative was found."
+      }
+    ],
+    "better_alternative_search": "No stronger in-scope option was found. Building a new visual asset or a second PDF pipeline would add duplicate ownership without an actual consumer or registered publication policy.",
+    "long_term_fit": "Preserving the existing blueprint owner, text-native wireframes, and a separate target/main boundary minimizes future drift and avoids false runtime claims.",
+    "local_exit": "LOCAL_CLEAN_REVIEW_EXIT / pending commit, remote exact-head CI, PR, and post-merge readback."
+  },
+  "reuse_learning_handoff": {
+    "gate": "REUSE_LEARNING_HANDOFF_REQUIRED",
+    "project_only_lessons": [
+      "A human blueprint must explicitly distinguish current-main runtime truth from an approved target proven only in a separate active worktree.",
+      "For native Godot UI structures, editable text wireframes and consumer-specific runtime evidence are preferable to decorative explanation images."
+    ],
+    "base_promotion_candidates": "NO_NEW_REUSE_LEARNING"
+  }
+}

@@ -269,6 +269,6 @@ Root `ASSET_MANIFEST.yml`가 current tracked product-asset authority이며, 현�
 
 ## 9. Sync rule
 
-향후 시각/UX 의미 변경은 Notion과 Repository를 같은 작업 범위에서 갱신하고 readback한다. 승인된 Decision은 동일 Decision ID로 양쪽에 기록한다. 구현·asset·Human evidence Gate는 서로 분리한다. 진행 중 unrelated PR은 read-only로 유지한다.
+향후 시각/UX 의미 변경은 Repository primary canon을 먼저 갱신하고, **Repository commit/push/remote readback**으로 확인한다. Notion은 `HISTORICAL_READ_ONLY_NO_WRITE` legacy inventory이며 current decision을 복제·대체하지 않는다. 구현·asset·Human evidence Gate는 서로 분리한다. 진행 중 unrelated PR은 read-only로 유지한다.
 
 사용자 승인 시각 원본은 `docs/visual/candidates/`의 receipt 포함 PNG와 Notion native attachment를 함께 남긴다. 자세한 보관 계약과 2026-08-26 원본 목록은 `docs/IMAGE_ASSET_WORKFLOW.md` 및 `docs/visual/candidates/APPROVED_VISUAL_REFERENCES_2026-08-26.md`를 따른다.
