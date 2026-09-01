@@ -7,6 +7,7 @@
 ```text
 Prompt
 → PLAN / BUILD / REVIEW
+→ L1 이상이면 프로젝트·승인 asset/reference·Base reuse handoff 순의 재사용 preflight
 → 프로젝트 분야 trigger: 주 Skill 0~1개
 → 프로젝트 로컬 trigger: 전문 Skill 0~1개
 → Base trigger·do-not-use: 지원 Skill 0~3개
@@ -15,6 +16,8 @@ Prompt
 ```
 
 `load_by_default=false`는 trigger가 없을 때 읽지 않는다는 뜻이다. 지원 목록 전체를 연쇄 호출하지 않는다. Registry 행만 읽고 Skill을 실행했다고 보고하지 않는다.
+
+L1 이상은 `managing-project-intake-and-work-contract`의 `route → first-prompt → contract → clarify` 흐름을 따른다. 기존 승인 범위의 연속 작업은 현재 work contract를 재사용하되, 새 플레이어 경험·범위·비용·공개 표면·최종 Human UX는 별도 사용자 결정으로 남긴다. 재사용 조사와 종료 학습은 `docs/operations/receipts/`의 해당 영수증에 `REUSE_FIRST_PREFLIGHT_REQUIRED`와 `REUSE_LEARNING_HANDOFF_REQUIRED`로 기록한다.
 
 ## 프로젝트 Skill 층
 

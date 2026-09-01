@@ -49,6 +49,16 @@ class GutTestAuthorityCiContractTests(unittest.TestCase):
         ):
             self.assertIn(marker, text)
 
+    def test_ci_classifies_runtime_scope_before_running_heavy_godot_work(self) -> None:
+        text = WORKFLOW.read_text(encoding="utf-8")
+        self.assertIn("id: runtime-scope", text)
+        self.assertIn("run_runtime", text)
+        self.assertIn(
+            "steps.runtime-scope.outputs.run_runtime == 'true'",
+            text,
+        )
+        self.assertIn("runtime-scope-paths.txt", text)
+
     def test_ci_checks_out_and_records_the_exact_pr_head(self) -> None:
         text = WORKFLOW.read_text(encoding="utf-8")
         exact_head_expression = "${{ github.event.pull_request.head.sha || github.sha }}"

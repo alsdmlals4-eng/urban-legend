@@ -7,7 +7,7 @@ Base 공용 운영체계를 urban-legend의 기존 구조와 프로젝트 코어
 1. 최신 사용자 지시.
 2. Repository current GDD와 `docs/CURRENT_PLANNING_CANON.md`.
 3. `AGENTS.md`, `docs/PROJECT_CORE.md`, 보호·저장·엔진 계약.
-4. `docs/CURRENT_STATUS.md`와 승인 작업 계약.
+4. `docs/CURRENT_DECISION_OVERLAY.md`, `docs/CURRENT_HANDOFF.md`와 승인 작업 계약.
 5. 프로젝트 책임 원본과 실제 코드·데이터·자산·테스트.
 6. 프로젝트에 고정된 Base 라우팅·Coverage.
 7. Base 원격 전문과 외부 근거.
@@ -35,7 +35,7 @@ Base 공용 운영체계를 urban-legend의 기존 구조와 프로젝트 코어
 ## 책임 원본
 
 ```text
-현재 상태 → docs/CURRENT_STATUS.md
+현재 상태·후속 행동 → docs/CURRENT_DECISION_OVERLAY.md + docs/CURRENT_HANDOFF.md
 현재 10일·반일 기획 → docs/CURRENT_PLANNING_CANON.md + docs/current-planning-canon.json
 사람용 전체 그림·Flow·비교표 → docs/design/PROJECT_AI_PRODUCTION_SPEC.md + user PDF GDD
 프로젝트 코어·승인 상태 → docs/PROJECT_CORE.md
@@ -44,6 +44,7 @@ Base 공용 운영체계를 urban-legend의 기존 구조와 프로젝트 코어
 Base Skill 라우팅 → skills/BASE_SKILL_INDEX.json
 공용 기능 무손실 → skills/BASE_SKILL_COVERAGE.json
 경로 변환 → skills/PROJECT_PATH_ADAPTER.json
+운영 Gate 상태 → docs/PROJECT_OPERATING_HEALTH.json
 상세 설계 → docs/GAME_DESIGN_DOCUMENT.md
 로드맵 → MVP_ROADMAP.md
 검증 → TEST_CHECKLIST.md
@@ -60,6 +61,7 @@ Repository는 사람용·구조화 기획·구현·테스트·runtime evidence�
 - 주 프로젝트 분야 Skill은 최대 하나, 프로젝트 로컬 전문 Skill은 최대 하나, 지원 Base Skill은 최대 3개다.
 - `support_skills`는 가능한 조합이지 상시 호출 목록이 아니다.
 - Base 상세는 고정 커밋의 선택된 패키지만 읽는다.
+- L1 이상은 구현 전 현재 프로젝트·승인 Asset/Reference·Base handoff 순으로 재사용 가능성을 먼저 확인하고, 결과를 작업 영수증의 `REUSE_FIRST_PREFLIGHT_REQUIRED`와 `REUSE_LEARNING_HANDOFF_REQUIRED`에 기록한다. 이 규칙은 새 게임 의미·자산 승인·Human QA를 자동 승인하지 않는다.
 - 프로젝트 분야 Skill 10개의 공통 DoR·DoD·보고는 `skills/disciplines/PROJECT_DISCIPLINE_CONTRACT.md`가 책임진다.
 - 괴이 사건의 전조·가설·근거·대응·매뉴얼 상태를 작성·개정할 때는 `skills/urban-legend-investigation-case-authoring/SKILL.md`를 추가로 읽는다.
 

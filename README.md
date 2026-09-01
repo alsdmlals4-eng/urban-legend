@@ -169,7 +169,7 @@ git diff --check
 ## Workspace·이미지 운영
 
 - Base 버전 원본: `docs/BASE_RULES_VERSION.md`
-- 사람용 전체 그림: Notion 괴이기록국 프로젝트 홈
+- 사람용 전체 그림: Repository `docs/design/PROJECT_AI_PRODUCTION_SPEC.md`
 - 구조화 기획·구현·테스트·증거: Repository
 - Google Sheet: migration-only legacy inventory; `docs/PROJECT_GOOGLE_SHEET_WORKBOOK.md`
 - GPT 이미지·검수: `docs/IMAGE_ASSET_WORKFLOW.md`
