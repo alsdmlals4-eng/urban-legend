@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "artifact_role": "PROJECT_PROTECTED_CHANGE_APPROVAL",
+  "status": "APPROVED",
+  "protected_base_commit": "3083cd5bceab324a820d8fc63c9664e7c882d970",
+  "decision_ids": [
+    "UL-CI-RECOVERY-TELEGRAPH-UID-STABILITY-20260901"
+  ],
+  "approved_paths": [
+    "scripts/ui/recovery_telegraph_audio.gd.uid"
+  ],
+  "approval_source": "The sole decision owner authorized the recommended Base adaptation and necessary safe correction work. Exact-head CI found that Godot generates the missing UID for the already tracked recovery telegraph audio script. This record confines that approval to the one generated source-identity file and does not authorize gameplay, scene, save, asset, or other protected-path changes.",
+  "approval_time": "2026-09-01T21:44:07+09:00",
+  "scope_summary": "Add only the Godot-generated UID metadata for scripts/ui/recovery_telegraph_audio.gd so headless import leaves the protected game tree clean. The UID has no behavior or player-facing content effect."
+}
