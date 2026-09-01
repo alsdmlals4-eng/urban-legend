@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "artifact_role": "PROJECT_PROTECTED_CHANGE_APPROVAL",
+  "status": "APPROVED",
+  "protected_base_commit": "a03f17585f8e027f7dbafac23315b56c197ed780",
+  "decision_ids": [
+    "UL-DEC-M04-RECOVERY-CLOCK-ARCHIVE-MENU-20260902"
+  ],
+  "approved_paths": [
+    "assets/backgrounds/bureau_archive_menu.png",
+    "assets/backgrounds/bureau_archive_menu.png.import",
+    "assets/log/log_focus.png",
+    "assets/log/log_focus.png.import",
+    "assets/log/log_normal.png",
+    "assets/log/log_normal.png.import",
+    "assets/log/log_warning.png",
+    "assets/log/log_warning.png.import",
+    "assets/source/wordmarks/ULAB-MAIN-MENU-WORDMARK-001-locked-source.png",
+    "assets/ui/bureau_archive_emblem.png",
+    "assets/ui/bureau_archive_emblem.png.import",
+    "assets/ui/bureau_archive_wordmark.png",
+    "assets/ui/bureau_archive_wordmark.png.import",
+    "scenes/battle_scene.tscn",
+    "scripts/core/game_state.gd",
+    "scripts/scenes/battle_scene.gd",
+    "scripts/ui/canon_v2_operation_overlay.gd",
+    "scripts/ui/canon_v2_runtime_bridge.gd",
+    "scripts/ui/log_guide.gd",
+    "scripts/ui/main_menu.gd",
+    "scripts/ui/recovery_clock.gd",
+    "scripts/ui/recovery_clock.gd.uid",
+    "scripts/ui/ui_asset_catalog.gd"
+  ],
+  "approval_source": "The sole decision owner approved the recommended current-main integration, directed continued implementation, and explicitly authorized creation of any needed images without per-image reconfirmation. The approved scope is limited to the player-facing M04 recovery Clock, direct-lead and automatic-resolution correction, field-manual entry, text-only global archivist treatment, and archive-laboratory main-menu implementation. This manifest also records the approved removal of the obsolete global Lume visual assets; it does not approve new case truth, save-schema migration outside the additive Clock state, human/accessibility/release acceptance, or unrelated protected paths.",
+  "approval_time": "2026-09-02T00:00:00+09:00",
+  "scope_summary": "Implement the approved recovery Clock and presentation integration on the exact protected surface listed above. Stability is an 8-segment player-facing progress Clock; danger is a 6-segment pressure Clock. Keep manual evidence as actual player-facing field information, move its entry to the lower-right recovery quick action, remove representative switching and manual recovery execution controls, preserve the fixed direct lead, and resolve only when recovery conditions are already met. Replace the obsolete global Lume portrait consumer with text-only 기록관 아카 procedure communication. Restore only the approved archive-laboratory background, emblem, and wordmark derivatives as actual main-menu consumers, with independent action plates and no scenario-specific character art. Preserve current case facts, provenance records, approved source art, existing save compatibility, and all unlisted protected paths."
+}
