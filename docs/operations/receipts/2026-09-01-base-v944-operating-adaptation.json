@@ -8,14 +8,16 @@
     "included": [
       "Repository-first operating entrypoints and current authority order",
       "Base v9.4.4 pin, selected route metadata, generated operating views",
-      "stale document-router test correction and operating health bootstrap"
+      "stale document-router test correction and operating health bootstrap",
+      "CI validator checkout pin to the Base v9.4.4 formal finalization",
+      "Godot-generated UID metadata for the already tracked recovery telegraph audio script"
     ],
     "excluded": [
-      "Godot runtime, scene, save, episode, gameplay, or approved asset mutation",
+      "Godot runtime, scene, save, episode, gameplay, or approved asset mutation other than the generated UID metadata required to keep import stability",
       "Human, device, accessibility, runtime, release, or player acceptance claims",
       "Open PR mutation, direct main push, force push, ruleset bypass, and archival deletion"
     ],
-    "protected_paths_changed": false
+    "protected_paths_changed": true
   },
   "base_release": {
     "repository": "alsdmlals4-eng/Base",

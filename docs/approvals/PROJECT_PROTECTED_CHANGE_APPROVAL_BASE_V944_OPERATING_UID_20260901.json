@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "artifact_role": "PROJECT_PROTECTED_CHANGE_APPROVAL",
+  "status": "APPROVED",
+  "protected_base_commit": "3083cd5bceab324a820d8fc63c9664e7c882d970",
+  "decision_ids": [
+    "UL-PR-353-BASE-V944-OPERATING-UID-STABILITY"
+  ],
+  "approved_paths": [
+    "scripts/ui/recovery_telegraph_audio.gd.uid"
+  ],
+  "approval_source": "The sole decision owner explicitly approved the recommended Base fresh-read adaptation and instructed continuation. During exact-head CI, Godot identified the already tracked recovery telegraph script as missing its generated UID metadata. This manifest records the owner's existing in-scope approval only for that source-identification file; it does not authorize runtime, scene, gameplay, save, asset, or unrelated protected-path changes.",
+  "approval_time": "2026-09-01T21:44:07+09:00",
+  "scope_summary": "Commit the Godot-generated UID metadata for scripts/ui/recovery_telegraph_audio.gd so headless import remains clean while the Base v9.4.4 operating-contract PR is validated. No behavior or player-facing content changes."
+}

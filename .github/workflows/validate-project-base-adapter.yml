@@ -19,7 +19,9 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           repository: alsdmlals4-eng/Base
-          ref: 19d936a3048115ab1bf8d94a6400d9bedbe09b2f
+          # Formal v9.4.4 finalization: recognises this project's pinned
+          # release identity without silently following mutable Base main.
+          ref: 5adc196c0185951f50e49ab5e51586eff8d60886
           path: .base-contract
           fetch-depth: 0
 
