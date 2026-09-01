@@ -2,12 +2,18 @@ class_name CanonV2OperationOverlay
 extends Control
 
 const ObligationPolicyScript := preload("res://scripts/core/protection_obligation_policy.gd")
+const RecoveryClockScript := preload("res://scripts/ui/recovery_clock.gd")
 
 var _runtime_state: Dictionary = {}
 var _mode := "recovery"
 var _manual_detail_panel: PanelContainer
 var _rule_summary_label: Label
 var _manual_toggle_button: Button
+var _recovery_clock_cluster: HBoxContainer
+var _stability_clock
+var _danger_clock
+var _stability_clock_label: Label
+var _danger_clock_label: Label
 var _detail_stack: VBoxContainer
 var _detail_toggle_button: Button
 var _detail_stack_open := false
@@ -43,6 +49,21 @@ func configure(runtime_state: Dictionary, mode: String) -> void:
 	_mode = mode
 	_ensure_ui()
 	_refresh()
+
+
+func set_recovery_clock_presentation(state: Dictionary) -> void:
+	_runtime_state["recovery_clock"] = state.duplicate(true)
+	_ensure_ui()
+	_refresh_recovery_clocks()
+
+
+func set_recovery_clock_feedback(kind: String) -> void:
+	if _recovery_clock_cluster == null:
+		return
+	if kind in ["danger", "surge"]:
+		_danger_clock.play_feedback(kind)
+	elif kind in ["stability", "relief"]:
+		_stability_clock.play_feedback("relief")
 
 
 func set_rule_strip_top_inset(top_inset: int) -> void:
@@ -125,6 +146,33 @@ func _ensure_ui() -> void:
 	_rule_summary_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_rule_summary_label.add_theme_font_size_override("font_size", 15)
 	rule_strip.add_child(_rule_summary_label)
+
+	_recovery_clock_cluster = HBoxContainer.new()
+	_recovery_clock_cluster.name = "RecoveryClockCluster"
+	_recovery_clock_cluster.add_theme_constant_override("separation", 6)
+	rule_strip.add_child(_recovery_clock_cluster)
+
+	_stability_clock = RecoveryClockScript.new()
+	_stability_clock.name = "StabilityClock"
+	_stability_clock.total_segments = 8
+	_stability_clock.active_color = Color("76c7b0")
+	_recovery_clock_cluster.add_child(_stability_clock)
+	_stability_clock_label = Label.new()
+	_stability_clock_label.name = "StabilityClockLabel"
+	_stability_clock_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_stability_clock_label.add_theme_font_size_override("font_size", 13)
+	_recovery_clock_cluster.add_child(_stability_clock_label)
+
+	_danger_clock = RecoveryClockScript.new()
+	_danger_clock.name = "DangerClock"
+	_danger_clock.total_segments = 6
+	_danger_clock.active_color = Color("c99a61")
+	_recovery_clock_cluster.add_child(_danger_clock)
+	_danger_clock_label = Label.new()
+	_danger_clock_label.name = "DangerClockLabel"
+	_danger_clock_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_danger_clock_label.add_theme_font_size_override("font_size", 13)
+	_recovery_clock_cluster.add_child(_danger_clock_label)
 
 	_manual_toggle_button = Button.new()
 	_manual_toggle_button.name = "ManualToggleButton"
@@ -287,6 +335,7 @@ func _refresh() -> void:
 		return
 	_mode_label.text = _mode_title(_mode)
 	_rule_summary_label.text = _make_rule_summary()
+	_refresh_recovery_clocks()
 	_refresh_manual_detail()
 	_refresh_obligations()
 	_refresh_termination()
@@ -314,6 +363,21 @@ func _refresh_manual_detail() -> void:
 	lines.append("")
 	lines.append("이 패널은 플레이어가 확보한 가설과 근거만 보여 주며 공식 정답을 자동 공개하지 않습니다.")
 	manual_text.text = "\n".join(lines)
+
+
+func _refresh_recovery_clocks() -> void:
+	if _recovery_clock_cluster == null:
+		return
+	var clock := _dictionary_copy(_runtime_state.get("recovery_clock"))
+	var stability_total := maxi(1, int(clock.get("stability_total", 8)))
+	var danger_total := maxi(1, int(clock.get("danger_total", 6)))
+	var stability_segments := clampi(int(clock.get("stability_segments", 0)), 0, stability_total)
+	var danger_segments := clampi(int(clock.get("danger_segments", 0)), 0, danger_total)
+	var danger_urgent := bool(clock.get("danger_urgent", false))
+	_stability_clock.set_clock(stability_segments, stability_total, false)
+	_danger_clock.set_clock(danger_segments, danger_total, danger_urgent)
+	_stability_clock_label.text = "안정도 %d/%d" % [stability_segments, stability_total]
+	_danger_clock_label.text = "위험도 %d/%d" % [danger_segments, danger_total]
 
 
 func _refresh_obligations() -> void:
@@ -463,6 +527,7 @@ func _apply_mode_visibility() -> void:
 	_detail_stack.visible = _detail_stack_open and _detail_toggle_button.visible
 	_detail_toggle_button.text = "작전 상태 닫기" if _detail_stack.visible else "작전 상태 열기"
 	_set_legacy_action_dock_visible(not _detail_stack.visible)
+	_recovery_clock_cluster.visible = _mode == "recovery"
 	_manual_toggle_button.visible = _mode != "investigation"
 	if _mode == "investigation":
 		_manual_detail_panel.visible = false

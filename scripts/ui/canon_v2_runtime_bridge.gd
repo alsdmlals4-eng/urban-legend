@@ -169,7 +169,7 @@ func _sync_current_scene() -> void:
 		_sync_recovery_termination_preview(current_scene, game_state)
 	elif mode == "result":
 		_finalize_legacy_recovery(game_state)
-	var state := _build_overlay_state(mode)
+	var state := _build_overlay_state(mode, current_scene)
 	_sync_m01_first_session(mode, game_state)
 	_mount_overlay(current_scene, state, mode)
 	_mounted_scene_instance_id = current_scene.get_instance_id()
@@ -318,14 +318,15 @@ func _apply_overlay_host_layout(overlay: Node, mode: String) -> void:
 	overlay.call("set_rule_strip_top_inset", top_inset)
 
 
-func _build_overlay_state(mode: String) -> Dictionary:
+func _build_overlay_state(mode: String, recovery_host: Node = null) -> Dictionary:
 	var state := {
 		"manual_state": _get_player_manual_state(),
 		"active_protection_obligations": [],
 		"termination_preview": {},
 		"follow_up_records": [],
 		"evaluation_packet": {},
-		"recovery_supports": []
+		"recovery_supports": [],
+		"recovery_clock": {}
 	}
 	var game_state := get_node_or_null("/root/GameState")
 	if game_state == null:
@@ -353,6 +354,10 @@ func _build_overlay_state(mode: String) -> Dictionary:
 		state["evaluation_packet"] = _dictionary_copy(runtime.get("evaluation_packet"))
 	if mode == "recovery" and game_state.has_method("get_selected_recovery_supports"):
 		state["recovery_supports"] = _array_copy(game_state.get_selected_recovery_supports())
+	if mode == "recovery" and recovery_host != null and recovery_host.has_method("get_recovery_clock_presentation"):
+		var presentation_value: Variant = recovery_host.call("get_recovery_clock_presentation")
+		if typeof(presentation_value) == TYPE_DICTIONARY:
+			state["recovery_clock"] = (presentation_value as Dictionary).duplicate(true)
 	return state
 
 

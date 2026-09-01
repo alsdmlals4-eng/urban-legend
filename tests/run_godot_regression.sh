@@ -85,6 +85,8 @@ script_tests=(
   m04/m04_sequential_result_vignette_test
   m04/m04_recovery_promoted_asset_runtime_test
   recovery/recovery_clock_state_test
+  recovery/recovery_dual_clock_overlay_test
+  recovery/recovery_dual_clock_scene_test
   recovery_telegraph_audio_test
 )
 

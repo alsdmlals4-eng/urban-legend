@@ -486,6 +486,9 @@ func _begin_recovery_turn(last_result: String = "") -> void:
 		_refresh_recovery_evidence()
 		_log_guide.show_compact_hint("전조 기록을 찾지 못했습니다. 현장 기록을 다시 확인해 주세요.")
 		return
+	var clock_before := GameState.get_recovery_clock_state()
+	var clock_after := GameState.begin_recovery_clock_turn()
+	var danger_advanced := int(clock_after.get("danger", 0)) > int(clock_before.get("danger", 0))
 	_play_telegraph_cue()
 	var first_telegraph := not GameState.has_seen_log_tutorial("recovery_first_telegraph")
 	if first_telegraph:
@@ -528,6 +531,8 @@ func _begin_recovery_turn(last_result: String = "") -> void:
 	else:
 		_last_result_detail_label.text = "직전 판단 상세\n%s" % last_result
 		_update_battle_view(_make_compact_last_result(last_result))
+	if danger_advanced:
+		_play_recovery_clock_feedback("danger")
 
 
 func _play_telegraph_cue() -> void:
@@ -808,6 +813,8 @@ func _select_pattern_response(response: Dictionary) -> void:
 	var reason := _make_recovery_learning_reason(response, correct, decision_evaluation)
 	var manual_context := _make_manual_decision_context(response, decision_evaluation)
 	GameState.record_recovery_pattern_outcome(String(_current_pattern.get("id", "")), response_id, correct, reason, manual_context)
+	var complete_manual_verification := bool(decision_evaluation.get("guided", false)) and bool(decision_evaluation.get("verified", false))
+	var clock_outcome := _resolve_recovery_clock_outcome(correct, complete_manual_verification, lines)
 	if not correct:
 		if not GameState.has_seen_log_tutorial("recovery_first_learning"):
 			_present_log_tutorial("recovery_first_learning")
@@ -824,6 +831,12 @@ func _select_pattern_response(response: Dictionary) -> void:
 	GameState.save_game()
 	var result_text := "\n".join(lines)
 	_update_battle_view(result_text)
+	if bool(clock_outcome.get("surge_triggered", false)):
+		_play_recovery_clock_feedback("surge")
+	elif correct:
+		_play_recovery_clock_feedback("relief")
+	else:
+		_play_recovery_clock_feedback("danger")
 	if _can_recover():
 		_clear_children(_response_box)
 		_telegraph_label.text = "회수 실행 가능\n안정화 기준을 충족했습니다. 현재 규칙을 고정하고 잔향 회수를 실행하십시오."
@@ -1271,6 +1284,9 @@ func _use_agent_recovery_support(support: Dictionary, button: Button) -> void:
 		0,
 		100
 	)
+	var clock_delta := _clock_delta_from_fear_delta(int(support.get("fear_delta", 0)))
+	if clock_delta != 0:
+		GameState.change_recovery_clock_danger(clock_delta)
 	_recovery_threshold = clampi(
 		_recovery_threshold + int(support.get("threshold_delta", 0)),
 		30,
@@ -1280,11 +1296,20 @@ func _use_agent_recovery_support(support: Dictionary, button: Button) -> void:
 	var operation_overlay := get_node_or_null("CanonV2OperationOverlay")
 	if operation_overlay != null and operation_overlay.has_method("mark_recovery_support_used"):
 		operation_overlay.call("mark_recovery_support_used", support_id)
-	_update_battle_view("%s의 %s 지원 발동\n%s" % [
+	var clock_note := ""
+	if clock_delta != 0:
+		var clock_state := GameState.get_recovery_clock_state()
+		clock_note = "\n위험 시계: %s%d · 현재 %d/6" % ["+" if clock_delta > 0 else "", clock_delta, int(clock_state.get("danger", 0))]
+	_update_battle_view("%s의 %s 지원 발동\n%s%s" % [
 		String(support.get("agent_name", "")),
 		String(support.get("role", "회수")),
-		String(support.get("description", ""))
+		String(support.get("description", "")),
+		clock_note
 	])
+	if clock_delta < 0:
+		_play_recovery_clock_feedback("relief")
+	elif clock_delta > 0:
+		_play_recovery_clock_feedback("danger")
 	if _representative_agent_image != null:
 		var support_texture := AssetCatalog.new().get_agent_production_texture(
 			String(support.get("agent_id", "")),
@@ -1295,9 +1320,73 @@ func _use_agent_recovery_support(support: Dictionary, button: Button) -> void:
 			_show_representative_cut_in(false)
 
 
+func _resolve_recovery_clock_outcome(correct: bool, verified: bool, lines: Array[String]) -> Dictionary:
+	var outcome := GameState.resolve_recovery_clock_outcome(correct, verified)
+	var danger := int(outcome.get("danger", 0))
+	if correct:
+		lines.append("현장 대응: 위험 -1 · 현재 %d/6" % danger)
+		if verified:
+			lines.append("매뉴얼 검증: 추가 위험 -1 · 현재 %d/6" % danger)
+	else:
+		lines.append("오대응 누적: 위험 +2 · 현재 %d/6" % danger)
+	if not bool(outcome.get("surge_triggered", false)):
+		return outcome
+
+	var target := _get_representative_agent()
+	var target_id := String(target.get("id", ""))
+	var surge_damage := int(outcome.get("surge_damage", 0))
+	var remaining := surge_damage
+	if not target_id.is_empty():
+		remaining = GameState.consume_protection(target_id, surge_damage)
+		if remaining > 0:
+			GameState.change_agent_mental(target_id, -remaining)
+	lines.append("공명 폭주: %s 정신력 -%d · 위험 3/6으로 후퇴" % [
+		String(target.get("name", "대표 요원")),
+		remaining
+	])
+	return outcome
+
+
+func _clock_delta_from_fear_delta(fear_delta: int) -> int:
+	if fear_delta == 0:
+		return 0
+	var magnitude := maxi(1, int(ceil(float(abs(fear_delta)) / 16.0)))
+	return magnitude if fear_delta > 0 else -magnitude
+
+
+func get_recovery_clock_presentation() -> Dictionary:
+	var stability_segments := 0
+	if _recovery_threshold > 0:
+		stability_segments = clampi(int(ceil(float(_anomaly_stability) / float(_recovery_threshold) * 8.0)), 0, 8)
+	var clock_state := GameState.get_recovery_clock_state()
+	var danger_segments := int(clock_state.get("danger", 0))
+	return {
+		"stability_segments": stability_segments,
+		"stability_total": 8,
+		"danger_segments": danger_segments,
+		"danger_total": 6,
+		"danger_urgent": danger_segments >= 6,
+		"stability_value": _anomaly_stability,
+		"stability_threshold": _recovery_threshold
+	}
+
+
+func _refresh_recovery_clock_hud() -> void:
+	var operation_overlay := get_node_or_null("CanonV2OperationOverlay")
+	if operation_overlay != null and operation_overlay.has_method("set_recovery_clock_presentation"):
+		operation_overlay.call("set_recovery_clock_presentation", get_recovery_clock_presentation())
+
+
+func _play_recovery_clock_feedback(kind: String) -> void:
+	var operation_overlay := get_node_or_null("CanonV2OperationOverlay")
+	if operation_overlay != null and operation_overlay.has_method("set_recovery_clock_feedback"):
+		operation_overlay.call("set_recovery_clock_feedback", kind)
+
+
 func _update_battle_view(message: String) -> void:
 	_refresh_representative_agent()
 	_populate_team_strip()
+	_refresh_recovery_clock_hud()
 	if _auto_effect_label != null:
 		_auto_effect_label.text = _make_clue_summary()
 	if _stability_bar != null:
