@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "artifact_role": "PROJECT_POSTMERGE_BASELINE_RECONCILIATION",
+  "receipt_id": "URBAN-LEGEND-M04-POSTMERGE-PROTECTED-BASELINE-2026-09-02",
+  "source_merge": {
+    "pull_request": 356,
+    "merge_commit": "a62b5341f3c4742192f7bfc0d11e1fb4897c1308",
+    "subject": "M04 recovery Clock, manual entry, guide cleanup, and archive-menu integration"
+  },
+  "adapter_change": {
+    "canonical_owner": "skills/PROJECT_BASE_ADAPTER.json#/protected_baseline/commit",
+    "previous_commit": "a03f17585f8e027f7dbafac23315b56c197ed780",
+    "next_commit": "a62b5341f3c4742192f7bfc0d11e1fb4897c1308",
+    "reason": "The source merge is the latest audited main state. Moving the protected baseline after its exact-head CI prevents a future unrelated pull request from rediscovering these already-approved protected paths.",
+    "product_effect": "None. This changes validation history only; no data, scripts, scenes, assets, addons, project settings, or gameplay meaning are changed by this reconciliation."
+  },
+  "generated_outputs": [
+    "skills/PROJECT_SKILL_SNAPSHOT.json",
+    "docs/PROJECT_OPERATING_DASHBOARD.html",
+    ".agents/skills/urban-legend-workflow-router/SKILL.md",
+    "skills/BASE_V9_ADAPTER.json",
+    "skills/PROJECT_BASE_SKILL_ADAPTER.json",
+    "skills/PROJECT_PATH_ADAPTER.json"
+  ],
+  "base_contract": {
+    "version": "9.4.4",
+    "policy_evidence_commit": "19355b7ef065a21d0f2b685c7d9be64a4a3970f8",
+    "adoption": "PINNED_NO_SILENT_UPGRADE"
+  },
+  "verification_boundary": "Local generator and adapter checks plus exact-head PR CI are required. Human UX, accessibility, device, and release acceptance remain outside this reconciliation."
+}
