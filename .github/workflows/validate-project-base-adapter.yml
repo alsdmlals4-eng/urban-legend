@@ -19,9 +19,10 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           repository: alsdmlals4-eng/Base
-          # Formal v9.4.4 finalization: recognises this project's pinned
-          # release identity without silently following mutable Base main.
-          ref: 5adc196c0185951f50e49ab5e51586eff8d60886
+          # Immutable policy-evidence revision. It indexes the formal v9.4.4
+          # finalization below, while the project adapter remains pinned to
+          # that release identity rather than to mutable Base main.
+          ref: 19355b7ef065a21d0f2b685c7d9be64a4a3970f8
           path: .base-contract
           fetch-depth: 0
 
