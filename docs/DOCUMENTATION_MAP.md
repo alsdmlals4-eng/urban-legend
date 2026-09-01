@@ -167,7 +167,7 @@ PLANNING_COMPLETE
 → USER_FINAL_PLANNING_DECLARATION_APPROVED
 → Reality Gate: HANDOFF_READY_WITH_KNOWN_REALIGNMENT
 → implementation contract: READY
-→ runtime implementation authorization: NOT_AUTHORIZED
+→ runtime implementation: MERGED_MAIN (후속 변경은 current handoff와 exact main을 재판정)
 → COMPOSITE_RESULT semantic realignment
 → legacy grade/save compatibility
 → additive monthly_state
@@ -195,3 +195,5 @@ Historical evidence나 migration debt가 필요한 경우에만 필요한 문서
 ## Base 운영 계약
 
 Base 릴리스·payload·trusted evidence·registry hash의 단일 owner는 `BASE_RULES_VERSION.md`와 `../skills/PROJECT_BASE_ADAPTER.json`이다. 이 Map은 버전 숫자나 채택 commit을 복제하지 않는다.
+
+`PROJECT_OPERATING_HEALTH.json`은 운영 계약의 기계 Gate만 집계한다. runtime·device·accessibility·Human `NOT_RUN`을 PASS로 바꾸지 않으며, 제품 완료·출시 승인 owner도 아니다.

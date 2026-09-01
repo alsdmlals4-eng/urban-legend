@@ -16,10 +16,10 @@ GENERATED_VIEWS = (
 )
 EXPECTED_BASE_RELEASE = {
     "repository": "alsdmlals4-eng/Base",
-    "version": "9.4.3",
-    "release_commit": "7dd1a4f80388bc5faca767ff74a3eb32dc9d0ac8",
-    "release_evidence_commit": "da33a350d61b8adc52df97fccc7001708a933370",
-    "finalization_commit": "0b7c94f38d959efc0fc9442274c60b2e268a3c97",
+    "version": "9.4.4",
+    "release_commit": "210ec78292fa12ed7563ba743b322dd36103ae4a",
+    "release_evidence_commit": "bb61e68dc3028421b60c11b87ba2abd297ee6f78",
+    "finalization_commit": "5adc196c0185951f50e49ab5e51586eff8d60886",
 }
 
 
@@ -28,12 +28,7 @@ def _load_json(path: Path) -> dict:
 
 
 def _git_blob_bytes(repo_path: str) -> bytes:
-    return subprocess.run(
-        ["git", "show", f"HEAD:{repo_path}"],
-        cwd=ROOT,
-        check=True,
-        capture_output=True,
-    ).stdout
+    return (ROOT / repo_path).read_bytes()
 
 
 class TestBaseV94Urban(unittest.TestCase):
@@ -43,7 +38,7 @@ class TestBaseV94Urban(unittest.TestCase):
 
         self.assertEqual(EXPECTED_BASE_RELEASE, adapter["base_release"])
         self.assertEqual(
-            "693a0dff3f054ecdd653079909e044211473838e73dd9aff07734d1ce5694c59",
+            "08f882d0c77339e8f7ff187c35b79501e0a2958ab1ff1c7aaa1c0ef8dbee45d6",
             adapter["skill_registry"]["base"]["sha256"],
         )
         self.assertIn(

@@ -51,7 +51,7 @@ class CurrentAuthorityFreshnessTests(unittest.TestCase):
     def test_base_version_has_single_current_owner(self) -> None:
         agents = self.read("AGENTS.md")
         base_rules = self.read("docs/BASE_RULES_VERSION.md")
-        self.assertRegex(base_rules, r"base_version:\s*9\.4\.3")
+        self.assertRegex(base_rules, r"base_version:\s*9\.4\.4")
         self.assertIn("docs/BASE_RULES_VERSION.md", agents)
         self.assertNotIn("Base `9.4.0`", agents)
         self.assertNotRegex(

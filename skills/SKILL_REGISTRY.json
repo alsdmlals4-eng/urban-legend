@@ -4,9 +4,9 @@
   "base": {
     "repository": "alsdmlals4-eng/Base",
     "branch": "main",
-    "commit": "c987647d01ad2baa028a16e03d85ddfc1572a727",
+    "commit": "bb61e68dc3028421b60c11b87ba2abd297ee6f78",
     "source_registry": "skills/SKILL_REGISTRY.json",
-    "source_registry_blob_sha": "0f749dca51423ff3ea3e6db6a712a2b5bee800a8",
+    "source_registry_blob_sha": "08f882d0c77339e8f7ff187c35b79501e0a2958ab1ff1c7aaa1c0ef8dbee45d6",
     "routing_index": "skills/BASE_SKILL_INDEX.json",
     "coverage_map": "skills/BASE_SKILL_COVERAGE.json",
     "source_type": "pinned-progressive-disclosure",

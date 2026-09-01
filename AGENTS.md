@@ -168,15 +168,14 @@ overall_plan: COMPLETE
 plan_lock: RELEASED_TO_IMPLEMENTATION_GATE
 implementation_reality_gate: HANDOFF_READY_WITH_KNOWN_REALIGNMENT
 implementation_contract: READY
-runtime_implementation: NOT_AUTHORIZED
+runtime_implementation: MERGED_MAIN
+runtime_merge_commit: 8d303f0f9414950273be934fd28c8fb1b3a21e18
 human_qa: NOT_RUN
 poc_passed: NOT_DECLARED
 production_expansion: NOT_APPROVED
 ```
 
-Planning은 완료됐다. 현재 mutation 경계는 **runtime implementation authorization**이다.
-
-Fresh-main Reality Gate는 existing Canon v2 runtime을 재사용하고 `LEGACY_S_RANK_CONTRACT_REALIGNMENT_REQUIRED`와 `MONTHLY_STATE_NOT_IMPLEMENTED`를 다음 구현의 우선 교정으로 둔다.
+Planning과 runtime reconciliation은 완료됐다. 후속 mutation은 `docs/CURRENT_HANDOFF.md`의 실제 main·현재 case coverage·Human QA gate를 먼저 확인하며, 구현 완료 이력이나 과거 Reality Gate를 새 구현 권한으로 되살리지 않는다.
 
 ## Base·Workspace·이미지 생성·검수
 

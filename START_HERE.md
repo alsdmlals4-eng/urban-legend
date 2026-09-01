@@ -11,7 +11,7 @@
 → GitHub latest main ref + open PR/Issue 상태
 → docs/OPERATING_MODEL.md
 → docs/WORK_MODE_AND_SKILL_ROUTING.md
-→ Notion 괴이기록국 프로젝트 홈
+→ docs/design/PROJECT_AI_PRODUCTION_SPEC.md
 → docs/CURRENT_PLANNING_CANON.md
 → docs/current-planning-canon.json
 → docs/CURRENT_DECISION_OVERLAY.md
@@ -42,7 +42,7 @@ Validation·저승역·장기 구현 Ledger·승인 역사처럼 작업 주제�
 GitHub latest main ref
 = 현재 정확한 commit과 실제 구현 기준
 
-Notion 프로젝트 홈
+repository `docs/design/PROJECT_AI_PRODUCTION_SPEC.md`
 = 사람이 보는 전체 그림·Flow·비교표·현재 승인 방향
 
 docs/CURRENT_PLANNING_CANON.md + docs/current-planning-canon.json
@@ -61,7 +61,7 @@ docs/CURRENT_STATUS.md
 = 구현 사실
 ```
 
-같은 질문에 여러 문서가 다른 시대의 상태를 말하면 **최신 사용자 지시 → GitHub latest main → Notion current planning → CURRENT_PLANNING_CANON/current-planning-canon.json → CURRENT_DECISION_OVERLAY → CURRENT_HANDOFF → 분야별 current canon → 실제 code/test → 조건부 역사 ledger** 순서로 판정한다.
+Notion은 `HISTORICAL_READ_ONLY_NO_WRITE` migration/reference source다. 같은 질문에 여러 문서가 다른 시대의 상태를 말하면 **최신 사용자 지시 → GitHub latest main → repository current master GDD → CURRENT_PLANNING_CANON/current-planning-canon.json → CURRENT_DECISION_OVERLAY → CURRENT_HANDOFF → 분야별 current canon → 실제 code/test → 조건부 역사 ledger → legacy Notion** 순서로 판정한다.
 
 ## 현재 제품·Gate Snapshot
 

@@ -7,7 +7,7 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-EXPECTED_BASE_INDEX_BLOB_SHA = "ccc78a366fb2f45226057de1ca1684310506e6f6"
+EXPECTED_BASE_INDEX_BLOB_SHA = "8027140e46ff0ece1ae6e30f169f8433f141a74e"
 EXPECTED_BASE_IDS = {
     "managing-game-project-operating-system",
     "auditing-and-refining-ui-art",
@@ -34,6 +34,11 @@ EXPECTED_BASE_IDS = {
     "analyzing-and-refining-game-concepts",
     "creating-user-learning-notes",
     "refactoring-with-contract-preservation",
+    "developing-and-revising-serial-fiction",
+    "evaluating-godot-assets-and-plugins-before-creation",
+    "governing-legacy-retention-and-archives",
+    "optimizing-ai-model-and-prompt-costs",
+    "producing-game-development-youtube-videos",
 }
 NO_LOSS = {
     "urban-legend-narrative": ["미확보", "선택 기억", "continuity-review"],
