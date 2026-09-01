@@ -10,7 +10,8 @@
       "Ten official-source product comparisons",
       "Text-native main/manual/recovery wireframes and causal flow",
       "Current-main versus active-M04-worktree status boundary",
-      "Repository-first visual workflow correction and focused documentation test"
+      "Repository-first visual workflow correction and focused documentation test",
+      "Exact-head CI recovery: Base Adapter protected-baseline reconciliation and generated-view refresh"
     ],
     "excluded": [
       "Runtime Scene, save, data, asset, or add-on mutation",
@@ -70,7 +71,20 @@
     "visual_and_handoff_regression": "PASS: 9 tests across visual asset authority, visual planning closure, and final planning handoff.",
     "json_and_local_links": "PASS: receipt parsed and local Markdown links resolved.",
     "diff_hygiene": "PASS: git diff --check; no scripts/scenes/data/assets/addons/project.godot paths changed.",
-    "publication_route": "SOURCE_ONLY / PDF_NOT_PUBLISHED: the only discovered builder mirrors PROJECT_AI_PRODUCTION_SPEC.md to an absent untracked DOCX. No blueprint registry or dedicated PDF generator exists, so no derivative file was invented."
+    "publication_route": "SOURCE_ONLY / PDF_NOT_PUBLISHED: the only discovered builder mirrors PROJECT_AI_PRODUCTION_SPEC.md to an absent untracked DOCX. No blueprint registry or dedicated PDF generator exists, so no derivative file was invented.",
+    "ci_recovery_local": "PASS: PR #355 exact-head CI exposed a stale protected baseline. The changed UID is present in origin/main a03f17585f8e027f7dbafac23315b56c197ed780 and absent from a03f17585f8e027f7dbafac23315b56c197ed780..this branch. Updating only the adapter baseline and regenerating six declared operating views passed the Base generator --check and project operating-contract validator."
+  },
+  "ci_recovery": {
+    "trigger": "PR #355 Validate Project Base Adapter failed because it compared the current PR to stale protected baseline 3083cd5bceab324a820d8fc63c9664e7c882d970 and rediscovered scripts/ui/recovery_telegraph_audio.gd.uid already merged by PR #354.",
+    "root_cause_evidence": [
+      "git diff --name-status 3083cd5bceab324a820d8fc63c9664e7c882d970..a03f17585f8e027f7dbafac23315b56c197ed780 -- scripts/ui/recovery_telegraph_audio.gd.uid => A",
+      "git diff --name-status a03f17585f8e027f7dbafac23315b56c197ed780..HEAD -- scripts/ui/recovery_telegraph_audio.gd.uid => no output",
+      "PR #354's approved manifest confines the UID to a no-behavior Godot source-identity fix."
+    ],
+    "minimal_fix": "Advance skills/PROJECT_BASE_ADAPTER.json#/protected_baseline/commit to immutable current-main a03f17585f8e027f7dbafac23315b56c197ed780 and regenerate exactly the six adapter-derived operating views.",
+    "approval_manifest_decision": "NOT_USED: no protected path is changed relative to the new baseline; the Base approved-contract validator requires exactly one detected protected-path error when a manifest is supplied.",
+    "product_boundary": "No scripts/scenes/data/assets/addons/project.godot mutation is made by this recovery.",
+    "rollback": "Revert the adapter baseline commit and its six generated views; the prior failure then recurs but no product behavior changes."
   },
   "adversarial_review": {
     "skill": "running-adversarial-review-and-refinement",

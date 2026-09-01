@@ -97,6 +97,21 @@ Excluded:
 4. Commit only this worktree's files, push the branch, open a PR, and read back
    the exact remote head. Required CI and Human QA stay separate gates.
 
+### 5. Recover a pre-existing Base Adapter baseline only if exact-head CI proves drift
+
+**Files:** `skills/PROJECT_BASE_ADAPTER.json` and its six generated operating views.
+
+1. Treat a CI report of a protected path already present on PR base as a
+   baseline-drift incident, not as this documentation task's product mutation.
+2. Prove it by comparing `protected_baseline..PR base` with `PR base..HEAD`.
+3. Advance only `protected_baseline.commit` to the immutable PR-base SHA;
+   preserve the protected-path list and policy hash.
+4. Regenerate only the declared operating views with the pinned Base generator,
+   then run its `--check` and the exact project operating-contract validator.
+5. Do not add a protected-change approval manifest when no protected path is
+   changed: that manifest is intentionally valid only for one detected
+   protected-path error and would make a clean baseline-reconciliation fail.
+
 ## Acceptance criteria
 
 - A reader can trace `조사 → 매뉴얼 → 구출 → 회수 → 복합 결과` without confusing a
