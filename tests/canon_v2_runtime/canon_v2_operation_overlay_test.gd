@@ -67,11 +67,18 @@ func _run() -> void:
 	var recovery_support_panel := overlay.get_node_or_null("SafeArea/RootLayout/DetailStack/RecoverySupportPanel") as Control
 	var termination_preview_panel := overlay.get_node_or_null("SafeArea/RootLayout/DetailStack/TerminationPreviewPanel") as Control
 	_expect(recovery_support_panel != null and termination_preview_panel != null and recovery_support_panel.get_index() < termination_preview_panel.get_index(), "recovery support must stay before termination detail so its state remains on-screen at 1280×720")
-	var manual_button := overlay.get_node_or_null("SafeArea/RootLayout/RuleStripPanel/RuleStrip/ManualToggleButton") as Button
-	_expect(manual_button != null, "manual toggle button missing")
-	if manual_button != null:
-		_expect(manual_button.focus_mode == Control.FOCUS_ALL, "manual toggle lacks keyboard/gamepad focus")
-		_expect(not manual_button.text.is_empty(), "manual toggle lacks text label")
+	_expect(overlay.get_node_or_null("SafeArea/RootLayout/RuleStripPanel/RuleStrip/ManualToggleButton") == null, "manual access must not occupy the recovery header")
+	_expect(overlay.has_method("open_manual_from_quick_action"), "lower-right manual quick action must be exposed")
+	overlay.call("open_manual_from_quick_action")
+	await process_frame
+	var manual_panel := overlay.get_node_or_null("ManualDetailPanel") as Control
+	_expect(manual_panel != null and manual_panel.visible, "manual quick action must open the field-reference panel")
+	var manual_close := overlay.get_node_or_null("ManualDetailPanel/ManualContent/ManualHeader/ManualCloseButton") as Button
+	_expect(manual_close != null and manual_close.focus_mode == Control.FOCUS_ALL, "manual field-reference panel must provide keyboard/gamepad close control")
+	if manual_close != null:
+		manual_close.emit_signal("pressed")
+		await process_frame
+		_expect(manual_panel != null and not manual_panel.visible, "manual close control must hide the field-reference panel")
 	var summary_label := overlay.get_node_or_null("SafeArea/RootLayout/RuleStripPanel/RuleStrip/RuleSummaryLabel") as Label
 	_expect(summary_label != null and not summary_label.text.is_empty(), "rule strip lacks text summary")
 	var detail_toggle := overlay.get_node_or_null("SafeArea/RootLayout/RuleStripPanel/RuleStrip/DetailToggleButton") as Button

@@ -186,8 +186,9 @@ func _sync_recovery_termination_preview(host: Node, game_state: Node) -> Diction
 		return {}
 	if not game_state.has_method("evaluate_canon_v2_recovery_termination"):
 		return {}
-	var recover_button := host.find_child("RecoverButton", true, false) as Button
-	if recover_button == null or recover_button.disabled:
+	if not host.has_method("is_recovery_ready_for_resolution"):
+		return {}
+	if not bool(host.call("is_recovery_ready_for_resolution")):
 		return {}
 	if game_state.has_method("get_canon_v2_runtime_state"):
 		var runtime: Dictionary = game_state.get_canon_v2_runtime_state()

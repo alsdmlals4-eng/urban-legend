@@ -8,7 +8,6 @@ var _runtime_state: Dictionary = {}
 var _mode := "recovery"
 var _manual_detail_panel: PanelContainer
 var _rule_summary_label: Label
-var _manual_toggle_button: Button
 var _recovery_clock_cluster: HBoxContainer
 var _stability_clock
 var _danger_clock
@@ -64,6 +63,13 @@ func set_recovery_clock_feedback(kind: String) -> void:
 		_danger_clock.play_feedback(kind)
 	elif kind in ["stability", "relief"]:
 		_stability_clock.play_feedback("relief")
+
+
+func open_manual_from_quick_action() -> void:
+	_ensure_ui()
+	if _mode != "recovery" or _manual_detail_panel.visible:
+		return
+	_toggle_manual_detail()
 
 
 func set_rule_strip_top_inset(top_inset: int) -> void:
@@ -174,13 +180,6 @@ func _ensure_ui() -> void:
 	_danger_clock_label.add_theme_font_size_override("font_size", 13)
 	_recovery_clock_cluster.add_child(_danger_clock_label)
 
-	_manual_toggle_button = Button.new()
-	_manual_toggle_button.name = "ManualToggleButton"
-	_manual_toggle_button.text = "괴이 매뉴얼 열기"
-	_manual_toggle_button.focus_mode = Control.FOCUS_ALL
-	_manual_toggle_button.tooltip_text = "현재 가설과 근거를 확인합니다. 정답을 자동으로 공개하지 않습니다."
-	_manual_toggle_button.pressed.connect(_toggle_manual_detail)
-	rule_strip.add_child(_manual_toggle_button)
 	_detail_toggle_button = Button.new()
 	_detail_toggle_button.name = "DetailToggleButton"
 	_detail_toggle_button.text = "작전 상태 열기"
@@ -193,16 +192,42 @@ func _ensure_ui() -> void:
 	_manual_detail_panel.name = "ManualDetailPanel"
 	_manual_detail_panel.visible = false
 	_manual_detail_panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	_manual_detail_panel.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	_manual_detail_panel.anchor_left = 0.58
+	_manual_detail_panel.anchor_top = 0.10
+	_manual_detail_panel.anchor_right = 0.985
+	_manual_detail_panel.anchor_bottom = 0.58
+	_manual_detail_panel.z_index = 120
 	_manual_detail_panel.add_theme_stylebox_override("panel", _panel_style(Color(0.055, 0.06, 0.075, 0.97), Color(0.34, 0.46, 0.54, 0.85)))
-	root_layout.add_child(_manual_detail_panel)
+	add_child(_manual_detail_panel)
+	var manual_content := VBoxContainer.new()
+	manual_content.name = "ManualContent"
+	manual_content.add_theme_constant_override("separation", 6)
+	_manual_detail_panel.add_child(manual_content)
+	var manual_header := HBoxContainer.new()
+	manual_header.name = "ManualHeader"
+	manual_content.add_child(manual_header)
+	var manual_title := Label.new()
+	manual_title.name = "ManualTitle"
+	manual_title.text = "괴이 매뉴얼 · 현장 참조"
+	manual_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	manual_title.add_theme_font_size_override("font_size", 16)
+	manual_header.add_child(manual_title)
+	var manual_close := Button.new()
+	manual_close.name = "ManualCloseButton"
+	manual_close.text = "닫기"
+	manual_close.focus_mode = Control.FOCUS_ALL
+	manual_close.pressed.connect(_toggle_manual_detail)
+	manual_header.add_child(manual_close)
 	var manual_text := RichTextLabel.new()
 	manual_text.name = "ManualText"
-	manual_text.custom_minimum_size = Vector2(0, 138)
-	manual_text.fit_content = true
+	manual_text.custom_minimum_size = Vector2(0, 190)
+	manual_text.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	manual_text.fit_content = false
 	manual_text.bbcode_enabled = true
 	manual_text.scroll_active = true
 	manual_text.focus_mode = Control.FOCUS_ALL
-	_manual_detail_panel.add_child(manual_text)
+	manual_content.add_child(manual_text)
 
 	var spacer := Control.new()
 	spacer.name = "FlexibleSpacer"
@@ -345,7 +370,7 @@ func _refresh() -> void:
 
 
 func _refresh_manual_detail() -> void:
-	var manual_text := _manual_detail_panel.get_node("ManualText") as RichTextLabel
+	var manual_text := _manual_detail_panel.get_node("ManualContent/ManualText") as RichTextLabel
 	var manual_state := _dictionary_copy(_runtime_state.get("manual_state"))
 	var pages := _array_copy(manual_state.get("pages"))
 	var active_ids := _string_array(manual_state.get("active_rule_ids"))
@@ -528,18 +553,14 @@ func _apply_mode_visibility() -> void:
 	_detail_toggle_button.text = "작전 상태 닫기" if _detail_stack.visible else "작전 상태 열기"
 	_set_legacy_action_dock_visible(not _detail_stack.visible)
 	_recovery_clock_cluster.visible = _mode == "recovery"
-	_manual_toggle_button.visible = _mode != "investigation"
-	if _mode == "investigation":
+	if _mode != "recovery":
 		_manual_detail_panel.visible = false
 
 
 func _toggle_manual_detail() -> void:
 	_manual_detail_panel.visible = not _manual_detail_panel.visible
-	_manual_toggle_button.text = "괴이 매뉴얼 닫기" if _manual_detail_panel.visible else "괴이 매뉴얼 열기"
 	if _manual_detail_panel.visible:
-		(_manual_detail_panel.get_node("ManualText") as RichTextLabel).grab_focus()
-	else:
-		_manual_toggle_button.grab_focus()
+		(_manual_detail_panel.get_node("ManualContent/ManualText") as RichTextLabel).grab_focus()
 
 
 func _toggle_detail_stack() -> void:

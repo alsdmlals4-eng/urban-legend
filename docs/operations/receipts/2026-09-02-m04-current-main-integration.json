@@ -1,0 +1,119 @@
+{
+  "schema_version": 1,
+  "artifact_role": "PROJECT_WORK_CONTRACT_RECEIPT",
+  "receipt_id": "URBAN-LEGEND-M04-CURRENT-MAIN-INTEGRATION-2026-09-02",
+  "work_level": "L3",
+  "request": "승인된 권장안에 따라 회수 시계, 현장 매뉴얼, 안내자 정리, 메인 메뉴를 현재 main 기반 통합 작업트리에 구현하고 검증한다.",
+  "scope": {
+    "included": [
+      "회수 페이즈 안정도 8칸 및 위험도 6칸 시계",
+      "정답/오답 및 지원 행동에 따른 시계 변화와 단일 자동 종결",
+      "대표 교체 및 회수 실행 버튼 제거",
+      "하단 우측 괴이 매뉴얼 열기/닫기",
+      "루메 초상 소비처 제거와 기록관 아카 텍스트 절차 통신",
+      "사용자 승인 아카이브 연구실 배경, 엠블럼, 워드타이포를 사용하는 메인 메뉴",
+      "실제 Godot 실행 캡처와 focused 회귀 검증"
+    ],
+    "excluded": [
+      "새 시나리오 의미, 수치, 캐릭터 또는 세계관의 확장",
+      "사람 UX/접근성/기기/출시 승인 주장",
+      "배포 권리 또는 상표 법률 검토",
+      "다른 활성 작업트리나 기존 사용자 변경의 변형"
+    ],
+    "asset_policy": "사용자가 필요한 실제 소비처용 이미지의 자율 제작을 승인했다. 이번 변경에서는 승인된 자산이 이미 모든 Texture 소비처를 충족하므로 새 이미지를 만들지 않았다."
+  },
+  "authority_and_baseline": {
+    "project": "urban-legend",
+    "worktree": "_worktrees/m04-current-main-integration-20260902",
+    "branch": "codex/m04-current-main-integration-20260902",
+    "worktree_base_head_before_uncommitted_integration": "02bd1b64e292f344b9443508ddfa33b94feed39e",
+    "upstream_main_read": "e7ff8139984c7117dc6b6259fbb482ccc2e6880c",
+    "base_contract": "v9.4.4 pinned by the project; no silent Base upgrade"
+  },
+  "runtime_observation": {
+    "tool": "Hera Godot live editor",
+    "target_editor_instance": 26168,
+    "main_menu": {
+      "scene": "res://scenes/main_menu.tscn",
+      "viewport": "1280x720",
+      "capture": "docs/qa/captures/m04-current-main-integration/main-menu-runtime.png",
+      "sha256": "65da4aaa41c8c77a1804a158c81ac6c306f70ae5854efd224157c661f2103abc",
+      "observed": [
+        "사용자 승인 아카이브 연구실 배경, 엠블럼, 워드타이포가 실제 TextureRect 소비처에 표시된다.",
+        "3열 레이아웃과 독립 액션 플레이트가 화면 안에 남고 메뉴별 접근 가능한 네이티브 Button이 유지된다.",
+        "아카는 초상 없이 기록관 아카 텍스트 절차 통신으로 표시된다."
+      ]
+    },
+    "recovery": {
+      "scene": "res://scenes/battle_scene.tscn",
+      "viewport": "1280x720",
+      "capture": "docs/qa/captures/m04-current-main-integration/recovery-runtime.png",
+      "sha256": "f34f5efa8eda23caa189d504749321a7c902855f9aba9106ccc7e14c3331a017",
+      "manual_open_capture": "docs/qa/captures/m04-current-main-integration/recovery-manual-open-runtime.png",
+      "manual_open_sha256": "8ab2c655eea14338497660546d95c5f0dbd2971887dde78b01c5564c4d5a7fc9",
+      "observed": [
+        "안정도 0/8 및 위험도 0/6 원형 시계가 같은 상단 정보줄에 표시된다.",
+        "대표 교체와 회수 실행은 실제 UI 트리에 존재하지 않는다.",
+        "하단 우측 괴이 매뉴얼 버튼으로 현장 참조 패널을 열고 실제 좌표 클릭으로 닫았다.",
+        "직접 진입 상태에서는 가설-근거-대응 카드와 현장 전조가 함께 보인다."
+      ]
+    },
+    "engine_error_log": "0 errors after main menu and recovery scene runs"
+  },
+  "machine_verification": {
+    "red_to_green": [
+      "MVP-035 text-first Aka conversion: 50 passed / 2 expected failures before correction, then 52 passed / 0 failed.",
+      "Main-menu historic asset import/consumer mapping: no-import failure observed, then all focused contracts green after Godot import and catalog mapping."
+    ],
+    "focused_green": [
+      "tests/recovery/recovery_clock_state_test.gd: 17 passed, 0 failed",
+      "tests/recovery/recovery_direct_lead_flow_test.gd: 12 passed, 0 failed",
+      "tests/recovery/recovery_dual_clock_overlay_test.gd: 8 passed, 0 failed",
+      "tests/recovery/recovery_dual_clock_scene_test.gd: 12 passed, 0 failed",
+      "tests/canon_v2_runtime/canon_v2_operation_overlay_test.gd: PASS",
+      "tests/canon_v2_runtime/canon_v2_result_termination_test.gd: PASS",
+      "tests/test_mvp039_manual_ux_validation.gd: 92 passed, 0 failed",
+      "tests/test_main_menu_control_room_static_contract.py: 7 tests OK",
+      "tests/validation/validation_main_menu_contract_test.gd: PASS",
+      "tests/validation/main_menu_window_breakpoint_test.gd: PASS",
+      "Full current regression: 77 direct runner entrypoints plus 15 Afterlife Canon V2 migration entrypoints passed in isolated Windows user-data directories; script-load/compile error matches: 0."
+    ],
+    "known_nonblocking_runtime_warnings": "Focused Godot tests retain existing ObjectDB/resource-leak warnings. The main-menu contract intentionally exercises a corrupt JSON fixture and emits its expected parse diagnostic while still passing. No script error or test failure was recorded in the listed focused runs."
+  },
+  "adversarial_review": {
+    "required_full_loops": 5,
+    "loops": [
+      {"loop": 1, "focus": "clock state and automatic termination", "result": "PASS"},
+      {"loop": 2, "focus": "legacy command removal and direct-lead flow", "result": "PASS"},
+      {"loop": 3, "focus": "manual opening, closing, and no source-specific guide portrait", "result": "PASS"},
+      {"loop": 4, "focus": "main menu consumer/provenance and live frame containment", "result": "PASS"},
+      {"loop": 5, "focus": "runtime error log, focused regressions, and generated-file cleanup plan", "result": "PASS"}
+    ],
+    "exit_before_remote": "LOCAL_CLEAN_REVIEW_EXIT after the full isolated regression, current runtime capture, static contract checks, and generated-file cleanup. Commit, push, exact-head CI, and post-push readback remain pending."
+  },
+  "reuse_learning_handoff": {
+    "gate": "REUSE_LEARNING_HANDOFF_REQUIRED",
+    "selected_modules": [
+      "Current M01/M04 recovery flow and manual workbench",
+      "Approved ULAB main-menu background, emblem, and wordmark receipts",
+      "Existing Canon V2 operation overlay and asset catalog"
+    ],
+    "reuse_mode": "ADAPT",
+    "project_paths_changed": [
+      "game state, recovery scene, operation overlay, main menu, asset catalog, current asset manifest, focused tests, runtime captures"
+    ],
+    "evidence_ceiling": "Machine and runtime capture evidence only; human UX/accessibility/device/release evidence remains NOT_RUN.",
+    "rollback": "Revert the three scoped integration commits after they are created; retained user-approved source assets remain recoverable through Git history.",
+    "project_only_lessons": [
+      "A recovery clock must be bound to direct player evidence choices, not exposed as a separate execute action.",
+      "A live Texture consumer should be restored from the approved asset receipt before generating a replacement.",
+      "Scenario guide character art and global procedural support must use separate consumers."
+    ],
+    "base_promotion_candidates": "NO_NEW_REUSE_LEARNING_PENDING_FINAL_CI"
+  },
+  "remaining_completion_gates": [
+    "Final staged diff and asset-hash hygiene",
+    "Commit, push, PR exact-head CI, and post-push readback",
+    "Human visual/accessibility and release-rights review remain intentionally NOT_RUN"
+  ]
+}

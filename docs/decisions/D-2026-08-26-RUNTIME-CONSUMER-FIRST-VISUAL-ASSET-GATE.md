@@ -80,7 +80,7 @@ Telegraph Badge, Context Action List, Category Bar, Composite Result card를 각
 - 권나래 `full_body` → Preparation protagonist art.
 - 외부 접점 4명 `portrait` → Preparation contact cards.
 - 요원 `recovery_support` → Recovery support cut-in.
-- `log_normal/focus/warning` → 기록관 아카 portrait.
+- 기록관 아카 절차 통신 → text-first `LogGuide`; portrait asset 없음.
 
 ## Current consumer inventory
 

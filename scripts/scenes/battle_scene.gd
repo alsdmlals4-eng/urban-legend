@@ -10,7 +10,6 @@ const LogTutorialCatalog = preload("res://scripts/ui/log_tutorial_catalog.gd")
 const RecoveryTelegraphAudio = preload("res://scripts/ui/recovery_telegraph_audio.gd")
 const ActionChoiceCardScene = preload("res://scenes/ui/action_choice_card.tscn")
 const TeamStatusChipScene = preload("res://scenes/ui/team_status_chip.tscn")
-const AnomalyManualDrawerScript = preload("res://scripts/ui/anomaly_manual_drawer.gd")
 
 const BASE_ANOMALY_STABILITY := 0
 const BASE_RECOVERY_THRESHOLD := 70
@@ -34,17 +33,12 @@ var _active_effects: Array = []
 var _minigame_recovery_messages: Array[String] = []
 var _action_buttons: Array[Button] = []
 var _agent_support_buttons: Array[Button] = []
-var _representative_agent_index := 0
 var _target_agent_index := 0
+var _recovery_completion_queued := false
 
-var _stability_bar: ProgressBar
-var _fear_bar: ProgressBar
 var _threshold_label: Label
 var _prediction_label: Label
-var _auto_effect_label: Label
 var _result_label: Label
-var _recover_button: Button
-var _representative_agent_label: Label
 var _representative_agent_image: TextureRect
 var _representative_cut_in_generation := 0
 var _anomaly_panel: PanelContainer
@@ -55,15 +49,11 @@ var _runtime_editor: RuntimeUiEditor
 var _current_pattern: Dictionary = {}
 var _telegraph_label: Label
 var _prediction_summary_label: Label
-var _evidence_label: Label
 var _response_box: GridContainer
 var _consumable_row: HBoxContainer
 var _turn_auto_success_agents: Dictionary = {}
 var _turn_locked := false
 var _log_guide: LogGuide
-var _manual_drawer: AnomalyManualDrawer
-var _manual_prediction_label: Label
-var _last_result_detail_label: Label
 var _decision_progress_label: Label
 var _decision_instruction_label: Label
 var _decision_back_button: Button
@@ -91,11 +81,6 @@ func _build_scene_ui() -> void:
 	var shade := get_node_or_null("ArtLayer/Shade") as ColorRect
 	if shade != null:
 		shade.color = Color(0.08, 0.015, 0.025, 0.14)
-	_representative_agent_label = %RepresentativeAgentLabel
-	_stability_bar = %StabilityBar
-	_stability_bar.max_value = 100
-	_fear_bar = %FearBar
-	_fear_bar.max_value = 100
 	_representative_agent_image = %RepresentativeVisual
 	_representative_agent_image.visible = false
 	_anomaly_panel = %AnomalyPanel
@@ -111,10 +96,8 @@ func _build_scene_ui() -> void:
 	_response_box.columns = 3
 	_consumable_row = %ConsumableRow
 	_result_label = %ResultLabel
-	_recover_button = %RecoverButton
 	_threshold_label = %ThresholdLabel
 	_prediction_label = %PredictionLabel
-	_auto_effect_label = %ClueSummaryLabel
 	_decision_back_button = %DecisionBackButton
 	_decision_confirm_button = %DecisionConfirmButton
 	_telegraph_audio_player = AudioStreamPlayer.new()
@@ -123,37 +106,9 @@ func _build_scene_ui() -> void:
 
 	var initial_stage := SceneVisuals.apply_anomaly(_anomaly_image, GameState.get_anomaly_risk())
 	_anomaly_stage_label.text = "관측 위험 단계 %s · %s" % [initial_stage, _make_resolution_phase_text()]
-	_auto_effect_label.text = _make_clue_summary()
-	_auto_effect_label.tooltip_text = "괴이 매뉴얼에서 확보 단서와 회수 효과를 확인합니다."
-	_recover_button.pressed.connect(_recover_anomaly_core)
 	_decision_back_button.pressed.connect(_go_back_decision_step)
 	_decision_confirm_button.pressed.connect(_confirm_evidence_step)
-	%RepresentativeSwitchButton.pressed.connect(_switch_representative)
-	(%ClueDrawer as PanelContainer).visible = false
-	_manual_drawer = AnomalyManualDrawerScript.new()
-	add_child(_manual_drawer)
-	_manual_drawer.anchor_left = 0.66
-	_manual_drawer.anchor_top = 0.12
-	_manual_drawer.anchor_right = 0.985
-	_manual_drawer.anchor_bottom = 0.60
-	_manual_drawer.set_sections([
-		{"title": "회수 자동 반영 단서", "text": _make_auto_effect_text()},
-		{"title": "요원 지원", "text": "대표 교체와 지원 행동은 현재 전조를 확인한 뒤 선택할 수 있습니다."}
-	])
-	_manual_drawer.bind_toggle_button(%ClueDrawerButton)
-	_manual_prediction_label = _make_label("")
-	_manual_drawer.add_detail_control(_manual_prediction_label)
-	_last_result_detail_label = _make_label("직전 판단 상세\n아직 실행한 대응이 없습니다.")
-	_manual_drawer.add_detail_control(_last_result_detail_label)
-	_evidence_label = _make_label("")
-	_manual_drawer.add_detail_control(_evidence_label)
-	# 기존 회수 지원과 이동 조작은 화면 기본 정보에서는 숨기되, 기능을 제거하지 않고
-	# 상세 매뉴얼 안에서 계속 제공한다.
-	var manual_actions := VBoxContainer.new()
-	manual_actions.add_theme_constant_override("separation", 6)
-	_manual_drawer.add_detail_control(manual_actions)
-	_add_agent_recovery_support_actions(manual_actions)
-	_add_navigation(manual_actions)
+	%ManualQuickButton.pressed.connect(_open_recovery_manual)
 
 	_log_guide = LogGuideScript.new()
 	_log_guide.set_compact(true)
@@ -163,28 +118,14 @@ func _build_scene_ui() -> void:
 	_refresh_representative_agent()
 
 
-func _make_clue_summary() -> String:
-	if _active_effects.is_empty():
-		return "핵심 단서 없음 · 매뉴얼 확인"
-	return "핵심 단서 %d개 · 매뉴얼 확인" % _active_effects.size()
+func request_manual_quick_open() -> void:
+	var operation_overlay := get_node_or_null("CanonV2OperationOverlay")
+	if operation_overlay != null and operation_overlay.has_method("open_manual_from_quick_action"):
+		operation_overlay.call("open_manual_from_quick_action")
 
 
-func _toggle_clue_drawer() -> void:
-	var drawer := %ClueDrawer as PanelContainer
-	drawer.visible = not drawer.visible
-	%ClueDrawerButton.text = "근거 ▲" if drawer.visible else "근거 ▼"
-
-
-func _switch_representative() -> void:
-	var agents := GameState.get_selected_agents()
-	if agents.size() <= 1:
-		_result_label.text = "교체할 지원 요원이 없습니다."
-		return
-	_representative_agent_index = (_representative_agent_index + 1) % agents.size()
-	_refresh_representative_agent()
-	_populate_team_strip()
-	_show_representative_cut_in()
-	_result_label.text = "%s이(가) 대표 대응을 맡습니다." % String(_get_representative_agent().get("name", "요원"))
+func _open_recovery_manual() -> void:
+	request_manual_quick_open()
 
 
 func _populate_team_strip() -> void:
@@ -192,8 +133,11 @@ func _populate_team_strip() -> void:
 	_clear_children(strip)
 	var catalog := AssetCatalog.new()
 	var agents := GameState.get_selected_agents()
-	for index in range(agents.size()):
-		var agent: Dictionary = agents[index]
+	var representative_id := String(_get_representative_agent().get("id", ""))
+	for agent_value in agents:
+		if typeof(agent_value) != TYPE_DICTIONARY:
+			continue
+		var agent := agent_value as Dictionary
 		var agent_id := String(agent.get("id", ""))
 		var chip := TeamStatusChipScene.instantiate()
 		strip.add_child(chip)
@@ -203,7 +147,7 @@ func _populate_team_strip() -> void:
 			"mental": GameState.get_agent_current_mental(agent_id),
 			"max_mental": GameState.get_agent_max_mental(agent_id),
 			"active": GameState.is_agent_active(agent_id),
-			"representative": index == _representative_agent_index,
+			"representative": agent_id == representative_id,
 			"texture": catalog.get_agent_expression(agent_id, 1)
 		})
 
@@ -393,15 +337,13 @@ func _find_response_by_id(response_id: String) -> Dictionary:
 
 
 func _refresh_recovery_evidence() -> void:
-	if _evidence_label != null:
-		_evidence_label.text = _make_recovery_evidence_text()
-	if _manual_drawer != null:
-		_manual_drawer.mark_new_entries()
+	# 회수 근거는 별도 드로어가 아니라 우측 하단 괴이 매뉴얼의 현행 기록으로 참조한다.
+	pass
 
 
 func _refresh_manual_prediction() -> void:
-	if _manual_prediction_label != null:
-		_manual_prediction_label.text = "예측·지원 상세\n%s" % _prediction_summary_label.text
+	# 예측은 현재 전조 패널에 남기며, 매뉴얼은 확인 가능한 기록만 보여 준다.
+	pass
 
 
 func _make_minigame_recovery_text() -> String:
@@ -529,7 +471,6 @@ func _begin_recovery_turn(last_result: String = "") -> void:
 	if last_result.is_empty():
 		_update_battle_view("판단 절차: 가설을 세우고 확보 기록으로 검증한 뒤 현장 대응을 선택합니다.")
 	else:
-		_last_result_detail_label.text = "직전 판단 상세\n%s" % last_result
 		_update_battle_view(_make_compact_last_result(last_result))
 	if danger_advanced:
 		_play_recovery_clock_feedback("danger")
@@ -1214,22 +1155,6 @@ func _add_support_action(parent: Control) -> void:
 	_action_buttons.append(button)
 
 
-func _add_representative_switch_action(parent: Control) -> void:
-	var button := Button.new()
-	button.text = "대표 요원 교체"
-	button.pressed.connect(func() -> void:
-		var agents := GameState.get_selected_agents()
-		if agents.size() < 2:
-			_update_battle_view("대표 요원 교체: 전환할 다른 요원이 없습니다.")
-			return
-		_representative_agent_index = (_representative_agent_index + 1) % agents.size()
-		_refresh_representative_agent()
-		_update_battle_view("현장 지휘 / 회수 담당을 전환했습니다. 팀 지원과 회수 조건은 유지됩니다.")
-	)
-	parent.add_child(button)
-	_action_buttons.append(button)
-
-
 func _add_agent_recovery_support_actions(parent: Control) -> void:
 	var title := Label.new()
 	title.text = "요원 지원"
@@ -1387,12 +1312,6 @@ func _update_battle_view(message: String) -> void:
 	_refresh_representative_agent()
 	_populate_team_strip()
 	_refresh_recovery_clock_hud()
-	if _auto_effect_label != null:
-		_auto_effect_label.text = _make_clue_summary()
-	if _stability_bar != null:
-		_stability_bar.value = _anomaly_stability
-	if _fear_bar != null:
-		_fear_bar.value = _fear_level
 	if _threshold_label != null:
 		_threshold_label.text = "회수 가능 조건: 괴이 안정도 %d 이상 / 현재 %d" % [
 			_recovery_threshold,
@@ -1408,9 +1327,6 @@ func _update_battle_view(message: String) -> void:
 			int(status.get("prediction_success_streak", 0)),
 			int(status.get("prediction_failure_streak", 0))
 		]
-	if _recover_button != null:
-		_recover_button.disabled = _recovery_completed or not _can_recover()
-
 	var status_message := message
 	if not _recovery_completed and _can_recover():
 		status_message += "\n괴이의 핵이 회수 가능한 상태입니다."
@@ -1420,6 +1336,9 @@ func _update_battle_view(message: String) -> void:
 		if GameState.are_all_agents_inactive():
 			_result_label.text += "\n\n모든 요원이 행동 불능 상태입니다. 조사 화면으로 돌아가 재정비합니다."
 			call_deferred("_return_to_investigation")
+	if not _recovery_completed and _can_recover() and not _recovery_completion_queued:
+		_recovery_completion_queued = true
+		call_deferred("_complete_recovery_when_ready")
 
 
 func _show_representative_cut_in(refresh_portrait: bool = true) -> void:
@@ -1436,16 +1355,9 @@ func _show_representative_cut_in(refresh_portrait: bool = true) -> void:
 
 
 func _refresh_representative_agent() -> void:
-	if _representative_agent_label == null:
+	var representative := _get_representative_agent()
+	if representative.is_empty():
 		return
-
-	var agents := GameState.get_selected_agents()
-	if agents.is_empty():
-		_representative_agent_label.text = "대표 요원: 미지정\n팀 상태: 요원 편성이 필요합니다."
-		return
-
-	_representative_agent_index = posmod(_representative_agent_index, agents.size())
-	var representative: Dictionary = agents[_representative_agent_index]
 	if _representative_agent_image != null:
 		var catalog := AssetCatalog.new()
 		_representative_agent_image.texture = catalog.get_agent_expression(String(representative.get("id", "")), 1)
@@ -1453,30 +1365,20 @@ func _refresh_representative_agent() -> void:
 			String(representative.get("name", "요원")),
 			String(representative.get("temperament_label", representative.get("temperament", "")))
 		]
-	var rep_id := String(representative.get("id", ""))
-	var hp_info := ""
-	if not rep_id.is_empty():
-		hp_info = " · 체력 %d/%d · 정신 %d/%d%s" % [
-			GameState.get_agent_current_hp(rep_id),
-			GameState.get_agent_max_hp(rep_id),
-			GameState.get_agent_current_mental(rep_id),
-			GameState.get_agent_max_mental(rep_id),
-			" [방호]" if GameState.has_protection(rep_id) else ""
-		]
-	_representative_agent_label.text = "대표: %s%s" % [
-		String(representative.get("name", representative.get("id", "요원"))),
-		hp_info,
-	]
-
-
 func _get_representative_agent() -> Dictionary:
 	var agents := GameState.get_selected_agents()
 	if agents.is_empty():
 		return {}
-	_representative_agent_index = posmod(_representative_agent_index, agents.size())
-	var agent: Variant = agents[_representative_agent_index]
-	if typeof(agent) == TYPE_DICTIONARY:
-		return agent
+	var protagonist_id := GameState.get_protagonist_agent_id()
+	for agent_value in agents:
+		if typeof(agent_value) != TYPE_DICTIONARY:
+			continue
+		var agent := agent_value as Dictionary
+		if String(agent.get("id", "")) == protagonist_id:
+			return agent
+	var first_agent: Variant = agents[0]
+	if typeof(first_agent) == TYPE_DICTIONARY:
+		return first_agent
 	return {}
 
 
@@ -1495,9 +1397,13 @@ func _can_recover() -> bool:
 	return _anomaly_stability >= _recovery_threshold
 
 
-func _recover_anomaly_core() -> void:
-	if not _can_recover():
-		_update_battle_view("아직 괴이의 핵이 충분히 안정화되지 않았습니다.")
+func is_recovery_ready_for_resolution() -> bool:
+	return not _recovery_completed and _can_recover()
+
+
+func _complete_recovery_when_ready() -> void:
+	_recovery_completion_queued = false
+	if not is_recovery_ready_for_resolution():
 		return
 	_recovery_completed = true
 	GameState.save_recovery_result(true, "core_recovered", _anomaly_stability)
@@ -1507,8 +1413,15 @@ func _recover_anomaly_core() -> void:
 		button.disabled = true
 	for button in _agent_support_buttons:
 		button.disabled = true
-	_recover_button.disabled = true
 	get_tree().change_scene_to_file("res://scenes/result_scene.tscn")
+
+
+func _recover_anomaly_core() -> void:
+	# 레거시 테스트·저장 호환 호출점. 실제 화면에는 별도 회수 실행 조작을 만들지 않는다.
+	if not _can_recover():
+		_update_battle_view("아직 괴이의 핵이 충분히 안정화되지 않았습니다.")
+		return
+	_complete_recovery_when_ready()
 
 
 func _return_to_investigation() -> void:

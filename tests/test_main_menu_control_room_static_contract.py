@@ -4,6 +4,8 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 MENU = ROOT / "scripts" / "ui" / "main_menu.gd"
 VERSION_OWNER = ROOT / "scripts" / "core" / "product_version.gd"
+MAIN_MENU_EMBLEM = ROOT / "assets" / "ui" / "bureau_archive_emblem.png"
+MAIN_MENU_WORDMARK = ROOT / "assets" / "ui" / "bureau_archive_wordmark.png"
 
 
 class MainMenuControlRoomStaticContract(unittest.TestCase):
@@ -26,6 +28,10 @@ class MainMenuControlRoomStaticContract(unittest.TestCase):
             "IdentityRail",
             "ActionRail",
             "IntelligenceRail",
+            "WorldTitleLockup",
+            "WorldTitle",
+            "WorldTitleSuffix",
+            "WorldSubtitle",
             "VersionLabel",
             "PrimaryActionHint",
             "SettingsButton",
@@ -37,6 +43,51 @@ class MainMenuControlRoomStaticContract(unittest.TestCase):
         menu = MENU.read_text(encoding="utf-8")
         for forbidden in ["김하람", "SYSTEM ALERT", "슬롯 01", "매우 높음", "2011. 08. 11"]:
             self.assertNotIn(forbidden, menu)
+
+    def test_user_approved_bureau_archive_background_is_the_runtime_menu_backdrop(self) -> None:
+        menu = MENU.read_text(encoding="utf-8")
+        catalog = (ROOT / "scripts" / "ui" / "ui_asset_catalog.gd").read_text(encoding="utf-8")
+        manifest = (ROOT / "ASSET_MANIFEST.yml").read_text(encoding="utf-8")
+
+        self.assertIn('MAIN_MENU_BACKGROUND_ID := "bureau_archive_menu"', menu)
+        self.assertIn('get_texture(MAIN_MENU_BACKGROUND_ID)', menu)
+        self.assertIn('"bureau_archive_menu": "res://assets/backgrounds/bureau_archive_menu.png"', catalog)
+        self.assertIn('asset_id: "ULAB-MAIN-MENU-BACKGROUND-001"', manifest)
+        self.assertIn('canonical_path: "assets/backgrounds/bureau_archive_menu.png"', manifest)
+
+    def test_user_locked_bureau_emblem_is_registered_and_rendered_in_the_main_menu_identity_lockup(self) -> None:
+        menu = MENU.read_text(encoding="utf-8")
+        manifest = (ROOT / "ASSET_MANIFEST.yml").read_text(encoding="utf-8")
+
+        self.assertTrue(MAIN_MENU_EMBLEM.is_file(), "selected bureau emblem must be a project-owned runtime asset")
+        self.assertIn('preload("res://assets/ui/bureau_archive_emblem.png")', menu)
+        self.assertIn('bureau_emblem.name = "WorldTitleEmblem"', menu)
+        self.assertIn('bureau_emblem.texture = MAIN_MENU_EMBLEM_TEXTURE', menu)
+        self.assertIn('asset_id: "ULAB-MAIN-MENU-EMBLEM-001"', manifest)
+        self.assertIn('canonical_path: "assets/ui/bureau_archive_emblem.png"', manifest)
+
+    def test_user_locked_bureau_wordmark_is_registered_and_replaces_duplicate_visual_title_text(self) -> None:
+        menu = MENU.read_text(encoding="utf-8")
+        manifest = (ROOT / "ASSET_MANIFEST.yml").read_text(encoding="utf-8")
+
+        self.assertTrue(MAIN_MENU_WORDMARK.is_file(), "selected bureau wordmark must be a project-owned runtime asset")
+        self.assertIn('preload("res://assets/ui/bureau_archive_wordmark.png")', menu)
+        self.assertIn('wordmark.name = "WorldTitleWordmark"', menu)
+        self.assertIn('wordmark.texture = MAIN_MENU_WORDMARK_TEXTURE', menu)
+        self.assertIn('title.visible = false', menu)
+        self.assertIn('report_title.visible = false', menu)
+        self.assertIn('asset_id: "ULAB-MAIN-MENU-WORDMARK-001"', manifest)
+        self.assertIn('canonical_path: "assets/ui/bureau_archive_wordmark.png"', manifest)
+
+    def test_world_title_lockup_displays_the_approved_product_title_without_renaming_the_agency(self) -> None:
+        menu = MENU.read_text(encoding="utf-8")
+        self.assertIn('title_lockup.name = "WorldTitleLockup"', menu)
+        self.assertIn('title.name = "WorldTitle"', menu)
+        self.assertIn('title.text = "괴이기록국"', menu)
+        self.assertIn('report_title.name = "WorldTitleSuffix"', menu)
+        self.assertIn('report_title.text = "잔향 보고서"', menu)
+        self.assertIn('subtitle.name = "WorldSubtitle"', menu)
+        self.assertIn('subtitle.text = "BUREAU OF ANOMALIES: ECHO REPORT"', menu)
 
 
 if __name__ == "__main__":

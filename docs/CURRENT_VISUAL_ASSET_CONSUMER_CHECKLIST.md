@@ -127,19 +127,13 @@ legacy `get_agent_expression()` / `AGENT_ASSETS` / `AGENT_CUTOUT_ASSETS`는 현�
 
 윤서하·한유리 production files 존재 자체를 이유로 새 expression sheet를 생성하지 않는다. 필요하면 이는 먼저 runtime wiring/consumer 문제로 분류한다.
 
-## 6. Log guide consumer
+## 6. Procedure guide consumer
 
-`LogGuide`의 실제 portrait consumer는:
+`LogGuide`는 `기록관 아카 · 절차 통신`이라는 text-first 절차 패널이다. 대사 순서,
+접속 시그니처, 상태색만 제공하며 portrait consumer는 없다. 기존 `assets/log/log_*.png`는
+실제 소비처가 0임을 readback한 뒤 제거했다.
 
-- `assets/log/log_normal.png`
-- `assets/log/log_focus.png`
-- `assets/log/log_warning.png`
-
-이다.
-
-상태색은 별도 ColorRect로 중복 cue를 제공한다.
-
-Current status: `REUSE_REVIEW`.
+Current status: `TEXT_ONLY_IMPLEMENTED`; Human QA pending.
 
 ## 7. Result screen boundary
 

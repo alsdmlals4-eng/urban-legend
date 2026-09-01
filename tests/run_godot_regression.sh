@@ -87,6 +87,7 @@ script_tests=(
   recovery/recovery_clock_state_test
   recovery/recovery_dual_clock_overlay_test
   recovery/recovery_dual_clock_scene_test
+  recovery/recovery_direct_lead_flow_test
   recovery_telegraph_audio_test
 )
 
