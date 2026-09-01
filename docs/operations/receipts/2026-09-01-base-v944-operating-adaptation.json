@@ -9,7 +9,8 @@
       "Repository-first operating entrypoints and current authority order",
       "Base v9.4.4 pin, selected route metadata, generated operating views",
       "stale document-router test correction and operating health bootstrap",
-      "CI validator checkout pin to immutable Base policy evidence that indexes the v9.4.4 formal finalization"
+      "CI validator checkout pin to immutable Base policy evidence that indexes the v9.4.4 formal finalization",
+      "GUT runtime-scope classifier: full import/GUT/regression stays required for GUT or engine-surface changes, while governance-only changes retain focused contract verification"
     ],
     "excluded": [
       "Godot runtime, scene, save, episode, gameplay, or approved asset mutation",
@@ -133,7 +134,8 @@
     "rollback": "Revert this dedicated operating-contract commit; product paths and M04 worktree are unchanged.",
     "project_only_lessons": [
       "A protected baseline must be advanced only after exact diff review, not by treating an existing validation failure as product drift.",
-      "Deleted legacy routers must be removed from current tests rather than recreated as speculative authority."
+      "Deleted legacy routers must be removed from current tests rather than recreated as speculative authority.",
+      "A governance-only change must not invoke a full Godot import merely because it touches a GUT governance test; retain that import gate for actual GUT or engine-surface changes."
     ],
     "base_promotion_candidates": "NO_NEW_REUSE_LEARNING"
   },
