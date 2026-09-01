@@ -69,9 +69,12 @@ func _run() -> void:
 	if not _test_investigation_decision_context():
 		return
 	if not await _test_scene_contract("res://scenes/battle_scene.tscn", [
-		"CinematicStage", "RecoveryHud", "RepresentativeVisual", "AnomalyVisual",
-		"ClueDrawer", "ActionDock", "ResponseGrid", "RepresentativeSwitchButton"
+		"CinematicStage", "RepresentativeVisual", "AnomalyVisual", "ActionDock",
+		"ResponseGrid", "ManualQuickButton"
 	]):
+		return
+	if current_scene.find_child("RepresentativeSwitchButton", true, false) != null or current_scene.find_child("RecoverButton", true, false) != null:
+		_fail("recovery must use a fixed lead and automatic resolution, without representative switch or execute buttons")
 		return
 	var representative_visual := current_scene.find_child("RepresentativeVisual", true, false) as Control
 	if representative_visual == null or representative_visual.visible:

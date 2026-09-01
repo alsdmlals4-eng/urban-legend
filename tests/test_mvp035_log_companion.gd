@@ -3,7 +3,6 @@ extends Node
 const TestSaveGuard = preload("res://tests/test_save_guard.gd")
 const LogGuide = preload("res://scripts/ui/log_guide.gd")
 const LogTutorialCatalog = preload("res://scripts/ui/log_tutorial_catalog.gd")
-const AssetCatalog = preload("res://scripts/ui/ui_asset_catalog.gd")
 const ProductVersion = preload("res://scripts/core/product_version.gd")
 
 var _guard := TestSaveGuard.new()
@@ -58,6 +57,9 @@ func _run_component_tests() -> void:
 	], "normal", false)
 	_check(guide.get_current_text() == "접속 완료", "guide presents first line")
 	_check(guide.get_current_expression() == "normal", "guide presents normal expression")
+	var procedure_speaker := guide.find_child("ProcedureSpeaker", true, false) as Label
+	_check(procedure_speaker != null and procedure_speaker.text.contains("기록관 아카 · 절차 통신"), "guide identifies the text-only Archivist Aka procedure channel")
+	_check(guide.find_children("*", "TextureRect", true, false).is_empty(), "procedure guide must not render a discarded portrait asset")
 	guide.advance()
 	_check(guide.get_current_text() == "기록 대조 중", "guide advances sequence")
 	_check(guide.get_current_expression() == "focus", "guide changes expression")
@@ -75,10 +77,6 @@ func _run_component_tests() -> void:
 	_check(not LogTutorialCatalog.get_entry("recovery_first_prediction").is_empty(), "prediction tutorial exists")
 	_check(LogTutorialCatalog.get_entry("unknown").is_empty(), "unknown tutorial is safe")
 	_check(LogTutorialCatalog.get_repeat_hint("main_welcome").length() > 0, "repeat hint exists")
-	var catalog := AssetCatalog.new()
-	_check(catalog.get_asset_path("log_normal").ends_with("log_normal.png"), "normal Log asset path registered")
-	_check(catalog.get_asset_path("log_focus").ends_with("log_focus.png"), "focus Log asset path registered")
-	_check(catalog.get_asset_path("log_warning").ends_with("log_warning.png"), "warning Log asset path registered")
 	guide.queue_free()
 
 

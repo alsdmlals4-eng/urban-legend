@@ -11,6 +11,9 @@ const SAVE_VERSION := "mvp-039"
 const DEFAULT_DIALOGUE_NODE_ID := "dialogue_intro"
 const DEFAULT_FIELD_NODE_ID := "dialogue_intro"
 const STABILITY_SCHEMA_VERSION := 2
+const RECOVERY_CLOCK_DANGER_MAX := 6
+const RECOVERY_CLOCK_SURGE_DAMAGE := 8
+const RECOVERY_CLOCK_SURGE_FALLBACK := 3
 const DEFAULT_MINIGAME_ID := "minigame_frequency_sync"
 const EQUIP_FREQUENCY_FILTER := "equip_frequency_filter"
 const SCENE_MAIN_MENU := "res://scenes/main_menu.tscn"
@@ -117,6 +120,11 @@ var last_recovery_pattern_id := ""
 var confirmed_recovery_pattern_id := ""
 var seen_recovery_pattern_ids: Array = []
 var recovery_pattern_learning: Dictionary = {}
+var recovery_clock_state: Dictionary = {
+	"danger": 0,
+	"turn_count": 0,
+	"surge_count": 0
+}
 var last_random_event_id := ""
 var last_random_event_result: Dictionary = {}
 var forced_recovery_phase := false
@@ -2071,6 +2079,7 @@ func reset_recovery_pattern_state(save_after: bool = true) -> void:
 	confirmed_recovery_pattern_id = ""
 	seen_recovery_pattern_ids.clear()
 	recovery_pattern_learning.clear()
+	reset_recovery_clock_state()
 	prediction_success_streak = 0
 	prediction_failure_streak = 0
 	if save_after:
@@ -2093,6 +2102,62 @@ func record_recovery_pattern_outcome(pattern_id: String, response_id: String, co
 
 func get_recovery_pattern_learning() -> Dictionary:
 	return recovery_pattern_learning.duplicate(true)
+
+
+## Returns recovery-only pressure without duplicating the canonical stability state.
+func get_recovery_clock_state() -> Dictionary:
+	recovery_clock_state = _normalize_recovery_clock_state(recovery_clock_state)
+	return recovery_clock_state.duplicate(true)
+
+
+## Clears recovery pressure whenever the recovery pattern loop resets.
+func reset_recovery_clock_state() -> void:
+	recovery_clock_state = {
+		"danger": 0,
+		"turn_count": 0,
+		"surge_count": 0
+	}
+
+
+## Starts a meaningful recovery turn. Reading a manual reference never calls this.
+func begin_recovery_clock_turn() -> Dictionary:
+	var state := get_recovery_clock_state()
+	if int(state.get("turn_count", 0)) > 0:
+		state["danger"] = mini(RECOVERY_CLOCK_DANGER_MAX, int(state.get("danger", 0)) + 1)
+	state["turn_count"] = int(state.get("turn_count", 0)) + 1
+	recovery_clock_state = _normalize_recovery_clock_state(state)
+	return get_recovery_clock_state()
+
+
+## Applies a bounded support effect without treating it as a failed recovery response.
+func change_recovery_clock_danger(delta: int) -> Dictionary:
+	var state := get_recovery_clock_state()
+	state["danger"] = clampi(int(state.get("danger", 0)) + delta, 0, RECOVERY_CLOCK_DANGER_MAX)
+	recovery_clock_state = _normalize_recovery_clock_state(state)
+	return get_recovery_clock_state()
+
+
+## Resolves one committed recovery response. Correct field work relieves pressure;
+## complete manual verification relieves one additional segment. A wrong response
+## creates one bounded escalation event rather than stacking unrelated penalties.
+func resolve_recovery_clock_outcome(correct: bool, verified: bool) -> Dictionary:
+	var state := get_recovery_clock_state()
+	if correct:
+		state["danger"] = maxi(0, int(state.get("danger", 0)) - 1)
+		if verified:
+			state["danger"] = maxi(0, int(state.get("danger", 0)) - 1)
+	else:
+		state["danger"] = mini(RECOVERY_CLOCK_DANGER_MAX, int(state.get("danger", 0)) + 2)
+	var surge_triggered := false
+	if int(state.get("danger", 0)) >= RECOVERY_CLOCK_DANGER_MAX and not correct:
+		surge_triggered = true
+		state["danger"] = RECOVERY_CLOCK_SURGE_FALLBACK
+		state["surge_count"] = int(state.get("surge_count", 0)) + 1
+	recovery_clock_state = _normalize_recovery_clock_state(state)
+	var result := get_recovery_clock_state()
+	result["surge_triggered"] = surge_triggered
+	result["surge_damage"] = RECOVERY_CLOCK_SURGE_DAMAGE if surge_triggered else 0
+	return result
 
 
 func get_agent_auto_action_chance(agent_id: String, ability_key: String, bonus_chance: float = 0.0, maximum_chance: float = 70.0) -> float:
@@ -3033,6 +3098,7 @@ func load_game() -> bool:
 	confirmed_recovery_pattern_id = String(save_data.get("confirmed_recovery_pattern_id", ""))
 	seen_recovery_pattern_ids = _to_unique_string_array(save_data.get("seen_recovery_pattern_ids", []))
 	recovery_pattern_learning = _to_dictionary(save_data.get("recovery_pattern_learning", {}))
+	recovery_clock_state = _normalize_recovery_clock_state(save_data.get("recovery_clock_state", {}))
 
 	current_minigame_id = String(save_data.get("current_minigame_id", DEFAULT_MINIGAME_ID))
 	if current_minigame_id.is_empty():
@@ -3130,6 +3196,7 @@ func _make_save_data() -> Dictionary:
 		"confirmed_recovery_pattern_id": confirmed_recovery_pattern_id,
 		"seen_recovery_pattern_ids": seen_recovery_pattern_ids.duplicate(),
 		"recovery_pattern_learning": recovery_pattern_learning.duplicate(true),
+		"recovery_clock_state": get_recovery_clock_state(),
 		"last_random_event_id": last_random_event_id,
 		"last_random_event_result": last_random_event_result,
 		"forced_recovery_phase": forced_recovery_phase,
@@ -3533,6 +3600,15 @@ func _to_dictionary(value: Variant) -> Dictionary:
 	if typeof(value) == TYPE_DICTIONARY:
 		return value.duplicate(true)
 	return {}
+
+
+func _normalize_recovery_clock_state(value: Variant) -> Dictionary:
+	var source := _to_dictionary(value)
+	return {
+		"danger": clampi(int(source.get("danger", 0)), 0, RECOVERY_CLOCK_DANGER_MAX),
+		"turn_count": maxi(0, int(source.get("turn_count", 0))),
+		"surge_count": maxi(0, int(source.get("surge_count", 0)))
+	}
 
 
 func _to_dictionary_array(value: Variant) -> Array:

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cm1erqyx82ixi"
-path="res://.godot/imported/log_normal.png-39a19f6dc796a204d245ff5df8d9ab77.ctex"
+uid="uid://cet6rik0qfkpb"
+path="res://.godot/imported/bureau_archive_wordmark.png-e8302bc322d1bc03ee664ba5fb766d7f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/log/log_normal.png"
-dest_files=["res://.godot/imported/log_normal.png-39a19f6dc796a204d245ff5df8d9ab77.ctex"]
+source_file="res://assets/ui/bureau_archive_wordmark.png"
+dest_files=["res://.godot/imported/bureau_archive_wordmark.png-e8302bc322d1bc03ee664ba5fb766d7f.ctex"]
 
 [params]
 

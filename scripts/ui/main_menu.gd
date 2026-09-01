@@ -10,15 +10,24 @@ const ValidationInspectorScript = preload("res://scripts/core/validation_persist
 const ValidationEntryCoordinatorScript = preload("res://scripts/ui/validation_entry_coordinator.gd")
 const ValidationRouteMapperScript = preload("res://scripts/core/validation_route_mapper.gd")
 const ProductVersion = preload("res://scripts/core/product_version.gd")
+const MAIN_MENU_BACKGROUND_ID := "bureau_archive_menu"
+const MAIN_MENU_EMBLEM_TEXTURE := preload("res://assets/ui/bureau_archive_emblem.png")
+const MAIN_MENU_WORDMARK_TEXTURE := preload("res://assets/ui/bureau_archive_wordmark.png")
+const TITLE_SERIF_FONT := preload("res://assets/fonts/noto/NotoSerifKR-VF.ttf")
 
 var _start_episode_button: Button
 var _continue_button: Button
 var _save_status_label: Label
 var _legacy_new_campaign_button: Button
+var _m04_campaign_entry_button: Button
 var _legacy_continue_button: Button
 var _legacy_status_label: Label
 var _validation_primary_button: Button
 var _validation_secondary_button: Button
+var _menu_panel_style_cache: Dictionary = {}
+var _menu_action_rows: Dictionary = {}
+var _menu_section_contents: Array[VBoxContainer] = []
+var _action_context_labels: Array[Control] = []
 var _validation_status_label: Label
 var _validation_badge_label: Label
 var _database_button: Button
@@ -47,6 +56,7 @@ var _validation_intel_status: Label
 var _settings_button: Button
 var _settings_panel: Control
 var _exit_button: Button
+var _record_boundary_notice: Label
 
 
 func _ready() -> void:
@@ -75,7 +85,8 @@ func _make_validation_coordinator() -> Object:
 
 func _build_ui() -> void:
 	var backdrop := TextureRect.new()
-	backdrop.texture = AssetCatalog.new().get_texture("afterlife_entrance")
+	backdrop.name = "MainMenuBackdrop"
+	backdrop.texture = AssetCatalog.new().get_texture(MAIN_MENU_BACKGROUND_ID)
 	backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	backdrop.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	backdrop.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
@@ -83,29 +94,30 @@ func _build_ui() -> void:
 	add_child(backdrop)
 
 	var background := ColorRect.new()
-	background.color = Color(0.025, 0.035, 0.05, 0.82)
+	background.name = "MainMenuBackdropShade"
+	background.color = Color(0.018, 0.026, 0.035, 0.32)
 	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	background.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(background)
 
 	var margin := MarginContainer.new()
 	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	margin.add_theme_constant_override("margin_left", 24)
-	margin.add_theme_constant_override("margin_top", 24)
-	margin.add_theme_constant_override("margin_right", 24)
-	margin.add_theme_constant_override("margin_bottom", 24)
+	margin.add_theme_constant_override("margin_left", 20)
+	margin.add_theme_constant_override("margin_top", 20)
+	margin.add_theme_constant_override("margin_right", 20)
+	margin.add_theme_constant_override("margin_bottom", 20)
 	add_child(margin)
 
 	_menu_shell = HBoxContainer.new()
 	_menu_shell.name = "MenuShell"
 	_menu_shell.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_menu_shell.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_menu_shell.add_theme_constant_override("separation", 18)
+	_menu_shell.add_theme_constant_override("separation", 22)
 	margin.add_child(_menu_shell)
 
-	_identity_rail = _make_menu_rail(_menu_shell, "IdentityRail", 260.0, 0.82, Color("31434d"))
-	_action_rail = _make_menu_rail(_menu_shell, "ActionRail", 410.0, 1.18, ThemeFactory.COLOR_AMBER)
-	_intelligence_rail = _make_menu_rail(_menu_shell, "IntelligenceRail", 320.0, 1.0, ThemeFactory.COLOR_TEAL)
+	_identity_rail = _make_open_identity_rail(_menu_shell, "IdentityRail", 318.0, 0.91)
+	_action_rail = _make_menu_rail(_menu_shell, "ActionMenuPanel", "ActionRail", 430.0, 1.12, ThemeFactory.COLOR_AMBER, 0.84)
+	_intelligence_rail = _make_menu_rail(_menu_shell, "IntelligenceControlPanel", "IntelligenceRail", 340.0, 0.97, ThemeFactory.COLOR_TEAL, 0.84)
 
 	_build_identity_rail(_identity_rail)
 	_build_action_rail(_action_rail)
@@ -117,13 +129,26 @@ func _build_ui() -> void:
 	_apply_responsive_layout()
 
 
-func _make_menu_rail(parent: Control, node_name: String, minimum_width: float, stretch_ratio: float, accent: Color) -> VBoxContainer:
+func _make_open_identity_rail(parent: Control, node_name: String, minimum_width: float, stretch_ratio: float) -> VBoxContainer:
+	var rail := VBoxContainer.new()
+	rail.name = node_name
+	rail.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	rail.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	rail.size_flags_stretch_ratio = stretch_ratio
+	rail.custom_minimum_size.x = minimum_width
+	rail.add_theme_constant_override("separation", 12)
+	parent.add_child(rail)
+	return rail
+
+
+func _make_menu_rail(parent: Control, panel_name: String, node_name: String, minimum_width: float, stretch_ratio: float, accent: Color, alpha: float) -> VBoxContainer:
 	var panel := PanelContainer.new()
+	panel.name = panel_name
 	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	panel.size_flags_stretch_ratio = stretch_ratio
 	panel.custom_minimum_size.x = minimum_width
-	panel.add_theme_stylebox_override("panel", ThemeFactory.panel_style(accent, 0.90))
+	panel.add_theme_stylebox_override("panel", ThemeFactory.panel_style(accent, alpha))
 	parent.add_child(panel)
 
 	var rail := VBoxContainer.new()
@@ -136,31 +161,84 @@ func _make_menu_rail(parent: Control, node_name: String, minimum_width: float, s
 
 
 func _build_identity_rail(parent: VBoxContainer) -> void:
+	var title_lockup := VBoxContainer.new()
+	title_lockup.name = "WorldTitleLockup"
+	title_lockup.add_theme_constant_override("separation", 5)
+	parent.add_child(title_lockup)
+
+	var top_rule := HSeparator.new()
+	top_rule.name = "WorldTitleTopRule"
+	title_lockup.add_child(top_rule)
+
 	var bureau_mark := Label.new()
-	bureau_mark.text = "RECORD / CONTAIN / RETURN"
+	bureau_mark.name = "WorldTitleMark"
+	bureau_mark.text = "기록 · 봉쇄 · 귀환"
+	bureau_mark.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	bureau_mark.add_theme_color_override("font_color", ThemeFactory.COLOR_TEAL)
-	bureau_mark.add_theme_font_size_override("font_size", 12)
-	parent.add_child(bureau_mark)
+	bureau_mark.add_theme_font_size_override("font_size", 11)
+	title_lockup.add_child(bureau_mark)
+
+	var bureau_emblem := TextureRect.new()
+	bureau_emblem.name = "WorldTitleEmblem"
+	bureau_emblem.texture = MAIN_MENU_EMBLEM_TEXTURE
+	bureau_emblem.custom_minimum_size = Vector2(84, 84)
+	bureau_emblem.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	bureau_emblem.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	bureau_emblem.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	bureau_emblem.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	title_lockup.add_child(bureau_emblem)
+
+	var wordmark := TextureRect.new()
+	wordmark.name = "WorldTitleWordmark"
+	wordmark.texture = MAIN_MENU_WORDMARK_TEXTURE
+	wordmark.custom_minimum_size = Vector2(328, 148)
+	wordmark.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	wordmark.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	wordmark.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	wordmark.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	title_lockup.add_child(wordmark)
 
 	var title := Label.new()
-	title.name = "BureauTitle"
+	title.name = "WorldTitle"
 	title.text = "괴이기록국"
-	title.add_theme_font_size_override("font_size", 42)
+	title.visible = false
+	title.add_theme_font_override("font", TITLE_SERIF_FONT)
+	title.add_theme_font_size_override("font_size", 46)
 	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	parent.add_child(title)
+	title_lockup.add_child(title)
 
-	var english := Label.new()
-	english.text = "Urban Legend Archive Bureau"
-	english.add_theme_color_override("font_color", ThemeFactory.COLOR_MUTED)
-	english.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	parent.add_child(english)
+	var report_title := Label.new()
+	report_title.name = "WorldTitleSuffix"
+	report_title.text = "잔향 보고서"
+	report_title.visible = false
+	report_title.add_theme_font_override("font", TITLE_SERIF_FONT)
+	report_title.add_theme_font_size_override("font_size", 26)
+	report_title.add_theme_color_override("font_color", ThemeFactory.COLOR_AMBER)
+	report_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	title_lockup.add_child(report_title)
+
+	var subtitle := Label.new()
+	subtitle.name = "WorldSubtitle"
+	subtitle.text = "BUREAU OF ANOMALIES: ECHO REPORT"
+	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	subtitle.add_theme_font_override("font", TITLE_SERIF_FONT)
+	subtitle.add_theme_color_override("font_color", ThemeFactory.COLOR_AMBER)
+	subtitle.add_theme_font_size_override("font_size", 15)
+	subtitle.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	title_lockup.add_child(subtitle)
 
 	var version_label := Label.new()
 	version_label.name = "VersionLabel"
 	version_label.text = ProductVersion.display_text()
-	version_label.add_theme_font_size_override("font_size", 18)
+	version_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	version_label.add_theme_font_override("font", TITLE_SERIF_FONT)
+	version_label.add_theme_font_size_override("font_size", 17)
 	version_label.add_theme_color_override("font_color", ThemeFactory.COLOR_AMBER)
-	parent.add_child(version_label)
+	title_lockup.add_child(version_label)
+
+	var title_rule := HSeparator.new()
+	title_rule.name = "WorldTitleBottomRule"
+	title_lockup.add_child(title_rule)
 
 	var divider := HSeparator.new()
 	parent.add_child(divider)
@@ -179,120 +257,144 @@ func _build_identity_rail(parent: VBoxContainer) -> void:
 	identity_spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	parent.add_child(identity_spacer)
 
-	var boundary := Label.new()
-	boundary.text = "본편 기록과 Validation 기록은 서로 독립적으로 보존됩니다."
-	boundary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	boundary.add_theme_color_override("font_color", ThemeFactory.COLOR_MUTED)
-	boundary.add_theme_font_size_override("font_size", 13)
-	parent.add_child(boundary)
+	_record_boundary_notice = Label.new()
+	_record_boundary_notice.name = "RecordBoundaryNotice"
+	_record_boundary_notice.text = "본편 기록과 Validation 기록은 서로 독립적으로 보존됩니다."
+	_record_boundary_notice.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_record_boundary_notice.add_theme_color_override("font_color", ThemeFactory.COLOR_MUTED)
+	_record_boundary_notice.add_theme_font_size_override("font_size", 13)
+	parent.add_child(_record_boundary_notice)
 
 
 func _build_action_rail(parent: VBoxContainer) -> void:
 	var heading := Label.new()
+	heading.name = "CentralMenuHeader"
 	heading.text = "MAIN MENU"
+	heading.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	heading.add_theme_color_override("font_color", ThemeFactory.COLOR_MUTED)
 	parent.add_child(heading)
 
 	_primary_action_hint = Label.new()
 	_primary_action_hint.name = "PrimaryActionHint"
+	_primary_action_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_primary_action_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_primary_action_hint.add_theme_color_override("font_color", ThemeFactory.COLOR_AMBER)
 	parent.add_child(_primary_action_hint)
 
 	_build_entry_cards(parent)
 
-	var utility := _add_section(parent, "기록국 도구")
-	_database_button = Button.new()
-	_database_button.name = "DatabaseButton"
-	_database_button.text = "기록 보관실"
-	_database_button.focus_mode = Control.FOCUS_ALL
-	_database_button.pressed.connect(_open_database)
-	utility.add_child(_database_button)
-
-	_settings_button = Button.new()
-	_settings_button.name = "SettingsButton"
-	_settings_button.text = "설정 / 접근성"
-	_settings_button.focus_mode = Control.FOCUS_ALL
-	_settings_button.pressed.connect(_toggle_settings_panel)
-	utility.add_child(_settings_button)
-
-	_exit_button = Button.new()
-	_exit_button.name = "ExitButton"
-	_exit_button.text = "종료"
-	_exit_button.focus_mode = Control.FOCUS_ALL
-	_exit_button.pressed.connect(func() -> void: get_tree().quit())
-	utility.add_child(_exit_button)
-
 
 func _build_entry_cards(parent: Control) -> void:
 	var entry_cards := VBoxContainer.new()
 	entry_cards.name = "EntryCards"
 	entry_cards.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	entry_cards.add_theme_constant_override("separation", 10)
+	entry_cards.add_theme_constant_override("separation", 12)
 	parent.add_child(entry_cards)
 
-	var legacy_content := _add_section(
-		entry_cards,
-		"본편",
-		"기존 캠페인 기록입니다. Validation 기록과 서로 영향을 주지 않습니다."
-	)
+	_add_menu_group_heading(entry_cards, "LegacyMenuGroupHeading", "본편", ThemeFactory.COLOR_AMBER)
 	_legacy_status_label = Label.new()
 	_legacy_status_label.name = "LegacyStatusLabel"
-	_legacy_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	_legacy_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_legacy_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	legacy_content.add_child(_legacy_status_label)
+	_legacy_status_label.add_theme_color_override("font_color", ThemeFactory.COLOR_MUTED)
+	entry_cards.add_child(_legacy_status_label)
+	_action_context_labels.append(_legacy_status_label)
 
 	_legacy_continue_button = Button.new()
 	_legacy_continue_button.name = "LegacyContinueButton"
 	_legacy_continue_button.text = "이어하기"
 	_legacy_continue_button.focus_mode = Control.FOCUS_ALL
 	_legacy_continue_button.pressed.connect(_continue_saved_game)
-	legacy_content.add_child(_legacy_continue_button)
+	entry_cards.add_child(_legacy_continue_button)
+	_prepare_menu_action_row(_legacy_continue_button, "이전 조사 기록을 이어서 확인합니다.", ThemeFactory.COLOR_AMBER, "▤")
 
 	_legacy_new_campaign_button = Button.new()
 	_legacy_new_campaign_button.name = "LegacyNewCampaignButton"
 	_legacy_new_campaign_button.text = "새 캠페인 시작"
 	_legacy_new_campaign_button.focus_mode = Control.FOCUS_ALL
 	_legacy_new_campaign_button.pressed.connect(_start_afterlife_station)
-	legacy_content.add_child(_legacy_new_campaign_button)
+	entry_cards.add_child(_legacy_new_campaign_button)
+	_prepare_menu_action_row(_legacy_new_campaign_button, "새로운 사건을 조사합니다.", ThemeFactory.COLOR_AMBER, "✦")
+
+	_m04_campaign_entry_button = Button.new()
+	_m04_campaign_entry_button.name = "M04CampaignEntryButton"
+	_m04_campaign_entry_button.text = "빨간 우산 현장 기록 시작"
+	_m04_campaign_entry_button.tooltip_text = "새 본편 기록으로 준비실에서 시작합니다. 대기·회복 반일 뒤 M04를 선택해 조사와 회수까지 진행합니다."
+	_m04_campaign_entry_button.focus_mode = Control.FOCUS_ALL
+	_m04_campaign_entry_button.pressed.connect(_start_red_umbrella_campaign)
+	entry_cards.add_child(_m04_campaign_entry_button)
+	_prepare_menu_action_row(_m04_campaign_entry_button, "빨간 우산의 조사와 회수 루트로 진입합니다.", Color("9a7184"), "◈")
 
 	_start_episode_button = _legacy_new_campaign_button
 	_continue_button = _legacy_continue_button
 	_save_status_label = _legacy_status_label
 
-	var validation_content := _add_section(
-		entry_cards,
-		"Validation 기록",
-		"저승역 검증 흐름을 위한 독립 기록입니다."
-	)
+	_add_menu_group_heading(entry_cards, "ValidationMenuGroupHeading", "Validation 기록", ThemeFactory.COLOR_TEAL)
 	_validation_badge_label = Label.new()
 	_validation_badge_label.name = "ValidationBadgeLabel"
 	_validation_badge_label.text = "본편과 별도 기록"
-	_validation_badge_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	_validation_badge_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_validation_badge_label.add_theme_color_override("font_color", ThemeFactory.COLOR_TEAL)
-	validation_content.add_child(_validation_badge_label)
+	entry_cards.add_child(_validation_badge_label)
+	_action_context_labels.append(_validation_badge_label)
 
 	_validation_status_label = Label.new()
 	_validation_status_label.name = "ValidationStatusLabel"
-	_validation_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	_validation_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_validation_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	validation_content.add_child(_validation_status_label)
+	_validation_status_label.add_theme_color_override("font_color", ThemeFactory.COLOR_MUTED)
+	entry_cards.add_child(_validation_status_label)
+	_action_context_labels.append(_validation_status_label)
 
 	_validation_primary_button = Button.new()
 	_validation_primary_button.name = "ValidationPrimaryButton"
 	_validation_primary_button.focus_mode = Control.FOCUS_ALL
 	_validation_primary_button.pressed.connect(_on_validation_primary_pressed)
-	validation_content.add_child(_validation_primary_button)
+	entry_cards.add_child(_validation_primary_button)
+	_prepare_menu_action_row(_validation_primary_button, "검증 기록을 검토하거나 새 기록을 시작합니다.", ThemeFactory.COLOR_TEAL, "◇")
 
 	_validation_secondary_button = Button.new()
 	_validation_secondary_button.name = "ValidationSecondaryButton"
 	_validation_secondary_button.text = "새 기록 시작"
 	_validation_secondary_button.focus_mode = Control.FOCUS_ALL
 	_validation_secondary_button.pressed.connect(_on_validation_secondary_pressed)
-	validation_content.add_child(_validation_secondary_button)
+	entry_cards.add_child(_validation_secondary_button)
+	_prepare_menu_action_row(_validation_secondary_button, "현재 검증 기록을 대체하고 처음부터 시작합니다.", ThemeFactory.COLOR_TEAL, "↺")
+
+	_add_menu_group_heading(entry_cards, "ToolsMenuGroupHeading", "기록국 도구", Color("536772"))
+	_database_button = Button.new()
+	_database_button.name = "DatabaseButton"
+	_database_button.text = "기록 보관실"
+	_database_button.focus_mode = Control.FOCUS_ALL
+	_database_button.pressed.connect(_open_database)
+	entry_cards.add_child(_database_button)
+	_prepare_menu_action_row(_database_button, "수집한 기록과 문서를 확인합니다.", ThemeFactory.COLOR_TEAL, "▦")
+
+	_settings_button = Button.new()
+	_settings_button.name = "SettingsButton"
+	_settings_button.text = "설정 / 접근성"
+	_settings_button.focus_mode = Control.FOCUS_ALL
+	_settings_button.pressed.connect(_toggle_settings_panel)
+	entry_cards.add_child(_settings_button)
+	_prepare_menu_action_row(_settings_button, "화면 연출과 접근성 설정을 조절합니다.", Color("536772"), "⚙")
+
+	_exit_button = Button.new()
+	_exit_button.name = "ExitButton"
+	_exit_button.text = "종료"
+	_exit_button.focus_mode = Control.FOCUS_ALL
+	_exit_button.pressed.connect(func() -> void: get_tree().quit())
+	entry_cards.add_child(_exit_button)
+	_prepare_menu_action_row(_exit_button, "기록국 시스템을 종료합니다.", Color("536772"), "⏻")
 
 
 func _build_intelligence_rail(parent: VBoxContainer) -> void:
+	var header := Label.new()
+	header.name = "ControlPanelHeader"
+	header.text = "ULAB. CONTROL PANEL"
+	header.add_theme_color_override("font_color", ThemeFactory.COLOR_MUTED)
+	header.add_theme_font_size_override("font_size", 13)
+	parent.add_child(header)
+
 	var case_content := _add_section(parent, "현재 사건")
 
 	_current_case_title = Label.new()
@@ -309,7 +411,7 @@ func _build_intelligence_rail(parent: VBoxContainer) -> void:
 
 	_current_case_preview = TextureRect.new()
 	_current_case_preview.name = "CurrentCasePreview"
-	_current_case_preview.custom_minimum_size = Vector2(0, 150)
+	_current_case_preview.custom_minimum_size = Vector2(0, 104)
 	_current_case_preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	_current_case_preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 	_current_case_preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -409,6 +511,7 @@ func _rebuild_focus_chain() -> void:
 	var candidates: Array[Button] = [
 		_legacy_continue_button,
 		_legacy_new_campaign_button,
+		_m04_campaign_entry_button,
 		_validation_primary_button,
 		_validation_secondary_button,
 		_database_button,
@@ -444,10 +547,192 @@ func _meaningful_primary_action() -> Button:
 	return null
 
 
+func _add_menu_group_heading(parent: VBoxContainer, node_name: String, title_text: String, accent: Color) -> HBoxContainer:
+	var heading := HBoxContainer.new()
+	heading.name = node_name
+	heading.custom_minimum_size.y = 20
+	heading.add_theme_constant_override("separation", 8)
+	parent.add_child(heading)
+
+	var left_rule := HSeparator.new()
+	left_rule.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	left_rule.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	heading.add_child(left_rule)
+
+	var title := Label.new()
+	title.text = title_text
+	title.add_theme_font_override("font", TITLE_SERIF_FONT)
+	title.add_theme_font_size_override("font_size", 15)
+	title.add_theme_color_override("font_color", accent)
+	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	heading.add_child(title)
+
+	var right_rule := HSeparator.new()
+	right_rule.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	right_rule.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	heading.add_child(right_rule)
+	return heading
+
+
+func _prepare_menu_action_row(button: Button, description_text: String, accent: Color, icon_text: String) -> void:
+	# Keep Button.text as the stable semantic/action label, while the child labels
+	# below own the visible title-and-description composition.
+	button.add_theme_font_size_override("font_size", 1)
+	button.add_theme_color_override("font_color", Color.TRANSPARENT)
+	button.add_theme_color_override("font_hover_color", Color.TRANSPARENT)
+	button.add_theme_color_override("font_pressed_color", Color.TRANSPARENT)
+	button.add_theme_color_override("font_disabled_color", Color.TRANSPARENT)
+
+	var content := MarginContainer.new()
+	content.name = "%sMenuActionContent" % button.name
+	content.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	content.offset_left = 12
+	content.offset_top = 7
+	content.offset_right = -12
+	content.offset_bottom = -7
+	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	button.add_child(content)
+
+	var row := HBoxContainer.new()
+	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	row.add_theme_constant_override("separation", 10)
+	content.add_child(row)
+
+	var icon_plate := PanelContainer.new()
+	icon_plate.name = "%sMenuActionIconPlate" % button.name
+	icon_plate.custom_minimum_size = Vector2(48, 48)
+	icon_plate.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	icon_plate.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	icon_plate.add_theme_stylebox_override("panel", _menu_action_icon_style(accent, false))
+	row.add_child(icon_plate)
+
+	var icon := Label.new()
+	icon.name = "%sMenuActionIcon" % button.name
+	icon.text = icon_text
+	icon.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	icon.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	icon.add_theme_font_override("font", TITLE_SERIF_FONT)
+	icon.add_theme_font_size_override("font_size", 25)
+	icon.add_theme_color_override("font_color", accent)
+	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	icon_plate.add_child(icon)
+
+	var copy := VBoxContainer.new()
+	copy.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	copy.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	copy.add_theme_constant_override("separation", 1)
+	row.add_child(copy)
+
+	var title := Label.new()
+	title.name = "%sMenuActionTitle" % button.name
+	title.add_theme_font_override("font", TITLE_SERIF_FONT)
+	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	copy.add_child(title)
+
+	var description := Label.new()
+	description.name = "%sMenuActionDescription" % button.name
+	description.text = description_text
+	description.add_theme_color_override("font_color", ThemeFactory.COLOR_MUTED)
+	description.add_theme_font_size_override("font_size", 12)
+	description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	description.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	copy.add_child(description)
+
+	var marker := Label.new()
+	marker.name = "%sMenuActionMarker" % button.name
+	marker.text = "›"
+	marker.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	marker.add_theme_font_size_override("font_size", 28)
+	marker.add_theme_color_override("font_color", accent)
+	marker.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_child(marker)
+
+	_menu_action_rows[button.get_instance_id()] = {
+		"title": title,
+		"description": description,
+		"marker": marker,
+		"icon_plate": icon_plate,
+		"icon": icon,
+		"description_text": description_text,
+		"accent": accent,
+	}
+
+
+func _menu_action_style(accent: Color, alpha: float, dense: bool) -> StyleBoxFlat:
+	var style := ThemeFactory.panel_style(accent, alpha)
+	style.content_margin_left = 8 if dense else 12
+	style.content_margin_right = 8 if dense else 12
+	style.content_margin_top = 4 if dense else 8
+	style.content_margin_bottom = 4 if dense else 8
+	return style
+
+
+func _menu_action_icon_style(accent: Color, primary: bool) -> StyleBoxFlat:
+	var style := ThemeFactory.panel_style(accent, 0.42 if primary else 0.28)
+	style.set_corner_radius_all(3)
+	style.content_margin_left = 2
+	style.content_margin_right = 2
+	style.content_margin_top = 2
+	style.content_margin_bottom = 2
+	return style
+
+
+func _refresh_menu_action_rows(primary: Button) -> void:
+	var dense := _is_compact_layout() or _uses_dense_vertical_layout()
+	for button in [
+		_legacy_continue_button,
+		_legacy_new_campaign_button,
+		_m04_campaign_entry_button,
+		_validation_primary_button,
+		_validation_secondary_button,
+		_database_button,
+		_settings_button,
+		_exit_button,
+	]:
+		if button == null:
+			continue
+		var row_data: Dictionary = _menu_action_rows.get(button.get_instance_id(), {})
+		if row_data.is_empty():
+			continue
+		var title := row_data.get("title") as Label
+		var description := row_data.get("description") as Label
+		var marker := row_data.get("marker") as Label
+		var icon_plate := row_data.get("icon_plate") as PanelContainer
+		var icon := row_data.get("icon") as Label
+		var accent := row_data.get("accent", ThemeFactory.COLOR_TEAL) as Color
+		var is_primary: bool = button == primary
+		var is_tool_row: bool = button in [_database_button, _settings_button, _exit_button]
+		if title != null:
+			title.text = button.text
+			title.add_theme_font_size_override("font_size", 26 if is_primary else 17)
+			title.add_theme_color_override("font_color", ThemeFactory.COLOR_AMBER if is_primary else ThemeFactory.COLOR_INK)
+			if button.disabled:
+				title.add_theme_color_override("font_color", ThemeFactory.COLOR_MUTED)
+		if description != null:
+			description.text = String(row_data.get("description_text", ""))
+			description.visible = not dense and not description.text.is_empty()
+		if marker != null:
+			marker.visible = not button.disabled
+			marker.add_theme_color_override("font_color", ThemeFactory.COLOR_AMBER if is_primary else accent)
+		if icon_plate != null:
+			icon_plate.custom_minimum_size = Vector2(66, 66) if is_primary else Vector2(48, 48)
+			icon_plate.add_theme_stylebox_override("panel", _menu_action_icon_style(ThemeFactory.COLOR_AMBER if is_primary else accent, is_primary))
+		if icon != null:
+			icon.add_theme_font_size_override("font_size", 31 if is_primary else 23)
+			icon.add_theme_color_override("font_color", ThemeFactory.COLOR_MUTED if button.disabled else (ThemeFactory.COLOR_AMBER if is_primary else accent))
+
+		button.custom_minimum_size.y = 92.0 if is_primary else (54.0 if is_tool_row else 60.0)
+		button.add_theme_stylebox_override("normal", _menu_action_style(ThemeFactory.COLOR_AMBER if is_primary else accent, 0.94 if is_primary else 0.80, dense))
+		button.add_theme_stylebox_override("focus", _menu_action_style(ThemeFactory.COLOR_AMBER if is_primary else accent, 0.98, dense))
+
+
 func _apply_primary_action_emphasis() -> void:
 	var buttons: Array[Button] = [
 		_legacy_continue_button,
 		_legacy_new_campaign_button,
+		_m04_campaign_entry_button,
 		_validation_primary_button,
 		_validation_secondary_button,
 		_database_button,
@@ -457,18 +742,12 @@ func _apply_primary_action_emphasis() -> void:
 	for button in buttons:
 		if button == null:
 			continue
-		button.custom_minimum_size.y = 46
-		button.add_theme_font_size_override("font_size", 16)
-		button.remove_theme_stylebox_override("normal")
-		button.add_theme_stylebox_override("focus", ThemeFactory.panel_style(ThemeFactory.COLOR_AMBER, 0.98))
 
 	var primary := _meaningful_primary_action()
+	_refresh_menu_action_rows(primary)
 	if primary == null:
 		_primary_action_hint.text = "현재 사용 가능한 시작 행동이 없습니다."
 		return
-	primary.custom_minimum_size.y = 62
-	primary.add_theme_font_size_override("font_size", 20)
-	primary.add_theme_stylebox_override("normal", ThemeFactory.panel_style(ThemeFactory.COLOR_AMBER, 0.96))
 	_primary_action_hint.text = "현재 권장 행동 · %s" % primary.text
 
 
@@ -480,20 +759,77 @@ func _focus_initial_action() -> void:
 
 func _apply_responsive_layout() -> void:
 	var compact := _is_compact_layout()
+	# A 1080p desktop window can have a smaller client height once its frame is
+	# accounted for. Keep the information preview, but use compact control density
+	# before any keyboard-reachable menu action falls below the client area.
+	var dense := compact or _uses_dense_vertical_layout()
 	if _current_case_preview != null:
-		_current_case_preview.visible = not compact and _current_case_preview.texture != null
+		_current_case_preview.visible = _should_show_case_preview() and _current_case_preview.texture != null
 	if _current_case_summary != null:
 		_current_case_summary.visible = not compact and not _current_case_summary.text.is_empty()
 	if _identity_rail != null:
-		_identity_rail.add_theme_constant_override("separation", 8 if compact else 12)
+		_identity_rail.add_theme_constant_override("separation", 4 if dense else 12)
 	if _action_rail != null:
-		_action_rail.add_theme_constant_override("separation", 8 if compact else 12)
+		_action_rail.add_theme_constant_override("separation", 2 if dense else 12)
 	if _intelligence_rail != null:
-		_intelligence_rail.add_theme_constant_override("separation", 8 if compact else 12)
+		_intelligence_rail.add_theme_constant_override("separation", 4 if dense else 12)
+	if _record_boundary_notice != null:
+		_record_boundary_notice.visible = not dense
+	if _primary_action_hint != null:
+		_primary_action_hint.visible = not dense
+	for context_label in _action_context_labels:
+		if is_instance_valid(context_label):
+			context_label.visible = not dense
+	for section_content in _menu_section_contents:
+		if is_instance_valid(section_content):
+			section_content.add_theme_constant_override("separation", 4 if dense else 8)
+	_apply_compact_menu_density(dense)
+	_refresh_menu_action_rows(_meaningful_primary_action())
+
+
+func _should_show_case_preview() -> bool:
+	var physical_size := Vector2(DisplayServer.window_get_size())
+	var effective_size := Vector2(maxf(size.x, physical_size.x), maxf(size.y, physical_size.y))
+	return effective_size.x >= 1180.0 and effective_size.y >= 700.0
+
+
+func _apply_compact_menu_density(compact: bool) -> void:
+	if _menu_shell != null:
+		_menu_shell.add_theme_constant_override("separation", 8 if compact else 22)
+	for panel_value in _menu_shell.find_children("*", "PanelContainer", true, false) if _menu_shell != null else []:
+		var panel := panel_value as PanelContainer
+		if panel == null:
+			continue
+		var panel_id := panel.get_instance_id()
+		if not _menu_panel_style_cache.has(panel_id):
+			var base_style := panel.get_theme_stylebox("panel") as StyleBoxFlat
+			if base_style == null:
+				continue
+			_menu_panel_style_cache[panel_id] = base_style.duplicate() as StyleBoxFlat
+		var cached_style := _menu_panel_style_cache.get(panel_id) as StyleBoxFlat
+		if cached_style == null:
+			continue
+		var adjusted_style := cached_style.duplicate() as StyleBoxFlat
+		if compact:
+			adjusted_style.content_margin_top = 4
+			adjusted_style.content_margin_bottom = 4
+			adjusted_style.content_margin_left = 8
+			adjusted_style.content_margin_right = 8
+		panel.add_theme_stylebox_override("panel", adjusted_style)
+
+	var entry_cards := _action_rail.get_node_or_null("EntryCards") as VBoxContainer if _action_rail != null else null
+	if entry_cards != null:
+		entry_cards.add_theme_constant_override("separation", 9 if compact else 14)
 
 
 func _is_compact_layout() -> bool:
 	return _is_compact_for_sizes(size, Vector2(DisplayServer.window_get_size()))
+
+
+func _uses_dense_vertical_layout() -> bool:
+	var physical_size := Vector2(DisplayServer.window_get_size())
+	var effective_height := maxf(size.y, physical_size.y)
+	return effective_height < 1120.0
 
 
 func _is_compact_for_sizes(control_size: Vector2, window_size: Vector2) -> bool:
@@ -717,6 +1053,8 @@ func _set_entry_mutation_enabled(enabled: bool) -> void:
 		_legacy_continue_button.disabled = not enabled or not GameState.has_save_file()
 	if _legacy_new_campaign_button != null:
 		_legacy_new_campaign_button.disabled = not enabled
+	if _m04_campaign_entry_button != null:
+		_m04_campaign_entry_button.disabled = not enabled
 	if _validation_primary_button != null:
 		_validation_primary_button.disabled = not enabled
 	if _validation_secondary_button != null:
@@ -766,6 +1104,7 @@ func _add_section(parent: Control, title_text: String, description_text: String 
 	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	content.add_theme_constant_override("separation", 8)
 	panel.add_child(content)
+	_menu_section_contents.append(content)
 
 	var title := Label.new()
 	title.text = title_text
@@ -817,6 +1156,15 @@ func _start_afterlife_station() -> void:
 	GameState.restart_afterlife_station_flow(["agent_oh_hyun", "agent_kwon_narae", "agent_kang_ijun"])
 	GameState.save_game()
 	get_tree().change_scene_to_file(GameState.SCENE_DIALOGUE)
+
+
+func _start_red_umbrella_campaign() -> void:
+	GameState.clear_save_file()
+	if not GameState.begin_campaign_case_selection(["agent_kwon_narae", "agent_oh_hyun", "agent_kang_ijun"]):
+		_refresh_entry_cards()
+		return
+	GameState.save_game()
+	get_tree().change_scene_to_file(GameState.SCENE_PREPARATION)
 
 
 func _continue_saved_game() -> void:

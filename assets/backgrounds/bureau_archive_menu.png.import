@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://wkrdcsje27jl"
-path="res://.godot/imported/log_focus.png-96f2d126e3be309a061fdbc7a448748d.ctex"
+uid="uid://cfoe5rgmycwi"
+path="res://.godot/imported/bureau_archive_menu.png-f7be6a5bb7d5262a3ccd151255873f8e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/log/log_focus.png"
-dest_files=["res://.godot/imported/log_focus.png-96f2d126e3be309a061fdbc7a448748d.ctex"]
+source_file="res://assets/backgrounds/bureau_archive_menu.png"
+dest_files=["res://.godot/imported/bureau_archive_menu.png-f7be6a5bb7d5262a3ccd151255873f8e.ctex"]
 
 [params]
 

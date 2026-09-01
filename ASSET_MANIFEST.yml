@@ -18,6 +18,7 @@ status_definitions:
   - PROJECT_ASSET_APPROVED
   - PRODUCTION_READY
   - IMPLEMENTED
+  - RUNTIME_VERIFIED
   - VISUALLY_VALIDATED
   - PARTIAL_REFERENCE
   - SUPERSEDED
@@ -36,6 +37,130 @@ canonical_rules:
     - new
 
 assets:
+  - asset_id: "ULAB-MAIN-MENU-BACKGROUND-001"
+    name: "Bureau Archive Research Room main-menu background"
+    category: "environment_background"
+    purpose: "User-approved characterless archive research-room environment behind the live main-menu UI."
+    owner_discipline: "Visual"
+    affected_disciplines: ["Godot UI", "UX", "Accessibility"]
+    statuses: ["PROJECT_ASSET_APPROVED", "PRODUCTION_READY", "IMPLEMENTED", "RUNTIME_VERIFIED"]
+    vault_source_key: "ULAB_MAIN_MENU_BUREAU_ARCHIVE_20260831"
+    canonical_path: "assets/backgrounds/bureau_archive_menu.png"
+    source_path: "USER_ATTACHMENT: codex-clipboard-e2893934-18b7-424f-9dd4-557eb92db1ec.png"
+    runtime_path: "scenes/main_menu.tscn -> scripts/ui/main_menu.gd -> MainMenuBackdrop"
+    latest_capture_path: "docs/qa/captures/m04-current-main-integration/main-menu-runtime.png"
+    golden_screenshot_path: ""
+    source_type: "USER_PROVIDED"
+    source_and_license: "User-provided attachment explicitly locked for the main-menu environment; this record is not distribution-rights clearance."
+    approved_reference: "docs/visual/receipts/ULAB_MAIN_MENU_BACKGROUND_20260831.md"
+    supersedes: ""
+    superseded_by: ""
+    replacement_requires_approval: true
+    reference_elements:
+      use: ["Textless archive research room", "Open central passage for live menu controls", "Modern bureau with restrained eastern/western occult research objects"]
+      do_not_use: ["Baked menus", "Fictional operator identity", "Case-specific characters or active anomaly combat"]
+    visual_dna:
+      silhouette: "Deep archive laboratory with a clear central aisle and quieter action-rail space."
+      proportion: "1672x941 landscape PNG fitted by MainMenuBackdrop with KEEP_ASPECT_COVERED."
+      palette: "Near-black charcoal, muted cyan containment glow, warm brass practicals, restrained gold detail."
+      accessibility_fallback: "All menu actions and live state remain native Godot controls independent of this image."
+    generation_record:
+      tool_and_model: "User-provided attachment; creation model and prompt not asserted."
+      prompt_core: "Not supplied as provenance."
+      seed_or_reproduction: "Not supplied."
+      manual_post_process: "None; canonical bytes are the approved attachment."
+      known_remaining_issues: "Current exact-head runtime and human visual/accessibility checks remain separate gates."
+    validation:
+      sha256: "dab2c35a06cbce5d2a4b4b1d071ed0589e77bf801f35457ed97c329fa238a504"
+      target_resolutions: ["1280x720", "1920x1080"]
+      runtime_verified: true
+      visual_qa_verified: false
+      accessibility_verified: false
+      evidence: ["docs/visual/receipts/ULAB_MAIN_MENU_BACKGROUND_20260831.md", "docs/operations/receipts/2026-09-02-m04-current-main-integration.json"]
+    next_review_triggers: ["MainMenuBackdrop or menu-rail layout change", "first human visual/accessibility review", "distribution-rights review"]
+  - asset_id: "ULAB-MAIN-MENU-EMBLEM-001"
+    name: "Bureau Archive main-menu emblem"
+    category: "brand_emblem"
+    purpose: "User-selected compact archival-occult bureau mark in the live title lockup."
+    owner_discipline: "Visual"
+    affected_disciplines: ["Godot UI", "UX", "Accessibility"]
+    statuses: ["PROJECT_ASSET_APPROVED", "PRODUCTION_READY", "IMPLEMENTED", "RUNTIME_VERIFIED"]
+    vault_source_key: "ULAB_MAIN_MENU_EMBLEM_MARK_01_20260831"
+    canonical_path: "assets/ui/bureau_archive_emblem.png"
+    source_path: "OPENAI_BUILT_IN_IMAGE_GENERATION: exec-e0f90e1d-4e28-4c12-b310-f759a0034360.png"
+    runtime_path: "scenes/main_menu.tscn -> scripts/ui/main_menu.gd -> WorldTitleLockup/WorldTitleEmblem"
+    latest_capture_path: "docs/qa/captures/m04-current-main-integration/main-menu-runtime.png"
+    golden_screenshot_path: ""
+    source_type: "AI_GENERATED"
+    source_and_license: "User selected the first generated emblem candidate; this receipt is not distribution-rights or legal clearance."
+    approved_reference: "docs/visual/receipts/ULAB_MAIN_MENU_EMBLEM_20260831.md"
+    supersedes: ""
+    superseded_by: ""
+    replacement_requires_approval: true
+    reference_elements:
+      use: ["User-selected compact archival-occult bureau emblem", "Transparent mark beside accessible native title text"]
+      do_not_use: ["Readable title text", "HUD", "Second crest", "Case-specific motifs"]
+    visual_dna:
+      silhouette: "Compact vertical archival emblem."
+      proportion: "1224x1285 RGBA PNG shown in an 84x84 KEEP_ASPECT_CENTERED TextureRect."
+      palette: "Aged-gold linework with restrained dark accents."
+      accessibility_fallback: "Native Korean title, subtitle, focus order, and state information do not depend on the emblem."
+    generation_record:
+      tool_and_model: "OpenAI built-in image generation; model identifier not retained."
+      prompt_core: "Not retained."
+      seed_or_reproduction: "Not exposed."
+      manual_post_process: "None."
+      known_remaining_issues: "Current exact-head runtime and human visual/accessibility checks remain separate gates."
+    validation:
+      sha256: "2c8722ca8c5e73140752b9fb4a540c672835315464b8b14cab5daa0448982d0c"
+      target_resolutions: ["1280x720", "1920x1080"]
+      runtime_verified: true
+      visual_qa_verified: false
+      accessibility_verified: false
+      evidence: ["docs/visual/receipts/ULAB_MAIN_MENU_EMBLEM_20260831.md", "docs/operations/receipts/2026-09-02-m04-current-main-integration.json"]
+    next_review_triggers: ["WorldTitleLockup layout/scaling change", "first human visual/accessibility review", "distribution-rights review"]
+  - asset_id: "ULAB-MAIN-MENU-WORDMARK-001"
+    name: "Bureau Archive main-menu Korean wordmark"
+    category: "brand_wordmark"
+    purpose: "User-locked Korean title typography for 괴이기록국: 잔향 보고서 in the live title lockup."
+    owner_discipline: "Visual"
+    affected_disciplines: ["Godot UI", "UX", "Accessibility"]
+    statuses: ["PROJECT_ASSET_APPROVED", "PRODUCTION_READY", "IMPLEMENTED", "RUNTIME_VERIFIED"]
+    vault_source_key: "ULAB_MAIN_MENU_WORDMARK_01_20260901"
+    canonical_path: "assets/ui/bureau_archive_wordmark.png"
+    source_path: "assets/source/wordmarks/ULAB-MAIN-MENU-WORDMARK-001-locked-source.png; OPENAI_BUILT_IN_IMAGE_GENERATION: exec-e5cce94a-8456-4c88-ad47-5120b438e961.png"
+    runtime_path: "scenes/main_menu.tscn -> scripts/ui/main_menu.gd -> WorldTitleLockup/WorldTitleWordmark"
+    latest_capture_path: "docs/qa/captures/m04-current-main-integration/main-menu-runtime.png"
+    golden_screenshot_path: ""
+    source_type: "AI_GENERATED_WITH_DETERMINISTIC_ALPHA_DERIVATIVE"
+    source_and_license: "User locked this word-typography candidate; runtime derivative only removes documented neutral checkerboard pixels to alpha. This receipt is not distribution-rights clearance."
+    approved_reference: "docs/visual/receipts/ULAB_MAIN_MENU_WORDMARK_20260901.md"
+    supersedes: ""
+    superseded_by: ""
+    replacement_requires_approval: true
+    reference_elements:
+      use: ["User-locked antique-gold Korean title typography", "Transparent title image with separately locked emblem"]
+      do_not_use: ["Checkerboard background", "Second emblem", "Menu buttons", "Case-specific visual"]
+    visual_dna:
+      silhouette: "Wide single-line Korean title typography with transparent margins."
+      proportion: "1969x799 RGBA PNG shown in a 328x148 title-lockup TextureRect."
+      palette: "Antique gold letters, restrained dark outline, ink texture."
+      accessibility_fallback: "WorldTitle and WorldTitleSuffix retain canonical native Korean text values."
+    generation_record:
+      tool_and_model: "OpenAI built-in image generation; model identifier not exposed."
+      prompt_core: "Wide Korean title logo reading exactly 괴이기록국: 잔향 보고서, antique-gold archival bureau typography, no extra copy or emblem."
+      seed_or_reproduction: "Not exposed."
+      manual_post_process: "Deterministic neutral-checkerboard alpha cleanup only; source is preserved in assets/source/wordmarks."
+      known_remaining_issues: "Current exact-head runtime and human visual/accessibility checks remain separate gates."
+    validation:
+      source_sha256: "36c20c3538486d4423a907652153c741149de980c73ef18375d455b984699dfc"
+      sha256: "ac49625f3f5febac55837ac3dc6624dbd514d3e3ea2bae8f03c36210d8157225"
+      target_resolutions: ["1280x720", "1920x1080"]
+      runtime_verified: true
+      visual_qa_verified: false
+      accessibility_verified: false
+      evidence: ["docs/visual/receipts/ULAB_MAIN_MENU_WORDMARK_20260901.md", "docs/operations/receipts/2026-09-02-m04-current-main-integration.json"]
+    next_review_triggers: ["WorldTitleLockup layout/scaling change", "first human visual/accessibility review", "distribution-rights review"]
   - asset_id: "M01-INVESTIGATION-BACKGROUND-001"
     name: "Afterlife Station Investigation background"
     category: "environment_background"
