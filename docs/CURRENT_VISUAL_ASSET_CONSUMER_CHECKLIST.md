@@ -185,7 +185,7 @@ No batch generation from checklist gaps, and no candidate is auto-promoted to a 
 
 ## 10. Authority / evidence ceiling
 
-Root `ASSET_MANIFEST.yml` is the current tracked product-asset authority and has nine current approved entries: M01 Investigation background, M01 Recovery background, B/C anomaly cutout, D anomaly cutout, the CASE-01 Lume manual guide portrait, the M04 Investigation/Recovery background assets, and the M04 B/C·D cutout assets.
+Root `ASSET_MANIFEST.yml` is the current tracked product-asset authority and has twelve current approved entries: Bureau Archive main-menu background/emblem/wordmark, M01 Investigation background, M01 Recovery background, B/C anomaly cutout, D anomaly cutout, the CASE-01 Lume manual guide portrait, the M04 Investigation/Recovery background assets, and the M04 B/C·D cutout assets. The three Bureau Archive entries are consumed only by `MainMenuBackdrop` and `WorldTitleLockup`; their exact-head runtime capture is recorded, while Human/accessibility and release-rights review remain separate gates.
 
 Legacy `assets/ASSET_MANIFEST.json`, tracked PNG presence, `.import` files, existing runtime wiring, and old QA labels do **not** independently grant `PROJECT_ASSET_APPROVED`.
 

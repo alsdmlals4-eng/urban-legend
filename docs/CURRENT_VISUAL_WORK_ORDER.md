@@ -263,7 +263,7 @@ actual Scene / Texture consumer
 
 ## 8. Asset authority warning
 
-Root `ASSET_MANIFEST.yml`가 current tracked product-asset authority이며, 현재 승인된 M01 Investigation/Recovery background·B/C cutout·D cutout·CASE-01 루메 매뉴얼 보조 초상 및 M04 Investigation/Recovery background와 M04 B/C·D cutout의 9개 entry를 가진다.
+Root `ASSET_MANIFEST.yml`가 current tracked product-asset authority이며, 현재 승인된 Bureau Archive main-menu background/emblem/wordmark, M01 Investigation/Recovery background·B/C cutout·D cutout·CASE-01 루메 매뉴얼 보조 초상 및 M04 Investigation/Recovery background와 M04 B/C·D cutout의 12개 entry를 가진다. Bureau Archive 세 항목은 scenario art가 아니라 `MainMenuBackdrop`과 `WorldTitleLockup`의 실제 소비처에만 묶이며, exact-head runtime evidence와 Human/accessibility/release gate를 혼동하지 않는다.
 
 `assets/ASSET_MANIFEST.json`은 `LEGACY_MIGRATION_PENDING_NON_AUTHORITY`다. 과거 `stage=final`, QA 문구, tracked PNG, `.import`, runtime wiring은 existence/provenance/history evidence일 수 있지만 `PROJECT_ASSET_APPROVED`를 부여하지 않는다.
 
