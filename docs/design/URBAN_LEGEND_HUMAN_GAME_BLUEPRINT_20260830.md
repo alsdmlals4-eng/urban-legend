@@ -1,11 +1,11 @@
 # 괴이기록국: 잔향 보고서 · 사람용 게임 블루프린트
 
-> 상태: `CURRENT / RUNTIME_ALIGNED / HUMAN_QA_NOT_RUN`
-> 기준: 최신 사용자 승인, `origin/main`의 M01/M04 공용 시스템, 그리고 M04 능동 작업트리의 회수·메인 메뉴 목표 구현을 대조했다.
+> 상태: `CURRENT / RUNTIME_ALIGNED / M04_RECOVERY_AND_MENU_MAIN_MERGED / MACHINE_RUNTIME_CAPTURED / HUMAN_QA_NOT_RUN`
+> 기준: 최신 사용자 승인, latest `origin/main` (`a2b4d2e5c185a4e295cc05b86e4673446a23ac6c`), PR #356의 M04 통합 커밋 (`a62b5341f3c4742192f7bfc0d11e1fb4897c1308`), 그리고 그 exact head에서 남긴 focused test·runtime capture를 대조했다.
 > 정본 경계: 이 문서는 사람이 읽는 흐름·와이어프레임 owner다. 시스템 규칙은 `docs/CURRENT_PLANNING_CANON.md`, 현재 mutable 결정은 `docs/CURRENT_DECISION_OVERLAY.md`, 실제 현재 메인 구현은 코드·Scene·test가 소유한다.
 > AI·구현 짝문서: `docs/design/PROJECT_AI_PRODUCTION_SPEC.md`
 > 시각 참고: `docs/visual/blueprint-reference-pack/2026-08-30/README.md` — `USER_APPROVED / BLUEPRINT_REFERENCE_ONLY`, runtime asset·Human QA와 별개
-> 현재 메인과 M04 목표의 경계: M04의 이중 시계와 정제된 action surface는 `PENDING_MAIN_RECONCILIATION`이다. 이 문서는 목표 UX를 구현 완료로 승격하지 않는다.
+> 현재 메인과 M04 목표의 경계: 이중 시계, 하단 빠른 매뉴얼, 자동 회수 전환, 정제된 메인 action plate는 PR #356으로 `main`에 합류했다. 이는 machine/runtime capture 근거이며, Human QA·접근성·기기·출시 승인을 뜻하지 않는다.
 
 ---
 
@@ -313,10 +313,11 @@ M01과 M04에는 source record를 가진 candidate pool과 deduction segment가 
 
 ### 이중 시계 · 압박과 해소를 같은 화면에서 읽는 방법
 
-`M04 회수 이중 시계`는 **사용자 승인 목표 UX**다. 능동 M04 작업트리에는 구현·기계
-증거가 있으나 `origin/main`에는 아직 합류하지 않았으므로 이 문서의 상태는
-`PENDING_MAIN_RECONCILIATION`이다. 현재 main의 공용 회수 기준선을 이 목표 구현으로
-바꿔 적지 않는다.
+`M04 회수 이중 시계`는 **사용자 승인 UX이며 PR #356으로 main에 통합된 현재 기준선**이다.
+통합 커밋 `a62b5341f3c4742192f7bfc0d11e1fb4897c1308`에서 focused Godot test와 runtime
+capture를 남겼다. 따라서 아래는 작업트리 목표가 아니라 현재 플레이어가 마주하는
+M04 회수 surface의 설명이다. 다만 읽기 밀도·체감 압박·접근성은 Human QA 전까지
+`NOT_RUN`으로 남는다.
 
 | 시계 | 칸·방향 | 무엇이 움직이는가 | 플레이어가 느껴야 하는 변화 |
 | --- | --- | --- | --- |
@@ -334,7 +335,7 @@ M01과 M04에는 source record를 가진 candidate pool과 deduction segment가 
 - 한 칸이 움직일 때는 숫자만 바꾸지 않는다. 붉은 잔향의 범위, 전광판·방송의
   왜곡, 보호 경로, 팀의 대응 자세를 함께 갱신해 다음 선택의 근거를 준다.
 
-#### 회수 행동 surface · 목표 wireframe
+#### 회수 행동 surface · 현재 main wireframe
 
 ```text
 ┌ MODE / 현상명 ── [안정도 시계 8] ── [위험도 시계 6] ── 현재 전조 ┐
@@ -352,7 +353,7 @@ M01과 M04에는 source record를 가진 candidate pool과 deduction segment가 
   안내·봉쇄 같은 `상황 대응`이 별도 선택지로 나타난다.
 - **괴이 매뉴얼 열기**는 우측 하단의 빠른 참조/전체 화면 진입점이다. 상단 고정
   탭이 아니며, 열어도 답을 추천하거나 행동을 자동 실행하지 않는다.
-- 이전의 **대표 교체**, 별도 **회수 실행** 버튼은 이 목표 surface에 존재하지 않는다.
+- 이전의 **대표 교체**, 별도 **회수 실행** 버튼은 현재 surface에 존재하지 않는다.
   안정도 조건이 충족되면 회수 전환은 명시적 상태 변화로 자동 처리하고, 팀 역할은
   화면의 위치·행동·보호 효과로 읽힌다.
 
@@ -484,9 +485,9 @@ flowchart LR
 
 | 화면·계약 | `origin/main`의 현재 사실 | 승인 목표 / 다음 안전 작업 |
 | --- | --- | --- |
-| 메인 3-rail과 분리 action | Ver 4.3 관제실형 메뉴 구현, Human UI QA 미실행 | M04 능동 작업트리의 refined plates·워드마크는 `PENDING_MAIN_RECONCILIATION`; 먼저 최신 main과 독립 diff/회귀 대조가 필요하다. |
+| 메인 3-rail과 분리 action | PR #356 통합 뒤 archive research background, 기관 엠블럼·워드마크, 분리된 action plate가 현재 main에 있다. | focused machine/runtime capture는 있음. 1280×720/1920×1080 가독성, 첫인상, 접근성은 `NOT_RUN`. |
 | M01/M04 매뉴얼 입력 | source-backed 후보, draft-only 빈칸 배치 구현·기계 검증 | 1280×720/1920×1080, 입력 피로, 신규 플레이어 이해는 `NOT_RUN`. |
-| 회수 공용 기준선 | 전조·가설·근거·대응과 구출/결과 분리 구현 | 이중 시계·하단 빠른 매뉴얼·구형 행동 제거는 M04 목표 구현에서만 확인되어 `PENDING_MAIN_RECONCILIATION`. |
+| 회수 공용 기준선 | 전조·가설·근거·대응과 구출/결과 분리, **안정도 시계 8칸 / 위험도 시계 6칸**, 우측 하단 `괴이 매뉴얼 열기`, 자동 회수 전환이 현재 main에 구현됐다. | integration exact head의 focused Godot test·runtime capture는 있음. 실제 사람의 압박감·해소감, 입력 접근성은 `NOT_RUN`. |
 
 ---
 
@@ -494,9 +495,17 @@ flowchart LR
 
 이 블루프린트는 현재 프로젝트의 플레이 규칙과 사용자 승인 시각 참고를 사람에게
 보여 주기 위한 문서다. 실제 게임에는 조사·구출·회수·결과 흐름과 M01/M04의
-매뉴얼 빈칸 입력이 있다. 이중 시계와 정제된 M04 회수/메인 메뉴 surface는 main
-합류 전의 승인 목표이며, 시간 경과·세그먼트 값·결과 연출의 최종 체감은 플레이어가
-검증해야 한다.
+매뉴얼 빈칸 입력이 있다. 이중 시계와 정제된 M04 회수/메인 메뉴 surface도 PR #356으로
+main에 합류했으며, integration exact head에서 focused test와 runtime capture가 남아 있다.
+다만 시간 경과·세그먼트 값·결과 연출의 최종 체감은 플레이어가 검증해야 한다.
+
+현재 구현을 읽을 때에는 다음 증거 경계를 지킨다.
+
+| 확인 대상 | 현재 근거 | 아직 말할 수 없는 것 |
+| --- | --- | --- |
+| 이중 시계와 자동 회수 | `game_state.gd`, 회수 scene/overlay, focused recovery tests, PR #356 capture | 시계가 모든 플레이어에게 적절한 압박과 해소를 주는지 |
+| 우측 하단 매뉴얼과 구형 행동 제거 | recovery overlay·manual-open capture, contract test | 처음 보는 사람의 발견성·키보드/패드 접근성 |
+| 3-rail 메인과 분리 action plate | main-menu runtime capture와 current menu consumer | 해상도별 가독성, 최종 미감·출시 적합성 |
 
 따라서 다음 검수에서는 두 가지를 분리해 확인한다.
 

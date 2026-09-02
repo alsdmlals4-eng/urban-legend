@@ -1,0 +1,184 @@
+{
+  "schema_version": 1,
+  "artifact_role": "PROJECT_WORK_CONTRACT_RECEIPT",
+  "receipt_id": "URBAN-LEGEND-BLUEPRINT-MAIN-RECONCILIATION-2026-09-02",
+  "work_level": "L1",
+  "request": "Reconcile the regressed human blueprint with the current main implementation without replacing historical evidence.",
+  "scope": {
+    "included": [
+      "Postmerge reconciliation of the active human blueprint, master GDD index, handoff, and their document contract.",
+      "Reuse of existing current-main code, tests, captures, approved blueprint references, and benchmark evidence."
+    ],
+    "excluded": [
+      "Runtime code, scene, data, or asset mutation.",
+      "New image generation or asset promotion.",
+      "Human, accessibility, device, rights, or release acceptance."
+    ]
+  },
+  "authority_and_baseline": {
+    "main_head_before_change": "a2b4d2e5c185a4e295cc05b86e4673446a23ac6c",
+    "merge_commit": "a62b5341f3c4742192f7bfc0d11e1fb4897c1308",
+    "integration_pr": 356,
+    "project_base_release": "9.4.4"
+  },
+  "legacy_context_hygiene": [
+    {
+      "path": "docs/design/URBAN_LEGEND_HUMAN_GAME_BLUEPRINT_20260830.md",
+      "classification": "ACTIVE_OWNER",
+      "action": "Correct stale premerge status in place."
+    },
+    {
+      "path": "docs/design/PROJECT_AI_PRODUCTION_SPEC.md",
+      "classification": "ACTIVE_OWNER",
+      "action": "Update the owner index to state the merged-main evidence boundary."
+    },
+    {
+      "path": "docs/CURRENT_HANDOFF.md",
+      "classification": "ACTIVE_OWNER",
+      "action": "Add a compact continuation route for merged M04 recovery/menu state."
+    },
+    {
+      "path": "docs/operations/receipts/2026-09-01-runtime-aligned-blueprint.json",
+      "classification": "ARCHIVE",
+      "action": "Preserve. It truthfully records the earlier premerge state."
+    },
+    {
+      "path": "docs/visual/blueprint-reference-pack/2026-08-30/",
+      "classification": "ACTIVE_OWNER_REFERENCE_ONLY",
+      "action": "Reuse as approved blueprint reference; do not promote it to runtime assets."
+    }
+  ],
+  "benchmark_preflight": {
+    "benchmark_preflight_state": "REUSED_EVIDENCE",
+    "sources_and_decisions": [
+      {
+        "source": "docs/research/2026-09-01-runtime-aligned-blueprint-benchmark.md",
+        "observed_pattern": "Existing ten-game ADOPT/ADAPT/REJECT study already covers dual clocks, record-based deduction, and automatic-resolution risks.",
+        "project_fit_and_difference": "The current task changes only a stale target-to-main claim; it adds no system meaning.",
+        "decision": "REUSE"
+      },
+      {
+        "source": "PR #356 integration receipt, current main code/tests, and stored runtime captures",
+        "observed_pattern": "M04 clocks/menu and menu identity consumers have already been integrated and machine-captured.",
+        "project_fit_and_difference": "This is the primary current-state comparison, replacing the frozen premerge wording.",
+        "decision": "ADOPT"
+      },
+      {
+        "source": "Citizen Sleeper official Steam page and Return of the Obra Dinn official site",
+        "observed_pattern": "Clocks can communicate parallel pressure, while an investigation can make documents and assessment the player-facing work.",
+        "project_fit_and_difference": "Only corroborates the already approved information architecture; it does not import rules or content.",
+        "decision": "ADAPT"
+      },
+      {
+        "source": "Base PROJECT_WORK_REUSE_HANDOFF.json urban-legend profile",
+        "observed_pattern": "No reusable Base runtime module owns this project-specific reconciliation.",
+        "project_fit_and_difference": "The active project owner documents and their contract test are the smallest safe repair surface.",
+        "decision": "REUSE_EXISTING_PROJECT_IMPLEMENTATION"
+      }
+    ],
+    "alternatives": [
+      {
+        "option": "Restore the older pre-reconciliation blueprint wholesale.",
+        "decision": "REJECT",
+        "reason": "Would discard newer flow and reference facts while still failing to describe merged main."
+      },
+      {
+        "option": "Create a separate replacement blueprint or visual dashboard.",
+        "decision": "REJECT",
+        "reason": "Would duplicate the active human-facing owner and create conflicting state."
+      },
+      {
+        "option": "Correct the active blueprint, its owner index/handoff, and the existing regression contract while preserving history.",
+        "decision": "ADOPT",
+        "reason": "Smallest reversible repair that restores current truth and prevents the same target/main regression."
+      }
+    ]
+  },
+  "state_correction": {
+    "previous_active_claim": "PENDING_MAIN_RECONCILIATION for M04 dual clocks and refined menu surface.",
+    "replacement_active_claim": "M04_RECOVERY_AND_MENU_MAIN_MERGED with focused machine/runtime capture; Human QA remains NOT_RUN.",
+    "current_implementation_surface": [
+      "Stability clock 8 and danger clock 6.",
+      "Lower-right anomaly manual entry.",
+      "Automatic recovery transition at the stability condition.",
+      "No legacy representative swap or separate recovery execute control.",
+      "Archive research menu background, title identity, and separate action plates."
+    ]
+  },
+  "verification_plan": {
+    "document_contract": "tests/test_runtime_aligned_human_blueprint.py",
+    "runtime_regression": [
+      "tests/recovery/recovery_clock_state_test.gd",
+      "tests/recovery/recovery_direct_lead_test.gd",
+      "tests/ui/operation_overlay_dual_clock_test.gd",
+      "tests/scenes/battle_scene_dual_clock_test.gd"
+    ],
+    "static": [
+      "JSON parse of this receipt.",
+      "git diff --check.",
+      "Active-owner scan for stale PENDING_MAIN_RECONCILIATION."
+    ]
+  },
+  "verification_results": {
+    "document_contract": "PASS — tests/test_runtime_aligned_human_blueprint.py: 4 passed, 0 failed.",
+    "full_python_contract": "PASS — python -m unittest discover -s tests -p test_*.py: 490 passed, 0 failed.",
+    "focused_godot_runtime": [
+      "PASS — recovery_clock_state_test.gd: 17 passed, 0 failed.",
+      "PASS — recovery_direct_lead_flow_test.gd: 12 passed, 0 failed; Godot reported 2 ObjectDB instances leaked at exit.",
+      "PASS — recovery_dual_clock_overlay_test.gd: 8 passed, 0 failed.",
+      "PASS — recovery_dual_clock_scene_test.gd: 12 passed, 0 failed."
+    ],
+    "static": "PASS — JSON parse, git diff --check, and active-owner stale-status scan.",
+    "derived_artifact_hygiene": "Godot import was required in this disposable worktree to rebuild its missing .godot cache. Generated .import/.uid churn is not staged or part of this change and is removed with the disposable worktree after publication."
+  },
+  "adversarial_review": {
+    "required_full_loops": 5,
+    "loops": [
+      "Authority/state: compare active blueprint claim with merged current-main implementation and integration receipt.",
+      "History/provenance: preserve the premerge receipt and approved reference pack without relabeling either as runtime proof.",
+      "Mechanic/document: require the clock counts, manual placement, automatic transition, and removed controls in the regression contract.",
+      "Evidence boundary: keep machine/runtime capture distinct from Human, accessibility, device, rights, and release gates.",
+      "Repository integration: inspect exact branch diff, focused regression, JSON/static checks, PR exact head, and postmerge readback."
+    ],
+    "local_results": [
+      "Loop 1 found the stale PENDING_MAIN_RECONCILIATION claim and replaced it with the merged-main state plus exact integration evidence.",
+      "Loop 2 preserved the premerge receipt and approved reference pack as historical/reference artifacts; neither was deleted or promoted.",
+      "Loop 3 retained the pre-existing RUNTIME_ALIGNED contract while adding an assertion for the current M04 merged surface.",
+      "Loop 4 found no new verified runtime texture consumer; no image candidate or asset catalog mutation is warranted for this documentation repair.",
+      "Loop 5 verified that only five intended project files are staged in the reconciliation commit; Godot-generated import/UID churn is excluded and disposable."
+    ],
+    "local_clean_review_exit": "CLEAN_LOCAL_REVIEW_WITH_REMOTE_CI_AND_POSTMERGE_READBACK_PENDING"
+  },
+  "reuse_learning_handoff": {
+    "selected_modules": [
+      "Active human blueprint owner",
+      "Existing runtime-aligned benchmark",
+      "Existing PR #356 integration receipt and focused test/capture evidence",
+      "Existing blueprint document contract"
+    ],
+    "reuse_mode": "REUSE_EXISTING_PROJECT_IMPLEMENTATION",
+    "project_paths_changed": [
+      "docs/design/URBAN_LEGEND_HUMAN_GAME_BLUEPRINT_20260830.md",
+      "docs/design/PROJECT_AI_PRODUCTION_SPEC.md",
+      "docs/CURRENT_HANDOFF.md",
+      "tests/test_runtime_aligned_human_blueprint.py",
+      "docs/operations/receipts/2026-09-02-blueprint-main-reconciliation.json"
+    ],
+    "verification_evidence": "Focused document/runtime/static validation is required before publication.",
+    "evidence_ceiling": "No Human, accessibility, device, rights, or release evidence is produced by this document repair.",
+    "rollback": "Revert the single reconciliation commit; archived premerge receipt and approved reference assets remain intact.",
+    "project_only_lessons": [
+      "When a target implementation merges, update the active human owner and its regression assertion in the same continuation rather than preserving a premerge status line."
+    ],
+    "base_promotion_candidates": "NO_NEW_REUSE_LEARNING"
+  },
+  "evidence_ceiling": {
+    "machine_document_contract": "PASS",
+    "machine_runtime": "FOCUSED_PASS_WITH_OBJECTDB_LEAK_WARNING",
+    "human_qa": "NOT_RUN",
+    "accessibility": "NOT_RUN",
+    "device": "NOT_RUN",
+    "rights": "NOT_RUN",
+    "release": "NOT_RUN"
+  }
+}

@@ -35,7 +35,7 @@ The direct user instruction prevails over an attached work instruction. `PROJECT
 | `CURRENT` | `docs/decisions/D-2026-08-28-URBAN-NOIR-HYBRID-VISUAL-DIRECTION.md`, `docs/visual/VISUAL_DIRECTION_LOCK_PACKET_2026-08-28.md` | visual grammar |
 | `CURRENT` | `docs/decisions/D-2026-08-28-VISUAL-CANDIDATE-GENERATION-LOCK-ONLY-APPROVAL.md` | image candidate workflow |
 | `CURRENT` | `docs/decisions/D-2026-08-28-REPOSITORY-ONLY-PROJECT-CANON.md` | workspace ownership |
-| `CURRENT` | `docs/design/URBAN_LEGEND_HUMAN_GAME_BLUEPRINT_20260830.md` | 사람용 core loop, runtime-aligned wireframe, M04 target/main boundary |
+| `CURRENT` | `docs/design/URBAN_LEGEND_HUMAN_GAME_BLUEPRINT_20260830.md` | 사람용 core loop, runtime-aligned wireframe, M04 main merge and evidence boundary |
 | `REFERENCE` | `docs/research/2026-09-01-runtime-aligned-blueprint-benchmark.md` | 10-game comparison; ADOPT/ADAPT/REJECT rationale, not product authority |
 | `CURRENT` | `scripts/core/campaign_state.gd`, `scripts/scenes/preparation_scene.gd`, `scripts/scenes/investigation_scene.gd`, `scripts/scenes/result_scene.gd`, `scripts/scenes/battle_scene.gd` | actual runtime evidence |
 | `CURRENT` | `data/episodes/episode_001_afterlife_station_canon_v2.json`, `data/episodes/episode_002_red_umbrella_alley.json`, `data/episodes/episode_002_red_umbrella_alley_validation_map.json` | actual M01/M04 content/data boundary |
