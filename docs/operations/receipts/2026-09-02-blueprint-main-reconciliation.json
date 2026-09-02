@@ -139,7 +139,15 @@
       "Mechanic/document: require the clock counts, manual placement, automatic transition, and removed controls in the regression contract.",
       "Evidence boundary: keep machine/runtime capture distinct from Human, accessibility, device, rights, and release gates.",
       "Repository integration: inspect exact branch diff, focused regression, JSON/static checks, PR exact head, and postmerge readback."
-    ]
+    ],
+    "local_results": [
+      "Loop 1 found the stale PENDING_MAIN_RECONCILIATION claim and replaced it with the merged-main state plus exact integration evidence.",
+      "Loop 2 preserved the premerge receipt and approved reference pack as historical/reference artifacts; neither was deleted or promoted.",
+      "Loop 3 retained the pre-existing RUNTIME_ALIGNED contract while adding an assertion for the current M04 merged surface.",
+      "Loop 4 found no new verified runtime texture consumer; no image candidate or asset catalog mutation is warranted for this documentation repair.",
+      "Loop 5 verified that only five intended project files are staged in the reconciliation commit; Godot-generated import/UID churn is excluded and disposable."
+    ],
+    "local_clean_review_exit": "CLEAN_LOCAL_REVIEW_WITH_REMOTE_CI_AND_POSTMERGE_READBACK_PENDING"
   },
   "reuse_learning_handoff": {
     "selected_modules": [
