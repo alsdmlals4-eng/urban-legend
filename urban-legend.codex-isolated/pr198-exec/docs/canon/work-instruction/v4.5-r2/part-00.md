@@ -1,0 +1,40 @@
+---
+contract_name: PROJECT_TOTAL_PLANNING_IMPLEMENTATION_AND_DELIVERY_INSTRUCTION
+contract_version: '4.5'
+status: ACTIVE_BASE_CURRENT_MAIN_THIN_ADAPTER_GODOT_DELIVERY_CONTRACT
+revision: '2026-08-11-r2'
+execution_scope_guard: INSTRUCTION_DOCUMENT_UPDATE_ONLY_UNLESS_EXPLICIT_FUTURE_EXECUTION_REQUEST
+planning_phase_policy: GPT_CHAT_PLANNING_COMPLETE_BEFORE_POWERSHELL_CODEX_GODOT_BUILD
+planning_completion_trigger: USER_EXPLICIT_PLANNING_COMPLETE_DECLARATION
+grill_me_approval_batch_max: 10
+grill_me_batch_close_policy: SYNC_CANON_AND_SHEET_THEN_PLANNING_PR_REVIEW_ADVERSARIAL_LOOP
+numeric_detail_policy: GPT_RECOMMENDED_WITH_BENCHMARK_AND_TUNING_RANGE
+planning_conflict_policy: GRILL_ME_MANDATORY_USER_APPROVAL
+current_conversation_merge_policy: RECOMMENDED_AUTO_APPROVAL_WITHIN_ALREADY_APPROVED_SCOPE
+open_draft_pr_inventory_required: true
+tdd_required_every_task: true
+powershell_codex_default_command: "codex.cmd -a never -s workspace-write"
+powershell_manual_approval_prompt_max: 2
+powershell_session_policy: EPHEMERAL_CLOSE_AND_FRESH_START_EACH_EXECUTION_BLOCK
+user_action_blocker_policy: GPT_SOLVES_WHEN_POSSIBLE_ELSE_REQUEST_EXACT_USER_ACTION_AT_END
+bcp_project_source_policy: PROPOSAL_FIRST_NO_ACTIVE_BASE_RULE_MUTATION_UNTIL_SEPARATELY_APPROVED_IMPLEMENTATION
+skill_absorption_policy: PARTIAL_ABSORPTION_ALLOWED_WITH_FUNCTION_LEVEL_CLASSIFICATION
+language: ko-KR
+base_repository: https://github.com/alsdmlals4-eng/Base
+base_snapshot_observed_when_v4_5_written: 7ce3fb64fa6303c5da6c7fc27c979f7233b761ac
+base_snapshot_policy: ALWAYS_REFETCH_CURRENT_MAIN_BEFORE_WORK
+base_repository_review_policy: RECURSIVE_INVENTORY_THEN_RELEVANCE_DRIVEN_DEEP_READ
+adapter_policy: THIN_ADAPTER_DO_NOT_DUPLICATE_BASE_CANON
+usage: >
+  최신 Base의 PLAN→BUILD→REVIEW, Registry 기반 최소 Skill 라우팅, Existing Solution First,
+  승인 Decision 재사용, EXTERNAL_PROCESS_OVERLAY, BCP-020 플레이어 경험 증거 Gate,
+  on-demand Codex, HiGodot/GUT/Hera 역할 분리, public REMOTE_CI, Windows/Android 공용 코어,
+  Visual Requirement/Asset Vault, exact validation target PR Gate, merged-main readback,
+  사용자 로컬 Fetch/Pull까지 하나의 증거 기반 생명주기로 수행한다.
+core_gates:
+  - CURRENT_BASE_MAIN_REFETCH_AND_AUTHORITY_RECOVERY
+  - BASE_REPOSITORY_WIDE_INVENTORY_AND_RELEVANCE_DRIVEN_DEEP_READ
+  - BASE_SKILL_REGISTRY_AND_WORK_MODE_ROUTING
+  - THIN_ADAPTER_NO_BASE_CANON_DUPLICATION
+  - EXTERNAL_PROCESS_OVERLAY_AUTHORITY_BOUNDARY
+  - PROJECT_GITHUB_AND_GOOGLE_SHEET_WHOLE_STATE_RECOVERY

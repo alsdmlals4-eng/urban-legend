@@ -1,0 +1,254 @@
+name: Validate GUT Test Authority
+
+on:
+  pull_request:
+    paths:
+      - "addons/gut/**"
+      - "tests/gut/**"
+      - ".gutconfig.json"
+      - ".gitignore"
+      - "scripts/core/validation_route_mapper.gd"
+      - "docs/operations/GODOT_TOOL_AUTHORITY_LEDGER.json"
+      - "docs/operations/PROJECT_ENTRY_GATE.json"
+      - "docs/validation/GUT_9_7_1_ADOPTION_VALIDATION.md"
+      - "tools/governance/evaluate_project_entry_gate.py"
+      - "tests/test_godot_tool_authority_contract.py"
+      - "tests/test_project_entry_gate_contract.py"
+      - "tests/test_base_gut_entry_gate_adoption.py"
+      - "tests/test_gut_test_authority_ci_contract.py"
+      - ".github/workflows/validate-gut-test-authority.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "addons/gut/**"
+      - "tests/gut/**"
+      - ".gutconfig.json"
+      - ".gitignore"
+      - "scripts/core/validation_route_mapper.gd"
+      - "docs/operations/GODOT_TOOL_AUTHORITY_LEDGER.json"
+      - "docs/operations/PROJECT_ENTRY_GATE.json"
+      - "docs/validation/GUT_9_7_1_ADOPTION_VALIDATION.md"
+      - "tools/governance/evaluate_project_entry_gate.py"
+      - "tests/test_godot_tool_authority_contract.py"
+      - "tests/test_project_entry_gate_contract.py"
+      - "tests/test_base_gut_entry_gate_adoption.py"
+      - "tests/test_gut_test_authority_ci_contract.py"
+      - ".github/workflows/validate-gut-test-authority.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  gut-test-authority:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+    steps:
+      - name: Check out exact candidate
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+
+      - name: Check out exact official GUT tree
+        uses: actions/checkout@v4
+        with:
+          repository: bitwes/Gut
+          ref: aeb5d4f3f7f0a6c9b5e178876d6c99b791fda605
+          path: .gut-upstream
+          fetch-depth: 1
+
+      - name: Initialize exact-head evidence directory
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${CANDIDATE_SHA}"
+          mkdir -p .artifacts/gut
+          printf '%s\n' "${CANDIDATE_SHA}" > .artifacts/gut/candidate-sha.txt
+          printf '%s\n' "${GITHUB_SHA}" > .artifacts/gut/workflow-sha.txt
+
+      - name: Setup Godot 4.7.1
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.1
+          use-dotnet: false
+          include-templates: false
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Verify engine and contract versions
+        shell: bash
+        run: |
+          set -euo pipefail
+          godot --version
+          python --version
+          test "$(godot --version | cut -d. -f1-2)" = "4.7"
+
+      - name: Run focused governance contracts
+        run: |
+          python -m unittest \
+            tests.test_godot_tool_authority_contract \
+            tests.test_project_entry_gate_contract \
+            tests.test_base_gut_entry_gate_adoption \
+            tests.test_gut_test_authority_ci_contract \
+            -v
+
+      - name: Import and verify UID-resource stability
+        shell: bash
+        run: |
+          set -euo pipefail
+          godot --headless --path . --import
+          git diff --exit-code -- project.godot addons scripts scenes assets data
+          protected_status="$(git status --porcelain --untracked-files=all -- project.godot addons scripts scenes assets data)"
+          if [ -n "$protected_status" ]; then
+            printf 'Godot import changed protected paths:\n%s\n' "$protected_status" >&2
+            exit 1
+          fi
+
+      - name: Capture pre-GUT repository state
+        shell: bash
+        run: |
+          set -euo pipefail
+          git status --porcelain --untracked-files=all > .artifacts/gut/status-before.txt
+          git diff -- project.godot addons scripts scenes assets data > .artifacts/gut/protected-before.patch
+
+      - name: Compare installed GUT with exact upstream tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --no-index --exit-code \
+            -- .gut-upstream/addons/gut addons/gut \
+            > .artifacts/gut/upstream-tree-compare.txt; then
+            printf 'MATCH_UPSTREAM_AEB5D4F3\n' \
+              > .artifacts/gut/upstream-tree-result.txt
+          else
+            printf 'MISMATCH_UPSTREAM_AEB5D4F3\n' \
+              > .artifacts/gut/upstream-tree-result.txt
+            cat .artifacts/gut/upstream-tree-compare.txt
+            exit 1
+          fi
+
+      - name: Run project GUT suite with JUnit
+        shell: bash
+        run: |
+          set -euo pipefail
+          godot --headless -d -s --path "$PWD" addons/gut/gut_cmdln.gd \
+            -gdir=res://tests/gut \
+            -ginclude_subdirs \
+            -gexit \
+            -gjunit_xml_file=.artifacts/gut/junit.xml \
+            2>&1 | tee .artifacts/gut/gut-output.log
+          test -s .artifacts/gut/junit.xml
+
+      - name: Enforce GUT non-authoring boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --exit-code -- project.godot addons scripts scenes assets data
+          git status --porcelain --untracked-files=all > .artifacts/gut/status-after.txt
+          diff -u .artifacts/gut/status-before.txt .artifacts/gut/status-after.txt
+
+      - name: Run maintained full Godot regression
+        shell: bash
+        env:
+          GODOT_BIN: godot
+          GODOT_TEST_TMP: ${{ runner.temp }}/gut-authority-full-regression
+        run: |
+          set -euo pipefail
+          bash tests/run_godot_regression.sh \
+            2>&1 | tee .artifacts/gut/full-regression.log
+
+      - name: Generate machine-readable evidence summary
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import re
+          import xml.etree.ElementTree as ET
+          from pathlib import Path
+
+          artifact_dir = Path(".artifacts/gut")
+          gut_output = (artifact_dir / "gut-output.log").read_text(encoding="utf-8")
+          regression_output = (artifact_dir / "full-regression.log").read_text(encoding="utf-8")
+          junit_root = ET.parse(artifact_dir / "junit.xml").getroot()
+
+          gut_tests_match = re.search(r"^Tests\s+(\d+)\s*$", gut_output, re.MULTILINE)
+          gut_assertions_match = re.search(r"^Asserts\s+(\d+)\s*$", gut_output, re.MULTILINE)
+          regression_match = re.search(
+              r"Godot regression suite:\s+(\d+)/(\d+) legacy entrypoints \+ "
+              r"(\d+)/(\d+) Canon v2 focused entrypoints passed",
+              regression_output,
+          )
+          if not gut_tests_match or not gut_assertions_match or not regression_match:
+              raise SystemExit("expected GUT or regression summary was not found")
+
+          suites = list(junit_root.iter("testsuite"))
+          junit_tests = sum(int(suite.attrib.get("tests", 0)) for suite in suites)
+          junit_failures = sum(int(suite.attrib.get("failures", 0)) for suite in suites)
+          junit_errors = sum(int(suite.attrib.get("errors", 0)) for suite in suites)
+          gut_tests = int(gut_tests_match.group(1))
+          gut_assertions = int(gut_assertions_match.group(1))
+          legacy_passed, legacy_total, canon_passed, canon_total = map(
+              int, regression_match.groups()
+          )
+
+          if junit_tests != gut_tests or junit_failures or junit_errors:
+              raise SystemExit(
+                  "JUnit and GUT summary disagree or contain failures: "
+                  f"junit={junit_tests}, gut={gut_tests}, "
+                  f"failures={junit_failures}, errors={junit_errors}"
+              )
+          if legacy_passed != legacy_total or canon_passed != canon_total:
+              raise SystemExit("maintained regression summary is not fully passing")
+
+          summary = {
+              "candidate_sha": (artifact_dir / "candidate-sha.txt").read_text(
+                  encoding="utf-8"
+              ).strip(),
+              "gut_tests": gut_tests,
+              "gut_assertions": gut_assertions,
+              "junit_tests": junit_tests,
+              "junit_failures": junit_failures,
+              "junit_errors": junit_errors,
+              "legacy_entrypoints": legacy_passed,
+              "canon_v2_entrypoints": canon_passed,
+              "full_regression_entrypoints": legacy_passed + canon_passed,
+              "upstream_tree": (artifact_dir / "upstream-tree-result.txt").read_text(
+                  encoding="utf-8"
+              ).strip(),
+              "protected_diff": "PASS",
+          }
+          (artifact_dir / "summary.json").write_text(
+              json.dumps(summary, indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+          print(json.dumps(summary, sort_keys=True))
+          PY
+
+      - name: Verify final protected state
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --exit-code -- project.godot addons scripts scenes assets data
+          git status --porcelain --untracked-files=all > .artifacts/gut/status-final.txt
+          diff -u .artifacts/gut/status-before.txt .artifacts/gut/status-final.txt
+
+      - name: Upload exact-head GUT evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gut-test-authority-${{ env.CANDIDATE_SHA }}
+          path: .artifacts/gut/
+          if-no-files-found: error
+          retention-days: 14

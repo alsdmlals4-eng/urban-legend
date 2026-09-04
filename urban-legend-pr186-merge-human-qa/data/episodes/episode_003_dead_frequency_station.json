@@ -1,0 +1,167 @@
+{
+  "episode": {
+    "id": "episode_003_dead_frequency_station",
+    "title": "폐주파수 방송국",
+    "legend_type": "응답 방송형 괴담",
+    "summary": "폐국된 지역 방송국에서 청취자의 이름을 먼저 부르는 심야 방송이 다음 피해자를 고릅니다.",
+    "anomaly_core": "송출되지 않은 청취자 사연을 반복 재생하는 녹음 릴",
+    "visuals": {
+      "dialogue_background_id": "afterlife_entrance",
+      "investigation_background_id": "afterlife_platform",
+      "recovery_background_id": "afterlife_recovery",
+      "anomaly_b_asset_id": "afterlife_b",
+      "anomaly_d_asset_id": "afterlife_d"
+    },
+    "anomaly_profile": {
+      "origin": "끊긴 청취자 사연과 미확인 실종 신고가 겹쳐 생긴 현상",
+      "activity_stage": "learning",
+      "activity_period": "심야 송출 시간대",
+      "human_understanding": "낮음",
+      "observed_form": "꺼진 조정실 유리 너머의 진행자 실루엣",
+      "repetition_rule": "방송이 이름을 부른 뒤 응답한 사람의 목소리를 다음 사연으로 사용한다"
+    }
+  },
+  "victims": [
+    {
+      "id": "victim_frequency_listener",
+      "name": "심야 방송에 응답한 청취자",
+      "episode_id": "episode_003_dead_frequency_station",
+      "status": "voice_captured_in_broadcast",
+      "last_seen_location": "폐쇄된 지역 방송국 2층 조정실",
+      "emotional_state": "자신의 목소리가 방송에서 먼저 들렸다는 공포와 죄책감",
+      "rescue_result": "unresolved",
+      "after_story": "해결 등급에 따라 청취자는 자신의 목소리를 다시 구분하거나 방송 잔향을 계속 듣습니다."
+    }
+  ],
+  "agents": [
+    {
+      "id": "agent_kang_ijun",
+      "name": "강이준",
+      "temperament": "breakthrough",
+      "temperament_label": "열혈·돌파형",
+      "role": "현장 봉인·송출 경로 차단",
+      "investigation_stats": {"destruction": 1, "observation": 2, "analysis": 4},
+      "abilities": {"suppression": 5, "analysis": 3, "protection": 3, "treatment": 1, "rapport": 2},
+      "max_health": 120,
+      "max_mental": 80,
+      "equipment": [{"name": "부적 권갑", "ability": "suppression", "bonus": 1}],
+      "skills": [{"name": "봉인선 타격", "ability": "suppression", "bonus": 2}],
+      "recovery_support": {"id": "support_kang_cut_transmitter", "label": "송신선 봉인", "role": "제압", "description": "강이준이 송신선의 반동을 막아 방송이 새 청취자를 부르지 못하게 합니다.", "stability_delta": -12, "fear_delta": 2, "threshold_delta": 2}
+    },
+    {
+      "id": "agent_kwon_narae",
+      "name": "권나래",
+      "temperament": "analytical",
+      "temperament_label": "분석형",
+      "role": "신호 분석·피해자 보호",
+      "investigation_stats": {"destruction": 1, "observation": 4, "analysis": 2},
+      "abilities": {"suppression": 1, "analysis": 5, "protection": 4, "treatment": 3, "rapport": 4},
+      "max_health": 85,
+      "max_mental": 120,
+      "equipment": [{"name": "탐지봉", "ability": "analysis", "bonus": 1}],
+      "skills": [{"name": "영적 스캔", "ability": "analysis", "bonus": 2}],
+      "recovery_support": {"id": "support_kwon_hold_silence", "label": "무음 구간 고정", "role": "분석", "description": "권나래가 방송 사이의 무음 구간을 고정해 진짜 송출과 잔향을 분리합니다.", "stability_delta": -10, "fear_delta": -4, "threshold_delta": 3}
+    },
+    {
+      "id": "agent_oh_hyun",
+      "name": "오현",
+      "temperament": "balanced",
+      "temperament_label": "공감·분석 균형형",
+      "role": "청취 기록 복원·피해자 교감",
+      "investigation_stats": {"destruction": 4, "observation": 1, "analysis": 1},
+      "abilities": {"suppression": 3, "analysis": 4, "protection": 2, "treatment": 4, "rapport": 5},
+      "max_health": 100,
+      "max_mental": 100,
+      "equipment": [{"name": "이능 단말기", "ability": "analysis", "bonus": 1}],
+      "skills": [{"name": "증거 중계", "ability": "analysis", "bonus": 2}],
+      "recovery_support": {"id": "support_oh_return_voice", "label": "목소리 반환", "role": "교감", "description": "오현이 피해자의 실제 녹음만 되돌려 주어 방송의 가짜 사연과 분리합니다.", "stability_delta": -8, "fear_delta": -10, "threshold_delta": 2}
+    }
+  ],
+  "player_investigation_stats": {"destruction": 2, "observation": 2, "analysis": 2},
+  "anomaly_status": {"anomaly_risk": 8, "anomaly_understanding": 0, "anomaly_stability": 100, "mental_stamina": 100, "prediction_success_streak": 0, "forced_recovery_phase": false},
+  "preparation_briefing": {
+    "briefing": "폐국된 방송국이 아직 송출 중입니다. 방송은 청취자의 이름을 먼저 부르고, 응답한 목소리를 다음 사연으로 남깁니다.",
+    "equipped_frequency_filter": "폐주파수 필터가 방송 사이의 무음 구간을 분리합니다. 동기화 판정에서 첫 박자를 강조합니다.",
+    "record_reference": "저승역의 반복 안내방송 기록처럼, 의미 있는 말보다 반복 간격과 무음 구간을 먼저 대조하세요.",
+    "risk_warning": "방송이 이름을 부르더라도 응답하지 마세요. 응답한 목소리가 다음 송출의 재료가 됩니다."
+  },
+  "records": [
+    {"id": "record_dead_frequency_protocol", "title": "폐주파수 무응답 절차", "description": "호출 방송에 답하지 않고 무음 구간을 기준으로 실제 녹음과 잔향을 분리한 회수 기록입니다.", "next_investigation_effect": "응답 방송형 괴담에서 호출문과 실제 피해자 목소리를 분리해 확인할 수 있습니다."}
+  ],
+  "hints": [
+    {"id": "hint_dead_frequency_001", "episode_id": "episode_003_dead_frequency_station", "target_clue_id": "clue_dead_frequency_call_sheet", "source_type": "investigation", "source_id": "point_call_sheet", "text": "방송이 이름을 부르기 전, 대본에는 이미 다음 청취자의 빈칸이 적혀 있습니다. 이름을 채우는 쪽은 방송이 아니라 응답입니다.", "condition_flags": ["dead_frequency_call_sheet_read"]},
+    {"id": "hint_dead_frequency_002", "episode_id": "episode_003_dead_frequency_station", "target_clue_id": "clue_dead_frequency_silence_loop", "source_type": "minigame", "source_id": "minigame_dead_air_sync", "text": "잡음이 아니라 무음 구간이 진짜 송출의 경계입니다. 그 사이에는 방송이 청취자를 들을 수 없습니다.", "condition_flags": ["dead_frequency_sync_requested"]},
+    {"id": "hint_dead_frequency_003", "episode_id": "episode_003_dead_frequency_station", "target_clue_id": "clue_dead_frequency_listener_tape", "source_type": "investigation", "source_id": "point_listener_tape", "text": "피해자의 목소리는 사연 뒤에 녹음된 것이 아니라, 방송이 응답을 받아 앞에 덧씌운 것입니다.", "condition_flags": ["dead_frequency_listener_tape_found"]}
+  ],
+  "field_nodes": [
+    {
+      "id": "dialogue_intro",
+      "legacy_dialogue_node_ids": ["dialogue_intro"],
+      "title": "폐주파수 방송국",
+      "opening_dialogue": [
+        {"speaker": "로그", "text": "관측됨: 송출 중단된 방송국에서 01:13마다 청취자 이름을 먼저 부르는 음성이 반복됩니다.", "expression": "focus"},
+        {"speaker": "오현", "text": "응답한 기록을 찾겠습니다. 우선 이 방송이 누구의 이름을 어떻게 얻는지 확인해야 해요."},
+        {"speaker": "권나래", "text": "이름을 부르는 순간에는 대답하지 마세요. 피해자의 실제 녹음부터 보호하겠습니다."},
+        {"speaker": "강이준", "text": "송신선을 끊는 건 마지막입니다. 먼저 어느 소리가 진짜 길인지 잡죠."}
+      ],
+      "choices": [
+        {"id": "field_begin_dead_frequency", "label": "호출 대본, 조정실 무음 구간, 청취자 녹음을 분리해 기록한다", "ability": "analysis", "point_id": "point_call_sheet", "after_dialogue": [{"speaker": "로그", "text": "세 기록을 별도 항목으로 열었습니다. 호출문, 무음, 피해자 목소리는 같은 것이 아닙니다.", "expression": "normal"}], "next_field_node_id": "field_dead_frequency_investigation"}
+      ]
+    },
+    {"id": "field_dead_frequency_investigation", "title": "폐주파수 방송국 조사", "opening_dialogue": [{"speaker": "로그", "text": "조사 지점을 선택하세요. 방송에 응답하지 않는 것이 현재 안전 규칙입니다.", "expression": "focus"}], "uses_investigation_points": true}
+  ],
+  "investigation_points": [
+    {
+      "id": "point_call_sheet", "label": "이름이 비어 있는 심야 호출 대본", "description": "진행 대본에는 사연보다 먼저 청취자 이름을 부를 빈칸이 남아 있습니다.", "tags": ["evidence_sensitive", "ritual_rule"], "conditions": {}, "locked_text": "호출 대본의 빈칸을 먼저 확인해야 합니다.", "result_text": "대본의 빈칸은 방송이 이름을 아는 방식이 아니라, 응답을 받아 이름을 채우는 방식처럼 보입니다.",
+      "method_options": [
+        {"id": "method_call_sheet_observe", "label": "빈칸과 실제 송출 순서를 대조한다", "method_type": "observation", "stat_key": "observation", "approach_type": "analysis", "difficulty": 7, "summary": "응답 전후의 대본 변화를 기록해 호출문이 이름을 얻는 시점을 확인합니다.", "success_text": "이름은 호출 전에 없었습니다. 응답 직후 다음 줄의 사연으로 복사됩니다.", "failure_text": "대본의 글자가 번져 이름이 먼저 있었는지 확정하지 못했습니다.", "success_effects": {"add_flags": ["dead_frequency_call_sheet_read"], "collect_clues": ["clue_dead_frequency_call_sheet"], "show_hint_ids": ["hint_dead_frequency_001"], "anomaly_understanding_delta": 8, "anomaly_stability_delta": -4}, "failure_effects": {"add_flags": ["dead_frequency_script_blurred"], "anomaly_risk_delta": 5, "mental_stamina_delta": -3}},
+        {"id": "method_call_sheet_force", "label": "호출 대본을 찢어 다음 이름을 막는다", "method_type": "destruction", "stat_key": "destruction", "approach_type": "suppression", "difficulty": 7, "summary": "송출을 즉시 막으려 하지만 대본이 남긴 이름이 다른 장치로 옮겨갈 수 있습니다.", "success_text": "찢긴 종이 사이에서 응답 음성을 받아 적은 압인 흔적이 드러납니다.", "failure_text": "찢긴 대본의 빈칸이 조정실 모니터에 다시 나타납니다.", "success_effects": {"add_flags": ["dead_frequency_call_sheet_read"], "collect_clues": ["clue_dead_frequency_call_sheet"], "anomaly_risk_delta": 5, "anomaly_understanding_delta": 4}, "failure_effects": {"add_flags": ["dead_frequency_script_alert"], "anomaly_risk_delta": 12, "anomaly_stability_delta": 4}}
+      ]
+    },
+    {
+      "id": "point_silence_monitor", "label": "말보다 먼저 끊기는 조정실 모니터", "description": "진행자 목소리가 들릴 때마다 파형은 오히려 무음 구간에서만 안정됩니다.", "tags": ["frequency_related", "noise_pattern"], "conditions": {"required_clues": ["clue_dead_frequency_call_sheet"]}, "locked_text": "호출문이 응답을 받아 이름을 채운다는 근거가 필요합니다.", "result_text": "모니터의 파형은 말소리가 아니라 그 사이의 무음 구간에서만 한 번씩 고정됩니다.",
+      "method_options": [
+        {"id": "method_silence_analysis", "label": "무음 구간과 송출 파형을 동기화한다", "method_type": "analysis", "stat_key": "analysis", "approach_type": "analysis", "difficulty": 7, "summary": "말소리를 지우지 않고 무음의 길이를 측정해 실제 송출 경계를 찾습니다.", "success_text": "무음 구간에는 청취자 응답이 들어오지 않습니다. 그 짧은 틈만이 방송을 듣지 못하는 시간입니다.", "failure_text": "잡음과 무음의 길이가 섞여 안전한 틈을 하나로 고정하지 못했습니다.", "success_effects": {"add_flags": ["dead_frequency_sync_requested"], "collect_clues": ["clue_dead_frequency_silence_loop"], "show_hint_ids": ["hint_dead_frequency_002"], "anomaly_understanding_delta": 10, "anomaly_stability_delta": -5}, "failure_effects": {"add_flags": ["dead_frequency_sync_noise"], "anomaly_risk_delta": 6, "mental_stamina_delta": -4}},
+        {"id": "method_silence_protect", "label": "피해자 녹음이 들리는 채널만 차폐한다", "method_type": "observation", "stat_key": "observation", "approach_type": "protection", "difficulty": 7, "summary": "피해자의 실제 목소리를 보호하며 방송의 빈 구간을 기록합니다.", "success_text": "차폐된 채널에서만 피해자의 짧은 숨소리가 남습니다. 방송의 진행자 목소리는 다른 층에 있습니다.", "failure_text": "차폐막이 흔들려 피해자 목소리와 진행자 음성이 다시 겹칩니다.", "success_effects": {"add_flags": ["dead_frequency_sync_requested"], "collect_clues": ["clue_dead_frequency_silence_loop"], "anomaly_understanding_delta": 6, "victim_understanding_delta": 5}, "failure_effects": {"add_flags": ["dead_frequency_channel_overlap"], "anomaly_risk_delta": 4, "mental_stamina_delta": -2}}
+      ]
+    },
+    {
+      "id": "point_listener_tape", "label": "청취자 응답이 앞에 덧씌워진 릴 테이프", "description": "피해자의 목소리가 사연을 읽기 전부터 녹음되어 있지만, 실제 시간 표시는 뒤에 있습니다.", "tags": ["victim_risk", "frequency_related"], "conditions": {"required_clues": ["clue_dead_frequency_call_sheet", "clue_dead_frequency_silence_loop"]}, "locked_text": "호출문과 무음 구간을 모두 대조해야 피해자의 실제 목소리를 분리할 수 있습니다.", "result_text": "테이프는 피해자의 응답을 받아 과거 사연 앞에 덧씌운 흔적을 보여 줍니다.",
+      "method_options": [
+        {"id": "method_listener_tape_rapport", "label": "피해자의 실제 녹음만 남기고 사연을 분리한다", "method_type": "observation", "stat_key": "observation", "approach_type": "rapport", "difficulty": 7, "summary": "응답을 탓하지 않고 실제 목소리와 방송 잔향을 구분해 반환 경로를 만듭니다.", "success_text": "피해자의 숨소리 뒤에 붙은 진행자 음성이 떨어져 나갑니다. 응답은 원인이 아니라 방송이 붙잡은 재료였습니다.", "failure_text": "테이프가 되감기며 피해자의 목소리가 다시 사연 첫 줄로 붙습니다.", "success_effects": {"add_flags": ["dead_frequency_listener_tape_found"], "collect_clues": ["clue_dead_frequency_listener_tape"], "show_hint_ids": ["hint_dead_frequency_003"], "anomaly_understanding_delta": 9, "victim_understanding_delta": 8, "anomaly_stability_delta": -5}, "failure_effects": {"add_flags": ["dead_frequency_voice_rewound"], "anomaly_risk_delta": 7, "mental_stamina_delta": -5}},
+        {"id": "method_listener_tape_cut", "label": "릴 테이프를 멈춰 방송의 재생을 강제로 끊는다", "method_type": "destruction", "stat_key": "destruction", "approach_type": "suppression", "difficulty": 7, "summary": "재생을 멈추지만 피해자의 실제 녹음까지 손상할 위험이 있습니다.", "success_text": "테이프를 멈춘 틈에서 응답을 복사한 접합부가 드러납니다.", "failure_text": "릴이 반동으로 돌아가며 진행자 음성이 더 크게 재생됩니다.", "success_effects": {"add_flags": ["dead_frequency_listener_tape_found"], "collect_clues": ["clue_dead_frequency_listener_tape"], "anomaly_risk_delta": 6, "anomaly_understanding_delta": 5}, "failure_effects": {"add_flags": ["dead_frequency_tape_alert"], "anomaly_risk_delta": 13, "anomaly_stability_delta": 5}}
+      ]
+    }
+  ],
+  "minigames": [
+    {"id": "minigame_dead_air_sync", "title": "무음 구간 동기화", "description": "방송이 청취자를 듣지 못하는 무음 구간에 맞춰 녹음 릴의 접합부를 고정합니다.", "type": "rhythm_timing", "rules_text": "SPACE 또는 ENTER로 5번의 박자 중 3번 이상을 무음 구간에 맞추세요.", "round_count": 5, "required_hits": 3, "success_agent_reaction": "팀이 무음 구간을 따라 피해자의 실제 녹음을 격리하고, 방송의 호출문이 닿지 않는 틈을 확보합니다.", "failure_agent_reaction": "동기화는 어긋났지만, 어느 박자에서 방송이 다시 청취자를 듣는지는 기록했습니다.", "success_flags": ["minigame_dead_air_sync_success", "dead_frequency_sync_completed"], "failure_flags": ["minigame_dead_air_sync_failed", "dead_frequency_sync_noise"], "success_show_hint_ids": ["hint_dead_frequency_002"], "failure_show_hint_ids": ["hint_dead_frequency_002"], "success_anomaly_risk_delta": -5, "success_anomaly_understanding_delta": 10, "success_anomaly_stability_delta": -5, "success_recovery_threshold_delta": 6, "success_recovery_stability_delta": -6, "failure_anomaly_risk_delta": 8, "failure_anomaly_understanding_delta": 2, "failure_anomaly_stability_delta": 5, "failure_recovery_threshold_delta": -6, "failure_recovery_stability_delta": 8, "success_result_text": "무음 구간에 접합부를 고정했습니다. 방송은 잠시 응답을 받을 수 없고, 릴 테이프의 진짜 시작점이 드러납니다.", "failure_result_text": "박자가 어긋났습니다. 방송은 다시 청취자를 부르지만, 응답이 들어오는 박자는 기록되었습니다.", "return_scene_path": "res://scenes/investigation_scene.tscn"}
+  ],
+  "clues": [
+    {"id": "clue_dead_frequency_call_sheet", "title": "이름이 비어 있는 호출 대본", "description": "방송은 이름을 미리 알지 못합니다. 응답한 목소리에서 이름을 받아 다음 사연 앞에 붙입니다.", "location_id": "point_call_sheet", "related_victim_id": "victim_frequency_listener", "battle_effect_id": "effect_dead_frequency_no_reply", "resolution_weight": 34, "is_required": true, "collected": false},
+    {"id": "clue_dead_frequency_silence_loop", "title": "방송이 듣지 못하는 무음 구간", "description": "말소리 사이의 짧은 무음에서만 실제 송출과 잔향이 분리되며, 이때 방송은 새 응답을 받을 수 없습니다.", "location_id": "point_silence_monitor", "related_victim_id": "victim_frequency_listener", "battle_effect_id": "effect_dead_frequency_silence_anchor", "resolution_weight": 33, "is_required": true, "collected": false},
+    {"id": "clue_dead_frequency_listener_tape", "title": "응답이 덧씌워진 청취자 릴", "description": "피해자의 실제 목소리는 사연보다 뒤에 녹음되었습니다. 방송이 응답을 과거 사연 앞에 복사해 붙였습니다.", "location_id": "point_listener_tape", "related_victim_id": "victim_frequency_listener", "battle_effect_id": "effect_dead_frequency_return_voice", "resolution_weight": 33, "is_required": true, "collected": false}
+  ],
+  "battle_clue_effects": [
+    {"id": "effect_dead_frequency_no_reply", "clue_id": "clue_dead_frequency_call_sheet", "effect_type": "block_call_response", "effect_value": 12, "description": "호출문에 응답하지 않아야 방송이 새 이름을 얻지 못한다는 근거를 제공합니다."},
+    {"id": "effect_dead_frequency_silence_anchor", "clue_id": "clue_dead_frequency_silence_loop", "effect_type": "anchor_silence_window", "effect_value": 12, "description": "무음 구간이 릴 테이프 접합부를 고정할 수 있는 안전한 순간을 만듭니다."},
+    {"id": "effect_dead_frequency_return_voice", "clue_id": "clue_dead_frequency_listener_tape", "effect_type": "separate_listener_voice", "effect_value": 14, "description": "피해자의 실제 목소리를 방송이 만든 가짜 사연과 분리해 반환할 수 있습니다."}
+  ],
+  "recovery_patterns": [
+    {"id": "pattern_dead_frequency_name_call", "order": 0, "name": "이름을 부르는 사전 방송", "telegraph": "꺼진 스피커가 피해자의 이름을 부른다. 대본의 빈칸이 천천히 채워지고 있다.", "description": "방송은 응답을 받아 이름을 다음 사연의 첫 줄에 복사하려 한다.", "related_clue_ids": ["clue_dead_frequency_call_sheet"], "responses": [{"id": "hold_silence", "label": "호출문을 녹음시키되 이쪽은 응답하지 않는다", "ability": "protection", "stability_gain": 18}, {"id": "answer_name", "label": "피해자 이름을 불러 방송보다 먼저 응답한다", "ability": "rapport"}, {"id": "shout_over", "label": "큰 소리로 방송을 덮어 호출을 끊는다", "ability": "suppression"}], "correct_response_id": "hold_silence", "failure_reason": "이름에 답하면 방송이 응답 목소리를 다음 사연의 재료로 붙잡는다."},
+    {"id": "pattern_dead_frequency_dead_air", "order": 1, "name": "말보다 긴 무음", "telegraph": "진행자 목소리가 끊긴 뒤 파형만 한 번 평평해진다. 릴 테이프의 접합부가 그 순간에만 보인다.", "description": "방송이 청취자를 듣지 못하는 무음 구간에만 실제 녹음과 잔향을 분리할 수 있다.", "related_clue_ids": ["clue_dead_frequency_silence_loop"], "responses": [{"id": "anchor_silence", "label": "무음 구간에 맞춰 접합부를 고정한다", "ability": "analysis", "stability_gain": 19}, {"id": "cut_voice", "label": "목소리가 들리는 동안 모니터 전원을 끈다", "ability": "suppression"}, {"id": "repeat_line", "label": "진행자 대사를 따라 읽어 파형을 맞춘다", "ability": "rapport"}], "correct_response_id": "anchor_silence", "failure_reason": "말소리를 끊거나 따라 하면 방송이 새 응답으로 인식해 무음 구간이 사라진다."},
+    {"id": "pattern_dead_frequency_returned_voice", "order": 2, "name": "사연보다 먼저 들리는 피해자 목소리", "telegraph": "피해자의 숨소리가 사연 첫 줄보다 앞에서 들린다. 조정실 유리에는 진행자 실루엣이 릴을 되감고 있다.", "description": "방송은 피해자의 실제 응답을 과거 사연 앞에 덧씌워 계속 호출문을 만들고 있다.", "related_clue_ids": ["clue_dead_frequency_listener_tape", "clue_dead_frequency_silence_loop"], "responses": [{"id": "return_original_voice", "label": "실제 녹음만 피해자에게 돌려주고 가짜 사연을 분리한다", "ability": "rapport", "stability_gain": 20}, {"id": "erase_tape", "label": "릴 테이프 전체를 지워 진행자를 없앤다", "ability": "suppression"}, {"id": "play_backwards", "label": "테이프를 끝까지 되감아 사연을 처음부터 듣는다", "ability": "analysis"}], "correct_response_id": "return_original_voice", "failure_reason": "테이프를 지우거나 되감으면 피해자 목소리도 다시 방송의 사연 앞에 덧씌워진다."}
+  ],
+  "resolution": {"episode_id": "episode_003_dead_frequency_station", "total_clues": 3, "collected_clues": 0, "collection_rate": 0, "phase_state": "unavailable", "temporary_threshold": 34, "standard_threshold": 67, "complete_threshold": 100},
+  "research_rewards": [{"id": "reward_dead_frequency_protocol", "legend_id": "legend_dead_frequency_station", "resolution_grade": "standard", "ability_name": "무응답 송출 분리", "ability_description": "호출 방송형 괴담에서 응답과 실제 녹음을 구분하는 기록국 절차입니다.", "next_episode_effect": "후속 응답 방송형 사건에서 호출문과 피해자 목소리를 구분하는 기록으로 표시됩니다."}],
+  "recovery_results": [
+    {"resolution_grade": "unavailable", "victim_rescue_result": "failed_to_enter_resolution", "description": "단서가 부족해 방송이 이름을 얻는 방식을 고정하지 못했습니다.", "after_story": "피해자의 목소리는 다음 심야 사연 속에서 계속 반복됩니다.", "research_result": "연구 보상 없음", "unlocks_records": [], "unlocks_research_rewards": [], "unlocks_equipment": []},
+    {"resolution_grade": "temporary", "victim_rescue_result": "voice_partially_released", "description": "피해자의 목소리를 일부 분리했지만, 심야 무음 구간에서만 여전히 방송 잔향을 듣습니다.", "after_story": "피해자는 자신의 이름을 들으면 대답하지 않고 기록국에 연락하는 절차를 기억합니다.", "research_result": "임시 무응답 절차를 기록했습니다.", "unlocks_records": [], "unlocks_research_rewards": [], "unlocks_equipment": []},
+    {"resolution_grade": "standard", "victim_rescue_result": "listener_voice_restored", "description": "피해자의 실제 녹음을 되돌리고 방송이 응답을 사연으로 복사하는 규칙을 기록했습니다.", "after_story": "피해자는 방송을 듣더라도 자신의 목소리와 잔향을 구분할 수 있습니다.", "research_result": "무응답 송출 분리 절차를 확보했습니다.", "unlocks_records": ["record_dead_frequency_protocol"], "unlocks_research_rewards": ["reward_dead_frequency_protocol"], "unlocks_equipment": []},
+    {"resolution_grade": "complete", "victim_rescue_result": "listener_restored_and_reel_recovered", "description": "피해자의 목소리를 완전히 되돌리고, 응답을 복사하던 녹음 릴을 안정적으로 회수했습니다.", "after_story": "폐쇄 방송국은 더 이상 이름을 먼저 부르지 않으며, 피해자는 자신의 사연을 직접 기록국 DB에 남깁니다.", "research_result": "호출문·무음 구간·실제 녹음의 연결 구조를 완전 기록했습니다.", "unlocks_records": ["record_dead_frequency_protocol"], "unlocks_research_rewards": ["reward_dead_frequency_protocol"], "unlocks_equipment": []}
+  ],
+  "agent_reactions": [
+    {"agent_id": "agent_kang_ijun", "conditions": {}, "text": "이름을 부른다고 바로 끊지 말죠. 응답이 들어오는 길부터 막겠습니다."},
+    {"agent_id": "agent_kwon_narae", "conditions": {}, "text": "무음 구간이 안전한 틈이라면, 그때만 릴의 접합부를 고정할 수 있습니다."},
+    {"agent_id": "agent_oh_hyun", "conditions": {}, "text": "피해자가 대답한 건 실수가 아닙니다. 방송이 그 목소리를 사연으로 바꾼 거예요."}
+  ]
+}

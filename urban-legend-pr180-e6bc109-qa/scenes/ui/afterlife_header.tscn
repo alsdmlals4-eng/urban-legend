@@ -1,0 +1,52 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/afterlife_header.gd" id="1"]
+
+[node name="AfterlifeHeader" type="PanelContainer"]
+custom_minimum_size = Vector2(0, 48)
+theme_type_variation = &"AfterlifeHeader"
+script = ExtResource("1")
+
+[node name="Row" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Bureau" type="Label" parent="Row"]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+theme_type_variation = &"AfterlifeTitle"
+text = "괴이 기록국"
+vertical_alignment = 1
+
+[node name="TeamButton" type="Button" parent="Row"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(108, 0)
+layout_mode = 2
+text = "팀 상태"
+
+[node name="CaseLabel" type="Label" parent="Row"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "저승역 · 현장 조사"
+horizontal_alignment = 1
+vertical_alignment = 1
+theme_type_variation = &"AfterlifeTitle"
+
+[node name="RecordButton" type="Button" parent="Row"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(72, 0)
+layout_mode = 2
+text = "기록"
+
+[node name="SettingsButton" type="Button" parent="Row"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(72, 0)
+layout_mode = 2
+text = "설정"
+
+[node name="HqButton" type="Button" parent="Row"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(62, 0)
+layout_mode = 2
+text = "HQ"

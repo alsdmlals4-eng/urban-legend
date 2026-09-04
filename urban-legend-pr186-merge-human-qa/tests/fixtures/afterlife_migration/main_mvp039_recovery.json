@@ -1,0 +1,112 @@
+{
+  "save_version": "mvp-039",
+  "episode_id": "episode_001_afterlife_station",
+  "episode_path": "res://data/episodes/episode_001_afterlife_station.json",
+  "current_scene_path": "res://scenes/battle_scene.tscn",
+  "current_dialogue_node_id": "dialogue_legacy_recovery_entry",
+  "current_field_node_id": "field_platform_loop",
+  "current_minigame_id": "minigame_frequency_sync",
+  "selected_agent_ids": [
+    "agent_kwon_narae",
+    "agent_oh_hyun",
+    "agent_kang_ijun"
+  ],
+  "flags": [
+    "legacy_afterlife_platform_entered",
+    "legacy_afterlife_recovery_started"
+  ],
+  "seen_hint_ids": ["hint_legacy_announcement_gap"],
+  "seen_log_tutorial_ids": ["tutorial_case_log"],
+  "minigame_results": {
+    "minigame_frequency_sync": {
+      "success": true,
+      "score": 81
+    }
+  },
+  "method_results": {
+    "legacy_recovery_attempt": {
+      "success": false
+    }
+  },
+  "agent_trust": {
+    "agent_kwon_narae": 3,
+    "agent_oh_hyun": 2
+  },
+  "triggered_agent_event_ids": [],
+  "used_agent_supports": ["agent_kwon_narae:field_support"],
+  "unlocked_records": [
+    "clue_last_message",
+    "clue_repeating_announcement"
+  ],
+  "unlocked_equipment": ["gear_resonance_prism"],
+  "unlocked_research_rewards": [],
+  "equipped_items": ["gear_resonance_prism"],
+  "used_equipment_effects": ["gear_resonance_prism:scan"],
+  "completed_case_reports": [],
+  "anomaly_manual_records": {},
+  "completed_daily_episode_records": [],
+  "active_daily_episode": {},
+  "echo_fragments": 93,
+  "granted_reward_ids": ["reward:existing"],
+  "faction_relations": {
+    "rumor_market": 14,
+    "exorcist_network": 4
+  },
+  "triggered_faction_event_ids": [],
+  "completed_faction_request_ids": [],
+  "purchased_market_item_ids": [],
+  "consumable_inventory": {
+    "consumable_first_aid": 1
+  },
+  "consumable_loadout": {},
+  "active_consumable_effects": {},
+  "rewarded_resolution_grades": {},
+  "campaign_state": {
+    "day": 6,
+    "resolved_cases": ["episode_000_tutorial"]
+  },
+  "investigation_risk": 42,
+  "case_understanding": 58,
+  "victim_understanding": 41,
+  "anomaly_stability": 64,
+  "stability_schema_version": 2,
+  "mental_stamina": 72,
+  "prediction_success_streak": 0,
+  "prediction_failure_streak": 1,
+  "current_recovery_pattern_id": "pattern_station_ticket_imprint",
+  "last_recovery_pattern_id": "pattern_station_false_terminal",
+  "confirmed_recovery_pattern_id": "",
+  "seen_recovery_pattern_ids": [
+    "pattern_station_false_terminal",
+    "pattern_station_ticket_imprint"
+  ],
+  "recovery_pattern_learning": {
+    "pattern_station_false_terminal": 1
+  },
+  "last_random_event_id": "legacy_event_ticket_echo",
+  "last_random_event_result": {
+    "observed": true
+  },
+  "forced_recovery_phase": true,
+  "collected_clue_ids": [
+    "clue_repeating_announcement",
+    "clue_staff_room_log",
+    "clue_black_ticket"
+  ],
+  "selected_resolution_grade": "temporary",
+  "selected_resolution_label": "임시",
+  "selected_resolution_rate": 0.3,
+  "capture_success": false,
+  "capture_result_state": "active",
+  "capture_result_stability": 64,
+  "agent_case_states": {
+    "agent_kwon_narae": {
+      "fatigue": 6
+    }
+  },
+  "victim_state": {
+    "victim_id": "victim_afterlife_station_001",
+    "status": "trapped",
+    "stress": 83
+  }
+}

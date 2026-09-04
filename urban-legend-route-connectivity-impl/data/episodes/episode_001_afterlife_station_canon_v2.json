@@ -1,0 +1,216 @@
+{
+  "target_episode_id": "episode_001_afterlife_station",
+  "victim_id": "victim_afterlife_station_001",
+  "victim_display_name": "이하린",
+  "content_contract_id": "afterlife-station-canon-v2",
+  "content_schema": 2,
+  "canonical_v2": {
+    "victim_profile": {
+      "id": "victim_afterlife_station_001",
+      "display_name": "이하린",
+      "status": "trapped",
+      "primary_return_memory": "돌아가고 싶은 개인적 장소와 마지막 약속",
+      "comparison_record_ids": [
+        "record_afterlife_r1_victim_phone_destination",
+        "record_afterlife_r1_concurrent_destination_mismatch"
+      ]
+    },
+    "investigation_manual": {
+      "state": "unstarted",
+      "pages": [
+        {
+          "id": "manual_afterlife_page_01_destination_projection",
+          "title": "목적지는 방송되지 않는다",
+          "slot_ids": [
+            "slot_afterlife_p01_broadcast_blank",
+            "slot_afterlife_p01_listener_memory",
+            "slot_afterlife_p01_destination_mismatch",
+            "slot_afterlife_p01_official_absence"
+          ],
+          "required_record_ids": [
+            "record_afterlife_r1_broadcast_original",
+            "record_afterlife_r1_victim_phone_destination",
+            "record_afterlife_r1_concurrent_destination_mismatch",
+            "record_afterlife_official_operation_log"
+          ]
+        },
+        {
+          "id": "manual_afterlife_page_02_boundary_reset",
+          "title": "안내 종료 전 이동은 공간만 되감는다",
+          "slot_ids": [
+            "slot_afterlife_p02_announcement_window",
+            "slot_afterlife_p02_projected_direction",
+            "slot_afterlife_p02_boundary_crossing",
+            "slot_afterlife_p02_position_reset",
+            "slot_afterlife_p02_persistent_time_records"
+          ],
+          "required_record_ids": [
+            "record_afterlife_r2_continuous_recording",
+            "record_afterlife_r2_phone_time_battery",
+            "record_afterlife_r2_object_position",
+            "record_afterlife_r2_directional_boundary_test"
+          ]
+        },
+        {
+          "id": "manual_afterlife_page_03_official_return",
+          "title": "귀환은 공식 운행 절차를 복원한다",
+          "slot_ids": [
+            "slot_afterlife_p03_real_return_route",
+            "slot_afterlife_p03_wait_until_end",
+            "slot_afterlife_p03_official_identifier",
+            "slot_afterlife_p03_matching_ticket",
+            "slot_afterlife_p03_joint_disembarkation"
+          ],
+          "required_record_ids": [
+            "record_afterlife_r3_transit_history",
+            "record_afterlife_r3_official_route_map",
+            "record_afterlife_r3_station_identifier",
+            "record_afterlife_r3_ticket_comparison",
+            "record_afterlife_r3_boarding_disembarkation",
+            "record_afterlife_official_operation_log"
+          ]
+        }
+      ],
+      "slots": [
+        {"id": "slot_afterlife_p01_broadcast_blank", "page_id": "manual_afterlife_page_01_destination_projection"},
+        {"id": "slot_afterlife_p01_listener_memory", "page_id": "manual_afterlife_page_01_destination_projection"},
+        {"id": "slot_afterlife_p01_destination_mismatch", "page_id": "manual_afterlife_page_01_destination_projection"},
+        {"id": "slot_afterlife_p01_official_absence", "page_id": "manual_afterlife_page_01_destination_projection"},
+        {"id": "slot_afterlife_p02_announcement_window", "page_id": "manual_afterlife_page_02_boundary_reset"},
+        {"id": "slot_afterlife_p02_projected_direction", "page_id": "manual_afterlife_page_02_boundary_reset"},
+        {"id": "slot_afterlife_p02_boundary_crossing", "page_id": "manual_afterlife_page_02_boundary_reset"},
+        {"id": "slot_afterlife_p02_position_reset", "page_id": "manual_afterlife_page_02_boundary_reset"},
+        {"id": "slot_afterlife_p02_persistent_time_records", "page_id": "manual_afterlife_page_02_boundary_reset"},
+        {"id": "slot_afterlife_p03_real_return_route", "page_id": "manual_afterlife_page_03_official_return"},
+        {"id": "slot_afterlife_p03_wait_until_end", "page_id": "manual_afterlife_page_03_official_return"},
+        {"id": "slot_afterlife_p03_official_identifier", "page_id": "manual_afterlife_page_03_official_return"},
+        {"id": "slot_afterlife_p03_matching_ticket", "page_id": "manual_afterlife_page_03_official_return"},
+        {"id": "slot_afterlife_p03_joint_disembarkation", "page_id": "manual_afterlife_page_03_official_return"}
+      ],
+      "evidence_records": [
+        {
+          "id": "record_afterlife_r1_broadcast_original",
+          "source_id": "source_afterlife_platform_announcement",
+          "usage_refs": ["manual_afterlife_page_01_destination_projection"],
+          "state": "unverified"
+        },
+        {
+          "id": "record_afterlife_r1_victim_phone_destination",
+          "source_id": "source_afterlife_victim_phone",
+          "usage_refs": ["manual_afterlife_page_01_destination_projection"],
+          "state": "unverified"
+        },
+        {
+          "id": "record_afterlife_r1_concurrent_destination_mismatch",
+          "source_id": "source_afterlife_comparison_recordings",
+          "usage_refs": ["manual_afterlife_page_01_destination_projection"],
+          "state": "unverified"
+        },
+        {
+          "id": "record_afterlife_official_operation_log",
+          "source_id": "source_afterlife_control_log",
+          "usage_refs": [
+            "manual_afterlife_page_01_destination_projection",
+            "manual_afterlife_page_03_official_return"
+          ],
+          "state": "unverified"
+        },
+        {"id": "record_afterlife_r2_continuous_recording", "source_id": "source_afterlife_continuous_recording", "usage_refs": ["manual_afterlife_page_02_boundary_reset"], "state": "unverified"},
+        {"id": "record_afterlife_r2_phone_time_battery", "source_id": "source_afterlife_phone_telemetry", "usage_refs": ["manual_afterlife_page_02_boundary_reset"], "state": "unverified"},
+        {"id": "record_afterlife_r2_object_position", "source_id": "source_afterlife_anchor_object", "usage_refs": ["manual_afterlife_page_02_boundary_reset"], "state": "unverified"},
+        {"id": "record_afterlife_r2_directional_boundary_test", "source_id": "source_afterlife_boundary_test", "usage_refs": ["manual_afterlife_page_02_boundary_reset"], "state": "unverified"},
+        {"id": "record_afterlife_r3_transit_history", "source_id": "source_afterlife_transit_history", "usage_refs": ["manual_afterlife_page_03_official_return"], "state": "unverified"},
+        {"id": "record_afterlife_r3_official_route_map", "source_id": "source_afterlife_route_map", "usage_refs": ["manual_afterlife_page_03_official_return"], "state": "unverified"},
+        {"id": "record_afterlife_r3_station_identifier", "source_id": "source_afterlife_identifier_audio", "usage_refs": ["manual_afterlife_page_03_official_return"], "state": "unverified"},
+        {"id": "record_afterlife_r3_ticket_comparison", "source_id": "source_afterlife_ticket_comparison", "usage_refs": ["manual_afterlife_page_03_official_return"], "state": "unverified"},
+        {"id": "record_afterlife_r3_boarding_disembarkation", "source_id": "source_afterlife_boarding_log", "usage_refs": ["manual_afterlife_page_03_official_return"], "state": "unverified"}
+      ],
+      "candidate_keywords": [],
+      "semantic_relations": []
+    },
+    "rescue_protocol": {
+      "stages": [
+        {"id": "rescue_afterlife_stage_01_hold_position", "required_manual_page_id": "manual_afterlife_page_02_boundary_reset"},
+        {"id": "rescue_afterlife_stage_02_restore_identifier", "required_manual_page_id": "manual_afterlife_page_03_official_return"},
+        {"id": "rescue_afterlife_stage_03_board_official_route", "required_manual_page_id": "manual_afterlife_page_03_official_return"},
+        {"id": "rescue_afterlife_stage_04_joint_disembarkation", "required_manual_page_id": "manual_afterlife_page_03_official_return"}
+      ],
+      "official_route_requirements": {
+        "wait_until_announcement_end": true,
+        "require_official_identifier": true,
+        "require_matching_route_and_ticket": true
+      },
+      "ticket_requirements": {
+        "black_ticket_is_core": false,
+        "black_ticket_role": "residual_imprint_evidence",
+        "official_ticket_required_for_return": true
+      },
+      "risk_states": [
+        "risk_afterlife_early_movement_reset",
+        "risk_afterlife_projected_destination_lure",
+        "risk_afterlife_separated_disembarkation"
+      ],
+      "retreat_policy": {
+        "approved_withdrawal": true,
+        "partial_truth_reveal": true,
+        "full_disclosure_opt_in": true
+      }
+    },
+    "recovery_encounters": {
+      "patterns": [
+        {
+          "id": "pattern_afterlife_nonstop_farewell",
+          "telegraph_event_ids": ["telegraph_afterlife_announcement_without_end_chime"],
+          "response_ids": ["response_afterlife_present_official_ticket"]
+        },
+        {
+          "id": "pattern_afterlife_recurring_platform",
+          "telegraph_event_ids": ["telegraph_afterlife_persistent_clock_drift"],
+          "response_ids": ["response_afterlife_anchor_persistent_trace"]
+        },
+        {
+          "id": "pattern_afterlife_destination_chorus",
+          "telegraph_event_ids": ["telegraph_afterlife_multiple_destinations_overlap"],
+          "response_ids": ["response_afterlife_insert_official_identifier"]
+        }
+      ],
+      "telegraph_events": [
+        {"id": "telegraph_afterlife_announcement_without_end_chime"},
+        {"id": "telegraph_afterlife_persistent_clock_drift"},
+        {"id": "telegraph_afterlife_multiple_destinations_overlap"}
+      ],
+      "response_outcomes": [
+        {"id": "response_afterlife_present_official_ticket", "outcome": "stabilize_route"},
+        {"id": "response_afterlife_anchor_persistent_trace", "outcome": "preserve_time_evidence"},
+        {"id": "response_afterlife_insert_official_identifier", "outcome": "restore_official_announcement"}
+      ]
+    },
+    "result_contract": {
+      "first_run": {
+        "owns_campaign_canon": true,
+        "owns_first_s_rank": true
+      },
+      "normal_clear": {
+        "spoiler_state": "answer_viewed",
+        "reveal_complete_manual": true
+      },
+      "s_rank": {
+        "requires_first_run": true,
+        "requires_victim_rescue": true,
+        "requires_manual_precision": true
+      },
+      "approved_retreat": {
+        "spoiler_state": "partial_truth_revealed",
+        "reinvestigation_available": true
+      },
+      "partial_truth_reveal": {
+        "show_verified_only": true,
+        "unverified_slots_hidden": true
+      },
+      "replay_mastery": {
+        "canonical_result_overwrite": false,
+        "growth_reward_repeatable": false
+      }
+    }
+  }
+}

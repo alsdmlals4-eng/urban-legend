@@ -1,0 +1,110 @@
+{
+  "adapter_role": "urban-legend-base-operating-path-adapter",
+  "artifact_role": "GENERATED_COMPATIBILITY_VIEW",
+  "base": {
+    "commit": "c987647d01ad2baa028a16e03d85ddfc1572a727",
+    "repository": "alsdmlals4-eng/Base",
+    "version_authority": "docs/BASE_RULES_VERSION.md"
+  },
+  "base_path_overrides": [
+    {
+      "base_example": "[기획서]/00_프로젝트_허브/START_HERE.md",
+      "project_path": "START_HERE.md",
+      "reason": "현행 콜드 스타트 경로 유지"
+    },
+    {
+      "base_example": "[기획서]/00_프로젝트_허브/ACTIVE_CONTEXT.md",
+      "project_path": "docs/CURRENT_STATUS.md",
+      "reason": "현재 구현과 승인 계획의 단일 상태 원본"
+    },
+    {
+      "base_example": "[기획서]/00_프로젝트_허브/DOCUMENTATION_MAP.md",
+      "project_path": "docs/DOCUMENTATION_MAP.md",
+      "reason": "현행 문서 라우터 유지"
+    },
+    {
+      "base_example": "[기획서]/00_프로젝트_허브/DESIGN_DOCUMENT_REGISTRY.json",
+      "project_path": "docs/DOCUMENTATION_MAP.md",
+      "reason": "별도 승인 전 기존 Markdown 원본과 결정적 DOCX 생성 계약 유지"
+    },
+    {
+      "base_example": "skills/disciplines/<discipline>/SKILL.md",
+      "project_path": "skills/disciplines/<skill-id>/SKILL.md",
+      "reason": "Registry skill_id와 디렉터리 1:1"
+    }
+  ],
+  "base_release": {
+    "finalization_commit": "0b7c94f38d959efc0fc9442274c60b2e268a3c97",
+    "release_commit": "7dd1a4f80388bc5faca767ff74a3eb32dc9d0ac8",
+    "release_evidence_commit": "da33a350d61b8adc52df97fccc7001708a933370",
+    "repository": "alsdmlals4-eng/Base",
+    "version": "9.4.3"
+  },
+  "canonical_source": "skills/PROJECT_BASE_ADAPTER.json",
+  "canonical_source_sha256": "78cc1fb5f4dcc731c55e63a94e4ad72052988447c81b36665e18858361a480d0",
+  "generated": true,
+  "hash_definition": "RAW_FILE_BYTES_SHA256",
+  "legacy_source": "docs/archive/base-v9-legacy-inputs/PROJECT_PATH_ADAPTER.json",
+  "legacy_source_sha256": "e9a8c7b708e647391aeae856ffd077fad81874a91093d8f3d55f1008f7e0ae49",
+  "lifecycle": "ONE_CYCLE",
+  "project": {
+    "engine": "Godot 4.7",
+    "repository": "alsdmlals4-eng/urban-legend",
+    "root": "."
+  },
+  "protected_paths": [
+    "scripts/core/game_state.gd",
+    "data/episodes/**",
+    "project.godot",
+    "knowledge/base-pack/**"
+  ],
+  "publication_compatibility": {
+    "base_v3_registry_migration": "DEFERRED_REQUIRES_SEPARATE_APPROVAL",
+    "current_model": "markdown-source-plus-untracked-derived-docx",
+    "derivative_tracking": "UNTRACKED_REGENERATE_ON_DEMAND",
+    "docx": "docs/URBAN_LEGEND_GAME_DESIGN.docx",
+    "generator": "tools/docs/build_game_design_doc.py",
+    "ignore_rule": "/docs/URBAN_LEGEND_GAME_DESIGN.docx",
+    "reason": "최신 main은 Markdown을 정본으로 두고 DOCX를 필요 시 결정적으로 재생성하는 비추적 파생본으로 관리한다.",
+    "source": "docs/GAME_DESIGN_DOCUMENT.md",
+    "validation": "python tools/docs/build_game_design_doc.py --build && python tools/docs/build_game_design_doc.py --check"
+  },
+  "role_bindings": {
+    "active_context": "docs/CURRENT_STATUS.md",
+    "base_skill_coverage": "skills/BASE_SKILL_COVERAGE.json",
+    "base_skill_index": "skills/BASE_SKILL_INDEX.json",
+    "base_sync_audit": "docs/qa/BASE_SYNC_AUDIT_2026-07-22.md",
+    "base_version": "docs/BASE_RULES_VERSION.md",
+    "design_document_registry_equivalent": "docs/DOCUMENTATION_MAP.md",
+    "documentation_map": "docs/DOCUMENTATION_MAP.md",
+    "game_design_docx_derivative": "docs/URBAN_LEGEND_GAME_DESIGN.docx",
+    "game_design_generator": "tools/docs/build_game_design_doc.py",
+    "game_design_source": "docs/GAME_DESIGN_DOCUMENT.md",
+    "handoff": "docs/CURRENT_HANDOFF.md",
+    "legacy_skill_aliases": "skills/LEGACY_SKILL_ALIASES.md",
+    "operating_model": "docs/OPERATING_MODEL.md",
+    "project_agents": "AGENTS.md",
+    "project_context": "docs/PROJECT_CONTEXT.md",
+    "project_core": "docs/PROJECT_CORE.md",
+    "project_discipline_contract": "skills/disciplines/PROJECT_DISCIPLINE_CONTRACT.md",
+    "project_discipline_skill_root": "skills/disciplines",
+    "project_local_skill_root": "skills",
+    "project_start_here": "START_HERE.md",
+    "roadmap": "MVP_ROADMAP.md",
+    "skill_learning_log": "skills/SKILL_LEARNING_LOG.md",
+    "skill_registry": "skills/SKILL_REGISTRY.json",
+    "validation_contract": "TEST_CHECKLIST.md",
+    "work_mode_and_skill_routing": "docs/WORK_MODE_AND_SKILL_ROUTING.md"
+  },
+  "routing_precedence": "PROJECT_LOCAL_THEN_BASE_SHARED",
+  "schema_version": 1,
+  "validation": {
+    "tests": [
+      "tests/test_base_operating_sync.py",
+      "tests/test_skill_package_integrity.py",
+      "tests/test_active_document_references.py"
+    ],
+    "workflow": ".github/workflows/validate-base-operating-sync.yml"
+  },
+  "view_name": "PROJECT_PATH_ADAPTER.json"
+}

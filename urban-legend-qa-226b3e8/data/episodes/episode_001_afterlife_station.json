@@ -1,0 +1,1168 @@
+{
+  "episode": {
+    "id": "episode_001_afterlife_station",
+    "title": "저승역",
+    "legend_type": "공간형 괴담",
+    "summary": "막차 이후 목적지 공백을 각자 다르게 듣는 승강장에서, 공식 기록으로 안전 노선을 복원하고 현재 출현을 안정화하는 첫 기록입니다.",
+    "anomaly_core": "저승역 반복 안내 잔향이 각인된 검은 승차권",
+    "visuals": { "dialogue_background_id": "afterlife_entrance", "investigation_background_id": "afterlife_platform", "recovery_background_id": "afterlife_recovery", "anomaly_b_asset_id": "afterlife_b", "anomaly_d_asset_id": "afterlife_d" },
+    "anomaly_profile": { "origin": "집단 인식과 공포에서 발생한 현상", "activity_stage": "personality", "activity_period": "장기", "human_understanding": "높음", "observed_form": "역무원으로 보이는 익명의 인간형", "repetition_rule": "막차 안내의 목적지 공백을 청자가 개인 목적지로 채우며, 안내 종료 전 이동하면 위치가 초기화된다" }
+  },
+  "victims": [
+    {
+      "id": "victim_afterlife_station_001",
+      "name": "막차 이후 사라진 인물",
+      "episode_id": "episode_001_afterlife_station",
+      "status": "missing",
+      "last_seen_location": "자정 이후의 무인 승강장",
+      "emotional_state": "불안과 체념이 섞인 상태",
+      "rescue_result": "unresolved",
+      "after_story": "해결 등급에 따라 피해자의 귀환 여부와 후유증 기록이 달라집니다."
+    }
+  ],
+  "agents": [
+    {
+      "id": "agent_kang_ijun",
+      "name": "강이준",
+      "temperament": "breakthrough",
+      "temperament_label": "열혈·돌파형",
+      "class": "동양 봉인술사",
+      "role": "근접 봉인·현장 돌파",
+      "specialty": "부적을 주먹에 감아 괴이의 반복을 끊는 근접 봉인",
+      "magic_lineage": "eastern_talisman",
+      "visual_asset_id": "kang_ijun_expressions",
+      "description": "현장 감각으로 위험 구간을 먼저 읽고 부적을 감은 주먹으로 봉인선을 확보한다.",
+      "mvp10_dialogue_focus": "노이즈, 로그, 전광판, 앱 기록의 반복 패턴을 말한다.",
+      "mvp11_future_role": "미니게임 보조, 괴이 패턴 관찰, 고가치 힌트 발견",
+      "investigation_stats": {
+        "destruction": 1,
+        "observation": 2,
+        "analysis": 4
+      },
+      "abilities": {
+        "suppression": 5,
+        "analysis": 3,
+        "protection": 3,
+        "treatment": 1,
+        "rapport": 2
+      },
+      "max_health": 120,
+      "max_mental": 80,
+      "equipment": [{"name": "부적 권갑", "ability": "suppression", "bonus": 1}, {"name": "봉인못", "ability": "protection", "bonus": 1}],
+      "skills": [{"name": "봉인선 타격", "ability": "suppression", "bonus": 2}, {"name": "위험 돌파", "ability": "protection", "bonus": 2}],
+      "aspects": [
+        {
+          "name": "현장 직감",
+          "bonus_ability": "suppression",
+          "match_tags": ["time_pressure", "anomaly_alert"],
+          "description": "위험한 현장에서 몸으로 부딪히며 길을 여는 데 익숙합니다."
+        },
+        {
+          "name": "저돌적",
+          "bonus_ability": "analysis",
+          "match_tags": ["noise_pattern", "ritual_rule"],
+          "description": "반복과 규칙을 체감으로 읽어내 다음 패턴을 직감합니다."
+        }
+      ],
+      "backstory": "부적을 무기화하는 가문 출신으로, 봉인 현장에서 몸으로 부딪히며 자랐다. 위험을 읽는 감각이 뛰어나지만, 미묘한 감정 흐름은 종종 놓친다.",
+      "recovery_support": {
+        "id": "support_kang_pattern_observation",
+        "label": "패턴 예측",
+        "role": "관찰",
+        "description": "강이준이 안내방송과 전광판 노이즈의 반복 주기를 읽어 괴이 행동 패턴을 예측합니다.",
+        "stability_delta": -8,
+        "fear_delta": 0,
+        "threshold_delta": 3
+      }
+    },
+    {
+      "id": "agent_kwon_narae",
+      "name": "권나래",
+      "temperament": "analytical",
+      "temperament_label": "분석형",
+      "class": "서양 보조 마법사",
+      "role": "탐지·보호·조사 보조",
+      "specialty": "서양식 탐지와 보호 주문으로 단서와 팀의 안전을 보조",
+      "magic_lineage": "western_support",
+      "visual_asset_id": "kwon_narae_expressions",
+      "description": "현상을 논리적으로 분해하고 탐지·보호 주문으로 조사 조건을 정돈한다.",
+      "mvp10_dialogue_focus": "피해자의 감정, 기억 공백, 후유증 위험을 말한다.",
+      "mvp11_future_role": "방어, 위험 상승 억제, 피해자 이해도와 구조 결과 보정",
+      "investigation_stats": {
+        "destruction": 1,
+        "observation": 4,
+        "analysis": 2
+      },
+      "abilities": {
+        "suppression": 1,
+        "analysis": 5,
+        "protection": 4,
+        "treatment": 3,
+        "rapport": 4
+      },
+      "max_health": 85,
+      "max_mental": 120,
+      "equipment": [{"name": "탐지봉", "ability": "analysis", "bonus": 1}, {"name": "보호 주문서", "ability": "protection", "bonus": 1}],
+      "skills": [{"name": "영적 스캔", "ability": "analysis", "bonus": 2}, {"name": "보호 결계", "ability": "protection", "bonus": 2}, {"name": "기억 고정", "ability": "rapport", "bonus": 2}],
+      "aspects": [
+        {
+          "name": "냉철한 관찰",
+          "bonus_ability": "analysis",
+          "match_tags": ["evidence_sensitive", "ritual_rule"],
+          "description": "증거와 규칙을 논리적으로 분해해 현상의 구조를 먼저 읽습니다."
+        },
+        {
+          "name": "신중함",
+          "bonus_ability": "protection",
+          "match_tags": ["victim_risk", "memory_gap"],
+          "description": "탐지·보호 주문으로 팀원과 피해자의 흔적을 위험으로부터 방호합니다."
+        }
+      ],
+      "backstory": "서양 마법과 동양 부적을 병용하는 탐지 전문가. 현상을 논리적으로 분해하는 데 능숙하며, 팀원 보호를 최우선으로 삼는다.",
+      "recovery_support": {
+        "id": "support_kwon_victim_guard",
+        "label": "피해자 보호",
+        "role": "방어",
+        "description": "권나래가 피해자의 기억 흔적을 고정해 현장 위험과 공포 상승을 억제합니다.",
+        "stability_delta": 0,
+        "fear_delta": -16,
+        "threshold_delta": 2
+      }
+    },
+    {
+      "id": "agent_oh_hyun",
+      "name": "오현",
+      "temperament": "balanced",
+      "temperament_label": "공감·분석 균형형",
+      "class": "현대 이능 공학 요원",
+      "role": "자료 분석·현대 장비 연동",
+      "specialty": "현대 장비에 팀원의 부적과 주문서를 연결하는 이능 공학",
+      "magic_lineage": "modern_occult_engineering",
+      "visual_asset_id": "oh_hyun_expressions",
+      "abilities": {
+        "suppression": 3,
+        "analysis": 4,
+        "protection": 2,
+        "treatment": 4,
+        "rapport": 5
+      },
+      "max_health": 100,
+      "max_mental": 100,
+      "equipment": [{"name": "이능 단말기", "ability": "analysis", "bonus": 1}, {"name": "공명 주입기", "ability": "rapport", "bonus": 1}],
+      "skills": [{"name": "증거 중계", "ability": "analysis", "bonus": 2}, {"name": "응급 패치", "ability": "treatment", "bonus": 2}, {"name": "감정 동조", "ability": "rapport", "bonus": 2}],
+      "aspects": [
+        {
+          "name": "현대적 적응력",
+          "bonus_ability": "rapport",
+          "match_tags": ["frequency_related", "noise_pattern"],
+          "description": "현대 장비로 팀원의 부적과 주문서를 연결해 교감을 기술로 증폭합니다."
+        },
+        {
+          "name": "사람 중심",
+          "bonus_ability": "treatment",
+          "match_tags": ["time_pressure", "victim_risk"],
+          "description": "이론보다 현장의 실용적 판단을 우선해 빠른 회복 조치를 취합니다."
+        }
+      ],
+      "backstory": "현대 장비와 전통 봉인술을 연결하는 공학자 출신 요원. 팀원 간 교감을 중시하며, 현대 기술과 전통 마법 사이의 가교 역할을 맡는다.",
+      "recovery_support": {
+        "id": "support_oh_direct_stabilize",
+        "label": "강행 안정화",
+        "role": "공격",
+        "description": "오현이 위험을 감수하고 괴이의 흔들리는 경로를 직접 끊어 안정도를 낮춥니다.",
+        "stability_delta": -14,
+        "fear_delta": 4,
+        "threshold_delta": 0
+      }
+    }
+  ],
+  "player_investigation_stats": {
+    "destruction": 2,
+    "observation": 2,
+    "analysis": 2
+  },
+  "anomaly_status": {
+    "anomaly_risk": 0,
+    "anomaly_understanding": 0,
+    "anomaly_stability": 100,
+    "mental_stamina": 100,
+    "prediction_success_streak": 0,
+    "forced_recovery_phase": false
+  },
+  "prediction_rules": {
+    "base_stat": "anomaly_understanding",
+    "decay_by_success_streak": {
+      "0": 1.0,
+      "1": 0.5,
+      "2": 0.25,
+      "3_or_more": 0.125
+    }
+  },
+  "random_events": [
+    {
+      "id": "event_shadow_arrival_threat",
+      "event_type": "threat_event",
+      "title": "어둠 속 종착 안내",
+      "trigger_tags": [
+        "anomaly_alert",
+        "time_pressure",
+        "noise_pattern"
+      ],
+      "min_anomaly_risk": 25,
+      "weight": 3,
+      "text": "전광판이 존재하지 않는 종착지를 다시 표시합니다. 기록국 단말기가 짧게 먹통이 됩니다.",
+      "effects": {
+        "add_flags": [
+          "random_event_shadow_arrival"
+        ],
+        "anomaly_risk_delta": 8,
+        "anomaly_stability_delta": 4,
+        "mental_stamina_delta": -6
+      }
+    },
+    {
+      "id": "event_lost_ticket_opportunity",
+      "event_type": "opportunity_event",
+      "title": "떨어진 검은 표 조각",
+      "trigger_tags": [
+        "locked_route",
+        "evidence_sensitive",
+        "memory_gap"
+      ],
+      "min_anomaly_risk": 10,
+      "weight": 2,
+      "text": "좌석 아래에서 검은 승차권과 같은 재질의 작은 조각이 발견됩니다. 괴이의 규칙을 조금 더 이해합니다.",
+      "effects": {
+        "add_flags": [
+          "random_event_ticket_trace"
+        ],
+        "show_hint_ids": [
+          "hint_afterlife_station_002"
+        ],
+        "anomaly_understanding_delta": 8,
+        "mental_stamina_delta": 2
+      }
+    },
+    {
+      "id": "event_split_platform_branch",
+      "event_type": "branch_event",
+      "title": "갈라지는 승강장",
+      "trigger_tags": [
+        "locked_route",
+        "ritual_rule",
+        "anomaly_alert"
+      ],
+      "min_anomaly_risk": 40,
+      "conditions": {
+        "required_flags": [
+          "unlocked_staff_room"
+        ]
+      },
+      "weight": 1,
+      "text": "승강장이 두 갈래로 갈라진 듯 보입니다. 어느 쪽도 정답은 아니지만, 회수 페이즈에서 괴이의 흔들림을 예측할 단서를 얻습니다.",
+      "effects": {
+        "add_flags": [
+          "random_event_split_platform"
+        ],
+        "anomaly_risk_delta": 5,
+        "anomaly_understanding_delta": 6
+      }
+    }
+  ],
+  "hints": [
+    {
+      "id": "hint_afterlife_station_001",
+      "episode_id": "episode_001_afterlife_station",
+      "target_clue_id": "clue_last_message",
+      "source_type": "dialogue",
+      "source_id": "dialogue_station_intro",
+      "text": "피해자가 보낸 마지막 문자는 도착지가 아니라 시간을 가리키는 것 같습니다.",
+      "condition_flags": []
+    },
+    {
+      "id": "hint_afterlife_station_002",
+      "episode_id": "episode_001_afterlife_station",
+      "target_clue_id": "clue_black_ticket",
+      "source_type": "investigation",
+      "source_id": "hotspot_ticket_gate",
+      "text": "개찰구 주변에 남은 검은 종이 조각을 확인해보세요.",
+      "condition_flags": [
+        "visited_ticket_gate"
+      ]
+    },
+    {
+      "id": "hint_afterlife_station_003",
+      "episode_id": "episode_001_afterlife_station",
+      "target_clue_id": "clue_repeating_announcement",
+      "source_type": "minigame",
+      "source_id": "frequency_sync_test",
+      "text": "안내방송은 같은 문장을 반복하지만 잡음 사이의 숫자가 매번 바뀝니다.",
+      "condition_flags": [
+        "heard_station_noise"
+      ]
+    },
+    {
+      "id": "hint_afterlife_station_004",
+      "episode_id": "episode_001_afterlife_station",
+      "target_clue_id": "clue_missing_terminal_sign",
+      "source_type": "investigation",
+      "source_id": "hotspot_platform_sign",
+      "text": "전광판이 꺼지는 순간, 지도에 없는 종착지명이 비칩니다.",
+      "condition_flags": []
+    },
+    {
+      "id": "hint_afterlife_station_005",
+      "episode_id": "episode_001_afterlife_station",
+      "target_clue_id": "clue_staff_room_log",
+      "source_type": "support_agent",
+      "source_id": "bureau_case_terminal",
+      "text": "역무원실 근무 기록에는 막차 이후에도 출근 도장이 찍혀 있습니다.",
+      "condition_flags": [
+        "unlocked_staff_room"
+      ]
+    }
+  ],
+  "field_nodes": [
+    {
+      "id": "dialogue_intro",
+      "legacy_dialogue_node_ids": ["dialogue_intro", "dialogue_after_photo"],
+      "title": "목적지 공백이 있는 안내",
+      "opening_dialogue": [
+		{"speaker": "로그", "text": "미확인: 같은 방송을 들은 승객들이 서로 다른 목적지를 기억합니다. 방송 원본에는 목적지 구간이 비어 있습니다.", "expression": "focus"},
+		{"speaker": "권나래", "text": "피해자 기록과 방송 원본을 비교해, 누가 공백을 채웠는지 보겠습니다."},
+		{"speaker": "강이준", "text": "안내가 끝나기 전에 움직이면 공간이 초기화됩니다. 먼저 관찰합니다."},
+		{"speaker": "오현", "text": "공식 운행 기록의 식별 번호를 안전 노선 기준으로 잡겠습니다."}
+      ],
+      "choices": [
+        {
+          "id": "field_begin_station_investigation",
+          "label": "공식 운행 기록을 먼저 확인한다",
+          "ability": "analysis",
+          "point_id": "point_staff_room_log",
+          "after_dialogue": [
+			{"speaker": "오현", "text": "막차 뒤 추가 운행은 없습니다. 정상 역명과 식별음, 종료 시각을 안전 노선 기준으로 잡겠습니다."},
+			{"speaker": "권나래", "text": "피해자가 기억한 목적지와 공식 기록이 다르면, 기억만으로는 현장 사실을 확정할 수 없어요."},
+			{"speaker": "로그", "text": "공식 운행 기록을 비교 기준으로 등록했습니다.", "expression": "normal"}
+          ],
+          "next_field_node_id": "field_station_investigation"
+        },
+        {
+          "id": "field_begin_broadcast_comparison",
+          "label": "비정상 안내방송 원본을 먼저 확인한다",
+          "ability": "observation",
+          "point_id": "point_platform_speaker",
+          "after_dialogue": [
+            {"speaker": "오현", "text": "원본에는 목적지명이 없습니다. 청자가 각자 돌아가고 싶은 곳을 채워 듣고 있습니다."},
+            {"speaker": "로그", "text": "추정: 개인 목적지를 따르는 이동은 안전 노선이 아니다.", "expression": "normal"}
+          ],
+          "next_field_node_id": "field_station_investigation"
+        }
+      ]
+    },
+    {
+      "id": "field_station_investigation",
+      "title": "저승역 현장 조사",
+      "return_field_node_id": "dialogue_intro",
+      "opening_dialogue": [
+		{"speaker": "로그", "text": "조사 지점을 선택하세요. 확보한 단서와 위험 사례는 기록에 남고, 조사 선택으로 돌아가 다른 기록을 먼저 확인할 수 있습니다.", "expression": "focus"}
+      ],
+      "uses_investigation_points": true
+    }
+  ],
+  "recovery_patterns": [
+    {
+      "id": "pattern_station_false_terminal", "order": 0, "name": "존재하지 않는 종착 안내",
+      "telegraph": "스피커가 같은 승강장 이름을 세 번 반복한다. 반복될 때마다 전광판의 글자가 한 칸씩 사라진다.",
+      "description": "반복 안내와 전광판 표기가 서로 다른 승강장을 가리킨다.",
+      "related_clue_ids": ["clue_repeating_announcement", "clue_missing_terminal_sign"],
+      "responses": [
+        {"id": "cut_false_broadcast", "label": "방송 주기와 전광판 표기를 대조해 안내 신호를 차단한다", "ability": "analysis", "stability_gain": 18},
+        {"id": "follow_terminal", "label": "전광판이 가리키는 승강장으로 이동한다", "ability": "suppression"},
+        {"id": "answer_broadcast", "label": "방송에 현재 목적지를 말해 응답한다", "ability": "rapport"}
+      ],
+      "correct_response_id": "cut_false_broadcast",
+      "failure_reason": "전광판의 목적지를 실제 경로로 따르면 이동 경로가 잠긴다."
+    },
+    {
+      "id": "pattern_station_gaze_lure", "order": 1, "name": "역무원의 시선 유도",
+      "telegraph": "얼굴이 흐린 역무원이 피해자와 반대쪽 선로를 바라본다. 시선은 움직이지 않는다.",
+      "description": "역무원의 시선과 피해자의 마지막 동선이 서로 다른 방향을 가리킨다.",
+      "related_clue_ids": ["clue_last_message", "clue_staff_room_log"],
+      "responses": [
+        {"id": "trace_victim_time", "label": "역무원의 시선을 무시하고 피해자의 시간 기록으로 동선을 고정한다", "ability": "rapport", "stability_gain": 16},
+        {"id": "meet_stationmaster_gaze", "label": "역무원이 바라보는 방향을 따라간다", "ability": "suppression"},
+        {"id": "enter_tracks", "label": "역무원이 바라보는 선로로 먼저 진입한다", "ability": "protection"}
+      ],
+      "correct_response_id": "trace_victim_time",
+      "failure_reason": "역무원의 시선을 따라가면 피해자의 마지막 동선에서 멀어진다."
+    },
+    {
+      "id": "pattern_station_ticket_imprint", "order": 2, "name": "검은 승차권의 승객 각인",
+      "telegraph": "검은 승차권의 천공 자국이 번지며 가장 가까운 요원의 이름과 비슷한 획을 만든다.",
+      "description": "승차권의 표식이 접촉한 대상을 새 승객으로 기록하려 한다.",
+      "related_clue_ids": ["clue_black_ticket", "clue_last_message"],
+      "responses": [
+        {"id": "isolate_ticket", "label": "자정 기록을 대조하며 승차권과의 접촉을 차단한다", "ability": "protection", "stability_gain": 17},
+        {"id": "punch_ticket", "label": "승차권을 개찰해 인쇄된 목적지를 확인한다", "ability": "analysis"},
+        {"id": "carry_ticket", "label": "한 명이 승차권을 직접 소지한다", "ability": "suppression"}
+      ],
+      "correct_response_id": "isolate_ticket",
+      "failure_reason": "승차권을 개찰하거나 소지하면 종착지 표식이 요원에게 옮겨간다."
+    },
+    {
+      "id": "pattern_station_boundary_collapse", "order": 3, "name": "선로 경계 붕괴",
+      "telegraph": "승강장 안전선이 중간에서 끊긴다. 양쪽 선로가 같은 방향으로 이어져 보인다.",
+      "description": "현실 승강장과 괴이 노선의 경계가 겹치고 있다.",
+      "related_clue_ids": ["clue_missing_terminal_sign", "clue_staff_room_log"],
+      "responses": [
+        {"id": "restore_platform_boundary", "label": "표지판과 근무 기록을 대조해 현실 승강장 경계를 고정한다", "ability": "protection", "stability_gain": 20},
+        {"id": "retreat_to_tracks", "label": "선로 아래로 내려가 끊어진 경계를 우회한다", "ability": "suppression"},
+        {"id": "cross_broken_line", "label": "끊어진 안전선을 넘어 반대편으로 이동한다", "ability": "treatment"}
+      ],
+      "correct_response_id": "restore_platform_boundary",
+      "failure_reason": "선로로 후퇴하면 현실 경계가 아니라 괴이의 노선으로 진입한다."
+    }
+  ],
+  "dialogue_nodes": [
+    {
+      "id": "dialogue_intro",
+      "background_id": "station_platform_midnight",
+      "standing_id": "bureau_control",
+      "lines": [
+        {
+          "speaker": "기록국 관제",
+          "text": "사람의 마음과 기억이 남아 있는 한, 괴이는 다른 장소와 모습으로 다시 나타날 수 있습니다.",
+          "expression": "calm"
+        },
+        {
+          "speaker": "기록국 관제",
+          "text": "그래서 괴이 기록국은 괴이를 없애는 기관이 아닙니다. 현상을 조사하고, 현재 출현을 안정화하며, 다음 피해를 막을 대응 절차를 기록합니다.",
+          "expression": "question"
+        },
+        {
+          "speaker": "기록국 관제",
+          "text": "이번 긴급 보고는 저승역입니다. 같은 방송을 들은 승객들이 서로 다른 목적지를 기억합니다. 오현·권나래·강이준이 이미 각 기록과 현장을 붙잡고 있습니다.",
+          "expression": "serious"
+        }
+      ],
+      "choices": [
+        {
+          "id": "choice_begin_afterlife_investigation",
+          "text": "저승역 긴급 조사를 시작한다",
+          "conditions": {},
+          "result_text": "기록국은 관측과 판단을 분리해 기록합니다. 먼저 공식 운행 기록과 방송 원본 중 무엇을 확인할지 선택하세요.",
+          "next_scene_path": "res://scenes/investigation_scene.tscn"
+        }
+      ]
+    },
+    {
+      "id": "dialogue_after_photo",
+      "background_id": "station_platform_midnight",
+      "standing_id": "bureau_control",
+      "lines": [
+        {
+          "speaker": "기록국 관제",
+          "text": "좋아요. 사진 속 종착지는 실제 운행 데이터에 없는 이름이에요.",
+          "expression": "focused"
+        },
+        {
+          "speaker": "신입 요원",
+          "text": "이 기록이면 역무원실 접근 요청에 쓸 수 있겠네요.",
+          "expression": "default"
+        }
+      ],
+      "choices": [
+        {
+          "id": "choice_unlock_staff_room_with_photo",
+          "text": "촬영 기록으로 역무원실 접근을 요청한다",
+          "conditions": {
+            "required_flags": [
+              "choice_photographed_sign"
+            ]
+          },
+          "result_text": "촬영 기록 덕분에 역무원실 접근 권한이 열렸습니다.",
+          "add_flags": [
+            "shared_terminal_photo",
+            "unlocked_staff_room"
+          ],
+          "show_hint_ids": [
+            "hint_afterlife_station_005"
+          ],
+          "next_scene_path": "res://scenes/investigation_scene.tscn"
+        },
+        {
+          "id": "choice_start_investigation_after_photo",
+          "text": "먼저 승강장을 조사한다",
+          "conditions": {},
+          "result_text": "사진 기록을 보관하고 승강장 조사를 시작합니다.",
+          "add_flags": [
+            "started_investigation_after_photo"
+          ],
+          "next_scene_path": "res://scenes/investigation_scene.tscn"
+        },
+        {
+          "id": "choice_frequency_sync_after_photo",
+          "text": "전광판 사진의 잡음 주파수를 분석한다",
+          "conditions": {
+            "required_flags": [
+              "choice_photographed_sign"
+            ]
+          },
+          "result_text": "사진에 남은 잡음 패턴을 기록국 단말기로 넘깁니다.",
+          "add_flags": [
+            "requested_frequency_sync"
+          ],
+          "start_minigame_id": "minigame_frequency_sync",
+          "next_scene_path": "res://scenes/minigame_scene.tscn"
+        }
+      ]
+    }
+  ],
+  "agent_reactions": [
+    {
+      "agent_id": "agent_kang_ijun",
+      "temperament": "analytical",
+      "conditions": {},
+      "text": "반복 주기가 끊기는 지점을 찾으면 봉인선을 밀어 넣을 틈이 생깁니다.",
+      "expression": "focused"
+    },
+    {
+      "agent_id": "agent_kwon_narae",
+      "temperament": "empathetic",
+      "conditions": {},
+      "text": "탐지 결과와 피해자 기록을 분리해, 겹치는 구간만 보호하겠습니다.",
+      "expression": "worried"
+    },
+    {
+      "agent_id": "agent_oh_hyun",
+      "temperament": "breakthrough",
+      "conditions": {},
+      "text": "확보되는 방송·전광판·승차권 기록은 별도 채널로 저장하겠습니다.",
+      "expression": "serious"
+    }
+  ],
+  "investigation_points": [
+    {
+      "id": "point_victim_phone",
+      "label": "피해자의 마지막 휴대폰 기록",
+      "clue_id": "clue_last_message",
+      "conditions": {},
+      "locked_text": "",
+      "result_text": "마지막 세 문자의 도착 예정 시각이 모두 00:00으로 고정되어 있습니다.",
+      "add_flags": [
+        "inspected_phone"
+      ],
+      "show_hint_ids": [
+        "hint_afterlife_station_001"
+      ]
+    },
+    {
+      "id": "point_black_ticket",
+      "label": "개찰구 아래의 검은 승차권 조각",
+      "conditions": {},
+      "locked_text": "",
+      "result_text": "승차권에는 사람마다 다른 목적지 획이 번져 있습니다. 이는 정답 단서가 아니라, 개인 목적지가 물리 증거에 각인되는 현상으로 기록합니다.",
+      "add_flags": [
+        "visited_ticket_gate",
+        "inspected_black_ticket"
+      ],
+      "show_hint_ids": [
+        "hint_afterlife_station_002"
+      ]
+    },
+    {
+      "id": "point_platform_speaker",
+      "label": "반복되는 플랫폼 안내방송",
+      "clue_id": "clue_repeating_announcement",
+      "conditions": {},
+      "locked_text": "",
+      "result_text": "같은 안내문이 반복되는 사이, 잡음 속에서 피해자의 이름이 들립니다. 해당 구간을 녹음했습니다.",
+      "add_flags": [
+        "heard_station_noise",
+        "inspected_platform_speaker"
+      ],
+      "show_hint_ids": [
+        "hint_afterlife_station_003"
+      ]
+    },
+    {
+      "id": "point_frequency_terminal",
+      "label": "기록국 단말기 — 폐주파수 동기화",
+      "conditions": {
+        "required_flags": [
+          "heard_station_noise"
+        ],
+        "blocked_flags": [
+          "minigame_frequency_success",
+          "minigame_frequency_failed"
+        ]
+      },
+      "locked_text": "플랫폼 스피커의 잡음 기록을 확보해야 합니다. 이미 동기화 결과가 저장된 사건에서는 다시 실행할 수 없습니다.",
+      "result_text": "단말기가 안내방송의 반복 구간과 잡음 파형을 분리하기 시작합니다.",
+      "add_flags": [
+        "started_frequency_sync"
+      ],
+      "start_minigame_id": "minigame_frequency_sync",
+      "next_scene_path": "res://scenes/minigame_scene.tscn"
+    },
+    {
+      "id": "point_terminal_sign",
+      "label": "꺼졌다 켜지는 종착지 전광판",
+      "clue_id": "clue_missing_terminal_sign",
+      "conditions": {},
+      "locked_text": "",
+      "result_text": "전광판이 꺼지는 순간, 지도와 운행 데이터에 없는 종착지명이 잠깐 나타납니다. 화면 기록을 확보했습니다.",
+      "add_flags": [
+        "inspected_terminal_sign"
+      ],
+      "show_hint_ids": [
+        "hint_afterlife_station_004"
+      ]
+    },
+    {
+      "id": "point_staff_room_door",
+      "label": "잠긴 역무원실 문",
+      "conditions": {},
+      "locked_text": "",
+      "result_text": "손잡이는 움직이지 않고 잠금장치가 안쪽에서 걸려 있습니다. 접근 방식을 선택하세요.",
+      "method_options": [
+        {
+          "id": "method_staff_room_destruction",
+          "label": "잠금장치를 강제로 밀어 연다",
+          "method_type": "destruction",
+          "stat_key": "destruction",
+          "approach_type": "suppression",
+          "difficulty": 7,
+          "situation_tags": [
+            "locked_route",
+            "time_pressure",
+            "anomaly_alert"
+          ],
+          "summary": "가장 빠르지만 큰 소음과 위험 상승을 감수합니다.",
+          "success_text": "잠금장치가 밀려나 문이 열립니다. 금속 경계음이 승강장에 퍼집니다.",
+          "failure_text": "문은 열리지 않습니다. 충격음 뒤로 역무원실 주변의 소음이 커집니다.",
+          "success_effects": {
+            "add_flags": [
+              "unlocked_staff_room",
+              "staff_room_forced_entry",
+              "method_destruction_success"
+            ],
+            "anomaly_risk_delta": 15,
+            "anomaly_understanding_delta": 4,
+            "mental_stamina_delta": 0,
+            "investigation_risk_delta": 12,
+            "case_understanding_delta": 2,
+            "victim_understanding_delta": 0,
+            "anomaly_stability_delta": -4
+          },
+          "failure_effects": {
+            "add_flags": [
+              "staff_room_noise_alert",
+              "method_destruction_failed"
+            ],
+            "anomaly_risk_delta": 20,
+            "anomaly_understanding_delta": 0,
+            "mental_stamina_delta": -5,
+            "investigation_risk_delta": 18,
+            "case_understanding_delta": 0,
+            "victim_understanding_delta": 0,
+            "anomaly_stability_delta": 6
+          },
+          "trust_rules": [
+            {
+              "temperament": "breakthrough",
+              "success_delta": 2,
+              "failure_delta": -1,
+              "success_text": "빠른 진입 판단이 맞았다고 봅니다.",
+              "failure_text": "강행했지만 진입 각이 좋지 않았다고 판단합니다."
+            },
+            {
+              "temperament": "analytical",
+              "success_delta": -1,
+              "failure_delta": -2,
+              "success_text": "증거 훼손 가능성을 걱정합니다.",
+              "failure_text": "기록을 확보하기 전에 현장을 흔든 점을 우려합니다."
+            },
+            {
+              "temperament": "empathetic",
+              "success_delta": -1,
+              "failure_delta": -2,
+              "success_text": "피해자 기억 흔적이 놀랐을 가능성을 걱정합니다.",
+              "failure_text": "위험을 올린 선택에 부담을 느낍니다."
+            }
+          ]
+        },
+        {
+          "id": "method_staff_room_observation",
+          "label": "문 주변에서 열쇠와 통과 흔적을 찾는다",
+          "method_type": "observation",
+          "stat_key": "observation",
+          "approach_type": "protection",
+          "difficulty": 6,
+          "situation_tags": [
+            "locked_route",
+            "victim_risk",
+            "memory_gap"
+          ],
+          "summary": "시간을 들여 문 주변과 피해자의 동선을 훼손 없이 확인합니다.",
+          "success_text": "문틈 아래에서 작은 열쇠와 손자국을 발견합니다. 열쇠로 문을 열고 기록을 보존합니다.",
+          "failure_text": "손자국은 확인했지만 열쇠 위치를 찾지 못합니다. 문은 잠긴 채로 남습니다.",
+          "success_effects": {
+            "add_flags": [
+              "unlocked_staff_room",
+              "found_staff_room_key",
+              "method_observation_success"
+            ],
+            "collect_clues": [
+              "clue_staff_room_log"
+            ],
+            "show_hint_ids": [
+              "hint_afterlife_station_005"
+            ],
+            "anomaly_risk_delta": 5,
+            "anomaly_understanding_delta": 15,
+            "mental_stamina_delta": 0,
+            "investigation_risk_delta": 2,
+            "case_understanding_delta": 8,
+            "victim_understanding_delta": 10,
+            "anomaly_stability_delta": -2
+          },
+          "failure_effects": {
+            "add_flags": [
+              "staff_room_observation_delayed",
+              "method_observation_failed"
+            ],
+            "show_hint_ids": [
+              "hint_afterlife_station_005"
+            ],
+            "anomaly_risk_delta": 5,
+            "anomaly_understanding_delta": 3,
+            "mental_stamina_delta": 0,
+            "investigation_risk_delta": 3,
+            "case_understanding_delta": 2,
+            "victim_understanding_delta": 2,
+            "anomaly_stability_delta": 0
+          },
+          "trust_rules": [
+            {
+              "temperament": "empathetic",
+              "success_delta": 2,
+              "failure_delta": 0,
+              "success_text": "피해자의 흔적을 먼저 본 선택을 신뢰합니다.",
+              "failure_text": "시간은 걸렸지만 피해자를 해치지 않는 접근이라고 봅니다."
+            },
+            {
+              "temperament": "analytical",
+              "success_delta": 1,
+              "failure_delta": 0,
+              "success_text": "관찰 기록이 분석 근거로 쓸 만하다고 봅니다.",
+              "failure_text": "정보는 부족하지만 기록 방향은 유지됩니다."
+            },
+            {
+              "temperament": "breakthrough",
+              "success_delta": 0,
+              "failure_delta": -1,
+              "success_text": "느리지만 결과가 있으면 받아들입니다.",
+              "failure_text": "망설이다가 기회를 놓쳤다고 느낍니다."
+            }
+          ]
+        },
+        {
+          "id": "method_staff_room_analysis",
+          "label": "잠금장치와 안내방송의 반복 주기를 대조한다",
+          "method_type": "analysis",
+          "stat_key": "analysis",
+          "approach_type": "analysis",
+          "difficulty": 8,
+          "situation_tags": [
+            "locked_route",
+            "ritual_rule",
+            "noise_pattern",
+            "evidence_sensitive"
+          ],
+          "summary": "시간과 정신력을 쓰지만 잠금 규칙과 동기화 보조 정보를 함께 확인합니다.",
+          "success_text": "잠금장치가 안내방송의 반복 주기마다 잠시 풀립니다. 그 순간 문을 열고 동기화 보조 기록을 저장합니다.",
+          "failure_text": "주기를 놓치자 잠금장치의 잡음이 커집니다. 문은 열리지 않습니다.",
+          "success_effects": {
+            "add_flags": [
+              "unlocked_staff_room",
+              "decoded_staff_room_lock",
+              "method_analysis_success",
+              "frequency_sync_assisted"
+            ],
+            "show_hint_ids": [
+              "hint_afterlife_station_003",
+              "hint_afterlife_station_005"
+            ],
+            "anomaly_risk_delta": 10,
+            "anomaly_understanding_delta": 25,
+            "mental_stamina_delta": -3,
+            "investigation_risk_delta": 4,
+            "case_understanding_delta": 12,
+            "victim_understanding_delta": 3,
+            "anomaly_stability_delta": -6
+          },
+          "failure_effects": {
+            "add_flags": [
+              "method_analysis_failed",
+              "frequency_sync_harder"
+            ],
+            "anomaly_risk_delta": 12,
+            "anomaly_understanding_delta": 2,
+            "mental_stamina_delta": -8,
+            "investigation_risk_delta": 8,
+            "case_understanding_delta": 1,
+            "victim_understanding_delta": 0,
+            "anomaly_stability_delta": 4
+          },
+          "trust_rules": [
+            {
+              "temperament": "analytical",
+              "success_delta": 2,
+              "failure_delta": -1,
+              "success_text": "규칙을 해석한 판단을 높게 평가합니다.",
+              "failure_text": "분석 절차를 더 안정화해야 한다고 봅니다."
+            },
+            {
+              "temperament": "empathetic",
+              "success_delta": 1,
+              "failure_delta": -1,
+              "success_text": "피해자에게 부담이 적은 접근이라 긍정적으로 봅니다.",
+              "failure_text": "오판이 기억 흔적을 자극할까 걱정합니다."
+            },
+            {
+              "temperament": "breakthrough",
+              "success_delta": 0,
+              "failure_delta": -1,
+              "success_text": "시간은 걸렸지만 문이 열렸으니 인정합니다.",
+              "failure_text": "너무 오래 붙잡았다고 답답해합니다."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "point_staff_room_log",
+      "label": "역무원실 근무 기록",
+      "clue_id": "clue_staff_room_log",
+      "conditions": {
+        "required_flags": [
+          "unlocked_staff_room"
+        ]
+      },
+      "locked_text": "역무원실 문이 잠겨 있어 기록을 확인할 수 없습니다. 먼저 접근 방법을 확보해야 합니다.",
+      "result_text": "근무 기록에는 막차 이후의 출근 도장이 여러 날짜에 반복되어 있습니다. 필체와 시각도 모두 같습니다.",
+      "add_flags": [
+        "inspected_staff_room_log"
+      ],
+      "show_hint_ids": [
+        "hint_afterlife_station_005"
+      ]
+    }
+  ],
+  "minigames": [
+    {
+      "id": "minigame_frequency_sync",
+      "title": "저승역 노선 복원",
+      "description": "방송 원본의 목적지 공백과 공식 운행 기록을 대조해, 현실 승강장으로 이어지는 안전 노선을 복원합니다.",
+      "type": "route_restore",
+      "rules_text": "타일을 회전하고 분기 스위치를 바꿔 안전 목적지까지 연결하세요. 3×3은 조작 학습이고 4×4가 마지막 현장 검증입니다.",
+      "round_count": 5,
+      "required_hits": 3,
+      "beat_duration": 1.4,
+      "start_radius": 180.0,
+      "target_radius": 64.0,
+      "minimum_radius": 28.0,
+      "hit_tolerance": 10.0,
+      "success_agent_reaction": "오현은 공식 기록과 실제 이동 경로를 대조하고, 권나래는 피해자 호송을 재개하며, 강이준은 현실 경계를 고정합니다.",
+      "failure_agent_reaction": "팀은 잘못된 목적지 적용을 위험 사례로 남기고, 현재 노선과 기록을 유지한 채 다시 비교합니다.",
+      "success_flags": [
+        "minigame_frequency_success",
+        "heard_station_noise",
+        "frequency_sync_completed"
+      ],
+      "failure_flags": [
+        "minigame_frequency_failed",
+        "frequency_noise_alert",
+        "battle_route_distorted"
+      ],
+      "success_collect_clues": [
+        "clue_black_ticket"
+      ],
+      "success_show_hint_ids": [
+        "hint_afterlife_station_003"
+      ],
+      "failure_show_hint_ids": [
+        "hint_afterlife_station_003"
+      ],
+      "success_anomaly_risk_delta": -5,
+          "success_anomaly_understanding_delta": 15,
+          "success_anomaly_stability_delta": -5,
+          "success_mental_stamina_delta": 0,
+          "success_recovery_threshold_delta": 8,
+          "success_recovery_stability_delta": -8,
+          "failure_anomaly_risk_delta": 15,
+          "failure_anomaly_understanding_delta": 3,
+          "failure_anomaly_stability_delta": 5,
+          "failure_mental_stamina_delta": -10,
+          "failure_recovery_threshold_delta": -8,
+          "failure_recovery_stability_delta": 10,
+      "success_result_text": "안전 노선 검증 기록을 확보했습니다. 개인 목적지는 방송 원본에 없었고, 공식 식별 번호와 일치한 경로만 현실 승강장으로 연결됐습니다.",
+      "failure_result_text": "노선 검증은 계속할 수 있습니다. 기록을 다시 대조해 안전 경로를 복원하세요.",
+      "return_scene_path": "res://scenes/investigation_scene.tscn",
+      "success_next_scene_path": "res://scenes/battle_scene.tscn",
+      "failure_next_scene_path": "res://scenes/investigation_scene.tscn"
+    }
+  ],
+  "clues": [
+    {
+      "id": "clue_last_message",
+      "episode_id": "episode_001_afterlife_station",
+      "title": "피해자의 마지막 문자",
+      "description": "피해자가 막차 시간 이후 보낸 짧은 문자입니다. 도착 예정 시간이 00:00으로 고정되어 있습니다.",
+      "location_id": "location_station_entrance",
+      "related_victim_id": "victim_afterlife_station_001",
+      "related_legend_id": "legend_afterlife_station",
+      "battle_effect_id": "effect_last_message",
+      "resolution_weight": 1,
+      "is_required": false,
+      "collected": false
+    },
+    {
+      "id": "clue_black_ticket",
+      "episode_id": "episode_001_afterlife_station",
+      "title": "안전 노선 검증 기록",
+      "description": "공식 운행 기록과 일치한 노선이 현실 승강장으로 연결됐다는 마지막 현장 검증 기록입니다. 검은 승차권에는 개인 목적지 대신 공식 식별 번호의 천공 자국만 남았습니다.",
+      "location_id": "location_ticket_gate",
+      "related_victim_id": "victim_afterlife_station_001",
+      "related_legend_id": "legend_afterlife_station",
+      "battle_effect_id": "effect_black_ticket",
+      "resolution_weight": 1,
+      "is_required": true,
+      "collected": false
+    },
+    {
+      "id": "clue_repeating_announcement",
+      "episode_id": "episode_001_afterlife_station",
+      "title": "반복 안내방송 녹음",
+      "description": "방송 원본의 목적지 구간이 비어 있습니다. 사람마다 기억한 목적지와 달리, 녹음에는 객관적인 역명이 남아 있지 않습니다.",
+      "location_id": "location_platform_speaker",
+      "related_victim_id": "victim_afterlife_station_001",
+      "related_legend_id": "legend_afterlife_station",
+      "battle_effect_id": "effect_repeating_announcement",
+      "resolution_weight": 1,
+      "is_required": false,
+      "collected": false
+    },
+    {
+      "id": "clue_missing_terminal_sign",
+      "episode_id": "episode_001_afterlife_station",
+      "title": "서로 다른 목적지 표기",
+      "description": "같은 방송 시각에 전광판·기기·목격 기록이 서로 다른 목적지를 표시합니다. 한 개의 객관적 종착지가 아니라는 근거입니다.",
+      "location_id": "location_platform_sign",
+      "related_victim_id": "victim_afterlife_station_001",
+      "related_legend_id": "legend_afterlife_station",
+      "battle_effect_id": "effect_missing_terminal_sign",
+      "resolution_weight": 1,
+      "is_required": false,
+      "collected": false
+    },
+    {
+      "id": "clue_staff_room_log",
+      "episode_id": "episode_001_afterlife_station",
+      "title": "역무원실 근무 기록",
+      "description": "막차 이후 추가 운행은 없으며, 정상 역명·노선 식별음·운행 종료 시각이 남아 있는 공식 운행 기록입니다.",
+      "location_id": "location_staff_room",
+      "related_victim_id": "victim_afterlife_station_001",
+      "related_legend_id": "legend_afterlife_station",
+      "battle_effect_id": "effect_staff_room_log",
+      "resolution_weight": 1,
+      "is_required": false,
+      "collected": false
+    }
+  ],
+  "resolution": {
+    "episode_id": "episode_001_afterlife_station",
+    "total_clues": 5,
+    "collected_clues": 0,
+    "collection_rate": 0.0,
+    "phase_state": "unavailable",
+    "temporary_threshold": 40.0,
+    "standard_threshold": 70.0,
+    "complete_threshold": 100.0
+  },
+  "battle_clue_effects": [
+    {
+      "id": "effect_last_message",
+      "clue_id": "clue_last_message",
+      "effect_type": "reduce_anomaly_focus",
+      "effect_value": 5,
+      "description": "피해자의 마지막 위치를 고정해 괴이의 시선 집중도를 낮춥니다."
+    },
+    {
+      "id": "effect_black_ticket",
+      "clue_id": "clue_black_ticket",
+      "effect_type": "expose_core",
+      "effect_value": 20,
+      "description": "검은 승차권이 괴이의 핵을 드러내 회수 페이즈 진입을 돕습니다."
+    },
+    {
+      "id": "effect_repeating_announcement",
+      "clue_id": "clue_repeating_announcement",
+      "effect_type": "delay_pattern",
+      "effect_value": 10,
+      "description": "반복 안내방송의 규칙을 깨 괴이 패턴 발동을 늦춥니다."
+    },
+    {
+      "id": "effect_missing_terminal_sign",
+      "clue_id": "clue_missing_terminal_sign",
+      "effect_type": "weaken_route_lock",
+      "effect_value": 12,
+      "description": "존재하지 않는 종착지의 노선 고정을 약화합니다."
+    },
+    {
+      "id": "effect_staff_room_log",
+      "clue_id": "clue_staff_room_log",
+      "effect_type": "reduce_escape_cost",
+      "effect_value": 8,
+      "description": "역무원실의 반복 근무 기록으로 피해자의 탈출 경로를 추적합니다."
+    }
+  ],
+  "research_rewards": [
+    {
+      "id": "reward_afterlife_station_temporary",
+      "legend_id": "legend_afterlife_station",
+      "resolution_grade": "temporary",
+      "ability_name": "임시 승강장 봉인",
+      "ability_description": "공간형 괴담의 이동 경로를 짧은 시간 차단합니다.",
+      "next_episode_effect": "다음 공간형 사건에서 첫 조사 힌트 1개를 더 빨리 확인합니다."
+    },
+    {
+      "id": "reward_afterlife_station_standard",
+      "legend_id": "legend_afterlife_station",
+      "resolution_grade": "standard",
+      "ability_name": "노선 잔향 추적",
+      "ability_description": "사라진 동선과 반복되는 안내방송 패턴을 분석합니다.",
+      "next_episode_effect": "다음 사건의 조사 시작 시 관련 위치 후보를 1개 표시합니다."
+    },
+    {
+      "id": "reward_afterlife_station_complete",
+      "legend_id": "legend_afterlife_station",
+      "resolution_grade": "complete",
+      "ability_name": "검은 승차권 회수 기록",
+      "ability_description": "괴이의 핵을 안정적으로 회수한 연구 기록입니다.",
+      "next_episode_effect": "다음 공간형 괴담의 해결 페이즈 기준 정보를 더 정확하게 표시합니다."
+    },
+    {
+      "id": "reward_frequency_analysis",
+      "legend_id": "legend_afterlife_station",
+      "resolution_grade": "standard",
+      "ability_name": "폐주파수 분석 절차",
+      "ability_description": "저승역 안내방송의 반복 파형을 분리해 다음 주파수 계열 조사에서 안정 타이밍을 예측합니다.",
+      "next_episode_effect": "equip_frequency_filter를 해금합니다.",
+      "unlocks_equipment": [
+        "equip_frequency_filter"
+      ],
+      "unlocks_records": [
+        "record_black_ticket_core",
+        "record_repeating_announcement"
+      ]
+    }
+  ],
+  "records": [
+    {
+      "id": "record_black_ticket_core",
+      "title": "검은 승차권의 핵",
+      "description": "저승역 괴이의 중심 매개체로 회수된 검은 승차권 기록입니다. 승객을 없는 종착지로 묶는 규칙과 직접 연결됩니다.",
+      "next_investigation_effect": "다음 사건 준비에서 괴이 매개체와 봉인 조건을 먼저 확인하는 참고 기록으로 표시됩니다.",
+      "episode_id": "episode_001_afterlife_station",
+      "source_result": "standard_or_better"
+    },
+    {
+      "id": "record_repeating_announcement",
+      "title": "반복 안내방송 기록",
+      "description": "피해자의 이름과 숫자 패턴이 섞여 반복되던 안내방송 분석 기록입니다. 주파수 계열 조사 보정의 근거가 됩니다.",
+      "next_investigation_effect": "주파수 계열 조사에서 반복 파형과 안정 타이밍을 해석하는 근거로 표시됩니다.",
+      "episode_id": "episode_001_afterlife_station",
+      "source_result": "standard_or_better"
+    },
+    {
+      "id": "record_missing_terminal_sign",
+      "title": "존재하지 않는 종착지 표지",
+      "description": "완전 해결 시 보존되는 추가 기록물입니다. 현실 노선도에 없는 종착지가 괴이 경로를 고정하던 흔적을 담습니다.",
+      "next_investigation_effect": "완전 해결 기록으로 다음 공간형 괴담의 위장 경로를 의심하는 참고 자료로 표시됩니다.",
+      "episode_id": "episode_001_afterlife_station",
+      "source_result": "complete"
+    }
+  ],
+  "equipment": [
+    {
+      "id": "equip_frequency_filter",
+      "name": "폐주파수 필터",
+      "category": "investigation_support",
+      "description": "기록국 단말기에 장착하는 조사 보조 필터입니다. 잡음 속 반복 파형을 분리해 주파수 계열 미니게임 또는 분석 조사에서 힌트를 1회 제공합니다.",
+      "effect_scope": "frequency_minigame_or_analysis",
+      "effect_once_key": "equip_frequency_filter:{minigame_id}",
+      "effect_text": "폐주파수 필터가 잡음을 분리합니다. 다음 타이밍은 세 번째 파형이 가장 안정적입니다.",
+      "next_investigation_modifier": "주파수 계열 미니게임에서 힌트 1회 제공",
+      "unlock_reward_id": "reward_frequency_analysis"
+    }
+  ],
+  "recovery_results": [
+    {
+      "resolution_grade": "unavailable",
+      "victim_rescue_result": "failed_to_enter_resolution",
+      "description": "단서가 부족해 해결 페이즈에 진입하지 못합니다.",
+      "after_story": "피해자의 행방은 아직 확정되지 않았고, 기록국은 저승역 접근 근거를 더 모아야 합니다.",
+      "research_result": "연구 보상 없음",
+      "unlocks_records": [],
+      "unlocks_research_rewards": [],
+      "unlocks_equipment": []
+    },
+    {
+      "resolution_grade": "temporary",
+      "victim_rescue_result": "rescued_with_aftereffect",
+      "description": "피해자는 구조되지만 기억 일부가 역사에 남습니다.",
+      "after_story": "피해자는 돌아왔지만 막차 이후의 기억 일부가 비어 있습니다. 가끔 존재하지 않는 안내방송을 꿈에서 듣습니다.",
+      "research_result": "저승역의 이동 경로를 임시로 막는 방법을 기록했습니다.",
+      "unlocks_records": [],
+      "unlocks_research_rewards": [],
+      "unlocks_equipment": []
+    },
+    {
+      "resolution_grade": "standard",
+      "victim_rescue_result": "rescued",
+      "description": "피해자를 구조하고 괴이의 발동 조건을 기록합니다.",
+      "after_story": "피해자는 안정적으로 귀환했고, 반복 안내방송과 검은 승차권의 발동 조건이 기록국 자료로 정리되었습니다.",
+      "research_result": "저승역의 잔향 노선을 추적할 수 있는 분석 절차를 확보했습니다.",
+      "unlocks_records": [
+        "record_black_ticket_core",
+        "record_repeating_announcement"
+      ],
+      "unlocks_research_rewards": [
+        "reward_frequency_analysis"
+      ],
+      "unlocks_equipment": [
+        "equip_frequency_filter"
+      ]
+    },
+    {
+      "resolution_grade": "complete",
+      "victim_rescue_result": "rescued_and_core_recovered",
+      "description": "피해자를 안정적으로 구조하고 괴이의 핵을 회수합니다.",
+      "after_story": "피해자는 큰 후유증 없이 돌아왔고, 검은 승차권은 기록국 격리 보관함에 안정 회수되었습니다.",
+      "research_result": "검은 승차권의 핵 규칙과 종착지 조작 원리를 완전 기록했습니다.",
+      "unlocks_records": [
+        "record_black_ticket_core",
+        "record_repeating_announcement",
+        "record_missing_terminal_sign"
+      ],
+      "unlocks_research_rewards": [
+        "reward_frequency_analysis"
+      ],
+      "unlocks_equipment": [
+        "equip_frequency_filter"
+      ]
+    }
+  ]
+}

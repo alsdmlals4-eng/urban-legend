@@ -1,0 +1,46 @@
+{
+  "agents": [
+    {
+      "id": "agent_yoon_seoha",
+      "name": "윤서하",
+      "temperament": "breakthrough",
+      "temperament_label": "직관·돌파형",
+      "class": "무속 현장 요원",
+      "role": "강제 반응·현장 돌파",
+      "specialty": "괴이의 반복 조건을 자극해 숨은 반응을 드러냄",
+      "magic_lineage": "korean_shamanism",
+      "visual_asset_id": "yoon_seoha_expressions",
+      "description": "현장 징후를 몸으로 받아내고 괴이가 감춘 반응 조건을 강제로 드러낸다.",
+      "investigation_stats": {"destruction": 4, "observation": 2, "analysis": 1},
+      "abilities": {"suppression": 5, "analysis": 2, "protection": 3, "treatment": 1, "rapport": 3},
+      "max_health": 120,
+      "max_mental": 80,
+      "equipment": [{"name": "방울 매듭", "ability": "suppression", "bonus": 1}],
+      "skills": [{"name": "강제 반응", "ability": "suppression", "bonus": 2}],
+      "aspects": [{"name": "현장 돌파", "bonus_ability": "suppression", "match_tags": ["time_pressure", "anomaly_alert"], "description": "위험을 감수해 괴이의 숨은 반응을 끌어냅니다."}],
+      "backstory": "도시의 무속 현장을 기록국식 절차로 번역해 온 현장 요원.",
+      "recovery_support": {"id": "support_yoon_forced_reaction", "label": "강제 반응", "role": "안정화", "description": "윤서하가 괴이의 반응 조건을 드러내 다음 행동 근거를 확보합니다.", "stability_delta": -10, "fear_delta": 2, "threshold_delta": 0}
+    },
+    {
+      "id": "agent_han_yuri",
+      "name": "한유리",
+      "temperament": "empathetic",
+      "temperament_label": "분석·교감형",
+      "class": "잔향 감응 요원",
+      "role": "기억 잔향·변조 조건 분석",
+      "specialty": "피해자의 기억 잔향에서 원본과 변조된 조건을 분리",
+      "magic_lineage": "memory_resonance",
+      "visual_asset_id": "han_yuri_expressions",
+      "description": "남겨진 감정과 기억의 잔향을 읽어 개인 기억이 괴이 규칙을 바꾼 지점을 찾는다.",
+      "investigation_stats": {"destruction": 1, "observation": 4, "analysis": 4},
+      "abilities": {"suppression": 1, "analysis": 4, "protection": 2, "treatment": 4, "rapport": 5},
+      "max_health": 85,
+      "max_mental": 120,
+      "equipment": [{"name": "잔향 청진기", "ability": "rapport", "bonus": 1}],
+      "skills": [{"name": "기억 잔향", "ability": "rapport", "bonus": 2}, {"name": "변조 조건 분리", "ability": "analysis", "bonus": 2}],
+      "aspects": [{"name": "감정 공명", "bonus_ability": "rapport", "match_tags": ["victim_risk", "memory_gap"], "description": "기억의 공백과 감정 잔향을 안전하게 분리합니다."}],
+      "backstory": "피해자 기록에서 반복되는 감정 잔향을 추적해 괴이 규칙의 변조 지점을 찾아온 감응 요원.",
+      "recovery_support": {"id": "support_han_memory_echo", "label": "기억 잔향", "role": "교감", "description": "한유리가 원본 기억과 변조 조건을 분리해 현장 혼선을 낮춥니다.", "stability_delta": -4, "fear_delta": -10, "threshold_delta": 1}
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+# Godot local cache
+.godot/
+.import/
+
+# Python local cache
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Test and validation artifacts
+.artifacts/
+
+# Godot export settings and credentials
+export.cfg
+export_credentials.cfg
+
+# Optional .NET files if the project ever enables C#
+.mono/
+*.csproj
+*.sln
+
+# Editor and OS files
+.vscode/
+.idea/
+.vs/
+.worktrees/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Builds and exported packages
+build/
+builds/
+exports/
+*.pck
+*.exe
+*.apk
+*.aab
+*.ipa
+*.zip
+
+# Deterministic generated document mirror; rebuild from Markdown when needed.
+/docs/URBAN_LEGEND_GAME_DESIGN.docx
+
+# Local asset vault
+.asset-vault/

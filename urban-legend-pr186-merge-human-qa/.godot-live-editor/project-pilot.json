@@ -1,0 +1,39 @@
+{
+  "schema_version": "1",
+  "project_identity": {
+    "repository": "alsdmlals4-eng/urban-legend",
+    "project_id": "urban-legend"
+  },
+  "base_pilot_commit": "2b595570bd237174b2b962a1eb54588b5ecc508d",
+  "project_state": "EXISTING_GODOT_PROJECT",
+  "godot": {
+    "version": "4.7.1-stable",
+    "archive_sha256": "c7ff14fd28472c8d4f193043de30278dcf7e5241a1dcf7566b02e27addaa33ba"
+  },
+  "project_file": "project.godot",
+  "main_scene_source": "application/run/main_scene",
+  "legacy_editor_plugins": [
+    "res://addons/godot_ai/plugin.cfg"
+  ],
+  "legacy_autoloads": [
+    "_mcp_game_helper"
+  ],
+  "legacy_disable_mode": "TEMPORARY_COPY_ONLY",
+  "source_mutation_policy": "FORBIDDEN",
+  "scratch_scene_path": "res://.godot-live-editor-pilot/scratch.tscn",
+  "behavior_checks": [
+    {"kind": "GODOT_SCRIPT", "target": "res://tests/core_mvp_001_state_test.gd", "timeout_seconds": 300},
+    {"kind": "GODOT_SCRIPT", "target": "res://tests/core_mvp_001_scene_test.gd", "timeout_seconds": 300},
+    {"kind": "GODOT_SCRIPT", "target": "res://tests/validation/validation_save_repository_test.gd", "timeout_seconds": 300},
+    {"kind": "GODOT_SCRIPT", "target": "res://tests/validation/validation_session_test.gd", "timeout_seconds": 300},
+    {"kind": "GODOT_SCRIPT", "target": "res://tests/validation/validation_game_state_adapter_test.gd", "timeout_seconds": 300},
+    {"kind": "GODOT_SCRIPT", "target": "res://tests/validation/validation_save_isolation_test.gd", "timeout_seconds": 300},
+    {"kind": "GODOT_SCRIPT", "target": "res://tests/annual_mvp_001_state_test.gd", "timeout_seconds": 300},
+    {"kind": "GODOT_SCRIPT", "target": "res://tests/annual_mvp_001_scene_test.gd", "timeout_seconds": 300},
+    {"kind": "GODOT_SCRIPT", "target": "res://tests/mvp043_recovery_loop_test.gd", "timeout_seconds": 300},
+    {"kind": "GODOT_SCRIPT", "target": "res://tests/minigame_pipeline_test.gd", "timeout_seconds": 300},
+    {"kind": "GODOT_SCRIPT", "target": "res://tests/runtime_ui_editor_scene_test.gd", "timeout_seconds": 300},
+    {"kind": "GODOT_SCRIPT", "target": "res://tests/accessibility_settings_test.gd", "timeout_seconds": 300}
+  ],
+  "expected_platform": "PC"
+}

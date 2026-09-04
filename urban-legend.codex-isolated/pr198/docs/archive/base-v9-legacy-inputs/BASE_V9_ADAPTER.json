@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "adapter_role": "project-base-v9-operating-system-adapter",
+  "base": {
+    "repository": "alsdmlals4-eng/Base",
+    "release_line": "v9.0.0",
+    "release_commit": "585a53a25be1b04c543196f5901551deb49c7691",
+    "release_state": "BASE_RELEASED",
+    "registry_path": "skills/SKILL_REGISTRY.json",
+    "registry_sha256": "c136d9bb3fde9fc1473fbbe518cc975313023fc9c104efd9692f6834cbf8d8ae",
+    "snapshot_path": "skills/BASE_V9_SKILL_SNAPSHOT.json",
+    "snapshot_sha256": "e30fca95d201a31937c7bddcbc341c79764d4940c318933a8902cb5bf901ba57",
+    "copy_common_skill_bodies": false,
+    "legacy_v8_index": "skills/BASE_SKILL_INDEX.json"
+  },
+  "project": {
+    "repository": "alsdmlals4-eng/urban-legend",
+    "local_registry": "skills/SKILL_REGISTRY.json",
+    "local_adapter": "skills/PROJECT_PATH_ADAPTER.json",
+    "ownership": "PROJECT_SPECIFIC_SKILLS_AND_CANONICAL_SOURCES_REMAIN_LOCAL"
+  },
+  "sheet": {
+    "id": "14xtlvd90iQTKjDLcZR_b-WS5fHnBwNf-OfBruPBS6ck",
+    "role": "USER_FACING_GDD_WORKSPACE",
+    "sync_status": "SHEET_GITHUB_CONFLICT",
+    "sheet_only_change_policy": "PROPOSED_SHEET_CHANGE",
+    "write_policy": "NO_AUTOMATIC_OVERWRITE",
+    "last_read_at": "2026-07-30"
+  },
+  "maturity": {
+    "level": 4,
+    "status": "PROVISIONAL_PENDING_RUNTIME_REVALIDATION",
+    "next_gate": "HUMAN_VALIDATION_AND_CURRENT_RUNTIME_EVIDENCE"
+  },
+  "validation": {
+    "ci_gate": "REQUIRED_ON_PULL_REQUEST",
+    "adversarial_gate": "REQUIRED_ON_PULL_REQUEST",
+    "godot_runtime": "NOT_RUN",
+    "human_validation": "HUMAN_VALIDATION_NOT_RUN"
+  }
+}

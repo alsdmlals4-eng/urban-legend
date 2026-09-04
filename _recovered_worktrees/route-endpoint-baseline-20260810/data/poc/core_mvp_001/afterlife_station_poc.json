@@ -1,0 +1,356 @@
+{
+  "contract_version": "core-mvp-001-v1",
+  "case": {
+    "id": "poc001_case_afterlife_station",
+    "title": "저승역 규칙 검증 PoC",
+    "protagonist": "권나래",
+    "session_minutes": [18, 25],
+    "starting_health": 100,
+    "starting_risk": 0,
+    "max_risk": 100
+  },
+  "clues": [
+    {
+      "id": "poc001_clue_broadcast_blank",
+      "title": "목적지 공백이 있는 방송 원본",
+      "text": "방송 원본의 목적지 구간은 비어 있다.",
+      "role": "support",
+      "scene_id": "poc001_scene_broadcast_archive",
+      "observable": true
+    },
+    {
+      "id": "poc001_clue_reset_timing",
+      "title": "이동 직후 초기화된 시간 기록",
+      "text": "안내 종료 전에 움직인 사람만 같은 시각으로 되돌아왔다.",
+      "role": "support",
+      "scene_id": "poc001_scene_broadcast_archive",
+      "observable": true
+    },
+    {
+      "id": "poc001_clue_official_identifier",
+      "title": "공식 식별 신호",
+      "text": "안내가 끝난 뒤 세 번 울리는 짧은 신호는 반복마다 동일하다.",
+      "role": "support",
+      "scene_id": "poc001_scene_ticket_gate",
+      "observable": true
+    },
+    {
+      "id": "poc001_clue_display_mismatch",
+      "title": "전광판과 방송의 불일치",
+      "text": "전광판의 종착지는 매번 바뀌지만 방송 원본에는 종착지가 없다.",
+      "role": "contradiction",
+      "scene_id": "poc001_scene_platform_display",
+      "observable": true
+    },
+    {
+      "id": "poc001_clue_passenger_count",
+      "title": "맞지 않는 승객 수",
+      "text": "카메라와 승차권 기록의 승객 수가 서로 다르다.",
+      "role": "contradiction",
+      "scene_id": "poc001_scene_platform_display",
+      "observable": true
+    },
+    {
+      "id": "poc001_question_ticket_trigger",
+      "title": "검은 승차권의 발동 조건",
+      "text": "검은 승차권이 언제 사람 이름을 새기는지는 아직 모른다.",
+      "role": "unresolved",
+      "scene_id": "poc001_scene_ticket_gate",
+      "observable": true
+    }
+  ],
+  "manual_records": [
+    {
+      "id": "poc001_manual_early_movement_reset",
+      "title": "안내 종료 전 이동 사례",
+      "statement": "안내가 끝나기 전에 이동하면 출발 위치로 되돌아왔다.",
+      "status": "danger_case",
+      "known_at_start": true
+    },
+    {
+      "id": "poc001_manual_personal_destination",
+      "title": "개인 목적지 진술 사례",
+      "statement": "승객이 지목한 목적지와 다수 의견은 반복마다 달라 안전 기준이 되지 못했다.",
+      "status": "danger_case",
+      "known_at_start": true
+    },
+    {
+      "id": "poc001_manual_ticket_contact_danger",
+      "title": "검은 승차권 접촉 위험",
+      "statement": "검은 승차권과 직접 접촉한 대상의 이름을 닮은 천공 흔적이 남았다.",
+      "status": "candidate",
+      "known_at_start": true
+    }
+  ],
+  "investigation_scenes": [
+    {
+      "id": "poc001_scene_broadcast_archive",
+      "title": "방송 기록실",
+      "situation": "끊긴 막차 방송 원본과 반복 시각 기록을 대조한다.",
+      "clue_ids": [
+        "poc001_clue_broadcast_blank",
+        "poc001_clue_reset_timing"
+      ]
+    },
+    {
+      "id": "poc001_scene_platform_display",
+      "title": "변하는 전광판",
+      "situation": "플랫폼 전광판과 승객 수 기록이 매 반복마다 달라진다.",
+      "clue_ids": [
+        "poc001_clue_display_mismatch",
+        "poc001_clue_passenger_count"
+      ]
+    },
+    {
+      "id": "poc001_scene_ticket_gate",
+      "title": "검은 승차권 개찰구",
+      "situation": "공식 신호 뒤 개찰구가 열리지만 검은 승차권의 조건은 불명이다.",
+      "clue_ids": [
+        "poc001_clue_official_identifier",
+        "poc001_question_ticket_trigger"
+      ]
+    }
+  ],
+  "choices": [
+    {
+      "id": "poc001_choice_move_before_end",
+      "label": "안내가 끝나기 전에 플랫폼을 벗어난다"
+    },
+    {
+      "id": "poc001_choice_follow_passenger_count",
+      "label": "가장 많은 승객이 모인 출구를 따른다"
+    },
+    {
+      "id": "poc001_choice_follow_display",
+      "label": "전광판에 표시된 종착지를 따라간다",
+      "hypothesis_id": "poc001_hypothesis_display_route"
+    },
+    {
+      "id": "poc001_choice_hold_official_signal",
+      "label": "공식 식별 신호가 끝날 때까지 위치를 고정한다",
+      "hypothesis_id": "poc001_hypothesis_broadcast_blank"
+    }
+  ],
+  "elimination_rules": [
+    {
+      "id": "poc001_elimination_early_movement",
+      "record_id": "poc001_manual_early_movement_reset",
+      "choice_id": "poc001_choice_move_before_end",
+      "relation": "contradiction",
+      "feedback": "기존 위험 사례에서 안내 종료 전 이동은 공간 초기화를 일으켰다."
+    },
+    {
+      "id": "poc001_elimination_personal_destination",
+      "record_id": "poc001_manual_personal_destination",
+      "choice_id": "poc001_choice_follow_passenger_count",
+      "relation": "contradiction",
+      "feedback": "승객 수와 개인 목적지는 반복마다 달라 안전한 식별 기준이 될 수 없다."
+    }
+  ],
+  "hypotheses": [
+    {
+      "id": "poc001_hypothesis_display_route",
+      "rule_text": "전광판이 표시하는 종착지가 현재 반복의 안전 경로다.",
+      "required_supporting_clue_ids": [
+        "poc001_clue_broadcast_blank"
+      ],
+      "required_contradiction_clue_ids": [
+        "poc001_clue_display_mismatch"
+      ],
+      "unresolved_question_ids": [
+        "poc001_question_ticket_trigger"
+      ],
+      "field_test_id": "poc001_test_follow_display"
+    },
+    {
+      "id": "poc001_hypothesis_broadcast_blank",
+      "rule_text": "방송의 빈 목적지를 임의로 채우지 않고 공식 식별 신호 종료까지 위치를 고정해야 한다.",
+      "required_supporting_clue_ids": [
+        "poc001_clue_broadcast_blank",
+        "poc001_clue_reset_timing",
+        "poc001_clue_official_identifier"
+      ],
+      "required_contradiction_clue_ids": [
+        "poc001_clue_display_mismatch",
+        "poc001_clue_passenger_count"
+      ],
+      "unresolved_question_ids": [
+        "poc001_question_ticket_trigger"
+      ],
+      "field_test_id": "poc001_test_wait_official_signal"
+    }
+  ],
+  "field_tests": [
+    {
+      "id": "poc001_test_follow_display",
+      "hypothesis_id": "poc001_hypothesis_display_route",
+      "correct": false,
+      "damage": 16,
+      "risk_delta": 35,
+      "reaction_clue_id": "poc001_clue_display_mismatch",
+      "danger_case_text": "변하는 전광판을 따라가자 승강장 경계가 접혀 원래 위치로 되돌아왔다.",
+      "refresh_hypothesis_id": "poc001_hypothesis_broadcast_blank"
+    },
+    {
+      "id": "poc001_test_wait_official_signal",
+      "hypothesis_id": "poc001_hypothesis_broadcast_blank",
+      "correct": true,
+      "damage": 0,
+      "risk_delta": 5,
+      "reaction_clue_id": "poc001_clue_official_identifier",
+      "resolves_question_id": "poc001_question_ticket_trigger"
+    }
+  ],
+  "understanding": {
+    "tiers": ["unknown", "clue", "likely", "understood"],
+    "omen_read_rates": {
+      "unknown": 0,
+      "clue": 35,
+      "likely": 70,
+      "understood": 100
+    }
+  },
+  "recovery_patterns": [
+    {
+      "id": "poc001_pattern_false_terminal",
+      "name": "존재하지 않는 종착 안내",
+      "omen_text": "방송이 반복될 때마다 전광판의 글자가 한 칸씩 사라진다.",
+      "observed_before_recovery": true,
+      "first_use_hidden": false,
+      "readable_fields": ["action_name", "target", "condition"],
+      "action_name": "거짓 종착 유도",
+      "target": "권나래",
+      "range": "단일",
+      "condition": "안내 종료 전에 이동한 대상",
+      "valid_action_ids": ["poc001_action_hold_position"],
+      "capture_mark": "broadcast_cut",
+      "damage_on_failure": 14,
+      "risk_on_failure": 18
+    },
+    {
+      "id": "poc001_pattern_boundary_fold",
+      "name": "승강장 경계 접힘",
+      "omen_text": "노란 안전선이 안쪽으로 접히며 같은 기둥이 두 번 보인다.",
+      "observed_before_recovery": true,
+      "first_use_hidden": false,
+      "readable_fields": ["action_name", "range", "condition"],
+      "action_name": "경계 접기",
+      "target": "플랫폼",
+      "range": "전체",
+      "condition": "경계 표식이 고정되지 않음",
+      "valid_action_ids": ["poc001_action_fix_boundary"],
+      "capture_mark": "boundary_fixed",
+      "damage_on_failure": 12,
+      "risk_on_failure": 16
+    },
+    {
+      "id": "poc001_pattern_ticket_imprint",
+      "name": "검은 승차권의 승객 각인",
+      "omen_text": "검은 천공 자국이 사람 이름과 비슷한 획으로 번진다.",
+      "observed_before_recovery": false,
+      "first_use_hidden": true,
+      "readable_fields": ["action_name", "target", "condition"],
+      "action_name": "승객 각인",
+      "target": "권나래",
+      "range": "단일",
+      "condition": "검은 승차권과 직접 접촉",
+      "generic_mitigation_action_ids": [
+        "poc001_action_guard",
+        "poc001_action_cover",
+        "poc001_action_protect_trace"
+      ],
+      "max_first_observation_damage": 18,
+      "valid_action_ids_after_observation": ["poc001_action_isolate_ticket"],
+      "capture_mark": "ticket_isolated",
+      "damage_on_failure": 24,
+      "risk_on_failure": 22
+    }
+  ],
+  "recovery_sequence": [
+    "poc001_pattern_false_terminal",
+    "poc001_pattern_boundary_fold",
+    "poc001_pattern_ticket_imprint",
+    "poc001_pattern_false_terminal",
+    "poc001_pattern_ticket_imprint"
+  ],
+  "recovery_actions": [
+    {
+      "id": "poc001_action_observe",
+      "category": "observe",
+      "label": "전조의 변화만 관측해 다음 판단 근거를 남긴다",
+      "generic": true
+    },
+    {
+      "id": "poc001_action_guard",
+      "category": "guard",
+      "label": "몸을 낮추고 전조의 충격을 방어한다",
+      "generic": true
+    },
+    {
+      "id": "poc001_action_cover",
+      "category": "guard",
+      "label": "주변 구조물 뒤로 엄폐한다",
+      "generic": true
+    },
+    {
+      "id": "poc001_action_protect_trace",
+      "category": "support",
+      "label": "승차권의 흔적을 천으로 감싸 접촉을 줄인다",
+      "generic": true
+    },
+    {
+      "id": "poc001_action_hold_position",
+      "category": "rule_response",
+      "label": "안내가 끝날 때까지 현재 위치를 고정한다",
+      "generic": false
+    },
+    {
+      "id": "poc001_action_fix_boundary",
+      "category": "rule_response",
+      "label": "안전선과 기둥 사이에 경계 표식을 고정한다",
+      "generic": false
+    },
+    {
+      "id": "poc001_action_isolate_ticket",
+      "category": "rule_response",
+      "label": "관측한 천공 패턴을 따라 검은 승차권을 격리한다",
+      "generic": false
+    },
+    {
+      "id": "poc001_action_capture",
+      "category": "capture",
+      "label": "열린 포획 창에서 잔향을 봉쇄한다",
+      "generic": false
+    }
+  ],
+  "capture_rule": {
+    "required_capture_marks": [
+      "broadcast_cut",
+      "boundary_fixed",
+      "ticket_isolated"
+    ],
+    "min_capture_turn": 5,
+    "max_recovery_turn": 8,
+    "normal_max_damage": 20,
+    "costly_max_damage": 45,
+    "emergency_risk_threshold": 100,
+    "emergency_health_threshold": 15
+  },
+  "outcomes": [
+    {
+      "id": "poc001_outcome_normal_capture",
+      "label": "정상 포획",
+      "quality": "normal"
+    },
+    {
+      "id": "poc001_outcome_costly_capture",
+      "label": "비용 있는 포획",
+      "quality": "costly"
+    },
+    {
+      "id": "poc001_outcome_emergency_capture",
+      "label": "긴급 포획",
+      "quality": "emergency"
+    }
+  ]
+}

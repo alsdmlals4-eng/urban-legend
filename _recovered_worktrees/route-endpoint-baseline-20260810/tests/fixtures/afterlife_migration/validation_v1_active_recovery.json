@@ -1,0 +1,101 @@
+{
+  "format": "urban-legend-validation-save",
+  "version": "validation-save-v1",
+  "payload_schema": 1,
+  "revision": 3,
+  "session": {
+    "token": "fixture-validation-token",
+    "lifecycle": "active",
+    "episode_id": "episode_001_afterlife_station",
+    "flow_stage": "SIT-003",
+    "checkpoint_id": "legacy:recovery",
+    "return_target": "res://scenes/battle_scene.tscn",
+    "focus_token": "legacy-afterlife-recovery"
+  },
+  "snapshots": {
+    "runtime": {
+      "episode_id": "episode_001_afterlife_station",
+      "episode_path": "res://data/episodes/episode_001_afterlife_station.json",
+      "scene_path": "res://scenes/battle_scene.tscn",
+      "dialogue_node_id": "dialogue_legacy_recovery_entry",
+      "field_node_id": "field_platform_loop",
+      "minigame_id": "minigame_frequency_sync",
+      "selected_agent_ids": ["agent_kwon_narae"],
+      "flags": ["legacy_afterlife_recovery_started"],
+      "collected_clue_ids": [
+        "clue_repeating_announcement",
+        "clue_black_ticket"
+      ],
+      "seen_hint_ids": ["hint_legacy_announcement_gap"],
+      "method_results": {
+        "legacy_recovery_attempt": {
+          "success": false
+        }
+      },
+      "minigame_results": {
+        "minigame_frequency_sync": {
+          "success": true,
+          "score": 81
+        }
+      },
+      "resolution": {
+        "grade": "temporary",
+        "label": "임시",
+        "rate": 0.3
+      },
+      "recovery": {
+        "successful": false,
+        "result_status": "active",
+        "stability": 64,
+        "current_pattern_id": "pattern_station_ticket_imprint",
+        "last_pattern_id": "pattern_station_false_terminal",
+        "confirmed_pattern_id": "",
+        "seen_pattern_ids": [
+          "pattern_station_false_terminal",
+          "pattern_station_ticket_imprint"
+        ],
+        "pattern_learning": {
+          "pattern_station_false_terminal": 1
+        }
+      },
+      "agent_case_states": {
+        "agent_kwon_narae": {
+          "fatigue": 6
+        }
+      },
+      "victim_state": {
+        "victim_id": "victim_afterlife_station_001",
+        "status": "trapped",
+        "stress": 83
+      }
+    },
+    "preparation": {
+      "selected_agent_ids": ["agent_kwon_narae"]
+    },
+    "reasoning": {
+      "collected_clue_ids": [
+        "clue_repeating_announcement",
+        "clue_black_ticket"
+      ]
+    },
+    "route": {
+      "correct_response_id": "cut_false_broadcast"
+    },
+    "recovery": {
+      "pattern_id": "pattern_station_ticket_imprint"
+    }
+  },
+  "result": {
+    "axes": {},
+    "candidate_records": {},
+    "applied_effect_ids": {}
+  },
+  "timestamps": {
+    "created_at_utc": "2026-08-01T00:00:00Z",
+    "updated_at_utc": "",
+    "completed_at_utc": ""
+  },
+  "integrity": {
+    "content_episode_id": "episode_001_afterlife_station"
+  }
+}

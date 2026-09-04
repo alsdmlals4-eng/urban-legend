@@ -1,0 +1,100 @@
+name: Validate documentation contracts
+
+on:
+  pull_request:
+    paths:
+      - ".github/pull_request_template.md"
+      - ".github/workflows/validate-base-operating-sync.yml"
+      - "START_HERE.md"
+      - "AGENTS.md"
+      - "README.md"
+      - "MVP_ROADMAP.md"
+      - "TEST_CHECKLIST.md"
+      - "docs/**"
+      - "skills/**"
+      - "tools/check_archive_governance.py"
+      - "tests/test_base_operating_sync.py"
+      - "tests/test_skill_package_integrity.py"
+      - "tests/test_investigation_case_authoring_formula.py"
+      - "tests/test_investigation_session_truth_reveal.py"
+      - "tests/test_investigation_first_run_and_replay_mastery.py"
+      - "tests/test_investigation_outcome_scoped_truth_reveal.py"
+      - "tests/test_active_document_references.py"
+      - "tests/test_archive_retention_governance.py"
+      - "tests/test_annual_mvp_001_document_contract.py"
+      - "tests/test_project_document_sync.py"
+      - "tests/test_annual_expansion_planning_contract.py"
+      - "tests/test_genre_benchmark_contract.py"
+      - "tests/test_annual_mvp_002_implementation_contract.py"
+      - "tests/test_rule_strip_continuity_planning_contract.py"
+      - "tests/test_rescue_retrieval_role_boundary_planning_contract.py"
+      - "tests/test_rescue_minigame_retrieval_rule_coverage_planning_contract.py"
+      - "tests/test_recovery_pattern_authority_correction_contract.py"
+      - "tests/test_recovery_pattern_pool_selection_and_judgment_planning_contract.py"
+      - "tests/test_recovery_outcome_states_and_result_packet_planning_contract.py"
+      - "tests/test_rescue_result_handoff_to_recovery_planning_contract.py"
+      - "tests/test_protection_obligation_cost_priority_and_termination_eligibility_planning_contract.py"
+      - "tests/test_protection_obligation_follow_up_reentry_reward_and_evaluation_linkage_planning_contract.py"
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  ubuntu-document-validation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile archive validator
+        run: python -m py_compile tools/check_archive_governance.py tests/test_archive_retention_governance.py
+      - name: Validate archive governance
+        run: python tools/check_archive_governance.py
+      - name: Validate Base, core, routing, local Skill, investigation contracts, archive, active references, planning synchronization, expansion baseline, benchmark recommendations, ANNUAL-MVP-002 implementation records, and GrillMe Batch 3 planning contracts
+        shell: bash
+        run: |
+          set +e
+          python -m unittest \
+            tests/test_base_operating_sync.py \
+            tests/test_skill_package_integrity.py \
+            tests/test_investigation_case_authoring_formula.py \
+            tests/test_investigation_session_truth_reveal.py \
+            tests/test_investigation_first_run_and_replay_mastery.py \
+            tests/test_investigation_outcome_scoped_truth_reveal.py \
+            tests/test_active_document_references.py \
+            tests/test_archive_retention_governance.py \
+            tests/test_annual_mvp_001_document_contract.py \
+            tests/test_project_document_sync.py \
+            tests/test_annual_expansion_planning_contract.py \
+            tests/test_genre_benchmark_contract.py \
+            tests/test_annual_mvp_002_implementation_contract.py \
+            tests/test_rule_strip_continuity_planning_contract.py \
+            tests/test_rescue_retrieval_role_boundary_planning_contract.py \
+            tests/test_rescue_minigame_retrieval_rule_coverage_planning_contract.py \
+            tests/test_recovery_pattern_authority_correction_contract.py \
+            tests/test_recovery_pattern_pool_selection_and_judgment_planning_contract.py \
+            tests/test_recovery_outcome_states_and_result_packet_planning_contract.py \
+            tests/test_rescue_result_handoff_to_recovery_planning_contract.py \
+            tests/test_protection_obligation_cost_priority_and_termination_eligibility_planning_contract.py \
+            tests/test_protection_obligation_follow_up_reentry_reward_and_evaluation_linkage_planning_contract.py \
+            2>&1 | tee documentation-validation.log
+          status=${PIPESTATUS[0]}
+          echo "$status" > documentation-validation-exit-code.txt
+          exit "$status"
+      - name: Preserve failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: documentation-validation-failure
+          path: |
+            documentation-validation.log
+            documentation-validation-exit-code.txt
+          if-no-files-found: error
+          retention-days: 7
