@@ -56,6 +56,7 @@ func register_element(element_id: String, control: Control, options: Dictionary 
 		"text_control": options.get("text_control", null),
 		"style_target": options.get("style_target", control),
 		"image_target": options.get("image_target", null),
+		"default_crop_mode": int(options.get("default_crop_mode", TextureRect.STRETCH_KEEP_ASPECT_COVERED)),
 		"free_layout": bool(options.get("free_layout", false)),
 		"content_key": String(options.get("content_key", "")),
 		"source_text": String(options.get("source_text", ""))
@@ -325,7 +326,8 @@ func _apply_saved_properties(element_id: String) -> void:
 		style_target.modulate.a = float(_store.get_layout_property(_scene_id, element_id, viewport_size, "panel_alpha", 1.0))
 	var image_target := entry.get("image_target") as TextureRect
 	if image_target != null:
-		image_target.stretch_mode = int(_store.get_layout_property(_scene_id, element_id, viewport_size, "crop_mode", TextureRect.STRETCH_KEEP_ASPECT_COVERED))
+		var default_crop_mode := int(entry.get("default_crop_mode", TextureRect.STRETCH_KEEP_ASPECT_COVERED))
+		image_target.stretch_mode = int(_store.get_layout_property(_scene_id, element_id, viewport_size, "crop_mode", default_crop_mode))
 
 
 func _selected_entry() -> Dictionary:

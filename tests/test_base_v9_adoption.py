@@ -26,7 +26,7 @@ class BaseV9AdoptionTests(unittest.TestCase):
         current = json.loads((ROOT / "skills/PROJECT_BASE_ADAPTER.json").read_text(encoding="utf-8"))
         self.assertEqual("MIGRATION_ONLY", current["gdd_sheet"]["operational_role"])
         self.assertEqual(
-            "NOTION",
+            "REPOSITORY",
             current["project"]["workspace_authority"]["human_facing"]["system"],
         )
 

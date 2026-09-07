@@ -38,12 +38,15 @@ pre-reveal display label: 피해자 단독 탑승
 - slot fitness/correctness 정렬 없음
 - Lume comment가 변조 후보를 식별하지 않음
 
-## 3. Lume fixed visual identity
+## 3. Lume identity and scenario-specific costume
 
 기준 Plan에서 Lume 컴포넌트 구현 시 사용할 visual contract는 다음으로 고정한다.
 
-- 사용자가 고정한 현재 루메 디자인이 identity reference다.
-- 사건별 costume/face/silhouette/pose-family variation을 자동 허용하지 않는다.
+- 사용자가 고정한 현재 루메 디자인이 identity reference다. 귀여운 소형 치비 비율,
+  은빛 웨이브 머리, 큰 호박빛 눈의 정체성은 유지한다.
+- 사건별 복장은 사용자 지시에 따라 바뀔 수 있다. 다만 무작위 자동 변형이 아니라,
+  사건 ID가 명시된 별도 후보·별도 승인 product asset으로만 추가한다. `CASE-01`
+  저승역 복장은 다른 시나리오의 전역 기본 복장이 아니다.
 - approved product asset이 없으면 텍스트 helper shell까지만 구현하고 이미지 바인딩은 `BLOCKED_ASSET_APPROVAL`로 남긴다.
 - Visual Requirement Gate 승인 전 placeholder를 제품 최종 자산처럼 승격하지 않는다.
 

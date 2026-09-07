@@ -1,6 +1,6 @@
 # IMG-M01-03 · Afterlife Recovery Background · Consumer Requirement
 
-Status: `REPLACE_REQUIRED / USER_APPROVED_VISUAL_CANDIDATE / PRODUCT_ASSET_PROMOTION_PENDING`
+Status: `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_AND_HUMAN_QA_PENDING`
 Decision: `D-2026-08-26-RUNTIME-CONSUMER-FIRST-VISUAL-ASSET-GATE`
 Consumer: `scenes/battle_scene.tscn -> ArtLayer/Background`
 Current file: `assets/backgrounds/afterlife_recovery.png`

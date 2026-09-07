@@ -39,10 +39,14 @@ func _run() -> void:
 
 	for node_name in [
 		"MenuShell", "IdentityRail", "ActionRail", "IntelligenceRail",
-		"VersionLabel", "PrimaryActionHint", "CurrentCaseTitle",
+		"ActionMenuPanel", "IntelligenceControlPanel", "CentralMenuHeader", "ControlPanelHeader",
+		"EntryCards", "LegacyMenuGroupHeading", "ValidationMenuGroupHeading", "ToolsMenuGroupHeading",
+		"WorldTitleLockup", "WorldTitleEmblem", "WorldTitleWordmark", "WorldTitle", "WorldTitleSuffix", "WorldSubtitle", "VersionLabel", "PrimaryActionHint", "CurrentCaseTitle",
+		"RecordBoundaryNotice",
 		"CurrentCaseMeta", "CurrentCaseSummary", "CurrentCasePreview",
 		"LegacyIntelStatus", "ValidationIntelStatus",
-		"SettingsButton", "SettingsPanel", "ExitButton"
+		"SettingsButton", "SettingsPanel", "ExitButton",
+		"MainMenuBackdrop", "MainMenuBackdropShade"
 	]:
 		_expect(menu.find_child(node_name, true, false) != null, "%s must exist" % node_name)
 
@@ -61,7 +65,8 @@ func _run() -> void:
 	var validation_secondary := menu.find_child("ValidationSecondaryButton", true, false) as Button
 	var validation_status := menu.find_child("ValidationStatusLabel", true, false) as Label
 	var db_button := menu.find_child("DatabaseButton", true, false) as Button
-	for required_control in [badge, legacy_button, legacy_new_button, validation_button, validation_secondary, validation_status, db_button]:
+	var m04_entry_button := menu.find_child("M04CampaignEntryButton", true, false) as Button
+	for required_control in [badge, legacy_button, legacy_new_button, m04_entry_button, validation_button, validation_secondary, validation_status, db_button]:
 		if required_control == null:
 			_expect(false, "all named controls must have expected types")
 			_cleanup(menu)
@@ -69,24 +74,73 @@ func _run() -> void:
 			return
 
 	var version_label := menu.find_child("VersionLabel", true, false) as Label
+	var world_title := menu.find_child("WorldTitle", true, false) as Label
+	var world_title_emblem := menu.find_child("WorldTitleEmblem", true, false) as TextureRect
+	var world_title_wordmark := menu.find_child("WorldTitleWordmark", true, false) as TextureRect
+	var world_title_suffix := menu.find_child("WorldTitleSuffix", true, false) as Label
+	var world_subtitle := menu.find_child("WorldSubtitle", true, false) as Label
 	var primary_hint := menu.find_child("PrimaryActionHint", true, false) as Label
 	var current_case_title := menu.find_child("CurrentCaseTitle", true, false) as Label
 	var settings_button := menu.find_child("SettingsButton", true, false) as Button
 	var settings_panel := menu.find_child("SettingsPanel", true, false) as Control
 	var exit_button := menu.find_child("ExitButton", true, false) as Button
+	var record_boundary_notice := menu.find_child("RecordBoundaryNotice", true, false) as Label
+	var bureau_backdrop := menu.find_child("MainMenuBackdrop", true, false) as TextureRect
+	var bureau_backdrop_shade := menu.find_child("MainMenuBackdropShade", true, false) as ColorRect
+	var menu_shell := menu.find_child("MenuShell", true, false) as HBoxContainer
+	var identity_rail := menu.find_child("IdentityRail", true, false) as VBoxContainer
+	var action_rail := menu.find_child("ActionRail", true, false) as VBoxContainer
+	var intelligence_rail := menu.find_child("IntelligenceRail", true, false) as VBoxContainer
+	var action_panel := menu.find_child("ActionMenuPanel", true, false) as PanelContainer
+	var intelligence_panel := menu.find_child("IntelligenceControlPanel", true, false) as PanelContainer
+	var entry_cards := menu.find_child("EntryCards", true, false) as VBoxContainer
+	var title_lockup := menu.find_child("WorldTitleLockup", true, false) as VBoxContainer
+	var primary_icon_plate := menu.find_child("LegacyNewCampaignButtonMenuActionIconPlate", true, false) as PanelContainer
+	var validation_icon_plate := menu.find_child("ValidationPrimaryButtonMenuActionIconPlate", true, false) as PanelContainer
+	var archive_icon_plate := menu.find_child("DatabaseButtonMenuActionIconPlate", true, false) as PanelContainer
 
 	_expect(version_label != null and version_label.text == "Ver 4.3", "menu must display canonical Ver 4.3")
+	_expect(world_title != null and world_title.text == "괴이기록국", "product title keeps the established bureau wordmark")
+	_expect(world_title_emblem != null and world_title_emblem.texture != null, "user-locked bureau emblem must render as the main-menu identity mark")
+	_expect(world_title_wordmark != null and world_title_wordmark.texture != null, "user-locked bureau wordmark must render in the main-menu identity lockup")
+	_expect(title_lockup != null and title_lockup.get_child_count() >= 7, "title lockup must keep the bureau mark, emblem, wordmark, dividers, subtitle, and version treatment as one authored identity stack")
+	_expect(world_title_emblem != null and world_title_emblem.custom_minimum_size.y >= 84.0, "bureau emblem must hold enough scale to anchor the title lockup")
+	_expect(world_title_wordmark != null and world_title_wordmark.custom_minimum_size.y >= 148.0, "locked wordmark must read as the primary title rather than a small secondary decal")
+	_expect(world_title_suffix != null and world_title_suffix.text == "잔향 보고서", "product title displays the approved report subtitle")
+	_expect(world_subtitle != null and world_subtitle.text == "BUREAU OF ANOMALIES: ECHO REPORT", "English subtitle mirrors the product title without changing runtime IDs")
+	_expect(bureau_backdrop != null and bureau_backdrop.texture != null, "user-approved bureau archive must render as the menu backdrop")
+	_expect(bureau_backdrop_shade != null and bureau_backdrop_shade.color.a <= 0.34, "bureau backdrop shade must preserve the approved research-room read")
+	_expect(menu_shell != null and identity_rail != null and identity_rail.get_parent() == menu_shell, "brand rail must stay open over the archive room instead of becoming a third opaque panel")
+	_expect(action_panel != null and action_rail != null and action_rail.get_parent() == action_panel, "main actions must live in the central menu panel")
+	_expect(intelligence_panel != null and intelligence_rail != null and intelligence_rail.get_parent() == intelligence_panel, "current-case information must live in the right control panel")
+	_expect(entry_cards != null and legacy_new_button != null and legacy_new_button.get_parent() == entry_cards, "each Legacy action must be an independent menu row instead of a child of a shared card")
+	_expect(entry_cards != null and validation_button != null and validation_button.get_parent() == entry_cards, "each Validation action must be an independent menu row instead of a child of a shared card")
+	_expect(entry_cards != null and db_button != null and db_button.get_parent() == entry_cards, "each tool action must be an independent menu row instead of a child of a shared card")
+	_expect(primary_icon_plate != null and validation_icon_plate != null and archive_icon_plate != null, "primary, Validation, and archive actions must each have a separate left identity plate instead of reading as text-only rows")
 	_expect(primary_hint != null and "새 캠페인 시작" in primary_hint.text, "no-save state must name new campaign as primary")
 	_expect(current_case_title != null and "저승역" in current_case_title.text, "current case must use loaded canonical episode data")
 	_expect(settings_button != null and settings_button.focus_mode == Control.FOCUS_ALL, "settings must accept keyboard focus")
 	_expect(settings_panel != null and not settings_panel.visible, "settings panel must start collapsed")
 	_expect(exit_button != null and exit_button.focus_mode == Control.FOCUS_ALL, "exit must accept keyboard focus")
+	_expect(record_boundary_notice != null and not record_boundary_notice.visible, "720p must hide the duplicate identity-rail boundary notice before it can clip at the viewport edge")
 	_expect(menu.find_children("*", "ScrollContainer", true, false).is_empty(), "main menu must not contain a document-wall ScrollContainer")
 
 	await process_frame
 	_expect(root.gui_get_focus_owner() == legacy_new_button, "no-save initial focus must match the primary new-campaign action")
 	_expect(_inside_viewport(version_label), "Ver 4.3 must fit inside 1280x720")
+	_expect(_inside_viewport(world_title_emblem), "bureau emblem must fit inside 1280x720")
+	_expect(_inside_viewport(world_title_wordmark), "bureau wordmark must fit inside 1280x720")
 	_expect(_inside_viewport(legacy_new_button), "primary Legacy action must fit inside 1280x720")
+	_expect(legacy_new_button.size.y >= 88.0, "primary campaign action must read as a prominent framed menu row, not a compact utility button")
+	_expect(legacy_button.size.y >= 56.0 and m04_entry_button.size.y >= 56.0, "Legacy supporting actions must retain deliberate row height beside the primary campaign action")
+	_expect(validation_button.size.y >= 56.0 and db_button.size.y >= 52.0, "Validation and archive actions must keep a readable separate-row silhouette at 720p")
+	_expect(_vertical_gap(legacy_button, legacy_new_button) >= 8.0, "Legacy actions must retain a visible independent-row gap at 720p")
+	_expect(_vertical_gap(legacy_new_button, m04_entry_button) >= 8.0, "the M04 entry must remain visually separate from the primary campaign row")
+	_expect(_vertical_gap(validation_button, db_button) >= 16.0, "the Validation and tool groups must be separated by a distinct group gap")
+	_expect(exit_button != null and exit_button.get_global_rect().end.y <= float(root.size.y) - 8.0, "720p exit row must retain an eight-pixel safe margin below the clean menu stack")
+	_expect(exit_button != null and action_panel != null and action_panel.get_global_rect().end.y - exit_button.get_global_rect().end.y <= 72.0, "the action stack must use the central panel height deliberately instead of leaving a prototype-sized blank floor")
+	_expect(m04_entry_button.focus_neighbor_top == m04_entry_button.get_path_to(legacy_new_button), "M04 entry must follow the standard new-campaign action in keyboard focus order")
+	_expect(m04_entry_button.focus_neighbor_bottom == m04_entry_button.get_path_to(validation_button), "M04 entry must lead to the Validation action in keyboard focus order")
 
 	_expect("별도 기록" in badge.text, "Validation badge must explain persistence separation")
 	_expect(legacy_button.focus_mode == Control.FOCUS_ALL, "Legacy primary must accept keyboard focus")
@@ -123,7 +177,7 @@ func _run() -> void:
 
 	var case_preview := menu.find_child("CurrentCasePreview", true, false) as Control
 	var case_summary := menu.find_child("CurrentCaseSummary", true, false) as Control
-	_expect(case_preview != null and not case_preview.visible, "1280x720 must compact secondary preview first")
+	_expect(case_preview != null and case_preview.visible and _inside_viewport(case_preview), "1280x720 must retain the current-case preview in the right control panel")
 	_expect(case_summary != null and not case_summary.visible, "1280x720 must compact secondary summary first")
 
 	root.size = Vector2i(1920, 1080)
@@ -132,6 +186,9 @@ func _run() -> void:
 	await process_frame
 	_expect(case_preview.visible, "1920x1080 may expose the existing case preview")
 	_expect(case_summary.visible, "1920x1080 may expose the existing case summary")
+	for node_name in ["WorldTitleEmblem", "WorldTitleWordmark", "M04CampaignEntryButton", "DatabaseButton", "SettingsButton", "ExitButton"]:
+		var action := menu.find_child(node_name, true, false) as Control
+		_expect(action != null and _inside_viewport(action), "%s must remain reachable inside 1920x1080" % node_name)
 
 	_cleanup(menu)
 	_finish()
@@ -141,6 +198,12 @@ func _inside_viewport(control: Control) -> bool:
 	if control == null:
 		return false
 	return Rect2(Vector2.ZERO, Vector2(root.size)).encloses(control.get_global_rect())
+
+
+func _vertical_gap(upper: Control, lower: Control) -> float:
+	if upper == null or lower == null:
+		return -1.0
+	return lower.get_global_rect().position.y - upper.get_global_rect().end.y
 
 
 func _write_payload(lifecycle: String, flow_stage: String) -> void:

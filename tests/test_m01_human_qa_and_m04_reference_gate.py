@@ -71,12 +71,15 @@ class M01HumanQaAndM04ReferenceGateTests(unittest.TestCase):
         self.assertIn("환경·괴이·증거 우선", text)
         self.assertNotIn("PRODUCT_REFERENCE_ASSET_APPROVED", text)
 
-    def test_m04_result_approval_is_recorded_without_promoting_product_asset(self) -> None:
+    def test_m04_result_approval_keeps_reference_asset_pending_after_runtime_asset_validation(self) -> None:
         machine = json.loads((ROOT / "docs/current-planning-canon.json").read_text(encoding="utf-8"))
         evidence = machine["evidence_ceiling"]
         self.assertEqual("USER_APPROVED_VISUAL_CANDIDATE", evidence["m04_reference_visual_candidate"])
         self.assertEqual("PENDING", evidence["product_reference_asset"])
-        self.assertEqual("NOT_RUN", evidence["m04_runtime_visual_validation"])
+        self.assertEqual(
+            "RECOVERY_BACKGROUND_AND_D_CUTOUT_TARGET_SCENE_CHECK_1280_720_1920_1080_PASS_HUMAN_QA_NOT_RUN",
+            evidence["m04_runtime_visual_validation"],
+        )
 
         text = M04_BRIEF.read_text(encoding="utf-8")
         for token in (

@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "artifact_role": "PROJECT_PROTECTED_CHANGE_APPROVAL",
+  "status": "APPROVED",
+  "protected_base_commit": "c0bc8a98ee40bf04d4953a834d9cd06c47e42efe",
+  "decision_ids": ["UL-ISSUE-280-M01-ANOMALY-D-CORRECTION-PROMOTION", "UL-ISSUE-282-M01-ANOMALY-D-RUNTIME-1920"],
+  "approved_paths": ["assets/anomalies/cutouts/afterlife_d_cutout.png", "scripts/scenes/battle_scene.gd", "scripts/scenes/investigation_scene.gd", "scripts/ui/canon_v2_operation_overlay.gd", "scripts/ui/canon_v2_runtime_bridge.gd", "scripts/ui/recovery_telegraph_audio.gd"],
+  "approval_source": "The sole decision owner authorized continuous autonomous work and direct Godot validation. This approval records only the already-promoted D asset's 1920x1080 evidence; no product route or gameplay change is authorized.",
+  "approval_time": "2026-08-27T12:51:00+09:00",
+  "scope_summary": "Record actual M01 D 1920x1080 runtime evidence and retain Human QA as pending. Preserve all product assets, scene/catalog routes, B/C, rules, save data, and M04 scope."
+}

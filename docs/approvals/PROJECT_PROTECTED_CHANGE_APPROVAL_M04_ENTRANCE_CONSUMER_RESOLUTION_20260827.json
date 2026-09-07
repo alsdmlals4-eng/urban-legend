@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "artifact_role": "PROJECT_PROTECTED_CHANGE_APPROVAL",
+  "status": "APPROVED",
+  "protected_base_commit": "c0bc8a98ee40bf04d4953a834d9cd06c47e42efe",
+  "decision_ids": ["UL-ISSUE-305-M04-ENTRANCE-CONSUMER-RESOLUTION"],
+  "approved_paths": [
+    "assets/anomalies/cutouts/afterlife_d_cutout.png",
+    "assets/anomalies/cutouts/red_umbrella_b_cutout.png",
+    "assets/backgrounds/afterlife_platform.png",
+    "scripts/scenes/battle_scene.gd",
+    "scripts/scenes/investigation_scene.gd",
+    "scripts/ui/canon_v2_operation_overlay.gd",
+    "scripts/ui/canon_v2_runtime_bridge.gd",
+    "scripts/ui/recovery_telegraph_audio.gd"
+  ],
+  "approval_source": "The sole decision owner authorized continuous autonomous current-slice work, safe current-task PR handling, and correction of material consumer-fact drift. This receipt acknowledges the adapter's existing protected baseline; no protected product path changes and no second GitHub identity are required.",
+  "approval_time": "2026-08-27T23:59:00+09:00",
+  "scope_summary": "Correct only the stale M04 entrance consumer-resolution wording: the main-menu CurrentCasePreview is hidden in compact layouts below 1500×850. Preserve candidate and canonical asset bytes, Scene/catalog/runtime/UI behavior, gameplay, data, saves, and Human QA state."
+}

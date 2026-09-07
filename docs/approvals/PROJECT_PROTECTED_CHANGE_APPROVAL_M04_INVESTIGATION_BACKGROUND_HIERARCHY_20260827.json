@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "artifact_role": "PROJECT_PROTECTED_CHANGE_APPROVAL",
+  "status": "APPROVED",
+  "protected_base_commit": "c0bc8a98ee40bf04d4953a834d9cd06c47e42efe",
+  "decision_ids": [
+    "UL-ISSUE-261-M04-RECOVERY-TELEGRAPH-AUDIO",
+    "UL-ISSUE-268-RECOVERY-OVERLAY-LAYERING",
+    "UL-ISSUE-270-INVESTIGATION-OVERLAY-REFLOW",
+    "UL-ISSUE-272-M04-INVESTIGATION-BACKGROUND-HIERARCHY"
+  ],
+  "approved_paths": [
+    "scripts/scenes/battle_scene.gd",
+    "scripts/scenes/investigation_scene.gd",
+    "scripts/ui/canon_v2_operation_overlay.gd",
+    "scripts/ui/canon_v2_runtime_bridge.gd",
+    "scripts/ui/recovery_telegraph_audio.gd"
+  ],
+  "approval_source": "The project's sole decision owner authorized continuous autonomous implementation, direct Godot verification, and treating in-scope approvals as granted. This manifest records the M04-only visual hierarchy correction found during actual-consumer runtime validation; no second GitHub identity is required.",
+  "approval_time": "2026-08-27T11:45:00+09:00",
+  "scope_summary": "This approval covers the protected-path delta from the adapter baseline: preserve the approved M04 red-crossroads background in the actual Investigation consumer by reducing only M04's scene shade and applying translucent existing dossier panels to PointMethodDock and DialogueDock. Preserve M01/Afterlife theme behavior, scene layout, UI controls, assets, investigation rules, save data, and recovery behavior."
+}

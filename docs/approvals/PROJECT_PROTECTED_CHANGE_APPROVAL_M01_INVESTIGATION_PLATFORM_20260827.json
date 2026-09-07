@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "artifact_role": "PROJECT_PROTECTED_CHANGE_APPROVAL",
+  "status": "APPROVED",
+  "protected_base_commit": "c0bc8a98ee40bf04d4953a834d9cd06c47e42efe",
+  "decision_ids": ["UL-ISSUE-286-M01-INVESTIGATION-PLATFORM"],
+  "approved_paths": [
+    "assets/anomalies/cutouts/afterlife_d_cutout.png",
+    "assets/backgrounds/afterlife_platform.png",
+    "scripts/scenes/battle_scene.gd",
+    "scripts/scenes/investigation_scene.gd",
+    "scripts/ui/canon_v2_operation_overlay.gd",
+    "scripts/ui/canon_v2_runtime_bridge.gd",
+    "scripts/ui/recovery_telegraph_audio.gd"
+  ],
+  "approval_source": "The sole decision owner authorized continuous autonomous current-slice work, bounded visual generation, local project and Notion storage, direct Godot validation, and safe current-task PR merge. This approval applies only to the M01 Investigation background replacement and its evidence; it does not authorize unrelated protected-path mutation.",
+  "approval_time": "2026-08-27T18:00:00+09:00",
+  "scope_summary": "Replace the existing M01 Investigation background at its already-wired canonical path with the exact Adapt 02 bytes after two-resolution runtime validation. Preserve scene wiring, UI, gameplay, save data, episode data, other assets, Human QA pending state, and unrelated workstreams."
+}

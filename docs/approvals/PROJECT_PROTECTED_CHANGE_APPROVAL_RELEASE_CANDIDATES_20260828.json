@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "artifact_role": "PROJECT_PROTECTED_CHANGE_APPROVAL",
+  "status": "APPROVED",
+  "protected_base_commit": "c0bc8a98ee40bf04d4953a834d9cd06c47e42efe",
+  "decision_ids": ["UL-ISSUE-317-RELEASE-CANDIDATES"],
+  "approved_paths": ["assets/anomalies/cutouts/afterlife_d_cutout.png", "assets/anomalies/cutouts/red_umbrella_b_cutout.png", "assets/backgrounds/afterlife_platform.png", "scripts/scenes/battle_scene.gd", "scripts/scenes/investigation_scene.gd", "scripts/ui/canon_v2_operation_overlay.gd", "scripts/ui/canon_v2_runtime_bridge.gd", "scripts/ui/recovery_telegraph_audio.gd"],
+  "approval_source": "The sole decision owner authorized autonomous candidate creation and dual storage for missing promotion-layer visuals. This task changes none of the listed protected product paths.",
+  "approval_time": "2026-08-28T07:25:00+09:00",
+  "scope_summary": "Retain one key-art candidate and one app-icon candidate under documentation-only release storage; preserve all product assets, runtime mappings, and submission status."
+}

@@ -214,7 +214,7 @@ Most consumers already have tracked files and must remain `REUSE_REVIEW` until t
 |---|---|---|---|
 | `IMG-M01-03` | Recovery `ArtLayer/Background` | `assets/backgrounds/afterlife_recovery.png` | `REUSE_REVIEW / PIXEL_COMPARE_PENDING` |
 | `IMG-M01-04` | Recovery `AnomalyVisual` B/C | `afterlife_b_cutout.png` + full fallback | `REUSE_REVIEW / PIXEL_COMPARE_PENDING` |
-| `IMG-M01-05` | Recovery `AnomalyVisual` D | `afterlife_d_cutout.png` + full fallback | `REUSE_REVIEW / PIXEL_COMPARE_PENDING` |
+| `IMG-M01-05` | Recovery `AnomalyVisual` D | `afterlife_d_cutout.png` + full fallback | `PROJECT_ASSET_APPROVED / IMPLEMENTED / 1280_RUNTIME_VERIFIED / 1920_HUMAN_QA_PENDING` |
 | `IMG-M01-02` | Investigation `ArtLayer/Background` + `LocationPreview` | `assets/backgrounds/afterlife_platform.png` | `REUSE_REVIEW / PIXEL_COMPARE_PENDING` |
 | `IMG-M01-01` | Dialogue/location background + secondary Main Menu reuse | `assets/backgrounds/afterlife_entrance.png` | `REUSE_REVIEW / SHARED_CONSUMER_ROLE_REVIEW / PIXEL_COMPARE_PENDING` |
 
@@ -267,7 +267,7 @@ Tracked PNG presence, `.import` files, legacy `assets/ASSET_MANIFEST.json`, user
 Still pending:
 
 - current binary pixel review for the M01 reuse queue;
-- product-reference promotion;
+- product-reference promotion for M01 D is complete; remaining M01/M04 consumers still require their own promotion gates;
 - rights/provenance promotion review;
 - 1280×720 / 1920×1080 runtime readability;
 - M01 actual Human first-session QA;

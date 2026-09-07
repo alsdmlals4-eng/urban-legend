@@ -2,7 +2,7 @@
 
 ## Status
 
-`USER_APPROVED_VISUAL_CANDIDATE / PRODUCT_ASSET_PROMOTION_PENDING`
+`PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_AND_HUMAN_QA_PENDING`
 
 This record owns the one-image visual candidate created after the direct pixel review of the current `afterlife_recovery.png` Recovery background consumer.
 
@@ -23,4 +23,4 @@ The candidate is a textless, characterless M01 Recovery environment. Its repeate
 
 ## Approval boundary
 
-User result approval confirms this visual candidate and requires durable storage in this repository and Project Notion. It does not replace `assets/backgrounds/afterlife_recovery.png`, add a Godot reference, grant `PROJECT_ASSET_APPROVED`, or pass runtime readability and Human QA. Those gates remain separately authorized work.
+The sole decision owner authorized product promotion under GitHub Issue #250. The exact candidate bytes now replace only `assets/backgrounds/afterlife_recovery.png`; the existing Godot catalog, scene route, and anomaly/fallback assets remain unchanged. Godot import and automated catalog checks are required by this promotion. Live 1280×720/1920×1080 capture and Human QA remain separate pending gates.

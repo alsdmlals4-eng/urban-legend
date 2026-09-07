@@ -27,12 +27,26 @@
             "slot_afterlife_p01_destination_mismatch",
             "slot_afterlife_p01_official_absence"
           ],
-          "required_record_ids": [
-            "record_afterlife_r1_broadcast_original",
-            "record_afterlife_r1_victim_phone_destination",
-            "record_afterlife_r1_concurrent_destination_mismatch",
-            "record_afterlife_official_operation_log"
-          ]
+           "required_record_ids": [
+             "record_afterlife_r1_broadcast_original",
+             "record_afterlife_r1_victim_phone_destination",
+             "record_afterlife_r1_concurrent_destination_mismatch",
+             "record_afterlife_official_operation_log"
+           ],
+           "deduction_segments": [
+             {"kind": "text", "text": "안내방송 원본의 목적지 구간에는 "},
+             {"kind": "slot", "slot_id": "slot_afterlife_p01_broadcast_blank"},
+             {"kind": "text", "text": "가 남아 있다."},
+             {"kind": "text", "text": "피해자가 들은 장소는 "},
+             {"kind": "slot", "slot_id": "slot_afterlife_p01_listener_memory"},
+             {"kind": "text", "text": "와 연결되어 있다."},
+             {"kind": "text", "text": "동시간대 기록은 "},
+             {"kind": "slot", "slot_id": "slot_afterlife_p01_destination_mismatch"},
+             {"kind": "text", "text": "를 남긴다."},
+             {"kind": "text", "text": "공식 운행 기록은 "},
+             {"kind": "slot", "slot_id": "slot_afterlife_p01_official_absence"},
+             {"kind": "text", "text": "를 확인한다."}
+           ]
         },
         {
           "id": "manual_afterlife_page_02_boundary_reset",
@@ -44,12 +58,29 @@
             "slot_afterlife_p02_position_reset",
             "slot_afterlife_p02_persistent_time_records"
           ],
-          "required_record_ids": [
-            "record_afterlife_r2_continuous_recording",
-            "record_afterlife_r2_phone_time_battery",
-            "record_afterlife_r2_object_position",
-            "record_afterlife_r2_directional_boundary_test"
-          ]
+           "required_record_ids": [
+             "record_afterlife_r2_continuous_recording",
+             "record_afterlife_r2_phone_time_battery",
+             "record_afterlife_r2_object_position",
+             "record_afterlife_r2_directional_boundary_test"
+           ],
+           "deduction_segments": [
+             {"kind": "text", "text": "진입점으로 돌아온 뒤에도 "},
+             {"kind": "slot", "slot_id": "slot_afterlife_p02_announcement_window"},
+             {"kind": "text", "text": "가 관찰된다."},
+             {"kind": "text", "text": "개인 목적지가 들린 방향은 "},
+             {"kind": "slot", "slot_id": "slot_afterlife_p02_projected_direction"},
+             {"kind": "text", "text": "로 기록된다."},
+             {"kind": "text", "text": "경계를 넘을 때 확인한 변화는 "},
+             {"kind": "slot", "slot_id": "slot_afterlife_p02_boundary_crossing"},
+             {"kind": "text", "text": "다."},
+             {"kind": "text", "text": "위치 기록에서는 "},
+             {"kind": "slot", "slot_id": "slot_afterlife_p02_position_reset"},
+             {"kind": "text", "text": "가 남는다."},
+             {"kind": "text", "text": "시간 기록은 "},
+             {"kind": "slot", "slot_id": "slot_afterlife_p02_persistent_time_records"},
+             {"kind": "text", "text": "를 보여 준다."}
+           ]
         },
         {
           "id": "manual_afterlife_page_03_official_return",
@@ -61,14 +92,31 @@
             "slot_afterlife_p03_matching_ticket",
             "slot_afterlife_p03_joint_disembarkation"
           ],
-          "required_record_ids": [
-            "record_afterlife_r3_transit_history",
-            "record_afterlife_r3_official_route_map",
-            "record_afterlife_r3_station_identifier",
-            "record_afterlife_r3_ticket_comparison",
-            "record_afterlife_r3_boarding_disembarkation",
-            "record_afterlife_official_operation_log"
-          ]
+           "required_record_ids": [
+             "record_afterlife_r3_transit_history",
+             "record_afterlife_r3_official_route_map",
+             "record_afterlife_r3_station_identifier",
+             "record_afterlife_r3_ticket_comparison",
+             "record_afterlife_r3_boarding_disembarkation",
+             "record_afterlife_official_operation_log"
+           ],
+           "deduction_segments": [
+             {"kind": "text", "text": "피해자의 현실 이동 기록은 "},
+             {"kind": "slot", "slot_id": "slot_afterlife_p03_real_return_route"},
+             {"kind": "text", "text": "를 가리킨다."},
+             {"kind": "text", "text": "안내가 이어질 때에는 "},
+             {"kind": "slot", "slot_id": "slot_afterlife_p03_wait_until_end"},
+             {"kind": "text", "text": "를 비교한다."},
+             {"kind": "text", "text": "현재 위치는 "},
+             {"kind": "slot", "slot_id": "slot_afterlife_p03_official_identifier"},
+             {"kind": "text", "text": "로 다시 확인한다."},
+             {"kind": "text", "text": "승차권 비교에서는 "},
+             {"kind": "slot", "slot_id": "slot_afterlife_p03_matching_ticket"},
+             {"kind": "text", "text": "를 대조한다."},
+             {"kind": "text", "text": "귀환 이동 기록은 "},
+             {"kind": "slot", "slot_id": "slot_afterlife_p03_joint_disembarkation"},
+             {"kind": "text", "text": "를 남긴다."}
+           ]
         }
       ],
       "slots": [
@@ -125,7 +173,38 @@
         {"id": "record_afterlife_r3_ticket_comparison", "source_id": "source_afterlife_ticket_comparison", "usage_refs": ["manual_afterlife_page_03_official_return"], "state": "unverified"},
         {"id": "record_afterlife_r3_boarding_disembarkation", "source_id": "source_afterlife_boarding_log", "usage_refs": ["manual_afterlife_page_03_official_return"], "state": "unverified"}
       ],
-      "candidate_keywords": [],
+       "candidate_keywords": [
+         {"id": "kw_afterlife_p01_broadcast_silence", "page_id": "manual_afterlife_page_01_destination_projection", "display_label": "목적지 구간의 무음 공백", "source_record_id": "record_afterlife_r1_broadcast_original"},
+         {"id": "kw_afterlife_p01_broadcast_named_destination", "page_id": "manual_afterlife_page_01_destination_projection", "display_label": "방송 속 선명한 목적지명", "source_record_id": "record_afterlife_r1_broadcast_original", "derived_from_candidate_id": "kw_afterlife_p01_broadcast_silence"},
+         {"id": "kw_afterlife_p01_listener_personal_place", "page_id": "manual_afterlife_page_01_destination_projection", "display_label": "개인이 들은 귀환 장소", "source_record_id": "record_afterlife_r1_victim_phone_destination"},
+         {"id": "kw_afterlife_p01_listener_shared_place", "page_id": "manual_afterlife_page_01_destination_projection", "display_label": "모두가 들은 동일 목적지", "source_record_id": "record_afterlife_r1_victim_phone_destination", "derived_from_candidate_id": "kw_afterlife_p01_listener_personal_place"},
+         {"id": "kw_afterlife_p01_concurrent_destination_disagreement", "page_id": "manual_afterlife_page_01_destination_projection", "display_label": "동시간대 기록의 목적지 불일치", "source_record_id": "record_afterlife_r1_concurrent_destination_mismatch"},
+         {"id": "kw_afterlife_p01_concurrent_shared_destination", "page_id": "manual_afterlife_page_01_destination_projection", "display_label": "동시간대 기록의 공통 목적지", "source_record_id": "record_afterlife_r1_concurrent_destination_mismatch", "derived_from_candidate_id": "kw_afterlife_p01_concurrent_destination_disagreement"},
+         {"id": "kw_afterlife_p01_official_route_absence", "page_id": "manual_afterlife_page_01_destination_projection", "display_label": "공식 운행 기록의 추가 목적지 부재", "source_record_id": "record_afterlife_official_operation_log"},
+         {"id": "kw_afterlife_p01_official_extra_train", "page_id": "manual_afterlife_page_01_destination_projection", "display_label": "공식 운행 기록의 추가 열차", "source_record_id": "record_afterlife_official_operation_log", "derived_from_candidate_id": "kw_afterlife_p01_official_route_absence"},
+         {"id": "kw_afterlife_p02_continuous_recording", "page_id": "manual_afterlife_page_02_boundary_reset", "display_label": "위치와 무관하게 이어진 녹음 시간", "source_record_id": "record_afterlife_r2_continuous_recording"},
+         {"id": "kw_afterlife_p02_recording_reset", "page_id": "manual_afterlife_page_02_boundary_reset", "display_label": "진입점에서 함께 끊긴 녹음 시간", "source_record_id": "record_afterlife_r2_continuous_recording", "derived_from_candidate_id": "kw_afterlife_p02_continuous_recording"},
+         {"id": "kw_afterlife_p02_time_battery_persist", "page_id": "manual_afterlife_page_02_boundary_reset", "display_label": "되감기지 않은 시각과 배터리", "source_record_id": "record_afterlife_r2_phone_time_battery"},
+         {"id": "kw_afterlife_p02_time_battery_reset", "page_id": "manual_afterlife_page_02_boundary_reset", "display_label": "초기화된 시각과 배터리", "source_record_id": "record_afterlife_r2_phone_time_battery", "derived_from_candidate_id": "kw_afterlife_p02_time_battery_persist"},
+         {"id": "kw_afterlife_p02_object_remains", "page_id": "manual_afterlife_page_02_boundary_reset", "display_label": "경계 안쪽에 남은 물건의 위치", "source_record_id": "record_afterlife_r2_object_position"},
+         {"id": "kw_afterlife_p02_object_disappears", "page_id": "manual_afterlife_page_02_boundary_reset", "display_label": "사람과 함께 사라진 물건의 위치", "source_record_id": "record_afterlife_r2_object_position", "derived_from_candidate_id": "kw_afterlife_p02_object_remains"},
+         {"id": "kw_afterlife_p02_destination_boundary", "page_id": "manual_afterlife_page_02_boundary_reset", "display_label": "들린 목적지 방향의 경계 통과", "source_record_id": "record_afterlife_r2_directional_boundary_test"},
+         {"id": "kw_afterlife_p02_platform_interior", "page_id": "manual_afterlife_page_02_boundary_reset", "display_label": "승강장 내부의 이동", "source_record_id": "record_afterlife_r2_directional_boundary_test", "derived_from_candidate_id": "kw_afterlife_p02_destination_boundary"},
+         {"id": "kw_afterlife_p02_person_position_reset", "page_id": "manual_afterlife_page_02_boundary_reset", "display_label": "사람만 진입점으로 돌아온 위치", "source_record_id": "record_afterlife_r2_object_position"},
+         {"id": "kw_afterlife_p02_all_position_reset", "page_id": "manual_afterlife_page_02_boundary_reset", "display_label": "물건과 사람 모두 초기화된 위치", "source_record_id": "record_afterlife_r2_object_position", "derived_from_candidate_id": "kw_afterlife_p02_person_position_reset"},
+         {"id": "kw_afterlife_p03_real_transit_history", "page_id": "manual_afterlife_page_03_official_return", "display_label": "피해자의 현실 귀환 경로", "source_record_id": "record_afterlife_r3_transit_history"},
+         {"id": "kw_afterlife_p03_personal_destination", "page_id": "manual_afterlife_page_03_official_return", "display_label": "피해자가 들은 개인 목적지", "source_record_id": "record_afterlife_r3_transit_history", "derived_from_candidate_id": "kw_afterlife_p03_real_transit_history"},
+         {"id": "kw_afterlife_p03_route_map", "page_id": "manual_afterlife_page_03_official_return", "display_label": "노선명·노선색·역 코드의 대조", "source_record_id": "record_afterlife_r3_official_route_map"},
+         {"id": "kw_afterlife_p03_route_color_only", "page_id": "manual_afterlife_page_03_official_return", "display_label": "노선색만 같은 노선", "source_record_id": "record_afterlife_r3_official_route_map", "derived_from_candidate_id": "kw_afterlife_p03_route_map"},
+         {"id": "kw_afterlife_p03_station_identifier", "page_id": "manual_afterlife_page_03_official_return", "display_label": "현재 역과 공식 노선을 고정한 식별음", "source_record_id": "record_afterlife_r3_station_identifier"},
+         {"id": "kw_afterlife_p03_personal_guide_sound", "page_id": "manual_afterlife_page_03_official_return", "display_label": "개인 목적지로 향하는 안내음", "source_record_id": "record_afterlife_r3_station_identifier", "derived_from_candidate_id": "kw_afterlife_p03_station_identifier"},
+         {"id": "kw_afterlife_p03_matching_ticket", "page_id": "manual_afterlife_page_03_official_return", "display_label": "노선명·역 코드·문양·텍스트가 맞는 표", "source_record_id": "record_afterlife_r3_ticket_comparison"},
+         {"id": "kw_afterlife_p03_color_only_ticket", "page_id": "manual_afterlife_page_03_official_return", "display_label": "노선색만 같은 표", "source_record_id": "record_afterlife_r3_ticket_comparison", "derived_from_candidate_id": "kw_afterlife_p03_matching_ticket"},
+         {"id": "kw_afterlife_p03_joint_disembarkation", "page_id": "manual_afterlife_page_03_official_return", "display_label": "함께 탑승하고 실제 역에서 함께 하차", "source_record_id": "record_afterlife_r3_boarding_disembarkation"},
+         {"id": "kw_afterlife_p03_separate_disembarkation", "page_id": "manual_afterlife_page_03_official_return", "display_label": "각자 들은 목적지에서 따로 하차", "source_record_id": "record_afterlife_r3_boarding_disembarkation", "derived_from_candidate_id": "kw_afterlife_p03_joint_disembarkation"},
+         {"id": "kw_afterlife_p03_official_extra_service_absence", "page_id": "manual_afterlife_page_03_official_return", "display_label": "막차 이후 추가 운행 없음", "source_record_id": "record_afterlife_official_operation_log"},
+         {"id": "kw_afterlife_p03_official_extra_service", "page_id": "manual_afterlife_page_03_official_return", "display_label": "막차 이후 추가 운행", "source_record_id": "record_afterlife_official_operation_log", "derived_from_candidate_id": "kw_afterlife_p03_official_extra_service_absence"}
+       ],
       "semantic_relations": []
     },
     "rescue_protocol": {
@@ -200,7 +279,7 @@
       },
       "normal_clear": {
         "spoiler_state": "answer_viewed",
-        "reveal_complete_manual": true
+         "reveal_complete_manual": false
       },
       "approved_retreat": {
         "spoiler_state": "partial_truth_revealed",

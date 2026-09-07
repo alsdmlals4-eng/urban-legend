@@ -8,6 +8,103 @@
     "visuals": { "dialogue_background_id": "red_alley_entrance", "investigation_background_id": "red_crossroads", "recovery_background_id": "red_recovery", "anomaly_b_asset_id": "red_umbrella_b", "anomaly_d_asset_id": "red_umbrella_d" },
     "anomaly_profile": { "origin": "집단 인식과 공포에서 발생한 현상", "activity_stage": "learning", "activity_period": "성장 중", "human_understanding": "중간", "observed_form": "피해자와 무관한 20대 초반 여성형", "repetition_rule": "세 번째 빗소리마다 귀가 경로를 되감는다" }
   },
+  "investigation_manual": {
+    "schema_version": 1,
+    "case_id": "episode_002_red_umbrella_alley",
+    "state": "unstarted",
+    "record_ids": [
+      "clue_red_umbrella_fabric",
+      "clue_repeating_alley_sign",
+      "clue_reverse_rain_flow"
+    ],
+    "pages": [
+      {
+        "id": "rule_m04_rain_rewind",
+        "title": "세 번째 빗소리 뒤의 경로",
+        "required_record_ids": [
+          "clue_repeating_alley_sign",
+          "clue_reverse_rain_flow"
+        ],
+        "player_rule_summary": "세 번째 빗소리와 선행하는 빗물 흐름을 함께 대조해 반복 경로가 되감기는 시점을 판별한다.",
+        "slot_ids": [
+          "slot_m04_rain_rewind_sign",
+          "slot_m04_rain_rewind_flow"
+        ],
+        "deduction_segments": [
+          {"kind": "text", "text": "반복 표지판은 실제 출구가 아니라 "},
+          {"kind": "slot", "slot_id": "slot_m04_rain_rewind_sign"},
+          {"kind": "text", "text": "를 가리킨다."},
+          {"kind": "text", "text": "물웅덩이의 변화는 "},
+          {"kind": "slot", "slot_id": "slot_m04_rain_rewind_flow"},
+          {"kind": "text", "text": "에서 관찰된다."}
+        ]
+      },
+      {
+        "id": "rule_m04_victim_tether",
+        "title": "젖은 손자국과 귀가 기억",
+        "required_record_ids": [
+          "clue_red_umbrella_fabric",
+          "clue_repeating_alley_sign"
+        ],
+        "player_rule_summary": "우산에 남은 피해자 흔적과 반복 표지판을 분리해 피해자의 실제 귀가 경로가 다시 덮어쓰이지 않도록 보호한다.",
+        "slot_ids": [
+          "slot_m04_victim_tether_fabric",
+          "slot_m04_victim_tether_sign"
+        ],
+        "deduction_segments": [
+          {"kind": "text", "text": "피해자 보호 중에는 "},
+          {"kind": "slot", "slot_id": "slot_m04_victim_tether_fabric"},
+          {"kind": "text", "text": "에 남은 손자국을 기준으로 삼는다."},
+          {"kind": "text", "text": "표지판은 "},
+          {"kind": "slot", "slot_id": "slot_m04_victim_tether_sign"},
+          {"kind": "text", "text": "와 분리하여 읽는다."}
+        ]
+      }
+    ],
+    "slots": [
+      {"id": "slot_m04_rain_rewind_sign", "page_id": "rule_m04_rain_rewind"},
+      {"id": "slot_m04_rain_rewind_flow", "page_id": "rule_m04_rain_rewind"},
+      {"id": "slot_m04_victim_tether_fabric", "page_id": "rule_m04_victim_tether"},
+      {"id": "slot_m04_victim_tether_sign", "page_id": "rule_m04_victim_tether"}
+    ],
+    "evidence_records": [
+      {"id": "clue_red_umbrella_fabric", "source_id": "clue_red_umbrella_fabric", "usage_refs": ["rule_m04_victim_tether"], "state": "unverified"},
+      {"id": "clue_repeating_alley_sign", "source_id": "clue_repeating_alley_sign", "usage_refs": ["rule_m04_rain_rewind", "rule_m04_victim_tether"], "state": "unverified"},
+      {"id": "clue_reverse_rain_flow", "source_id": "clue_reverse_rain_flow", "usage_refs": ["rule_m04_rain_rewind"], "state": "unverified"}
+    ],
+    "candidate_keywords": [
+      {"id": "kw_m04_rain_sign_reverse_route", "page_id": "rule_m04_rain_rewind", "display_label": "피해자가 지나간 순서를 거꾸로 표시함", "source_record_id": "clue_repeating_alley_sign"},
+      {"id": "kw_m04_rain_sign_actual_exit", "page_id": "rule_m04_rain_rewind", "display_label": "실제 출구 방향을 표시함", "source_record_id": "clue_repeating_alley_sign", "derived_from_candidate_id": "kw_m04_rain_sign_reverse_route"},
+      {"id": "kw_m04_rain_flow_third_sound", "page_id": "rule_m04_rain_rewind", "display_label": "세 번째 빗소리 뒤의 역류", "source_record_id": "clue_reverse_rain_flow"},
+      {"id": "kw_m04_rain_flow_first_sound", "page_id": "rule_m04_rain_rewind", "display_label": "첫 번째 빗소리 뒤의 역류", "source_record_id": "clue_reverse_rain_flow", "derived_from_candidate_id": "kw_m04_rain_flow_third_sound"},
+      {"id": "kw_m04_tether_fabric_inner_dry", "page_id": "rule_m04_victim_tether", "display_label": "비에 닿지 않은 붉은 천 안쪽", "source_record_id": "clue_red_umbrella_fabric"},
+      {"id": "kw_m04_tether_fabric_outer_wet", "page_id": "rule_m04_victim_tether", "display_label": "비에 젖은 붉은 천 바깥쪽", "source_record_id": "clue_red_umbrella_fabric", "derived_from_candidate_id": "kw_m04_tether_fabric_inner_dry"},
+      {"id": "kw_m04_tether_sign_reverse_route", "page_id": "rule_m04_victim_tether", "display_label": "피해자 이동 순서를 거꾸로 표시함", "source_record_id": "clue_repeating_alley_sign"},
+      {"id": "kw_m04_tether_sign_actual_exit", "page_id": "rule_m04_victim_tether", "display_label": "실제 출구 방향을 표시함", "source_record_id": "clue_repeating_alley_sign", "derived_from_candidate_id": "kw_m04_tether_sign_reverse_route"}
+    ],
+    "rule_pages": [
+      {
+        "id": "rule_m04_rain_rewind",
+        "required_record_ids": [
+          "clue_repeating_alley_sign",
+          "clue_reverse_rain_flow"
+        ],
+        "player_rule_summary": "세 번째 빗소리와 선행하는 빗물 흐름을 함께 대조해 반복 경로가 되감기는 시점을 판별한다."
+      },
+      {
+        "id": "rule_m04_victim_tether",
+        "required_record_ids": [
+          "clue_red_umbrella_fabric",
+          "clue_repeating_alley_sign"
+        ],
+        "player_rule_summary": "우산에 남은 피해자 흔적과 반복 표지판을 분리해 피해자의 실제 귀가 경로가 다시 덮어쓰이지 않도록 보호한다."
+      }
+    ],
+    "rescue_gate": {
+      "minimum_earned_records": 2,
+      "minimum_completed_rules": 1
+    }
+  },
   "victims": [
     {
       "id": "victim_alley_witness",

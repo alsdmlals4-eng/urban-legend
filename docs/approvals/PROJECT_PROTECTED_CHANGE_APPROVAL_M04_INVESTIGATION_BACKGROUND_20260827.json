@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "artifact_role": "PROJECT_PROTECTED_CHANGE_APPROVAL",
+  "status": "APPROVED",
+  "protected_base_commit": "5fe87d3729b130385c489169ac6943307f2dd633",
+  "decision_ids": [
+    "UL-DEC-20260827-M04-INVESTIGATION-BACKGROUND-PRODUCT-PROMOTION"
+  ],
+  "approved_paths": [
+    "assets/backgrounds/red_crossroads.png"
+  ],
+  "approval_source": "The project's sole decision owner gave explicit ChatGPT Work approval, authorized autonomous continuation, and permitted Codex-mode Godot work when needed. This recorded approval is the merge evidence; no second GitHub identity is required.",
+  "approval_time": "2026-08-27T00:00:00+09:00",
+  "scope_summary": "Replace only the approved M04 Investigation background at its existing canonical runtime path; no scene, catalog, data, fallback, UI, or additional asset changes."
+}

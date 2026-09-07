@@ -18,7 +18,7 @@
 → GitHub latest main + open PR/Issue
 → OPERATING_MODEL.md
 → WORK_MODE_AND_SKILL_ROUTING.md
-→ Notion Project Home
+→ repository `docs/design/PROJECT_AI_PRODUCTION_SPEC.md`
 → CURRENT_PLANNING_CANON.md
 → current-planning-canon.json
 → CURRENT_DECISION_OVERLAY.md
@@ -37,7 +37,7 @@
 → START_HERE.md
 → AGENTS.md
 → GitHub latest main + open PR/Issue
-→ Notion Project Home
+→ repository `docs/design/PROJECT_AI_PRODUCTION_SPEC.md`
 → CURRENT_PLANNING_CANON.md
 → current-planning-canon.json
 → CURRENT_DECISION_OVERLAY.md
@@ -55,7 +55,7 @@
 ```text
 최신 사용자 승인
 → GitHub latest main ref
-→ Notion current planning
+→ repository current planning
 → CURRENT_PLANNING_CANON.md / current-planning-canon.json
 → CURRENT_DECISION_OVERLAY.md
 → CURRENT_HANDOFF.md
@@ -74,8 +74,9 @@
 |---|---|---|
 | 강제 규칙·불변 용어 | `../AGENTS.md` | 항상 |
 | 콜드 스타트 | `../START_HERE.md` | 새 채팅·새 작업자 |
-| 사람용 전체 그림·Flow·비교표 | Notion Project Home | 기획·상태·검토 |
-| 최종 월간 기획·Gate | `CURRENT_PLANNING_CANON.md`, `current-planning-canon.json` | 항상 |
+| 사람용 전체 그림·Flow·비교표 | `docs/design/PROJECT_AI_PRODUCTION_SPEC.md` + user PDF GDD | 기획·상태·검토 |
+| Notion 이전 영수증·참조물 inventory | `migrations/NOTION_CURRENT_WORK_MIGRATION_2026-08-28.md` | legacy Notion 내용·reference provenance가 필요할 때만 |
+| 최종 10일·반일 기획·Gate | `CURRENT_PLANNING_CANON.md`, `current-planning-canon.json` | 항상 |
 | current mutable decision·successor | `CURRENT_DECISION_OVERLAY.md` | 항상 |
 | current continuation | `CURRENT_HANDOFF.md` | 구현·재개·교대 |
 | current Reality Gate | `audits/2026-08-22-final-planning-implementation-reality-gate.md` | 구현 진입 |
@@ -85,8 +86,10 @@
 | Validation Router | `VALIDATION_TARGET_CANON.md` | Validation·제품 Target |
 | 상세 승인·대체 역사 | `CURRENT_CONFIRMED_DECISIONS.md` | 역사·근거 추적 |
 | 저승역 상세 정본 | `CURRENT_AFTERLIFE_STATION_CANON.md` | M01 규칙·runtime 정합화 |
-| 현재 시각 계약 | `CURRENT_VISUAL_WORK_ORDER.md`, `VISUAL_ANCHOR_SPEC.md` | UI/아트/asset 작업 |
-| 상세 게임 설계 | `GAME_DESIGN_DOCUMENT.md` | 시스템·콘텐츠 상세 |
+| 현재 시각 계약 | `CURRENT_VISUAL_WORK_ORDER.md`, `CURRENT_SCREEN_SURFACE_INVENTORY_AND_VISUAL_COVERAGE.md`, `VISUAL_ANCHOR_SPEC.md`, `visual/VISUAL_DIRECTION_LOCK_PACKET_2026-08-28.md` | UI/아트/asset 작업 |
+| Notion-only 시각 reference 보존 | `migrations/notion-reference-mockups/README.md` | historical/reference mockup 확인; runtime/asset 승인에는 사용하지 않음 |
+| 사람용 current master GDD | `design/PROJECT_AI_PRODUCTION_SPEC.md` | 제품 약속·핵심 사건 흐름·핵심 시스템·구현/검증 경계 |
+| historical detailed design | `GAME_DESIGN_DOCUMENT.md` | legacy annual/weekly 상세과 provenance; current requirement로 사용 금지 |
 | 운영 생명주기 | `OPERATING_MODEL.md` | L1 이상 |
 | Work Mode·Skill 라우팅 | `WORK_MODE_AND_SKILL_ROUTING.md` | Skill 선택·보고 |
 | 프로젝트 Skill Registry | `../skills/SKILL_REGISTRY.json` | trigger 선택 |
@@ -98,13 +101,14 @@
 | 주제 | 현행 원본 | 읽기 조건 |
 |---|---|---|
 | 제품 약속·cadence·M01/M04·Gate | `CURRENT_PLANNING_CANON.md` | 모든 제품 변경 |
+| 사람용 current master GDD | `design/PROJECT_AI_PRODUCTION_SPEC.md` | 기획 검토·AI 이해·구현 계약 전 |
 | current mutable 결정 | `CURRENT_DECISION_OVERLAY.md` | 다음 행동·successor |
 | machine contract | `current-planning-canon.json` | 자동 검증·consumer |
 | M01/M04 역할 | `M01_M04_VERTICAL_SLICE_FLOW.md` | First Session·release-near Slice |
 | M01 조사/추리/구출/회수 | `M01_*_SCENE_PACKET.md` | M01 implementation |
 | 저승역 current canon | `CURRENT_AFTERLIFE_STATION_CANON.md` | M01 content/runtime |
 | current Validation | `VALIDATION_TARGET_CANON.md` | M01/M04 검증 |
-| current visual | `CURRENT_VISUAL_WORK_ORDER.md` | 화면·시각·asset |
+| current visual | `CURRENT_VISUAL_WORK_ORDER.md`, `CURRENT_SCREEN_SURFACE_INVENTORY_AND_VISUAL_COVERAGE.md`, `visual/VISUAL_DIRECTION_LOCK_PACKET_2026-08-28.md`, `visual/PROJECT_CORE_SCENE_VISUAL_BOARD_2026-08-28.md` | 화면·시각·asset |
 | reusable UI grammar | `UI_COMPONENT_REUSE_CONTRACT.md` | 공용 UI implementation |
 | 장기 방향·서사·아트 history | `planning/**` current owner files | 해당 분야 의미 변경 |
 | 구현 순서 | `../MVP_ROADMAP.md` + current implementation plan | 범위·우선순위 |
@@ -138,14 +142,14 @@ Human QA는 계속 `NOT_RUN`이며 자동 테스트로 대체하지 않는다.
 | CORE-MVP-001 실행 계획 | `superpowers/plans/2026-07-23-core-mvp-001-implementation-plan.md` |
 | 스트레스 테스트·벤치마킹 | `planning/PROJECT_CORE_STRESS_TEST_AND_BENCHMARK.md` |
 
-위 문서는 역사적 마일스톤 계약·기술 회귀 근거를 보존한다. 현재 월간 제품 cadence나 M01/M04 Validation 책임, 현재 implementation handoff를 소유하지 않는다.
+위 문서는 역사적 마일스톤 계약·기술 회귀 근거를 보존한다. 현재 10일·반일 제품 cadence나 M01/M04 Validation 책임, 현재 implementation handoff를 소유하지 않는다.
 
 ## Skill 조건부 라우팅
 
 | 작업 조건 | 프로젝트 Skill | 추가 책임 원본 |
 |---|---|---|
 | 새 괴이 사건·전조·가설·근거·대응·매뉴얼 | `urban-legend-investigation-case-authoring` | current canon, GDD, 실제 사건 데이터 |
-| 대사·일상·관계·월간 결과 | `urban-legend-narrative` | narrative/current context |
+| 대사·일상·관계·복합 결과 | `urban-legend-narrative` | narrative/current context |
 | 육성·일정·조사·회수·밸런스 | `urban-legend-game-design` | GDD, current plan |
 | UI·입력·접근성 | `urban-legend-ux-ui-accessibility` | current visual/UI contracts |
 | Godot·저장·Scene·데이터 계약 | `urban-legend-engineering` | actual code/test + current plan |
@@ -163,7 +167,7 @@ PLANNING_COMPLETE
 → USER_FINAL_PLANNING_DECLARATION_APPROVED
 → Reality Gate: HANDOFF_READY_WITH_KNOWN_REALIGNMENT
 → implementation contract: READY
-→ runtime implementation authorization: NOT_AUTHORIZED
+→ runtime implementation: MERGED_MAIN (후속 변경은 current handoff와 exact main을 재판정)
 → COMPOSITE_RESULT semantic realignment
 → legacy grade/save compatibility
 → additive monthly_state
@@ -191,3 +195,5 @@ Historical evidence나 migration debt가 필요한 경우에만 필요한 문서
 ## Base 운영 계약
 
 Base 릴리스·payload·trusted evidence·registry hash의 단일 owner는 `BASE_RULES_VERSION.md`와 `../skills/PROJECT_BASE_ADAPTER.json`이다. 이 Map은 버전 숫자나 채택 commit을 복제하지 않는다.
+
+`PROJECT_OPERATING_HEALTH.json`은 운영 계약의 기계 Gate만 집계한다. runtime·device·accessibility·Human `NOT_RUN`을 PASS로 바꾸지 않으며, 제품 완료·출시 승인 owner도 아니다.

@@ -6,6 +6,8 @@ const M01FirstSessionRuntimeSyncScript := preload("res://scripts/core/m01_first_
 
 const SYNC_INTERVAL_SECONDS := 0.25
 const FREE_INFORMATION_CHANNELS := ["observe", "open_manual", "preview_result"]
+const DEFAULT_RULE_STRIP_TOP_INSET := 14
+const INVESTIGATION_RULE_STRIP_TOP_INSET := 72
 
 var _elapsed := 0.0
 var _mounted_scene_instance_id := 0
@@ -167,7 +169,7 @@ func _sync_current_scene() -> void:
 		_sync_recovery_termination_preview(current_scene, game_state)
 	elif mode == "result":
 		_finalize_legacy_recovery(game_state)
-	var state := _build_overlay_state(mode)
+	var state := _build_overlay_state(mode, current_scene)
 	_sync_m01_first_session(mode, game_state)
 	_mount_overlay(current_scene, state, mode)
 	_mounted_scene_instance_id = current_scene.get_instance_id()
@@ -184,8 +186,9 @@ func _sync_recovery_termination_preview(host: Node, game_state: Node) -> Diction
 		return {}
 	if not game_state.has_method("evaluate_canon_v2_recovery_termination"):
 		return {}
-	var recover_button := host.find_child("RecoverButton", true, false) as Button
-	if recover_button == null or recover_button.disabled:
+	if not host.has_method("is_recovery_ready_for_resolution"):
+		return {}
+	if not bool(host.call("is_recovery_ready_for_resolution")):
 		return {}
 	if game_state.has_method("get_canon_v2_runtime_state"):
 		var runtime: Dictionary = game_state.get_canon_v2_runtime_state()
@@ -279,25 +282,52 @@ func _derive_protection_status(obligations: Array) -> String:
 func _mount_overlay(host: Node, runtime_state: Dictionary, mode: String) -> Node:
 	if host == null:
 		return null
+	if mode == "recovery":
+		_hide_legacy_recovery_hud(host)
+	elif mode == "investigation":
+		_hide_legacy_investigation_log_bar(host)
 	var existing := host.get_node_or_null("CanonV2OperationOverlay")
 	if existing != null:
 		if existing.has_method("configure"):
 			existing.configure(runtime_state, mode)
+		_apply_overlay_host_layout(existing, mode)
 		return existing
 	var overlay = OperationOverlayScript.new()
 	overlay.name = "CanonV2OperationOverlay"
 	host.add_child(overlay)
 	overlay.configure(runtime_state, mode)
+	_apply_overlay_host_layout(overlay, mode)
 	return overlay
 
 
-func _build_overlay_state(mode: String) -> Dictionary:
+func _hide_legacy_recovery_hud(host: Node) -> void:
+	var legacy_hud := host.get_node_or_null("RecoveryHud") as Control
+	if legacy_hud != null:
+		legacy_hud.visible = false
+
+
+func _hide_legacy_investigation_log_bar(host: Node) -> void:
+	var legacy_log_bar := host.get_node_or_null("SafeFrame/MainColumn/LogBar") as Control
+	if legacy_log_bar != null:
+		legacy_log_bar.visible = false
+
+
+func _apply_overlay_host_layout(overlay: Node, mode: String) -> void:
+	if overlay == null or not overlay.has_method("set_rule_strip_top_inset"):
+		return
+	var top_inset := INVESTIGATION_RULE_STRIP_TOP_INSET if mode == "investigation" else DEFAULT_RULE_STRIP_TOP_INSET
+	overlay.call("set_rule_strip_top_inset", top_inset)
+
+
+func _build_overlay_state(mode: String, recovery_host: Node = null) -> Dictionary:
 	var state := {
 		"manual_state": _get_player_manual_state(),
 		"active_protection_obligations": [],
 		"termination_preview": {},
 		"follow_up_records": [],
-		"evaluation_packet": {}
+		"evaluation_packet": {},
+		"recovery_supports": [],
+		"recovery_clock": {}
 	}
 	var game_state := get_node_or_null("/root/GameState")
 	if game_state == null:
@@ -323,6 +353,12 @@ func _build_overlay_state(mode: String) -> Dictionary:
 		state["termination_preview"] = _dictionary_copy(runtime.get("termination_preview"))
 		state["follow_up_records"] = _array_copy(runtime.get("follow_up_records"))
 		state["evaluation_packet"] = _dictionary_copy(runtime.get("evaluation_packet"))
+	if mode == "recovery" and game_state.has_method("get_selected_recovery_supports"):
+		state["recovery_supports"] = _array_copy(game_state.get_selected_recovery_supports())
+	if mode == "recovery" and recovery_host != null and recovery_host.has_method("get_recovery_clock_presentation"):
+		var presentation_value: Variant = recovery_host.call("get_recovery_clock_presentation")
+		if typeof(presentation_value) == TYPE_DICTIONARY:
+			state["recovery_clock"] = (presentation_value as Dictionary).duplicate(true)
 	return state
 
 

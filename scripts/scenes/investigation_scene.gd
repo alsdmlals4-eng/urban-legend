@@ -2,6 +2,7 @@
 extends Control
 
 const SceneVisuals = preload("res://scripts/ui/scene_presentation.gd")
+const ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")
 const RuntimeEditor = preload("res://scripts/ui/runtime_ui_editor.gd")
 const AssetCatalog = preload("res://scripts/ui/ui_asset_catalog.gd")
 const LogGuideScript = preload("res://scripts/ui/log_guide.gd")
@@ -13,6 +14,11 @@ const AccessibilitySettingsScript = preload("res://scripts/ui/accessibility_sett
 const AnomalyManualDrawerScript = preload("res://scripts/ui/anomaly_manual_drawer.gd")
 const AfterlifeManualCatalog = preload("res://scripts/ui/afterlife_manual_catalog.gd")
 const TeamStatusPopoverScene = preload("res://scenes/ui/team_status_popover.tscn")
+const ManualDeductionWorkbenchScene = preload("res://scenes/ui/manual_deduction_workbench.tscn")
+
+const M04_EPISODE_ID := "episode_002_red_umbrella_alley"
+const M04_INVESTIGATION_SHADE_ALPHA := 0.42
+const M04_INVESTIGATION_PANEL_ALPHA := 0.80
 
 const FALLBACK_INVESTIGATION_POINTS: Array[Dictionary] = [
 	{
@@ -69,6 +75,7 @@ var _manual_panel: PanelContainer
 var _manual_toggle_button: Button
 var _manual_visible_by_user := false
 var _manual_drawer: AnomalyManualDrawer
+var _manual_workbench: Control
 var _result_toast: PanelContainer
 var _case_summary_label: Label
 var _mode_label: Label
@@ -79,6 +86,8 @@ var _accessibility := AccessibilitySettingsScript.new()
 var _safe_frame: MarginContainer
 var _location_preview: TextureRect
 var _is_afterlife_layout := false
+var _has_player_authored_workbench_manual := false
+var _manual_entry_available := false
 var _manual_body: VBoxContainer
 var _manual_page_label: Label
 var _manual_status_label: Label
@@ -111,6 +120,8 @@ func _build_ui() -> void:
 	_safe_frame = %SafeFrame
 	_location_preview = %LocationPreview
 	_is_afterlife_layout = GameState.get_current_episode_id() == "episode_001_afterlife_station"
+	_has_player_authored_workbench_manual = not _get_player_authored_workbench_manual().is_empty()
+	_manual_entry_available = _is_afterlife_layout or _has_player_authored_workbench_manual
 	if _is_afterlife_layout:
 		theme = AfterlifeTheme.create_theme()
 	var background := get_node_or_null("ArtLayer/Background") as TextureRect
@@ -121,6 +132,7 @@ func _build_ui() -> void:
 	_team_hud = %TeamHud
 	_dialogue_dock = %DialogueDock
 	_point_method_dock = %PointMethodDock
+	_apply_m04_investigation_visual_hierarchy()
 	_method_column = %MethodColumn
 	_manual_panel = %ManualPanel
 	_manual_body = %Body
@@ -172,7 +184,7 @@ func _build_ui() -> void:
 	%LogUtilityButton.pressed.connect(_toggle_record_drawer)
 	%ResultCloseButton.pressed.connect(_close_inline_result)
 	%ResultNextButton.pressed.connect(_return_to_point_picker)
-	_manual_toggle_button.visible = _is_afterlife_layout
+	_manual_toggle_button.visible = _manual_entry_available
 	%SettingsButton.pressed.connect(_show_settings)
 	%ReturnHqButton.pressed.connect(_show_return_confirmation)
 	_return_field_button.pressed.connect(_return_to_field_choice)
@@ -180,13 +192,13 @@ func _build_ui() -> void:
 	if _is_afterlife_layout:
 		_record_button.pressed.connect(_toggle_record_drawer)
 		_build_afterlife_manual()
-		_manual_drawer = AnomalyManualDrawerScript.new()
-		add_child(_manual_drawer)
-		_manual_drawer.anchor_left = 0.70
-		_manual_drawer.anchor_top = 0.12
-		_manual_drawer.anchor_right = 0.986
-		_manual_drawer.anchor_bottom = 0.92
-		_manual_drawer.bind_toggle_button(_manual_toggle_button)
+	if _has_player_authored_workbench_manual:
+		_manual_workbench = ManualDeductionWorkbenchScene.instantiate() as Control
+		_manual_workbench.z_index = 100
+		add_child(_manual_workbench)
+		_manual_workbench.connect("draft_slot_requested", _on_manual_draft_slot_requested)
+		_manual_workbench.connect("draft_slot_clear_requested", _on_manual_draft_slot_clear_requested)
+		_manual_toggle_button.pressed.connect(_open_manual_workbench)
 	else:
 		_manual_drawer = AnomalyManualDrawerScript.new()
 		add_child(_manual_drawer)
@@ -393,6 +405,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		_close_inline_result()
 	elif _resolution_confirm_panel != null and _resolution_confirm_panel.visible:
 		_resolution_confirm_panel.visible = false
+	elif _manual_workbench != null and _manual_workbench.visible:
+		_manual_workbench.call("dismiss")
 	elif _manual_drawer != null and _manual_drawer.is_open():
 		_manual_drawer.close_drawer()
 	elif _record_drawer != null and _record_drawer.visible:
@@ -727,6 +741,17 @@ func _select_field_choice(choice: Dictionary) -> void:
 	_field_next_button.visible = not _pending_next_field_node_id.is_empty()
 	_refresh_case_status()
 	_refresh_manual_drawer(true)
+
+
+func _apply_m04_investigation_visual_hierarchy() -> void:
+	if GameState.get_current_episode_id() != M04_EPISODE_ID:
+		return
+	var shade := get_node_or_null("ArtLayer/Shade") as ColorRect
+	if shade != null:
+		shade.color.a = M04_INVESTIGATION_SHADE_ALPHA
+	for dock in [_point_method_dock, _dialogue_dock]:
+		if dock != null:
+			dock.add_theme_stylebox_override("panel", ThemeFactory.panel_style(Color("293943"), M04_INVESTIGATION_PANEL_ALPHA))
 
 
 func _refresh_record_learning() -> void:
@@ -1279,23 +1304,151 @@ func _set_ui_mode(mode: String) -> void:
 			point_column.visible = not uses_method_picker
 	if _dialogue_dock != null:
 		_dialogue_dock.visible = true
-	if uses_method_picker and _manual_drawer != null and _manual_drawer.is_open():
-		_manual_drawer.close_drawer()
+	if uses_method_picker:
+		if _manual_workbench != null and _manual_workbench.visible:
+			_manual_workbench.call("dismiss")
+		elif _manual_drawer != null and _manual_drawer.is_open():
+			_manual_drawer.close_drawer()
 	_refresh_manual_layout()
 	if _result_toast != null and mode != "RESULT":
 		_result_toast.visible = false
 
 
 func _toggle_manual_panel() -> void:
-	if _manual_drawer != null:
+	if _has_player_authored_workbench_manual:
+		_open_manual_workbench()
+	elif _manual_drawer != null:
 		_manual_drawer.toggle()
+
+
+func _open_manual_workbench() -> void:
+	if not _has_player_authored_workbench_manual or _manual_workbench == null:
+		return
+	var manual := _get_player_authored_workbench_manual()
+	if manual.is_empty():
+		return
+	_manual_workbench.call("set_view_model", _build_player_authored_workbench_model(manual))
+	_manual_workbench.call("open_workbench", _manual_toggle_button)
+
+
+func _on_manual_draft_slot_requested(slot_id: String, candidate_id: String) -> void:
+	var manual := _get_player_authored_workbench_manual()
+	if manual.is_empty():
+		return
+	GameState.set_manual_draft_slot(
+		manual,
+		_current_manual_page_id_for_slot(manual, slot_id),
+		slot_id,
+		candidate_id,
+		GameState.get_collected_clue_ids(),
+		GameState.get_current_episode_id()
+	)
+	_refresh_player_authored_workbench_model()
+
+
+func _on_manual_draft_slot_clear_requested(slot_id: String) -> void:
+	var manual := _get_player_authored_workbench_manual()
+	if manual.is_empty():
+		return
+	GameState.clear_manual_draft_slot(manual, slot_id, GameState.get_current_episode_id())
+	_refresh_player_authored_workbench_model()
+
+
+func _refresh_player_authored_workbench_model() -> void:
+	if _manual_workbench == null or not _manual_workbench.visible:
+		return
+	var manual := _get_player_authored_workbench_manual()
+	if not manual.is_empty():
+		_manual_workbench.call("set_view_model", _build_player_authored_workbench_model(manual))
+
+
+func _get_player_authored_workbench_manual() -> Dictionary:
+	var episode: Dictionary = GameState.get_current_episode()
+	var manual_value: Variant = episode.get("investigation_manual", {})
+	if manual_value is Dictionary:
+		var manual := manual_value as Dictionary
+		if not (manual.get("candidate_keywords", []) as Array).is_empty():
+			return manual.duplicate(true)
+	return {}
+
+
+func _build_player_authored_workbench_model(manual: Dictionary) -> Dictionary:
+	var source_titles: Dictionary = {}
+	for clue_value in GameState.get_clues():
+		if clue_value is Dictionary:
+			var clue := clue_value as Dictionary
+			source_titles[String(clue.get("id", ""))] = String(clue.get("title", "확보 기록"))
+	var earned_record_ids := GameState.get_collected_clue_ids()
+	var visible_candidates: Array[Dictionary] = []
+	for candidate_value in manual.get("candidate_keywords", []) as Array:
+		if not candidate_value is Dictionary:
+			continue
+		var candidate := candidate_value as Dictionary
+		var source_record_id := String(candidate.get("source_record_id", ""))
+		if not earned_record_ids.has(source_record_id):
+			continue
+		visible_candidates.append({
+			"id": String(candidate.get("id", "")),
+			"page_id": String(candidate.get("page_id", "")),
+			"display_label": String(candidate.get("display_label", "기록 후보")),
+			"source_label": "출처: %s" % String(source_titles.get(source_record_id, "확보 기록"))
+		})
+	return {
+		"case_label": _player_authored_manual_case_label(),
+		"title": "괴이 매뉴얼",
+		"selected_page_id": _first_player_authored_manual_page_id(manual),
+		"pages": (manual.get("pages", []) as Array).duplicate(true),
+		"draft_slots": GameState.get_manual_draft_slots(manual, GameState.get_current_episode_id()),
+		"candidate_keywords": visible_candidates,
+		"guide": _player_authored_manual_guide()
+	}
+
+
+func _first_player_authored_manual_page_id(manual: Dictionary) -> String:
+	for page_value in manual.get("pages", []) as Array:
+		if page_value is Dictionary:
+			return String((page_value as Dictionary).get("id", ""))
+	return ""
+
+
+func _player_authored_manual_case_label() -> String:
+	if _is_afterlife_layout:
+		return "CASE-01 %s" % GameState.get_current_episode_title()
+	if GameState.get_current_episode_id() == M04_EPISODE_ID:
+		return "CASE-04 %s" % GameState.get_current_episode_title()
+	return GameState.get_current_episode_title()
+
+
+func _player_authored_manual_guide() -> Dictionary:
+	if _is_afterlife_layout:
+		return {
+			"name": "루메",
+			"message": "출처 기록과 문장을 함께 비교해 보세요. 판단은 현장 대응에서 확인할 수 있어요.",
+			"portrait_visible": true
+		}
+	return {
+		"name": "기록관 아카",
+		"message": "확보한 기록과 문장을 대조하세요. 판단은 피해자 보호와 회수 대응에서 확인됩니다.",
+		"portrait_visible": false
+	}
+
+
+func _current_manual_page_id_for_slot(manual: Dictionary, slot_id: String) -> String:
+	for page_value in manual.get("pages", []) as Array:
+		if not page_value is Dictionary:
+			continue
+		var page := page_value as Dictionary
+		for segment_value in page.get("deduction_segments", []) as Array:
+			if segment_value is Dictionary and String((segment_value as Dictionary).get("slot_id", "")) == slot_id:
+				return String(page.get("id", ""))
+	return ""
 
 
 func _refresh_manual_layout() -> void:
 	if _manual_panel != null:
 		_manual_panel.visible = false
 	if _manual_toggle_button != null:
-		_manual_toggle_button.visible = _is_afterlife_layout
+		_manual_toggle_button.visible = _manual_entry_available
 
 
 func _refresh_manual_drawer(mark_new: bool) -> void:

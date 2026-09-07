@@ -4,11 +4,16 @@ extends Node
 const DEFAULT_EPISODE_PATH := "res://data/episodes/episode_001_afterlife_station.json"
 const RED_UMBRELLA_ALLEY_EPISODE_PATH := "res://data/episodes/episode_002_red_umbrella_alley.json"
 const DEAD_FREQUENCY_STATION_EPISODE_PATH := "res://data/episodes/episode_003_dead_frequency_station.json"
+const M04_EPISODE_ID := "episode_002_red_umbrella_alley"
+const M04_PREPARATION_SUPPORT_ID := "support_kwon_return_route"
 const SAVE_FILE_PATH := "user://urban_legend_save.json"
 const SAVE_VERSION := "mvp-039"
 const DEFAULT_DIALOGUE_NODE_ID := "dialogue_intro"
 const DEFAULT_FIELD_NODE_ID := "dialogue_intro"
 const STABILITY_SCHEMA_VERSION := 2
+const RECOVERY_CLOCK_DANGER_MAX := 6
+const RECOVERY_CLOCK_SURGE_DAMAGE := 8
+const RECOVERY_CLOCK_SURGE_FALLBACK := 3
 const DEFAULT_MINIGAME_ID := "minigame_frequency_sync"
 const EQUIP_FREQUENCY_FILTER := "equip_frequency_filter"
 const SCENE_MAIN_MENU := "res://scenes/main_menu.tscn"
@@ -81,6 +86,7 @@ const AGENT_TRUST_EVENTS: Array[Dictionary] = [
 ]
 const EpisodeLoaderScript := preload("res://scripts/data/episode_loader.gd")
 const CaseDataScript := preload("res://scripts/data/case_data.gd")
+const ManualKeywordCompositionPolicyScript := preload("res://scripts/core/manual_keyword_composition_policy.gd")
 const CampaignStateScript := preload("res://scripts/core/campaign_state.gd")
 const AgentCatalogScript := preload("res://scripts/data/agent_catalog.gd")
 const DailyEpisodeCatalogScript := preload("res://scripts/data/daily_episode_catalog.gd")
@@ -114,6 +120,11 @@ var last_recovery_pattern_id := ""
 var confirmed_recovery_pattern_id := ""
 var seen_recovery_pattern_ids: Array = []
 var recovery_pattern_learning: Dictionary = {}
+var recovery_clock_state: Dictionary = {
+	"danger": 0,
+	"turn_count": 0,
+	"surge_count": 0
+}
 var last_random_event_id := ""
 var last_random_event_result: Dictionary = {}
 var forced_recovery_phase := false
@@ -1082,8 +1093,32 @@ func get_selected_recovery_supports() -> Array:
 		entry["agent_name"] = String(agent.get("name", ""))
 		entry["temperament"] = String(agent.get("temperament", ""))
 		entry["temperament_label"] = String(agent.get("temperament_label", ""))
+		var availability := _get_recovery_support_availability(support_id)
+		entry["available"] = bool(availability.get("available", true))
+		entry["unavailable_reason"] = String(availability.get("reason", ""))
+		entry["used"] = has_used_agent_support(support_id)
 		supports.append(entry)
 	return supports
+
+
+## Keeps M04 preparation as a visible, case-local support gate rather than a stat bonus.
+func _get_recovery_support_availability(support_id: String) -> Dictionary:
+	if get_current_episode_id() != M04_EPISODE_ID or support_id != M04_PREPARATION_SUPPORT_ID:
+		return {"available": true, "reason": ""}
+
+	var operation := get_active_campaign_operation()
+	if String(operation.get("case_id", "")) != M04_EPISODE_ID:
+		return {"available": true, "reason": ""}
+
+	var context: Variant = operation.get("dispatch_context", {})
+	var dispatch_context: Dictionary = context if typeof(context) == TYPE_DICTIONARY else {}
+	if int(dispatch_context.get("m04_preparation_capacity", 0)) >= 1:
+		return {"available": true, "reason": ""}
+
+	return {
+		"available": false,
+		"reason": "현장 준비가 없습니다. 준비실에서 ‘대기·회복’ 반일을 한 번 완료하면 권나래의 귀가 기억 고정 보조를 사용할 수 있습니다."
+	}
 
 
 ## Returns true when an agent recovery support has already been used.
@@ -1454,6 +1489,106 @@ func get_current_anomaly_manual_record() -> Dictionary:
 	return get_anomaly_manual_record(get_current_episode_id())
 
 
+## Returns the current Canon-compatible player-authored draft slots for one episode.
+## Stale saved IDs are ignored here without modifying the original save payload.
+func get_manual_draft_slots(manual: Dictionary, episode_id: String = "") -> Dictionary:
+	var target_id := episode_id.strip_edges()
+	if target_id.is_empty():
+		target_id = get_current_episode_id()
+	if target_id.is_empty():
+		return {}
+	var record := get_anomaly_manual_record(target_id)
+	var policy = ManualKeywordCompositionPolicyScript.new()
+	var filtered: Dictionary = policy.filter_known_draft_slots(manual, record.get("draft_slots", {}))
+	if not bool(filtered.get("ok", false)):
+		return {}
+	return (filtered.get("draft_slots", {}) as Dictionary).duplicate(true)
+
+
+## Persists a source-gated player-authored manual placement inside the existing manual record.
+func set_manual_draft_slot(
+	manual: Dictionary,
+	page_id: String,
+	slot_id: String,
+	candidate_id: String,
+	earned_record_ids: Variant,
+	episode_id: String = ""
+) -> Dictionary:
+	var target_id := episode_id.strip_edges()
+	if target_id.is_empty():
+		target_id = get_current_episode_id()
+	if target_id.is_empty():
+		return {"ok": false, "code": "EPISODE_ID_REQUIRED"}
+	var policy = ManualKeywordCompositionPolicyScript.new()
+	var drafts := get_manual_draft_slots(manual, target_id)
+	var placement: Dictionary = policy.validate_draft_slot(
+		manual,
+		page_id,
+		slot_id,
+		candidate_id,
+		earned_record_ids,
+		drafts
+	)
+	if not bool(placement.get("ok", false)):
+		return placement
+	var had_previous := anomaly_manual_records.has(target_id)
+	var previous_value: Variant = anomaly_manual_records.get(target_id, {})
+	var previous_record: Dictionary = previous_value.duplicate(true) if typeof(previous_value) == TYPE_DICTIONARY else {}
+	var title := get_current_episode_title() if target_id == get_current_episode_id() else String(previous_record.get("episode_title", target_id))
+	var record := _ensure_anomaly_manual_record(target_id, title)
+	drafts[slot_id] = candidate_id
+	record["draft_slots"] = drafts
+	record["draft_updated_at_label"] = Time.get_datetime_string_from_system(false, true)
+	anomaly_manual_records[target_id] = record
+	if not save_game():
+		if had_previous:
+			anomaly_manual_records[target_id] = previous_record
+		else:
+			anomaly_manual_records.erase(target_id)
+		return {"ok": false, "code": "DRAFT_PERSISTENCE_FAILED"}
+	return {
+		"ok": true,
+		"code": "DRAFT_SLOT_SAVED",
+		"draft_slots": drafts.duplicate(true),
+		"source_record_id": String(placement.get("source_record_id", ""))
+	}
+
+
+## Removes one player-authored placement while preserving all Canon migration state.
+func clear_manual_draft_slot(manual: Dictionary, slot_id: String, episode_id: String = "") -> Dictionary:
+	var target_id := episode_id.strip_edges()
+	if target_id.is_empty():
+		target_id = get_current_episode_id()
+	if target_id.is_empty():
+		return {"ok": false, "code": "EPISODE_ID_REQUIRED"}
+	var policy = ManualKeywordCompositionPolicyScript.new()
+	var validation: Dictionary = policy.validate_manual(manual)
+	if not bool(validation.get("ok", false)):
+		return validation
+	var slot_pages := validation.get("slot_pages", {}) as Dictionary
+	if not slot_pages.has(slot_id):
+		return {"ok": false, "code": "UNKNOWN_SLOT", "slot_id": slot_id}
+	var drafts := get_manual_draft_slots(manual, target_id)
+	if not drafts.has(slot_id):
+		return {"ok": true, "code": "DRAFT_SLOT_ALREADY_EMPTY", "draft_slots": drafts}
+	var had_previous := anomaly_manual_records.has(target_id)
+	var previous_value: Variant = anomaly_manual_records.get(target_id, {})
+	var previous_record: Dictionary = previous_value.duplicate(true) if typeof(previous_value) == TYPE_DICTIONARY else {}
+	var title := get_current_episode_title() if target_id == get_current_episode_id() else String(previous_record.get("episode_title", target_id))
+	var record := _ensure_anomaly_manual_record(target_id, title)
+	drafts.erase(slot_id)
+	record["draft_slots"] = drafts
+	record["draft_updated_at_label"] = Time.get_datetime_string_from_system(false, true)
+	anomaly_manual_records[target_id] = record
+	if not save_game():
+		if had_previous:
+			anomaly_manual_records[target_id] = previous_record
+		else:
+			anomaly_manual_records.erase(target_id)
+		return {"ok": false, "code": "DRAFT_PERSISTENCE_FAILED"}
+	return {"ok": true, "code": "DRAFT_SLOT_CLEARED", "draft_slots": drafts.duplicate(true)}
+
+
 func _ensure_anomaly_manual_record(episode_id: String, episode_title: String) -> Dictionary:
 	var value: Variant = anomaly_manual_records.get(episode_id, {})
 	var record: Dictionary = value.duplicate(true) if typeof(value) == TYPE_DICTIONARY else {}
@@ -1462,6 +1597,7 @@ func _ensure_anomaly_manual_record(episode_id: String, episode_title: String) ->
 	record["verified_rules"] = _to_dictionary(record.get("verified_rules", {}))
 	record["candidate_rules"] = _to_dictionary(record.get("candidate_rules", {}))
 	record["danger_cases"] = _to_dictionary_array(record.get("danger_cases", []))
+	record["draft_slots"] = _to_dictionary(record.get("draft_slots", {}))
 	return record
 
 
@@ -1943,6 +2079,7 @@ func reset_recovery_pattern_state(save_after: bool = true) -> void:
 	confirmed_recovery_pattern_id = ""
 	seen_recovery_pattern_ids.clear()
 	recovery_pattern_learning.clear()
+	reset_recovery_clock_state()
 	prediction_success_streak = 0
 	prediction_failure_streak = 0
 	if save_after:
@@ -1965,6 +2102,62 @@ func record_recovery_pattern_outcome(pattern_id: String, response_id: String, co
 
 func get_recovery_pattern_learning() -> Dictionary:
 	return recovery_pattern_learning.duplicate(true)
+
+
+## Returns recovery-only pressure without duplicating the canonical stability state.
+func get_recovery_clock_state() -> Dictionary:
+	recovery_clock_state = _normalize_recovery_clock_state(recovery_clock_state)
+	return recovery_clock_state.duplicate(true)
+
+
+## Clears recovery pressure whenever the recovery pattern loop resets.
+func reset_recovery_clock_state() -> void:
+	recovery_clock_state = {
+		"danger": 0,
+		"turn_count": 0,
+		"surge_count": 0
+	}
+
+
+## Starts a meaningful recovery turn. Reading a manual reference never calls this.
+func begin_recovery_clock_turn() -> Dictionary:
+	var state := get_recovery_clock_state()
+	if int(state.get("turn_count", 0)) > 0:
+		state["danger"] = mini(RECOVERY_CLOCK_DANGER_MAX, int(state.get("danger", 0)) + 1)
+	state["turn_count"] = int(state.get("turn_count", 0)) + 1
+	recovery_clock_state = _normalize_recovery_clock_state(state)
+	return get_recovery_clock_state()
+
+
+## Applies a bounded support effect without treating it as a failed recovery response.
+func change_recovery_clock_danger(delta: int) -> Dictionary:
+	var state := get_recovery_clock_state()
+	state["danger"] = clampi(int(state.get("danger", 0)) + delta, 0, RECOVERY_CLOCK_DANGER_MAX)
+	recovery_clock_state = _normalize_recovery_clock_state(state)
+	return get_recovery_clock_state()
+
+
+## Resolves one committed recovery response. Correct field work relieves pressure;
+## complete manual verification relieves one additional segment. A wrong response
+## creates one bounded escalation event rather than stacking unrelated penalties.
+func resolve_recovery_clock_outcome(correct: bool, verified: bool) -> Dictionary:
+	var state := get_recovery_clock_state()
+	if correct:
+		state["danger"] = maxi(0, int(state.get("danger", 0)) - 1)
+		if verified:
+			state["danger"] = maxi(0, int(state.get("danger", 0)) - 1)
+	else:
+		state["danger"] = mini(RECOVERY_CLOCK_DANGER_MAX, int(state.get("danger", 0)) + 2)
+	var surge_triggered := false
+	if int(state.get("danger", 0)) >= RECOVERY_CLOCK_DANGER_MAX and not correct:
+		surge_triggered = true
+		state["danger"] = RECOVERY_CLOCK_SURGE_FALLBACK
+		state["surge_count"] = int(state.get("surge_count", 0)) + 1
+	recovery_clock_state = _normalize_recovery_clock_state(state)
+	var result := get_recovery_clock_state()
+	result["surge_triggered"] = surge_triggered
+	result["surge_damage"] = RECOVERY_CLOCK_SURGE_DAMAGE if surge_triggered else 0
+	return result
 
 
 func get_agent_auto_action_chance(agent_id: String, ability_key: String, bonus_chance: float = 0.0, maximum_chance: float = 70.0) -> float:
@@ -2905,6 +3098,7 @@ func load_game() -> bool:
 	confirmed_recovery_pattern_id = String(save_data.get("confirmed_recovery_pattern_id", ""))
 	seen_recovery_pattern_ids = _to_unique_string_array(save_data.get("seen_recovery_pattern_ids", []))
 	recovery_pattern_learning = _to_dictionary(save_data.get("recovery_pattern_learning", {}))
+	recovery_clock_state = _normalize_recovery_clock_state(save_data.get("recovery_clock_state", {}))
 
 	current_minigame_id = String(save_data.get("current_minigame_id", DEFAULT_MINIGAME_ID))
 	if current_minigame_id.is_empty():
@@ -3002,6 +3196,7 @@ func _make_save_data() -> Dictionary:
 		"confirmed_recovery_pattern_id": confirmed_recovery_pattern_id,
 		"seen_recovery_pattern_ids": seen_recovery_pattern_ids.duplicate(),
 		"recovery_pattern_learning": recovery_pattern_learning.duplicate(true),
+		"recovery_clock_state": get_recovery_clock_state(),
 		"last_random_event_id": last_random_event_id,
 		"last_random_event_result": last_random_event_result,
 		"forced_recovery_phase": forced_recovery_phase,
@@ -3405,6 +3600,15 @@ func _to_dictionary(value: Variant) -> Dictionary:
 	if typeof(value) == TYPE_DICTIONARY:
 		return value.duplicate(true)
 	return {}
+
+
+func _normalize_recovery_clock_state(value: Variant) -> Dictionary:
+	var source := _to_dictionary(value)
+	return {
+		"danger": clampi(int(source.get("danger", 0)), 0, RECOVERY_CLOCK_DANGER_MAX),
+		"turn_count": maxi(0, int(source.get("turn_count", 0))),
+		"surge_count": maxi(0, int(source.get("surge_count", 0)))
+	}
 
 
 func _to_dictionary_array(value: Variant) -> Array:

@@ -5,8 +5,9 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-BASE_COMMIT = "c987647d01ad2baa028a16e03d85ddfc1572a727"
-BASE_REGISTRY_BLOB = "0f749dca51423ff3ea3e6db6a712a2b5bee800a8"
+BASE_COMMIT = "bb61e68dc3028421b60c11b87ba2abd297ee6f78"
+BASE_REGISTRY_BLOB = "08f882d0c77339e8f7ff187c35b79501e0a2958ab1ff1c7aaa1c0ef8dbee45d6"
+LEGACY_VIEW_BASE_COMMIT = "c987647d01ad2baa028a16e03d85ddfc1572a727"
 OLD_BASE_COMMIT = "ee265576da7f67d3278f8099dd97d4e714ef0651"
 REQUIRED_BASE_SKILLS = {
     "managing-game-project-operating-system", "auditing-and-refining-ui-art",
@@ -22,6 +23,9 @@ REQUIRED_BASE_SKILLS = {
     "identifying-project-core", "auditing-canonical-reference-freshness",
     "analyzing-and-refining-game-concepts", "creating-user-learning-notes",
     "refactoring-with-contract-preservation",
+    "developing-and-revising-serial-fiction", "evaluating-godot-assets-and-plugins-before-creation",
+    "governing-legacy-retention-and-archives", "optimizing-ai-model-and-prompt-costs",
+    "producing-game-development-youtube-videos",
 }
 REQUIRED_ADAPTER_ROLES = {
     "skill_registry", "skill_learning_log", "project_discipline_skill_root",
@@ -65,7 +69,7 @@ class BaseOperatingSyncTests(unittest.TestCase):
         self.assertEqual(self.registry["base"]["source_registry_blob_sha"], BASE_REGISTRY_BLOB)
         self.assertEqual(self.index["source"]["commit"], BASE_COMMIT)
         self.assertEqual(self.index["source"]["registry_blob_sha"], BASE_REGISTRY_BLOB)
-        self.assertEqual(self.adapter["base"]["commit"], BASE_COMMIT)
+        self.assertEqual(self.adapter["base"]["commit"], LEGACY_VIEW_BASE_COMMIT)
         version = (ROOT / "docs/BASE_RULES_VERSION.md").read_text(encoding="utf-8")
         self.assertIn(BASE_COMMIT, version)
         active_docs = [
@@ -81,13 +85,13 @@ class BaseOperatingSyncTests(unittest.TestCase):
     def test_latest_base_skill_set_and_coverage_are_complete(self) -> None:
         ids = {x["skill_id"] for x in self.index["skills"]}
         self.assertEqual(ids, REQUIRED_BASE_SKILLS)
-        self.assertEqual(len(ids), 25)
-        self.assertEqual(self.index["source"]["active_skill_count"], 25)
+        self.assertEqual(len(ids), 30)
+        self.assertEqual(self.index["source"]["active_skill_count"], 30)
         self.assertFalse(self.registry["routing_policy"]["load_all_skills"])
         for item in self.index["skills"]:
             self.assertTrue(item["trigger_tags"])
             self.assertTrue(item["base_path"].endswith("/SKILL.md"))
-        self.assertEqual(len(self.coverage["responsibilities"]), 18)
+        self.assertEqual(len(self.coverage["responsibilities"]), 21)
         for row in self.coverage["responsibilities"]:
             self.assertIn(row["status"], {"COVERED", "COVERED_EXISTING"})
             self.assertTrue(set(row["skills"]) <= ids, row)

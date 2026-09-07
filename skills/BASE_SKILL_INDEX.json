@@ -3,10 +3,10 @@
   "index_role": "pinned-base-skill-routing-index",
   "source": {
     "repository": "alsdmlals4-eng/Base",
-    "commit": "c987647d01ad2baa028a16e03d85ddfc1572a727",
+    "commit": "bb61e68dc3028421b60c11b87ba2abd297ee6f78",
     "registry_path": "skills/SKILL_REGISTRY.json",
-    "registry_blob_sha": "0f749dca51423ff3ea3e6db6a712a2b5bee800a8",
-    "active_skill_count": 25,
+    "registry_blob_sha": "08f882d0c77339e8f7ff187c35b79501e0a2958ab1ff1c7aaa1c0ef8dbee45d6",
+    "active_skill_count": 30,
     "full_contract_location": "remote-pinned-skill-package",
     "selection_contract": "Read this index first; fetch only the selected full SKILL.md and its explicitly linked references from the pinned Base commit.",
     "version_authority": "docs/BASE_RULES_VERSION.md",
@@ -32,6 +32,8 @@
         "cross-discipline",
         "ambiguous-scope",
         "material-ambiguity",
+        "grill-me",
+        "decision-interview",
         "work-order",
         "acceptance-criteria",
         "work-decomposition",
@@ -42,7 +44,22 @@
         "cold-start",
         "work-mode-selection",
         "automatic-skill-routing",
-        "skill-execution-report"
+        "skill-execution-report",
+        "current-confirmed-decisions",
+        "duplicate-question-prevention",
+        "recommended-default",
+        "pr-preflight",
+        "approval-bundle",
+        "duplicate-omission-conflict-audit",
+        "planning-sequence",
+        "image-approval-bundle",
+        "instruction-authority",
+        "interface-first-prompt",
+        "context-curation",
+        "artifact-first-delivery",
+        "notion-project-workspace",
+        "project-home",
+        "legacy-sheet-migration"
       ]
     },
     {
@@ -63,7 +80,16 @@
         "versioned-duplicate",
         "stale-copy",
         "obsolete-file",
-        "legacy-reconciliation"
+        "legacy-reconciliation",
+        "current-confirmed-decisions",
+        "decision-recovery",
+        "project-cold-start",
+        "visual-workflow-install",
+        "project-base-adapter",
+        "project-operating-integrity",
+        "notion-project-workspace",
+        "project-home",
+        "legacy-sheet-migration"
       ]
     },
     {
@@ -88,7 +114,18 @@
         "pdf-publication",
         "publication-stale",
         "approved-image-change",
-        "document-restructure"
+        "document-restructure",
+        "decision-tracking",
+        "subsystem-checkpoint",
+        "canonical-integration",
+        "confirmed-decision-sync",
+        "duplicate-question-prevention",
+        "immediate-canonical-promotion",
+        "image-approval-ledger",
+        "visual-canonical-sync",
+        "notion-project-workspace",
+        "project-home",
+        "legacy-sheet-migration"
       ]
     },
     {
@@ -99,7 +136,16 @@
         "handoff",
         "active-context-change",
         "phase-boundary",
-        "new-chat"
+        "new-chat",
+        "implementation-package-handoff",
+        "codex-plan-review",
+        "godot-package-handoff",
+        "resume-implementation",
+        "agent-merge",
+        "verified-pr-merge",
+        "on-demand-codex-handoff",
+        "codex-handoff",
+        "codex-work-spec"
       ]
     },
     {
@@ -127,7 +173,19 @@
         "reward-latency",
         "poc",
         "concept-recalibration",
-        "production-direction"
+        "production-direction",
+        "evidence-pack",
+        "professional-official-evidence",
+        "game-system-design",
+        "system-boundary",
+        "difficulty-design",
+        "combat-ai-design",
+        "adaptive-difficulty",
+        "dynamic-difficulty-adjustment",
+        "attack-budget",
+        "threat-budget",
+        "tension-pacing",
+        "enemy-ai-fairness"
       ]
     },
     {
@@ -143,7 +201,28 @@
         "playtest-evidence",
         "external-playtest",
         "accessibility-target",
-        "performance-budget"
+        "performance-budget",
+        "demo-first",
+        "polished-demo",
+        "vertical-slice-playtest",
+        "technical-spike"
+      ]
+    },
+    {
+      "skill_id": "producing-game-development-youtube-videos",
+      "layer": "specialist",
+      "base_path": "skills/producing-game-development-youtube-videos/SKILL.md",
+      "trigger_tags": [
+        "game-devlog",
+        "youtube-development-video",
+        "game-development-shorts",
+        "feature-reveal-video",
+        "release-marketing-video",
+        "channel-portfolio",
+        "episode-concept",
+        "script-shot-plan",
+        "title-thumbnail-package",
+        "youtube-analytics-review"
       ]
     },
     {
@@ -174,8 +253,17 @@
         "target-platform",
         "frame-time",
         "memory-budget",
+        "ci-cost-optimization",
+        "github-actions-cost",
+        "ci-gate",
         "regression",
-        "evidence-report"
+        "evidence-report",
+        "project-operating-integrity",
+        "fail-closed-operating-gate",
+        "completion-claim",
+        "claim-evidence",
+        "intent-conformance",
+        "hallucination-audit"
       ]
     },
     {
@@ -202,7 +290,16 @@
       "trigger_tags": [
         "art-direction",
         "image-prompt",
-        "technique-card"
+        "technique-card",
+        "planning-visualization",
+        "intermediate-visual-checkpoint",
+        "mid-review-game-screen",
+        "ui-included-game-screen",
+        "final-visual-candidate",
+        "visual-qa-and-approval",
+        "image-mockup",
+        "image-approval",
+        "image-review-ledger"
       ]
     },
     {
@@ -210,11 +307,26 @@
       "layer": "specialist",
       "base_path": "skills/auditing-and-refining-ui-art/SKILL.md",
       "trigger_tags": [
-        "ui-art-audit",
+        "game-ux",
+        "ui-design",
+        "ui-information-architecture",
+        "interaction-pattern",
+        "ui-polishing",
+        "interaction-feedback",
+        "microinteraction",
+        "motion-feedback",
+        "audio-haptic-feedback",
         "godot-ui",
         "web-ui",
+        "runtime-ui-audit",
         "visual-refinement",
-        "render-review"
+        "render-review",
+        "ui-art-audit",
+        "ui-motion-design",
+        "animation-interruption",
+        "instant-complete",
+        "reduced-motion",
+        "motion-feedback-budget"
       ]
     },
     {
@@ -273,7 +385,17 @@
         "critique-validation",
         "approved-refinement",
         "regression-recheck",
-        "negative-review"
+        "negative-review",
+        "post-merge-review",
+        "canonical-conflict",
+        "decision-omission",
+        "configured-workspace-authority-drift",
+        "merged-pr-regression",
+        "repository-wide-audit",
+        "full-file-audit",
+        "stale-file-audit",
+        "untouched-consumer-audit",
+        "prompt-drift"
       ]
     },
     {
@@ -298,7 +420,12 @@
         "progressive-disclosure",
         "context-reduction",
         "reference-extraction",
-        "compact-skill"
+        "compact-skill",
+        "completeness-first",
+        "no-size-ceiling",
+        "instruction-budget",
+        "example-as-fixture",
+        "golden-set-preservation"
       ]
     },
     {
@@ -326,7 +453,10 @@
         "push",
         "branch-divergence",
         "working-tree",
-        "github-sync"
+        "github-sync",
+        "github-cli-missing",
+        "gh-auth-missing",
+        "github-connector-fallback"
       ]
     },
     {
@@ -376,11 +506,14 @@
       "base_path": "skills/building-project-visual-dashboards/SKILL.md",
       "trigger_tags": [
         "project-dashboard",
-        "html-dashboard",
         "system-map",
         "mvp-board",
         "ux-flow",
-        "visual-status"
+        "visual-status",
+        "notion-project-home",
+        "notion-visual-map",
+        "human-facing-project-view",
+        "self-contained-home"
       ]
     },
     {
@@ -395,6 +528,74 @@
         "crash",
         "state-corruption",
         "engine-debugging"
+      ]
+    },
+    {
+      "skill_id": "governing-legacy-retention-and-archives",
+      "layer": "foundation",
+      "base_path": "skills/governing-legacy-retention-and-archives/SKILL.md",
+      "trigger_tags": [
+        "legacy-retention",
+        "archive-governance",
+        "legacy-file",
+        "versioned-duplicate",
+        "stale-copy",
+        "canonical-merge",
+        "compatibility-stub",
+        "archive-history",
+        "delete-candidate",
+        "legacy-reconciliation"
+      ]
+    },
+    {
+      "skill_id": "evaluating-godot-assets-and-plugins-before-creation",
+      "layer": "specialist",
+      "base_path": "skills/evaluating-godot-assets-and-plugins-before-creation/SKILL.md",
+      "trigger_tags": [
+        "godot-asset-search",
+        "godot-plugin-search",
+        "commercial-plugin",
+        "asset-store",
+        "asset-library",
+        "itchio-asset",
+        "github-addon",
+        "reuse-before-build",
+        "third-party-license",
+        "build-custom-decision"
+      ]
+    },
+    {
+      "skill_id": "optimizing-ai-model-and-prompt-costs",
+      "layer": "specialist",
+      "base_path": "skills/optimizing-ai-model-and-prompt-costs/SKILL.md",
+      "trigger_tags": [
+        "model-recommendation",
+        "model-effort-routing",
+        "luna-terra-sol",
+        "reasoning-effort",
+        "prompt-caching",
+        "cacheable-prefix",
+        "ai-cost-estimation",
+        "usage-measurement",
+        "provider-profile",
+        "cost-recalibration"
+      ]
+    },
+    {
+      "skill_id": "developing-and-revising-serial-fiction",
+      "layer": "specialist",
+      "base_path": "skills/developing-and-revising-serial-fiction/SKILL.md",
+      "trigger_tags": [
+        "serial-fiction",
+        "webnovel",
+        "novel-writing",
+        "fiction-revision",
+        "adaptation",
+        "pov",
+        "character-voice",
+        "episode-pacing",
+        "setup-payoff",
+        "reader-feedback"
       ]
     }
   ]

@@ -1,0 +1,179 @@
+{
+  "schema_version": 1,
+  "artifact_role": "PROJECT_WORK_CONTRACT_RECEIPT",
+  "receipt_id": "URBAN-LEGEND-BASE-V9.4.4-OPERATING-ADAPTATION-2026-09-01",
+  "work_level": "L3",
+  "request": "Base를 상세 fresh-read하고 프로젝트에 맞춰 작업순서, 구조, 계약을 갱신한다.",
+  "scope": {
+    "included": [
+      "Repository-first operating entrypoints and current authority order",
+      "Base v9.4.4 pin, selected route metadata, generated operating views",
+      "stale document-router test correction and operating health bootstrap",
+      "CI validator checkout pin to immutable Base policy evidence that indexes the v9.4.4 formal finalization",
+      "GUT runtime-scope classifier: full import/GUT/regression stays required for GUT or engine-surface changes, while governance-only changes retain focused contract verification"
+    ],
+    "excluded": [
+      "Godot runtime, scene, save, episode, gameplay, or approved asset mutation",
+      "Human, device, accessibility, runtime, release, or player acceptance claims",
+      "Open PR mutation, direct main push, force push, ruleset bypass, and archival deletion"
+    ],
+    "protected_paths_changed": false
+  },
+  "base_release": {
+    "repository": "alsdmlals4-eng/Base",
+    "version": "9.4.4",
+    "release_commit": "210ec78292fa12ed7563ba743b322dd36103ae4a",
+    "release_evidence_commit": "bb61e68dc3028421b60c11b87ba2abd297ee6f78",
+    "finalization_commit": "5adc196c0185951f50e49ab5e51586eff8d60886",
+    "registry_sha256": "08f882d0c77339e8f7ff187c35b79501e0a2958ab1ff1c7aaa1c0ef8dbee45d6",
+    "reviewed_base_main_policy_commit": "19355b7ef065a21d0f2b685c7d9be64a4a3970f8",
+    "reviewed_base_main_policy_state": "POLICY_EVIDENCE_NOT_RELEASE_IDENTITY"
+  },
+  "benchmark_preflight_receipt": {
+    "state": "PASS",
+    "entries": [
+      {
+        "source_and_evidence": "urban-legend origin/main 3083cd5bceab324a820d8fc63c9664e7c882d970; current adapter, current handoff, runtime code and protected-path diff readback",
+        "observed_pattern": "Repository current canon and exact main own product facts; the previous protected baseline stopped before seven already-merged protected-script files.",
+        "project_fit_and_difference": "ADAPT the operator baseline to exact latest main while leaving product paths untouched in this branch.",
+        "disposition": "ADAPT"
+      },
+      {
+        "source_and_evidence": "Base v9.4.4 formal release contract and base-v9.4.4.lock.json at 210ec78292fa12ed7563ba743b322dd36103ae4a / bb61e68dc3028421b60c11b87ba2abd297ee6f78 / 5adc196c0185951f50e49ab5e51586eff8d60886",
+        "observed_pattern": "Pin the canonical adapter and registry bytes; reuse-first and learning handoff are metadata gates, not game-content replacement.",
+        "project_fit_and_difference": "ADOPT the exact release identity while retaining only this project's selected 28 Base routes and its ten discipline routes.",
+        "disposition": "ADOPT"
+      },
+      {
+        "source_and_evidence": "Base current policy evidence 19355b7ef065a21d0f2b685c7d9be64a4a3970f8; project-operating artifact builder and work-contract receipt validator read locally",
+        "observed_pattern": "A generated dashboard, router, compatibility views, health record, and receipt can make contract drift machine-checkable without duplicating Skill bodies.",
+        "project_fit_and_difference": "ADAPT as operating-only evidence; do not treat current Base main as release identity or as Human/runtime product proof.",
+        "disposition": "ADAPT"
+      }
+    ]
+  },
+  "context_configuration_hygiene": {
+    "state": "PASS",
+    "inventory": [
+      {
+        "path": "AGENTS.md, START_HERE.md, docs/OPERATING_MODEL.md, docs/WORK_MODE_AND_SKILL_ROUTING.md, docs/DOCUMENTATION_MAP.md",
+        "classification": "ACTIVE_OWNER",
+        "decision": "UPDATE_IN_PLACE",
+        "reason": "Current entrypoints own read order and Work Mode routing.",
+        "owner_or_provenance": "Current repository entrypoint owners; exact main readback.",
+        "references_and_consumers": "Cold-start, routing, handoff, and active-document tests."
+      },
+      {
+        "path": "skills/PROJECT_BASE_ADAPTER.json, skills/PROJECT_SKILL_SNAPSHOT.json, skills/BASE_V9_ADAPTER.json, skills/PROJECT_BASE_SKILL_ADAPTER.json, skills/PROJECT_PATH_ADAPTER.json",
+        "classification": "ACTIVE_OWNER",
+        "decision": "CANONICAL_PLUS_GENERATED_VIEWS",
+        "reason": "Canonical adapter remains one source; declared compatibility views are regenerated, not hand-maintained.",
+        "owner_or_provenance": "PROJECT_BASE_ADAPTER.json is canonical; generated artifacts carry its source hash.",
+        "references_and_consumers": "Base artifact generator, project router, tests/test_base_v944_operating_contract.py."
+      },
+      {
+        "path": "docs/archive/base-v9-legacy-inputs/**",
+        "classification": "COMPATIBILITY",
+        "decision": "PRESERVE_GENERATION_INPUT",
+        "reason": "One-cycle compatibility inputs remain separated from generated views and are not current authority.",
+        "owner_or_provenance": "Historical v9 compatibility bytes restored exactly from urban-legend commit 92727506eae01d988851f8f5c26c71689bf4ba37.",
+        "references_and_consumers": "Only adapter-declared one-cycle generated views; never a default authority."
+      },
+      {
+        "path": "docs/CURRENT_STATUS.md and docs/archive/**",
+        "classification": "ARCHIVE",
+        "decision": "KEEP_UNCHANGED",
+        "reason": "Historical lineage is conditionally read and is not current operating authority.",
+        "owner_or_provenance": "Current STATUS and archived records are repository history sources.",
+        "references_and_consumers": "Conditional lineage and rollback reading; no default current owner."
+      },
+      {
+        "path": "docs/AI_WORKFLOW.md, docs/AI_SKILL_ADOPTION_GUIDE.md, docs/planning/README.md",
+        "classification": "UNKNOWN_UNVERIFIED",
+        "decision": "DO_NOT_RESTORE",
+        "reason": "They are absent from current main; stale test/router references are removed instead of reconstructing their former content.",
+        "owner_or_provenance": "Absent legacy paths are recorded from current main.",
+        "references_and_consumers": "No current consumer after router/test correction; no speculative reconstruction."
+      },
+      {
+        "path": "scripts/, scenes/, data/, assets/, addons/, project.godot",
+        "classification": "ACTIVE_OWNER",
+        "decision": "PROTECT_AND_DO_NOT_MUTATE",
+        "reason": "Operating-contract work has no product implementation authority.",
+        "owner_or_provenance": "Current project code, scenes, data, assets, addons, and project settings.",
+        "references_and_consumers": "Actual Godot runtime and protected-path policy; untouched by this worktree."
+      },
+      {
+        "path": "_worktrees/m04-playable-vertical-slice-20260831",
+        "classification": "UNKNOWN_UNVERIFIED",
+        "decision": "PRESERVE_SEPARATE_WORKTREE",
+        "reason": "It contains another active product branch and generated engine state outside this branch's ownership.",
+        "owner_or_provenance": "Separate active M04 worktree under the repository worktree parent.",
+        "references_and_consumers": "Its own product branch and engine-generated files; this branch has no consumer/write ownership."
+      }
+    ],
+    "scope": "Repository-first operating-entrypoint, Base v9.4.4 pin, and generated-view adaptation only; no product/runtime/asset mutation."
+  },
+  "reuse_learning_handoff": {
+    "gate": "REUSE_LEARNING_HANDOFF_REQUIRED",
+    "selected_modules": [
+      "Base v9.4.4 release contract and registry pin",
+      "managing-project-intake-and-work-contract reuse handoff",
+      "project-operating artifact generator and receipt validator"
+    ],
+    "reuse_mode": "ADAPT",
+    "project_paths_changed": [
+      "operating docs, adapter metadata, generated operating views, health bootstrap, contract tests"
+    ],
+    "verification_evidence": [
+      "focused red-to-green contract tests",
+      "Base project operating contract check and generated-view check",
+      "Git exact-head readback after PR creation"
+    ],
+    "evidence_ceiling": "Machine/static operating-contract evidence only; runtime, device, accessibility, human, player, release, and product acceptance remain NOT_RUN.",
+    "rollback": "Revert this dedicated operating-contract commit; product paths and M04 worktree are unchanged.",
+    "project_only_lessons": [
+      "A protected baseline must be advanced only after exact diff review, not by treating an existing validation failure as product drift.",
+      "Deleted legacy routers must be removed from current tests rather than recreated as speculative authority.",
+      "A governance-only change must not invoke a full Godot import merely because it touches a GUT governance test; retain that import gate for actual GUT or engine-surface changes."
+    ],
+    "base_promotion_candidates": "NO_NEW_REUSE_LEARNING"
+  },
+  "adversarial_review": {
+    "required_full_loops": 5,
+    "loops": [
+      {
+        "loop": 1,
+        "focus": "Exact-current-tree regression baseline",
+        "result": "PASS",
+        "evidence": "A clean full checkout at exact origin/main 3083cd5bceab324a820d8fc63c9664e7c882d970 completed 477 tests before this adaptation."
+      },
+      {
+        "loop": 2,
+        "focus": "Base-generated operating artifact integrity",
+        "result": "PASS",
+        "evidence": "Base artifact builder --check, generic operating-contract checker, and receipt validator passed after regeneration."
+      },
+      {
+        "loop": 3,
+        "focus": "Diff hygiene and protected product boundary",
+        "result": "PASS",
+        "evidence": "git diff --check passed and the protected Godot/product path comparison against exact main was empty."
+      },
+      {
+        "loop": 4,
+        "focus": "Current-authority and structured-data drift",
+        "result": "PASS",
+        "evidence": "Every changed JSON file parsed; active-entrypoint conflict and Base-release conflict scans passed."
+      },
+      {
+        "loop": 5,
+        "focus": "Post-cleanup final regression and artifact readback",
+        "result": "PASS",
+        "evidence": "The temporary baseline worktree was removed; Base artifact check, generic contract check, receipt validator, and 481-test suite all passed afterwards."
+      }
+    ],
+    "finding_and_correction": "The operating worktree inherited sparse checkout and falsely presented tracked documents as absent. A clean full checkout at the same exact main passed its baseline tests; sparse checkout was disabled only in this operating worktree before final verification. No product source was changed.",
+    "exit": "CLEAN_REVIEW_EXIT"
+  }
+}

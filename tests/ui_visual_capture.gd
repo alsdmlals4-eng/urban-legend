@@ -112,8 +112,8 @@ func _capture() -> void:
 					break
 			for _frame in range(3):
 				await process_frame
-	if ui_state == "recovery_evidence" and current_scene.has_method("_toggle_clue_drawer"):
-		current_scene.call("_toggle_clue_drawer")
+	if ui_state == "recovery_evidence" and current_scene.has_method("request_manual_quick_open"):
+		current_scene.call("request_manual_quick_open")
 		for _frame in range(3):
 			await process_frame
 	if ui_state == "mvp043_team_status":
@@ -175,7 +175,8 @@ func _capture() -> void:
 			current_scene.call("_select_pattern_response", wrong_response)
 			for _frame in range(3):
 				await process_frame
-		current_scene.call("_toggle_clue_drawer")
+		if current_scene.has_method("request_manual_quick_open"):
+			current_scene.call("request_manual_quick_open")
 		for _frame in range(3):
 			await process_frame
 	if ui_state.begins_with("core_validation_") and current_scene.has_method("_select_hypothesis"):

@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "artifact_role": "PROJECT_PROTECTED_CHANGE_APPROVAL",
+  "status": "APPROVED",
+  "protected_base_commit": "c0bc8a98ee40bf04d4953a834d9cd06c47e42efe",
+  "decision_ids": ["UL-ISSUE-311-M04-D-CANDIDATE"],
+  "approved_paths": [
+    "assets/anomalies/cutouts/afterlife_d_cutout.png",
+    "assets/anomalies/cutouts/red_umbrella_b_cutout.png",
+    "assets/backgrounds/afterlife_platform.png",
+    "scripts/scenes/battle_scene.gd",
+    "scripts/scenes/investigation_scene.gd",
+    "scripts/ui/canon_v2_operation_overlay.gd",
+    "scripts/ui/canon_v2_runtime_bridge.gd",
+    "scripts/ui/recovery_telegraph_audio.gd"
+  ],
+  "approval_source": "The sole decision owner authorized automatic generation and dual storage of the current M04 D visual candidate, safe current-task PR handling, and the required protected-baseline acknowledgement. This task changes none of the listed protected product paths.",
+  "approval_time": "2026-08-28T06:35:00+09:00",
+  "scope_summary": "Retain one M04 D visual candidate and receipt in documentation paths, synchronize the Visual Notion attachment, and preserve all product asset bytes, Scene/script/UI behavior, gameplay, data, saves, product-asset status, runtime evidence, and Human QA state."
+}

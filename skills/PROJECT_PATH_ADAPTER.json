@@ -34,14 +34,14 @@
     }
   ],
   "base_release": {
-    "finalization_commit": "0b7c94f38d959efc0fc9442274c60b2e268a3c97",
-    "release_commit": "7dd1a4f80388bc5faca767ff74a3eb32dc9d0ac8",
-    "release_evidence_commit": "da33a350d61b8adc52df97fccc7001708a933370",
+    "finalization_commit": "5adc196c0185951f50e49ab5e51586eff8d60886",
+    "release_commit": "210ec78292fa12ed7563ba743b322dd36103ae4a",
+    "release_evidence_commit": "bb61e68dc3028421b60c11b87ba2abd297ee6f78",
     "repository": "alsdmlals4-eng/Base",
-    "version": "9.4.3"
+    "version": "9.4.4"
   },
   "canonical_source": "skills/PROJECT_BASE_ADAPTER.json",
-  "canonical_source_sha256": "998ed3501e69bfcfadd48c24440a18e4f81adbbdd046c995cd81221a70a0bb03",
+  "canonical_source_sha256": "2d0bb146dd73aa467f8f45e2b101466d65d30f8c84b68073611889d9cfcb64bc",
   "generated": true,
   "hash_definition": "RAW_FILE_BYTES_SHA256",
   "legacy_source": "docs/archive/base-v9-legacy-inputs/PROJECT_PATH_ADAPTER.json",
@@ -49,14 +49,24 @@
   "lifecycle": "ONE_CYCLE",
   "project": {
     "engine": "Godot 4.7",
+    "historical_notion": {
+      "migration_receipt": "docs/migrations/NOTION_CURRENT_WORK_MIGRATION_2026-08-28.md",
+      "project_page": "https://app.notion.com/p/3c01b237eb1c811c9d5ec512acad4f92",
+      "role": "HISTORICAL_READ_ONLY_NO_WRITE",
+      "system": "NOTION"
+    },
     "project_id": "urban-legend",
     "repository": "alsdmlals4-eng/urban-legend",
     "root": ".",
     "workspace_authority": {
       "human_facing": {
-        "project_page": "https://app.notion.com/p/3c01b237eb1c811c9d5ec512acad4f92",
-        "role": "HUMAN_FACING_PLANNING_CANON",
-        "system": "NOTION"
+        "documents": [
+          "docs/design/PROJECT_AI_PRODUCTION_SPEC.md",
+          "exports/urban-legend_MASTER_PRODUCTION_GDD_20260828.pdf"
+        ],
+        "repository": "alsdmlals4-eng/urban-legend",
+        "role": "HUMAN_FACING_GDD_AND_DECISION_CANON",
+        "system": "REPOSITORY"
       },
       "structured_implementation": {
         "repository": "alsdmlals4-eng/urban-legend",

@@ -2,7 +2,7 @@
 
 ## Status
 
-`USER_APPROVED_VISUAL_CANDIDATE / PRODUCT_ASSET_PROMOTION_PENDING`
+`PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_AND_HUMAN_QA_PENDING`
 
 This record owns the one-image transparent anomaly candidate for M01 Recovery risk stages B/C.
 
@@ -25,4 +25,4 @@ The candidate depicts an unnamed station-attendant-like humanoid whose uniform d
 
 ## Approval boundary
 
-User result approval confirms this visual candidate and requires durable storage in this repository and Project Notion. It does not replace `assets/anomalies/cutouts/afterlife_b_cutout.png`, change the asset catalog, grant `PROJECT_ASSET_APPROVED`, or pass runtime readability and Human QA. Those gates remain separately authorized work.
+The sole decision owner authorized product promotion under GitHub Issue #250. The exact candidate bytes now replace only `assets/anomalies/cutouts/afterlife_b_cutout.png`; the existing Godot catalog, scene route, and full-image fallback remain unchanged. Godot import and automated catalog checks are required by this promotion. Live 1280×720/1920×1080 capture and Human QA remain separate pending gates.

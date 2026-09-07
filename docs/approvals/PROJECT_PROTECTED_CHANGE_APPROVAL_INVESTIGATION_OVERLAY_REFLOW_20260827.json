@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "artifact_role": "PROJECT_PROTECTED_CHANGE_APPROVAL",
+  "status": "APPROVED",
+  "protected_base_commit": "c0bc8a98ee40bf04d4953a834d9cd06c47e42efe",
+  "decision_ids": [
+    "UL-ISSUE-261-M04-RECOVERY-TELEGRAPH-AUDIO",
+    "UL-ISSUE-268-RECOVERY-OVERLAY-LAYERING",
+    "UL-ISSUE-270-INVESTIGATION-OVERLAY-REFLOW"
+  ],
+  "approved_paths": [
+    "scripts/scenes/battle_scene.gd",
+    "scripts/ui/canon_v2_operation_overlay.gd",
+    "scripts/ui/canon_v2_runtime_bridge.gd",
+    "scripts/ui/recovery_telegraph_audio.gd"
+  ],
+  "approval_source": "The project's sole decision owner authorized continuous autonomous implementation and direct Godot verification. This manifest records the protected-path merge evidence for the M04 Investigation runtime overlap found during actual consumer validation; no second GitHub identity is required.",
+  "approval_time": "2026-08-27T11:20:00+09:00",
+  "scope_summary": "This approval covers the protected-path delta from the adapter baseline: the previously approved M04 telegraph-audio scene/player paths, the Canon V2 overlay paths, and the present Investigation reflow. Keep the legacy Investigation TopHud and its record/settings/HQ input. Hide only the duplicate legacy LogBar and place the Canon V2 compact rule strip beneath TopHud. Preserve M04 background assets, LocationPreview consumer wiring, investigation rules, save data, and recovery behavior."
+}

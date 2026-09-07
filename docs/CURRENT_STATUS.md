@@ -1,16 +1,34 @@
 # Current Project Status
 
+> 2026-08-28 routing correction: 아래의 2026-08-21 및 ANNUAL/CORE 표는 implementation/history ledger다. current product 상태를 재정의하지 않는다. 최신 상태는 `CURRENT_PLANNING_CANON.md` + `current-planning-canon.json` + `CURRENT_DECISION_OVERLAY.md` + `CURRENT_HANDOFF.md`와 GitHub latest main을 우선한다.
+
 > 문서 위치: `docs/CURRENT_STATUS.md`  
 > 프로젝트 코어: `docs/PROJECT_CORE.md`  
-> 상세 설계: `docs/GAME_DESIGN_DOCUMENT.md`  
+> current master GDD: `docs/design/PROJECT_AI_PRODUCTION_SPEC.md`
+> historical detailed design archive: `docs/GAME_DESIGN_DOCUMENT.md`
 > 연도제 원설계: `docs/superpowers/specs/2026-07-25-annual-raising-visual-novel-design.md`  
 > 최신 시간 계약: `docs/superpowers/specs/2026-07-25-annual-mvp-001-seven-day-scheduling-design.md`  
+> current production GDD: `docs/design/PROJECT_AI_PRODUCTION_SPEC.md`
 > 확장 마스터 설계: `docs/superpowers/specs/2026-07-26-annual-expansion-master-design.md`  
 > ANNUAL-MVP-002 상세 설계: `docs/superpowers/specs/2026-07-26-annual-mvp-002-companion-equipment-research-design.md`  
 > 최신 구현 계획: `docs/superpowers/plans/2026-07-26-annual-mvp-002-vertical-slice-implementation-plan.md`  
 > 벤치마크 권장안: `docs/planning/ANNUAL_BENCHMARK_RECOMMENDATIONS.md`
 
-## 2026-08-21 현재 Overlay
+## 2026-08-28 current router
+
+| 항목 | 현재 값 |
+|---|---|
+| 최신 기획 정본 | `docs/CURRENT_PLANNING_CANON.md` + `docs/current-planning-canon.json` |
+| 현재 시각 방향 | `D-2026-08-28-URBAN-NOIR-HYBRID-VISUAL-DIRECTION` — 현실적 한국 도시 누아르 환경 + 애니풍 인물·괴이 + 손그림 기록물 UI |
+| 현재 campaign timing 결정 | `D-2026-08-28-TEN-DAY-HALF-DAY-CASE-CADENCE` — 10일·오전/오후, Day 1~9 조기 해결 / Day 10 정규 해결. 옛 2/3/4주, `0/15/30`, `0/+4/+8`은 `SUPERSEDED`; replacement numeric balance는 `UNDEFINED`. |
+| current runtime state | one-main-case cycle lock, persisted non-numeric dispatch context, Preparation docket, and M04 four-page causal result are implemented with focused machine evidence. CASE-01 keyword composition remains `IMPLEMENTED / MACHINE_VERIFIED / HUMAN_QA_NOT_RUN`; global keyword expansion, numeric timing balance, M01/M04 entrance promotion, Human/accessibility/release QA remain excluded or pending. |
+| 프로젝트 이해 보드 | `GENERATED_EXPLORATION / NOT_PROJECT_ASSET / NOT_RUNTIME_ASSET` |
+| runtime reconciliation | `MERGED_MAIN` (구현 merge PR #224); current documentation reconciliation PR #322 |
+| 개별 제품 asset | root `ASSET_MANIFEST.yml`의 9개 entry는 각자의 승인·구현·runtime evidence 범위를 보유; Human QA와 별개 |
+| Human/new-player/Player Experience | `NOT_RUN` |
+| production expansion | `NOT_APPROVED` |
+
+## 2026-08-21 historical Overlay — current authority 아님
 
 | 항목 | 현재 값 |
 |---|---|
@@ -25,7 +43,7 @@
 | Human QA | `NOT_RUN` |
 | POC_PASSED | `NOT_DECLARED` |
 
-아래 ANNUAL/CORE/MVP 상세는 병합된 기술·회귀·검증 계보를 보존하는 구현 Ledger다. 현재 제품 구조나 다음 Gate가 충돌하면 위 Overlay와 `CURRENT_PLANNING_CANON`을 우선한다.
+아래 ANNUAL/CORE/MVP 상세는 병합된 기술·회귀·검증 계보를 보존하는 구현 Ledger다. 현재 제품 구조나 다음 Gate가 충돌하면 위 current router와 `CURRENT_PLANNING_CANON`을 우선한다. 특히 아래의 4주/7일/M04 `0/15/30`는 historical evidence이며 current balance가 아니다.
 
 이 문서는 구현, 자동 검증, 렌더링·입력 QA, 신규 플레이어 검증을 분리한다. 자동 회귀와 화면 검증은 `POC_PASSED`, 연간 루프 통과, 제작 확대 승인을 뜻하지 않는다.
 
@@ -81,9 +99,9 @@
 → 직접 휴식: 1일, 피로 -25, 상태 회복 가능
 → 자동 휴식: 하루당 피로 5만 회복
 → 자동 휴식은 관계 이벤트·특수 회복·추가 보상 없음
-→ 2주차 자율 출동 위험 0 또는 지연
-→ 3주차 자율 출동 위험 15 또는 지연
-→ 4주차 7일 결과 확인 후 긴급 강제 출동 위험 30
+→ M04 전용: 2주차 조기 출동 귀가 기억 노출 0 / 준비 tier 0
+→ M04 전용: 3주차 조기 출동 귀가 기억 노출 15 / 준비 tier 1
+→ M04 전용: 4주차 정규 출동 귀가 기억 노출 30 / 준비 tier 2
 → 기존 CORE-MVP-001 사건 → 연구·공용 스킬 → 월말/분기 결산 모형
 ```
 
@@ -243,7 +261,7 @@ PR #70의 4주 구조는 달력 월 보정과 위험 0/15/30의 근거로 유지
 ## 미실행 ANNUAL 사람 검증 backlog (현재 제품 다음 Gate 아님)
 
 1. 실제 사람의 7일 편성·템플릿·동료·장비 반복 사용성 평가
-2. 신규 플레이어의 2주차 조기·3주차 자율·4주차 강제 출동 플레이
+2. 신규 플레이어의 M04 2주차 조기·3주차 조기·4주차 정규 출동 플레이
 3. 동료별 장점, 지원 확률·준비도·보장 발동, 육성→사건→연구 인과 설명 수집
 4. 장비·동료가 사건 정답을 제공한다고 오인하지 않는지 확인
 5. `KEEP / AMPLIFY / CHANGE / RETEST / HOLD` 판정

@@ -1,18 +1,21 @@
 # 괴이기록국 · Current Visual Work Order
 
 > Role: `CURRENT_VISUAL_WORK_ORDER`
-> Updated: `2026-08-26`
-> Status: `PLANNING_COMPLETE / RUNTIME_IMPLEMENTED / USER_APPROVED_VISUAL_CANDIDATES / RUNTIME_CONSUMER_FIRST_ASSET_GATE / PRODUCT_REFERENCE_ASSET_PENDING / HUMAN_QA_NOT_RUN`
+> Updated: `2026-08-30`
+> Status: `PLANNING_COMPLETE / RUNTIME_IMPLEMENTED / USER_APPROVED_VISUAL_DIRECTION_LOCK / USER_APPROVED_VISUAL_CANDIDATES / RUNTIME_CONSUMER_FIRST_ASSET_GATE / M04_INVESTIGATION_RUNTIME_VERIFIED / ENTRANCE_CANDIDATE_RUNTIME_COMPARED / FINAL_USER_LOCK_REQUIRED / PRODUCT_REFERENCE_ASSET_PENDING / HUMAN_QA_NOT_RUN`
 > Art treatment: `SOFT_ANIME_NOIR_LOCKED`
 > Presentation invariant: `DOSSIER_HYBRID_IS_PRESENTATION_LANGUAGE_NOT_MEDIUM`
-> Decisions: `D-2026-08-20-INVESTIGATION-SCENE-KEYWORD-DEDUCTION-LIMITED-CHARACTER-EXPOSURE`, `D-2026-08-25-RECOVERY-CONTEXT-ACTION-HIERARCHY`, `D-2026-08-26-RUNTIME-CONSUMER-FIRST-VISUAL-ASSET-GATE`
+> Decisions: `D-2026-08-20-INVESTIGATION-SCENE-KEYWORD-DEDUCTION-LIMITED-CHARACTER-EXPOSURE`, `D-2026-08-25-RECOVERY-CONTEXT-ACTION-HIERARCHY`, `D-2026-08-26-RUNTIME-CONSUMER-FIRST-VISUAL-ASSET-GATE`, `D-2026-08-28-URBAN-NOIR-HYBRID-VISUAL-DIRECTION`
 > Consumer checklist: `docs/CURRENT_VISUAL_ASSET_CONSUMER_CHECKLIST.md`
+> Screen coverage owner: `docs/CURRENT_SCREEN_SURFACE_INVENTORY_AND_VISUAL_COVERAGE.md`
 
-이 문서는 현재 시각/화면 계약을 소유한다. 공유 runtime 구현은 PR #224를 통해 main에 반영됐고, M04 Investigation Anchor 1안은 사용자 결과 승인을 받았다. Recovery successor 전체 시안도 현재 대화에서 사용자 승인을 받았고, Composite Result 1·2단계 mockup은 사용자 승인 reference다. 다만 이 화면 mockup들은 자동으로 제품 PNG asset이 되지 않는다.
+이 문서는 현재 시각/화면 계약을 소유한다. 공유 runtime 구현은 PR #224를 통해 main에 반영됐고, M04 Investigation Anchor 1안은 사용자 결과 승인을 받았다. Recovery successor 전체 시안도 현재 대화에서 사용자 승인을 받았고, Composite Result 1·2단계 mockup은 사용자 승인 reference다. 다만 이 화면 mockup들은 자동으로 제품 PNG asset이 되지 않는다. `PRODUCT_REFERENCE_ASSET_PENDING`은 아직 promotion/runtime evidence가 남은 소비처에 적용되는 전역 게이트이며, M04 Investigation의 개별 `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED` 사실을 되돌리지 않는다.
 
 2026-08-26 사용자 결정에 따라 신규 이미지 제작은 **실제 게임 runtime consumer가 있는 asset**을 기준으로 한다. `PanelContainer`, `Label`, `Button`, `GridContainer`, Theme/StyleBox 등 Godot UI 구조를 설명하기 위한 component sheet는 이미지 backlog에서 제외한다. 실제 생성/교체 판단은 `CURRENT_VISUAL_ASSET_CONSUMER_CHECKLIST.md`가 소비처·기존 파일·Delete Test를 연결해 소유한다.
 
 현재 mutation 경계는 **runtime-consumed visual asset review, product-reference asset 승격, runtime 가독성 검증, release-near polish, Human evidence**다.
+
+2026-08-28에 사용자는 **현실적 한국 도시 누아르 환경 + 애니풍 인물·괴이 + 손그림 기록물 UI** 혼합 방향을 현재 시각 정본으로 승인했다. 상세 Keep/Avoid/Do Not Drift, provenance와 구현 제외 경계는 `docs/visual/VISUAL_DIRECTION_LOCK_PACKET_2026-08-28.md`가 소유한다. 이 이해 검증용 보드는 `docs/visual/PROJECT_CORE_SCENE_VISUAL_BOARD_2026-08-28.md`와 PNG에 남기며, runtime asset/UI/Scene/Human QA로 해석하지 않는다.
 
 ## 1. Current approved direction
 
@@ -114,13 +117,13 @@ M01 상세 runtime predecessor는 `docs/M01_RECOVERY_SCENE_PACKET.md`에 남아 
 - 실제 product-reference 승격 전 layer/reuse, rights/provenance, 1280×720/1920×1080 runtime readability, runtime consumption을 검증한다.
 - Human QA와 product-reference asset Gate는 서로 독립이다.
 
-2026-08-26 M04 Investigation background adaptation은 별도 `USER_APPROVED_VISUAL_CANDIDATE`로 확정됐다.
+2026-08-26 M04 Investigation background adaptation은 별도 `USER_APPROVED_VISUAL_CANDIDATE`로 확정됐고, 2026-08-27에는 기존 canonical runtime path에 제품 승격됐다.
 
 - candidate ID: `M04_INVESTIGATION_BACKGROUND_ADAPT_01`.
 - durable review source: `docs/visual/candidates/M04_INVESTIGATION_BACKGROUND_ADAPT_01.png`.
 - receipt: `1672x941`, `2,662,606` bytes, SHA-256 `874d3c531a45c9ddf670e9a8ff70a37443762dc24af640edac2ff45fea762f9d`.
 - actual consumer intent: `investigation_scene.tscn -> ArtLayer/Background` plus shared `LocationPreview`.
-- this is an approved visual adaptation candidate after current `red_crossroads.png` pixel comparison. It is **not** `PROJECT_ASSET_APPROVED`, a replacement of the tracked PNG, a Godot connection, runtime readability PASS, or Human QA PASS.
+- this is an approved visual adaptation candidate after current `red_crossroads.png` pixel comparison. Its exact bytes are now `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED` at the existing `assets/backgrounds/red_crossroads.png` route; no Godot connection was added or changed. PR #273 verified actual Investigation + LocationPreview readability at 1280×720/1920×1080. Human QA remains pending.
 - detailed approval/provenance record: Notion `M04_INVESTIGATION_BACKGROUND_ADAPT_01` Asset Library entry.
 
 Recovery visual history:
@@ -196,16 +199,31 @@ actual Scene / Texture consumer
 11. Composite Result mockup 1단계/2단계 — USER_APPROVED_REFERENCE; 3단계 — IN_REVIEW
 12. runtime-consumer-first image gate — APPROVED
 13. actual visual consumer inventory — COMPLETE_FOR_CURRENT_CORE_SURFACES
-14. `IMG-M01-03 afterlife_recovery.png` pixel compare + one background-only candidate result approval — COMPLETE_AS_VISUAL_CANDIDATE; no product asset promotion
-15. M01 anomaly B/C and D pixel compare — COMPLETE; B/C와 D 각각의 투명 후보가 사용자 결과 승인을 받았고 product promotion은 별도 대기
+14. `IMG-M01-03 afterlife_recovery.png` pixel compare + one background-only candidate result approval → product asset promotion — `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED`; Human QA pending
+15. M01 anomaly B/C and D pixel compare → product asset promotion — B/C `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED`; D correction candidate promoted under Issue #280 and verified in Issue #282 as `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED`; Human QA remains separate
 16. M04 approved Investigation Anchor vs actual `red_crossroads` consumer comparison — `ADAPT_CANDIDATE` selected
 17. `M04_INVESTIGATION_BACKGROUND_ADAPT_01` one-image adaptation + user result approval — COMPLETE_AS_VISUAL_CANDIDATE
-18. M04 product-reference promotion + rights/provenance + 1280×720/1920×1080 runtime 검증
-19. M04 release-near visual/audio/VFX implementation — separate later authorization
-20. M04 actual runtime/input + Human player-experience QA — separate later gate
+18. M04 product-reference promotion + rights/provenance — `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED`; 1280×720/1920×1080 runtime 검증 COMPLETE (PR #273)
+19. `M01_INVESTIGATION_PLATFORM_ADAPT_01` review → `CANDIDATE_NOT_PROMOTED` (central pillar conflicts with shared preview); `M01_INVESTIGATION_PLATFORM_ADAPT_02_20260827` one-image correction → `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED` at the existing `afterlife_platform.png` path; 1280×720/1920×1080 Background + LocationPreview verified, Human QA pending
+20. `M01_ENTRANCE_BACKGROUND_ADAPT_01` one-image candidate — `CANDIDATE_NOT_PROMOTED / REUSE_REVIEW`; it turns the descending entry threshold into a generic platform corridor and its blank sign/pillars compete with compact shared previews. Preserve `afterlife_entrance.png`; any re-entry candidate must retain the threshold and shared-preview composition.
+21. M04 release-near visual/audio/VFX implementation — separate later authorization
+22. M04 Human player-experience QA — separate later gate
+23. `M04_RECOVERY_BACKGROUND_ADAPT_01` one-image candidate — `CANDIDATE_NOT_PROMOTED / REUSE_REVIEW`; it improves the Korean closed-shop geography and preserves the `AnomalyVisual` zone, but its literal photographic surface misses the locked soft-anime-noir treatment. Preserve `red_recovery.png` and the separate transparent B/C·D overlays; any re-entry candidate must improve both style and layer separation.
+24. `M04_ANOMALY_BC_ADAPT_01_20260827` one-image candidate — `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED`; exact bytes now occupy the existing B/C cutout path and passed actual M04 Recovery `AnomalyVisual` captures at 1280×720/1920×1080. D remains a separate later identity-escalation review; Human QA remains pending.
+25. M04 D actual consumer review — `REPLACE_REQUIRED / ALPHA_CANDIDATE_BLOCKED`; the current cutout is a back-facing ordinary civilian and the full fallback is multi-figure scenery, so both fail the single D-risk apparition role. Two bounded image outputs were 24bpp RGB checkerboard files rather than transparent pixels and were rejected without durable storage. Preserve the canonical D path until an alpha-capable candidate route is available; see Issue #301.
+26. `M04_ENTRANCE_BACKGROUND_ADAPT_01_20260827` one-image candidate — `CANDIDATE_RUNTIME_COMPARED / PROMOTION_RECOMMENDED / FINAL_USER_LOCK_REQUIRED`; actual Dialogue at 1280×720 and requested 1920×1080 plus the non-compact current-case preview were compared in isolation. The candidate removes the current branding-like convenience-store striping while retaining the collapsed red umbrella and a clear central path; it is closer to the locked quiet urban-occult material language, but does not itself receive product-asset approval. `CurrentCasePreview` remains hidden below 1500×850, so 1280×720 validates Dialogue only. Preserve `red_alley_entrance.png` until final user `LOCK`; Human QA remains pending. The completed QA receipt is intentionally kept outside this current-status surface.
+27. M04 entrance consumer-resolution correction — repository and Notion readback completed under Issue #305 / PR #306 before runtime comparison. The later isolated comparison did not change any canonical product asset, Scene/catalog/runtime, UI, gameplay, save, or Human QA state.
+28. M01 ManualSurface + route-restore surface reuse review — `REUSE_ACCEPTED / NO_NEW_IMAGE_REQUIRED / EXISTING_RUNTIME_EVIDENCE_REUSED`; both existing textless textures preserve the locked dossier treatment while live Godot text, controls, and route tiles retain ownership. No asset replacement or new image; Human QA remains pending (Issue #307).
+29. `M01_ENTRANCE_BACKGROUND_ADAPT_02_20260828` one-image re-entry candidate — `CANDIDATE_RUNTIME_COMPARED / PROMOTION_RECOMMENDED / FINAL_USER_LOCK_REQUIRED`; the isolated actual-consumer comparison restored the descending entry threshold, paired rails, and clock landmark without competing with the shared menu/dialogue layouts. Preserve `afterlife_entrance.png` until final user `LOCK`; the completed QA receipt is intentionally kept outside this current-status surface.
+30. `M04_RECOVERY_BACKGROUND_ADAPT_02_20260828` exact-byte promotion — `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED`; the environment-only corrected background now occupies `red_recovery.png`. Actual Battle consumer assertions passed at 1280×720/1920×1080 without changing separate B/C/D overlays or live Godot UI. Human/accessibility and release-rights remain separate Gates.
+31. `M04_ANOMALY_D_ADAPT_01` exact-byte promotion — `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED`; the RGBA single-umbrella asset now occupies `red_umbrella_d_cutout.png`. The D consumer defaults to `KEEP_ASPECT_CENTERED` only when no player F2 crop preference exists; target-scene assertions passed at 1280×720/1920×1080. Human/accessibility and release-rights remain separate Gates.
 ```
 
 ## 7. Approval boundary
+
+### Candidate generation policy — 2026-08-28
+
+`D-2026-08-28-VISUAL-CANDIDATE-GENERATION-LOCK-ONLY-APPROVAL`을 적용한다. 실제 consumer brief, visual lock, reuse/rights preflight가 완료된 bounded candidate는 사전 건별 승인 없이 생성·검수한다. 사용자에게는 후보의 `LOCK / REVISE / REJECT`만 요청한다. 이 흐름은 candidate를 product asset, runtime implementation, Human QA PASS로 승격하지 않는다.
 
 ### Complete
 - 조사/추리 화면 분리
@@ -232,13 +250,9 @@ actual Scene / Texture consumer
 ### Pending / not run
 - Composite Result 3단계 result approval
 - remaining runtime PNG pixel-quality comparisons against latest approved visual references
-- M01-03 product-reference asset promotion + rights/provenance + runtime readability / Human QA
-- M01 B/C product-reference asset promotion + rights/provenance + runtime readability / Human QA
-- M01 D product-reference asset promotion + rights/provenance + runtime readability / Human QA
+- M01 approved assets Human QA
 - M01 actual Human QA / new-player validation
-- M04 product-reference asset 승격
-- layer/reuse production source 검증
-- rights/provenance promotion 검토
+- M04 Human player-experience / accessibility QA
 - 1280×720/1920×1080 최종 runtime 시각 PASS
 - M04 release-near visual/audio/VFX Human QA
 - Android
@@ -249,12 +263,12 @@ actual Scene / Texture consumer
 
 ## 8. Asset authority warning
 
-Root `ASSET_MANIFEST.yml`가 current tracked product-asset authority이며 현재 `assets: []`다.
+Root `ASSET_MANIFEST.yml`가 current tracked product-asset authority이며, 현재 승인된 Bureau Archive main-menu background/emblem/wordmark, M01 Investigation/Recovery background·B/C cutout·D cutout·CASE-01 루메 매뉴얼 보조 초상 및 M04 Investigation/Recovery background와 M04 B/C·D cutout의 12개 entry를 가진다. Bureau Archive 세 항목은 scenario art가 아니라 `MainMenuBackdrop`과 `WorldTitleLockup`의 실제 소비처에만 묶이며, exact-head runtime evidence와 Human/accessibility/release gate를 혼동하지 않는다.
 
 `assets/ASSET_MANIFEST.json`은 `LEGACY_MIGRATION_PENDING_NON_AUTHORITY`다. 과거 `stage=final`, QA 문구, tracked PNG, `.import`, runtime wiring은 existence/provenance/history evidence일 수 있지만 `PROJECT_ASSET_APPROVED`를 부여하지 않는다.
 
 ## 9. Sync rule
 
-향후 시각/UX 의미 변경은 Notion과 Repository를 같은 작업 범위에서 갱신하고 readback한다. 승인된 Decision은 동일 Decision ID로 양쪽에 기록한다. 구현·asset·Human evidence Gate는 서로 분리한다. 진행 중 unrelated PR은 read-only로 유지한다.
+향후 시각/UX 의미 변경은 Repository primary canon을 먼저 갱신하고, **Repository commit/push/remote readback**으로 확인한다. Notion은 `HISTORICAL_READ_ONLY_NO_WRITE` legacy inventory이며 current decision을 복제·대체하지 않는다. 구현·asset·Human evidence Gate는 서로 분리한다. 진행 중 unrelated PR은 read-only로 유지한다.
 
 사용자 승인 시각 원본은 `docs/visual/candidates/`의 receipt 포함 PNG와 Notion native attachment를 함께 남긴다. 자세한 보관 계약과 2026-08-26 원본 목록은 `docs/IMAGE_ASSET_WORKFLOW.md` 및 `docs/visual/candidates/APPROVED_VISUAL_REFERENCES_2026-08-26.md`를 따른다.

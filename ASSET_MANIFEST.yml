@@ -1,7 +1,7 @@
 schema_version: 1
 project: "괴이기록국(urban-legend)"
-last_reviewed: "2026-08-08"
-source_commit: "305d9b5bbf21ea13ce23053e43afd98fabc21654"
+last_reviewed: "2026-08-27"
+source_commit: "5fe87d3729b130385c489169ac6943307f2dd633"
 
 asset_vault:
   enabled: false
@@ -10,13 +10,15 @@ asset_vault:
   workspace_root: "assets/_vault_local"
   sync_manifest: ".asset-vault/sync.json"
   promotion_root: "assets"
-  note: "VAULT_LOCAL_STATE_UNVERIFIED. 이 원장은 tracked 제품 자산의 승인·의미·권리 권위다. 현재 PROJECT_ASSET_APPROVED 자산은 0건이며, 로컬 .asset-vault 상태와 프로젝트 vault 도구/계약은 이 환경에서 검증되지 않았다. 기존 assets/ASSET_MANIFEST.json은 LEGACY_MIGRATION_PENDING_NON_AUTHORITY이며 승인 근거가 아니다."
+  note: "VAULT_LOCAL_STATE_UNVERIFIED. 이 원장은 tracked 제품 자산의 승인·의미·권리 권위다. 아래 assets 항목만 PROJECT_ASSET_APPROVED이며, 로컬 .asset-vault 상태와 프로젝트 vault 도구/계약은 이 환경에서 검증되지 않았다. 기존 assets/ASSET_MANIFEST.json은 LEGACY_MIGRATION_PENDING_NON_AUTHORITY이며 승인 근거가 아니다."
 
 status_definitions:
   - REFERENCE
   - DIRECTION_APPROVED
+  - PROJECT_ASSET_APPROVED
   - PRODUCTION_READY
   - IMPLEMENTED
+  - RUNTIME_VERIFIED
   - VISUALLY_VALIDATED
   - PARTIAL_REFERENCE
   - SUPERSEDED
@@ -34,4 +36,787 @@ canonical_rules:
     - copy
     - new
 
-assets: []
+assets:
+  - asset_id: "ULAB-MAIN-MENU-BACKGROUND-001"
+    name: "Bureau Archive Research Room main-menu background"
+    category: "environment_background"
+    purpose: "User-approved characterless archive research-room environment behind the live main-menu UI."
+    owner_discipline: "Visual"
+    affected_disciplines: ["Godot UI", "UX", "Accessibility"]
+    statuses: ["PROJECT_ASSET_APPROVED", "PRODUCTION_READY", "IMPLEMENTED", "RUNTIME_VERIFIED"]
+    vault_source_key: "ULAB_MAIN_MENU_BUREAU_ARCHIVE_20260831"
+    canonical_path: "assets/backgrounds/bureau_archive_menu.png"
+    source_path: "USER_ATTACHMENT: codex-clipboard-e2893934-18b7-424f-9dd4-557eb92db1ec.png"
+    runtime_path: "scenes/main_menu.tscn -> scripts/ui/main_menu.gd -> MainMenuBackdrop"
+    latest_capture_path: "docs/qa/captures/m04-current-main-integration/main-menu-runtime.png"
+    golden_screenshot_path: ""
+    source_type: "USER_PROVIDED"
+    source_and_license: "User-provided attachment explicitly locked for the main-menu environment; this record is not distribution-rights clearance."
+    approved_reference: "docs/visual/receipts/ULAB_MAIN_MENU_BACKGROUND_20260831.md"
+    supersedes: ""
+    superseded_by: ""
+    replacement_requires_approval: true
+    reference_elements:
+      use: ["Textless archive research room", "Open central passage for live menu controls", "Modern bureau with restrained eastern/western occult research objects"]
+      do_not_use: ["Baked menus", "Fictional operator identity", "Case-specific characters or active anomaly combat"]
+    visual_dna:
+      silhouette: "Deep archive laboratory with a clear central aisle and quieter action-rail space."
+      proportion: "1672x941 landscape PNG fitted by MainMenuBackdrop with KEEP_ASPECT_COVERED."
+      palette: "Near-black charcoal, muted cyan containment glow, warm brass practicals, restrained gold detail."
+      accessibility_fallback: "All menu actions and live state remain native Godot controls independent of this image."
+    generation_record:
+      tool_and_model: "User-provided attachment; creation model and prompt not asserted."
+      prompt_core: "Not supplied as provenance."
+      seed_or_reproduction: "Not supplied."
+      manual_post_process: "None; canonical bytes are the approved attachment."
+      known_remaining_issues: "Current exact-head runtime and human visual/accessibility checks remain separate gates."
+    validation:
+      sha256: "dab2c35a06cbce5d2a4b4b1d071ed0589e77bf801f35457ed97c329fa238a504"
+      target_resolutions: ["1280x720", "1920x1080"]
+      runtime_verified: true
+      visual_qa_verified: false
+      accessibility_verified: false
+      evidence: ["docs/visual/receipts/ULAB_MAIN_MENU_BACKGROUND_20260831.md", "docs/operations/receipts/2026-09-02-m04-current-main-integration.json"]
+    next_review_triggers: ["MainMenuBackdrop or menu-rail layout change", "first human visual/accessibility review", "distribution-rights review"]
+  - asset_id: "ULAB-MAIN-MENU-EMBLEM-001"
+    name: "Bureau Archive main-menu emblem"
+    category: "brand_emblem"
+    purpose: "User-selected compact archival-occult bureau mark in the live title lockup."
+    owner_discipline: "Visual"
+    affected_disciplines: ["Godot UI", "UX", "Accessibility"]
+    statuses: ["PROJECT_ASSET_APPROVED", "PRODUCTION_READY", "IMPLEMENTED", "RUNTIME_VERIFIED"]
+    vault_source_key: "ULAB_MAIN_MENU_EMBLEM_MARK_01_20260831"
+    canonical_path: "assets/ui/bureau_archive_emblem.png"
+    source_path: "OPENAI_BUILT_IN_IMAGE_GENERATION: exec-e0f90e1d-4e28-4c12-b310-f759a0034360.png"
+    runtime_path: "scenes/main_menu.tscn -> scripts/ui/main_menu.gd -> WorldTitleLockup/WorldTitleEmblem"
+    latest_capture_path: "docs/qa/captures/m04-current-main-integration/main-menu-runtime.png"
+    golden_screenshot_path: ""
+    source_type: "AI_GENERATED"
+    source_and_license: "User selected the first generated emblem candidate; this receipt is not distribution-rights or legal clearance."
+    approved_reference: "docs/visual/receipts/ULAB_MAIN_MENU_EMBLEM_20260831.md"
+    supersedes: ""
+    superseded_by: ""
+    replacement_requires_approval: true
+    reference_elements:
+      use: ["User-selected compact archival-occult bureau emblem", "Transparent mark beside accessible native title text"]
+      do_not_use: ["Readable title text", "HUD", "Second crest", "Case-specific motifs"]
+    visual_dna:
+      silhouette: "Compact vertical archival emblem."
+      proportion: "1224x1285 RGBA PNG shown in an 84x84 KEEP_ASPECT_CENTERED TextureRect."
+      palette: "Aged-gold linework with restrained dark accents."
+      accessibility_fallback: "Native Korean title, subtitle, focus order, and state information do not depend on the emblem."
+    generation_record:
+      tool_and_model: "OpenAI built-in image generation; model identifier not retained."
+      prompt_core: "Not retained."
+      seed_or_reproduction: "Not exposed."
+      manual_post_process: "None."
+      known_remaining_issues: "Current exact-head runtime and human visual/accessibility checks remain separate gates."
+    validation:
+      sha256: "2c8722ca8c5e73140752b9fb4a540c672835315464b8b14cab5daa0448982d0c"
+      target_resolutions: ["1280x720", "1920x1080"]
+      runtime_verified: true
+      visual_qa_verified: false
+      accessibility_verified: false
+      evidence: ["docs/visual/receipts/ULAB_MAIN_MENU_EMBLEM_20260831.md", "docs/operations/receipts/2026-09-02-m04-current-main-integration.json"]
+    next_review_triggers: ["WorldTitleLockup layout/scaling change", "first human visual/accessibility review", "distribution-rights review"]
+  - asset_id: "ULAB-MAIN-MENU-WORDMARK-001"
+    name: "Bureau Archive main-menu Korean wordmark"
+    category: "brand_wordmark"
+    purpose: "User-locked Korean title typography for 괴이기록국: 잔향 보고서 in the live title lockup."
+    owner_discipline: "Visual"
+    affected_disciplines: ["Godot UI", "UX", "Accessibility"]
+    statuses: ["PROJECT_ASSET_APPROVED", "PRODUCTION_READY", "IMPLEMENTED", "RUNTIME_VERIFIED"]
+    vault_source_key: "ULAB_MAIN_MENU_WORDMARK_01_20260901"
+    canonical_path: "assets/ui/bureau_archive_wordmark.png"
+    source_path: "assets/source/wordmarks/ULAB-MAIN-MENU-WORDMARK-001-locked-source.png; OPENAI_BUILT_IN_IMAGE_GENERATION: exec-e5cce94a-8456-4c88-ad47-5120b438e961.png"
+    runtime_path: "scenes/main_menu.tscn -> scripts/ui/main_menu.gd -> WorldTitleLockup/WorldTitleWordmark"
+    latest_capture_path: "docs/qa/captures/m04-current-main-integration/main-menu-runtime.png"
+    golden_screenshot_path: ""
+    source_type: "AI_GENERATED_WITH_DETERMINISTIC_ALPHA_DERIVATIVE"
+    source_and_license: "User locked this word-typography candidate; runtime derivative only removes documented neutral checkerboard pixels to alpha. This receipt is not distribution-rights clearance."
+    approved_reference: "docs/visual/receipts/ULAB_MAIN_MENU_WORDMARK_20260901.md"
+    supersedes: ""
+    superseded_by: ""
+    replacement_requires_approval: true
+    reference_elements:
+      use: ["User-locked antique-gold Korean title typography", "Transparent title image with separately locked emblem"]
+      do_not_use: ["Checkerboard background", "Second emblem", "Menu buttons", "Case-specific visual"]
+    visual_dna:
+      silhouette: "Wide single-line Korean title typography with transparent margins."
+      proportion: "1969x799 RGBA PNG shown in a 328x148 title-lockup TextureRect."
+      palette: "Antique gold letters, restrained dark outline, ink texture."
+      accessibility_fallback: "WorldTitle and WorldTitleSuffix retain canonical native Korean text values."
+    generation_record:
+      tool_and_model: "OpenAI built-in image generation; model identifier not exposed."
+      prompt_core: "Wide Korean title logo reading exactly 괴이기록국: 잔향 보고서, antique-gold archival bureau typography, no extra copy or emblem."
+      seed_or_reproduction: "Not exposed."
+      manual_post_process: "Deterministic neutral-checkerboard alpha cleanup only; source is preserved in assets/source/wordmarks."
+      known_remaining_issues: "Current exact-head runtime and human visual/accessibility checks remain separate gates."
+    validation:
+      source_sha256: "36c20c3538486d4423a907652153c741149de980c73ef18375d455b984699dfc"
+      sha256: "ac49625f3f5febac55837ac3dc6624dbd514d3e3ea2bae8f03c36210d8157225"
+      target_resolutions: ["1280x720", "1920x1080"]
+      runtime_verified: true
+      visual_qa_verified: false
+      accessibility_verified: false
+      evidence: ["docs/visual/receipts/ULAB_MAIN_MENU_WORDMARK_20260901.md", "docs/operations/receipts/2026-09-02-m04-current-main-integration.json"]
+    next_review_triggers: ["WorldTitleLockup layout/scaling change", "first human visual/accessibility review", "distribution-rights review"]
+  - asset_id: "M01-INVESTIGATION-BACKGROUND-001"
+    name: "Afterlife Station Investigation background"
+    category: "environment_background"
+    purpose: "M01 Investigation platform environment behind the existing dossier UI and shared LocationPreview."
+    owner_discipline: "Visual"
+    affected_disciplines:
+      - "Godot UI"
+      - "Narrative"
+      - "QA"
+    statuses:
+      - "PRODUCTION_READY"
+      - "IMPLEMENTED"
+    vault_source_key: "M01_INVESTIGATION_PLATFORM_ADAPT_02_20260827"
+    canonical_path: "assets/backgrounds/afterlife_platform.png"
+    source_path: "docs/visual/candidates/M01_INVESTIGATION_PLATFORM_ADAPT_02_20260827.png"
+    runtime_path: "scenes/investigation_scene.tscn -> ArtLayer/Background; shared LocationPreview"
+    latest_capture_path: "docs/qa/M01_INVESTIGATION_PLATFORM_ADAPT_02_CANDIDATE_1280x720_20260827.png"
+    golden_screenshot_path: ""
+    source_type: "AI_GENERATED"
+    source_and_license: >
+      OpenAI built-in image generation output created on 2026-08-27 and promoted under the sole owner's current-slice autonomous approval.
+      The generation prompt contains no named third-party character, logo, or requested imitation style. This record
+      captures project provenance and an obvious-conflict review only; it is not legal clearance. The user remains
+      responsible for final distribution-rights review under the applicable service terms and law.
+    approved_reference: "docs/visual/candidates/M01_INVESTIGATION_PLATFORM_ADAPT_02_20260827.md"
+    supersedes: "Pre-promotion tracked afterlife_platform.png (SHA-256 d4b7bfd6e5cda3293bf5e37a8b050f29e03d88501c3b217e681714a4bde1bdad)"
+    superseded_by: ""
+    replacement_requires_approval: true
+    reference_elements:
+      use:
+        - "Textless and characterless late-night Korean station platform with an open shared-preview sightline"
+        - "Off-center station silhouette, tiled-wall rhythm, distant tunnel, and train confined to one side"
+        - "Soft anime-noir ink/paper texture with restrained warm lamps"
+      do_not_use:
+        - "Large central pillar, blank plaque, characters, anomaly, HUD, labels, or readable signage"
+        - "Named IP, logos, photoreal glare, neon-dominant color, or M04 motifs"
+    visual_dna:
+      silhouette: "Open late-night platform environment; no foreground feature competes with the small shared LocationPreview."
+      proportion: "1672x941 landscape background filling the existing ArtLayer Background TextureRect and shared LocationPreview."
+      camera: "Wide eye-level platform view with an open left-to-center sightline and right-side train depth."
+      resolution_or_pixel_density: "1672x941 PNG; existing runtime nodes own aspect fitting and modulation."
+      palette: "Charcoal, muted blue-grey, restrained warm practical lights, and readable midtone tile separation."
+      lighting: "Subdued nocturnal separation; no baked UI glow or focal object intended to replace the investigation content."
+      material_language: "Soft anime-noir ink/paper texture."
+      outline_and_readability: "Platform edge, wall rhythm, tunnel depth, and small off-center sign retain a location read at preview scale."
+      allowed_variation: "Existing scene modulation, layout, and UI scaling only."
+      forbidden_elements: "Characters, anomaly silhouette, readable text, UI, labels, named insignia, central pillar, or M04 motifs."
+      post_process: "No baked screen effects; existing Godot UI owns display treatment."
+      engine_import: "Godot Texture2D import from the canonical PNG."
+      performance_budget: "One existing landscape TextureRect and one 1672x941 PNG; no new runtime nodes or scripts."
+      accessibility_fallback: "Existing investigation copy, clue state, and UI communicate gameplay state independently of the background."
+    generation_record:
+      tool_and_model: "OpenAI built-in image generation (model identifier not exposed to this session)"
+      prompt_core: "Textless characterless Korean late-night subway platform, open shared-preview sightline, off-center small sign silhouette, tiled wall, distant tunnel, train only on one side, soft anime-noir ink/paper texture; no UI, readable text, large pillar, character, anomaly, M04 motif, photoreal glare, or neon."
+      seed_or_reproduction: "Not exposed by the generation surface."
+      manual_post_process: "None recorded."
+      known_remaining_issues: "Runtime consumer resolution and mechanical readability were verified at 1280x720 and 1920x1080. Human visual/accessibility QA remains pending."
+    validation:
+      target_resolutions:
+        - "1280x720"
+        - "1920x1080"
+      runtime_verified: true
+      visual_qa_verified: true
+      accessibility_verified: false
+      evidence:
+        - "docs/visual/candidates/M01_INVESTIGATION_PLATFORM_ADAPT_02_20260827.md"
+        - "docs/qa/M01_INVESTIGATION_PLATFORM_ADAPT_02_RUNTIME_EVIDENCE_20260827.md"
+        - "GitHub Issue #286"
+      last_verified_commit: ""
+    next_review_triggers:
+      - "After an ArtLayer Background or LocationPreview layout/scaling change"
+      - "Before release-rights sign-off"
+      - "When runtime or human QA reports low preview contrast or environment ambiguity"
+  - asset_id: "M01-RECOVERY-BACKGROUND-001"
+    name: "Afterlife Station Recovery background"
+    category: "environment_background"
+    purpose: "M01 Recovery station environment behind the separate anomaly visual and gameplay HUD."
+    owner_discipline: "Visual"
+    affected_disciplines:
+      - "Godot UI"
+      - "Narrative"
+      - "QA"
+    statuses:
+      - "PRODUCTION_READY"
+      - "IMPLEMENTED"
+    vault_source_key: "M01_RECOVERY_BACKGROUND_ADAPT_01"
+    canonical_path: "assets/backgrounds/afterlife_recovery.png"
+    source_path: "docs/visual/candidates/M01_RECOVERY_BACKGROUND_ADAPT_01.png"
+    runtime_path: "scenes/battle_scene.tscn -> ArtLayer/Background"
+    latest_capture_path: "docs/qa/captures/m01/recovery_asset_runtime_20260827/m01-recovery-b-1280x720.png"
+    golden_screenshot_path: ""
+    source_type: "AI_GENERATED"
+    source_and_license: >
+      OpenAI built-in image generation output created on 2026-08-26 and promoted after explicit sole-owner approval.
+      The generation prompt contains no named third-party character, logo, or requested imitation style. This record
+      captures project provenance and an obvious-conflict review only; it is not legal clearance. The user remains
+      responsible for final distribution-rights review under the applicable service terms and law.
+    approved_reference: "docs/visual/candidates/M01_RECOVERY_BACKGROUND_ADAPT_01.md"
+    supersedes: "Pre-promotion tracked afterlife_recovery.png (SHA-256 789696de7b7643a765d4d1b2dac0d00746255d5a935739624fc7a668f7931656)"
+    superseded_by: ""
+    replacement_requires_approval: true
+    reference_elements:
+      use:
+        - "Textless and characterless late-night Korean station concourse"
+        - "Distributed platform architecture with open central floor for the separate AnomalyVisual"
+        - "Soft anime-noir ink/paper texture with restrained wet-floor reflection"
+      do_not_use:
+        - "Embedded anomaly, characters, HUD, labels, or readable signage"
+        - "Named IP, logos, photoreal glare, or neon-dominant color"
+        - "M04 red-umbrella subject matter"
+    visual_dna:
+      silhouette: "Environment-only station platform/concourse; no foreground figure competes with the runtime anomaly."
+      proportion: "1672x941 landscape background filling the existing ArtLayer Background TextureRect."
+      camera: "Wide eye-level station view with depth carried by repeated columns and platform geometry."
+      resolution_or_pixel_density: "1672x941 PNG; existing runtime node owns aspect fitting and modulation."
+      palette: "Charcoal, muted blue-grey, restrained warm practical lights, and low-contrast wet-floor reflection."
+      lighting: "Subdued nocturnal separation; no baked UI glow or focal spotlight intended to replace the anomaly."
+      material_language: "Soft anime-noir ink/paper texture."
+      outline_and_readability: "Clear open midground preserves the separate AnomalyVisual and overlay panel hierarchy."
+      allowed_variation: "Existing scene modulation, layout, and UI scaling only."
+      forbidden_elements: "Characters, anomaly silhouette, readable text, UI, labels, named insignia, or M04 motifs."
+      post_process: "No baked screen effects; existing Godot UI owns display treatment."
+      engine_import: "Godot Texture2D import from the canonical PNG."
+      performance_budget: "One existing landscape TextureRect and one 1672x941 PNG; no new runtime nodes or scripts."
+      accessibility_fallback: "Existing recovery text, telegraph, risk label, and HUD communicate gameplay state independently of the background."
+    generation_record:
+      tool_and_model: "OpenAI built-in image generation (model identifier not exposed to this session)"
+      prompt_core: "Textless characterless Korean late-night subway concourse for a recovery scene, wet platform floor, repeated station architecture, open central composition for a separate anomaly, soft anime-noir ink/paper texture, subdued blue-grey palette; no person, anomaly, UI, signage, logo, or M04 motifs."
+      seed_or_reproduction: "Not exposed by the generation surface."
+      manual_post_process: "None recorded."
+      known_remaining_issues: "Runtime consumer resolution and readability were verified at 1280x720 and the 1920x1080 launch profile. Human visual/accessibility QA remains pending."
+    validation:
+      target_resolutions:
+        - "1280x720"
+        - "1920x1080"
+      runtime_verified: true
+      visual_qa_verified: false
+      accessibility_verified: false
+      evidence:
+        - "docs/visual/candidates/M01_RECOVERY_BACKGROUND_ADAPT_01.md"
+        - "GitHub Issue #250"
+        - "docs/qa/M01_RECOVERY_APPROVED_ASSET_RUNTIME_EVIDENCE_20260827.md"
+        - "GitHub Issue #284"
+      last_verified_commit: "179f4c35bdf048957fbfc599bac2eb92be1ef055"
+    next_review_triggers:
+      - "After an ArtLayer Background layout or scaling change"
+      - "Before release-rights sign-off"
+      - "When runtime or human QA reports overlap, contrast, or readability loss"
+  - asset_id: "M01-ANOMALY-BC-001"
+    name: "Afterlife Station B/C anomaly cutout"
+    category: "anomaly_cutout"
+    purpose: "M01 Recovery B/C-risk station-attendant-like manifestation for the existing battle cinematic HUD."
+    owner_discipline: "Visual"
+    affected_disciplines:
+      - "Godot UI"
+      - "Narrative"
+      - "QA"
+    statuses:
+      - "PRODUCTION_READY"
+      - "IMPLEMENTED"
+    vault_source_key: "M01_ANOMALY_BC_ADAPT_01"
+    canonical_path: "assets/anomalies/cutouts/afterlife_b_cutout.png"
+    source_path: "docs/visual/candidates/M01_ANOMALY_BC_ADAPT_01.png"
+    runtime_path: "scenes/battle_scene.tscn -> CinematicStage/AnomalyPanel/Content/AnomalyVisual"
+    latest_capture_path: "docs/qa/captures/m01/recovery_asset_runtime_20260827/m01-recovery-b-1280x720.png"
+    golden_screenshot_path: ""
+    source_type: "AI_GENERATED"
+    source_and_license: >
+      OpenAI built-in image generation output created on 2026-08-26 and promoted after explicit sole-owner approval.
+      The generation prompt contains no named third-party character, logo, or requested imitation style. This record
+      captures project provenance and an obvious-conflict review only; it is not legal clearance. The user remains
+      responsible for final distribution-rights review under the applicable service terms and law.
+    approved_reference: "docs/visual/candidates/M01_ANOMALY_BC_ADAPT_01.md"
+    supersedes: "Pre-promotion tracked afterlife_b_cutout.png (SHA-256 7fb486b3896ad9a7f7c07ca190aed6ae54395f2ffbc27a1a3a17cbe2ec574e29)"
+    superseded_by: ""
+    replacement_requires_approval: true
+    reference_elements:
+      use:
+        - "Unnamed Korean late-night station-attendant-like humanoid"
+        - "Single transparent figure with subtle repeated and misaligned uniform detail"
+        - "Middle-risk visual escalation without an embedded background or HUD"
+      do_not_use:
+        - "Named IP, logos, or copied character identity"
+        - "Duplicated limbs/faces, scenery, poster composition, UI, labels, or text"
+        - "M04 or recovery-background subject matter"
+    visual_dna:
+      silhouette: "One centered station-attendant-like figure with cap, coat, and subtly unstable uniform read."
+      proportion: "941x1672 alpha portrait cutout filling only the existing AnomalyVisual TextureRect."
+      camera: "Eye-level frontal character read without a separate environment."
+      resolution_or_pixel_density: "941x1672 PNG with alpha; existing runtime node uses KEEP_ASPECT_CENTERED."
+      palette: "Black/charcoal uniform with restrained cool highlights and existing scene modulation."
+      lighting: "Subdued rim separation; no neon or photoreal glare."
+      material_language: "Soft anime-noir ink/paper texture."
+      outline_and_readability: "Readable cap, shoulders, coat, and controlled detail misalignment at B/C-risk scale."
+      allowed_variation: "Existing scene modulation and UI scaling only."
+      forbidden_elements: "Additional figures, duplicate anatomy, scenery, UI, labels, named insignia, or text."
+      post_process: "No baked screen effects; existing Godot UI owns display treatment."
+      engine_import: "Godot Texture2D import from the canonical PNG."
+      performance_budget: "One existing TextureRect and one 941x1672 alpha PNG; no new runtime nodes or scripts."
+      accessibility_fallback: "The gameplay risk label and existing HUD communicate B/C risk independently of the image."
+    generation_record:
+      tool_and_model: "OpenAI built-in image generation (model identifier not exposed to this session)"
+      prompt_core: "Anonymous Korean late-night station-attendant-like humanoid, one coherent transparent silhouette, cap and dark uniform, subtly repeated and misaligned uniform details, restrained soft anime-noir ink/paper texture; no text, UI, scenery, logo, named character, duplicate face, or duplicate limbs."
+      seed_or_reproduction: "Not exposed by the generation surface."
+      manual_post_process: "None recorded."
+      known_remaining_issues: "Runtime consumer resolution and readability were verified at 1280x720 and the 1920x1080 launch profile. Human visual/accessibility QA remains pending."
+    validation:
+      target_resolutions:
+        - "1280x720"
+        - "1920x1080"
+      runtime_verified: true
+      visual_qa_verified: false
+      accessibility_verified: false
+      evidence:
+        - "docs/visual/candidates/M01_ANOMALY_BC_ADAPT_01.md"
+        - "GitHub Issue #250"
+        - "docs/qa/M01_RECOVERY_APPROVED_ASSET_RUNTIME_EVIDENCE_20260827.md"
+        - "GitHub Issue #284"
+      last_verified_commit: "179f4c35bdf048957fbfc599bac2eb92be1ef055"
+    next_review_triggers:
+      - "After an AnomalyVisual layout or scaling change"
+      - "Before release-rights sign-off"
+      - "When runtime or human QA reports clipping, ambiguity, or overlap"
+  - asset_id: "M01-LUME-GUIDE-001"
+    name: "Lume Afterlife Station manual guide"
+    category: "guide_portrait"
+    purpose: "CASE-01 player-authored manual workbench procedural guide portrait; it explains comparison process only and never marks answers or mutations."
+    owner_discipline: "Godot UI"
+    affected_disciplines:
+      - "Visual"
+      - "Narrative"
+      - "QA"
+    statuses:
+      - "PROJECT_ASSET_APPROVED"
+      - "PRODUCTION_READY"
+      - "IMPLEMENTED"
+    vault_source_key: "HGB-AUX-09-LUME-AFTERLIFE-STATION-20260830"
+    canonical_path: "assets/ui/guides/lume_afterlife_station.png"
+    source_path: "docs/visual/blueprint-reference-pack/2026-08-30/09-lume-afterlife-station-guide-candidate.png"
+    runtime_path: "scenes/ui/manual_deduction_workbench.tscn -> LumeGuidePanel/LumePortrait"
+    latest_capture_path: ""
+    golden_screenshot_path: ""
+    source_type: "AI_GENERATED_CANDIDATE"
+    source_and_license: >
+      HGB-AUX-09 is the user-approved CASE-01 guide portrait. This receipt records its repository provenance,
+      exact bytes, and narrow in-game consumer; it does not constitute release-rights clearance. The user remains
+      responsible for final distribution-rights review under applicable service terms and law.
+    approved_reference: "docs/CURRENT_DECISION_OVERLAY.md#contextual-lume-companion-and-scenario-costume--2026-08-30"
+    approval_scope: "CASE-01 Afterlife Station manual workbench only; no global Aka replacement and no automatic reuse for another case costume."
+    sha256: "4d22f0eaeff23c9ecdcbc5bc40678fab4b7185a01c2572b650ab6e68771bccf4"
+    pixel_size: "1024x1536"
+    alpha: false
+    supersedes: ""
+    superseded_by: ""
+    replacement_requires_approval: true
+    reference_elements:
+      use:
+        - "Cute small chibi proportion, silver wavy hair, large amber eyes, and CASE-01 black-and-gold Afterlife Station record-guide outfit"
+        - "Lower-right dossier companion role with source-and-sentence comparison guidance only"
+      do_not_use:
+        - "Adult field-agent anatomy, answer revelation, mutation labels, global guide replacement, another scenario costume, or a full-screen UI baked into the texture"
+    visual_dna:
+      silhouette: "Small seated chibi archive guide with lantern and compact Afterlife Station field record; opaque black background is intentional for the dossier frame."
+      proportion: "1024x1536 opaque portrait PNG used by one lower-right TextureRect."
+      camera: "Front three-quarter companion portrait; runtime UI, not the image, owns all readable text and interaction."
+      palette: "Charcoal/black, aged gold, silver hair, and amber eyes aligned with CASE-01 dossier accents."
+      material_language: "Cute hand-drawn chibi companion within the established soft anime-noir dossier direction."
+      engine_import: "Godot Texture2D imported from the exact canonical PNG."
+      accessibility_fallback: "Lume's non-answer procedural copy is duplicated as ordinary UI text and is not conveyed by the portrait alone."
+    generation_record:
+      tool_and_model: "AI image candidate provenance retained in the approved blueprint reference pack; model identifier is not asserted by this receipt."
+      prompt_core: "Not repeated here; the locked candidate is reused unchanged rather than regenerated."
+      seed_or_reproduction: "Not exposed by the generation surface."
+      manual_post_process: "None; canonical bytes match the approved source exactly."
+      known_remaining_issues: "Automated scene wiring and frame-containment tests are green; human visual acceptance, device accessibility observation, and release-rights sign-off remain unverified."
+    validation:
+      target_resolutions:
+        - "1280x720"
+        - "1920x1080"
+      runtime_verified: true
+      visual_qa_verified: false
+      accessibility_verified: false
+      evidence:
+        - "docs/superpowers/specs/2026-08-30-case01-player-authored-manual-workbench-design.md"
+        - "docs/CURRENT_DECISION_OVERLAY.md"
+        - "tests/case01_ui/lume_guide_asset_receipt_test.gd"
+      last_verified_commit: ""
+    next_review_triggers:
+      - "At human visual review of 1280x720 and 1920x1080 runtime captures"
+      - "Before release-rights sign-off or another scenario costume request"
+  - asset_id: "M01-ANOMALY-D-001"
+    name: "Afterlife Station D-risk anomaly cutout"
+    category: "anomaly_cutout"
+    purpose: "M01 Recovery D-risk visual escalation for the battle cinematic HUD."
+    owner_discipline: "Visual"
+    affected_disciplines:
+      - "Godot UI"
+      - "Narrative"
+      - "QA"
+    statuses:
+      - "PRODUCTION_READY"
+      - "IMPLEMENTED"
+    vault_source_key: "M01_ANOMALY_D_RUNTIME_CORRECTION_CANDIDATE_20260827"
+    canonical_path: "assets/anomalies/cutouts/afterlife_d_cutout.png"
+    source_path: "docs/visual/candidates/M01_ANOMALY_D_RUNTIME_CORRECTION_CANDIDATE_20260827.png"
+    runtime_path: "scenes/battle_scene.tscn -> CinematicStage/AnomalyPanel/Content/AnomalyVisual"
+    latest_capture_path: "docs/qa/captures/m01/d_promotion_20260827/m01-d-promoted-1280x720.png"
+    golden_screenshot_path: ""
+    source_type: "AI_GENERATED"
+    source_and_license: >
+      OpenAI built-in image generation output created on 2026-08-27 and promoted after the sole owner's autonomous-approval policy.
+      The generation prompt contains no named third-party character, logo, or requested imitation style. This record
+      captures project provenance and an obvious-conflict review only; it is not legal clearance. The user remains
+      responsible for final distribution-rights review under the applicable service terms and law.
+    approved_reference: "docs/visual/candidates/M01_ANOMALY_D_RUNTIME_CORRECTION_CANDIDATE_20260827.md"
+    supersedes: "M01_ANOMALY_D_ADAPT_01 canonical bytes (SHA-256 a67933332cd5deb0f774553e3e785b87ac8646543caaa297a19c1acb17c96ad9)"
+    superseded_by: ""
+    replacement_requires_approval: true
+    reference_elements:
+      use:
+        - "Unnamed Korean late-night station-attendant-like human figure"
+        - "Single front-facing figure, cap, light-grey inner garment, and long coat hem"
+        - "Transparent cutout with no embedded HUD or background"
+      do_not_use:
+        - "Named IP, logos, or copied character identity"
+        - "Duplicated limbs/faces, posters, environmental background, or runtime text"
+        - "M04 or recovery-background subject matter"
+    visual_dna:
+      silhouette: "One centered station-attendant-like figure with a forward-facing head/upper-body read; cap and coat hem remain readable at D-risk scale."
+      proportion: "1024x1536 alpha portrait cutout; fill only the existing AnomalyVisual TextureRect."
+      camera: "Eye-level rear three-quarter implication without a separate environment."
+      resolution_or_pixel_density: "1024x1536 PNG with alpha; existing runtime node uses KEEP_ASPECT_CENTERED."
+      palette: "Black/charcoal coat, muted light-grey inner garment, restrained warm D-risk modulation from the existing scene."
+      lighting: "Subdued rim separation; no neon or photoreal glare."
+      material_language: "Soft anime-noir ink/paper texture."
+      outline_and_readability: "Readable cap, shoulders, garment break, and continuous hem at a glance."
+      allowed_variation: "Existing scene modulation and UI scaling only."
+      forbidden_elements: "Additional figures, duplicate anatomy, scenery, UI, labels, named insignia, or text."
+      post_process: "No baked screen effects; existing Godot UI owns display treatment."
+      engine_import: "Godot Texture2D import from the canonical PNG."
+      performance_budget: "One existing TextureRect and one 941x1672 alpha PNG; no new runtime nodes or scripts."
+      accessibility_fallback: "The gameplay risk label and existing HUD communicate D-risk independently of the image."
+    generation_record:
+      tool_and_model: "OpenAI built-in image generation (model identifier not exposed to this session)"
+      prompt_core: "Same Korean urban-rail operator apparition with black peaked cap and dark long station coat; visibly escalated D state using fragmented afterimages, broken coat edges, black linear interference, restrained red-rust accents, and a genuinely transparent background; no text, UI, scenery, other character, boss pose, or gore."
+      seed_or_reproduction: "Not exposed by the generation surface."
+      manual_post_process: "None recorded."
+      known_remaining_issues: "The promoted D correction resolves and is readable at 1280x720 and 1920x1080. Human QA remains pending."
+    validation:
+      target_resolutions:
+        - "1280x720"
+        - "1920x1080"
+      runtime_verified: true
+      visual_qa_verified: false
+      accessibility_verified: false
+      evidence:
+        - "docs/visual/candidates/M01_ANOMALY_D_RUNTIME_CORRECTION_CANDIDATE_20260827.md"
+        - "docs/qa/captures/m01/d_promotion_20260827/m01-d-promoted-1280x720.png"
+        - "docs/qa/captures/m01/d_promotion_20260827/m01-d-promoted-1920x1080.png"
+        - "GitHub Issue #280"
+      last_verified_commit: ""
+    next_review_triggers:
+      - "After an AnomalyVisual layout or scaling change"
+      - "Before release-rights sign-off"
+      - "When human visual QA reports clipping, ambiguity, or overlap"
+  - asset_id: "M04-INVESTIGATION-BACKGROUND-001"
+    name: "Red Umbrella Investigation background"
+    category: "environment_background"
+    purpose: "M04 Investigation alley-crossroads environment behind the existing deduction UI and shared LocationPreview."
+    owner_discipline: "Visual"
+    affected_disciplines:
+      - "Godot UI"
+      - "Narrative"
+      - "QA"
+    statuses:
+      - "PRODUCTION_READY"
+      - "IMPLEMENTED"
+    vault_source_key: "M04_INVESTIGATION_BACKGROUND_ADAPT_01"
+    canonical_path: "assets/backgrounds/red_crossroads.png"
+    source_path: "docs/visual/candidates/M04_INVESTIGATION_BACKGROUND_ADAPT_01.png"
+    runtime_path: "scenes/investigation_scene.tscn -> ArtLayer/Background; shared LocationPreview"
+    latest_capture_path: ""
+    golden_screenshot_path: ""
+    source_type: "AI_GENERATED"
+    source_and_license: >
+      OpenAI built-in image generation output created on 2026-08-26 and promoted after explicit sole-owner approval.
+      The generation prompt contains no named third-party character, logo, or requested imitation style. This record
+      captures project provenance and an obvious-conflict review only; it is not legal clearance. The user remains
+      responsible for final distribution-rights review under the applicable service terms and law.
+    approved_reference: "docs/visual/candidates/M04_INVESTIGATION_BACKGROUND_ADAPT_01.md"
+    supersedes: "Pre-promotion tracked red_crossroads.png (SHA-256 e1e17dabf9ff38e2799fea79ec6ea0fca3670376d4c5afee508466eb36707d9f)"
+    superseded_by: ""
+    replacement_requires_approval: true
+    reference_elements:
+      use:
+        - "Rain-wet Korean closed-shop back-alley crossroads"
+        - "A clearly silhouetted red umbrella as the anomaly cue"
+        - "Dry footprints legible by edge and reflection contrast, with no baked UI or answer"
+      do_not_use:
+        - "Named IP, logos, copied character identity, or readable text"
+        - "Characters presented as a poster, answer annotations, HUD, panels, or rules tables"
+        - "M01 station or black-ticket motifs, photoreal glare, or neon-dominant color"
+    visual_dna:
+      silhouette: "Environment-first alley intersection; the umbrella and dry-footprint route read before any character."
+      proportion: "1672x941 landscape background filling the existing ArtLayer Background TextureRect and shared LocationPreview."
+      camera: "Eye-level wide alley-crossroads composition with an environment-to-anomaly-to-evidence eye path."
+      resolution_or_pixel_density: "1672x941 PNG; existing runtime nodes own aspect fitting and modulation."
+      palette: "Charcoal wet pavement, muted warm practical lights, restrained crimson umbrella accent, and no neon wash."
+      lighting: "Soft anime-noir nocturnal separation with readable wet versus dry surface contrast."
+      material_language: "Soft anime-noir ink/paper texture."
+      outline_and_readability: "Umbrella silhouette and footprint texture retain non-color-only cues; existing UI owns interaction and rule text."
+      allowed_variation: "Existing scene modulation, layout, and UI scaling only."
+      forbidden_elements: "Readable text, UI, labels, answer callouts, character poster composition, M01 motifs, or baked screen effects."
+      post_process: "No baked screen effects; existing Godot UI owns display treatment."
+      engine_import: "Godot Texture2D import from the canonical PNG."
+      performance_budget: "One existing landscape TextureRect and one 1672x941 PNG; no new runtime nodes or scripts."
+      accessibility_fallback: "Existing investigation copy and UI communicate the rule and evidence independently of the background image."
+    generation_record:
+      tool_and_model: "OpenAI built-in image generation (model identifier not exposed to this session)"
+      prompt_core: "Textless Korean closed-shop alley crossroads after rain, clear red umbrella, dry footprints that contrast with wet pavement, environment-to-anomaly-to-evidence eye path, restrained soft anime-noir ink/paper texture; no characters, UI, labels, rule answers, M01 motifs, photoreal glare, or neon HUD."
+      seed_or_reproduction: "Not exposed by the generation surface."
+      manual_post_process: "None recorded."
+      known_remaining_issues: "Human player-experience and accessibility QA remain pending; runtime consumer readability is verified."
+    validation:
+      target_resolutions:
+        - "1280x720"
+        - "1920x1080"
+      runtime_verified: true
+      visual_qa_verified: true
+      accessibility_verified: false
+      evidence:
+        - "docs/visual/candidates/M04_INVESTIGATION_BACKGROUND_ADAPT_01.md"
+        - "GitHub Issue #253"
+        - "GitHub Issue #272"
+        - "GitHub PR #273 (1280x720 and 1920x1080 actual Investigation + LocationPreview capture)"
+      last_verified_commit: "ea288a9b70fe3b0ab18d6fd08223e487e652f00c"
+    next_review_triggers:
+      - "After an ArtLayer Background or LocationPreview layout/scaling change"
+      - "Before release-rights sign-off"
+      - "When runtime or human QA reports weak umbrella, footprint, contrast, or UI-overlap readability"
+  - asset_id: "M04-ANOMALY-BC-001"
+    name: "Red Umbrella B/C anomaly cutout"
+    category: "anomaly_cutout"
+    purpose: "M04 Recovery B/C-risk anonymous red-umbrella apparition for the existing battle cinematic HUD."
+    owner_discipline: "Visual"
+    affected_disciplines:
+      - "Godot UI"
+      - "Narrative"
+      - "QA"
+    statuses:
+      - "PRODUCTION_READY"
+      - "IMPLEMENTED"
+    vault_source_key: "M04_ANOMALY_BC_ADAPT_01_20260827"
+    canonical_path: "assets/anomalies/cutouts/red_umbrella_b_cutout.png"
+    source_path: "docs/visual/candidates/M04_ANOMALY_BC_ADAPT_01_20260827.png"
+    runtime_path: "scenes/battle_scene.tscn -> CinematicStage/AnomalyPanel/Content/AnomalyVisual"
+    latest_capture_path: "docs/qa/captures/m04/bc_promotion_20260827/m04-bc-promoted-1280x720.png"
+    golden_screenshot_path: ""
+    source_type: "AI_GENERATED"
+    source_and_license: >
+      OpenAI built-in image generation output created on 2026-08-27 and promoted after sole-owner autonomous approval
+      plus exact current-consumer verification. The generation prompt contains no named third-party character, logo, or
+      requested imitation style. This record captures project provenance and an obvious-conflict review only; it is not
+      legal clearance. The user remains responsible for final distribution-rights review under the applicable service terms and law.
+    approved_reference: "docs/visual/candidates/M04_ANOMALY_BC_ADAPT_01_20260827.md"
+    supersedes: "Pre-promotion tracked red_umbrella_b_cutout.png (SHA-256 cd5a2d7371a414dba45a96cabcf1f23c18811930f111f8a3afcc112e17258c8d)"
+    superseded_by: ""
+    replacement_requires_approval: true
+    reference_elements:
+      use:
+        - "One anonymous human-like apparition beneath a crimson umbrella"
+        - "Pale blank face-void and restrained dissolving coat edge for B/C-risk identity"
+        - "One transparent cutout with no embedded environment or HUD"
+      do_not_use:
+        - "Named IP, logos, or copied character identity"
+        - "Scenery, reflection figure, crowd, UI, labels, text, or answer clues"
+        - "D-risk escalation, M01 station motifs, weapons, or gore"
+    visual_dna:
+      silhouette: "Centered umbrella and full-body anonymous apparition; the red umbrella carries the non-color-only shape cue."
+      proportion: "1672x941 ARGB landscape cutout filling the existing AnomalyVisual TextureRect."
+      camera: "Front-facing eye-level apparition read without a separate environment."
+      resolution_or_pixel_density: "1672x941 PNG; existing runtime node retains KEEP_ASPECT_COVERED."
+      palette: "Black/charcoal coat, one restrained crimson umbrella, and cool-grey ink-rain edge interference."
+      lighting: "Subdued anime-noir separation; no photoreal glare or baked scene light."
+      material_language: "Soft anime-noir ink/paper texture."
+      outline_and_readability: "Umbrella, blank face-void, shoulders, coat and controlled dissolving hem remain readable at B/C scale."
+      allowed_variation: "Existing scene modulation and UI scaling only."
+      forbidden_elements: "Additional figures, scenery, reflection, UI, labels, named insignia, text, or D-stage escalation."
+      post_process: "No baked screen effects; existing Godot UI owns display treatment."
+      engine_import: "Godot Texture2D import from the canonical PNG."
+      performance_budget: "One existing TextureRect and one 1672x941 alpha PNG; no new runtime nodes or scripts."
+      accessibility_fallback: "Existing risk label, telegraph copy, and HUD communicate B/C status independently of the image."
+    generation_record:
+      tool_and_model: "OpenAI built-in image generation (model identifier not exposed to this session)"
+      prompt_core: "Anonymous human-like apparition beneath a crimson umbrella, pale blank face-void, dissolving charcoal coat edge, soft anime-noir ink/paper texture, genuine transparent background; no text, UI, scenery, other people, clues, M01 motifs, D escalation, or gore."
+      seed_or_reproduction: "Not exposed by the generation surface."
+      manual_post_process: "None recorded."
+      known_remaining_issues: "Human visual/accessibility QA remains pending. D-risk identity escalation is a separate later review."
+    validation:
+      target_resolutions:
+        - "1280x720"
+        - "1920x1080"
+      runtime_verified: true
+      visual_qa_verified: true
+      accessibility_verified: false
+      evidence:
+        - "docs/visual/candidates/M04_ANOMALY_BC_ADAPT_01_20260827.md"
+        - "docs/qa/M04_ANOMALY_PIXEL_REVIEW_20260827.md"
+        - "docs/qa/M04_BC_ANOMALY_PROMOTION_RUNTIME_20260827.md"
+        - "GitHub Issue #299"
+      last_verified_commit: ""
+    next_review_triggers:
+      - "After an AnomalyVisual layout or scaling change"
+      - "Before release-rights sign-off"
+      - "When runtime or human QA reports clipping, ambiguity, or overlap"
+  - asset_id: "M04-RECOVERY-BACKGROUND-001"
+    name: "Red Umbrella Recovery background"
+    category: "environment_background"
+    purpose: "M04 Recovery's environment-only background behind the existing cinematic anomaly stage and ActionDock."
+    owner_discipline: "Visual"
+    affected_disciplines:
+      - "Godot UI"
+      - "Narrative"
+      - "QA"
+    statuses:
+      - "PROJECT_ASSET_APPROVED"
+      - "PRODUCTION_READY"
+      - "IMPLEMENTED"
+    vault_source_key: "M04_RECOVERY_BACKGROUND_ADAPT_02_20260828"
+    canonical_path: "assets/backgrounds/red_recovery.png"
+    source_path: "docs/visual/candidates/M04_RECOVERY_BACKGROUND_ADAPT_02_20260828.png"
+    runtime_path: "scenes/battle_scene.tscn -> ArtLayer/Background"
+    latest_capture_path: ""
+    golden_screenshot_path: ""
+    source_type: "AI_GENERATED"
+    source_and_license: >
+      OpenAI built-in image generation output created on 2026-08-28 and promoted under the sole owner's approved
+      current M04 implementation continuation. The generation prompt contains no named third-party character, logo,
+      or requested imitation style. This record captures project provenance and an obvious-conflict review only; it
+      is not legal clearance. The user remains responsible for final distribution-rights review under the applicable
+      service terms and law.
+    approved_reference: "docs/visual/candidates/M04_RECOVERY_BACKGROUND_ADAPT_02_20260828.md"
+    supersedes: "Pre-promotion tracked red_recovery.png (SHA-256 727d5a19cddeb614b50feac238a61fc8ffa8af67b719cabcd0be5c18620d779c)"
+    superseded_by: ""
+    replacement_requires_approval: true
+    reference_elements:
+      use:
+        - "Textless Korean closed-shop alley with restrained warm practical light"
+        - "Quiet upper-middle anomaly zone and low-detail lower ActionDock zone"
+        - "Environment-only composition; the separate AnomalyVisual owns the D umbrella"
+      do_not_use:
+        - "Readable text, UI, umbrella, people, creature, M01 station motifs, or copied character identity"
+        - "A baked action panel, score, rule, clue answer, or screen effect"
+    visual_dna:
+      silhouette: "Environment-first closed-shop alley; no figure or anomaly is baked into the background."
+      proportion: "1672x941 landscape PNG filling the existing ArtLayer Background TextureRect."
+      camera: "Eye-level wideshot with clear upper-middle anomaly separation and a quiet lower interaction zone."
+      resolution_or_pixel_density: "1672x941 PNG; the existing runtime node retains KEEP_ASPECT_COVERED."
+      palette: "Charcoal wet ground, muted warm practical lights, restrained noir contrast, and no neon wash."
+      material_language: "Soft anime-noir ink/paper texture aligned with the approved current M04 direction."
+      engine_import: "Godot Texture2D import from the exact canonical PNG."
+      accessibility_fallback: "The existing telegraph, risk label, and ActionDock state communicate gameplay independently of the background."
+    generation_record:
+      tool_and_model: "OpenAI built-in image generation (model identifier not exposed to this session)"
+      prompt_core: "Textless Korean closed-shop alley after rain, quiet upper-middle anomaly zone and low-detail lower ActionDock zone, restrained soft anime-noir ink/paper texture; no umbrella, people, creature, UI, labels, rule answer, M01 motifs, photoreal glare, or neon HUD."
+      seed_or_reproduction: "Not exposed by the generation surface."
+      manual_post_process: "None; the canonical bytes match the approved candidate exactly."
+      known_remaining_issues: "Automated target-scene verification passed at 1280x720 and 1920x1080. Human visual/accessibility QA and release-rights review remain pending."
+    validation:
+      sha256: "2e1f1a9ebf4f7c72a88aa95e535e397b07be2701bb9245fe99648a910b40dc5e"
+      target_resolutions:
+        - "1280x720"
+        - "1920x1080"
+      runtime_verified: true
+      visual_qa_verified: false
+      accessibility_verified: false
+      evidence:
+        - "docs/visual/candidates/M04_RECOVERY_BACKGROUND_ADAPT_02_20260828.md"
+        - "docs/approvals/PROJECT_PROTECTED_CHANGE_APPROVAL_M04_CURRENT_IMPLEMENTATION_20260830.json"
+        - "tests/test_m04_current_asset_promotion.py"
+        - "tests/m04/m04_recovery_promoted_asset_runtime_test.gd"
+      last_verified_commit: ""
+    next_review_triggers:
+      - "After an ArtLayer Background, ActionDock, or cinematic-stage layout/scaling change"
+      - "At human visual review of the target resolutions"
+      - "Before release-rights sign-off"
+  - asset_id: "M04-ANOMALY-D-001"
+    name: "Red Umbrella D-risk anomaly cutout"
+    category: "anomaly_cutout"
+    purpose: "M04 Recovery D-risk single-umbrella anomaly for the existing battle cinematic HUD."
+    owner_discipline: "Visual"
+    affected_disciplines:
+      - "Godot UI"
+      - "Narrative"
+      - "QA"
+    statuses:
+      - "PROJECT_ASSET_APPROVED"
+      - "PRODUCTION_READY"
+      - "IMPLEMENTED"
+    vault_source_key: "M04_ANOMALY_D_ADAPT_01"
+    canonical_path: "assets/anomalies/cutouts/red_umbrella_d_cutout.png"
+    source_path: "docs/visual/candidates/M04_ANOMALY_D_ADAPT_01.png"
+    runtime_path: "scenes/battle_scene.tscn -> CinematicStage/AnomalyPanel/Content/AnomalyVisual"
+    latest_capture_path: ""
+    golden_screenshot_path: ""
+    source_type: "AI_GENERATED"
+    source_and_license: >
+      OpenAI built-in image generation output created on 2026-08-28 and promoted under the sole owner's approved
+      current M04 implementation continuation. The generation prompt contains no named third-party character, logo,
+      or requested imitation style. This record captures project provenance and an obvious-conflict review only; it
+      is not legal clearance. The user remains responsible for final distribution-rights review under the applicable
+      service terms and law.
+    approved_reference: "docs/visual/candidates/M04_ANOMALY_D_ADAPT_01.md"
+    supersedes: "Pre-promotion tracked red_umbrella_d_cutout.png (SHA-256 29137409dad49ec149d84f9dafeb5483c6eefb37035815f196ac9a5c8cd6c98d)"
+    superseded_by: ""
+    replacement_requires_approval: true
+    reference_elements:
+      use:
+        - "One suspended crimson umbrella with a bent black handle and sparse soot-like residue"
+        - "Genuine transparent margin and an uncropped default D-risk presentation"
+        - "The existing risk label, modulation, and telegraph UI rather than baked gameplay text"
+      do_not_use:
+        - "Human figure, crowd, scenery, UI, labels, text, duplicate umbrella, named IP, weapon, or gore"
+        - "A B/C ordinary-person silhouette or the prior full-image fallback composition"
+    visual_dna:
+      silhouette: "One isolated D-risk red umbrella; it reads as an anomaly identity without a human body or environment."
+      proportion: "1024x1536 RGBA portrait cutout inside the existing AnomalyVisual TextureRect."
+      camera: "Centered object portrait with deliberate alpha-zero margin rather than a scene crop."
+      resolution_or_pixel_density: "1024x1536 PNG; D-risk default uses KEEP_ASPECT_CENTERED while a player-set F2 crop preference remains respected."
+      palette: "Crimson umbrella, black handle, charcoal residue, and restrained D-risk warm modulation from the existing scene."
+      material_language: "Soft anime-noir ink/paper texture with no embedded screen effect."
+      engine_import: "Godot Texture2D import from the exact canonical PNG."
+      accessibility_fallback: "Existing risk label, telegraph copy, and HUD communicate D-risk independently of the cutout."
+    generation_record:
+      tool_and_model: "OpenAI built-in image generation (model identifier not exposed to this session)"
+      prompt_core: "One suspended crimson umbrella with bent black handle, sparse water and soot-like residue, genuine transparent margin, restrained urban-legend soft anime-noir; no human figure, scene, crowd, text, UI, duplicate umbrella, weapon, or gore."
+      seed_or_reproduction: "Not exposed by the generation surface."
+      manual_post_process: "None; the canonical bytes match the approved candidate exactly."
+      known_remaining_issues: "Automated target-scene verification passed at 1280x720 and 1920x1080. Human visual/accessibility QA and release-rights review remain pending."
+    validation:
+      sha256: "0e52f8c02e2ce5a24684603b6280f131224fc02ea661c22275564e327d66541f"
+      pixel_format: "RGBA"
+      transparent_margin: "alpha-zero at the four tested corners"
+      target_resolutions:
+        - "1280x720"
+        - "1920x1080"
+      runtime_verified: true
+      visual_qa_verified: false
+      accessibility_verified: false
+      evidence:
+        - "docs/visual/candidates/M04_ANOMALY_D_ADAPT_01.md"
+        - "docs/approvals/PROJECT_PROTECTED_CHANGE_APPROVAL_M04_CURRENT_IMPLEMENTATION_20260830.json"
+        - "tests/test_m04_current_asset_promotion.py"
+        - "tests/m04/m04_recovery_promoted_asset_runtime_test.gd"
+      last_verified_commit: ""
+    next_review_triggers:
+      - "After an AnomalyVisual layout, scaling, or runtime-editor crop-default change"
+      - "At human visual review of the target resolutions"
+      - "Before release-rights sign-off"

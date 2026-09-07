@@ -55,8 +55,8 @@ class BaseGutEntryGateAdoptionTests(unittest.TestCase):
             set(gate["forbidden_current_states"]),
         )
 
-    def test_release_identity_remains_943_until_new_release_is_verified(self) -> None:
-        self.assertEqual("9.4.3", load(ADAPTER)["base_release"]["version"])
+    def test_release_identity_is_v944_after_released_pin_verification(self) -> None:
+        self.assertEqual("9.4.4", load(ADAPTER)["base_release"]["version"])
 
 
 if __name__ == "__main__":

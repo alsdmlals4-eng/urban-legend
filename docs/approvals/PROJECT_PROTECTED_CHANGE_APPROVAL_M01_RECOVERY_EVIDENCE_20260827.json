@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "artifact_role": "PROJECT_PROTECTED_CHANGE_APPROVAL",
+  "status": "APPROVED",
+  "protected_base_commit": "c0bc8a98ee40bf04d4953a834d9cd06c47e42efe",
+  "decision_ids": ["UL-ISSUE-278-M01-RECOVERY-RUNTIME-EVIDENCE", "UL-ISSUE-284-M01-RECOVERY-EVIDENCE-RECONCILIATION"],
+  "approved_paths": ["assets/anomalies/cutouts/afterlife_d_cutout.png", "scripts/scenes/battle_scene.gd", "scripts/scenes/investigation_scene.gd", "scripts/ui/canon_v2_operation_overlay.gd", "scripts/ui/canon_v2_runtime_bridge.gd", "scripts/ui/recovery_telegraph_audio.gd"],
+  "approval_source": "The sole decision owner authorized continuous autonomous work and direct Godot validation. This change records existing M01 Recovery and B/C runtime evidence only; it does not alter protected product paths.",
+  "approval_time": "2026-08-27T16:41:00+09:00",
+  "scope_summary": "Reconcile existing 1280x720 and 1920x1080 launch-profile evidence for M01 Recovery background and B/C. Preserve asset bytes, Godot routes, D evidence, gameplay, save data, and Human QA pending state."
+}

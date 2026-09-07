@@ -29,6 +29,7 @@ func _run() -> void:
 		"effect_summary": "위험도 -5"
 	})
 	_assert_pipeline(game_state, "minigame_frequency_sync", "route_restore", true)
+	_expect(game_state.save_game(), "M01 minigame completion should write its main save payload")
 	_assert_save_payload(game_state.get_save_file_path(), "minigame_frequency_sync", "route_restore")
 	await _assert_completed_game_does_not_reapply(game_state, "route_restore_game.gd")
 
@@ -74,13 +75,22 @@ func _assert_save_payload(save_path: String, minigame_id: String, game_type: Str
 	_expect(file != null, "save payload should be written")
 	if file == null:
 		return
-	var parsed: Variant = JSON.parse_string(file.get_as_text())
+	var payload_text := file.get_as_text()
+	file.close()
+	var parsed: Variant = JSON.parse_string(payload_text)
 	_expect(typeof(parsed) == TYPE_DICTIONARY, "save payload should contain valid JSON")
 	if typeof(parsed) != TYPE_DICTIONARY:
 		return
 	var results: Dictionary = parsed.get("minigame_results", {})
 	var result: Dictionary = results.get(minigame_id, {})
-	_expect(String(result.get("game_type", "")) == game_type, "save payload should preserve game-specific details")
+	_expect(
+		String(result.get("game_type", "")) == game_type,
+		"%s save payload should preserve %s, received %s" % [
+			minigame_id,
+			game_type,
+			String(result.get("game_type", ""))
+		]
+	)
 
 
 func _assert_incomplete_route_is_not_persisted(game_state: Node) -> void:
@@ -96,6 +106,7 @@ func _assert_incomplete_route_is_not_persisted(game_state: Node) -> void:
 	_expect(file != null, "the entry checkpoint payload should be readable")
 	if file != null:
 		var payload := file.get_as_text()
+		file.close()
 		_expect(not payload.contains("\"move_count\""), "the checkpoint should not persist route move state")
 		_expect(not payload.contains("\"danger_case_seen\""), "the checkpoint should not persist route danger observations")
 	_expect(game_state.load_game(), "the entry checkpoint should reload")

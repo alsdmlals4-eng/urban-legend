@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "artifact_role": "PROJECT_PROTECTED_CHANGE_APPROVAL",
+  "status": "APPROVED",
+  "protected_base_commit": "2e0116e7e59a3e64709ee8d1d4275fb67c5b9180",
+  "decision_ids": [
+    "D-2026-08-28-URBAN-NOIR-HYBRID-VISUAL-DIRECTION"
+  ],
+  "approved_paths": [
+    "scripts/ui/main_menu.gd"
+  ],
+  "approval_source": "The sole decision owner explicitly approved the recommended main-menu correction and instructed continued implementation. This receipt records approval only for the physical-window breakpoint correction and test-runner save isolation; it does not authorize other protected paths, save-schema changes, visual asset promotion, global Lume/Aka identity changes, Human QA, or release.",
+  "approval_time": "2026-08-30T18:49:22+09:00",
+  "scope_summary": "Modify only scripts/ui/main_menu.gd so compact and noncompact presentation use the maximum of the logical Control canvas and physical client-window sizes. Preserve routes, save semantics, screen identity, visual assets, Lume/Aka identity, all other scripts, and the human, release, and visual-asset gates. The accompanying test and runner changes are outside protected paths and do not expand this approval scope."
+}

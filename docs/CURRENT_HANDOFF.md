@@ -1,9 +1,11 @@
 # 괴이기록국 Current Handoff
 
-> 상태: `PLANNING_COMPLETE / RUNTIME_RECONCILIATION_MERGED / HUMAN_QA_PENDING`
-> 기준 main: `9073b4730993149f89970a13fbe32d49f8f473e7` · PR #226 (runtime implementation: `8d303f0f9414950273be934fd28c8fb1b3a21e18` · PR #224)
-> 사람용 정본: Notion 괴이기록국 프로젝트 홈
+> 상태: `PLANNING_COMPLETE / USER_APPROVED_VISUAL_DIRECTION_LOCK / RUNTIME_RECONCILIATION_MERGED / HUMAN_QA_PENDING`
+> latest-main reconciliation: PR #322 merge `9fa32d32e8a5a2ad7d34a388695986b4ab81c6a7` (runtime implementation: `8d303f0f9414950273be934fd28c8fb1b3a21e18` · PR #224)
+> M04 current-main continuation: PR #356 merge `a62b5341f3c4742192f7bfc0d11e1fb4897c1308` — recovery clocks/menu and main-menu identity surface are `M04_RECOVERY_AND_MENU_MAIN_MERGED`; Human QA remains `NOT_RUN`.
+> 사람용 정본: repository `docs/design/PROJECT_AI_PRODUCTION_SPEC.md`와 user PDF GDD
 > 구조화 정본: `docs/CURRENT_PLANNING_CANON.md`, `docs/current-planning-canon.json`
+> Notion 이전 영수증: `docs/migrations/NOTION_CURRENT_WORK_MIGRATION_2026-08-28.md` (Notion은 `HISTORICAL_READ_ONLY_NO_WRITE`)
 
 이 문서는 다음 GPT/Codex가 구현 전 handoff나 과거 annual next-step을 현재 권한으로 오인하지 않도록 하는 continuation router다. 실제 구현 사실은 latest `main`의 code/data/Scene/test를 우선한다.
 
@@ -15,20 +17,33 @@ plan_lock: RELEASED_TO_IMPLEMENTATION_GATE
 runtime_implementation: MERGED_MAIN
 runtime_merge_commit: 8d303f0f9414950273be934fd28c8fb1b3a21e18
 product_reference_asset: PENDING
+visual_direction_lock: USER_APPROVED
 human_qa: NOT_RUN
 poc_passed: NOT_DECLARED
 production_expansion: NOT_APPROVED
 base_adapter_baseline_reconciliation: COMPLETE
+ten_day_half_day_cadence: USER_APPROVED / IMPLEMENTED_NON_NUMERIC_CONTEXT / FOCUSED_MACHINE_VERIFIED
+one_main_case_runtime_enforcement: IMPLEMENTED / FOCUSED_MACHINE_VERIFIED
+keyword_composition: IMPLEMENTED_M01_M04 / DRAFT_ONLY / FOCUSED_MACHINE_VERIFIED / OTHER_CASES_PENDING
+player_authored_manual_keyword_verification: USER_APPROVED / IMPLEMENTED_M01_M04 / FOCUSED_MACHINE_VERIFIED / HUMAN_QA_NOT_RUN
+m04_bounded_preparation_capacity: USER_APPROVED / IMPLEMENTED_M04_ONLY / FOCUSED_MACHINE_VERIFIED / HUMAN_QA_NOT_RUN
+m04_recovery_and_menu_surface: IMPLEMENTED_MAIN / FOCUSED_MACHINE_RUNTIME_CAPTURED / HUMAN_QA_NOT_RUN
+primary_playable_core: INVESTIGATION_DEDUCTION_AND_RECOVERY
+calendar_role: SUPPORTING_CAMPAIGN_CONTEXT_NOT_PRIMARY_FUN
 ```
 
 `PLAN_LOCK`은 predecessor 기획 잠금 식별자이며 현재 값은 `RELEASED_TO_IMPLEMENTATION_GATE`다. 이를 runtime 미승인 상태로 되돌려 해석하지 않는다.
+
+현재 시각 방향은 `D-2026-08-28-URBAN-NOIR-HYBRID-VISUAL-DIRECTION`의 **현실적 한국 도시 누아르 환경 + 애니풍 인물·괴이 + 손그림 기록물 UI**다. 이 방향은 `docs/visual/VISUAL_DIRECTION_LOCK_PACKET_2026-08-28.md`가 소유하며, 첨부 Core Scene Board는 기획 검증용 `GENERATED_EXPLORATION`일 뿐 runtime asset/Scene/UI/Human QA가 아니다.
+
+현재 accepted frontier는 `D-2026-08-29-PLAYER-AUTHORED-MANUAL-KEYWORD-VERIFICATION`, `D-2026-08-29-CORE-LOOP-PRIORITY`, `D-2026-08-28-TEN-DAY-HALF-DAY-CASE-CADENCE`, `D-2026-08-28-M04-SEQUENTIAL-NARRATIVE-RESULT-VIGNETTES`, `D-2026-08-30-M04-BOUNDED-PREPARATION-CAPACITY`, `D-2026-08-28-VISUAL-CANDIDATE-GENERATION-LOCK-ONLY-APPROVAL`다. **1차 플레이 경험은 조사·추리와 회수**이며, M01과 M04는 원본 출처가 남은 정상 키워드를 만들고 플레이어가 빈칸 추리문을 직접 채운다. 매뉴얼은 정답·변조·호환 점수를 알려 주지 않으며, 구출 미니게임과 `전조 → 가설 → 근거 → 대응` 회수 결과에서만 후보 규칙을 검증한다. M04는 세 기존 clue ID와 두 기존 rule page를 사건 데이터 하나에서 소비하며, 기록관 아카는 텍스트 안내만 제공한다. 10일·반일 일정은 준비·후일담·관계의 리듬을 주는 보조 캠페인 시스템이다. 현재 `CampaignState`는 첫 operation을 cycle main case로 고정하고 다른 사건의 same-cycle 계획/시작을 거부하며, 실제 완료한 대기·회복 반일을 `현장 준비 1/1` dispatch record로 보존해 M04의 기존 권나래 귀가 지원 가용 여부와 귀가 기억 후일담으로 연결한다. 이 게이트는 stats/정답/추가 지원/자동 발동을 만들지 않는다. 예전 M04 주차 수치와 tier bonus는 `SUPERSEDED`; day-based 새 숫자는 여전히 `UNDEFINED`다. M05+ keyword/manual 확장, M01/M04 entrance candidate의 최종 user `LOCK`, Human/new-player/accessibility/release QA는 여전히 별도 Gate다.
 
 ## 1. 재개 순서
 
 ```text
 최신 사용자 지시
 → GitHub latest main + open PR/Issue + exact-head CI
-→ Notion Project Home
+→ repository current GDD / decision / handoff
 → docs/CURRENT_PLANNING_CANON.md
 → docs/current-planning-canon.json
 → docs/CURRENT_DECISION_OVERLAY.md
@@ -38,15 +53,19 @@ base_adapter_baseline_reconciliation: COMPLETE
 
 ## 2. 현재 구현된 제품 계약
 
-- cadence: `ONE_MAIN_CASE_PER_MONTH`.
+- primary playable core: `INVESTIGATION → DEDUCTION / MANUAL → RECOVERY`; the calendar is supporting campaign context, not primary fun.
+- approved cadence: `ONE_MAIN_CASE_PER_TEN_DAY_CYCLE / TWO_HALF_DAY_SLOTS_PER_DAY`; runtime implements the first-operation cycle lock, persisted non-numeric dispatch context, and Preparation docket; M04 alone also records one completed rest as a visible `0/1` or `1/1` gate for the existing Kwon support; numeric balance remains undefined.
 - result authority: `COMPOSITE_RESULT`.
 - legacy S/A/B/S grade는 history/mastery compatibility이며 current incident result를 덮어쓰지 않는다.
-- additive optional `monthly_state`가 월간 orchestration을 소유하며 case truth를 저장하지 않는다.
+- additive optional `monthly_state`는 historical generic orchestration이며 case truth를 저장하지 않는다. 새 10일 timing consumer를 아직 소유하지 않는다.
 - M01 저승역은 `M01_FIRST_SESSION` 10단계 causal orchestration과 `SERIAL_EXAM_FATIGUE_GUARD`를 사용한다.
 - M01은 기존 Canon v2 loader/save migration/result runtime을 재사용한다.
 - 메인 메뉴 제품 버전은 `scripts/core/product_version.gd`의 `Ver 4.3`이 중앙 owner다.
 - 메인 메뉴는 관제실형 3-rail 구조를 사용하고 Legacy / Validation save·route 분리를 유지한다.
 - M04 빨간 우산은 shared Investigation/Manual/Rescue/Recovery/Composite Result validation baseline까지 구현됐다.
+- PR #356은 M04의 안정도 8칸·위험도 6칸 회수 시계, 우측 하단 `괴이 매뉴얼 열기`, 안정도 조건의 자동 회수 전환, legacy `대표 교체`·`회수 실행` 제거와 메인 메뉴의 archive/워드마크/분리 action plate를 current main에 통합했다.
+- current keyword/manual state is split by coverage: CASE-01 and M04 page-local keyword composition are `IMPLEMENTED / MACHINE_VERIFIED`, while M05+ rollout and any mutated-candidate field-verification extension remain outside this slice.
+- clarified manual contract: the player must fill readable blank sentences from investigation memory and provenance; the UI cannot reveal semantic correctness. Rescue/minigame and recovery are the field verification, not an automatic answer checker. CASE-01 and M04 candidate arrays/input consumers are implemented, CASE-01 complete-manual auto-reveal is disabled, and every player draft remains separate from Canon migration slots.
 
 ## 3. PR #224 postmerge Reality Gate
 
@@ -77,13 +96,22 @@ PR #224 exact head에서 다음 계열이 GREEN이었다.
 
 `Project Base Adapter`의 fail-closed 신호는 PR #226에서 공식 Base generator로 reconciliation했다. protected baseline은 `6b4a9e8080898536139c8e825179b389f8bf9d64`으로 갱신됐고, adapter/generated views 검증과 core full Godot regression이 GREEN인 exact head를 `9073b4730993149f89970a13fbe32d49f8f473e7`로 병합했다.
 
+PR #356 integration exact head에서는 recovery clock 17건, direct-lead 12건, overlay 8건, dual-clock scene 12건의 focused Godot checks가 GREEN이었고, `docs/qa/captures/m04-current-main-integration/`에 메인·회수·매뉴얼-open capture가 남아 있다. 이 증거는 machine/runtime capture이며 Human/new-player/accessibility/device/release PASS가 아니다.
+
 ## 5. Product reference / Human gate
+
+### 2026-08-28 visual-status clarification
+
+`PRODUCT_REFERENCE_ASSET_PENDING`은 모든 자산이 미승격이라는 뜻이 아니다. 개별 제품 승인·runtime 상태는 `ASSET_MANIFEST.yml`과 `CURRENT_VISUAL_WORK_ORDER.md`가 소유한다. 현재 root manifest의 9개 entry 중 M01 Investigation/Recovery background, M01 B/C·D cutout, CASE-01 루메 매뉴얼 보조 초상, M04 Investigation/Recovery background, M04 B/C·D cutout은 각각의 승인·구현·runtime evidence를 가진다. 반면 M01 Entrance, M04 Entrance와 Human/new-player/accessibility/release QA는 별도 Gate에 남는다.
+
 
 `PRODUCT_REFERENCE_ASSET_PENDING` 유지:
 - concrete M01/M04 이미지·레이어
 - rights/source approval
 - 최종 1280×720 / 1920×1080 가독성
 - release-near M04 visual/audio/VFX polish
+
+Exception recorded: M01 D-risk `afterlife_d_cutout.png` is `PROJECT_ASSET_APPROVED / IMPLEMENTED / 1280_RUNTIME_VERIFIED` under Issue #246. Its 1920×1080 capture and Human QA remain pending; this exception does not promote other M01/M04 assets.
 
 Human QA는 계속 `NOT_RUN`:
 - M01 첫 세션 이해도

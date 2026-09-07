@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "artifact_role": "PROJECT_PROTECTED_CHANGE_APPROVAL",
+  "status": "APPROVED",
+  "protected_base_commit": "c0bc8a98ee40bf04d4953a834d9cd06c47e42efe",
+  "decision_ids": ["UL-ISSUE-303-M04-ENTRANCE-CANDIDATE"],
+  "approved_paths": [
+    "assets/anomalies/cutouts/afterlife_d_cutout.png",
+    "assets/anomalies/cutouts/red_umbrella_b_cutout.png",
+    "assets/backgrounds/afterlife_platform.png",
+    "scripts/scenes/battle_scene.gd",
+    "scripts/scenes/investigation_scene.gd",
+    "scripts/ui/canon_v2_operation_overlay.gd",
+    "scripts/ui/canon_v2_runtime_bridge.gd",
+    "scripts/ui/recovery_telegraph_audio.gd"
+  ],
+  "approval_source": "The sole decision owner authorized continuous autonomous current-slice work, bounded visual candidate creation, and safe current-task PR handling. This receipt acknowledges the adapter's existing protected baseline; no protected product path changes in this candidate-only PR and no second GitHub identity is required.",
+  "approval_time": "2026-08-27T23:30:00+09:00",
+  "scope_summary": "Preserve one M04 entrance background candidate and current-truth review records. Do not replace the canonical background or change scene, UI, data, save, gameplay, runtime wiring, or Human QA."
+}

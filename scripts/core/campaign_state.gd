@@ -17,6 +17,7 @@ const CASE_ORDER := [AFTERLIFE, RED_UMBRELLA, DEAD_FREQUENCY]
 const TIME_SLOTS := ["morning", "afternoon"]
 const SLOT_PHASES := ["planning", "in_progress", "result"]
 const SCHEDULE_ACTIVITIES := ["investigation", "rest"]
+const M04_PREPARATION_CAPACITY_MAX := 1
 const REQUEST_STATUSES := ["offered", "accepted", "completed", "failed", "declined", "canceled"]
 
 var _state: Dictionary = {}
@@ -38,12 +39,14 @@ func reset(seed: int = 0) -> void:
 		"slot_phase": "planning",
 		"slot_result": {},
 		"planned_case_id": "",
+		"cycle_main_case_id": "",
 		"max_days": MAX_DAYS,
 		"demo_ended": false,
 		"game_over": false,
 		"emergency_case_id": "",
 		"risk_rotation_cursor": 0,
 		"schedules": {},
+		"preparation_ledger": [],
 		"active_operation": {},
 		"request_rng_state": maxi(1, initial_seed),
 		"request_sequence": 0,
@@ -141,6 +144,9 @@ func set_planned_case(case_id: String) -> bool:
 	var clean_id := case_id.strip_edges()
 	if not clean_id.is_empty() and not CASE_ORDER.has(clean_id):
 		return false
+	var cycle_main_case_id := get_cycle_main_case_id()
+	if not cycle_main_case_id.is_empty() and not clean_id.is_empty() and clean_id != cycle_main_case_id:
+		return false
 	var emergency := String(_state.get("emergency_case_id", ""))
 	if not emergency.is_empty() and clean_id != emergency:
 		return false
@@ -152,16 +158,28 @@ func get_planned_case() -> String:
 	return String(_state.get("planned_case_id", ""))
 
 
+## Returns the single main case assigned to this ten-day cycle after its first dispatch.
+func get_cycle_main_case_id() -> String:
+	var case_id := String(_state.get("cycle_main_case_id", ""))
+	return case_id if CASE_ORDER.has(case_id) else ""
+
+
 func begin_operation(case_id: String) -> bool:
 	if get_slot_phase() != "planning" or not CASE_ORDER.has(case_id) or bool(_state.get("demo_ended", false)):
 		return false
 	if get_planned_case() != case_id:
 		return false
+	var cycle_main_case_id := get_cycle_main_case_id()
+	if not cycle_main_case_id.is_empty() and cycle_main_case_id != case_id:
+		return false
+	if cycle_main_case_id.is_empty():
+		_state["cycle_main_case_id"] = case_id
 	_state["active_operation"] = {
 		"case_id": case_id,
 		"day": int(_state.get("day", 1)),
 		"time_slot": get_current_slot(),
-		"status": "in_progress"
+		"status": "in_progress",
+		"dispatch_context": _make_dispatch_context(case_id)
 	}
 	_state["slot_phase"] = "in_progress"
 	return true
@@ -209,6 +227,7 @@ func acknowledge_slot_result(high_spread: bool = false) -> Dictionary:
 	if get_slot_phase() != "result":
 		return {"advanced": false}
 	var completed_slot := get_current_slot()
+	_record_completed_preparation_slot(completed_slot)
 	_state["slot_result"] = {}
 	_state["active_operation"] = {}
 	_state["planned_case_id"] = ""
@@ -235,6 +254,11 @@ func resolve_case(case_id: String, resolution_grade: String) -> bool:
 	var case_state := _get_case_state(case_id)
 	case_state["resolution_state"] = "resolved"
 	case_state["resolution_grade"] = resolution_grade.strip_edges()
+	var operation := _get_active_operation()
+	if String(operation.get("case_id", "")) == case_id:
+		var dispatch_context: Variant = operation.get("dispatch_context", {})
+		if typeof(dispatch_context) == TYPE_DICTIONARY:
+			case_state["resolution_context"] = (dispatch_context as Dictionary).duplicate(true)
 	_set_case_state(case_id, case_state)
 	if String(_state.get("emergency_case_id", "")) == case_id:
 		_state["emergency_case_id"] = ""
@@ -376,10 +400,13 @@ func load_save_data(value: Variant, legacy_mvp037: bool = false) -> void:
 	_state["slot_phase"] = String(saved.get("slot_phase", "planning")) if SLOT_PHASES.has(String(saved.get("slot_phase", "planning"))) else "planning"
 	_state["slot_result"] = saved.get("slot_result", {}).duplicate(true) if typeof(saved.get("slot_result", {})) == TYPE_DICTIONARY else {}
 	_state["planned_case_id"] = String(saved.get("planned_case_id", ""))
+	var saved_cycle_case_id := String(saved.get("cycle_main_case_id", ""))
+	_state["cycle_main_case_id"] = saved_cycle_case_id if CASE_ORDER.has(saved_cycle_case_id) else ""
 	_state["demo_ended"] = bool(saved.get("demo_ended", false))
 	_state["emergency_case_id"] = String(saved.get("emergency_case_id", ""))
 	_state["risk_rotation_cursor"] = maxi(0, int(saved.get("risk_rotation_cursor", 0)))
 	_state["schedules"] = _sanitize_schedules(saved.get("schedules", {}), legacy_mvp037)
+	_state["preparation_ledger"] = _sanitize_preparation_ledger(saved.get("preparation_ledger", []))
 	_state["request_rng_state"] = maxi(1, int(saved.get("request_rng_state", _state["request_rng_state"])))
 	_state["request_sequence"] = maxi(0, int(saved.get("request_sequence", 0)))
 	var board := _sanitize_request_board(saved.get("request_board", []))
@@ -393,6 +420,11 @@ func load_save_data(value: Variant, legacy_mvp037: bool = false) -> void:
 			_state["active_operation"] = saved_operation.duplicate(true)
 			_state["active_operation"]["time_slot"] = String(saved_operation.get("time_slot", _state["time_slot"]))
 			_state["active_operation"]["status"] = String(saved_operation.get("status", "suspended" if legacy_mvp037 else "in_progress"))
+			var saved_dispatch_context: Variant = _state["active_operation"].get("dispatch_context", {})
+			if typeof(saved_dispatch_context) != TYPE_DICTIONARY or (saved_dispatch_context as Dictionary).is_empty():
+				_state["active_operation"]["dispatch_context"] = _make_dispatch_context_for(operation_day, String(_state["active_operation"].get("time_slot", _state["time_slot"])), operation_case_id)
+			if String(_state.get("cycle_main_case_id", "")).is_empty():
+				_state["cycle_main_case_id"] = operation_case_id
 			_state["slot_phase"] = "in_progress"
 			_state["planned_case_id"] = operation_case_id
 	var saved_cases: Variant = saved.get("cases", {})
@@ -405,6 +437,8 @@ func load_save_data(value: Variant, legacy_mvp037: bool = false) -> void:
 			case_state["discovery_state"] = String(loaded_case.get("discovery_state", case_state["discovery_state"]))
 			case_state["resolution_state"] = String(loaded_case.get("resolution_state", "unresolved"))
 			case_state["resolution_grade"] = String(loaded_case.get("resolution_grade", ""))
+			var resolution_context: Variant = loaded_case.get("resolution_context", {})
+			case_state["resolution_context"] = (resolution_context as Dictionary).duplicate(true) if typeof(resolution_context) == TYPE_DICTIONARY else {}
 			case_state["risk"] = clampi(int(loaded_case.get("risk", 0)), 0, OUTBREAK_RISK)
 			case_state["daily_understanding"] = clampi(int(loaded_case.get("daily_understanding", 0)), 0, DAILY_UNDERSTANDING_CAP)
 			case_state["last_daily_reward_day"] = maxi(0, int(loaded_case.get("last_daily_reward_day", 0)))
@@ -522,7 +556,66 @@ func _get_active_operation() -> Dictionary:
 
 
 func _make_case_state(discovery_state: String) -> Dictionary:
-	return {"discovery_state": discovery_state, "resolution_state": "unresolved", "resolution_grade": "", "risk": 0, "daily_understanding": 0, "last_daily_reward_day": 0, "last_risk_day": 0, "rewarded_daily_content_ids": []}
+	return {"discovery_state": discovery_state, "resolution_state": "unresolved", "resolution_grade": "", "resolution_context": {}, "risk": 0, "daily_understanding": 0, "last_daily_reward_day": 0, "last_risk_day": 0, "rewarded_daily_content_ids": []}
+
+
+func _make_dispatch_context(case_id: String) -> Dictionary:
+	return _make_dispatch_context_for(int(_state.get("day", 1)), get_current_slot(), case_id)
+
+
+func _make_dispatch_context_for(dispatch_day: int, dispatch_slot: String, case_id: String = "") -> Dictionary:
+	var context := {
+		"dispatch_kind": "REGULAR" if dispatch_day == MAX_DAYS else "EARLY",
+		"dispatch_day": dispatch_day,
+		"dispatch_slot": dispatch_slot if TIME_SLOTS.has(dispatch_slot) else "morning"
+	}
+	if case_id == RED_UMBRELLA:
+		var preparation_provenance := _get_m04_preparation_provenance()
+		context["m04_preparation_capacity"] = preparation_provenance.size()
+		context["m04_preparation_provenance"] = preparation_provenance
+	return context
+
+
+func _record_completed_preparation_slot(completed_slot: String) -> void:
+	var slot_result := get_slot_result()
+	if String(slot_result.get("kind", "")) != "schedule":
+		return
+	var raw_results: Variant = slot_result.get("results", [])
+	if typeof(raw_results) != TYPE_ARRAY:
+		return
+	for raw_result in raw_results:
+		if typeof(raw_result) != TYPE_DICTIONARY or String(raw_result.get("activity", "")) != "rest":
+			continue
+		var ledger: Array = _state.get("preparation_ledger", []).duplicate(true)
+		if ledger.size() >= M04_PREPARATION_CAPACITY_MAX:
+			return
+		ledger.append({
+			"day": int(_state.get("day", 1)),
+			"time_slot": completed_slot if TIME_SLOTS.has(completed_slot) else "morning",
+			"activity": "rest"
+		})
+		_state["preparation_ledger"] = ledger
+		return
+
+
+func _get_m04_preparation_provenance() -> Array:
+	var ledger: Variant = _state.get("preparation_ledger", [])
+	if typeof(ledger) != TYPE_ARRAY:
+		return []
+	var result: Array = []
+	for raw_entry in ledger:
+		if typeof(raw_entry) != TYPE_DICTIONARY:
+			continue
+		if String(raw_entry.get("activity", "")) != "rest":
+			continue
+		result.append({
+			"day": clampi(int(raw_entry.get("day", 1)), 1, MAX_DAYS),
+			"time_slot": String(raw_entry.get("time_slot", "morning")) if TIME_SLOTS.has(String(raw_entry.get("time_slot", "morning"))) else "morning",
+			"activity": "rest"
+		})
+		if result.size() >= M04_PREPARATION_CAPACITY_MAX:
+			break
+	return result
 
 
 func _get_unresolved_case_ids() -> Array:
@@ -593,4 +686,24 @@ func _sanitize_schedules(value: Variant, legacy_mvp037: bool) -> Dictionary:
 				day_schedule[agent_id] = agent_schedule
 		if not day_schedule.is_empty():
 			result[day_key] = day_schedule
+	return result
+
+
+func _sanitize_preparation_ledger(value: Variant) -> Array:
+	if typeof(value) != TYPE_ARRAY:
+		return []
+	var result: Array = []
+	for raw_entry in value:
+		if typeof(raw_entry) != TYPE_DICTIONARY or String(raw_entry.get("activity", "")) != "rest":
+			continue
+		var slot := String(raw_entry.get("time_slot", "morning"))
+		if not TIME_SLOTS.has(slot):
+			continue
+		result.append({
+			"day": clampi(int(raw_entry.get("day", 1)), 1, MAX_DAYS),
+			"time_slot": slot,
+			"activity": "rest"
+		})
+		if result.size() >= M04_PREPARATION_CAPACITY_MAX:
+			break
 	return result

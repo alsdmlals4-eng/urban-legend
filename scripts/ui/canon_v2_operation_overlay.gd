@@ -2,16 +2,26 @@ class_name CanonV2OperationOverlay
 extends Control
 
 const ObligationPolicyScript := preload("res://scripts/core/protection_obligation_policy.gd")
+const RecoveryClockScript := preload("res://scripts/ui/recovery_clock.gd")
 
 var _runtime_state: Dictionary = {}
 var _mode := "recovery"
 var _manual_detail_panel: PanelContainer
 var _rule_summary_label: Label
-var _manual_toggle_button: Button
+var _recovery_clock_cluster: HBoxContainer
+var _stability_clock
+var _danger_clock
+var _stability_clock_label: Label
+var _danger_clock_label: Label
+var _detail_stack: VBoxContainer
+var _detail_toggle_button: Button
+var _detail_stack_open := false
 var _priority_label: Label
 var _obligation_list_label: Label
 var _termination_title_label: Label
 var _termination_detail_label: Label
+var _recovery_support_panel: PanelContainer
+var _recovery_support_content: VBoxContainer
 var _follow_up_label: Label
 var _mode_label: Label
 var _confirmation_layer: CenterContainer
@@ -38,6 +48,35 @@ func configure(runtime_state: Dictionary, mode: String) -> void:
 	_mode = mode
 	_ensure_ui()
 	_refresh()
+
+
+func set_recovery_clock_presentation(state: Dictionary) -> void:
+	_runtime_state["recovery_clock"] = state.duplicate(true)
+	_ensure_ui()
+	_refresh_recovery_clocks()
+
+
+func set_recovery_clock_feedback(kind: String) -> void:
+	if _recovery_clock_cluster == null:
+		return
+	if kind in ["danger", "surge"]:
+		_danger_clock.play_feedback(kind)
+	elif kind in ["stability", "relief"]:
+		_stability_clock.play_feedback("relief")
+
+
+func open_manual_from_quick_action() -> void:
+	_ensure_ui()
+	if _mode != "recovery" or _manual_detail_panel.visible:
+		return
+	_toggle_manual_detail()
+
+
+func set_rule_strip_top_inset(top_inset: int) -> void:
+	_ensure_ui()
+	var safe_area := get_node_or_null("SafeArea") as MarginContainer
+	if safe_area != null:
+		safe_area.add_theme_constant_override("margin_top", top_inset)
 
 
 func request_action_confirmation(
@@ -114,28 +153,81 @@ func _ensure_ui() -> void:
 	_rule_summary_label.add_theme_font_size_override("font_size", 15)
 	rule_strip.add_child(_rule_summary_label)
 
-	_manual_toggle_button = Button.new()
-	_manual_toggle_button.name = "ManualToggleButton"
-	_manual_toggle_button.text = "괴이 매뉴얼 열기"
-	_manual_toggle_button.focus_mode = Control.FOCUS_ALL
-	_manual_toggle_button.tooltip_text = "현재 가설과 근거를 확인합니다. 정답을 자동으로 공개하지 않습니다."
-	_manual_toggle_button.pressed.connect(_toggle_manual_detail)
-	rule_strip.add_child(_manual_toggle_button)
+	_recovery_clock_cluster = HBoxContainer.new()
+	_recovery_clock_cluster.name = "RecoveryClockCluster"
+	_recovery_clock_cluster.add_theme_constant_override("separation", 6)
+	rule_strip.add_child(_recovery_clock_cluster)
+
+	_stability_clock = RecoveryClockScript.new()
+	_stability_clock.name = "StabilityClock"
+	_stability_clock.total_segments = 8
+	_stability_clock.active_color = Color("76c7b0")
+	_recovery_clock_cluster.add_child(_stability_clock)
+	_stability_clock_label = Label.new()
+	_stability_clock_label.name = "StabilityClockLabel"
+	_stability_clock_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_stability_clock_label.add_theme_font_size_override("font_size", 13)
+	_recovery_clock_cluster.add_child(_stability_clock_label)
+
+	_danger_clock = RecoveryClockScript.new()
+	_danger_clock.name = "DangerClock"
+	_danger_clock.total_segments = 6
+	_danger_clock.active_color = Color("c99a61")
+	_recovery_clock_cluster.add_child(_danger_clock)
+	_danger_clock_label = Label.new()
+	_danger_clock_label.name = "DangerClockLabel"
+	_danger_clock_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_danger_clock_label.add_theme_font_size_override("font_size", 13)
+	_recovery_clock_cluster.add_child(_danger_clock_label)
+
+	_detail_toggle_button = Button.new()
+	_detail_toggle_button.name = "DetailToggleButton"
+	_detail_toggle_button.text = "작전 상태 열기"
+	_detail_toggle_button.focus_mode = Control.FOCUS_ALL
+	_detail_toggle_button.tooltip_text = "보호 의무와 종결 판단을 확인합니다."
+	_detail_toggle_button.pressed.connect(_toggle_detail_stack)
+	rule_strip.add_child(_detail_toggle_button)
 
 	_manual_detail_panel = PanelContainer.new()
 	_manual_detail_panel.name = "ManualDetailPanel"
 	_manual_detail_panel.visible = false
 	_manual_detail_panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	_manual_detail_panel.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	_manual_detail_panel.anchor_left = 0.58
+	_manual_detail_panel.anchor_top = 0.10
+	_manual_detail_panel.anchor_right = 0.985
+	_manual_detail_panel.anchor_bottom = 0.58
+	_manual_detail_panel.z_index = 120
 	_manual_detail_panel.add_theme_stylebox_override("panel", _panel_style(Color(0.055, 0.06, 0.075, 0.97), Color(0.34, 0.46, 0.54, 0.85)))
-	root_layout.add_child(_manual_detail_panel)
+	add_child(_manual_detail_panel)
+	var manual_content := VBoxContainer.new()
+	manual_content.name = "ManualContent"
+	manual_content.add_theme_constant_override("separation", 6)
+	_manual_detail_panel.add_child(manual_content)
+	var manual_header := HBoxContainer.new()
+	manual_header.name = "ManualHeader"
+	manual_content.add_child(manual_header)
+	var manual_title := Label.new()
+	manual_title.name = "ManualTitle"
+	manual_title.text = "괴이 매뉴얼 · 현장 참조"
+	manual_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	manual_title.add_theme_font_size_override("font_size", 16)
+	manual_header.add_child(manual_title)
+	var manual_close := Button.new()
+	manual_close.name = "ManualCloseButton"
+	manual_close.text = "닫기"
+	manual_close.focus_mode = Control.FOCUS_ALL
+	manual_close.pressed.connect(_toggle_manual_detail)
+	manual_header.add_child(manual_close)
 	var manual_text := RichTextLabel.new()
 	manual_text.name = "ManualText"
-	manual_text.custom_minimum_size = Vector2(0, 138)
-	manual_text.fit_content = true
+	manual_text.custom_minimum_size = Vector2(0, 190)
+	manual_text.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	manual_text.fit_content = false
 	manual_text.bbcode_enabled = true
 	manual_text.scroll_active = true
 	manual_text.focus_mode = Control.FOCUS_ALL
-	_manual_detail_panel.add_child(manual_text)
+	manual_content.add_child(manual_text)
 
 	var spacer := Control.new()
 	spacer.name = "FlexibleSpacer"
@@ -143,14 +235,14 @@ func _ensure_ui() -> void:
 	spacer.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root_layout.add_child(spacer)
 
-	var detail_stack := VBoxContainer.new()
-	detail_stack.name = "DetailStack"
-	detail_stack.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	detail_stack.add_theme_constant_override("separation", 6)
-	root_layout.add_child(detail_stack)
+	_detail_stack = VBoxContainer.new()
+	_detail_stack.name = "DetailStack"
+	_detail_stack.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_detail_stack.add_theme_constant_override("separation", 6)
+	root_layout.add_child(_detail_stack)
 
 	var obligation_panel := _make_detail_panel("ObligationPanel", Color(0.72, 0.43, 0.33, 0.95))
-	detail_stack.add_child(obligation_panel)
+	_detail_stack.add_child(obligation_panel)
 	var obligation_content := VBoxContainer.new()
 	obligation_content.name = "ObligationContent"
 	obligation_panel.add_child(obligation_content)
@@ -164,7 +256,7 @@ func _ensure_ui() -> void:
 	obligation_content.add_child(_obligation_list_label)
 
 	var termination_panel := _make_detail_panel("TerminationPreviewPanel", Color(0.49, 0.53, 0.72, 0.95))
-	detail_stack.add_child(termination_panel)
+	_detail_stack.add_child(termination_panel)
 	var termination_content := VBoxContainer.new()
 	termination_content.name = "TerminationContent"
 	termination_panel.add_child(termination_content)
@@ -177,8 +269,16 @@ func _ensure_ui() -> void:
 	_termination_detail_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	termination_content.add_child(_termination_detail_label)
 
+	_recovery_support_panel = _make_detail_panel("RecoverySupportPanel", Color(0.34, 0.62, 0.62, 0.95))
+	_detail_stack.add_child(_recovery_support_panel)
+	_detail_stack.move_child(_recovery_support_panel, 1)
+	_recovery_support_content = VBoxContainer.new()
+	_recovery_support_content.name = "RecoverySupportContent"
+	_recovery_support_content.add_theme_constant_override("separation", 6)
+	_recovery_support_panel.add_child(_recovery_support_content)
+
 	var follow_up_panel := _make_detail_panel("FollowUpPanel", Color(0.42, 0.61, 0.51, 0.95))
-	detail_stack.add_child(follow_up_panel)
+	_detail_stack.add_child(follow_up_panel)
 	var follow_up_content := VBoxContainer.new()
 	follow_up_content.name = "FollowUpContent"
 	follow_up_panel.add_child(follow_up_content)
@@ -260,15 +360,17 @@ func _refresh() -> void:
 		return
 	_mode_label.text = _mode_title(_mode)
 	_rule_summary_label.text = _make_rule_summary()
+	_refresh_recovery_clocks()
 	_refresh_manual_detail()
 	_refresh_obligations()
 	_refresh_termination()
+	_refresh_recovery_supports()
 	_refresh_follow_up()
 	_apply_mode_visibility()
 
 
 func _refresh_manual_detail() -> void:
-	var manual_text := _manual_detail_panel.get_node("ManualText") as RichTextLabel
+	var manual_text := _manual_detail_panel.get_node("ManualContent/ManualText") as RichTextLabel
 	var manual_state := _dictionary_copy(_runtime_state.get("manual_state"))
 	var pages := _array_copy(manual_state.get("pages"))
 	var active_ids := _string_array(manual_state.get("active_rule_ids"))
@@ -286,6 +388,21 @@ func _refresh_manual_detail() -> void:
 	lines.append("")
 	lines.append("이 패널은 플레이어가 확보한 가설과 근거만 보여 주며 공식 정답을 자동 공개하지 않습니다.")
 	manual_text.text = "\n".join(lines)
+
+
+func _refresh_recovery_clocks() -> void:
+	if _recovery_clock_cluster == null:
+		return
+	var clock := _dictionary_copy(_runtime_state.get("recovery_clock"))
+	var stability_total := maxi(1, int(clock.get("stability_total", 8)))
+	var danger_total := maxi(1, int(clock.get("danger_total", 6)))
+	var stability_segments := clampi(int(clock.get("stability_segments", 0)), 0, stability_total)
+	var danger_segments := clampi(int(clock.get("danger_segments", 0)), 0, danger_total)
+	var danger_urgent := bool(clock.get("danger_urgent", false))
+	_stability_clock.set_clock(stability_segments, stability_total, false)
+	_danger_clock.set_clock(danger_segments, danger_total, danger_urgent)
+	_stability_clock_label.text = "안정도 %d/%d" % [stability_segments, stability_total]
+	_danger_clock_label.text = "위험도 %d/%d" % [danger_segments, danger_total]
 
 
 func _refresh_obligations() -> void:
@@ -327,6 +444,87 @@ func _refresh_termination() -> void:
 	_termination_detail_label.text = "\n".join(lines) if not lines.is_empty() else "추가 차단 또는 비차단 결과가 없습니다."
 
 
+func _refresh_recovery_supports() -> void:
+	if _recovery_support_content == null:
+		return
+	for child in _recovery_support_content.get_children():
+		_recovery_support_content.remove_child(child)
+		child.queue_free()
+
+	var title := Label.new()
+	title.name = "RecoverySupportTitleLabel"
+	title.text = "요원 지원"
+	title.add_theme_font_size_override("font_size", 15)
+	_recovery_support_content.add_child(title)
+
+	var supports := _array_copy(_runtime_state.get("recovery_supports"))
+	if supports.is_empty():
+		var empty_label := Label.new()
+		empty_label.name = "RecoverySupportEmptyLabel"
+		empty_label.text = "현재 편성에 사용할 수 있는 요원 지원이 없습니다."
+		empty_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		_recovery_support_content.add_child(empty_label)
+		return
+
+	for support_value in supports:
+		if typeof(support_value) != TYPE_DICTIONARY:
+			continue
+		var support: Dictionary = (support_value as Dictionary).duplicate(true)
+		var available := bool(support.get("available", true))
+		var used := bool(support.get("used", false))
+		var support_id := String(support.get("id", "support"))
+		var support_row := VBoxContainer.new()
+		support_row.name = "RecoverySupportRow_%s" % support_id
+		support_row.add_theme_constant_override("separation", 2)
+		_recovery_support_content.add_child(support_row)
+		var button := Button.new()
+		button.name = "RecoverySupportButton_%s" % support_id
+		button.text = "%s [%s] · %s" % [
+			String(support.get("agent_name", "요원")),
+			String(support.get("temperament_label", "지원")),
+			String(support.get("label", "지원"))
+		]
+		button.disabled = not available or used
+		button.focus_mode = Control.FOCUS_ALL
+		button.tooltip_text = "이미 사용한 요원 지원입니다." if used else String(support.get("unavailable_reason", "")) if not available else String(support.get("description", ""))
+		button.pressed.connect(_activate_recovery_support.bind(support, button))
+		support_row.add_child(button)
+		var status_label := Label.new()
+		status_label.name = "RecoverySupportStatus_%s" % support_id
+		status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		status_label.add_theme_font_size_override("font_size", 13)
+		if used:
+			status_label.text = "사용 완료 · 이번 회수에서 이미 사용한 요원 지원입니다."
+		elif not available:
+			status_label.text = "잠김 이유 · %s" % String(support.get("unavailable_reason", "조건이 충족되지 않았습니다."))
+		else:
+			status_label.text = "사용 가능 · %s" % String(support.get("description", "현재 회수 단계에서 사용할 수 있습니다."))
+		support_row.add_child(status_label)
+
+
+func _activate_recovery_support(support: Dictionary, button: Button) -> void:
+	if not bool(support.get("available", true)) or bool(support.get("used", false)):
+		return
+	var host := get_parent()
+	if host != null and host.has_method("_use_agent_recovery_support"):
+		host.call("_use_agent_recovery_support", support, button)
+
+
+func mark_recovery_support_used(support_id: String) -> void:
+	var supports := _array_copy(_runtime_state.get("recovery_supports"))
+	for index in range(supports.size()):
+		if typeof(supports[index]) != TYPE_DICTIONARY:
+			continue
+		var support: Dictionary = (supports[index] as Dictionary).duplicate(true)
+		if String(support.get("id", "")) != support_id:
+			continue
+		support["used"] = true
+		supports[index] = support
+		_runtime_state["recovery_supports"] = supports
+		_refresh_recovery_supports()
+		return
+
+
 func _refresh_follow_up() -> void:
 	var records := _array_copy(_runtime_state.get("follow_up_records"))
 	if records.is_empty():
@@ -346,22 +544,39 @@ func _refresh_follow_up() -> void:
 
 
 func _apply_mode_visibility() -> void:
-	var detail_stack := get_node("SafeArea/RootLayout/DetailStack") as VBoxContainer
-	(detail_stack.get_node("ObligationPanel") as PanelContainer).visible = _mode in ["rescue", "recovery", "result"]
-	(detail_stack.get_node("TerminationPreviewPanel") as PanelContainer).visible = _mode in ["recovery", "result"]
-	(detail_stack.get_node("FollowUpPanel") as PanelContainer).visible = _mode == "result"
-	_manual_toggle_button.visible = _mode != "investigation"
-	if _mode == "investigation":
+	(_detail_stack.get_node("ObligationPanel") as PanelContainer).visible = _mode in ["rescue", "recovery", "result"]
+	(_detail_stack.get_node("TerminationPreviewPanel") as PanelContainer).visible = _mode in ["recovery", "result"]
+	_recovery_support_panel.visible = _mode == "recovery"
+	(_detail_stack.get_node("FollowUpPanel") as PanelContainer).visible = _mode == "result"
+	_detail_toggle_button.visible = _mode in ["rescue", "recovery", "result"]
+	_detail_stack.visible = _detail_stack_open and _detail_toggle_button.visible
+	_detail_toggle_button.text = "작전 상태 닫기" if _detail_stack.visible else "작전 상태 열기"
+	_set_legacy_action_dock_visible(not _detail_stack.visible)
+	_recovery_clock_cluster.visible = _mode == "recovery"
+	if _mode != "recovery":
 		_manual_detail_panel.visible = false
 
 
 func _toggle_manual_detail() -> void:
 	_manual_detail_panel.visible = not _manual_detail_panel.visible
-	_manual_toggle_button.text = "괴이 매뉴얼 닫기" if _manual_detail_panel.visible else "괴이 매뉴얼 열기"
 	if _manual_detail_panel.visible:
-		(_manual_detail_panel.get_node("ManualText") as RichTextLabel).grab_focus()
-	else:
-		_manual_toggle_button.grab_focus()
+		(_manual_detail_panel.get_node("ManualContent/ManualText") as RichTextLabel).grab_focus()
+
+
+func _toggle_detail_stack() -> void:
+	_detail_stack_open = not _detail_stack_open
+	_apply_mode_visibility()
+	if _detail_stack.visible:
+		_detail_toggle_button.grab_focus()
+
+
+func _set_legacy_action_dock_visible(is_visible: bool) -> void:
+	var host := get_parent()
+	if host == null:
+		return
+	var action_dock := host.get_node_or_null("ActionDock") as Control
+	if action_dock != null:
+		action_dock.visible = is_visible
 
 
 func _on_confirmation_confirmed() -> void:

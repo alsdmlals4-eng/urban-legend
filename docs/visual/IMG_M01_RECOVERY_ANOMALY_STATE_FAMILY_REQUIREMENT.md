@@ -1,6 +1,6 @@
 # IMG-M01-04/05 · Afterlife Recovery Anomaly · State-Family Consumer Requirement
 
-Status: `REUSE_REVIEW / PIXEL_COMPARE_PENDING`
+Status: `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_AND_HUMAN_QA_PENDING`
 Decision: `D-2026-08-26-RUNTIME-CONSUMER-FIRST-VISUAL-ASSET-GATE`
 Consumer: `scenes/battle_scene.tscn -> AnomalyVisual`
 Runtime selector: `ScenePresentation.apply_anomaly(texture_rect, risk)`

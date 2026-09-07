@@ -2,7 +2,7 @@
 
 ## Status
 
-`USER_APPROVED_VISUAL_CANDIDATE / PRODUCT_REFERENCE_ASSET_PENDING`
+`PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_AND_HUMAN_QA_PENDING`
 
 This record owns the approved visual-adaptation candidate created after the pixel comparison between the current `assets/backgrounds/red_crossroads.png` consumer and the approved M04 Investigation Anchor direction.
 
@@ -23,4 +23,12 @@ The image preserves an information-first read: wet Korean back-alley crossroad, 
 
 ## Approval boundary
 
-User result approval confirms this visual candidate only. It does not replace `assets/backgrounds/red_crossroads.png`, add a Godot reference, grant `PROJECT_ASSET_APPROVED`, or pass runtime readability and Human QA. Those gates remain separately authorized work.
+The sole decision owner's approved continuation promoted these exact bytes to `assets/backgrounds/red_crossroads.png` on 2026-08-27. It reuses the existing Godot route and does not add a new reference, scene, script, catalog, fallback, or UI change.
+
+Promotion records:
+
+- Decision: `docs/decisions/D-2026-08-27-M04-INVESTIGATION-BACKGROUND-PRODUCT-PROMOTION.md`
+- Protected-path approval: `docs/approvals/PROJECT_PROTECTED_CHANGE_APPROVAL_M04_INVESTIGATION_BACKGROUND_20260827.json`
+- GitHub Issue: `#253`
+
+Godot import plus focused automated catalog checks are required in this promotion. Live 1280×720/1920×1080 runtime readability and Human visual/accessibility QA remain separate pending gates.

@@ -1,11 +1,11 @@
 # 괴이기록국 · Current Visual Asset Consumer Checklist
 
 > Role: `CURRENT_VISUAL_ASSET_CONSUMER_CHECKLIST`
-> Updated: `2026-08-26`
+> Updated: `2026-08-30`
 > Decision: `D-2026-08-26-RUNTIME-CONSUMER-FIRST-VISUAL-ASSET-GATE`
 > Scope: planning / visual asset requirement inventory
-> Product asset approval: `0 CURRENT ROOT-MANIFEST ENTRIES`
-> Runtime visual validation: `NOT_RUN`
+> Product asset approval: `9 CURRENT ROOT-MANIFEST ENTRIES (M01 Investigation/Recovery backgrounds, B/C, D, CASE-01 Lume guide; M04 Investigation/Recovery backgrounds, B/C, D)`
+> Runtime visual validation: `PARTIALLY_VERIFIED` — M04 Investigation Background + LocationPreview 1280×720/1920×1080 is verified by PR #273; the remaining approved M01/M04 consumers still require their own runtime gates.
 > Human QA: `NOT_RUN`
 
 ## 1. Rule
@@ -19,8 +19,9 @@ actual consumer
 → delete test
 → REUSE_REVIEW | REPLACE_REQUIRED | CREATE_REQUIRED
 → consumer-specific brief
-→ explicit image approval
-→ exactly one image
+→ bounded candidate generation (pre-approved workflow)
+→ visual-lock / rights / consumer inspection
+→ user LOCK | REVISE | REJECT
 ```
 
 설명용 component sheet는 이미지 backlog가 아니다.
@@ -32,6 +33,7 @@ actual consumer
 - `CREATE_REQUIRED`: 실제 consumer는 있으나 viable current file이 없다.
 - `UI_NOT_IMAGE`: Godot Control/Theme으로 구현되며 별도 이미지가 현재 필요하지 않다.
 - `REFERENCE_ONLY`: 승인/검토용 화면 reference이며 현재 texture consumer 파일 자체가 아니다.
+- `USER_AUTHORIZED_VISUAL_CANDIDATE`: `D-2026-08-28-VISUAL-CANDIDATE-GENERATION-LOCK-ONLY-APPROVAL`에 따른 생성 후보. 제품 승격이나 runtime 적용은 아니다.
 
 ## 2. Runtime consumer facts
 
@@ -49,13 +51,13 @@ actual consumer
 
 | ID | Actual consumer | Current file | Current status | Delete test / note |
 |---|---|---|---|---|
-| `IMG-M01-01` | Main Menu backdrop + Dialogue `ArtLayer/Background` + dialogue location preview | `assets/backgrounds/afterlife_entrance.png` | `REUSE_REVIEW` | 없으면 Main Menu identity/background와 오프닝 현장 preview가 사라진다. 같은 파일을 여러 surface가 재사용한다. |
-| `IMG-M01-02` | Investigation `ArtLayer/Background` + `LocationPreview` | `assets/backgrounds/afterlife_platform.png` | `REUSE_REVIEW` | 없으면 조사 장소/관측 공간이 사라진다. 별도 location-card 이미지를 만들지 않는다. |
-| `IMG-M01-03` | Recovery `ArtLayer/Background` | `assets/backgrounds/afterlife_recovery.png` | `REPLACE_REQUIRED / USER_APPROVED_VISUAL_CANDIDATE / PRODUCT_ASSET_PROMOTION_PENDING` | `M01_RECOVERY_BACKGROUND_ADAPT_01`은 배경 전용 후보로 승인됐다. 현행 PNG 교체와 Godot 연결은 별도 Gate다. |
-| `IMG-M01-04` | Recovery `AnomalyVisual` B/C | `assets/anomalies/cutouts/afterlife_b_cutout.png` with `assets/anomalies/afterlife_b.png` fallback | `REPLACE_REQUIRED / USER_APPROVED_VISUAL_CANDIDATE / PRODUCT_ASSET_PROMOTION_PENDING` | `M01_ANOMALY_BC_ADAPT_01`은 투명 현현 후보로 승인됐다. 현행 컷아웃 교체와 Godot 연결은 별도 Gate다. |
-| `IMG-M01-05` | Recovery `AnomalyVisual` D | `assets/anomalies/cutouts/afterlife_d_cutout.png` with `assets/anomalies/afterlife_d.png` fallback | `REPLACE_REQUIRED / USER_APPROVED_VISUAL_CANDIDATE / PRODUCT_ASSET_PROMOTION_PENDING` | `M01_ANOMALY_D_ADAPT_01`은 단일 실루엣의 투명 고위험 현현 후보로 승인됐다. 현행 컷아웃 교체와 Godot 연결은 별도 Gate다. |
-| `IMG-M01-06` | Investigation `ManualSurface: TextureRect` | `assets/ui/afterlife/manual_book_frame.png` | `REUSE_REVIEW` | 실제 live Godot text 뒤의 textless surface. |
-| `IMG-M01-07` | route-restore minigame full-screen surface | `assets/ui/afterlife/generated/afterlife_metal_panel_v1.png` | `REUSE_REVIEW` | 저승역 최종 노선 복원 runtime surface. |
+| `IMG-M01-01` | Main Menu backdrop + Dialogue `ArtLayer/Background` + dialogue location preview | `assets/backgrounds/afterlife_entrance.png` | `CANDIDATE_RUNTIME_COMPARED / PROMOTION_RECOMMENDED / FINAL_USER_LOCK_REQUIRED` | `M01_ENTRANCE_BACKGROUND_ADAPT_01`은 일반 플랫폼 복도·중앙 빈 표지판/기둥이 entry threshold와 compact preview를 약화해 승격하지 않았다. `M01_ENTRANCE_BACKGROUND_ADAPT_02_20260828`은 descending stair/paired rail/clock landmark를 되돌렸고, 격리된 실제 menu/dialogue consumer 비교와 focused regression을 통과했다. 다만 명시적 최종 `LOCK` 전까지 현행 파일을 유지하며 Main Menu 전용 이미지는 만들지 않는다. 완료형 QA 영수증은 current checklist 밖에서 보존한다. |
+| `IMG-M01-02` | Investigation `ArtLayer/Background` + `LocationPreview` | `assets/backgrounds/afterlife_platform.png` | `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED / HUMAN_QA_PENDING` | `M01_INVESTIGATION_PLATFORM_ADAPT_02_20260827` exact bytes가 canonical PNG를 교체했다. Adapt 01은 작은 preview를 막는 중앙 기둥 때문에 승격하지 않았고, Adapt 02는 1280×720·1920×1080의 실제 두 consumer에서 import·resolution·readability를 확인했다. 별도 location-card 이미지는 만들지 않는다. |
+| `IMG-M01-03` | Recovery `ArtLayer/Background` | `assets/backgrounds/afterlife_recovery.png` | `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED / HUMAN_QA_PENDING` | `M01_RECOVERY_BACKGROUND_ADAPT_01`의 exact bytes가 canonical PNG를 교체했다. 1280×720·1920×1080 launch profile 실제 consumer에서 import·resolution·readability를 확인했으며, Human QA는 별도 Gate다. |
+| `IMG-M01-04` | Recovery `AnomalyVisual` B/C | `assets/anomalies/cutouts/afterlife_b_cutout.png` with `assets/anomalies/afterlife_b.png` fallback | `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED / HUMAN_QA_PENDING` | `M01_ANOMALY_BC_ADAPT_01`의 exact bytes가 canonical cutout을 교체했다. B/C는 1280×720·1920×1080 launch profile 실제 consumer에서 import·resolution·readability를 확인했으며, Human QA는 별도 Gate다. |
+| `IMG-M01-05` | Recovery `AnomalyVisual` D | `assets/anomalies/cutouts/afterlife_d_cutout.png` with `assets/anomalies/afterlife_d.png` fallback | `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED / HUMAN_QA_PENDING` | `M01_ANOMALY_D_RUNTIME_CORRECTION_CANDIDATE_20260827` exact bytes가 canonical cutout을 교체했다. 1280×720·1920×1080 실제 D consumer에서 identity escalation과 transparent cutout 가독성을 확인했으며, Human QA는 별도 Gate다. |
+| `IMG-M01-06` | Investigation `ManualSurface: TextureRect` | `assets/ui/afterlife/manual_book_frame.png` | `REUSE_ACCEPTED / NO_NEW_IMAGE_REQUIRED / EXISTING_RUNTIME_EVIDENCE_REUSED / HUMAN_QA_PENDING` | Textless book-paper surface owns framing only; live Manual text and controls remain separately readable in the existing 1920×1080 Investigation runtime capture. Current SHA-256 `2e4dd2d2cc646f76060ba0baf1f11b3bdcfc7b2bb8cd6766e6f45627dba96c24`. No replacement or new image is required. |
+| `IMG-M01-07` | route-restore minigame full-screen surface | `assets/ui/afterlife/generated/afterlife_metal_panel_v1.png` | `REUSE_ACCEPTED / NO_NEW_IMAGE_REQUIRED / EXISTING_RUNTIME_EVIDENCE_REUSED / HUMAN_QA_PENDING` | Full-rect texture remains a restrained frame behind route tiles and Korean labels in the existing 1920×1080 final-route runtime capture. Current SHA-256 `80efdc2544502c16432b998760e22aada5fe6aae06414db6273b9ee63685acce`. No replacement or new image is required. |
 
 ### M01 Anomaly pixel-review decision · 2026-08-26
 
@@ -74,11 +76,11 @@ actual consumer
 
 | ID | Actual consumer | Current file | Current status | Delete test / note |
 |---|---|---|---|---|
-| `IMG-M04-01` | Dialogue background + current-case preview | `assets/backgrounds/red_alley_entrance.png` | `REUSE_REVIEW` | 오프닝/preview surface. |
-| `IMG-M04-02` | Investigation `ArtLayer/Background` | `assets/backgrounds/red_crossroads.png` | `REUSE_REVIEW / APPROVED_CANDIDATE_COMPARE_REQUIRED` | 사용자 승인 M04 Investigation Anchor가 이 consumer의 strongest visual candidate다. 기존 tracked file과 promotion/replacement를 비교한다. |
-| `IMG-M04-03` | Recovery `ArtLayer/Background` | `assets/backgrounds/red_recovery.png` | `REUSE_REVIEW` | M04 Recovery background. |
-| `IMG-M04-04` | Recovery `AnomalyVisual` B/C | `assets/anomalies/cutouts/red_umbrella_b_cutout.png` with full fallback | `REUSE_REVIEW` | actual anomaly consumer. |
-| `IMG-M04-05` | Recovery `AnomalyVisual` D | `assets/anomalies/cutouts/red_umbrella_d_cutout.png` with full fallback | `REUSE_REVIEW` | actual high-risk anomaly consumer. |
+| `IMG-M04-01` | Dialogue background + main-menu current-case preview | `assets/backgrounds/red_alley_entrance.png` | `CANDIDATE_RUNTIME_COMPARED / PROMOTION_RECOMMENDED / FINAL_USER_LOCK_REQUIRED` | Current file is strongly photoreal and its convenience-store-like striped sign conflicts with the soft-anime-noir lock. `M04_ENTRANCE_BACKGROUND_ADAPT_01_20260827` removes the brand/text cues, preserves the red umbrella in the actual dialogue read, and passed isolated Dialogue + **non-compact** current-case-preview comparison plus focused regression. `CurrentCasePreview` is hidden below 1500×850; thus 1280×720 validates Dialogue only, while the requested 1920×1080 profile validates both consumers. Keep the canonical file until an explicit final `LOCK`; the completed QA receipt is intentionally kept outside this current checklist. |
+| `IMG-M04-02` | Investigation `ArtLayer/Background` + shared `LocationPreview` | `assets/backgrounds/red_crossroads.png` | `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED / HUMAN_QA_PENDING` | `M04_INVESTIGATION_BACKGROUND_ADAPT_01` exact bytes가 canonical PNG를 교체했다. PR #273이 기존 route에서 1280×720/1920×1080 Background·LocationPreview와 배경 관찰성을 검증했다. Human evidence는 별도 Gate다. |
+| `IMG-M04-03` | Recovery `ArtLayer/Background` | `assets/backgrounds/red_recovery.png` | `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED / HUMAN_QA_PENDING` | `M04_RECOVERY_BACKGROUND_ADAPT_02_20260828` exact bytes가 canonical PNG를 교체했다. 실제 Battle `Background`가 1280×720·1920×1080에서 경로·환경 크롭을 유지하는 자동 검증을 통과했다. separate B/C·D overlay, Scene mapping, live UI ownership은 유지하며 Human evidence와 release-rights review는 별도 Gate다. |
+| `IMG-M04-04` | Recovery `AnomalyVisual` B/C | `assets/anomalies/cutouts/red_umbrella_b_cutout.png` with full fallback | `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED / HUMAN_QA_PENDING` | `M04_ANOMALY_BC_ADAPT_01_20260827` exact bytes가 canonical cutout을 교체했다. 1280×720·1920×1080 actual M04 Recovery `AnomalyVisual`에서 import·resolution·readability를 확인했고, scene/catalog/fallback 경로는 변경하지 않았다. Human QA는 별도 Gate다. |
+| `IMG-M04-05` | Recovery `AnomalyVisual` D | `assets/anomalies/cutouts/red_umbrella_d_cutout.png` with full fallback | `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED / HUMAN_QA_PENDING` | `M04_ANOMALY_D_ADAPT_01` exact RGBA bytes가 canonical cutout을 교체했다. D 단계는 기본적으로 `KEEP_ASPECT_CENTERED`로 투명 여백을 보존하되, 플레이어가 F2 runtime editor에서 저장한 crop preference는 존중한다. 실제 Battle `AnomalyVisual` 경로가 1280×720·1920×1080 자동 검증을 통과했고, Human QA·release-rights는 별도 Gate다. |
 
 ### M04 layer caution
 
@@ -125,19 +127,13 @@ legacy `get_agent_expression()` / `AGENT_ASSETS` / `AGENT_CUTOUT_ASSETS`는 현�
 
 윤서하·한유리 production files 존재 자체를 이유로 새 expression sheet를 생성하지 않는다. 필요하면 이는 먼저 runtime wiring/consumer 문제로 분류한다.
 
-## 6. Log guide consumer
+## 6. Procedure guide consumer
 
-`LogGuide`의 실제 portrait consumer는:
+`LogGuide`는 `기록관 아카 · 절차 통신`이라는 text-first 절차 패널이다. 대사 순서,
+접속 시그니처, 상태색만 제공하며 portrait consumer는 없다. 기존 `assets/log/log_*.png`는
+실제 소비처가 0임을 readback한 뒤 제거했다.
 
-- `assets/log/log_normal.png`
-- `assets/log/log_focus.png`
-- `assets/log/log_warning.png`
-
-이다.
-
-상태색은 별도 ColorRect로 중복 cue를 제공한다.
-
-Current status: `REUSE_REVIEW`.
+Current status: `TEXT_ONLY_IMPLEMENTED`; Human QA pending.
 
 ## 7. Result screen boundary
 
@@ -163,12 +159,12 @@ Current status: `REUSE_REVIEW`.
 
 ### REUSE/REPLACE review order
 
-1. `IMG-M01-03` Afterlife Recovery background — `REPLACE_REQUIRED`; candidate result approved, product promotion 별도 대기.
-2. `IMG-M01-04` Afterlife anomaly B/C — candidate result approved; product promotion 별도 대기.
-3. `IMG-M01-05` Afterlife anomaly D — candidate result approved; product promotion 별도 대기.
-4. `IMG-M01-02` Afterlife Investigation background.
-5. `IMG-M01-01` Afterlife Entrance / Dialogue background.
-6. `IMG-M04-02` approved M04 Investigation Anchor vs current `red_crossroads` consumer.
+1. `IMG-M01-03` Afterlife Recovery background — `PROJECT_ASSET_APPROVED / RUNTIME_VERIFIED`; Human QA pending.
+2. `IMG-M01-04` Afterlife anomaly B/C — `PROJECT_ASSET_APPROVED / RUNTIME_VERIFIED`; Human QA pending.
+3. `IMG-M01-05` Afterlife anomaly D — `PROJECT_ASSET_APPROVED / RUNTIME_VERIFIED`; Human QA pending.
+4. `IMG-M04-02` Investigation background — `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED`; Human QA pending.
+5. `IMG-M01-02` Afterlife Investigation background — `PROJECT_ASSET_APPROVED / IMPLEMENTED / RUNTIME_VERIFIED`; Human QA pending.
+6. `IMG-M01-01` Afterlife Entrance / Dialogue background.
 7. M04 Recovery/anomaly consumers.
 8. Character/support/contact assets only when a current playable-slice consumer shows a visual gap.
 
@@ -176,20 +172,20 @@ If current binary pixels cannot be inspected in the active session, status remai
 
 ## 9. Image-generation rule
 
-Only after `REPLACE_REQUIRED` or `CREATE_REQUIRED` is supported:
+Only after `REPLACE_REQUIRED` or `CREATE_REQUIRED` is supported and a real consumer brief, visual lock, and rights/reuse preflight are present:
 
 ```text
 one consumer-specific text brief
-→ explicit user approval to generate
-→ exactly one image
-→ stop for result approval
+→ bounded candidate generation without per-image pre-approval
+→ inspect against visual lock / rights / actual consumer
+→ ask user to LOCK, REVISE, or REJECT
 ```
 
-No batch generation from checklist gaps.
+No batch generation from checklist gaps, and no candidate is auto-promoted to a product/runtime asset.
 
 ## 10. Authority / evidence ceiling
 
-Root `ASSET_MANIFEST.yml` is the current tracked product-asset authority and currently has `assets: []`.
+Root `ASSET_MANIFEST.yml` is the current tracked product-asset authority and has twelve current approved entries: Bureau Archive main-menu background/emblem/wordmark, M01 Investigation background, M01 Recovery background, B/C anomaly cutout, D anomaly cutout, the CASE-01 Lume manual guide portrait, the M04 Investigation/Recovery background assets, and the M04 B/C·D cutout assets. The three Bureau Archive entries are consumed only by `MainMenuBackdrop` and `WorldTitleLockup`; their exact-head runtime capture is recorded, while Human/accessibility and release-rights review remain separate gates.
 
 Legacy `assets/ASSET_MANIFEST.json`, tracked PNG presence, `.import` files, existing runtime wiring, and old QA labels do **not** independently grant `PROJECT_ASSET_APPROVED`.
 

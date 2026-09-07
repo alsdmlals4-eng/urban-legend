@@ -29,6 +29,13 @@ class FakeTerminationGameState:
 		}]
 
 
+class FakeRecoveryHost:
+	extends Control
+
+	func is_recovery_ready_for_resolution() -> bool:
+		return true
+
+
 var _failures: Array[String] = []
 
 
@@ -45,12 +52,8 @@ func _run() -> void:
 
 func _test_recovery_termination_preview() -> void:
 	var bridge = BridgeScript.new()
-	var host := Control.new()
+	var host := FakeRecoveryHost.new()
 	host.name = "BattleSceneTerminationHost"
-	var recover_button := Button.new()
-	recover_button.name = "RecoverButton"
-	recover_button.disabled = false
-	host.add_child(recover_button)
 	var fake_state := FakeTerminationGameState.new()
 	var preview: Dictionary = bridge.sync_recovery_termination_preview_for_test(host, fake_state)
 	_expect((fake_state.requested_candidates as Array[String]) == ["residue_recovered"], "enabled core recovery did not preview residue_recovered")

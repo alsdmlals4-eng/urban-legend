@@ -91,6 +91,8 @@ func _validate_route(episode: Dictionary, include_wrong_response: bool) -> void:
 		_check(not Dictionary(battle.get("_current_pattern")).is_empty(), "%s automatically exposes the next telegraph" % route_label)
 
 	for turn in range(8):
+		if not is_instance_valid(battle) or current_scene != battle:
+			break
 		if bool(battle.call("_can_recover")):
 			break
 		var pattern: Dictionary = battle.get("_current_pattern")
@@ -100,11 +102,8 @@ func _validate_route(episode: Dictionary, include_wrong_response: bool) -> void:
 			break
 		await _resolve_pattern_choice(battle, correct_response, false)
 
-	_check(bool(battle.call("_can_recover")), "%s reaches recovery with evidence-supported responses" % route_label)
-	battle.call("_recover_anomaly_core")
-	await process_frame
-	await process_frame
 	var result := current_scene
+	_check(result != battle and result.scene_file_path == "res://scenes/result_scene.tscn", "%s reaches the result scene automatically after evidence-supported recovery" % route_label)
 	var reasoning_summary := result.find_child("ReasoningSummary", true, false)
 	_check(reasoning_summary != null, "%s result shows the reasoning summary" % route_label)
 	var reports: Array = _game_state.get_completed_case_reports()
