@@ -8,6 +8,18 @@
 > 최신 시간 설계: `docs/superpowers/specs/2026-07-25-annual-mvp-001-seven-day-scheduling-design.md`  
 > ANNUAL-MVP-002 계획: `docs/superpowers/plans/2026-07-26-annual-mvp-002-vertical-slice-implementation-plan.md`
 
+## 2026-09-10 캠페인 준비실 진입 회귀
+
+- 책임 결정: `D-2026-09-10-CAMPAIGN-PREPARATION-ENTRY-REPAIR`.
+- RED: 신규 GUT 2건이 누락 함수로 실패, 기존 route mapper 5건 통과.
+- GREEN: Godot 4.7.2 / GUT 9.7.1, `tests/gut/test_campaign_preparation_entry.gd`와 mapper 합계 7/7, assertions 33, exit 0. 준비실 경로·사건/주기 미선택·팀 유지·저장 roundtrip·독립 M01 시작 경로 확인.
+- 실행: `--headless --path . --script addons/gut/gut_cmdln.gd -gtest=res://tests/gut/test_campaign_preparation_entry.gd -gexit`; APPDATA는 저장소 내부 `.artifacts/campaign-entry-test/appdata`로 격리. JUnit은 `.artifacts/gut/junit.xml`.
+- 실제 Windows runtime: editor PID 39148 / game PID 39616 / run `r864865-1`; 1280×720에서 `M04CampaignEntryButton`에 마우스 press/release → `/PreparationScene` 확인. 실제 framebuffer를 읽어 사건 미선택과 권나래/오현/강이준 표시 확인. 현재 run 게임 오류 0; editor 이름 shadowing 경고 5건은 남음.
+- 전체 Python: 490건, 실패 1건(`test_runtime_helper_matches_editor_headless_opt_in`: 기존 game_helper에 `GODOT_AI_ALLOW_HEADLESS` 없음). 전체 PASS 아님.
+- 검토 1: 호출·상태 초기화·팀·저장 roundtrip의 회귀 검사. 검토 2: 실제 버튼 입력·씬 전환·화면·게임 및 editor 로그를 재확인. 이 시작 오류의 재현은 해소됐으나 전체 CLEAN_REVIEW_EXIT는 미선언.
+- 미검증: 이 실행에서 조사·회수·미니게임 전체 완주, 신규 플레이어 UX, 1920×1080, 출시. 준비실 하단 내용은 스크롤 영역이며 이번 작업은 레이아웃 개선 증거가 아니다.
+- 학습: 함수 존재 검사만 아니라 저장·화면 경로까지 실행하는 회귀 검사를 유지한다. 공용 Base 승격은 수행하지 않음(`NO_NEW_REUSE_LEARNING`).
+
 ## 현재 기준
 
 - current product cadence: 10일·오전/오후, Day 1~9 조기 해결 / Day 10 정규 해결.

@@ -1,5 +1,9 @@
 # 괴이기록국 Current Handoff
 
+## 2026-09-10 시작 오류 복구 — 병합 전 로컬 증거
+
+`D-2026-09-10-CAMPAIGN-PREPARATION-ENTRY-REPAIR`: main 기반 별도 수정에서 누락된 `begin_campaign_case_selection`을 복구했다. 실제 메뉴 버튼 입력 → `PreparationScene`, 사건 미선택, 권나래/오현/강이준 편성을 확인했다. GUT 7/7 PASS. 전체 Python 검사는 490건 중 기존 `test_runtime_helper_matches_editor_headless_opt_in` 1건 FAIL이다. 따라서 전체 CLEAN/출시/사람 QA는 통과가 아니다. 다음 순서는 수정 PR exact-head 검사·검토 후 통합, 이어서 조사 → 규칙 추론 → 회수/미니게임 적용의 전체 경로 검증이다. Draft #359의 재기획·자산 교체 내용은 이 버그 수정에 흡수하지 않는다.
+
 > 상태: `PLANNING_COMPLETE / USER_APPROVED_VISUAL_DIRECTION_LOCK / RUNTIME_RECONCILIATION_MERGED / HUMAN_QA_PENDING`
 > latest-main reconciliation: PR #322 merge `9fa32d32e8a5a2ad7d34a388695986b4ab81c6a7` (runtime implementation: `8d303f0f9414950273be934fd28c8fb1b3a21e18` · PR #224)
 > M04 current-main continuation: PR #356 merge `a62b5341f3c4742192f7bfc0d11e1fb4897c1308` — recovery clocks/menu and main-menu identity surface are `M04_RECOVERY_AND_MENU_MAIN_MERGED`; Human QA remains `NOT_RUN`.
