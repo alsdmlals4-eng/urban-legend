@@ -1,5 +1,9 @@
 # Urban Legend 시작 지점
 
+> Current override · 2026-09-10: 재기획 검토가 진행 중이다. `docs/current-planning-canon.json`의 `replanning_review`
+> 및 `docs/CURRENT_DECISION_OVERLAY.md`의 `D-2026-09-10-REPLANNING-AND-PROJECT-LOCAL-ASEPRITE`를 먼저 적용한다.
+> 아래 기획 완료/시각 lock은 기존 baseline 이력이며 새 제작 확정이 아니다.
+
 새 채팅·새 GPT·새 Codex·새 작업자가 괴이기록국을 **현재 정본과 실제 main**에서 안전하게 시작하는 최상위 라우터다.
 
 ## 기본 읽기

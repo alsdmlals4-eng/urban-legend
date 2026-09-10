@@ -1,5 +1,26 @@
 # 괴이기록국 Current Handoff
 
+## Current continuation · 2026-09-10
+
+`REPLANNING_REVIEW_IN_PROGRESS`: 최신 사용자 지시는 기존 요소를 근거 기반으로 재검토하고
+새 이미지와 모션을 기획부터 연결하는 것이다. 이전 완료/visual lock은 baseline 이력이다.
+먼저 `CURRENT_DECISION_OVERLAY.md`의 `D-2026-09-10-REPLANNING-AND-PROJECT-LOCAL-ASEPRITE`,
+`current-planning-canon.json#/replanning_review`,
+`research/2026-09-10-replanning-element-review.md`의 미완료 목록을 읽는다.
+프로젝트 내부 Aseprite 경계는 제한 stdio 호출로 검증됐고 desktop native discovery는 미검증이다.
+`D-2026-09-10-HIDDEN-RULE-SURVIVAL-CORE`가 현재 핵심 방향을 명확히 한다.
+통합 작업본은 PR #359다. #360의 감사는 `audits/2026-09-10-manual-field-consumer-trace.md`로
+흡수했고 별도 게임 정본을 만들지 않는다. source trace는 완료했지만 동적 검증은 미실행이다.
+다음은 한 규칙의 조사→현장 판단→행동→관측 결과 연결 명세와 동적 검증이다.
+메모만 바꾸는 실험은 결과 불변성 대조군이며, 규칙에 따른 행동 변경을 실험군으로 비교한다.
+단순 draft getter 부재만으로 플레이어의 지식 활용 부재를 단정하지 않는다.
+추가 확인: M04 minigame_rain_sync는 시간/충돌 판정인데 성공 문구는 세 번째 빗소리
+타이밍을 맞췄다고 주장한다. 감사의 '한 규칙의 실행 전 비교 명세'에 실제 ID와 대조군을
+기록했다. 이후 사용자 지시로 편집기를 직접 열어 연결을 복구했다. 실행 비교는 아직 미완료다.
+실행 중 M04 시작이 없는 GameState.begin_campaign_case_selection 호출로 중단됨을 확인했다.
+격리 저장 경로에서 정상 진입 오류를 먼저 교정한 뒤 비교를 재개한다. 상세 실행 증거는 같은 감사 문서에 있다.
+기존 자산 삭제, 새 사건/수치 확정, 전체 이미지 양산 또는 Human PASS로 넘어가지 않는다.
+
 > 상태: `PLANNING_COMPLETE / USER_APPROVED_VISUAL_DIRECTION_LOCK / RUNTIME_RECONCILIATION_MERGED / HUMAN_QA_PENDING`
 > latest-main reconciliation: PR #322 merge `9fa32d32e8a5a2ad7d34a388695986b4ab81c6a7` (runtime implementation: `8d303f0f9414950273be934fd28c8fb1b3a21e18` · PR #224)
 > M04 current-main continuation: PR #356 merge `a62b5341f3c4742192f7bfc0d11e1fb4897c1308` — recovery clocks/menu and main-menu identity surface are `M04_RECOVERY_AND_MENU_MAIN_MERGED`; Human QA remains `NOT_RUN`.

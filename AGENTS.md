@@ -4,6 +4,11 @@
 
 최신 사용자 지시를 최우선으로 따른다.
 
+2026-09-10 재기획 진입: `docs/current-planning-canon.json`의 `replanning_review`와
+`docs/CURRENT_DECISION_OVERLAY.md`의 `D-2026-09-10-REPLANNING-AND-PROJECT-LOCAL-ASEPRITE`가
+이번 작업 상태를 소유한다. 아래 기획 완료/visual lock은 기존 구현 baseline으로 보존하며,
+새 기획·이미지의 자동 승인으로 사용하지 않는다. 기존 이미지는 새 제작에서 reference-only다.
+
 ## 기본 읽기 순서
 
 ### 일반 구현·버그 수정

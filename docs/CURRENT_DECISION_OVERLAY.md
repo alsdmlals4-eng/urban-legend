@@ -1,5 +1,32 @@
 # 괴이기록국 Current Decision Overlay
 
+## D-2026-09-10-HIDDEN-RULE-SURVIVAL-CORE
+
+상태: `USER_APPROVED_DIRECTION / RUNTIME_NOT_VERIFIED`.
+사용자는 숨겨진 규칙을 조사로 파악하고 회수·미니게임에서 실제 사용해 살아남는 것을
+핵심으로 명확히 했다. 매뉴얼은 플레이어의 해석과 현장 참조 수단이며 완성 자체가 목적은 아니다.
+규칙의 진실은 기존 사건 owner가 소유한다. 같은 현장 상태·행동·판정 조건에서 메모만
+바뀌었다고 물리적 결과를 바꾸거나 추가 벌점을 주지 않는다. 알아낸 규칙에 따라 방법·대상·시점을
+선택하고 그 결과로 위험 회피·피해자 보호·안정화·회수를 경험하는 연결을 검증한다.
+추론 오류와 실행 오류는 구분하며, 틀린 추론에는 관측 가능한 반증을 남긴다.
+구체적인 새 사건 정답·타이밍 수치·출동 잠금·저장 migration은 이 결정으로 확정하지 않는다.
+구조화 기준은 `docs/current-planning-canon.json`의 `replanning_review.survival_core`다.
+PR #359와 #360의 수정·통합 정리는 사용자가 명시 승인했다. 통합 작업본은 #359이며
+#360의 감사 이력을 보존한다. main 병합 및 runtime/Human 완료는 별도 검증 경계다.
+
+## D-2026-09-10-REPLANNING-AND-PROJECT-LOCAL-ASEPRITE
+
+최신 사용자 지시로 기획을 다시 검토한다. 기존 요소는 조사·벤치마크·실무 근거와
+SWOT·개선 가능성·독창성·창의성·실제 consumer를 비교해 유지/보완/수정/보류를 판정한다.
+기존 이미지는 새 제작의 참고자료이며 과거 visual lock을 새 제작에 자동 적용하지 않는다.
+기존 구현·승인 provenance는 baseline으로 보존하며 즉시 삭제/교체하지 않는다.
+현재 재검토 상태는 `current-planning-canon.json#/replanning_review`가 소유한다.
+아래 기획 완료/Gate는 기존 baseline 이력이며 새 기획 완료를 뜻하지 않는다.
+프로젝트 내부 Aseprite 후보 경계 추가는 승인됐다. 제한 설정과 증거는
+`visual/ASEPRITE_PROJECT_WORKSPACE.md`, 조사 결과와 권장안은
+`research/2026-09-10-replanning-element-review.md`를 따른다.
+새 게임 의미/최종 visual/승격/런타임/Human 승인은 서로 분리한다.
+
 > 문서 역할: `CURRENT_MUTABLE_DECISION_OVERLAY`
 > 상태: `CURRENT / PLANNING_COMPLETE / USER_APPROVED_VISUAL_DIRECTION_LOCK / RUNTIME_RECONCILIATION_MERGED`
 > 갱신 기준: PR #322 merge commit `9fa32d32e8a5a2ad7d34a388695986b4ab81c6a7` + merged-main canon readback (runtime merge `8d303f0f9414950273be934fd28c8fb1b3a21e18`)

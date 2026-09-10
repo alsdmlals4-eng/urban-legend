@@ -1,5 +1,10 @@
 # 괴이기록국 현재 기획 정본
 
+> 2026-09-10 current override: 재기획 검토 `IN_PROGRESS`.
+> `current-planning-canon.json#/replanning_review` 및 Decision Overlay의
+> `D-2026-09-10-REPLANNING-AND-PROJECT-LOCAL-ASEPRITE`가 현재 작업 상태를 소유한다.
+> 아래 확정 기획은 구현 baseline이며 새 설계 확정이 아니다. 기존 이미지는 새 제작의 참고자료다.
+
 > 역할: `CURRENT_PLANNING_CANON`
 > 상태: `PLANNING_COMPLETE / USER_FINAL_PLANNING_DECLARATION_APPROVED / RUNTIME_RECONCILIATION_MERGED`
 > 사람용 정본: repository `docs/design/PROJECT_AI_PRODUCTION_SPEC.md`와 user PDF GDD
@@ -8,6 +13,11 @@
 이 문서는 승인된 **10일·반일 캠페인 기획**과 2026-08-24 PR #224 runtime reconciliation merge를 현재 진입점에 연결한다. 과거의 `1년 4분기`, `분기 핵심 사건 4개`, `월 1 메인 사건`, `4주 M04 timing`, `ANNUAL-MVP-*가 다음 기획 트랙`, `runtime_implementation: NOT_AUTHORIZED` 설명과 충돌하면 이 문서를 우선한다. `ANNUAL-MVP-001/002` 이름은 병합된 runtime·역사 식별자로 보존한다.
 
 ## 제품 약속
+
+현재 핵심 방향의 추가 명확화는 `CURRENT_DECISION_OVERLAY.md`의
+`D-2026-09-10-HIDDEN-RULE-SURVIVAL-CORE`와 구조화 정본의 `replanning_review.survival_core`를 따른다.
+조사로 알아낸 숨겨진 규칙을 회수·미니게임의 실제 행동에 활용해 살아남는 것이 목적이다.
+매뉴얼은 그 지식을 정리·참조하는 수단이며, 기입한 문장이 세계의 규칙을 바꾸지 않는다.
 
 플레이어는 권나래로서 관측 가능한 단서로 괴이 규칙을 **조사·추리**하고, 그 가설을 전조 기반 **회수**에서 검증해 잔향을 안정화한다. 피해자 구출과 복합 결과는 이 판단이 사람에게 남긴 결과를 보여 주며, 10일·반일 일정은 이 핵심 경험에 준비와 후일담의 맥락을 더하는 보조 시스템이다. 성공·실패·미확정은 다음 판단에 쓰이는 기록과 매뉴얼로 남는다.
 
