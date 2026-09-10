@@ -16,7 +16,9 @@
 단순 draft getter 부재만으로 플레이어의 지식 활용 부재를 단정하지 않는다.
 추가 확인: M04 minigame_rain_sync는 시간/충돌 판정인데 성공 문구는 세 번째 빗소리
 타이밍을 맞췄다고 주장한다. 감사의 '한 규칙의 실행 전 비교 명세'에 실제 ID와 대조군을
-기록했다. live editor/session이 없어 실행 비교는 미완료다. 편집기 연결 후 이 경로부터 확인한다.
+기록했다. 이후 사용자 지시로 편집기를 직접 열어 연결을 복구했다. 실행 비교는 아직 미완료다.
+실행 중 M04 시작이 없는 GameState.begin_campaign_case_selection 호출로 중단됨을 확인했다.
+격리 저장 경로에서 정상 진입 오류를 먼저 교정한 뒤 비교를 재개한다. 상세 실행 증거는 같은 감사 문서에 있다.
 기존 자산 삭제, 새 사건/수치 확정, 전체 이미지 양산 또는 Human PASS로 넘어가지 않는다.
 
 > 상태: `PLANNING_COMPLETE / USER_APPROVED_VISUAL_DIRECTION_LOCK / RUNTIME_RECONCILIATION_MERGED / HUMAN_QA_PENDING`

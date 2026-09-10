@@ -206,3 +206,23 @@ Godot AI session list도 count=0이었다. 로컬 Godot 실행 파일의 실제 
 4.7.2.stable.official.ed1daf0bf다. 편집기/플러그인 연결을 사용자에게 요청했다.
 프로젝트 설정 파일의 plugin enabled는 live 연결 증거가 아니다. 실행 장면/입력/결과
 비교와 GUT 행동 검증은 NOT_RUN이며 이 문서는 소스 조사와 실행 준비까지만 증명한다.
+
+### 후속 실제 실행: 편집기 연결 복구 / 정상 진입 실패
+
+사용자가 직접 열어 진행하도록 지시하여 Godot 4.7.2 편집기를 실행했다.
+프로젝트 경로를 live status/session에서 확인했고, 메인 화면 1280×720 실행 트리를 읽었다.
+검증 editor/game은 `.artifacts/m04-rule-probe/appdata`로 APPDATA를 격리해 재실행했다.
+기존 사용자 저장 대신 프로젝트 내부 검증 저장을 사용했다.
+
+실제 실행 로그에 main_menu.gd:1163의 `_start_red_umbrella_campaign`에서
+`begin_campaign_case_selection` 없는 함수 호출이 발생했다. GameState 상속 경로에서 해당
+메서드가 없음을 소스 검색으로 재확인했다. 정상 M04 진입은 FAIL이며 수리가 남았다.
+직접 테스트 경로로 M04 load_episode=true와 minigame_rain_sync 설정, minigame_scene 전환은
+확인했지만 이를 정상 플레이 진행이나 행동 비교 PASS로 간주하지 않는다.
+
+별도 도구 문제: 설치된 Hera CLI/addon은 문서의 game --pid 옵션을 지원하지 않고,
+scene 전환 후 editor playing_scene과 live scene 불일치로 runtime 조회가 실패했다.
+또 전환 메서드 호출 뒤 제거된 노드의 get_path를 조회하는 inspector 오류가 기록됐다.
+이는 게임 규칙 오류와 분리하며 플러그인 교체/보안 경계 변경은 하지 않았다.
+마지막에는 게임을 중지하고 격리 편집기는 열어 두었다. 자동 import/UID 생성물은 제품
+수정에 포함하지 않았다. 화면 캡처, 규칙별 동적 대조, GUT/Human PASS는 여전히 미완료다.
