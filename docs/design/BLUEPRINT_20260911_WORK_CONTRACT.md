@@ -2,7 +2,7 @@
 
 상태: IN_PROGRESS / FINAL_USER_REVIEW_PENDING / NO_GAME_IMPLEMENTATION
 
-현재 산출: 46쪽 통합 검토 PDF, 편집 가능한 본문·사건 부록, 신규 자산 후보11개(배경4/직원3/루메3/UI패널1), Aseprite 직원 정적atlas PNG+JSON. 이것은 전체 자산/상태 제작 완료가 아닌 부분 제작 snapshot이다. `REMAINING_WORK_COMPLETION_GATE: NOT_COMPLETE`; 게임 적용·최종 승인 없음.
+현재 산출은 아래 참고 교정 후속판으로 갱신한다. 이전46쪽 검토 PDF와11개 후보는 역사 snapshot으로 보존한다. 이것은 전체 자산/상태 제작 완료가 아닌 부분 제작 snapshot이다. `REMAINING_WORK_COMPLETION_GATE: NOT_COMPLETE`; 게임 적용·최종 승인 없음.
 
 ## 의도·승인
 
@@ -66,3 +66,25 @@
 3. M07 후보 세트/미니게임 행동 계약과 사건별 대가/복귀의 완전한 구현 입력 확정. 본문은 현재값·제안값·미구현을 구분하며 임의 완료를 주장하지 않는다.
 4. 모든 필수 준비가 완료된 후 최종 사용자 승인. 그 전 게임 코드 적용·자산 canon 승격·Draft 병합 없음.
 5. PDF/source/receipt는 명시적 작업브랜치로 동기화한다. 승인 전 원본 PNG/aseprite는 project-local `.asset-vault`이므로 원격 원본 보관 완료가 아니다. 최종 자산 승인 후 계약에 따라 project-controlled tracked 경로로 승격한다.
+
+## 참고 이미지 교정 — 승인된 후속 범위
+
+최신 사용자4장과 권장안 승인을 적용한다. 추가 건별 승인은 요청하지 않는다. Work Mode는 PLAN → candidate/document BUILD → REVIEW, UI 정보구조·접근성 및 imagegen/PDF 스킬을 사용한다. 게임 코드 구현은 제외한다.
+
+- ADOPT: 참고1의 전조/상황 대응, 참고2의 중앙 괴이 집중, 참고3의 장/긴 추리문/후보/루메, 참고4의 기록 분류/원문/지도.
+- ADAPT: 회수 규칙 전문 상시 표시 대신 기록 요약과 독립 매뉴얼 버튼; 상황 대응은 정답 추천이 아닌 실제 가능한 조작; 맵은 확인된 장소/접근만 표시.
+- REJECT: 참고의 HP·레벨·턴 재사용·괴이 안정도0% 처치·인물명·정답 안내 대사·미관측 다음 전조 예언.
+- 기존 단순 화면 유지 / 참고 화면 통째 래스터 채택 / 신규 분리 자산+텍스트 네이티브 UI 설계의3안을 비교했다. 첫 안은 사용자 구도에 미달, 둘째는 내용·언어·입력 분리 불가, 셋째를 채택했다.
+- REUSE_FIRST: 기존 배경4·루메·UI texture·직원atlas와 실제 battle_scene의 ArtLayer/TeamStrip/ActionDock/ResponseGrid/ManualQuickButton 재사용 가능성을 확인. 새 프레임워크 없이 기존 네이티브UI로 구현할 명세다. Base v9.4.4 pin 유지; unrelated Draft359/360/361/287/231 read-only.
+- 최신 공식 NinePatchRect와 Aseprite sprite-sheet 문서를 확인했다. UI 코너 보존과 region/frame metadata 원칙만 적용하며 PDF 와이어프레임을 실제 NinePatch runtime 검사로 오인하지 않는다.
+- 후보 원본과 네 참고 이미지는 프로젝트 `.asset-vault/blueprint-20260911` 내부. 참고 이미지의 규칙/인물/기록수는 새 정본이 아니다.
+- 새 M04 빨간 루메는 실제 RGBA지만 저승역 후보보다 신체 비례가 길어 REVISION_REQUIRED다. 첫 체크무늬RGB 출력(exec-f4f45e6e-2e62-4645-bf7a-76af2c94b9f0.png)은 실사용·PDF 자산에서 제외했다. 기존 검은 방수복은 SUPERSEDED_CANDIDATE이며 삭제하지 않았다.
+- M01 중앙 괴이 신규 후보는 실제 episode의 ‘역무원으로 보이는 익명의 인간형’ 외형을 바탕으로 제작했다. 새 정답/공격/인물 이름을 부여하지 않았다.
+- Aseprite 루메3의상 정적atlas는 1-based 프레임으로 빈3프레임을 먼저 준비한 뒤 각각 가져왔다. 첫0-based 시도 오류는 잘못된 출력으로 분리하고 corrected 파일만 소비한다. 정적 의상집이지 모션/비례 정렬 완료가 아니다.
+- 기존 PDF가 열려 있어 덮어쓰기가 거절됐다. 사용자 창을 강제로 닫지 않고 VISUAL_REVISION 후속본으로 발행한다. 이전 PDF bytes를 보존한다.
+
+이번 후속 검증 증거는 `output/pdf/BLUEPRINT_20260911_VISUAL_REVISION_RECEIPT.json`이 소유한다. 문서 렌더와 후보 QA만 수행하며 runtime/Human/rights/release는 NOT_RUN. 새 공용 도구·유료API·Base 승격 없음. 프로젝트 교훈은 alpha 실측, 1-based 프레임, 열린PDF의 별도후속본 발행이다.
+
+후속 결과: PDF52쪽, 화면11개, 후보 보관13개 중 활성12개/대체된 검은 M04 의상1개. 전체 PDF를 렌더하고 변경 페이지1/15~20/22~23/31/39/52 및 정적atlas를 시각 확인했다. 1차 검토에서 아틀라스 ‘아홉’ 제목, 하단 보조문구 간격, 구형 후보 상태/출처 누락을 교정했다. 2차 검토에서 변경 페이지 재렌더와 문서/PNG/source/reference hash·alpha·atlas·본문 경계 검사 및 기존4개 회귀검사를 다시 통과했다. 문서 와이어프레임과 실제 게임 UI를 구분하며 전체 production CLEAN은 선언하지 않는다.
+
+실패한 첫 Aseprite 출력3개(10,329,667bytes)는 실제 문서/도구 참조0과 corrected 출력 보존을 확인한 뒤 삭제했다. 원본 PNG와 교정된 .aseprite/PNG/JSON으로 재생성 가능하다. 기존 사용자 파일·46쪽 PDF·제품 자산은 삭제하지 않았다. 루메 비례와 완성형 UI 장식·피해자/전조 상태/모션은 남은 미완성 항목이다.

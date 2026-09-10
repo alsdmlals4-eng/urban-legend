@@ -21,7 +21,7 @@ ASSETS = ROOT / '.asset-vault/blueprint-20260911'
 ASE = ROOT / '.asset-vault/aseprite-candidates/blueprint-20260911'
 OUT = ROOT / 'output/pdf'
 OUT.mkdir(parents=True, exist_ok=True)
-PDF = OUT / 'URBAN_LEGEND_HUMAN_BLUEPRINT_20260911_REVIEW.pdf'
+PDF = OUT / 'URBAN_LEGEND_HUMAN_BLUEPRINT_20260911_VISUAL_REVISION.pdf'
 pdfmetrics.registerFont(TTFont('KR', 'C:/Windows/Fonts/malgun.ttf'))
 pdfmetrics.registerFont(TTFont('KRB', 'C:/Windows/Fonts/malgunbd.ttf'))
 W, H = 1080, 720
@@ -112,6 +112,9 @@ def img(path,x,yy,w,h):
 
 def screen(kind,x,yy,w,h):
     """Text-native wireframe placed over candidate art; never a claimed screenshot."""
+    if kind in ('manual','records','map','recovery'):
+        detailed_screen(kind,x,yy,w,h)
+        return
     c.saveState();c.translate(x,yy);c.scale(w/960,h/540)
     bg='bureau' if kind in ('main','daily','preparation') else 'station'
     img(ASSETS/(bg+'.png'),0,0,960,540)
@@ -189,14 +192,19 @@ def screen(kind,x,yy,w,h):
 def special(line):
     global y
     if line=='@atlas':
-        kinds=['main','daily','preparation','investigation','manual','rescue','recovery','minigame','result']
-        names=['01 메인','02 일상','03 준비','04 조사','05 매뉴얼','06 구출','07 회수','08 미니게임','09 결과']
+        kinds=['main','daily','preparation','investigation','records','map','manual','rescue','recovery','minigame','result']
+        names=['01 메인','02 일상','03 준비','04 현장 조사','05 기록','06 지도','07 매뉴얼','08 구출','09 회수','10 미니게임','11 결과']
         for i,(k,label) in enumerate(zip(kinds,names)):
-            xx=40+(i%3)*338;yy=86+(2-i//3)*175
-            screen(k,xx,yy,280,157.5);txt(label,xx,yy-14,10)
+            xx=40+(i%4)*252;yy=86+(2-i//4)*175
+            screen(k,xx,yy,235,132.2);txt(label,xx,yy-14,10)
         txt('신규 자산 + 편집 가능한 화면 설계 / 실제 Godot 실행 캡처 아님',40,61,9)
         y=55
     elif line.startswith('@screen'):
+        if line.split()[1] in ('manual','records','map','recovery'):
+            room(516);screen(line.split()[1],100,y-495,880,495)
+            txt('상호작용 배치 명세 / 텍스트 네이티브 UI + 신규 후보 / 실제 실행 캡처 아님',100,y-511,9)
+            y-=528
+            return
         room(236);screen(line.split()[1],40,y-222,395,222)
         p=Paragraph('설계 합성 뷰<br/>신규 배경 + 편집 가능한 UI<br/><br/>실제 엔진 캡처가 아닙니다.<br/>아래 설명은 입력·상태·복귀 계약입니다.',STYLE)
         _,hh=p.wrap(510,220);p.drawOn(c,475,y-hh-20);y-=236
@@ -218,13 +226,110 @@ def special(line):
         room(240);img(ASE/'staff-atlas-clean.png',40,y-235,990,235);y-=250
     elif line=='@lume':
         room(290)
-        for i,name in enumerate(['lume.png','lume-m04.png','lume-m07.png']):
+        for i,name in enumerate(['lume.png','lume-m04-red.png','lume-m07.png']):
             img(ASSETS/name,40+i*335,y-262,310,262)
             txt(['저승역','빨간 우산 골목','폐주파수 방송국'][i],145+i*335,y-278,11)
         y-=302
     elif line.startswith('@image'):
         name=line.split()[1];room(278)
         img(ASSETS/name,40,y-264,1000,264);y-=282
+
+def detailed_screen(kind,x,yy,w,h):
+    """Editable information architecture, not painted art or a runtime capture."""
+    c.saveState();c.translate(x,yy);c.scale(w/960,h/540)
+    cream=HexColor('#dfcda3');muted=HexColor('#aca58f');red=HexColor('#d17257')
+    c.setFillColor(HexColor('#090e0e'));c.rect(0,0,960,540,fill=1,stroke=0)
+    if kind=='recovery':img(ASSETS/'station.png',0,0,960,540)
+    def panel(xx,yy,ww,hh):
+        c.setFillColor(Color(.025,.034,.034,.95));c.setStrokeColor(GOLD);c.setLineWidth(.7)
+        c.rect(xx,yy,ww,hh,fill=1,stroke=1)
+        c.setStrokeColor(HexColor('#403b2b'));c.rect(xx+3,yy+3,ww-6,hh-6,fill=0,stroke=1)
+    def label(t,xx,yy,size=13,color=cream):txt(t,xx,yy,size,color)
+    def button(t,xx,yy,ww,hh=33,selected=False):
+        panel(xx,yy,ww,hh)
+        if selected:
+            c.setFillColor(Color(.52,.40,.16,.25));c.rect(xx+3,yy+3,ww-6,hh-6,fill=1,stroke=0)
+        label(t,xx+9,yy+hh/2-4,12)
+    def lines(items,xx,top,size=13,step=25,color=cream):
+        for i,t in enumerate(items):label(t,xx,top-i*step,size,color)
+    panel(8,492,944,40);label('怪  괴이기록국',22,507,17)
+    label('CASE-01  저승역',187,508,13)
+    if kind!='recovery':
+        for i,(k,t) in enumerate([('records','기록'),('manual','괴이 매뉴얼'),('map','지도'),('log','로그')]):
+            button(t,386+i*103,500,97,25,k==kind)
+        button('현장 복귀',812,500,129,25)
+    if kind=='manual':
+        panel(12,17,171,459);label('괴이 매뉴얼 INDEX',25,449,14)
+        for i,t in enumerate(['1. 발생 조건','2. 피해자 연결','3. 금지 행동','4. 구출 절차','5. 회수 대응']):button(t,24,375-i*62,147,49,i==0)
+        lines(['현재 초안 · 작성 중','정답 여부는 표시하지 않음','','괴이기록국 공식 문서','미관측 사실은 기록하지 않음'],26,110,9,17,muted)
+        panel(196,17,439,459);label('제1장 · 발생 조건',212,446,23)
+        label('추리문 01',213,410,14)
+        lines(['안내방송 원본의 목적지 구간에는','① [                         ] 가 남아 있다.','','피해자가 들은 장소는','② [                         ] 와 연결되어 있다.','','동시간대 기록은','③ [                         ] 를 남긴다.','','공식 운행 기록은','④ [                         ] 를 확인한다.'],213,373,16,24)
+        label('선택한 빈칸에 후보 배치 · 출처는 다시 열기',213,50,12,muted)
+        panel(648,251,300,225);label('후보 키워드',663,446,17)
+        candidates=['방송의 공백','개인 목적지 기억','공통 목적지','목적지 이름 안내','동시간대 불일치','공식 노선 부재']
+        for i,t in enumerate(candidates):button(t,660+(i%2)*141,388-(i//2)*43,135,35)
+        label('획득 후보만 표시 · 출처 열기',662,273,12,muted)
+        panel(648,17,300,221);label('기록 보조',662,212,15)
+        img(ASSETS/'lume.png',655,30,131,178)
+        lines(['루메','원본을 다시 열어','비교할 수 있어요.'],794,146,13,24)
+    elif kind=='records':
+        panel(12,17,126,459);label('기록 ARCHIVE',24,448,13)
+        for i,t in enumerate(['전체 기록','현장 기록','증거 자료','인터뷰','분석 메모','위험 사례']):button(t,22,382-i*54,106,42,i==1)
+        panel(150,17,238,459);label('현장 기록',163,447,18)
+        for i,t in enumerate(['방송 원본','피해자 목적지 기록','동시간대 비교 기록','공식 운행 기록']):
+            button(t,161,364-i*78,216,64,i==0)
+            label('확보한 원본 / 출처 유지',171,375-i*78,10,muted)
+        panel(400,17,352,459);label('방송 원본 · 목적지 구간',414,446,17)
+        lines(['종류  현장 녹음 / 원본','관련 장소  현재 조사한 승강장'],416,411,12,25,muted)
+        button('원문 기록',414,326,155,32,True);button('조사관 메모',578,326,158,32)
+        lines(['방송 원본의 목적지 구간에','공백이 남아 있다.','','원본 재생과 전사 내용을','같은 위치에서 대조한다.'],417,296,16,28)
+        button('원본 재생 / 자막',415,102,320,36)
+        label('관련 키워드  방송의 공백',417,73,12)
+        label('표시 문구는 원본 요약 · 인용문 아님',417,40,10,muted)
+        panel(764,17,184,459);label('기록 보조 · 루메',777,446,14)
+        img(ASSETS/'lume.png',773,193,167,228)
+        lines(['선택한 기록의','원본을 다시','확인할 수 있어요.'],791,156,14,26)
+    elif kind=='map':
+        panel(12,17,160,459);label('조사 지도',27,446,18)
+        for i,t in enumerate(['전체 조사 지점','방송 기록 지점','승차권 확인 지점','표지 확인 지점']):button(t,23,362-i*60,138,48,i==0)
+        lines(['현재 위치  ●','방문  ○','조사 가능  !','접근 제한  잠금'],28,140,12,25)
+        panel(186,17,505,459);label('저승역 · 조사 지점 구조',204,445,19)
+        label('지리·층수 확정 도면 아님',204,418,11,muted)
+        # Text-native graph only; no illustration made from primitives.
+        c.setStrokeColor(GOLD);c.setLineWidth(2)
+        c.line(442,315,315,221);c.line(442,315,573,221)
+        button('현재 조사 구역',368,298,154,58,True)
+        button('방송 기록',235,178,157,70);button('승차권 / 표지',485,178,165,70)
+        label('실제 조사 지점 ID / 이동 조건으로 연결',244,108,13,muted)
+        panel(705,17,243,459);label('선택 장소 정보',721,446,18)
+        img(ASSETS/'station.png',719,272,216,122)
+        lines(['관측된 기록','방송 원본의 공백','','미발견 단서 위치는','미리 표시하지 않습니다.'],721,247,13,24)
+        button('장소 확인',719,59,214,40)
+        label('허용된 조사 상태에서만 이동',721,33,10,muted)
+    elif kind=='recovery':
+        label('회수 대응',388,507,18)
+        for cx,filled,total,col,title in [(737,2,6,red,'위험'),(849,3,8,HexColor('#85b9b0'),'안정화')]:
+            for tick in range(total):
+                c.setStrokeColor(col if tick<filled else HexColor('#454843'));c.setLineWidth(4)
+                c.arc(cx-12,501,cx+12,525,startAng=90-tick*360/total,extent=-(360/total-7))
+            label(title+' '+str(filled)+'/'+str(total),cx+17,508,10)
+        panel(12,103,165,375);label('CASE-01 저승역',25,452,15)
+        lines(['회수 목표','피해자 보호','잔향 안정화','','선택 기록 요약','방송 원본의 공백','서로 다른 목적지','','기록 더 보기'],25,411,12,27)
+        panel(190,397,496,81);label('현재 관측 전조 · 목적지 합창',206,451,18)
+        label('겹치는 방송 / 목적지 구간 변화',206,419,12,muted)
+        img(ASSETS/'m01-attendant.png',300,109,264,282)
+        panel(702,347,246,131);label('보호 대상 · 이하린',716,449,17)
+        lines(['상태  동행 보호','위험 변화는 별도 기록','초상 자산 준비 중'],716,418,12,23)
+        panel(702,103,246,231);label('상황 대응',716,304,18)
+        for i,t in enumerate(['방송 장치 조작','피해자 동행 보호','현재 전조 관찰']):button(t,714,242-i*53,222,42)
+        label('정답 추천이 아닌 가능한 조작',716,116,10,muted)
+        panel(12,12,674,78)
+        for i,t in enumerate(['관찰','보호','장비']):button(t,25+i*123,43,111,34)
+        label('직원 상태  지시 / 억제 / 보호 · 실제 수행 때 컷인',27,24,11,muted)
+        button('괴이 매뉴얼 열기',702,12,246,78)
+        label('열람 중 현장 정지',735,29,11,muted)
+    c.restoreState()
 
 def markdown(path,prefix=''):
     lines=path.read_text(encoding='utf-8').splitlines();i=0;started=False
@@ -253,9 +358,9 @@ markdown(ROOT/'docs/design/BLUEPRINT_20260911.md')
 markdown(ROOT/'docs/design/blueprint-20260911-case-appendix.md','부록 / ')
 newpage('찾아보기 · 실제 페이지 위치')
 for i,item in enumerate(list(toc[:-1])):
-    column=i//22;row=i%22
+    column=i//24;row=i%24
     p=Paragraph(clean(f"{item['page']:02d}  {item['title']}"),SMALL)
-    _,hh=p.wrap(475,28);p.drawOn(c,40+column*505,H-136-row*23-hh)
+    _,hh=p.wrap(475,28);p.drawOn(c,40+column*505,H-136-row*21-hh)
 c.save()
 assets=[]
 provenance = {
@@ -268,6 +373,8 @@ provenance = {
  'kang-ijun.png':('exec-712d45a1-9cad-486b-ac6e-5fc91de34b83.png','Staff portrait / selected action pose candidate'),
  'lume.png':('exec-6089fe90-214d-48f3-b3f3-969dbfcfa79c.png','M01 manual guide costume candidate'),
  'lume-m04.png':('exec-6a8cb2b2-c34d-4065-bc84-e75129bbf97c.png','M04 manual guide costume candidate'),
+ 'lume-m04-red.png':('exec-a8d75902-9765-4ce7-b615-dd33321225b3.png','M04 red raincoat and umbrella guide costume candidate'),
+ 'm01-attendant.png':('exec-ffb49dd5-c707-4084-82fa-0fb6965abf62.png','M01 recovery anonymous railway attendant manifestation candidate'),
  'lume-m07.png':('exec-56716a39-368a-473a-9bc8-f378870cd94c.png','M07 manual guide costume candidate'),
  'ui-panel.png':('exec-4c71a602-0700-4d25-903b-26c66b846824.png','Record / menu group panel; Aseprite crop y140 h744'),
 }
@@ -277,6 +384,15 @@ for p in sorted(ASSETS.glob('*.png')):
     assets.append({'path':str(p.relative_to(ROOT)).replace('\\','/'),'sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'size':im.size,'mode':im.mode,'alpha_range':im.getchannel('A').getextrema() if im.mode=='RGBA' else None,'status':'GENERATED_CANDIDATE','runtime_applied':False,'origin_generation_filename':origin,'generator':'host image model','created':'2026-09-11','planned_consumer':purpose,'approved':False,'rights_review':'NOT_RUN','remote_source_bytes':'LOCAL_VAULT_ONLY','state_family':'STATIC_ONLY','visual_caveat':'Pose, silhouette, alpha-edge compositing and identity consistency require final review'})
 sources=[ROOT/'docs/design/BLUEPRINT_20260911.md',ROOT/'docs/design/blueprint-20260911-case-appendix.md',Path(__file__)]
 receipt={'pdf':str(PDF.relative_to(ROOT)).replace('\\','/'),'sha256':hashlib.sha256(PDF.read_bytes()).hexdigest(),'pages':len(PdfReader(PDF).pages),'baseline_main':'c82291101bf0a2bb4d821a12bca9f14070ee2886','sources':{str(p.relative_to(ROOT)).replace('\\','/'):hashlib.sha256(p.read_bytes()).hexdigest() for p in sources},'assets':assets,'atlas':{'image':str((ASE/'staff-atlas-clean.png').relative_to(ROOT)).replace('\\','/'),'metadata':str((ASE/'staff-atlas-clean.json').relative_to(ROOT)).replace('\\','/'),'sha256':hashlib.sha256((ASE/'staff-atlas-clean.png').read_bytes()).hexdigest(),'animation':False},'toc':toc,'layout_checks':checks,'runtime':'NOT_RUN','human':'NOT_RUN','final_approval':'PENDING','visual_review':'PENDING'}
-(OUT/'BLUEPRINT_20260911_RECEIPT.json').write_text(json.dumps(receipt,ensure_ascii=False,indent=2),encoding='utf-8')
+receipt['superseded_asset_paths']=['.asset-vault/blueprint-20260911/lume-m04.png']
+receipt['lume_atlas']={name:str((ROOT/'.asset-vault/aseprite-candidates/blueprint-reference-revision'/file).relative_to(ROOT)).replace('\\','/') for name,file in [('image','lume-costumes-corrected.png'),('metadata','lume-costumes-corrected.json'),('source','lume-costumes-corrected.aseprite')]}
+receipt['lume_atlas']['animation']=False
+receipt['lume_atlas']['identity_alignment']='REVISION_REQUIRED_BODY_PROPORTIONS'
+receipt['lume_atlas']['sha256']=hashlib.sha256((ROOT/receipt['lume_atlas']['image']).read_bytes()).hexdigest()
+receipt['reference_inputs']={str(p.relative_to(ROOT)).replace('\\','/'):hashlib.sha256(p.read_bytes()).hexdigest() for p in (ASSETS/'reference-revision').glob('*.png') if not p.name.startswith('page-')}
+receipt['reference_inputs']['.asset-vault/blueprint-20260911/reference-revision/PROMPTS.md']=hashlib.sha256((ASSETS/'reference-revision/PROMPTS.md').read_bytes()).hexdigest()
+for asset in assets:
+    if asset['path'] in receipt['superseded_asset_paths']:asset['status']='SUPERSEDED_CANDIDATE'
+(OUT/'BLUEPRINT_20260911_VISUAL_REVISION_RECEIPT.json').write_text(json.dumps(receipt,ensure_ascii=False,indent=2),encoding='utf-8')
 assert all(v['bottom']>=48 for v in checks), 'Content crossed footer'
 print(json.dumps({'pdf':str(PDF),'pages':receipt['pages'],'sha256':receipt['sha256'],'assets':len(assets)},ensure_ascii=False))

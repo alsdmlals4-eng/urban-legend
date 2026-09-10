@@ -2,6 +2,8 @@
 
 ## 최신 실행 범위 — 2026-09-11 블루프린트 제작
 
+최신 참고 이미지 교정 승인: M04 루메는 빨간 비옷+빨간 우산, 회수는 중앙 괴이/상단 관측 전조/우측 보호·대응, 기록·지도·매뉴얼은 문서형 구성이다. `BLUEPRINT_20260911.md` §14B/14C/15/17/25와 제작 계약의 참고 교정 항목을 적용한다. 최신 파생본은 `output/pdf/URBAN_LEGEND_HUMAN_BLUEPRINT_20260911_VISUAL_REVISION.pdf`; 이전46쪽 검토판은 역사 snapshot이다. 새로운 외형 후보 최종 LOCK과 게임 적용은 아직 아니다.
+
 최신 사용자 요청으로 **블루프린트에 필요한 신규 실사용 이미지 후보 제작은 허용**됐다. 아래 2026-09-10의 이미지 보류만 이 범위에서 해제한다. 게임 구현은 여전히 최종 블루프린트 승인 이후다. [이번 제작 계약](design/BLUEPRINT_20260911_WORK_CONTRACT.md), [통합 검토 본문](design/BLUEPRINT_20260911.md), [사건·데이터 부록](design/blueprint-20260911-case-appendix.md)을 읽는다. 이 문서들은 승인 후보이며 기존 runtime 사실이나 승인 자산을 덮어쓰지 않는다.
 
 예시 십보강호 PDF는 구조 참고 전용이다. 신규 PDF·source·후보는 프로젝트 내부에 유지한다. 후보 전체의 production readiness와 모션/전조/사건별 의상·인물 데이터 정합성은 실제 검증 전 완료로 선언하지 않는다. 기존 dirty 코드·세이브·승인 PDF·자산과 unrelated Draft PR을 보존한다. 전체 Planning Canon/JSON 동기화는 최종 선택 및 migration 검증 후 별도 implementation 계약에서 수행한다.

@@ -3,6 +3,7 @@
 
 # Preserve this generated review PDF byte-for-byte across platforms.
 output/pdf/URBAN_LEGEND_HUMAN_BLUEPRINT_20260911_REVIEW.pdf binary
+output/pdf/URBAN_LEGEND_HUMAN_BLUEPRINT_20260911_VISUAL_REVISION.pdf binary
 
 # The operating-contract generator deliberately hashes these source bytes.
 # Keep them identical across Windows worktrees and Linux CI.
