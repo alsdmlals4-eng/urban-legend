@@ -1,6 +1,9 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 
+# Preserve this generated review PDF byte-for-byte across platforms.
+output/pdf/URBAN_LEGEND_HUMAN_BLUEPRINT_20260911_REVIEW.pdf binary
+
 # The operating-contract generator deliberately hashes these source bytes.
 # Keep them identical across Windows worktrees and Linux CI.
 skills/PROJECT_BASE_ADAPTER.json text eol=lf
