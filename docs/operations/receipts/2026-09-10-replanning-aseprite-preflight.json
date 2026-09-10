@@ -1,0 +1,47 @@
+{
+  "status": "PARTIAL_RESEARCH_AND_TOOL_PREFLIGHT",
+  "approval_ref": "current-user-2026-09-10-project-local-aseprite-and-evidence-based-element-review",
+  "source_sha": "c82291101bf0a2bb4d821a12bca9f14070ee2886",
+  "base_adoption_changed": false,
+  "protected_runtime_asset_paths_changed": false,
+  "scope": "Project-local candidate server entry and initial element-replanning research; no final redesign or asset promotion",
+  "research": "docs/research/2026-09-10-replanning-element-review.md",
+  "tool_contract": "docs/visual/ASEPRITE_PROJECT_WORKSPACE.md",
+  "local_only_changes": ["Codex config: add aseprite-urban-legend only", "Aseprite LOCAL_USAGE: approved project-root exception"],
+  "verification": {
+    "restricted_stdio_real_roundtrips": 2,
+    "allowed_tools": 10,
+    "negative_cases_per_roundtrip": 4,
+    "fixture_frames": 2,
+    "second_frame_duration_ms": 200,
+    "export_dimensions": [32, 16],
+    "source_preserved": true,
+    "temporary_fixtures_removed": true,
+    "focused_python_tests_passed": 23,
+    "python_discovery": {"total": 493, "failures": 1, "errors": 0},
+    "remaining_failure": "test_runtime_helper_matches_editor_headless_opt_in",
+    "failure_attribution": "Baseline helper and test are byte-identical to origin/main; expected headless guard absent",
+    "diff_check": "PASS",
+    "new_desktop_tool_discovery": "NOT_RUN",
+    "godot_runtime": "NOT_RUN",
+    "artwork_animation_quality": "NOT_RUN",
+    "human_qa": "NOT_RUN"
+  },
+  "review_findings": [
+    {"finding": "JSON pointer in backticks parsed as nonexistent filename", "resolution": "Separate filesystem path and JSON key; focused reference test passes"},
+    {"finding": "Prior benchmark can misattribute project 8/6 clock numbers to Citizen Sleeper", "resolution": "New report explicitly distinguishes project values from source evidence"},
+    {"finding": "Config discovery can be confused with desktop native activation", "resolution": "Report direct restricted stdio only; desktop discovery stays NOT_RUN"},
+    {"finding": "Baseline Godot helper contract failure", "resolution": "Preserved and recorded; no protected addon changes or clean merge claim"}
+  ],
+  "remaining_work": [
+    "Complete actual consumer-level element inventory and draft-to-field trace",
+    "Compare wireframes and settle material time-model/role decisions",
+    "Specify new visual direction and motion state contracts",
+    "Generate/review new artwork candidates then package selected states",
+    "Verify Godot integration, derived Blueprint and Human experience",
+    "Diagnose baseline headless-addon drift before ready integration"
+  ],
+  "base_learning": "PROJECT_ONLY; existing restricted server reused without new bridge or version upgrade",
+  "clean_review_exit": false,
+  "rollback": "Revert project change commit; remove only named local server and exception; keep shared deployment and originals"
+}

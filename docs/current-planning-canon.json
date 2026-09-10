@@ -2,6 +2,18 @@
   "schema_version": 1,
   "artifact_role": "CURRENT_PROJECT_PLANNING_CANON",
   "project": "urban-legend",
+  "replanning_review": {
+    "decision_id": "D-2026-09-10-REPLANNING-AND-PROJECT-LOCAL-ASEPRITE",
+    "status": "IN_PROGRESS",
+    "previous_planning_role": "IMPLEMENTED_BASELINE_NOT_NEW_DESIGN_APPROVAL",
+    "existing_images_for_new_production": "REFERENCE_ONLY",
+    "review_dimensions": ["PLAYER_VALUE", "SWOT", "IMPROVEMENT", "ORIGINALITY", "CREATIVITY", "FEASIBILITY", "LIFECYCLE_COST"],
+    "research": "docs/research/2026-09-10-replanning-element-review.md",
+    "aseprite_boundary": "docs/visual/ASEPRITE_PROJECT_WORKSPACE.md",
+    "new_visual_lock": "NOT_APPROVED",
+    "runtime_replacement": "NOT_RUN",
+    "human_qa": "NOT_RUN"
+  },
   "planning": {
     "cadence": {
       "unit": "TEN_DAY_CYCLE",

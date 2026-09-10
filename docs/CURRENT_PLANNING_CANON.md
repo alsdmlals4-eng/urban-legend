@@ -1,5 +1,10 @@
 # 괴이기록국 현재 기획 정본
 
+> 2026-09-10 current override: 재기획 검토 `IN_PROGRESS`.
+> `current-planning-canon.json#/replanning_review` 및 Decision Overlay의
+> `D-2026-09-10-REPLANNING-AND-PROJECT-LOCAL-ASEPRITE`가 현재 작업 상태를 소유한다.
+> 아래 확정 기획은 구현 baseline이며 새 설계 확정이 아니다. 기존 이미지는 새 제작의 참고자료다.
+
 > 역할: `CURRENT_PLANNING_CANON`
 > 상태: `PLANNING_COMPLETE / USER_FINAL_PLANNING_DECLARATION_APPROVED / RUNTIME_RECONCILIATION_MERGED`
 > 사람용 정본: repository `docs/design/PROJECT_AI_PRODUCTION_SPEC.md`와 user PDF GDD

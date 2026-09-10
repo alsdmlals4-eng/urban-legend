@@ -1,5 +1,13 @@
 # TEST_CHECKLIST
 
+## 재기획 경계 · 2026-09-10
+
+- `tests/test_replanning_entry_contract.py`: entry/decision/canon/roadmap의 새 검토 상태와 참조 연결.
+- `tools/qa/verify_project_aseprite.py`: 기존 제한 stdio server를 프로젝트 후보 root로 실행해
+  실제 export·duration·alpha·원본 보존·경로/Lua/덮어쓰기 거절 검증. 게임 artwork 증거가 아니다.
+- 다음 gate: draft→실제 대응 trace, 시간 모델 비교, 새 visual/동작 계약, Godot 통합과 Human QA.
+- 과거 자동 검사 PASS는 새 기획/시각/동작/Human PASS가 아니다.
+
 > 현재 10일·반일 기획·Gate: `docs/CURRENT_PLANNING_CANON.md` + `docs/current-planning-canon.json` + `docs/design/PROJECT_AI_PRODUCTION_SPEC.md`
 > 문서 역할: 병합된 CORE/ANNUAL runtime의 회귀 Checklist. 새 10일 cadence 구현 권한을 부여하지 않는다.
 > 상태: `docs/CURRENT_STATUS.md`  

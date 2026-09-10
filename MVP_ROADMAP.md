@@ -1,5 +1,14 @@
 # MVP_ROADMAP
 
+## 현재 재기획 진입 · 2026-09-10
+
+`docs/current-planning-canon.json`의 `replanning_review`가 기존 완료 이력보다 우선한다.
+순서: 요소별 근거 감사 → 규칙 하나의 실제 end-to-end trace → 시간/피드백/역할 대안과
+wireframe → 새 visual brief와 동작 계약 → 이미지 후보/선택 → Aseprite 필요 패키징 →
+Godot 통합/회귀 → 사람 검증. 상세 근거와 남은 범위는
+`docs/research/2026-09-10-replanning-element-review.md`를 읽는다.
+현재 Aseprite 경계 검증은 완료, 전체 요소 감사와 새 설계는 진행 중이다.
+
 > Current planning overlay: `docs/CURRENT_PLANNING_CANON.md` / `docs/current-planning-canon.json` / `docs/design/PROJECT_AI_PRODUCTION_SPEC.md`
 > current product gate: `TEN_DAY_HALF_DAY_CADENCE_IMPLEMENTED_NON_NUMERIC_CONTEXT / FOCUSED_MACHINE_VERIFIED / HUMAN_QA_NOT_RUN`
 

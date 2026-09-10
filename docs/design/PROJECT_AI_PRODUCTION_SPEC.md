@@ -1,5 +1,13 @@
 # 괴이 기록국 · Master GDD
 
+> Current review · 2026-09-10: planning is reopened under
+> `docs/current-planning-canon.json` (`replanning_review`). Existing content below is the
+> implemented/design baseline, not approval of the new design or visual assets.
+> Existing images are reference-only for new production. See
+> `docs/research/2026-09-10-replanning-element-review.md` for provisional comparisons.
+> The existing derived PDF remains a historical baseline until the new design is specified;
+> it has not been regenerated or replaced by this entry/preflight change.
+
 > Artifact role: `PROJECT_AI_PRODUCTION_SPEC`
 > Version: `2026-08-30 · M01/M04 runtime readback + M04 bounded preparation gate`
 > Status: `CURRENT / REPOSITORY_ONLY_CANON / M01_M04_RUNTIME_IMPLEMENTED / HUMAN_QA_NOT_RUN`

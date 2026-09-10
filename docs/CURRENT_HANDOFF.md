@@ -1,5 +1,16 @@
 # 괴이기록국 Current Handoff
 
+## Current continuation · 2026-09-10
+
+`REPLANNING_REVIEW_IN_PROGRESS`: 최신 사용자 지시는 기존 요소를 근거 기반으로 재검토하고
+새 이미지와 모션을 기획부터 연결하는 것이다. 이전 완료/visual lock은 baseline 이력이다.
+먼저 `CURRENT_DECISION_OVERLAY.md`의 `D-2026-09-10-REPLANNING-AND-PROJECT-LOCAL-ASEPRITE`,
+`current-planning-canon.json#/replanning_review`,
+`research/2026-09-10-replanning-element-review.md`의 미완료 목록을 읽는다.
+프로젝트 내부 Aseprite 경계는 제한 stdio 호출로 검증됐고 desktop native discovery는 미검증이다.
+다음은 기존 규칙 하나의 draft→구출/회수 실제 소비 trace와 대안 wireframe이다.
+기존 자산 삭제, 새 사건/수치 확정, 전체 이미지 양산 또는 Human PASS로 넘어가지 않는다.
+
 > 상태: `PLANNING_COMPLETE / USER_APPROVED_VISUAL_DIRECTION_LOCK / RUNTIME_RECONCILIATION_MERGED / HUMAN_QA_PENDING`
 > latest-main reconciliation: PR #322 merge `9fa32d32e8a5a2ad7d34a388695986b4ab81c6a7` (runtime implementation: `8d303f0f9414950273be934fd28c8fb1b3a21e18` · PR #224)
 > M04 current-main continuation: PR #356 merge `a62b5341f3c4742192f7bfc0d11e1fb4897c1308` — recovery clocks/menu and main-menu identity surface are `M04_RECOVERY_AND_MENU_MAIN_MERGED`; Human QA remains `NOT_RUN`.
