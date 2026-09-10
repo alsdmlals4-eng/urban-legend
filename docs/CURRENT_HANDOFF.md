@@ -1,5 +1,11 @@
 # 괴이기록국 Current Handoff
 
+## 최신 실행 순서 예외 — 2026-09-10
+
+현재 사용자 지시는 **기획·검토 먼저 / 이미지 제작·추가 구현 보류**다. 일정 폐기, 일상파트와 사건파트(조사·회수) 유지, M04 기존 귀가 기억 보조의 기본 사용 가능 방향은 승인됐다. 상세 범위·현행 충돌·보류 항목은 [일상/사건 구조 설계](superpowers/specs/2026-09-10-daily-case-structure-design.md) §9를 먼저 읽는다.
+
+아래 10일·반일 cadence/휴식 해금/완료 Gate는 이전 merged-main 구현의 기록이며 새 작업의 기획 승인 근거가 아니다. 현행 Planning Canon/JSON의 전면 동기화와 영향 검토는 아직 남아 있다. 일부 상태·UI 코드와 GUT 테스트는 로컬 검증 중으로 보존했으며 main 반영이나 전체 플레이 검증 완료로 해석하지 않는다. 이번 재개는 추가 코드·이미지 제작 또는 기존 Draft PR 병합 권한이 아니다.
+
 > 상태: `PLANNING_COMPLETE / USER_APPROVED_VISUAL_DIRECTION_LOCK / RUNTIME_RECONCILIATION_MERGED / HUMAN_QA_PENDING`
 > latest-main reconciliation: PR #322 merge `9fa32d32e8a5a2ad7d34a388695986b4ab81c6a7` (runtime implementation: `8d303f0f9414950273be934fd28c8fb1b3a21e18` · PR #224)
 > M04 current-main continuation: PR #356 merge `a62b5341f3c4742192f7bfc0d11e1fb4897c1308` — recovery clocks/menu and main-menu identity surface are `M04_RECOVERY_AND_MENU_MAIN_MERGED`; Human QA remains `NOT_RUN`.
