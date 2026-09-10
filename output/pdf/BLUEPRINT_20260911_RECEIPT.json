@@ -1,0 +1,1060 @@
+{
+  "pdf": "output/pdf/URBAN_LEGEND_HUMAN_BLUEPRINT_20260911_REVIEW.pdf",
+  "sha256": "112ff6fcd98eb24117f79af7faaf6354f662b84797432eaf8c94d09a9ac3e0e4",
+  "pages": 46,
+  "baseline_main": "c82291101bf0a2bb4d821a12bca9f14070ee2886",
+  "sources": {
+    "docs/design/BLUEPRINT_20260911.md": "808e8271c3c571b6461fb2eb52bd3b6ebf9009e21f9c2948effedc86f0293d7a",
+    "docs/design/blueprint-20260911-case-appendix.md": "c708275eedbfae75630cef54738ca02e4ec668f782855560f03bf2efcb8f3f4f",
+    "tools/build_blueprint_20260911.py": "7e53048cfd89a230b24f39851963ca2dab0942af157cf854a6f38a679129456d"
+  },
+  "assets": [
+    {
+      "path": ".asset-vault/blueprint-20260911/alley.png",
+      "sha256": "2937bea2a83aa131dba15acfde839a84c7bc9bc99dc0642ba6d81cfcf0581f17",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "alpha_range": null,
+      "status": "GENERATED_CANDIDATE",
+      "runtime_applied": false,
+      "origin_generation_filename": "exec-b13a636b-3726-46b2-8f0c-3e5029105af8.png",
+      "generator": "host image model",
+      "created": "2026-09-11",
+      "planned_consumer": "M04 investigation / recovery background",
+      "approved": false,
+      "rights_review": "NOT_RUN",
+      "remote_source_bytes": "LOCAL_VAULT_ONLY",
+      "state_family": "STATIC_ONLY",
+      "visual_caveat": "Pose, silhouette, alpha-edge compositing and identity consistency require final review"
+    },
+    {
+      "path": ".asset-vault/blueprint-20260911/broadcast.png",
+      "sha256": "99334e23261bbd788973b4a1cee8e14b487f5e2fde731cd24bc0e13331d83705",
+      "size": [
+        1672,
+        940
+      ],
+      "mode": "RGB",
+      "alpha_range": null,
+      "status": "GENERATED_CANDIDATE",
+      "runtime_applied": false,
+      "origin_generation_filename": "exec-9d72824a-facc-428b-a1f9-e0cecf327070.png",
+      "generator": "host image model",
+      "created": "2026-09-11",
+      "planned_consumer": "M07 investigation / recovery background",
+      "approved": false,
+      "rights_review": "NOT_RUN",
+      "remote_source_bytes": "LOCAL_VAULT_ONLY",
+      "state_family": "STATIC_ONLY",
+      "visual_caveat": "Pose, silhouette, alpha-edge compositing and identity consistency require final review"
+    },
+    {
+      "path": ".asset-vault/blueprint-20260911/bureau.png",
+      "sha256": "568ad54e8d1606294d1949ccb5bd60352b34cfbcdab35026682473d9de41c38e",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "alpha_range": null,
+      "status": "GENERATED_CANDIDATE",
+      "runtime_applied": false,
+      "origin_generation_filename": "exec-4d5512b2-7508-4a2a-a34e-d110abd488fb.png",
+      "generator": "host image model",
+      "created": "2026-09-11",
+      "planned_consumer": "Main menu and daily archive background",
+      "approved": false,
+      "rights_review": "NOT_RUN",
+      "remote_source_bytes": "LOCAL_VAULT_ONLY",
+      "state_family": "STATIC_ONLY",
+      "visual_caveat": "Pose, silhouette, alpha-edge compositing and identity consistency require final review"
+    },
+    {
+      "path": ".asset-vault/blueprint-20260911/kang-ijun.png",
+      "sha256": "7b2321e1a46a8f7d0bc5645b51fef0ad9a6582d473fbd508022211b7e0e311ef",
+      "size": [
+        1024,
+        1536
+      ],
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ],
+      "status": "GENERATED_CANDIDATE",
+      "runtime_applied": false,
+      "origin_generation_filename": "exec-712d45a1-9cad-486b-ac6e-5fc91de34b83.png",
+      "generator": "host image model",
+      "created": "2026-09-11",
+      "planned_consumer": "Staff portrait / selected action pose candidate",
+      "approved": false,
+      "rights_review": "NOT_RUN",
+      "remote_source_bytes": "LOCAL_VAULT_ONLY",
+      "state_family": "STATIC_ONLY",
+      "visual_caveat": "Pose, silhouette, alpha-edge compositing and identity consistency require final review"
+    },
+    {
+      "path": ".asset-vault/blueprint-20260911/lume-m04.png",
+      "sha256": "ed68b678881a46c8824a538dedf561c5cf43b27bb7a3f8eabf855aa96712642c",
+      "size": [
+        1024,
+        1536
+      ],
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ],
+      "status": "GENERATED_CANDIDATE",
+      "runtime_applied": false,
+      "origin_generation_filename": "exec-6a8cb2b2-c34d-4065-bc84-e75129bbf97c.png",
+      "generator": "host image model",
+      "created": "2026-09-11",
+      "planned_consumer": "M04 manual guide costume candidate",
+      "approved": false,
+      "rights_review": "NOT_RUN",
+      "remote_source_bytes": "LOCAL_VAULT_ONLY",
+      "state_family": "STATIC_ONLY",
+      "visual_caveat": "Pose, silhouette, alpha-edge compositing and identity consistency require final review"
+    },
+    {
+      "path": ".asset-vault/blueprint-20260911/lume-m07.png",
+      "sha256": "da5d7d54c87fde55b7326e0990695da5723fadbf314b5afe6673075f10adf9ec",
+      "size": [
+        1024,
+        1536
+      ],
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ],
+      "status": "GENERATED_CANDIDATE",
+      "runtime_applied": false,
+      "origin_generation_filename": "exec-56716a39-368a-473a-9bc8-f378870cd94c.png",
+      "generator": "host image model",
+      "created": "2026-09-11",
+      "planned_consumer": "M07 manual guide costume candidate",
+      "approved": false,
+      "rights_review": "NOT_RUN",
+      "remote_source_bytes": "LOCAL_VAULT_ONLY",
+      "state_family": "STATIC_ONLY",
+      "visual_caveat": "Pose, silhouette, alpha-edge compositing and identity consistency require final review"
+    },
+    {
+      "path": ".asset-vault/blueprint-20260911/lume.png",
+      "sha256": "7f51b2adc11a2582c2f6e7f6eaee7e986d9206694af352c1dcd81d4923c51ac4",
+      "size": [
+        1024,
+        1536
+      ],
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ],
+      "status": "GENERATED_CANDIDATE",
+      "runtime_applied": false,
+      "origin_generation_filename": "exec-6089fe90-214d-48f3-b3f3-969dbfcfa79c.png",
+      "generator": "host image model",
+      "created": "2026-09-11",
+      "planned_consumer": "M01 manual guide costume candidate",
+      "approved": false,
+      "rights_review": "NOT_RUN",
+      "remote_source_bytes": "LOCAL_VAULT_ONLY",
+      "state_family": "STATIC_ONLY",
+      "visual_caveat": "Pose, silhouette, alpha-edge compositing and identity consistency require final review"
+    },
+    {
+      "path": ".asset-vault/blueprint-20260911/narae.png",
+      "sha256": "1eb22489f473daeeca5bcb0453ccf1c5d2ef6887523d2cb464f2c7f3723cbdb8",
+      "size": [
+        1024,
+        1536
+      ],
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ],
+      "status": "GENERATED_CANDIDATE",
+      "runtime_applied": false,
+      "origin_generation_filename": "exec-e82f7e4c-78e0-4899-b95f-12c0d6b5b04a.png",
+      "generator": "host image model",
+      "created": "2026-09-11",
+      "planned_consumer": "Staff portrait / selected action pose candidate",
+      "approved": false,
+      "rights_review": "NOT_RUN",
+      "remote_source_bytes": "LOCAL_VAULT_ONLY",
+      "state_family": "STATIC_ONLY",
+      "visual_caveat": "Pose, silhouette, alpha-edge compositing and identity consistency require final review"
+    },
+    {
+      "path": ".asset-vault/blueprint-20260911/oh-hyeon.png",
+      "sha256": "19c6729e65043f6b83039d4cda486a71279cdd37ec7f325931953fdd601e55af",
+      "size": [
+        1024,
+        1536
+      ],
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ],
+      "status": "GENERATED_CANDIDATE",
+      "runtime_applied": false,
+      "origin_generation_filename": "exec-5e266e50-a19c-4728-9847-eb554adbb4cb.png",
+      "generator": "host image model",
+      "created": "2026-09-11",
+      "planned_consumer": "Staff portrait / selected action pose candidate",
+      "approved": false,
+      "rights_review": "NOT_RUN",
+      "remote_source_bytes": "LOCAL_VAULT_ONLY",
+      "state_family": "STATIC_ONLY",
+      "visual_caveat": "Pose, silhouette, alpha-edge compositing and identity consistency require final review"
+    },
+    {
+      "path": ".asset-vault/blueprint-20260911/station.png",
+      "sha256": "b95e1b931f0330fc8a03e38827bc73cdf2caa26b7fd3535c723b90977f8354e5",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "alpha_range": null,
+      "status": "GENERATED_CANDIDATE",
+      "runtime_applied": false,
+      "origin_generation_filename": "exec-fee500f8-6ca5-4663-80b0-9a3fc8aaa0ed.png",
+      "generator": "host image model",
+      "created": "2026-09-11",
+      "planned_consumer": "M01 investigation / rescue / recovery background",
+      "approved": false,
+      "rights_review": "NOT_RUN",
+      "remote_source_bytes": "LOCAL_VAULT_ONLY",
+      "state_family": "STATIC_ONLY",
+      "visual_caveat": "Pose, silhouette, alpha-edge compositing and identity consistency require final review"
+    },
+    {
+      "path": ".asset-vault/blueprint-20260911/ui-panel.png",
+      "sha256": "ff2a797c277d96293d8a4141e50224e5b57a08734e14fdb358ff0ba2135926fd",
+      "size": [
+        1536,
+        744
+      ],
+      "mode": "RGBA",
+      "alpha_range": [
+        255,
+        255
+      ],
+      "status": "GENERATED_CANDIDATE",
+      "runtime_applied": false,
+      "origin_generation_filename": "exec-4c71a602-0700-4d25-903b-26c66b846824.png",
+      "generator": "host image model",
+      "created": "2026-09-11",
+      "planned_consumer": "Record / menu group panel; Aseprite crop y140 h744",
+      "approved": false,
+      "rights_review": "NOT_RUN",
+      "remote_source_bytes": "LOCAL_VAULT_ONLY",
+      "state_family": "STATIC_ONLY",
+      "visual_caveat": "Pose, silhouette, alpha-edge compositing and identity consistency require final review"
+    }
+  ],
+  "atlas": {
+    "image": ".asset-vault/aseprite-candidates/blueprint-20260911/staff-atlas-clean.png",
+    "metadata": ".asset-vault/aseprite-candidates/blueprint-20260911/staff-atlas-clean.json",
+    "sha256": "b4cfa0225bd73bd6e1e6c656d9da3ef0c784fbf31d406a33c1d36107e01fc1e8",
+    "animation": false
+  },
+  "toc": [
+    {
+      "page": 1,
+      "title": "01. 화면 아틀라스: 플레이어가 오가는 아홉 화면"
+    },
+    {
+      "page": 2,
+      "title": "02. 읽는 순서와 승인 경계"
+    },
+    {
+      "page": 3,
+      "title": "03. 재미의 중심: 알아낸 것이 행동을 바꾼다"
+    },
+    {
+      "page": 4,
+      "title": "04. 세 가지 코어 대안 비교"
+    },
+    {
+      "page": 5,
+      "title": "05. SWOT: 강점과 강화 전략"
+    },
+    {
+      "page": 6,
+      "title": "06. SWOT: 약점과 보완 전략"
+    },
+    {
+      "page": 7,
+      "title": "07. SWOT: 기회와 확장 전략"
+    },
+    {
+      "page": 8,
+      "title": "08. SWOT: 위협과 방어 전략"
+    },
+    {
+      "page": 9,
+      "title": "09. SWOT를 실행으로 바꾸는 TOWS"
+    },
+    {
+      "page": 10,
+      "title": "10. 공식 사례 비교: 무엇을 가져오고 버리는가"
+    },
+    {
+      "page": 11,
+      "title": "11. 추가 장르 비교와 근거 상한"
+    },
+    {
+      "page": 12,
+      "title": "12. 전체 플로우와 저장 경계"
+    },
+    {
+      "page": 13,
+      "title": "13. 메인과 일상: 들어가기 쉽고 붙어 있지 않게"
+    },
+    {
+      "page": 14,
+      "title": "14. 조사 화면: 정보는 현장에서 획득한다"
+    },
+    {
+      "page": 15,
+      "title": "15. 괴이 매뉴얼: 사용자가 보낸 구성의 정보 위계"
+    },
+    {
+      "page": 16,
+      "title": "16. 추리에서 행동까지: 저승역 플레이 예"
+    },
+    {
+      "page": 17,
+      "title": "17. 회수 화면: 지시·억제·보호가 보이는 현장"
+    },
+    {
+      "page": 18,
+      "title": "18. 이중 시계: 압박과 해소의 방향"
+    },
+    {
+      "page": 19,
+      "title": "19. 정지·재개·입력 계약"
+    },
+    {
+      "page": 20,
+      "title": "20. 미니게임 세 종류의 목적"
+    },
+    {
+      "page": 21,
+      "title": "21. 결과: 무엇을 지켰는지 남긴다"
+    },
+    {
+      "page": 22,
+      "title": "22. 시각 방향과 실제 자산 분리"
+    },
+    {
+      "page": 23,
+      "title": "23. 사건 배경 아틀라스"
+    },
+    {
+      "page": 24,
+      "title": "24. 직원 정적 아틀라스와 좌표"
+    },
+    {
+      "page": 25,
+      "title": "25. 루메와 시나리오 의상"
+    },
+    {
+      "page": 26,
+      "title": "25B. 공통 기록철 UI 텍스처"
+    },
+    {
+      "page": 27,
+      "title": "26. 모션·상태 제작 계약"
+    },
+    {
+      "page": 28,
+      "title": "27. UI 규격과 입력 상세"
+    },
+    {
+      "page": 29,
+      "title": "28. 데이터 책임과 저장"
+    },
+    {
+      "page": 30,
+      "title": "29. 승인 직후 구현 순서"
+    },
+    {
+      "page": 31,
+      "title": "30. 기능별 인수 시험"
+    },
+    {
+      "page": 32,
+      "title": "31. 재미·독창성 검증 계획"
+    },
+    {
+      "page": 33,
+      "title": "32. 준비 상태·남은 제작 경계"
+    },
+    {
+      "page": 34,
+      "title": "33. 조사 출처와 사용 범위"
+    },
+    {
+      "page": 35,
+      "title": "부록 / 1. 소비자와 사건 범위"
+    },
+    {
+      "page": 36,
+      "title": "부록 / 2. M01 — 저승역: 개인 목적지와 현실 귀환 구분"
+    },
+    {
+      "page": 37,
+      "title": "부록 / 3. M04 — 빨간 우산: 세 번째 빗소리와 귀가 흔적"
+    },
+    {
+      "page": 38,
+      "title": "부록 / 4. M07 — 폐주파수 방송국: 응답과 무음 분리"
+    },
+    {
+      "page": 39,
+      "title": "부록 / 5. 직원과 장비: 유지할 정체성과 바꿀 표현"
+    },
+    {
+      "page": 42,
+      "title": "부록 / 6. 현재와 권장 구현의 차이"
+    },
+    {
+      "page": 43,
+      "title": "부록 / 7. 스키마·저장 호환"
+    },
+    {
+      "page": 44,
+      "title": "부록 / 8. 구현 후 인수 조건 12개"
+    },
+    {
+      "page": 45,
+      "title": "부록 / 9. 검토 증거와 상한"
+    },
+    {
+      "page": 46,
+      "title": "찾아보기 · 실제 페이지 위치"
+    }
+  ],
+  "layout_checks": [
+    {
+      "page": 2,
+      "kind": "text",
+      "bottom": 536
+    },
+    {
+      "page": 2,
+      "kind": "table",
+      "bottom": 345
+    },
+    {
+      "page": 2,
+      "kind": "text",
+      "bottom": 289
+    },
+    {
+      "page": 3,
+      "kind": "text",
+      "bottom": 536
+    },
+    {
+      "page": 3,
+      "kind": "table",
+      "bottom": 310
+    },
+    {
+      "page": 3,
+      "kind": "text",
+      "bottom": 254
+    },
+    {
+      "page": 4,
+      "kind": "table",
+      "bottom": 419
+    },
+    {
+      "page": 4,
+      "kind": "text",
+      "bottom": 363
+    },
+    {
+      "page": 5,
+      "kind": "table",
+      "bottom": 333
+    },
+    {
+      "page": 5,
+      "kind": "text",
+      "bottom": 299
+    },
+    {
+      "page": 6,
+      "kind": "table",
+      "bottom": 298
+    },
+    {
+      "page": 6,
+      "kind": "text",
+      "bottom": 264
+    },
+    {
+      "page": 7,
+      "kind": "table",
+      "bottom": 333
+    },
+    {
+      "page": 7,
+      "kind": "text",
+      "bottom": 277
+    },
+    {
+      "page": 8,
+      "kind": "table",
+      "bottom": 298
+    },
+    {
+      "page": 9,
+      "kind": "table",
+      "bottom": 401
+    },
+    {
+      "page": 9,
+      "kind": "text",
+      "bottom": 367
+    },
+    {
+      "page": 10,
+      "kind": "table",
+      "bottom": 314
+    },
+    {
+      "page": 10,
+      "kind": "text",
+      "bottom": 280
+    },
+    {
+      "page": 11,
+      "kind": "table",
+      "bottom": 244
+    },
+    {
+      "page": 11,
+      "kind": "text",
+      "bottom": 188
+    },
+    {
+      "page": 12,
+      "kind": "text",
+      "bottom": 448
+    },
+    {
+      "page": 12,
+      "kind": "text",
+      "bottom": 392
+    },
+    {
+      "page": 12,
+      "kind": "table",
+      "bottom": 149
+    },
+    {
+      "page": 13,
+      "kind": "text",
+      "bottom": 300
+    },
+    {
+      "page": 13,
+      "kind": "table",
+      "bottom": 127
+    },
+    {
+      "page": 13,
+      "kind": "text",
+      "bottom": 71
+    },
+    {
+      "page": 14,
+      "kind": "text",
+      "bottom": 300
+    },
+    {
+      "page": 14,
+      "kind": "text",
+      "bottom": 244
+    },
+    {
+      "page": 14,
+      "kind": "text",
+      "bottom": 210
+    },
+    {
+      "page": 15,
+      "kind": "text",
+      "bottom": 300
+    },
+    {
+      "page": 15,
+      "kind": "text",
+      "bottom": 222
+    },
+    {
+      "page": 15,
+      "kind": "text",
+      "bottom": 166
+    },
+    {
+      "page": 16,
+      "kind": "table",
+      "bottom": 366
+    },
+    {
+      "page": 16,
+      "kind": "text",
+      "bottom": 310
+    },
+    {
+      "page": 17,
+      "kind": "text",
+      "bottom": 300
+    },
+    {
+      "page": 17,
+      "kind": "text",
+      "bottom": 244
+    },
+    {
+      "page": 17,
+      "kind": "text",
+      "bottom": 188
+    },
+    {
+      "page": 18,
+      "kind": "table",
+      "bottom": 349
+    },
+    {
+      "page": 18,
+      "kind": "text",
+      "bottom": 293
+    },
+    {
+      "page": 19,
+      "kind": "table",
+      "bottom": 349
+    },
+    {
+      "page": 19,
+      "kind": "text",
+      "bottom": 271
+    },
+    {
+      "page": 20,
+      "kind": "table",
+      "bottom": 385
+    },
+    {
+      "page": 20,
+      "kind": "text",
+      "bottom": 329
+    },
+    {
+      "page": 21,
+      "kind": "table",
+      "bottom": 165
+    },
+    {
+      "page": 21,
+      "kind": "text",
+      "bottom": 109
+    },
+    {
+      "page": 22,
+      "kind": "text",
+      "bottom": 254
+    },
+    {
+      "page": 22,
+      "kind": "text",
+      "bottom": 198
+    },
+    {
+      "page": 23,
+      "kind": "table",
+      "bottom": 120
+    },
+    {
+      "page": 23,
+      "kind": "text",
+      "bottom": 64
+    },
+    {
+      "page": 24,
+      "kind": "table",
+      "bottom": 186
+    },
+    {
+      "page": 24,
+      "kind": "text",
+      "bottom": 130
+    },
+    {
+      "page": 25,
+      "kind": "text",
+      "bottom": 234
+    },
+    {
+      "page": 25,
+      "kind": "text",
+      "bottom": 156
+    },
+    {
+      "page": 26,
+      "kind": "text",
+      "bottom": 254
+    },
+    {
+      "page": 26,
+      "kind": "text",
+      "bottom": 198
+    },
+    {
+      "page": 27,
+      "kind": "table",
+      "bottom": 367
+    },
+    {
+      "page": 27,
+      "kind": "text",
+      "bottom": 311
+    },
+    {
+      "page": 28,
+      "kind": "table",
+      "bottom": 331
+    },
+    {
+      "page": 28,
+      "kind": "text",
+      "bottom": 275
+    },
+    {
+      "page": 29,
+      "kind": "text",
+      "bottom": 536
+    },
+    {
+      "page": 29,
+      "kind": "table",
+      "bottom": 310
+    },
+    {
+      "page": 29,
+      "kind": "text",
+      "bottom": 254
+    },
+    {
+      "page": 30,
+      "kind": "table",
+      "bottom": 331
+    },
+    {
+      "page": 30,
+      "kind": "text",
+      "bottom": 275
+    },
+    {
+      "page": 31,
+      "kind": "table",
+      "bottom": 244
+    },
+    {
+      "page": 31,
+      "kind": "text",
+      "bottom": 210
+    },
+    {
+      "page": 32,
+      "kind": "text",
+      "bottom": 536
+    },
+    {
+      "page": 32,
+      "kind": "table",
+      "bottom": 345
+    },
+    {
+      "page": 32,
+      "kind": "text",
+      "bottom": 311
+    },
+    {
+      "page": 33,
+      "kind": "table",
+      "bottom": 331
+    },
+    {
+      "page": 33,
+      "kind": "text",
+      "bottom": 275
+    },
+    {
+      "page": 33,
+      "kind": "text",
+      "bottom": 197
+    },
+    {
+      "page": 34,
+      "kind": "text",
+      "bottom": 536
+    },
+    {
+      "page": 34,
+      "kind": "text",
+      "bottom": 458
+    },
+    {
+      "page": 34,
+      "kind": "text",
+      "bottom": 380
+    },
+    {
+      "page": 34,
+      "kind": "text",
+      "bottom": 302
+    },
+    {
+      "page": 35,
+      "kind": "text",
+      "bottom": 536
+    },
+    {
+      "page": 35,
+      "kind": "table",
+      "bottom": 329
+    },
+    {
+      "page": 35,
+      "kind": "text",
+      "bottom": 251
+    },
+    {
+      "page": 36,
+      "kind": "table",
+      "bottom": 259
+    },
+    {
+      "page": 36,
+      "kind": "text",
+      "bottom": 203
+    },
+    {
+      "page": 36,
+      "kind": "text",
+      "bottom": 147
+    },
+    {
+      "page": 36,
+      "kind": "text",
+      "bottom": 69
+    },
+    {
+      "page": 37,
+      "kind": "table",
+      "bottom": 281
+    },
+    {
+      "page": 37,
+      "kind": "text",
+      "bottom": 225
+    },
+    {
+      "page": 37,
+      "kind": "text",
+      "bottom": 169
+    },
+    {
+      "page": 37,
+      "kind": "text",
+      "bottom": 69
+    },
+    {
+      "page": 38,
+      "kind": "text",
+      "bottom": 558
+    },
+    {
+      "page": 38,
+      "kind": "table",
+      "bottom": 334
+    },
+    {
+      "page": 38,
+      "kind": "text",
+      "bottom": 300
+    },
+    {
+      "page": 38,
+      "kind": "text",
+      "bottom": 244
+    },
+    {
+      "page": 38,
+      "kind": "text",
+      "bottom": 166
+    },
+    {
+      "page": 39,
+      "kind": "text",
+      "bottom": 536
+    },
+    {
+      "page": 39,
+      "kind": "text",
+      "bottom": 458
+    },
+    {
+      "page": 39,
+      "kind": "table",
+      "bottom": 198
+    },
+    {
+      "page": 39,
+      "kind": "text",
+      "bottom": 98
+    },
+    {
+      "page": 39,
+      "kind": "text",
+      "bottom": 64
+    },
+    {
+      "page": 40,
+      "kind": "table",
+      "bottom": 74
+    },
+    {
+      "page": 41,
+      "kind": "table",
+      "bottom": 472
+    },
+    {
+      "page": 41,
+      "kind": "text",
+      "bottom": 394
+    },
+    {
+      "page": 41,
+      "kind": "text",
+      "bottom": 294
+    },
+    {
+      "page": 41,
+      "kind": "text",
+      "bottom": 172
+    },
+    {
+      "page": 42,
+      "kind": "table",
+      "bottom": 262
+    },
+    {
+      "page": 43,
+      "kind": "text",
+      "bottom": 536
+    },
+    {
+      "page": 43,
+      "kind": "text",
+      "bottom": 480
+    },
+    {
+      "page": 43,
+      "kind": "text",
+      "bottom": 380
+    },
+    {
+      "page": 44,
+      "kind": "text",
+      "bottom": 558
+    },
+    {
+      "page": 44,
+      "kind": "text",
+      "bottom": 524
+    },
+    {
+      "page": 44,
+      "kind": "text",
+      "bottom": 490
+    },
+    {
+      "page": 44,
+      "kind": "text",
+      "bottom": 456
+    },
+    {
+      "page": 44,
+      "kind": "text",
+      "bottom": 422
+    },
+    {
+      "page": 44,
+      "kind": "text",
+      "bottom": 388
+    },
+    {
+      "page": 44,
+      "kind": "text",
+      "bottom": 354
+    },
+    {
+      "page": 44,
+      "kind": "text",
+      "bottom": 320
+    },
+    {
+      "page": 44,
+      "kind": "text",
+      "bottom": 286
+    },
+    {
+      "page": 44,
+      "kind": "text",
+      "bottom": 252
+    },
+    {
+      "page": 44,
+      "kind": "text",
+      "bottom": 218
+    },
+    {
+      "page": 44,
+      "kind": "text",
+      "bottom": 184
+    },
+    {
+      "page": 45,
+      "kind": "text",
+      "bottom": 492
+    },
+    {
+      "page": 45,
+      "kind": "text",
+      "bottom": 392
+    }
+  ],
+  "runtime": "NOT_RUN",
+  "human": "NOT_RUN",
+  "final_approval": "PENDING",
+  "visual_review": "DOCUMENT_RENDER_REVIEWED_46_PAGES_NOT_HUMAN_APPROVAL"
+}

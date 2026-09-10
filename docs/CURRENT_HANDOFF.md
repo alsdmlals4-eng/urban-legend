@@ -1,5 +1,11 @@
 # 괴이기록국 Current Handoff
 
+## 최신 실행 범위 — 2026-09-11 블루프린트 제작
+
+최신 사용자 요청으로 **블루프린트에 필요한 신규 실사용 이미지 후보 제작은 허용**됐다. 아래 2026-09-10의 이미지 보류만 이 범위에서 해제한다. 게임 구현은 여전히 최종 블루프린트 승인 이후다. [이번 제작 계약](design/BLUEPRINT_20260911_WORK_CONTRACT.md), [통합 검토 본문](design/BLUEPRINT_20260911.md), [사건·데이터 부록](design/blueprint-20260911-case-appendix.md)을 읽는다. 이 문서들은 승인 후보이며 기존 runtime 사실이나 승인 자산을 덮어쓰지 않는다.
+
+예시 십보강호 PDF는 구조 참고 전용이다. 신규 PDF·source·후보는 프로젝트 내부에 유지한다. 후보 전체의 production readiness와 모션/전조/사건별 의상·인물 데이터 정합성은 실제 검증 전 완료로 선언하지 않는다. 기존 dirty 코드·세이브·승인 PDF·자산과 unrelated Draft PR을 보존한다. 전체 Planning Canon/JSON 동기화는 최종 선택 및 migration 검증 후 별도 implementation 계약에서 수행한다.
+
 ## 최신 실행 순서 예외 — 2026-09-10
 
 현재 사용자 지시는 **기획·검토 먼저 / 이미지 제작·추가 구현 보류**다. 일정 폐기, 일상파트와 사건파트(조사·회수) 유지, M04 기존 귀가 기억 보조의 기본 사용 가능 방향은 승인됐다. 상세 범위·현행 충돌·보류 항목은 [일상/사건 구조 설계](superpowers/specs/2026-09-10-daily-case-structure-design.md) §9를 먼저 읽는다.

@@ -1,5 +1,7 @@
 # 괴이기록국: 잔향 보고서 · 사람용 게임 블루프린트
 
+> 2026-09-11: 아래는 이전 구현 정렬판으로 보존한다. 일정 폐기 이후 새 사람용 통합 **검토 후보**는 [BLUEPRINT_20260911.md](BLUEPRINT_20260911.md)와 [사건 상세 부록](blueprint-20260911-case-appendix.md)이다. 새 문서의 승인 대기 규칙·자산을 아래 역사적 runtime 완료 상태와 혼합하지 않는다. 기존 PDF bytes는 교체하지 않는다.
+
 > 상태: `CURRENT / RUNTIME_ALIGNED / M04_RECOVERY_AND_MENU_MAIN_MERGED / MACHINE_RUNTIME_CAPTURED / HUMAN_QA_NOT_RUN`
 > 기준: 최신 사용자 승인, latest `origin/main` (`a2b4d2e5c185a4e295cc05b86e4673446a23ac6c`), PR #356의 M04 통합 커밋 (`a62b5341f3c4742192f7bfc0d11e1fb4897c1308`), 그리고 그 exact head에서 남긴 focused test·runtime capture를 대조했다.
 > 정본 경계: 이 문서는 사람이 읽는 흐름·와이어프레임 owner다. 시스템 규칙은 `docs/CURRENT_PLANNING_CANON.md`, 현재 mutable 결정은 `docs/CURRENT_DECISION_OVERLAY.md`, 실제 현재 메인 구현은 코드·Scene·test가 소유한다.
