@@ -172,3 +172,37 @@ B의 세부 경계: 후보가 정답인지 색으로 표시하지 않는다. 작
 
 재사용 교훈: draft 연결 검사는 지식 기반 플레이 검증을 대신하지 못한다.
 현재 프로젝트 한정 교훈이며 Base 강제 규칙 승격은 하지 않았다.
+
+## 한 규칙의 실행 전 비교 명세: M04 되감기
+
+기존 사건 데이터에서 읽은 값이며 새 사건 정답/수치는 아니다.
+
+| 연결 | 실제 owner 값 | 실행에서 확인할 것 |
+|---|---|---|
+| 관측 | clue_reverse_rain_flow: 세 번째 빗소리 뒤 역방향 빗물 | 해당 관측을 획득하고 다시 열 수 있는가 |
+| 추론 | rule_m04_rain_rewind / 첫 번째·세 번째 후보 | 후보를 정답 표시 없이 비교할 수 있는가 |
+| 전조 | pattern_red_rain_rewind: 두 번 멀어진 뒤 귓가에서 세 번째 소리 | 조사 정보와 현장 징후를 연결할 수 있는가 |
+| 대응 | wait / run_on_third / silence_rain | 동일 조건에서 wait와 run_on_third의 관측 결과 비교 |
+| 현재 truth | correct_response_id=wait, stability_gain=18 | 기존 truth를 별도 사전으로 복제하지 않고 소비하는가 |
+| 미니게임 | minigame_rain_sync / rain_dodge / 12초 / max_hits=3 | 조사 규칙 활용과 단순 회피 실력을 구분할 수 있는가 |
+
+**SOURCE_VERIFIED_MISMATCH:** rain_dodge_game의 `_process`와 MinigameRules는 생존 시간과
+충돌 수를 판정한다. 세 번째 빗소리 phase 판정은 이 경로에 없다. 그러나 사건의
+success_result_text는 '세 번째 빗소리 뒤의 빈 프레임을 맞췄습니다'라고 주장한다.
+이는 결과 문구와 실제 판정의 불일치다. 미니게임 구현에서 타이밍 지식의 활용을 증명하지
+못한 상태이며, 자동으로 성공 문구를 runtime evidence로 사용할 수 없다.
+
+실행 비교 절차(아직 NOT_RUN):
+1. 같은 출처 획득 상태·전조·장비·시계·팀 상태·난수 조건을 고정한다.
+2. 메모 후보만 교체하고 같은 wait 행동을 실행한다. 물리적 결과는 같아야 한다.
+3. 같은 상태에서 wait와 run_on_third를 실행한다. 행동 차이와 관측 결과를 기록한다.
+4. 미니게임은 같은 입력/난수 조건에서 메모만 교체하는 대조군을 둔다.
+   현행 판정의 12초 경계, 2회/3회 충돌 경계도 별도로 검사한다.
+5. 실제 빗소리 phase를 활용하는 실험은 phase/입력 연결이 명세·구현된 뒤 수행한다.
+   기존 generic 회피 성공을 그 실험의 PASS로 대체하지 않는다.
+
+2026-09-10 실행 환경 확인: `hera status`는 no live editor,
+Godot AI session list도 count=0이었다. 로컬 Godot 실행 파일의 실제 버전은
+4.7.2.stable.official.ed1daf0bf다. 편집기/플러그인 연결을 사용자에게 요청했다.
+프로젝트 설정 파일의 plugin enabled는 live 연결 증거가 아니다. 실행 장면/입력/결과
+비교와 GUT 행동 검증은 NOT_RUN이며 이 문서는 소스 조사와 실행 준비까지만 증명한다.

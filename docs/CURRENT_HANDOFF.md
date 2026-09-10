@@ -14,6 +14,9 @@
 다음은 한 규칙의 조사→현장 판단→행동→관측 결과 연결 명세와 동적 검증이다.
 메모만 바꾸는 실험은 결과 불변성 대조군이며, 규칙에 따른 행동 변경을 실험군으로 비교한다.
 단순 draft getter 부재만으로 플레이어의 지식 활용 부재를 단정하지 않는다.
+추가 확인: M04 minigame_rain_sync는 시간/충돌 판정인데 성공 문구는 세 번째 빗소리
+타이밍을 맞췄다고 주장한다. 감사의 '한 규칙의 실행 전 비교 명세'에 실제 ID와 대조군을
+기록했다. live editor/session이 없어 실행 비교는 미완료다. 편집기 연결 후 이 경로부터 확인한다.
 기존 자산 삭제, 새 사건/수치 확정, 전체 이미지 양산 또는 Human PASS로 넘어가지 않는다.
 
 > 상태: `PLANNING_COMPLETE / USER_APPROVED_VISUAL_DIRECTION_LOCK / RUNTIME_RECONCILIATION_MERGED / HUMAN_QA_PENDING`
