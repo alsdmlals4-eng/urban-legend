@@ -192,6 +192,17 @@ func restart_afterlife_station_flow(agent_ids: Array = []) -> bool:
 	return not current_episode_data.is_empty()
 
 
+## Starts a new campaign in preparation without selecting or dispatching an incident.
+## The standard M01 opening remains a separate entry point.
+func begin_campaign_case_selection(agent_ids: Array = []) -> bool:
+	reset_run_state()
+	var preparation_team := agent_ids if not agent_ids.is_empty() else ["agent_kwon_narae", "agent_oh_hyun", "agent_kang_ijun"]
+	set_selected_agent_ids(preparation_team)
+	_ensure_kwon_protagonist()
+	current_scene_path = SCENE_PREPARATION
+	return not current_episode_data.is_empty()
+
+
 ## Starts another episode while preserving unlocked preparation rewards and the current team.
 func start_episode_from_preparation(file_path: String) -> bool:
 	if not load_episode(file_path):

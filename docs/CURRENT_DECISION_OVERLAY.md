@@ -7,6 +7,15 @@
 
 이 파일은 현재 작업자가 즉시 판단해야 하는 mutable decision과 verified successor state만 소유한다. 역사 원장이 current state와 충돌하면 최신 사용자 지시 → GitHub latest main → repository current GDD / `CURRENT_PLANNING_CANON.md` / `current-planning-canon.json` → 이 Overlay 순으로 해석한다.
 
+## D-2026-09-10-CAMPAIGN-PREPARATION-ENTRY-REPAIR
+
+- 승인: 사용자의 시작 오류 복구 승인 `그래 진행해`; 기존 메뉴 소비자가 호출하는 누락 함수만 복구한다.
+- 기준: latest completed main `c82291101bf0a2bb4d821a12bca9f14070ee2886`; 재기획 Draft #359와 분리된 main 기반 수정이다.
+- 비교: 현재 `main_menu.gd`의 호출·안내와 `game_state.gd`의 초기화/편성 API를 첫 근거로 삼았다. `ADOPT`: 기존 reset/편성 API 재사용. `REJECT`: 버튼에서 사건을 자동 선택·출동시키기(현행 준비실 선택 의미 변경). `REJECT`: 메뉴에 초기화 로직 중복(상태 책임 분산). 역사 함수는 참고만 하고 다른 브랜치 변경을 흡수하지 않는다.
+- 범위: `begin_campaign_case_selection` 복구와 GUT 행동 회귀 검사. 새 저장 필드·사건 규칙·이미지·UI 디자인 변경 없음.
+- 상태: 로컬 구현 및 준비실 진입 runtime 확인; GitHub main 병합은 별도 확인 전까지 미완료. 증거와 남은 한계는 `TEST_CHECKLIST.md`의 2026-09-10 항목을 따른다.
+- 롤백: 이 수정 PR의 함수·회귀 검사만 되돌린다. 사용자 저장파일 및 기존 자산은 제거하지 않는다.
+
 ## 1. 현재 제품 구조
 
 ```yaml
