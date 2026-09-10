@@ -2,6 +2,10 @@
 
 ## 재기획 경계 · 2026-09-10
 
+- `replanning_review.survival_core`: 승인 방향과 runtime 미검증을 분리하는 문서 계약.
+- 동적 수용 기준(미실행): 같은 현장/행동/판정 조건에서 메모만 변경하면 물리적 결과 유지.
+- 동적 수용 기준(미실행): 규칙에 따른 방법/대상/시점 변경은 관측 가능한 결과로 연결.
+- 추론 오류와 실행 오류 구별, 단서 없이 답을 노출하는 UI 여부, 저장 후 과거 시도 보존 확인.
 - `tests/test_replanning_entry_contract.py`: entry/decision/canon/roadmap의 새 검토 상태와 참조 연결.
 - `tools/qa/verify_project_aseprite.py`: 기존 제한 stdio server를 프로젝트 후보 root로 실행해
   실제 export·duration·alpha·원본 보존·경로/Lua/덮어쓰기 거절 검증. 게임 artwork 증거가 아니다.

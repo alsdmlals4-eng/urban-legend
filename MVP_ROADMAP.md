@@ -2,6 +2,10 @@
 
 ## 현재 재기획 진입 · 2026-09-10
 
+핵심 방향은 `D-2026-09-10-HIDDEN-RULE-SURVIVAL-CORE`다. source trace 이후 순서는
+동일 현장/행동의 메모 독립성 대조 → 규칙 기반 행동의 결과 비교 → 한 규칙 연결 구현 →
+저장/결과 및 M01 회귀 → 필요한 시각·모션 제작이다. 아직 동적 검증 완료는 아니다.
+
 `docs/current-planning-canon.json`의 `replanning_review`가 기존 완료 이력보다 우선한다.
 순서: 요소별 근거 감사 → 규칙 하나의 실제 end-to-end trace → 시간/피드백/역할 대안과
 wireframe → 새 visual brief와 동작 계약 → 이미지 후보/선택 → Aseprite 필요 패키징 →

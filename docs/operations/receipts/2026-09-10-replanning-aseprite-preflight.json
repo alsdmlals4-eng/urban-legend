@@ -1,5 +1,20 @@
 {
   "status": "PARTIAL_RESEARCH_AND_TOOL_PREFLIGHT",
+  "integrated_continuation": {
+    "approval": "User explicitly approved modification and consolidation of PR 359 and PR 360",
+    "active_pr": 359,
+    "absorbed_audit_pr": 360,
+    "decision": "D-2026-09-10-HIDDEN-RULE-SURVIVAL-CORE",
+    "focused_tests": {"total": 49, "failures": 0, "errors": 0},
+    "full_tests": {"total": 494, "failures": 1, "errors": 0},
+    "new_contract_red_green": "Missing survival_core failed before owner update; focused suite passed after",
+    "review_1": "Corrected false premise that changing notes must change physical outcomes",
+    "review_2": "Kept direction approval distinct from mapping, runtime and human evidence; protected paths unchanged",
+    "runtime": "NOT_RUN",
+    "merge": "NOT_PERFORMED",
+    "learning": "PROJECT_ONLY: knowledge application must be tested through action, not only a draft getter",
+    "remaining": ["Specify and run one-rule action comparison", "Diagnose existing headless addon contract failure"]
+  },
   "approval_ref": "current-user-2026-09-10-project-local-aseprite-and-evidence-based-element-review",
   "source_sha": "c82291101bf0a2bb4d821a12bca9f14070ee2886",
   "base_adoption_changed": false,
@@ -34,7 +49,7 @@
     {"finding": "Baseline Godot helper contract failure", "resolution": "Preserved and recorded; no protected addon changes or clean merge claim"}
   ],
   "remaining_work": [
-    "Complete actual consumer-level element inventory and draft-to-field trace",
+    "Extend completed source trace to dynamic action comparison and remaining element inventory",
     "Compare wireframes and settle material time-model/role decisions",
     "Specify new visual direction and motion state contracts",
     "Generate/review new artwork candidates then package selected states",

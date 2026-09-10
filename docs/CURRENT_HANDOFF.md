@@ -8,7 +8,12 @@
 `current-planning-canon.json#/replanning_review`,
 `research/2026-09-10-replanning-element-review.md`의 미완료 목록을 읽는다.
 프로젝트 내부 Aseprite 경계는 제한 stdio 호출로 검증됐고 desktop native discovery는 미검증이다.
-다음은 기존 규칙 하나의 draft→구출/회수 실제 소비 trace와 대안 wireframe이다.
+`D-2026-09-10-HIDDEN-RULE-SURVIVAL-CORE`가 현재 핵심 방향을 명확히 한다.
+통합 작업본은 PR #359다. #360의 감사는 `audits/2026-09-10-manual-field-consumer-trace.md`로
+흡수했고 별도 게임 정본을 만들지 않는다. source trace는 완료했지만 동적 검증은 미실행이다.
+다음은 한 규칙의 조사→현장 판단→행동→관측 결과 연결 명세와 동적 검증이다.
+메모만 바꾸는 실험은 결과 불변성 대조군이며, 규칙에 따른 행동 변경을 실험군으로 비교한다.
+단순 draft getter 부재만으로 플레이어의 지식 활용 부재를 단정하지 않는다.
 기존 자산 삭제, 새 사건/수치 확정, 전체 이미지 양산 또는 Human PASS로 넘어가지 않는다.
 
 > 상태: `PLANNING_COMPLETE / USER_APPROVED_VISUAL_DIRECTION_LOCK / RUNTIME_RECONCILIATION_MERGED / HUMAN_QA_PENDING`

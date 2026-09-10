@@ -7,6 +7,17 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class ReplanningEntryContract(unittest.TestCase):
+    def test_survival_core_distinguishes_belief_from_world_rules(self):
+        canon = json.loads((ROOT / "docs/current-planning-canon.json").read_text(encoding="utf-8"))
+        core = canon["replanning_review"]["survival_core"]
+        self.assertEqual(core["status"], "USER_APPROVED_DIRECTION / RUNTIME_NOT_VERIFIED")
+        self.assertEqual(core["manual_role"], "PLAYER_BELIEF_AND_REFERENCE_NOT_WORLD_TRUTH")
+        self.assertIn("RECOVERY", core["application_surfaces"])
+        self.assertIn("MINIGAME", core["application_surfaces"])
+        self.assertIn("SAME_WORLD_AND_ACTION_SAME_OUTCOME_REGARDLESS_OF_NOTE", core["acceptance"])
+        self.assertIn("RULE_INFORMED_ACTION_HAS_OBSERVABLE_CONSEQUENCE", core["acceptance"])
+        self.assertTrue((ROOT / canon["replanning_review"]["consumer_audit"]).is_file())
+
     def test_replanning_is_distinct_from_implemented_baseline(self):
         canon = json.loads((ROOT / "docs/current-planning-canon.json").read_text(encoding="utf-8"))
         review = canon["replanning_review"]

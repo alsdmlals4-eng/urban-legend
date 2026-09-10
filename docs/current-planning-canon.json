@@ -5,6 +5,21 @@
   "replanning_review": {
     "decision_id": "D-2026-09-10-REPLANNING-AND-PROJECT-LOCAL-ASEPRITE",
     "status": "IN_PROGRESS",
+    "consumer_audit": "docs/audits/2026-09-10-manual-field-consumer-trace.md",
+    "survival_core": {
+      "decision_id": "D-2026-09-10-HIDDEN-RULE-SURVIVAL-CORE",
+      "status": "USER_APPROVED_DIRECTION / RUNTIME_NOT_VERIFIED",
+      "primary_experience": "DISCOVER_HIDDEN_RULES_THROUGH_INVESTIGATION_AND_APPLY_TO_SURVIVE",
+      "manual_role": "PLAYER_BELIEF_AND_REFERENCE_NOT_WORLD_TRUTH",
+      "application_surfaces": ["RECOVERY", "MINIGAME"],
+      "acceptance": [
+        "SAME_WORLD_AND_ACTION_SAME_OUTCOME_REGARDLESS_OF_NOTE",
+        "RULE_INFORMED_ACTION_HAS_OBSERVABLE_CONSEQUENCE",
+        "INFERENCE_ERROR_DISTINCT_FROM_EXECUTION_ERROR",
+        "NO_AUTOMATIC_ANSWER_REVEAL",
+        "NO_DUPLICATE_TRUTH_OWNER"
+      ]
+    },
     "previous_planning_role": "IMPLEMENTED_BASELINE_NOT_NEW_DESIGN_APPROVAL",
     "existing_images_for_new_production": "REFERENCE_ONLY",
     "review_dimensions": ["PLAYER_VALUE", "SWOT", "IMPROVEMENT", "ORIGINALITY", "CREATIVITY", "FEASIBILITY", "LIFECYCLE_COST"],
