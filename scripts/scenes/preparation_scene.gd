@@ -229,7 +229,7 @@ func _add_episode_panel(parent: Control) -> void:
 
 
 func _add_daily_episode_panel(parent: Control) -> void:
-	var content := _add_section(parent, "일상 에피소드", "HQ에서만 확인하는 선택형 요원 대화입니다. 반일 일정·조사·위험도·의뢰는 소모하지 않습니다.")
+	var content := _add_section(parent, "일상 에피소드", "HQ에서 확인하는 선택형 요원 대화입니다. 사건 출동의 필수 조건은 아닙니다.")
 	_daily_episode_list = VBoxContainer.new()
 	_daily_episode_list.name = "DailyEpisodeList"
 	_daily_episode_list.add_theme_constant_override("separation", 8)
@@ -630,7 +630,7 @@ func _refresh_external_contacts() -> void:
 	)
 	_contact_list.add_child(market)
 	var board_title := Label.new()
-	board_title.text = "반일 의뢰 게시판 · 수락한 의뢰는 완료 또는 취소까지 유지됩니다."
+	board_title.text = "외부 의뢰 · 새 사건 결과가 처음 확정되면 갱신됩니다. 수락 중 의뢰는 유지됩니다."
 	_contact_list.add_child(board_title)
 	for request in GameState.get_faction_request_board():
 		if typeof(request) == TYPE_DICTIONARY:
@@ -897,11 +897,11 @@ func _add_request_card(parent: Control, request: Dictionary) -> void:
 	panel.add_child(content)
 	var status := String(request.get("status", ""))
 	if status in ["declined", "canceled"]:
-		content.add_child(_make_label("빈 의뢰 슬롯 · 다음 반일 갱신 시 보충됩니다."))
+		content.add_child(_make_label("빈 의뢰 슬롯 · 다음 새 사건 결과 확정 시 보충됩니다."))
 		return
 	var faction_names := {"rumor_market": "소문시장", "mage_society": "마도회", "exorcist_lineage": "퇴마사 계열"}
 	var ability_key := String(request.get("ability_key", ""))
-	content.add_child(_make_label("%s · %s\n%s\n유형: %s / 요구: %s / 난이도 %d / 상태: %s" % [faction_names.get(String(request.get("faction_id", "")), "외부 세력"), String(request.get("title", "의뢰")), String(request.get("description", "")), "반일 파견" if String(request.get("kind", "")) == "dispatch" else "회수 행동", GameState.ABILITY_LABELS.get(ability_key, ability_key), int(request.get("difficulty", 0)), String(request.get("status", "offered"))]))
+	content.add_child(_make_label("%s · %s\n%s\n유형: %s / 요구: %s / 난이도 %d / 상태: %s" % [faction_names.get(String(request.get("faction_id", "")), "외부 세력"), String(request.get("title", "의뢰")), String(request.get("description", "")), "일상 파견" if String(request.get("kind", "")) == "dispatch" else "회수 행동", GameState.ABILITY_LABELS.get(ability_key, ability_key), int(request.get("difficulty", 0)), String(request.get("status", "offered"))]))
 	var row := HBoxContainer.new()
 	content.add_child(row)
 	var instance_id := String(request.get("instance_id", ""))
@@ -916,10 +916,41 @@ func _add_request_card(parent: Control, request: Dictionary) -> void:
 			decline.pressed.connect(_decline_request.bind(instance_id))
 			row.add_child(decline)
 		"accepted":
+			if String(request.get("kind", "")) == "dispatch":
+				var picker := OptionButton.new()
+				for agent in GameState.get_selected_agents():
+					picker.add_item(String(agent.get("name", "요원")))
+					picker.set_item_metadata(picker.item_count - 1, String(agent.get("id", "")))
+				row.add_child(picker)
+				var perform := Button.new()
+				perform.name = "PerformDailyRequest"
+				perform.text = "의뢰 수행"
+				perform.disabled = picker.item_count == 0 or GameState.get_campaign_slot_phase() != "planning"
+				perform.tooltip_text = "선택한 요원의 능력과 장비로 판정합니다. 일정은 소비하지 않습니다."
+				perform.pressed.connect(func() -> void:
+					if picker.selected >= 0:
+						_perform_daily_request(instance_id, String(picker.get_item_metadata(picker.selected)))
+				)
+				row.add_child(perform)
+			else:
+				content.add_child(_make_label("회수 현장에서 해당 능력의 대응을 수행하면 판정됩니다."))
 			var cancel := Button.new()
 			cancel.text = "취소 · 관계 -1"
 			cancel.pressed.connect(_cancel_request.bind(instance_id))
 			row.add_child(cancel)
+		"completed", "failed":
+			var grade := String(request.get("result_grade", "failure"))
+			content.add_child(_make_label(String(request.get("%s_text" % grade, "의뢰 판정이 완료되었습니다."))))
+
+
+func _perform_daily_request(instance_id: String, agent_id: String) -> void:
+	var result := GameState.perform_daily_faction_request(instance_id, agent_id)
+	if result.has("error"):
+		_status_label.text = String(result.error)
+		return
+	var saved := GameState.save_game()
+	_refresh()
+	_status_label.text = "%s\n잔향 조각 +%d · 관계 +%d%s" % [String(result.get("result_text", "의뢰 완료")), int(result.get("fragments", 0)), int(result.get("relation", 0)), "" if saved else " · 저장 실패: 게임을 종료하지 말고 다시 저장하세요."]
 
 
 func _accept_request(instance_id: String) -> void:

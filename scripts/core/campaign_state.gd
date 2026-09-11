@@ -245,6 +245,7 @@ func resolve_case(case_id: String, resolution_grade: String) -> bool:
 	if not CASE_ORDER.has(case_id):
 		return false
 	var case_state := _get_case_state(case_id)
+	var first_resolution := String(case_state.get("resolution_state", "")) != "resolved"
 	case_state["resolution_state"] = "resolved"
 	case_state["resolution_grade"] = resolution_grade.strip_edges()
 	var operation := _get_active_operation()
@@ -255,6 +256,8 @@ func resolve_case(case_id: String, resolution_grade: String) -> bool:
 	_set_case_state(case_id, case_state)
 	if String(_state.get("emergency_case_id", "")) == case_id:
 		_state["emergency_case_id"] = ""
+	if first_resolution:
+		_refresh_request_board(true)
 	return true
 
 

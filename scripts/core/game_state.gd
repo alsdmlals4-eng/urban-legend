@@ -2320,6 +2320,19 @@ func complete_faction_request(request_id: String, faction_id: String) -> bool:
 	return true
 
 
+func perform_daily_faction_request(instance_id: String, agent_id: String, roll_override: int = 0) -> Dictionary:
+	if get_campaign_slot_phase() != "planning" or not get_active_campaign_operation().is_empty():
+		return {"error": "현재 사건의 결과를 확인하고 일상에서 수행하세요."}
+	var request := campaign_state.get_request(instance_id)
+	if String(request.get("kind", "")) != "dispatch" or String(request.get("status", "")) != "accepted":
+		return {"error": "수락한 일상 파견 의뢰만 수행할 수 있습니다."}
+	if get_agent_by_id(agent_id).is_empty():
+		return {"error": "담당 요원을 선택하세요."}
+	if not campaign_state.assign_request(instance_id, agent_id):
+		return {"error": "의뢰 담당 요원을 배정하지 못했습니다."}
+	return resolve_faction_request(instance_id, agent_id, roll_override)
+
+
 func resolve_faction_request(instance_id: String, agent_id: String, roll_override: int = 0) -> Dictionary:
 	var request := campaign_state.get_request(instance_id)
 	if request.is_empty() or String(request.get("status", "")) != "accepted":
