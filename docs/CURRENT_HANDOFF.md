@@ -2,6 +2,8 @@
 
 ## 최신 실행 범위 — 2026-09-11 블루프린트 제작
 
+후속 상태 준비: [버튼 분리·루메 모션 시험 기록](design/BLUEPRINT_20260911_STATE_PREPARATION.md)을 읽는다. 6개 버튼 상태를 Aseprite 파생본으로 분리했고 루메 3프레임 시험은 눈 이외 색 변화로 적용 보류했다. 이 후속 기록은 현재69쪽 PDF에 아직 통합되지 않았으며 runtime 구현은 하지 않았다. 모션 외형 실패를 구조 검사 PASS로 덮지 않는다.
+
 최신 시각 선택/최적화: 현재 전달물은 `output/pdf/URBAN_LEGEND_HUMAN_BLUEPRINT_20260911_OPTIMIZED.pdf`, 영수증은 `BLUEPRINT_20260911_OPTIMIZED_RECEIPT.json`이다. 첨부 사진풍 피해자3인 초상은 `USER_REJECTED_STYLE`로 현재 PDF/회수 합성에서 제외했다. 나머지 기존 활성17개 이미지의 시각 선택 승인은 `docs/design/BLUEPRINT_20260911_IMAGE_DECISIONS.json`의 exact hash 목록에 고정했다. 기각 후 생성한 애니풍 교체 초상은 신규 후보로 별도 승인 전이다. 이는 전체 기획/제품 자산 승격/runtime 승인이 아니다. 아래 CASE_PREPARATION/52쪽/46쪽은 이전 판 보존 이력이며 최신 실행 근거로 단독 사용하지 않는다.
 
 후속 준비판: `output/pdf/URBAN_LEGEND_HUMAN_BLUEPRINT_20260911_CASE_PREPARATION.pdf`. 루메 SD 교정, M04/M07 괴이, 보호 대상3초상 atlas,6상태 버튼, 워드마크, M07 회수 부스 후보를 추가했다. 부록4B/4C는 M07 제안3장/9슬롯/15후보와 실제 구간·입력·반환·실패 계약을 소유한다. 런타임 파일은 수정하지 않았다. 최종 외형 승인·모션/전조 상태·실행 검증은 남아 있으며 이전52쪽/46쪽 PDF는 보존한다. 최신 receipt의 실제 검증 상태를 읽고 전체 완료로 추론하지 않는다.
