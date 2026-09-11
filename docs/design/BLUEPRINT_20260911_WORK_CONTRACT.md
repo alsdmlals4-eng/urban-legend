@@ -41,7 +41,7 @@
 
 원본 및 제품 assets/scripts/scenes/data, 기존 Draft PR 359/360/361/287/231은 read-only. 후보는 프로젝트 .asset-vault 아래 둔다. PDF와 source는 project-owned 경로이며 Notion이나 외부 문서 저장소는 만들지 않는다. 롤백은 이번 문서·후보·생성기 변경만 Git/receipt로 되돌린다.
 
-## 수행·검증 영수증
+## 이전 46쪽 판 수행·검증 영수증 (보존 이력)
 
 - PDF: `output/pdf/URBAN_LEGEND_HUMAN_BLUEPRINT_20260911_REVIEW.pdf`; exact PDF/source/asset hashes, 실제 크기·alpha·planned consumer·최종 승인 상태는 동 폴더 `BLUEPRINT_20260911_RECEIPT.json`이 소유한다.
 - `tools/validate_blueprint_20260911.py`: 문서 필수항목·PDF/source/PNG hash·인물6개 RGBA/투명 모서리·아틀라스3개region·본문/표 footer 경계 검사 PASS. 이것은 alpha edge 전체 미술 합격이나 runtime 검사가 아니다.
@@ -67,7 +67,7 @@
 4. 모든 필수 준비가 완료된 후 최종 사용자 승인. 그 전 게임 코드 적용·자산 canon 승격·Draft 병합 없음.
 5. PDF/source/receipt는 명시적 작업브랜치로 동기화한다. 승인 전 원본 PNG/aseprite는 project-local `.asset-vault`이므로 원격 원본 보관 완료가 아니다. 최종 자산 승인 후 계약에 따라 project-controlled tracked 경로로 승격한다.
 
-## 참고 이미지 교정 — 승인된 후속 범위
+## 이전 52쪽 판 참고 이미지 교정 — 승인된 후속 범위 (보존 이력)
 
 최신 사용자4장과 권장안 승인을 적용한다. 추가 건별 승인은 요청하지 않는다. Work Mode는 PLAN → candidate/document BUILD → REVIEW, UI 정보구조·접근성 및 imagegen/PDF 스킬을 사용한다. 게임 코드 구현은 제외한다.
 
@@ -88,3 +88,19 @@
 후속 결과: PDF52쪽, 화면11개, 후보 보관13개 중 활성12개/대체된 검은 M04 의상1개. 전체 PDF를 렌더하고 변경 페이지1/15~20/22~23/31/39/52 및 정적atlas를 시각 확인했다. 1차 검토에서 아틀라스 ‘아홉’ 제목, 하단 보조문구 간격, 구형 후보 상태/출처 누락을 교정했다. 2차 검토에서 변경 페이지 재렌더와 문서/PNG/source/reference hash·alpha·atlas·본문 경계 검사 및 기존4개 회귀검사를 다시 통과했다. 문서 와이어프레임과 실제 게임 UI를 구분하며 전체 production CLEAN은 선언하지 않는다.
 
 실패한 첫 Aseprite 출력3개(10,329,667bytes)는 실제 문서/도구 참조0과 corrected 출력 보존을 확인한 뒤 삭제했다. 원본 PNG와 교정된 .aseprite/PNG/JSON으로 재생성 가능하다. 기존 사용자 파일·46쪽 PDF·제품 자산은 삭제하지 않았다. 루메 비례와 완성형 UI 장식·피해자/전조 상태/모션은 남은 미완성 항목이다.
+
+## 현재 69쪽 CASE_PREPARATION 판 — 2026-09-11 연속 작업
+
+최신 전달물은 `output/pdf/URBAN_LEGEND_HUMAN_BLUEPRINT_20260911_CASE_PREPARATION.pdf`이며 exact source/asset/PDF hash는 `BLUEPRINT_20260911_CASE_PREPARATION_RECEIPT.json`이 소유한다. 46쪽/52쪽 PDF는 보존 이력이다. 승인된 작업은 기획·후보 자산·문서 준비이고 제품 코드 구현과 최종 자산 LOCK은 포함하지 않는다.
+
+- 새 후보7개: 짧고 귀여운 M04 루메, M04 괴이, M07 방송 진행자, 피해자3인 portrait atlas, 버튼6상태 board, 제목 워드마크, 회수용 방송 부스 배경. 원본 총20개 중 M04 의상2개는 superseded이며 삭제하지 않는다. RGB 체크무늬 편집 실패1개는 활성 후보에서 제외했다. 피해자 외형은 제안이며 성별/나이 정본을 추가하지 않는다.
+- M07은 현행3개 단서를 출처로 3장/9슬롯/15후보를 제안하고 긴 추리문, 실제 구간 선택, 5회 입력, 실제 음성 반환, 실패/재개/저장/6개 회귀 조건까지 연결했다. 모든 새 ID는 draft_m07_이며 제품 데이터에 쓰지 않았다. 정답 노트가 세계를 바꾸지 않고 raw_hits와 valid_hits를 분리한다.
+- Aseprite 정적 루메 atlas는3844×1568, 괴이 atlas는3844×1536, 각각3개 region이다. 빈 프레임3개를 먼저 생성하고 원본을 가져왔다. alpha 하단 정렬은 실제 픽셀 배치 증거이지 얼굴·머리 크기·모션 연속성 승인이 아니다.
+- 새 PDF는 큰 메인 화면, 세 사건 회수 구도, M07 긴 문장형 매뉴얼을 포함한다. M01의 실제3장을 참고 이미지의5장으로 부풀리지 않는다.
+- 1차 결과 검토에서 방송 진행자가 유리 밖에 뜨는 배치, M07 문장형 UI 부족, 실제 장 수 불일치, 찾아보기 용량을 발견했다. 전용 배경·유리 안 배치·M07 화면·실제3장·찾아보기 분할로 교정했다. 2차 변경 결과 재검토는 페이지13/20/37/38/41 및 최종69쪽 판33/55/56/59/60/69의 가독성·표·인과를 확인했다. 전체69쪽은 렌더했지만 모든 페이지의 새 시각 검수나 Human UX를 주장하지 않는다.
+- 공식 Godot pausing 문서의 signal guard와 Aseprite sprite-sheet의 region 원칙을 재확인했다. 기존 프레임워크 재사용(ADAPT)을 선택하고 단순 원 맞추기 유지/노트 정답 보너스 부여는 핵심 규칙 사용을 훼손해 REJECT했다.
+- Base v9.4.4 유지. 기존 runtime 변경·import 파일·Draft PR은 보호한다. 새 이미지 원본은 프로젝트 내부 로컬 vault에 있고 PDF만 Git 전달물에 포함된다. 원본의 원격 보관 완료를 주장하지 않는다.
+
+REMAINING_WORK_COMPLETION_GATE: NOT_COMPLETE. 표현/동작 프레임과 전조 상태 자산, 버튼 정확한 분할·NinePatch 코너 검수, 세 의상 루메의 얼굴/비율 일관성 최종 검토가 남았다. 구현·runtime·Human·출시 검증은 NOT_RUN이며 최종 승인도 PENDING이다. IMPLEMENTATION_CORRECTION_RESCAN은 제품 코드를 변경하지 않은 이번 문서 범위에서 시행했으며 전체 CLEAN_REVIEW_EXIT는 선언하지 않는다. 기존 자산·제품 코드에는 자동 승격하지 않는다.
+
+학습 환류: 유리 안/밖 공간 관계는 alpha 성공만으로 검증할 수 없고 실제 배경 합성이 필요하다. 정적 의상 atlas를 애니메이션으로 표시하지 않는다. 서로 다른 실제 선택/같은 노트와 같은 실제 선택/다른 노트를 별도로 시험해야 한다. 프로젝트 계약에 기록했으며 Base 강제 규칙 승격은 하지 않았다. 롤백은 이번 명시적 문서/생성기/PDF 변경만 되돌리고 보존된 원본·이전 PDF·사용자 runtime 변경은 유지한다.
