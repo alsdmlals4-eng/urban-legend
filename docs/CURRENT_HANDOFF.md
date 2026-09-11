@@ -1,5 +1,22 @@
 # 괴이기록국 Current Handoff
 
+## 구현 재개 — 2026-09-12
+
+최신 사용자 ‘프로젝트에서 남은 구현 업무 확인하고 진행해’로 확정된 일상/사건 구조의 구현을 재개한다. 아래의 이미지/기획 전용 보류는 이 범위에서 해제한다. 미승인 피해자 이미지, 외형 불합격 루메 모션, M07 후보 규칙의 최종 승인으로 확대하지 않는다.
+
+첫 범위: 이미 보존 중이던 campaign_state/game_state/preparation/daily_episode/result 5개 로컬 변경을 검토하고 기존 일상/사건 테스트를 실행했다. 새로운 저장 복구 검사에서 (1) 실제 사건 없는 in_progress 저장이 출동을 막음, (2) 알 수 없는 operation status가 재개를 막음을 재현한 뒤 수정했다. 전자는 사건 기록을 유지하고 planning으로 복구하며 후자는 같은 사건을 suspended로 복구한다. completed 결과는 유지하고 확인을 한 번만 처리한다.
+
+검증: Godot4.7.2 / GUT9.7.1, 새 테스트 전 14/14 통과 → 새 저장검사 포함17개 중2개 실패 → 교정 후17/17(67 asserts) 통과. 프로젝트 내부 .artifacts/daily-case-20260912로 APPDATA/LOCALAPPDATA를 격리한 재실행 및 Windows isolation PASS. 최초 baseline은 기존 TestSaveGuard 복구 성공을 확인했으나 live user data 경로에서 실행됐으므로 이후 격리 실행을 기준으로 삼는다. 회수 clock17/direct-lead12/overlay8/scene12 assertions 통과. direct-lead/scene 종료 시 ObjectDB2개 leak 경고가 각각 남아 무경고/전체 CLEAN은 아니다. 실제 화면 조작·1280/1920·Human/출시 검증 NOT_RUN.
+
+남은 구현 순서(이번 검사 범위에서 확인, 전 프로젝트 전수 완료 목록 아님):
+1. 일상/사건 전환 잔여 consumer: 준비실 외부 의뢰의 반일 갱신/파견과 메인 메뉴의 ‘대기·회복 반일’ 안내가 아직 남음. 문구만 바꿔 완료하지 말고 수락→수행→결과/보충 흐름을 함께 교정.
+2. 일상→조사→매뉴얼→회수→결과→일상의 실제 UI 입력 및 저장 재개 end-to-end 검증. 두 회수 테스트 종료 leak 원인 확인.
+3. 승인된 능동시간 이중시계/열람 정지 상세안과 실제 소비자 차이, M01/M04 키워드 현장 적용·미니게임 반환을 사건별 회귀로 연결.
+4. 메인 메뉴 6상태 버튼/문서형 매뉴얼 시각 통합 및 해상도/포커스 검증. 미승인 자산은 사용하지 않음.
+5. Blueprint 후속 상태 통합, planning canon/JSON/overlay의 구형 일정 표현과 실행 증거를 함께 동기화. 현재 문서의 과거 PLANNING_COMPLETE는 전체 새 구현 완료 의미가 아님.
+
+Base pin은 유지하며 신규 공용 도구/모듈은 추가하지 않는다. 이번 작업은 기존 CampaignState loader와 GUT 재사용이다. rollback은 해당 작업 commit을 검토하여 되돌리되 기존 저장/자산/무관 import 및 다른 작업 PR은 보호한다. main/PR 통합은 별도 exact-head 검증 전 보류한다.
+
 ## 파일 정리 방식 — 2026-09-12 사용자 지시
 
 앞으로 삭제 가능 파일도 직접 삭제하지 않는다. 실제 참조·생성 관계·고유 변경을 확인한 항목만 outer project `../삭제검토/YYYY-MM-DD/`로 이동하고 사용자에게 폴더 링크를 제공한다. 원래 경로·이동 경로·크기·SHA-256·판정 이유를 MANIFEST에 남기고 이동 후 해시를 확인한다. 미확인 worktree/승인 원본/검증 입력/사용자 dirty 파일은 보존한다. 이 폴더는 정본·구현 입력이 아니며 사용자가 직접 삭제한다.

@@ -1102,26 +1102,9 @@ func get_selected_recovery_supports() -> Array:
 
 
 ## Keeps M04 preparation as a visible, case-local support gate rather than a stat bonus.
-func _get_recovery_support_availability(support_id: String) -> Dictionary:
-	if get_current_episode_id() != M04_EPISODE_ID or support_id != M04_PREPARATION_SUPPORT_ID:
-		return {"available": true, "reason": ""}
-
-	var operation := get_active_campaign_operation()
-	if String(operation.get("case_id", "")) != M04_EPISODE_ID:
-		return {"available": true, "reason": ""}
-
-	var context: Variant = operation.get("dispatch_context", {})
-	var dispatch_context: Dictionary = context if typeof(context) == TYPE_DICTIONARY else {}
-	if int(dispatch_context.get("m04_preparation_capacity", 0)) >= 1:
-		return {"available": true, "reason": ""}
-
-	return {
-		"available": false,
-		"reason": "현장 준비가 없습니다. 준비실에서 ‘대기·회복’ 반일을 한 번 완료하면 권나래의 귀가 기억 고정 보조를 사용할 수 있습니다."
-	}
-
-
-## Returns true when an agent recovery support has already been used.
+func _get_recovery_support_availability(_support_id: String) -> Dictionary:
+	# All existing support effects and once-per-case use limits remain with their owners.
+	return {"available": true, "reason": ""}
 func has_used_agent_support(support_id: String) -> bool:
 	return used_agent_supports.has(support_id)
 

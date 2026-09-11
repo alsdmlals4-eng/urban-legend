@@ -223,22 +223,15 @@ func complete_current_slot(result: Dictionary = {}) -> bool:
 	return true
 
 
-func acknowledge_slot_result(high_spread: bool = false) -> Dictionary:
+func acknowledge_slot_result(_high_spread: bool = false) -> Dictionary:
 	if get_slot_phase() != "result":
 		return {"advanced": false}
-	var completed_slot := get_current_slot()
-	_record_completed_preparation_slot(completed_slot)
 	_state["slot_result"] = {}
 	_state["active_operation"] = {}
 	_state["planned_case_id"] = ""
-	if completed_slot == "morning":
-		_state["time_slot"] = "afternoon"
-		_state["slot_phase"] = "planning"
-		_refresh_request_board(false)
-		return {"advanced": true, "time_slot": "afternoon", "day": int(_state.get("day", 1))}
-	var result := _advance_day_internal(high_spread)
-	_refresh_request_board(false)
-	return result
+	_state["cycle_main_case_id"] = ""
+	_state["slot_phase"] = "planning"
+	return {"advanced": true, "phase": "daily"}
 
 
 func finish_operation_day() -> Dictionary:
@@ -265,10 +258,9 @@ func resolve_case(case_id: String, resolution_grade: String) -> bool:
 	return true
 
 
-func advance_day(high_spread: bool = false) -> Dictionary:
-	var result := _advance_day_internal(high_spread)
-	_refresh_request_board(false)
-	return result
+func advance_day(_high_spread: bool = false) -> Dictionary:
+	# Compatibility facade: daily/case progression never advances a calendar.
+	return {"advanced": false, "changed_case_ids": []}
 
 
 func _advance_day_internal(high_spread: bool) -> Dictionary:
@@ -366,9 +358,9 @@ func grant_daily_understanding(case_id: String, reward_type: String, content_id:
 		return 0
 	var case_state := _get_case_state(case_id)
 	var current_day := int(_state.get("day", 1))
-	if int(case_state.get("last_daily_reward_day", 0)) == current_day:
-		return 0
 	var clean_content_id := content_id.strip_edges()
+	if clean_content_id.is_empty():
+		return 0
 	var rewarded_content_ids: Array = case_state.get("rewarded_daily_content_ids", []).duplicate()
 	if not clean_content_id.is_empty() and rewarded_content_ids.has(clean_content_id):
 		return 0
@@ -400,9 +392,9 @@ func load_save_data(value: Variant, legacy_mvp037: bool = false) -> void:
 	_state["slot_phase"] = String(saved.get("slot_phase", "planning")) if SLOT_PHASES.has(String(saved.get("slot_phase", "planning"))) else "planning"
 	_state["slot_result"] = saved.get("slot_result", {}).duplicate(true) if typeof(saved.get("slot_result", {})) == TYPE_DICTIONARY else {}
 	_state["planned_case_id"] = String(saved.get("planned_case_id", ""))
-	var saved_cycle_case_id := String(saved.get("cycle_main_case_id", ""))
-	_state["cycle_main_case_id"] = saved_cycle_case_id if CASE_ORDER.has(saved_cycle_case_id) else ""
-	_state["demo_ended"] = bool(saved.get("demo_ended", false))
+	# Legacy cycle/date fields must not block the daily hub or a future case.
+	_state["cycle_main_case_id"] = ""
+	_state["demo_ended"] = false
 	_state["emergency_case_id"] = String(saved.get("emergency_case_id", ""))
 	_state["risk_rotation_cursor"] = maxi(0, int(saved.get("risk_rotation_cursor", 0)))
 	_state["schedules"] = _sanitize_schedules(saved.get("schedules", {}), legacy_mvp037)
@@ -416,17 +408,22 @@ func load_save_data(value: Variant, legacy_mvp037: bool = false) -> void:
 	if typeof(saved_operation) == TYPE_DICTIONARY:
 		var operation_case_id := String(saved_operation.get("case_id", ""))
 		var operation_day := int(saved_operation.get("day", 0))
-		if CASE_ORDER.has(operation_case_id) and operation_day == int(_state["day"]):
+		if CASE_ORDER.has(operation_case_id):
 			_state["active_operation"] = saved_operation.duplicate(true)
 			_state["active_operation"]["time_slot"] = String(saved_operation.get("time_slot", _state["time_slot"]))
 			_state["active_operation"]["status"] = String(saved_operation.get("status", "suspended" if legacy_mvp037 else "in_progress"))
+			if not ["in_progress", "suspended", "completed"].has(_state["active_operation"]["status"]):
+				_state["active_operation"]["status"] = "suspended"
 			var saved_dispatch_context: Variant = _state["active_operation"].get("dispatch_context", {})
 			if typeof(saved_dispatch_context) != TYPE_DICTIONARY or (saved_dispatch_context as Dictionary).is_empty():
 				_state["active_operation"]["dispatch_context"] = _make_dispatch_context_for(operation_day, String(_state["active_operation"].get("time_slot", _state["time_slot"])), operation_case_id)
 			if String(_state.get("cycle_main_case_id", "")).is_empty():
 				_state["cycle_main_case_id"] = operation_case_id
-			_state["slot_phase"] = "in_progress"
+			_state["slot_phase"] = "result" if String(_state["active_operation"].get("status", "")) == "completed" else "in_progress"
 			_state["planned_case_id"] = operation_case_id
+	# An orphaned operation flag must not lock the daily hub; retain case records below.
+	if _get_active_operation().is_empty() and get_slot_phase() == "in_progress":
+		_state["slot_phase"] = "planning"
 	var saved_cases: Variant = saved.get("cases", {})
 	if typeof(saved_cases) == TYPE_DICTIONARY:
 		for case_id in CASE_ORDER:
@@ -563,16 +560,11 @@ func _make_dispatch_context(case_id: String) -> Dictionary:
 	return _make_dispatch_context_for(int(_state.get("day", 1)), get_current_slot(), case_id)
 
 
-func _make_dispatch_context_for(dispatch_day: int, dispatch_slot: String, case_id: String = "") -> Dictionary:
-	var context := {
-		"dispatch_kind": "REGULAR" if dispatch_day == MAX_DAYS else "EARLY",
-		"dispatch_day": dispatch_day,
-		"dispatch_slot": dispatch_slot if TIME_SLOTS.has(dispatch_slot) else "morning"
-	}
+func _make_dispatch_context_for(_dispatch_day: int, _dispatch_slot: String, case_id: String = "") -> Dictionary:
+	var context := {"progression_mode": "DAILY_CASE"}
 	if case_id == RED_UMBRELLA:
-		var preparation_provenance := _get_m04_preparation_provenance()
-		context["m04_preparation_capacity"] = preparation_provenance.size()
-		context["m04_preparation_provenance"] = preparation_provenance
+		context["m04_preparation_capacity"] = 1
+		context["m04_support_access"] = "DEFAULT_SUPPORT"
 	return context
 
 

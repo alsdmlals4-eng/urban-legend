@@ -152,14 +152,6 @@ func _make_m04_vignette_pages() -> Array[Dictionary]:
 	var rescue_text := GameState.get_current_victim_rescue_result()
 	var after_story := GameState.get_current_victim_after_story()
 	var recovery_text := _make_report_recovery_text(report.get("recovery_result", {}))
-	var dispatch_context := _get_m04_dispatch_context()
-	var dispatch_kind := String(dispatch_context.get("dispatch_kind", "EARLY"))
-	var dispatch_day := int(dispatch_context.get("dispatch_day", 1))
-	var dispatch_slot := String(dispatch_context.get("dispatch_slot", "morning"))
-	var dispatch_label := "조기 해결" if dispatch_kind == "EARLY" else "정규 대응"
-	var slot_label := "오전" if dispatch_slot == "morning" else "오후"
-	var preparation_capacity := int(dispatch_context.get("m04_preparation_capacity", 0))
-	var preparation_text := "현장 준비 1/1 · 완료한 대기·회복 기록을 바탕으로 권나래의 귀가 기억 고정 보조를 회수 단계에서 선택할 수 있었습니다." if preparation_capacity >= 1 else "현장 준비 0/1 · 이번 출동에는 대기·회복 완료 기록이 없어 귀가 기억 고정 보조를 선택할 수 없었습니다."
 	var return_route_support_used := GameState.get_used_agent_supports().has("support_kwon_return_route")
 	var support_text := "권나래의 ‘귀가 기억 고정’ 보조가 피해자의 귀가 경로와 일상 기억을 붙들어, 안전 구역 이탈 뒤에도 귀환 순서를 유지했습니다." if return_route_support_used else "권나래의 ‘귀가 기억 고정’ 보조는 이번 회수에 배치되지 않았습니다. 귀가 경로는 회수 절차의 기본 보호 기록으로만 남습니다."
 	return [
@@ -173,7 +165,7 @@ func _make_m04_vignette_pages() -> Array[Dictionary]:
 		},
 		{
 			"title": "귀가 기억",
-			"body": "%s · %d일차 %s 출동 기록입니다.\n%s\n\n%s" % [dispatch_label, dispatch_day, slot_label, preparation_text, support_text]
+			"body": support_text
 		},
 		{
 			"title": "기록국",
@@ -211,6 +203,8 @@ func _get_m04_dispatch_context() -> Dictionary:
 
 func _has_m04_dispatch_context() -> bool:
 	var context := _get_m04_dispatch_context()
+	if String(context.get("progression_mode", "")) == "DAILY_CASE":
+		return true
 	return ["EARLY", "REGULAR"].has(String(context.get("dispatch_kind", ""))) \
 		and int(context.get("dispatch_day", 0)) >= 1 \
 		and ["morning", "afternoon"].has(String(context.get("dispatch_slot", "")))

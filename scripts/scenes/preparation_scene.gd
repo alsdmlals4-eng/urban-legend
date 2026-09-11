@@ -124,8 +124,8 @@ func _build_ui() -> void:
 	action_grid.add_theme_constant_override("h_separation", 8)
 	action_grid.add_theme_constant_override("v_separation", 8)
 	actions.add_child(action_grid)
-	_add_dashboard_action(action_grid, "현장 조사", "현재 사건 조사 일정을 배정합니다.", func() -> void: _assign_dashboard_activity("investigation"))
-	_add_dashboard_action(action_grid, "대기·회복", "현재 반일을 회복 일정으로 배정합니다.", func() -> void: _assign_dashboard_activity("rest"))
+	_add_dashboard_action(action_grid, "사건 선택", "조사할 사건을 확인합니다.", func() -> void: _dashboard_tabs.current_tab = 0)
+	_add_dashboard_action(action_grid, "요원·장비 준비", "함께 출동할 요원을 준비합니다.", func() -> void: _dashboard_tabs.current_tab = 1)
 	_add_dashboard_action(action_grid, "일상 기록", "HQ의 요원 기록을 확인합니다.", func() -> void: _dashboard_tabs.current_tab = 0)
 	_add_dashboard_action(action_grid, "외부 의뢰", "세력 접점과 의뢰 게시판을 확인합니다.", func() -> void: _dashboard_tabs.current_tab = 3)
 	_add_start_panel(actions)
@@ -196,14 +196,14 @@ func _add_header(parent: Control) -> void:
 
 
 func _add_schedule_panel(parent: Control) -> void:
-	var content := _add_section(parent, "오늘의 일정", "권나래의 현재 반일 일정만 정합니다.")
+	var content := _add_section(parent, "일상", "동료·기록·장비를 살피고 사건에 대비합니다.")
 	_campaign_day_label = Label.new()
 	_campaign_day_label.name = "CampaignDayLabel"
 	_campaign_day_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	content.add_child(_campaign_day_label)
 
 	_schedule_list = VBoxContainer.new()
-	_schedule_list.name = "ScheduleList"
+	_schedule_list.name = "DailyHubSummary"
 	_schedule_list.add_theme_constant_override("separation", 8)
 	content.add_child(_schedule_list)
 
@@ -284,28 +284,28 @@ func _refresh_agents() -> void:
 		_add_agent_card(_agent_list, agent)
 
 	var selected_count := GameState.get_selected_agent_ids().size()
-	var schedule_ready := GameState.is_campaign_schedule_complete(_get_schedule_agent_ids())
+	var schedule_ready := not GameState.get_campaign_planned_case().is_empty()
 	var phase := GameState.get_campaign_slot_phase()
 	var operation := GameState.get_active_campaign_operation()
 	if _start_button != null:
 		_start_button.disabled = false
 		if phase == "result":
-			_start_button.text = "결과 확인 후 다음 일정으로"
+			_start_button.text = "결과 확인 후 일상으로"
 		elif String(operation.get("status", "")) == "suspended":
 			_start_button.text = "현장 조사 재개"
 		else:
-			_start_button.text = "현재 일정 실행"
+			_start_button.text = "사건 조사 시작"
 			_start_button.disabled = not GameState.can_start_mission_with_agents() or not schedule_ready
 
 	if _status_label != null:
 		if phase == "result":
-			_status_label.text = "현재 반일 결과를 확인했습니다. 다음 일정으로 이동할 수 있습니다."
+			_status_label.text = "사건 결과를 확인했습니다. 일상으로 돌아갈 수 있습니다."
 		elif String(operation.get("status", "")) == "suspended":
-			_status_label.text = "현장 진행이 보존되어 있습니다. 완료 전에는 일정과 사건을 변경할 수 없습니다."
+			_status_label.text = "현장 진행이 보존되어 있습니다. 현재 사건을 먼저 이어가세요."
 		elif GameState.can_start_mission_with_agents() and schedule_ready:
-			_status_label.text = "실행 가능: 주인공 일정과 서포트 %d명 편성이 정해졌습니다." % maxi(0, selected_count - 1)
+			_status_label.text = "출동 가능: 사건과 서포트 %d명 편성이 정해졌습니다." % maxi(0, selected_count - 1)
 		elif GameState.can_start_mission_with_agents():
-			_status_label.text = "주인공의 현재 반일 일정을 정하세요. 서포트는 별도 일정을 소비하지 않습니다."
+			_status_label.text = "조사할 사건을 선택하세요. 일상 대화와 장비 준비도 확인할 수 있습니다."
 		else:
 			_status_label.text = GameState.get_agent_selection_status_text()
 
@@ -545,7 +545,7 @@ func _refresh_daily_episodes() -> void:
 		title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		content.add_child(title)
 		var description := Label.new()
-		description.text = "일정 소모 없음 · 완료 시 최초 1회 이해도 +2(사건별 최대 +10) · 선택은 DB에 기록됩니다."
+		description.text = "콘텐츠별 최초 1회 이해도 +2(사건별 최대 +10) · 선택은 DB에 기록됩니다."
 		description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		content.add_child(description)
 		var button := Button.new()
@@ -567,69 +567,10 @@ func _open_daily_episode(episode_id: String) -> void:
 func _refresh_schedule() -> void:
 	if _campaign_day_label == null or _schedule_list == null:
 		return
-	var campaign := GameState.get_campaign_snapshot()
-	var time_slot := String(campaign.get("time_slot", "morning"))
-	var slot_label := "오전" if time_slot == "morning" else "오후"
-	var phase := String(campaign.get("slot_phase", "planning"))
-	_campaign_day_label.text = "운영 %d일차 %s / 최대 %d일 · 현재 단계: %s" % [
-		int(campaign.get("day", 1)),
-		slot_label,
-		int(campaign.get("max_days", 10)),
-		{"planning": "일정 선택", "in_progress": "진행 중", "result": "결과 확인"}.get(phase, phase)
-	] + "\n" + _make_cycle_docket_text(campaign)
+	var phase := GameState.get_campaign_slot_phase()
+	_campaign_day_label.text = {"planning": "일상 · 대화와 기록을 살피고 사건에 대비합니다.", "in_progress": "사건 진행 중 · 현재 사건을 이어갑니다.", "result": "사건 결과 · 기록을 확인하고 일상으로 돌아갑니다."}.get(phase, phase)
 	_clear_children(_schedule_list)
-	if phase == "result":
-		_schedule_list.add_child(_make_label(_make_slot_result_text(GameState.get_campaign_slot_result(), slot_label)))
-		return
-	if phase == "in_progress":
-		var operation := GameState.get_active_campaign_operation()
-		_schedule_list.add_child(_make_label("%s 현장 조사가 %s 상태입니다.\n사건: %s\n%s" % [slot_label, "일시 중단" if String(operation.get("status", "")) == "suspended" else "진행 중", String(operation.get("case_id", "")), _make_dispatch_docket_text(operation)]))
-		return
-	var protagonist := GameState.get_agent_by_id(GameState.get_protagonist_agent_id())
-	for agent in [protagonist]:
-		if typeof(agent) != TYPE_DICTIONARY or (agent as Dictionary).is_empty():
-			continue
-		var agent_id := String(agent.get("id", ""))
-		if agent_id.is_empty():
-			continue
-		var row := HBoxContainer.new()
-		row.add_theme_constant_override("separation", 8)
-		_schedule_list.add_child(row)
-
-		var name_label := Label.new()
-		name_label.text = String(agent.get("name", agent_id))
-		name_label.custom_minimum_size.x = 140
-		row.add_child(name_label)
-
-		var schedule := GameState.get_campaign_agent_schedule(agent_id)
-		var picker := OptionButton.new()
-		picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		picker.add_item("%s 미정" % slot_label)
-		picker.set_item_metadata(0, "")
-		var selected_index := 0
-		for activity in SCHEDULE_ACTIVITIES:
-			var item_index := picker.item_count
-			picker.add_item("%s · %s" % [slot_label, String(activity.get("label", ""))])
-			picker.set_item_metadata(item_index, String(activity.get("id", "")))
-			if String(schedule.get(time_slot, "")) == String(activity.get("id", "")):
-				selected_index = item_index
-		for request in GameState.get_faction_request_board():
-			if typeof(request) != TYPE_DICTIONARY or String(request.get("status", "")) != "accepted" or String(request.get("kind", "")) != "dispatch":
-				continue
-			var activity_id := "request:%s" % String(request.get("instance_id", ""))
-			var request_index := picker.item_count
-			picker.add_item("의뢰 · %s" % String(request.get("title", "외부 의뢰")))
-			picker.set_item_metadata(request_index, activity_id)
-			if String(schedule.get(time_slot, "")) == activity_id:
-				selected_index = request_index
-		picker.select(selected_index)
-		picker.item_selected.connect(func(index: int) -> void:
-			var activity_id := String(picker.get_item_metadata(index))
-			if not activity_id.is_empty():
-				_set_schedule_activity(agent_id, time_slot, activity_id)
-		)
-		row.add_child(picker)
-	_schedule_list.add_child(_make_label("반일 일정은 주인공 한 명에게만 배정·소비됩니다. 서포트는 현장 자동 지원만 제공합니다."))
+	_schedule_list.add_child(_make_label("동료와의 대화, 기록 검토, 요원·장비 준비는 일상에서 진행합니다."))
 
 
 func _set_schedule_activity(agent_id: String, time_slot: String, activity_id: String) -> void:
@@ -772,13 +713,13 @@ func _refresh_episode_selection() -> void:
 		var emergency_locked := not emergency_case_id.is_empty() and episode_id != emergency_case_id
 		var cycle_locked := not cycle_main_case_id.is_empty() and episode_id != cycle_main_case_id
 		var button := Button.new()
-		var button_status := "해결 완료" if resolved else ("선택됨" if active else ("다음 cycle 대기" if cycle_locked else "사건 선택"))
+		var button_status := "해결 완료" if resolved else ("선택됨" if active else ("진행 사건 있음" if cycle_locked else "사건 선택"))
 		button.text = "%s: %s" % [button_status, String(entry.get("title", "사건"))]
 		button.disabled = resolved or emergency_locked or cycle_locked or active or phase != "planning" or not has_investigation
 		if not has_investigation:
-			button.tooltip_text = "현장 편성 요원을 조사 일정에 배치하면 선택할 수 있습니다."
+			button.tooltip_text = "출동 가능한 요원을 편성하면 선택할 수 있습니다."
 		elif cycle_locked:
-			button.tooltip_text = "이번 10일 cycle의 메인 사건은 %s으로 확정되었습니다. 다른 메인 사건은 다음 cycle에서 배정합니다." % _get_case_title(cycle_main_case_id)
+			button.tooltip_text = "현재 진행 중인 사건은 %s입니다. 해당 사건의 결과를 먼저 확인하세요." % _get_case_title(cycle_main_case_id)
 		else:
 			button.tooltip_text = ""
 		button.pressed.connect(_select_episode.bind(episode_path, episode_id))
@@ -907,16 +848,6 @@ func _start_investigation() -> void:
 	if not GameState.can_start_mission_with_agents():
 		_status_label.text = GameState.get_agent_selection_status_text()
 		return
-	if not GameState.is_campaign_schedule_complete(_get_schedule_agent_ids()):
-		_status_label.text = "주인공의 현재 반일 일정을 먼저 정하세요."
-		return
-	if not _selected_team_has_investigation():
-		var schedule_result := GameState.resolve_non_investigation_campaign_slot(_get_schedule_agent_ids())
-		if schedule_result.has("error"):
-			_status_label.text = String(schedule_result.get("error", "일정 처리에 실패했습니다."))
-		else:
-			get_tree().reload_current_scene()
-		return
 	var planned_case_id := GameState.get_campaign_planned_case()
 	if planned_case_id.is_empty() or not GameState.begin_campaign_operation(planned_case_id):
 		_status_label.text = "조사할 사건을 선택하세요."
@@ -928,21 +859,11 @@ func _start_investigation() -> void:
 
 
 func _selected_team_has_investigation() -> bool:
-	var slot := String(GameState.get_campaign_snapshot().get("time_slot", "morning"))
-	var protagonist_id := GameState.get_protagonist_agent_id()
-	return not protagonist_id.is_empty() and String(GameState.get_campaign_agent_schedule(protagonist_id).get(slot, "")) == "investigation"
+	return GameState.can_start_mission_with_agents()
 
 
-func _make_cycle_docket_text(campaign: Dictionary) -> String:
-	var cycle_main_case_id := String(campaign.get("cycle_main_case_id", ""))
-	var docket_text := "이번 10일 cycle 메인 사건: 미배정 · 첫 현장 조사 시작 시 확정됩니다." if cycle_main_case_id.is_empty() else "이번 10일 cycle 메인 사건: %s · 다른 메인 사건은 다음 cycle에서 배정합니다." % _get_case_title(cycle_main_case_id)
-	var planned_case_id := GameState.get_campaign_planned_case()
-	if cycle_main_case_id != "episode_002_red_umbrella_alley" and planned_case_id != "episode_002_red_umbrella_alley":
-		return docket_text
-
-	var capacity := _get_m04_preparation_capacity(campaign)
-	var support_status := "권나래의 ‘귀가 기억 고정’ 보조를 회수 단계에서 선택할 수 있습니다." if capacity >= 1 else "준비실에서 ‘대기·회복’ 반일을 한 번 완료하면 권나래의 ‘귀가 기억 고정’ 보조를 회수 단계에서 선택할 수 있습니다."
-	return "%s\nM04 현장 준비 %d/1 · %s · 수치 보정 없음" % [docket_text, capacity, support_status]
+func _make_cycle_docket_text(_campaign: Dictionary) -> String:
+	return "일상에서 사건을 선택하고 준비를 마치면 출동할 수 있습니다."
 
 
 func _get_m04_preparation_capacity(campaign: Dictionary) -> int:
@@ -959,19 +880,7 @@ func _get_m04_preparation_capacity(campaign: Dictionary) -> int:
 
 
 func _make_dispatch_docket_text(operation: Dictionary) -> String:
-	var context: Variant = operation.get("dispatch_context", {})
-	if typeof(context) != TYPE_DICTIONARY:
-		return "출동 기록: 현재 반일의 현장 대응"
-	var dispatch: Dictionary = context
-	var kind := String(dispatch.get("dispatch_kind", "EARLY"))
-	var day := int(dispatch.get("dispatch_day", 1))
-	var slot := "오전" if String(dispatch.get("dispatch_slot", "morning")) == "morning" else "오후"
-	var docket_text := "출동 기록: %s · %d일차 %s · 수치 보정 없음" % ["조기 출동" if kind == "EARLY" else "정규 대응", day, slot]
-	if String(operation.get("case_id", "")) != "episode_002_red_umbrella_alley":
-		return docket_text
-	var capacity := int(dispatch.get("m04_preparation_capacity", 0))
-	var support_status := "권나래의 ‘귀가 기억 고정’ 보조가 회수 단계에서 해금됩니다." if capacity >= 1 else "귀가 기억 고정 보조는 아직 잠겨 있습니다."
-	return "%s\nM04 현장 준비 %d/1 · %s" % [docket_text, capacity, support_status]
+	return "진행 사건: %s" % _get_case_title(String(operation.get("case_id", "")))
 
 
 func _get_case_title(case_id: String) -> String:
