@@ -1,5 +1,17 @@
 # 사람용 통합 블루프린트 제작 계약
 
+## 최신 승인/기각과 PDF 최적화
+
+사용자 첨부는 기존 `victims-atlas.png`와 일치한다. 세 사진풍 초상 전체를 그림체 불일치로 기각하며 현재 PDF/회수 합성에서 제거한다. 나머지 기존 활성17개는 시각 선택 승인, 과거 대체된 M04 의상2개는 그대로 보존한다. 파일과 exact hash 승인 범위는 `BLUEPRINT_20260911_IMAGE_DECISIONS.json`이 소유한다. 새 `victims-atlas-anime.png`는 교체 후보이며 이전의 '나머지 승인'을 소급 적용하지 않는다. 제품 root manifest 승격·실행·전체 기획 승인은 별개다.
+
+비교: 기존 ASCII85+Flate 유지(REJECT: 불필요한 전송 표현 비용), JPEG/다운샘플(보류: 선화·타이포 손실 가능), 기존 ReportLab의 binary Flate(ADOPT: 원본 픽셀/alpha 그대로). 공식 ReportLab 설정 문서와 설치된 pdfdoc.py useA85 분기를 실제로 확인했다. 새 압축 계층/유료 도구를 추가하지 않는다. PDF 출력은 OPTIMIZED 후속본이며 기존 열린/승인 판은 보존한다. 재사용 도구 BUILD→REVIEW의 제한된 변경으로 게임 규칙/씬/저장/사용자 runtime 변경은 제외한다.
+
+교체 그림은 호스트 이미지 모델의 style-transfer로 생성했다. 권나래=narae.png는 선화/얼굴 명암 스타일 기준, 기각 초상은 인원·복장·셀 순서만 기준이다. 생성 원본 exec-f0e6bdde-7fd5-45dd-b062-a1d1595a6791.png, 목적은 M01/M04/M07 보호 대상 HUD와 Blueprint atlas다. Prompt: three equal square cells in one 3:1 row; chest-up worried civilians; short-bob woman in gray jacket, tousled man in navy rain jacket, brown-haired woman in brown cardigan; strong anime ink contours, simplified facial anatomy and cel shadows; near-black background; no pores/photorealism/3D/text/extra props. RGB2172×724, 각724×724. 투명도가 필요한 독립 전신 자산은 아니다.
+
+검증 범위: PDF 전체 렌더, 수정 초상/회수/메인 페이지 검사, 기존 PDF 공통 이미지의 decoded RGB/alpha 동일성, 기각 초상 비포함, exact 승인 hash·후보 신규성, 기존 문서 회귀. 상태군 모션·실제 NinePatch·Godot·Human·권리·release는 미실행이다. Base v9.4.4와 다른 Draft PR은 유지한다. Base 승격은 하지 않는다. 롤백은 현재 변경 commit과 보존된 이전 PDF/원본을 이용한다.
+
+최적화 결과: 54,616,521→43,575,820 bytes,69쪽 유지. 이전 PDF와 공유하는16개 이미지의 decoded pixel/alpha hash가 동일하며 기각 초상은 새 PDF image object에서 검출되지 않았다. 전체69쪽 렌더 후13/23/36/39/41쪽을 시각 확인했다. 문서/hash/경로/alpha/atlas/경계 및 기존 문서 회귀4개 PASS. 1차 검토는 기각 초상 잔존·승인 소급 위험을 교정했고, 2차 검토는 승인17/기각1/새 후보1/과거2 분리와 무손실 증거·회수3화면을 재확인했다. 이번 제한된 최적화/선택 반영은 완료이며 전체 모션·구현 준비 CLEAN은 여전히 선언하지 않는다.
+
 상태: IN_PROGRESS / FINAL_USER_REVIEW_PENDING / NO_GAME_IMPLEMENTATION
 
 현재 산출은 아래 참고 교정 후속판으로 갱신한다. 이전46쪽 검토 PDF와11개 후보는 역사 snapshot으로 보존한다. 이것은 전체 자산/상태 제작 완료가 아닌 부분 제작 snapshot이다. `REMAINING_WORK_COMPLETION_GATE: NOT_COMPLETE`; 게임 적용·최종 승인 없음.

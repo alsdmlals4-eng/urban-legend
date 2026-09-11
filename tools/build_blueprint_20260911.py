@@ -9,6 +9,7 @@ import re
 from html import escape
 from PIL import Image
 from reportlab.pdfgen import canvas
+from reportlab import rl_config
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.lib.colors import HexColor, Color
@@ -21,7 +22,9 @@ ASSETS = ROOT / '.asset-vault/blueprint-20260911'
 ASE = ROOT / '.asset-vault/aseprite-candidates/blueprint-20260911'
 OUT = ROOT / 'output/pdf'
 OUT.mkdir(parents=True, exist_ok=True)
-PDF = OUT / 'URBAN_LEGEND_HUMAN_BLUEPRINT_20260911_CASE_PREPARATION.pdf'
+PDF = OUT / 'URBAN_LEGEND_HUMAN_BLUEPRINT_20260911_OPTIMIZED.pdf'
+# Binary Flate streams preserve original pixels; ASCII85 adds transport overhead.
+rl_config.useA85 = False
 pdfmetrics.registerFont(TTFont('KR', 'C:/Windows/Fonts/malgun.ttf'))
 pdfmetrics.registerFont(TTFont('KRB', 'C:/Windows/Fonts/malgunbd.ttf'))
 W, H = 1080, 720
@@ -349,7 +352,7 @@ def detailed_screen(kind,x,yy,w,h):
             c.restoreState()
         else:img(ASSETS/(case_info[1]+'.png'),260,109,350,282)
         panel(702,347,246,131);label('보호 대상 · '+case_info[3],716,451,12)
-        region_img(ASSETS/'victims-atlas.png',(case_info[9]*724,0,724,724),714,359,75,75)
+        region_img(ASSETS/'victims-atlas-anime.png',(case_info[9]*724,0,724,724),714,359,75,75)
         lines(['동행 보호','위험 변화 별도 기록','초상은 외형 후보'],800,418,10,23)
         panel(702,103,246,231);label('상황 대응',716,304,18)
         for i,t in enumerate([case_info[6],'피해자 동행 보호','현재 전조 관찰']):button(t,714,242-i*53,222,42)
@@ -414,6 +417,7 @@ provenance = {
  'm04-umbrella.png':('exec-523f88d0-a6cd-4290-a093-7e1e93633613.png','M04 adult female apparition, not victim or Lume'),
  'm07-presenter.png':('exec-5def0585-ee75-4658-9390-480f4feeb292.png','M07 presenter silhouette behind control booth glass'),
  'victims-atlas.png':('exec-655b2d45-7e45-4f2a-a2f3-c70a573c96fa.png','Three civilian portrait proposals; not approved age or identity canon'),
+ 'victims-atlas-anime.png':('exec-f0e6bdde-7fd5-45dd-b062-a1d1595a6791.png','Replacement anime civilian portrait atlas; candidate pending user selection'),
  'ui-button-states.png':('exec-395005a9-f7f5-49e5-822c-88a4539a7ab9.png','Six button state texture candidates; exact slicing still requires QA'),
  'wordmark.png':('exec-c9fd67ad-6191-4ec4-8e1c-74344bc5af05.png','New title wordmark candidate; prior approved logo preserved'),
 }
@@ -421,7 +425,9 @@ for p in sorted(ASSETS.glob('*.png')):
     im=Image.open(p)
     origin,purpose=provenance[p.name]
     assets.append({'path':str(p.relative_to(ROOT)).replace('\\','/'),'sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'size':im.size,'mode':im.mode,'alpha_range':im.getchannel('A').getextrema() if im.mode=='RGBA' else None,'status':'GENERATED_CANDIDATE','runtime_applied':False,'origin_generation_filename':origin,'generator':'host image model','created':'2026-09-11','planned_consumer':purpose,'approved':False,'rights_review':'NOT_RUN','remote_source_bytes':'LOCAL_VAULT_ONLY','state_family':'STATIC_ONLY','visual_caveat':'Pose, silhouette, alpha-edge compositing and identity consistency require final review'})
-sources=[ROOT/'docs/design/BLUEPRINT_20260911.md',ROOT/'docs/design/blueprint-20260911-case-appendix.md',ASSETS/'case-preparation-review/PROMPTS.md',Path(__file__)]
+decision_path=ROOT/'docs/design/BLUEPRINT_20260911_IMAGE_DECISIONS.json'
+decisions=json.loads(decision_path.read_text(encoding='utf-8'))
+sources=[ROOT/'docs/design/BLUEPRINT_20260911.md',ROOT/'docs/design/blueprint-20260911-case-appendix.md',ASSETS/'case-preparation-review/PROMPTS.md',decision_path,Path(__file__)]
 receipt={'pdf':str(PDF.relative_to(ROOT)).replace('\\','/'),'sha256':hashlib.sha256(PDF.read_bytes()).hexdigest(),'pages':len(PdfReader(PDF).pages),'baseline_main':'c82291101bf0a2bb4d821a12bca9f14070ee2886','sources':{str(p.relative_to(ROOT)).replace('\\','/'):hashlib.sha256(p.read_bytes()).hexdigest() for p in sources},'assets':assets,'atlas':{'image':str((ASE/'staff-atlas-clean.png').relative_to(ROOT)).replace('\\','/'),'metadata':str((ASE/'staff-atlas-clean.json').relative_to(ROOT)).replace('\\','/'),'sha256':hashlib.sha256((ASE/'staff-atlas-clean.png').read_bytes()).hexdigest(),'animation':False},'toc':toc,'layout_checks':checks,'runtime':'NOT_RUN','human':'NOT_RUN','final_approval':'PENDING','visual_review':'PENDING'}
 receipt['superseded_asset_paths']=['.asset-vault/blueprint-20260911/lume-m04.png','.asset-vault/blueprint-20260911/lume-m04-red.png']
 receipt['lume_atlas']={name:str((ROOT/'.asset-vault/aseprite-candidates/blueprint-completion-20260911'/file).relative_to(ROOT)).replace('\\','/') for name,file in [('image','lume-sheet.png'),('metadata','lume-sheet.json'),('source','lume-costumes.aseprite')]}
@@ -437,6 +443,14 @@ receipt['reference_inputs']={str(p.relative_to(ROOT)).replace('\\','/'):hashlib.
 receipt['reference_inputs']['.asset-vault/blueprint-20260911/reference-revision/PROMPTS.md']=hashlib.sha256((ASSETS/'reference-revision/PROMPTS.md').read_bytes()).hexdigest()
 for asset in assets:
     if asset['path'] in receipt['superseded_asset_paths']:asset['status']='SUPERSEDED_CANDIDATE'
-(OUT/'BLUEPRINT_20260911_CASE_PREPARATION_RECEIPT.json').write_text(json.dumps(receipt,ensure_ascii=False,indent=2),encoding='utf-8')
+    matching=next((d for d in decisions['assets'] if d['path']==asset['path']),None)
+    if matching:
+        assert matching['sha256']==asset['sha256'], 'Approval must bind exact bytes'
+        asset['status']=matching['status']
+        asset['approved']=matching['status']=='USER_APPROVED_VISUAL'
+        asset['approval_scope']='Visual selection only; not production canon, rights or runtime'
+receipt['rejected_asset_paths']=['.asset-vault/blueprint-20260911/victims-atlas.png']
+receipt['encoding_optimization']={'method':'BINARY_FLATE_NO_ASCII85','raster_downsampling':False,'lossy_reencoding':False}
+(OUT/'BLUEPRINT_20260911_OPTIMIZED_RECEIPT.json').write_text(json.dumps(receipt,ensure_ascii=False,indent=2),encoding='utf-8')
 assert all(v['bottom']>=48 for v in checks), 'Content crossed footer'
 print(json.dumps({'pdf':str(PDF),'pages':receipt['pages'],'sha256':receipt['sha256'],'assets':len(assets)},ensure_ascii=False))
