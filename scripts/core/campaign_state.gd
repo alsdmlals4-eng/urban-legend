@@ -241,11 +241,24 @@ func finish_operation_day() -> Dictionary:
 	return {"advanced": true, "day": int(_state.get("day", 1)), "time_slot": get_current_slot()}
 
 
+## First terminal outcome owns request-board refresh, not success/reward ownership.
+func settle_case_outcome(case_id: String, outcome: String) -> bool:
+	if not CASE_ORDER.has(case_id) or not ["success", "failure", "retreat"].has(outcome):
+		return false
+	var case_state := _get_case_state(case_id)
+	if not String(case_state.get("first_terminal_outcome", "")).is_empty() or String(case_state.get("resolution_state", "")) == "resolved":
+		return false
+	case_state["first_terminal_outcome"] = outcome
+	_set_case_state(case_id, case_state)
+	_refresh_request_board(true)
+	return true
+
+
 func resolve_case(case_id: String, resolution_grade: String) -> bool:
 	if not CASE_ORDER.has(case_id):
 		return false
+	settle_case_outcome(case_id, "success")
 	var case_state := _get_case_state(case_id)
-	var first_resolution := String(case_state.get("resolution_state", "")) != "resolved"
 	case_state["resolution_state"] = "resolved"
 	case_state["resolution_grade"] = resolution_grade.strip_edges()
 	var operation := _get_active_operation()
@@ -256,8 +269,6 @@ func resolve_case(case_id: String, resolution_grade: String) -> bool:
 	_set_case_state(case_id, case_state)
 	if String(_state.get("emergency_case_id", "")) == case_id:
 		_state["emergency_case_id"] = ""
-	if first_resolution:
-		_refresh_request_board(true)
 	return true
 
 
@@ -436,6 +447,8 @@ func load_save_data(value: Variant, legacy_mvp037: bool = false) -> void:
 			var case_state := _get_case_state(case_id)
 			case_state["discovery_state"] = String(loaded_case.get("discovery_state", case_state["discovery_state"]))
 			case_state["resolution_state"] = String(loaded_case.get("resolution_state", "unresolved"))
+			var first_outcome := String(loaded_case.get("first_terminal_outcome", "success" if case_state["resolution_state"] == "resolved" else ""))
+			case_state["first_terminal_outcome"] = first_outcome if ["success", "failure", "retreat"].has(first_outcome) else ""
 			case_state["resolution_grade"] = String(loaded_case.get("resolution_grade", ""))
 			var resolution_context: Variant = loaded_case.get("resolution_context", {})
 			case_state["resolution_context"] = (resolution_context as Dictionary).duplicate(true) if typeof(resolution_context) == TYPE_DICTIONARY else {}

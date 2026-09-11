@@ -82,3 +82,41 @@ func test_request_card_button_performs_accepted_dispatch() -> void:
 	button.pressed.emit()
 	assert_true(state.campaign_state.get_request(request.instance_id).status in ["completed", "failed"])
 	assert_eq(state.get_campaign_slot_phase(), "planning")
+
+func test_failure_and_retreat_settle_once_without_success_reports() -> void:
+	for status in ["failed", "retreated"]:
+		state.reset_run_state()
+		state.start_episode_from_preparation("res://data/episodes/episode_002_red_umbrella_alley.json")
+		var sequence: int = state.get_campaign_snapshot().request_sequence
+		state.save_recovery_result(false, status, 20)
+		assert_gt(int(state.get_campaign_snapshot().request_sequence), sequence)
+		var board: Array = state.get_faction_request_board()
+		assert_false(state.is_recovery_successful())
+		assert_false(state.record_current_case_report())
+		assert_true(state.get_completed_case_reports().is_empty())
+		assert_eq(state.get_campaign_snapshot().cases[Campaign.RED_UMBRELLA].resolution_state, "unresolved")
+		assert_true(state.load_game())
+		state.save_recovery_result(false, status, 20)
+		assert_eq(state.get_faction_request_board(), board)
+		state.save_recovery_result(true, "core_recovered", 100)
+		state.record_current_case_report()
+		assert_eq(state.get_faction_request_board(), board, "A retry success must not refresh the same case twice")
+
+func test_legacy_resolved_save_does_not_refresh_on_success_reconfirmation() -> void:
+	var campaign = Campaign.new()
+	campaign.load_save_data({"cases": {Campaign.AFTERLIFE: {"resolution_state": "resolved"}}})
+	var board: Array = campaign.get_request_board()
+	campaign.resolve_case(Campaign.AFTERLIFE, "contained")
+	assert_eq(campaign.get_request_board(), board)
+
+func test_invalid_or_unfinished_outcomes_cannot_refresh_board() -> void:
+	var campaign = Campaign.new()
+	var board: Array = campaign.get_request_board()
+	assert_false(campaign.settle_case_outcome(Campaign.AFTERLIFE, "suspended"))
+	assert_false(campaign.settle_case_outcome(Campaign.AFTERLIFE, ""))
+	assert_false(campaign.settle_case_outcome("unknown_case", "failure"))
+	assert_eq(campaign.get_request_board(), board)
+	var sequence: int = state.get_campaign_snapshot().request_sequence
+	state.save_recovery_result(false, "", 100)
+	state.record_current_case_report()
+	assert_eq(int(state.get_campaign_snapshot().request_sequence), sequence)
