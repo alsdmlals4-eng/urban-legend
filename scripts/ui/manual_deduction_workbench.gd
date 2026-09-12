@@ -320,6 +320,21 @@ func _render_deduction() -> void:
 			else:
 				line.add_child(_body_label(String(segment.get("text", ""))))
 	var lower_divider := HSeparator.new()
+	# Original earned observations are evidence, not a verdict on the player's draft.
+	var shown_sources: Dictionary = {}
+	for candidate_value in _current_page_candidates():
+		var candidate: Dictionary = candidate_value
+		var source_id := String(candidate.get("source_record_id", ""))
+		var observation := String(candidate.get("source_observation", ""))
+		if source_id.is_empty() or observation.is_empty() or shown_sources.has(source_id):
+			continue
+		if shown_sources.is_empty():
+			_deduction_content.add_child(_label("확보한 원문 기록 · 후보 해석과 대조", 18, COLOR_GOLD))
+		shown_sources[source_id] = true
+		_deduction_content.add_child(_label(String(candidate.get("source_label", "출처 기록")), 14, COLOR_TEAL))
+		var observation_label := _body_label(observation)
+		observation_label.name = "SourceObservation_%s" % source_id
+		_deduction_content.add_child(observation_label)
 	lower_divider.add_theme_stylebox_override("separator", _line_style(COLOR_GOLD_MUTED, 1))
 	_deduction_content.add_child(lower_divider)
 	_deduction_content.add_child(_label("작성 원칙", 16, COLOR_GOLD))

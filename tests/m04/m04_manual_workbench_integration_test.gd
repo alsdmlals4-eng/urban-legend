@@ -60,10 +60,21 @@ func _run() -> void:
 	if workbench == null:
 		_finish()
 		return
+	_expect(game_state.get_manual_draft_slots(manual, M04_EPISODE_ID).is_empty(), "reading observations must not author a draft automatically")
+	_expect(workbench.find_children("SourceObservation_%s" % source_record_id, "Label", true, false).size() == 1, "candidate alternatives must share one original observation, not duplicate it")
 	var lume_portrait := workbench.find_child("LumePortrait", true, false) as TextureRect
 	_expect(lume_portrait != null and not lume_portrait.visible, "M04 guide must not display the CASE-01 Lume portrait")
-	_expect(_visible_text_contains(workbench, "기록관 아카"), "M04 guide identity must be Archivist Aka")
-	_expect(not _visible_text_contains(workbench, "루메"), "M04 workbench must not expose the CASE-01 Lume identity")
+	_expect(_visible_text_contains(workbench, "루메"), "M04 guide must preserve Lume identity without using the station outfit")
+	_expect(not _visible_text_contains(workbench, "기록관 아카"), "retired guide identity must not return")
+	for clue_value in game_state.get_clues():
+		var clue: Dictionary = clue_value
+		var description := String(clue.get("description", ""))
+		if description.is_empty():
+			continue
+		if String(clue.get("id", "")) == source_record_id:
+			_expect(_visible_text_contains(workbench, description), "earned original observation must be readable beside deduction")
+		else:
+			_expect(not _visible_text_contains(workbench, description), "unearned original observation must not leak")
 	for viewport_size in [Vector2i(1280, 720), Vector2i(1920, 1080)]:
 		root.size = viewport_size
 		for _frame in range(2):
@@ -82,6 +93,7 @@ func _run() -> void:
 		await process_frame
 		var drafts: Dictionary = game_state.get_manual_draft_slots(manual, M04_EPISODE_ID)
 		_expect(String(drafts.get(slot_id, "")) == String(candidate.get("id", "")), "M04 manual candidate placement did not persist as a draft")
+		_expect(workbench.find_child("SourceObservation_%s" % source_record_id, true, false) != null, "observation comparison must remain available after draft placement")
 		_expect(not _visible_text_contains(workbench, "정답") and not _visible_text_contains(workbench, "오답"), "M04 manual exposed an answer verdict")
 	_finish()
 
@@ -126,6 +138,14 @@ func _expect(condition: bool, message: String) -> void:
 
 
 func _finish() -> void:
+	call_deferred("_finish_clean")
+
+
+func _finish_clean() -> void:
+	if current_scene != null:
+		current_scene.queue_free()
+	for frame in range(3):
+		await process_frame
 	if _prepared:
 		var restore_error := _guard.restore()
 		if not restore_error.is_empty():

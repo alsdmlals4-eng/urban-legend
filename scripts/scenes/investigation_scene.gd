@@ -1374,10 +1374,12 @@ func _get_player_authored_workbench_manual() -> Dictionary:
 
 func _build_player_authored_workbench_model(manual: Dictionary) -> Dictionary:
 	var source_titles: Dictionary = {}
+	var source_observations: Dictionary = {}
 	for clue_value in GameState.get_clues():
 		if clue_value is Dictionary:
 			var clue := clue_value as Dictionary
 			source_titles[String(clue.get("id", ""))] = String(clue.get("title", "확보 기록"))
+			source_observations[String(clue.get("id", ""))] = String(clue.get("description", ""))
 	var earned_record_ids := GameState.get_collected_clue_ids()
 	var visible_candidates: Array[Dictionary] = []
 	for candidate_value in manual.get("candidate_keywords", []) as Array:
@@ -1391,7 +1393,9 @@ func _build_player_authored_workbench_model(manual: Dictionary) -> Dictionary:
 			"id": String(candidate.get("id", "")),
 			"page_id": String(candidate.get("page_id", "")),
 			"display_label": String(candidate.get("display_label", "기록 후보")),
-			"source_label": "출처: %s" % String(source_titles.get(source_record_id, "확보 기록"))
+			"source_label": "출처: %s" % String(source_titles.get(source_record_id, "확보 기록")),
+			"source_record_id": source_record_id,
+			"source_observation": String(source_observations.get(source_record_id, ""))
 		})
 	return {
 		"case_label": _player_authored_manual_case_label(),
@@ -1427,7 +1431,7 @@ func _player_authored_manual_guide() -> Dictionary:
 			"portrait_visible": true
 		}
 	return {
-		"name": "기록관 아카",
+		"name": "루메",
 		"message": "확보한 기록과 문장을 대조하세요. 판단은 피해자 보호와 회수 대응에서 확인됩니다.",
 		"portrait_visible": false
 	}

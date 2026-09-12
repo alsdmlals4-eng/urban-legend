@@ -1,5 +1,17 @@
 # 괴이기록국 Current Handoff
 
+## 비교 게임 → 기획 구체화 → 연결 구현 루프 — 2026-09-13
+
+최신 사용자 정의: 개선 루프는 단순 버그 수정 반복이 아니라 유사 장르의 공개 개발 자료를 조사하고 우리 기획을 구체화/연결/구현하며 완성도를 높이는 반복이다. 계획 선행은 유지한다. 같은 승인 방향 안의 세부 작업은 재승인을 요구하지 않으며 핵심 규칙/주요 플레이 경험/비용 변경만 사용자 결정으로 분리한다. 루프 순서는 현재 플레이 병목 → 기존 구현/승인 자료 → 관련 게임 비교 → ADOPT/ADAPT/REJECT → 구현 계획 → 테스트 우선 구현 → 실행/퇴행 검수 → 다음 병목이다. 배경 자동 실행/전체 게임 완료를 선언하는 뜻은 아니다.
+
+첫 연결 단위 계획과 benchmark: `docs/superpowers/plans/2026-09-13-manual-observation-loop.md`. Phasmophobia Chronicle의 기록 재열람, Outer Wilds의 환경 관측/위험 시험, Expelled!의 지식/행동 결과 연결을 공개 개발사 자료에서 비교했다. 시간 루프·하루 일정·외부 보상 체계를 복제하지 않는다. 현재 매뉴얼은 후보의 출처 제목만 전달했으므로 확보된 원문 관측과 후보 해석의 비교 마찰을 우선 보완했다.
+
+구현: investigation_scene은 기존 clue description을 확보 후보에만 연결한다. workbench는 현재 페이지의 확보 원문을 출처 ID로 중복 제거해 기존 스크롤 문서 안에 표시한다. 새 단서/정답/저장 필드를 발명하지 않는다. 읽기만으로 초안이 작성되지 않고 작성 후에도 원문이 남는다. M04 활성 매뉴얼의 stale '기록관 아카'는 루메로 교정했다. 역무원 복장 이미지를 M04에 가져오지 않으며 미승인 비옷 그림을 제작/적용하지 않았다.
+
+검증: 원문 부재 및 stale guide 3개 실패 RED → 구현 후 M04 manual integration PASS. 미확보 원문 비노출/출처 중복 방지/초안 자동작성 금지/배치 후 원문 유지/판정 비노출 검사 통과. M04 authored-manual contract PASS; GUT 27/27 tests,144 assertions PASS. 기존 통합 테스트 종료에서 CanvasItem 2/Font RID 오류와 ObjectDB 경고가 남음(정리 대기 후 10→8); 무경고 PASS가 아니다. fixture에서 collect_clue로 관측을 확보했으므로 정상 조사 입력 E2E나 사람 UX 검증으로 승격하지 않는다. 1280/1920 논리 배치 검사는 실제 디스플레이 캡처와 구별한다.
+
+검토 1은 정보 누출/정답 자동 작성/출처 중복에 집중했고 검토 2는 초안 배치 이후 읽기 지속/기존 문서 레이아웃/구출 규칙 불변과 테스트 종료 경고를 확인했다. 다음 우선순위는 M04 실제 조사 입력→키워드 획득→작성한 규칙의 구출/회수 소비 및 반증 피드백 추적이다. 새로운 단위를 계획한 뒤 같은 루프로 진행한다. 전체 CLEAN_REVIEW_EXIT, 정상 플레이 완주, Human/출시 PASS는 미선언. Base 공용 승격 없음; 기존 자산/사용자 import 변경/열린 PR은 보존한다.
+
 ## 일반 저장 검증 후 교체 — 2026-09-13 continuation
 
 승인된 개선 루프의 다음 단위. 계획: `docs/superpowers/plans/2026-09-13-verified-main-save.md`. 기존 generic GameState writer는 primary를 직접 WRITE로 열어 검증 전에 이전 내용을 비웠으며 store/flush 실패를 확인하지 않았다. 이제 동일 폴더의 `urban_legend_save.json.pending`에 먼저 기록하고 store 반환값/flush 후 오류/디스크 재읽기 바이트를 확인한 뒤 primary로 rename한다. 실패는 false로 회수 재시도 소비자에 전달한다. 성공한 rename은 staging을 소비하며 실패 시 최대 한 staging 파일만 다음 재시도에 재사용한다. load_game은 staging을 자동 승격하지 않는다.
