@@ -41,3 +41,22 @@ func test_m04_return_memory_reports_actions_not_calendar() -> void:
 	assert_false(memory.contains("대기·회복"))
 	assert_true(memory.contains("귀가 기억 고정"))
 	scene.free()
+
+func test_failed_m04_result_does_not_show_success_vignette() -> void:
+	state.begin_campaign_operation("episode_002_red_umbrella_alley")
+	state.save_recovery_result(false, "control_failure", 20)
+	var scene = load("res://scenes/result_scene.tscn").instantiate()
+	add_child_autofree(scene)
+	assert_null(scene.find_child("M04NarrativeResult", true, false))
+	assert_true(String(scene.call("_make_recovery_status_text")).contains("통제 실패"))
+	assert_true(state.get_completed_case_reports().is_empty())
+	var visible_text := ""
+	for label in scene.find_children("*", "Label", true, false):
+		visible_text += label.text
+	assert_false(visible_text.contains("DB에 저장되었습니다"), "failure UI must not claim a completed report was saved")
+
+func test_withdrawal_result_is_distinct_from_no_result() -> void:
+	var scene = load("res://scripts/scenes/result_scene.gd").new()
+	state.save_recovery_result(false, "approved_withdrawal", 20)
+	assert_true(String(scene.call("_make_recovery_status_text")).contains("승인 철수"))
+	scene.free()

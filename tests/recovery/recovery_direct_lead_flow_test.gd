@@ -51,6 +51,8 @@ func _run() -> void:
 	var recovery_threshold := int(scene.get("_recovery_threshold")) if scene != null else 0
 	if scene != null:
 		scene.set("_anomaly_stability", recovery_threshold)
+		for agent_id in _game_state.get_selected_agent_ids():
+			_game_state.change_agent_hp(agent_id, -10000)
 		scene.call("_update_battle_view", "automatic completion fixture")
 		scene.call("_update_battle_view", "automatic completion fixture duplicate refresh")
 		_expect(bool(scene.get("_recovery_completion_queued")), "reaching the stability threshold must queue one automatic result transition")

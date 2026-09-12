@@ -2,6 +2,20 @@
 
 ## 구현 재개 — 2026-09-12
 
+### 회수 실패 화면 연결 — 2026-09-12 후속
+
+현재 승인 continuation의 bounded BUILD/REVIEW. `battle_scene`의 전원 행동 불능은 조사 화면으로 무기록 복귀하던 경로에서 `control_failure` 저장 → 결과 화면으로 연결했다. 중복 갱신은 하나의 deferred 종료로 모으고, 동일 step에 안정화 목표도 달성하면 기존 성공을 보존한다. 피해자 구조 결과·확보 기록·보상 수치는 바꾸지 않는다. 새 저장 필드/자산은 없다.
+
+실패 M04는 성공 후일담 대신 현장 종료 기록을 표시한다. ‘회수 기록 없음’과 통제 실패/철수/승인 철수를 구분하며 실패에 완료 보고서·성공 보상·성공 후일담을 노출하지 않는다. 빠른 전환에서 RuntimeUiEditor의 두 프레임 지연 작업이 이미 나간 scene tree를 참조하던 오류도 생명주기 검사로 차단했다.
+
+비교 근거: 기존 성공 자동종료/결과 씬/일상 결과확인 경로와 RecoveryOutcomePolicy를 재사용(ADAPT); 실패마다 별도 신규 씬은 중복 상태 증가로 DEFER; 위험 시계 6칸을 즉시 게임오버로 바꾸는 안은 기존 악화/책임 판정 의미 변경으로 REJECT. Godot 공식 SceneTree 문서(https://docs.godotengine.org/en/stable/tutorials/scripting/scene_tree.html)의 씬 입장/퇴장과 전환 수명주기를 확인했다. Base v9.4.4 pin은 변경하지 않았다. remote main `c82291101bf0a2bb4d821a12bca9f14070ee2886`, 열린 PR 361/360/359/287/231은 읽기 전용으로 확인했다.
+
+검증: 추가 GUT 2개가 실패함을 먼저 확인 → 교정 → 26/26,116 assertions PASS. 별도 `tests/recovery/recovery_failure_return_test.gd`는 최초 3개 실패 및 중복전환/지연레이아웃 오류 재현 → 교정 → 0 failures, 최종 출력 오류/누수 경고 없음. 실제 SceneTree에서 회수 실패→결과→저장/로드→복귀 버튼→준비실 결과확인 버튼→planning까지 실행한다. `recovery_direct_lead_flow_test.gd`는 동시 목표달성/행동불능 fixture로 12/12 PASS, 종료 시 AudioStreamWAV/Playback 관련 ObjectDB 2개 경고는 남는다. 전조음 stop/stream 해제 시험은 이 경고를 해결하지 못해 제품 수정으로 남기지 않았다.
+
+자체 검토 1차: 실패 정산과 성공 보상 분리, 중복 전환/목표 동시달성 확인. 2차: 실패에 ‘완료 보고서가 DB에 저장됨’ 표시 발견→회귀 테스트 실패 확인→비성공 표시 분리→전체 GUT 재실행. 이 범위의 기능 검사는 통과했지만 전체 CLEAN/Human/출시 PASS는 아니다. 학습은 기존 인계와 회귀 검사에 남기며 공용 Base 승격은 하지 않는다.
+
+남은 범위: **직접 철수 선택→책임 조건 미리보기/확인→approved_withdrawal 또는 control_failure** 입력 연결, 중단/재개의 전체 경로, 활성시간 시계 정책 동기화, 1280×720/1920×1080 시각·포커스·사람 검증. 기존 시계 가득 참 자체는 즉시 실패가 아니라 기존 악화 규칙이며 바꾸지 않았다. main 병합/전체 정본의 일정·루메 legacy 문구 교정은 미완료. 실패 API/표시 준비를 철수 UI 완료로 오인하지 않는다. 롤백은 이 후속 커밋만 되돌리며 기존 사용자 import/uid 변경은 보존한다.
+
 ### 실패·철수 정산 후속 — 2026-09-12
 
 검증 증거: Godot 4.7.2 / GUT 9.7.1, `tests/gut` 5개 스크립트의 24개 테스트·111개 assertion 통과. 프로젝트 내부 격리 저장 경로를 사용했다. 이는 자동 엔진 검증이며 실제 화면 조작·Human UX·출시 검증은 포함하지 않는다.

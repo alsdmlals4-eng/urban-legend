@@ -29,7 +29,7 @@ func _ready() -> void:
 
 
 func _build_ui() -> void:
-	if GameState.get_current_episode_id() == M04_EPISODE_ID and _has_m04_dispatch_context():
+	if GameState.is_recovery_successful() and GameState.get_current_episode_id() == M04_EPISODE_ID and _has_m04_dispatch_context():
 		_build_m04_narrative_result()
 		return
 
@@ -58,17 +58,29 @@ func _build_ui() -> void:
 
 	var title := Label.new()
 	title.text = "괴이 매뉴얼 갱신 / 안정화 결과" if GameState.get_current_episode_id() == "episode_001_afterlife_station" else "사건 보고서 / 잔향 회수 결과"
+	if not GameState.is_recovery_successful():
+		title.text = "현장 종료 / 회수 결과 확인"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	root.add_child(title)
 	var log_guide: LogGuide = LogGuideScript.new()
 	log_guide.set_compact(true)
 	root.add_child(log_guide)
-	if not GameState.has_seen_log_tutorial("result_first_case"):
+	if not GameState.is_recovery_successful():
+		log_guide.show_compact_hint("확보한 기록을 다시 대조하세요. 회수 결과와 피해자 구조 결과는 별도로 보존됩니다.")
+	elif not GameState.has_seen_log_tutorial("result_first_case"):
 		log_guide.present_tutorial("result_first_case", true)
 		log_guide.sequence_finished.connect(func() -> void: GameState.claim_log_tutorial("result_first_case"), CONNECT_ONE_SHOT)
 	else:
 		log_guide.show_compact_hint(LogTutorialCatalog.get_repeat_hint("result_first_case"))
 
+	if not GameState.is_recovery_successful():
+		var content := _add_section(root, "현장 종료 기록", "완료 보고서와 성공 보상은 생성하지 않습니다.")
+		content.add_child(_make_label(_make_recovery_status_text()))
+		content.add_child(_make_label("피해자 구조 결과: %s" % GameState.get_current_victim_rescue_result()))
+		_add_reasoning_summary_panel(root)
+		_add_save_state_panel(root)
+		_add_navigation_buttons(root)
+		return
 	_add_result_panel(root)
 	_add_reasoning_summary_panel(root)
 	_add_case_report_panel(root)
@@ -516,6 +528,7 @@ func _add_navigation_buttons(parent: Control) -> void:
 	row.add_child(restart_button)
 
 	var prepare_button := Button.new()
+	prepare_button.name = "ReturnToDailyButton"
 	prepare_button.text = "사건 결과 확인 후 일상으로"
 	prepare_button.pressed.connect(func() -> void:
 		GameState.complete_campaign_slot({"kind": "investigation", "episode_id": GameState.get_current_episode_id()})
@@ -531,6 +544,13 @@ func _make_recovery_status_text() -> String:
 			GameState.get_recovery_result_status(),
 			GameState.get_recovery_result_stability()
 		]
+	match GameState.get_recovery_result_status():
+		"approved_withdrawal":
+			return "승인 철수 / 회수 미완료 · 피해자 구조 기록은 별도로 유지됩니다."
+		"retreated":
+			return "현장 철수 / 회수 미완료 · 승인 철수 여부는 별도 책임 판정을 따릅니다."
+		"control_failure", "failed":
+			return "통제 실패 / 회수 미완료 · 확보한 기록과 피해자 구조 결과는 유지됩니다."
 	return "회수 기록 없음"
 
 

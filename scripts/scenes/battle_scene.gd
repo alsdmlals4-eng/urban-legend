@@ -1333,9 +1333,9 @@ func _update_battle_view(message: String) -> void:
 
 	if _result_label != null:
 		_result_label.text = status_message
-		if GameState.are_all_agents_inactive():
-			_result_label.text += "\n\n모든 요원이 행동 불능 상태입니다. 조사 화면으로 돌아가 재정비합니다."
-			call_deferred("_return_to_investigation")
+	if not _recovery_completed and not _can_recover() and GameState.are_all_agents_inactive() and not _recovery_completion_queued:
+		_recovery_completion_queued = true
+		call_deferred("_complete_failed_recovery")
 	if not _recovery_completed and _can_recover() and not _recovery_completion_queued:
 		_recovery_completion_queued = true
 		call_deferred("_complete_recovery_when_ready")
@@ -1405,10 +1405,27 @@ func _complete_recovery_when_ready() -> void:
 	_recovery_completion_queued = false
 	if not is_recovery_ready_for_resolution():
 		return
+	_finish_recovery(true, "core_recovered")
+
+
+func _complete_failed_recovery() -> void:
+	_recovery_completion_queued = false
+	if _recovery_completed or not is_inside_tree():
+		return
+	# Preserve an achieved control objective even if exhaustion occurs in the same step.
+	if _can_recover():
+		_complete_recovery_when_ready()
+	elif GameState.are_all_agents_inactive():
+		_finish_recovery(false, "control_failure")
+
+
+func _finish_recovery(successful: bool, status: String) -> void:
+	if _recovery_completed or not is_inside_tree():
+		return
 	_recovery_completed = true
-	GameState.save_recovery_result(true, "core_recovered", _anomaly_stability)
+	_turn_locked = true
 	GameState.set_current_scene_path("res://scenes/result_scene.tscn")
-	GameState.save_game()
+	GameState.save_recovery_result(successful, status, _anomaly_stability)
 	for button in _action_buttons:
 		button.disabled = true
 	for button in _agent_support_buttons:
