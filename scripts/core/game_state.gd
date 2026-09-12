@@ -2946,7 +2946,7 @@ func save_recovery_result(successful: bool, result_status: String, anomaly_stabi
 	recovery_result_status = result_status
 	recovery_result_stability = anomaly_stability
 	if not result_status.strip_edges().is_empty():
-		campaign_state.settle_case_outcome(get_current_episode_id(), "success" if successful else ("retreat" if result_status == "retreated" else "failure"))
+		campaign_state.settle_case_outcome(get_current_episode_id(), "success" if successful else ("retreat" if result_status in ["retreated", "approved_withdrawal"] else "failure"))
 	if successful:
 		add_flag(FLAG_CAPTURE_SUCCESS)
 		add_flag("capture_result_%s" % result_status)

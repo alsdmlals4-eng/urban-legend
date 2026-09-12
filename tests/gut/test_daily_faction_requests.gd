@@ -84,11 +84,15 @@ func test_request_card_button_performs_accepted_dispatch() -> void:
 	assert_eq(state.get_campaign_slot_phase(), "planning")
 
 func test_failure_and_retreat_settle_once_without_success_reports() -> void:
-	for status in ["failed", "retreated"]:
+	for status in ["failed", "control_failure", "retreated", "approved_withdrawal"]:
 		state.reset_run_state()
 		state.start_episode_from_preparation("res://data/episodes/episode_002_red_umbrella_alley.json")
 		var sequence: int = state.get_campaign_snapshot().request_sequence
+		var rescue_before: String = state.get_current_victim_rescue_result()
 		state.save_recovery_result(false, status, 20)
+		var expected_outcome := "retreat" if status in ["retreated", "approved_withdrawal"] else "failure"
+		assert_eq(String(state.get_campaign_snapshot().cases[Campaign.RED_UMBRELLA].get("first_terminal_outcome", "")), expected_outcome)
+		assert_eq(state.get_current_victim_rescue_result(), rescue_before)
 		assert_gt(int(state.get_campaign_snapshot().request_sequence), sequence)
 		var board: Array = state.get_faction_request_board()
 		assert_false(state.is_recovery_successful())
