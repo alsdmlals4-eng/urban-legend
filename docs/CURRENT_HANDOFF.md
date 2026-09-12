@@ -1,5 +1,11 @@
 # 괴이기록국 Current Handoff
 
+## 미니게임 명시적 재개·입력 분리 — 2026-09-13 successor
+
+같은 승인 루프에서 상세 설계 §11.6을 재대조하여 바로 아래 단위의 ‘닫기 즉시 재개’를 교정했다. 현재 미니게임은 매뉴얼 열람 또는 Window focus_exited에서 국소 simulation을 정지하고, 닫기/포커스 복귀 이후 ‘현장 재개’ 버튼을 눌러야 진행한다. 방향/확인/마우스 입력 해제를 기다려 재개 입력이 이동으로 새지 않게 한다. M01 route_restore의 입력 잠금도 같이 복구한다. 회수 전체 정지/음향/실시간 위험 시계까지 완료했다는 뜻이 아니다.
+
+기존 계획 `docs/superpowers/plans/2026-09-13-investigation-minigame-continuity.md`에 세 대안·Godot 공식 원문 비교와 결과를 추가했다. 자동 재개/버튼 부재 2개 RED 이후 새 통합 검사 0 failures. 실제 Vulkan 1280×720에서 재개 화면 캡처를 확인하고, 상단 작전 바가 가리던 M04 매뉴얼 버튼은 우측 하단, 저장 제한 안내는 기존 좌측 규칙 패널로 옮겼다. drawer는 실제 field 위에 표시한다. M01/M04 호스트/controls/pipeline 및 GUT 27/27·144 assertions PASS. 포커스 이탈은 Window signal 주입이며 실제 Alt-Tab/모든 기기 검증은 아니다. 기본 도형 미니게임은 아직 prototype이며 그림체/최종 UX 승인 증거가 아니다. 이전 headless audio 종료 경고와 실제 세 번째 빗소리 timing 소비처 공백은 여전히 남는다. 새 자산/유료 도구/삭제/Base 승격/다른 PR 변경 없음.
+
 ## 조사 → 작성 → 미니게임 왕복 연속성 — 2026-09-13
 
 승인된 개선 루프 continuation. 계획/비교/검증 owner: `docs/superpowers/plans/2026-09-13-investigation-minigame-continuity.md`. 기존 Outer Wilds 원출처를 현장 관측/행동 연결에 ADAPT, Phasmophobia 기록 재열람 evidence 재사용. Base v9.4.4 pin, main c82291101bf0a2bb4d821a12bca9f14070ee2886, 다른 open PR과 사용자 import/uid 변경은 보존했다.

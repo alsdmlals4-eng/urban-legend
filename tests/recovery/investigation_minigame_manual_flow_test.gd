@@ -73,7 +73,13 @@ func run() -> void:
 	check(current_scene.scene_file_path == "res://scenes/minigame_scene.tscn", "earned investigation unlocks the real minigame transition")
 	if current_scene.scene_file_path == "res://scenes/minigame_scene.tscn":
 		var game: Control = current_scene.get("_game_control")
+		check(root.get_visible_rect().encloses(game.get_global_rect()), "entire minigame playfield remains inside the logical viewport")
 		var drawer: Control = current_scene.get("_manual_drawer")
+		var field_toggle: Button = current_scene.get("_manual_toggle_button")
+		check(root.get_visible_rect().encloses(field_toggle.get_global_rect()), "manual entry stays inside the visible viewport")
+		var operation_strip := current_scene.find_child("RuleStripPanel", true, false) as Control
+		check(operation_strip == null or not operation_strip.get_global_rect().intersects(field_toggle.get_global_rect()), "operation strip cannot cover the field manual entry")
+		check(drawer.z_index > field_toggle.z_index, "opened manual draws above the underlying field controls")
 		Input.action_press("ui_right")
 		await create_timer(0.12).timeout
 		Input.action_release("ui_right")
@@ -92,9 +98,32 @@ func run() -> void:
 		check(is_equal_approx(float(game.get("_elapsed")), elapsed), "manual reading neither wins by waiting nor advances hazards")
 		check(game.get("_player_position") == position, "navigation input cannot move the umbrella behind the drawer")
 		drawer.call("close_drawer")
-		check(root.gui_get_focus_owner() == game, "duplicate open cannot replace the original gameplay focus with a hidden close button")
 		await create_timer(0.1).timeout
-		check(float(game.get("_elapsed")) > elapsed, "closing the manual resumes from the same simulation state")
+		check(is_equal_approx(float(game.get("_elapsed")), elapsed), "closing the manual cannot automatically resume danger")
+		var resume_button := current_scene.find_child("ResumeFieldButton", true, false) as Button
+		check(resume_button != null and resume_button.visible, "explicit field-resume action is available after reading")
+		if resume_button != null:
+			check(root.gui_get_focus_owner() == resume_button, "focus goes to the visible resume action, not the disabled playfield")
+			check(root.get_visible_rect().encloses(resume_button.get_global_rect()), "resume action stays inside the logical viewport")
+			if "--capture" in OS.get_cmdline_user_args():
+				await RenderingServer.frame_post_draw
+				check(root.get_texture().get_image().save_png(ProjectSettings.globalize_path("res://.artifacts/daily-case-20260912/minigame-explicit-resume.png")) == OK, "capture explicit resume state")
+			Input.action_press("ui_right")
+			resume_button.pressed.emit()
+			await create_timer(0.1).timeout
+			check(is_equal_approx(float(game.get("_elapsed")), elapsed) and game.get("_player_position") == position, "held input cannot leak through the resume action")
+			Input.action_release("ui_right")
+			await create_timer(0.1).timeout
+			check(float(game.get("_elapsed")) > elapsed, "explicit resume starts from the preserved simulation")
+			root.focus_exited.emit()
+			elapsed = game.get("_elapsed")
+			await create_timer(0.1).timeout
+			check(is_equal_approx(float(game.get("_elapsed")), elapsed), "window focus loss pauses simulation")
+			root.focus_entered.emit()
+			await create_timer(0.1).timeout
+			check(is_equal_approx(float(game.get("_elapsed")), elapsed), "window focus return requires explicit resume too")
+			resume_button.pressed.emit()
+			await process_frame
 		game.call("_complete", false)
 		drawer.call("open_drawer")
 		drawer.call("close_drawer")
@@ -106,6 +135,28 @@ func run() -> void:
 			await process_frame
 		check(current_scene.scene_file_path == "res://scenes/investigation_scene.tscn", "return input restores the real investigation scene")
 		check(state.get_manual_draft_slots(manual).get(slot, "") == "kw_m04_rain_sign_actual_exit", "returning from failure preserves the player's interpretation without grading it")
+	current_scene.queue_free()
+	for i in range(4):
+		await process_frame
+	state.reset_run_state()
+	state.load_episode("res://data/episodes/episode_001_afterlife_station.json")
+	state.set_current_minigame_id("minigame_frequency_sync")
+	change_scene_to_file("res://scenes/minigame_scene.tscn")
+	for i in range(6):
+		await process_frame
+	var route_game: Control = current_scene.get("_game_control")
+	var route_drawer: Control = current_scene.get("_manual_drawer")
+	route_drawer.call("open_drawer")
+	route_drawer.call("close_drawer")
+	await process_frame
+	check(bool(route_game.get("_input_locked")) and route_game.process_mode == Node.PROCESS_MODE_DISABLED, "M01 route controls remain locked until explicit resume")
+	var route_resume := current_scene.find_child("ResumeFieldButton", true, false) as Button
+	check(route_resume != null and route_resume.visible, "M01 header manual provides the same explicit resume route")
+	if route_resume != null:
+		route_resume.pressed.emit()
+		for i in range(2):
+			await process_frame
+		check(not bool(route_game.get("_input_locked")) and route_game.process_mode == Node.PROCESS_MODE_INHERIT, "M01 restores both its input lock and original process mode")
 	current_scene.queue_free()
 	for i in range(4):
 		await process_frame

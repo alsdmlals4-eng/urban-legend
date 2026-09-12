@@ -21,6 +21,10 @@
 
 ## 실행·재검토 결과
 
+후속 구현 계획: 상세 설계 §11.6 재대조에서 ‘닫기/포커스 복귀만으로 재개하지 않고 현장 재개 입력을 요구’하는 계약이 확인됐다. 세 번째 박자의 새 판정부터 만들지 않고 이 기존 계약의 미니게임 소비처를 먼저 완성한다. 비교 대안은 즉시 자동 재개(REJECT: 읽기 종료 입력과 현장 입력 혼선), 자동 카운트다운(REJECT: 새 시간값/대기 비용), 명시적 재개 버튼+입력 release 확인(ADAPT)이다. Godot 공식 Window focus_exited 및 process_mode 문서를 2026-09-13 확인했다: https://docs.godotengine.org/en/stable/classes/class_window.html / https://docs.godotengine.org/en/stable/tutorials/scripting/pausing_games.html . 기존 국소 정지 함수와 테마 Button을 재사용한다. 열람/포커스 이탈은 멈추고 닫기/포커스 복귀는 멈춤 유지; 재개 입력이 해제된 후 활성화한다. 테스트를 먼저 이 계약으로 변경하고 headless/실제 창 및 M01 route_restore를 회귀 검증한다. 회수 전체 타이머/음향 정지 완료로 확대 보고하지 않는다.
+
+후속 결과: 자동 재개/재개 버튼 부재 2개 RED→교정. 매뉴얼 닫기와 Window focus_entered만으로 재개하지 않는다. 재개 버튼 이후 방향/확인/마우스 왼쪽 입력이 해제되어야 국소 simulation을 복구한다. M01의 별도 `_input_locked`와 process_mode도 함께 복구하며 완료된 game은 되살리지 않는다. 새 테스트는 Window focus signals를 주입하므로 실제 OS Alt-Tab 검증이 아니다. Vulkan 1280×720 실제 창 캡처 `.artifacts/daily-case-20260912/minigame-explicit-resume.png`를 확인했다. 현장 매뉴얼 버튼/저장 안내의 작전 바 가림을 발견해 버튼은 우측 하단, 안내는 기존 왼쪽 규칙 패널로 옮기고 drawer를 field 위 레이어로 교정했다. 배경/승인 캐릭터/게임 규칙은 변경하지 않았고 현행 미니게임의 도형 prototype을 최종 아트로 승인하지 않는다. 이 단위는 앞선 자동 재개 상태의 successor이며 첫 계획의 닫기 즉시 재개 수용 기준을 대체한다.
+
 - 실제 조사 방법 선택 신호로 우산/표지판 기록을 확보하고 매뉴얼 열기→슬롯/후보 버튼으로 초안을 작성→CCTV 진입→매뉴얼 열람 중 위치/시간 고정→재개→조사 복귀까지 연결했다. 초안 저장 API 직접 주입도 제거했다. RNG seed는 통제하며 최종 실패는 `_complete(false)`로 주입하는 진단이다. 정상 플레이 전체 완주/Human 증거가 아니다.
 - drawer 중복 open의 포커스 덮어쓰기와 process mode 복원, 종료된 게임의 비재시작 검사 통과. 매뉴얼을 닫자마자 Scene이 바뀌면 deferred grab_focus가 트리 밖 opener를 호출하는 실제 오류를 재현했다. workbench가 호출 시점에 opener의 생명주기를 확인하도록 교정했다.
 - 조사 화면의 숨겨진 호환 Label 두 개에 Scene 소유권을 부여했다. orphan-node 누적과 Font RID/CanvasItem 경고는 사라졌지만 반복 headless 실행 일부에서 AudioStreamWAV/AudioStreamPlaybackWAV 각 1개 종료 경고가 남는다. 이를 무경고 PASS로 포장하지 않는다.
