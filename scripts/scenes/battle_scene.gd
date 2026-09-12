@@ -53,6 +53,8 @@ var _response_box: GridContainer
 var _consumable_row: HBoxContainer
 var _turn_auto_success_agents: Dictionary = {}
 var _turn_locked := false
+var _withdrawal_pending := false
+var _withdrawal_preview: Dictionary = {}
 var _log_guide: LogGuide
 var _decision_progress_label: Label
 var _decision_instruction_label: Label
@@ -109,6 +111,12 @@ func _build_scene_ui() -> void:
 	_decision_back_button.pressed.connect(_go_back_decision_step)
 	_decision_confirm_button.pressed.connect(_confirm_evidence_step)
 	%ManualQuickButton.pressed.connect(_open_recovery_manual)
+	var withdraw_button := Button.new()
+	withdraw_button.name = "WithdrawButton"
+	withdraw_button.text = "철수 검토"
+	withdraw_button.tooltip_text = "추가 피해 방지를 위한 철수의 책임 조건과 예상 결과를 검토합니다."
+	withdraw_button.pressed.connect(_request_withdrawal)
+	%ManualQuickButton.get_parent().add_child(withdraw_button)
 
 	_log_guide = LogGuideScript.new()
 	_log_guide.set_compact(true)
@@ -116,6 +124,83 @@ func _build_scene_ui() -> void:
 	%RecoveryLogHost.add_child(_log_guide)
 	_populate_team_strip()
 	_refresh_representative_agent()
+
+
+func _evaluate_withdrawal() -> Dictionary:
+	var runtime: Dictionary = GameState.get_canon_v2_runtime_state()
+	var handoff: Dictionary = runtime.get("recovery_handoff_state", {})
+	# Route safety comes from the authored handoff, never from opening this UI.
+	var context := {
+		"safe_route": bool(handoff.get("safe_withdrawal_route", false)),
+		"withdrawal_reason_recorded": true,
+		"before_control_collapse": not GameState.are_all_agents_inactive(),
+		"obligations": GameState.get_active_protection_obligations()
+	}
+	return preload("res://scripts/core/recovery_outcome_policy.gd").new().evaluate_termination_candidate("approved_withdrawal", context)
+
+
+func _request_withdrawal() -> void:
+	if _turn_locked or _recovery_completed or _recovery_completion_queued:
+		return
+	if _can_recover():
+		_complete_recovery_when_ready()
+		return
+	var overlay := get_node_or_null("CanonV2OperationOverlay")
+	if overlay == null:
+		_result_label.text = "작전 상태가 준비되지 않았습니다. 잠시 후 철수를 다시 검토하세요."
+		return
+	_withdrawal_preview = _evaluate_withdrawal()
+	_withdrawal_pending = true
+	_turn_locked = true
+	var lines: Array[String] = ["철수 사유: 추가 피해 방지를 위한 현장 철수", "회수는 미완료로 남으며, 이미 확보한 조사 기록과 피해자 구조 결과는 유지됩니다."]
+	lines.append("예상 판정: 승인 철수" if bool(_withdrawal_preview.get("eligible", false)) else "예상 판정: 통제 실패 — 아래 책임 조건이 충족되지 않았습니다.")
+	for reason in _withdrawal_preview.get("blocking_reasons", []):
+		var reason_id := String(reason)
+		var label: String = {
+			"safe_route_missing": "안전한 철수 경로가 확인되지 않았습니다.",
+			"withdrawal_reason_missing": "철수 사유가 기록되지 않았습니다.",
+			"withdrawal_not_before_control_collapse": "이미 통제가 붕괴했습니다."
+		}.get(reason_id, "미해결 보호 의무 또는 책임 인계 조건: " + reason_id)
+		lines.append("• " + label)
+	for consequence in _withdrawal_preview.get("non_blocking_consequences", []):
+		lines.append("잔여 보호 책임: %s · %s" % [String(consequence.get("target", "")), String(consequence.get("status", ""))])
+	overlay.request_action_confirmation({"allowed": true, "preview_text": "\n".join(lines)}, _confirm_withdrawal, _cancel_withdrawal)
+
+
+func _cancel_withdrawal() -> void:
+	_withdrawal_pending = false
+	_withdrawal_preview = {}
+	if not _recovery_completed:
+		_turn_locked = false
+
+
+func _confirm_withdrawal() -> void:
+	if not _withdrawal_pending or _recovery_completed:
+		return
+	if _can_recover():
+		_cancel_withdrawal()
+		_complete_recovery_when_ready()
+		return
+	var current := _evaluate_withdrawal()
+	if current != _withdrawal_preview:
+		_cancel_withdrawal()
+		_request_withdrawal()
+		return
+	_withdrawal_pending = false
+	# The displayed reason is acknowledged here; cancellation writes no outcome.
+	GameState.evaluate_canon_v2_recovery_termination("approved_withdrawal", {
+		"safe_route": bool(GameState.get_canon_v2_runtime_state().get("recovery_handoff_state", {}).get("safe_withdrawal_route", false)),
+		"withdrawal_reason_recorded": true,
+		"before_control_collapse": not GameState.are_all_agents_inactive()
+	})
+	var withdrawal_state: Dictionary = GameState.get_canon_v2_runtime_state()
+	withdrawal_state["termination_preview"]["withdrawal_reason"] = "추가 피해 방지를 위한 현장 철수"
+	var recorded: Dictionary = GameState.apply_canon_v2_runtime_state(withdrawal_state)
+	if not bool(recorded.get("ok", false)):
+		_cancel_withdrawal()
+		_result_label.text = "철수 사유 기록에 실패했습니다. 현장을 유지합니다."
+		return
+	_finish_recovery(false, "approved_withdrawal" if bool(current.get("eligible", false)) else "control_failure")
 
 
 func request_manual_quick_open() -> void:

@@ -2,6 +2,24 @@
 
 ## 구현 재개 — 2026-09-12
 
+### 직접 철수 검토 연결 — 2026-09-12 continuation
+
+승인된 일상/사건 구현을 계속한다. 실행 영수증은 `docs/qa/RECOVERY_CONTINUATION_20260912.json`이며 Base start/resume validator가 통과했다. Base local `68792fc38340a19945ba6b15eedef39f55d50705`와 fetched remote `d830c0f6967678eed3c208ac6b24f9cd1b262ec3`를 구분해 읽었고 프로젝트 v9.4.4 pin은 변경하지 않았다. Base 재사용 profile의 옛 schedule 문구는 최신 일상/사건 사용자 결정을 덮지 않는다.
+
+작업 전 문제: `approved_withdrawal`이 일상 사건 정산에서는 failure로 저장되었고 직접 철수 버튼이 없었다. 현재는 기존 정산 adapter가 legacy `retreated`와 canonical `approved_withdrawal`을 모두 retreat로 보존한다. 회수 화면 우측 하단의 **철수 검토** → 기존 보호 의무 확인창 → 취소/확정 → 결과 화면 → 일상 복귀를 연결했다. 안전 경로는 실제 `recovery_handoff_state.safe_withdrawal_route`만 읽는다. 미충족 조건은 통제 실패로 명시하며 안전 경로·보호 책임을 자동 완료하지 않는다. 취소는 종료/정산/보호 의무를 바꾸지 않으며 확정 직전 조건이 달라지면 다시 확인한다. 확정된 철수 사유는 기존 termination_preview 내부에 함께 저장한다. 기존 성공 목표를 이미 달성한 경우 성공을 철수로 덮지 않는다. 보상량·일정·핵심 시계 의미·세이브 버전·승인 자산은 그대로다.
+
+실무 비교: Phasmophobia 개발사 Tempest 글의 목표/생환 조건 분리와 보상 반복 악용 문제를 ADAPT(https://www.kineticgames.co.uk/news/phasmophobia-tempest). SOMA Safe Mode 개발자 글의 경험 전체를 고려한 위협 조정은 참고하되 무적 모드 도입은 REJECT(https://frictionalgames.com/2017-11-what-is-somas-safe-mode/). 프로젝트에서는 기존 정책/확인창/결과 adapter 재사용을 채택했고 무조건 즉시 종료 또는 새 철수 미니게임·비용 시스템은 기각했다. 이는 공개된 설계/운영 사례 비교이지 외부 게임 비공개 코드 역공학이나 실제 플레이 검증이 아니다.
+
+검증/교정: 정산 결과 오분류 1개 assertion 실패 → 교정. 직접 철수 버튼 부재 2개 실패 → 입력 연결. 취소·안전/비안전 경로·확인 도중 경로 변경·저장/로드·결과/일상 복귀의 실제 씬 fixture 통과. 사유 저장 누락 3개 실패 → 저장 교정 → 통과. 캡처에서 폐기된 ‘아카’ 안내문이 발견되어 활성 `log_guide`/환영 튜토리얼을 ‘루메 · 괴이기록국 기록 보조’로 교정했고 관련 실제 안내창 3개 assertion 실패 후 통과했다. 신규 그림이나 기각 자산은 사용하지 않았다.
+
+Godot4.7.2/GUT9.7.1 최종 27/27 tests,144 assertions PASS. 별도 회수 실패 복귀 0 failures, direct-lead12/12, clock17/17, overlay8/8 PASS. headless 종료에서 ObjectDB2개 경고가 남으며, 렌더러를 켠 철수 fixture 최종 실행은 0 failures/종료 경고 없음이었다. 두 환경을 혼동하지 않는다. 새 테스트는 `tests/recovery/recovery_withdrawal_return_test.gd`; `--capture`는 실제 프레임을 `.artifacts/daily-case-20260912/withdrawal-visual/`에 저장한다. 1280×720 확인창의 텍스트/버튼을 실제 캡처에서 확인했다. 1920×1080 실행 요청은 실제 뷰포트가 동일 크기가 아니어서 1920 검증으로 인정하지 않는다. 이 테스트는 안전 경로 fixture를 주입한 **DIAGNOSTIC_ONLY**이며 일상부터 조사·구출을 정상 입력으로 완주한 E3/E5/Human 증거가 아니다.
+
+저작은 exact urban-legend HiGodot session/editor PID39148에서 수행했다. 별도 외부 실행은 project 내부 APPDATA/LOCALAPPDATA로 격리했다. Hera는 해당 editor identity/guidance까지 확인했으나 외부 실행 game discovery가 비어 있어 Hera 실제 입력 PASS를 주장하지 않는다. 기존 editor/다른 프로젝트는 종료하지 않았다. HiGodot hot reload의 error43 메시지는 독립 새 프로세스에서 parse/GUT/render 실행이 통과했음과 별도로 기록하며 editor 재시작 검증은 하지 않았다.
+
+독립 읽기 검토의 P2: Tab으로 배경 행동에 접근해 공유 확인창을 교체하면 철수 취소 callback이 사라지고 입력 잠금이 남을 수 있었다. 중첩 확인 요청/다음 포커스/취소 복원을 검사해 fixture3개에서 총9개 실패를 확인했다. 공유 overlay가 열린 동안 추가 확인 요청을 무시하고 다음/이전/방향 포커스를 확인·취소 안에서 순환하도록 교정한 뒤 렌더 실행 0 failures를 확인했다. 비활성 확인 버튼의 포커스는 취소로 간다. 이는 새 독립 확인창 구현 대신 기존 owner를 보강한 것이다.
+
+남은 필수 작업: 정상 플레이 경로로 철수 책임 인계/입력 전체 검증, 1920 실제 뷰포트 검증, 긴 보호 의무 목록의 확인창 수용성, headless 음원 수명주기 경고, 종료 저장 실패의 사용자 복구 경로. 활성시간 시계·중단/재개·전체 Blueprint/UI 정본 동기화도 이전 목록대로 남아 있다. 이 변경을 전체 구현 완료·CLEAN_REVIEW_EXIT·Human/출시 PASS로 승격하지 않는다. 삭제나 삭제검토 이동은 이번 범위에서 하지 않았다. Base 환류는 프로젝트 검증 교훈으로 보존하고 공용 규칙 승격은 하지 않는다.
+
 ### 회수 실패 화면 연결 — 2026-09-12 후속
 
 현재 승인 continuation의 bounded BUILD/REVIEW. `battle_scene`의 전원 행동 불능은 조사 화면으로 무기록 복귀하던 경로에서 `control_failure` 저장 → 결과 화면으로 연결했다. 중복 갱신은 하나의 deferred 종료로 모으고, 동일 step에 안정화 목표도 달성하면 기존 성공을 보존한다. 피해자 구조 결과·확보 기록·보상 수치는 바꾸지 않는다. 새 저장 필드/자산은 없다.

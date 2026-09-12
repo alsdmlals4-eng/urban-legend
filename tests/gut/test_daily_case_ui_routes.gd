@@ -55,6 +55,15 @@ func test_failed_m04_result_does_not_show_success_vignette() -> void:
 		visible_text += label.text
 	assert_false(visible_text.contains("DB에 저장되었습니다"), "failure UI must not claim a completed report was saved")
 
+func test_record_assistant_uses_lume_identity_in_live_dialogue() -> void:
+	var guide = load("res://scripts/ui/log_guide.gd").new()
+	add_child_autofree(guide)
+	assert_true(guide.present_tutorial("main_welcome", false))
+	assert_true(String(guide.find_child("ProcedureSpeaker", true, false).text).contains("루메"))
+	assert_true(String(guide.get("_dialogue_label").text).contains("루메"))
+	assert_true(String(guide.get("_next_button").text).contains("루메"))
+
+
 func test_withdrawal_result_is_distinct_from_no_result() -> void:
 	var scene = load("res://scripts/scenes/result_scene.gd").new()
 	state.save_recovery_result(false, "approved_withdrawal", 20)

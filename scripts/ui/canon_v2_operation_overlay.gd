@@ -85,6 +85,9 @@ func request_action_confirmation(
 	on_cancel: Callable = Callable()
 ) -> void:
 	_ensure_ui()
+	# Keep one owner until the active confirmation is resolved.
+	if _confirmation_layer.visible:
+		return
 	_pending_confirm = on_confirm
 	_pending_cancel = on_cancel
 	_previous_focus = get_viewport().gui_get_focus_owner()
@@ -93,7 +96,18 @@ func request_action_confirmation(
 	_confirmation_layer.visible = true
 	_confirmation_panel.visible = true
 	_confirm_button.disabled = not bool(preview.get("allowed", true))
-	_confirm_button.grab_focus()
+	var cancel_next := _cancel_button.get_path() if _confirm_button.disabled else _confirm_button.get_path()
+	_cancel_button.focus_next = cancel_next
+	_cancel_button.focus_previous = cancel_next
+	_confirm_button.focus_next = _cancel_button.get_path()
+	_confirm_button.focus_previous = _cancel_button.get_path()
+	for side in [SIDE_LEFT, SIDE_RIGHT, SIDE_TOP, SIDE_BOTTOM]:
+		_cancel_button.set_focus_neighbor(side, cancel_next)
+		_confirm_button.set_focus_neighbor(side, _cancel_button.get_path())
+	if _confirm_button.disabled:
+		_cancel_button.grab_focus()
+	else:
+		_confirm_button.grab_focus()
 
 
 func close_action_confirmation() -> void:
