@@ -389,6 +389,12 @@ func _refresh_manual_detail() -> void:
 	var pages := _array_copy(manual_state.get("pages"))
 	var active_ids := _string_array(manual_state.get("active_rule_ids"))
 	var lines: Array[String] = ["[b]현재 괴이 매뉴얼[/b]"]
+	var authored_lines := _array_copy(manual_state.get("authored_draft_lines"))
+	if not authored_lines.is_empty():
+		lines.append("[b]내가 작성한 해석 · 미검증[/b]")
+		for draft_line in authored_lines:
+			lines.append(String(draft_line).replace("[", "[lb]"))
+		lines.append("작성한 내용은 자동 확정되지 않습니다. 현재 전조와 근거를 대조해 대응하세요.\n")
 	if pages.is_empty():
 		lines.append("검증된 현행 규칙이 없습니다. 조사 기록과 후보 가설을 확인하세요.")
 	else:
