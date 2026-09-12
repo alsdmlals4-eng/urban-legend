@@ -46,7 +46,7 @@ func _ready() -> void:
 	if _existing_result.is_empty() and not _is_route_restore_minigame():
 		_equipment_hint = GameState.try_use_frequency_filter_hint(minigame_id)
 	_build_ui()
-	if not _is_route_restore_minigame():
+	if not _is_route_restore_minigame() and not _completed:
 		# Keep the required manual entry outside the global operation-strip area.
 		_manual_toggle_button.reparent(self)
 		_manual_toggle_button.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
@@ -410,6 +410,7 @@ func _show_saved_result(playfield_frame: PanelContainer) -> void:
 	playfield_frame.add_child(summary)
 	_result_label.text = _make_result_text(_last_successful, _existing_result)
 	_return_button.visible = true
+	_dock_completed_actions()
 
 
 func _make_game_control() -> Control:
@@ -442,14 +443,34 @@ func _on_game_completed(successful: bool, details: Dictionary) -> void:
 	saved_details["effect_summary"] = _make_effect_summary(successful)
 	saved_details["equipment_assisted"] = not _equipment_hint.is_empty()
 	saved_details["display_title"] = String(_minigame.get("title", "현장 검증"))
-	GameState.save_minigame_result(String(_minigame.get("id", GameState.get_current_minigame_id())), successful, saved_details)
+	var saved := GameState.save_minigame_result(String(_minigame.get("id", GameState.get_current_minigame_id())), successful, saved_details)
 	if _is_route_restore_minigame() and successful:
 		GameState.collect_clue("clue_black_ticket")
 	_result_label.text = _make_result_text(successful, saved_details)
 	_return_button.visible = true
+	_dock_completed_actions()
 	_return_button.grab_focus()
 	if _manual_drawer != null:
 		_manual_drawer.mark_new_entries()
+	if not saved:
+		_show_save_retry()
+
+
+func _dock_completed_actions() -> void:
+	if _is_route_restore_minigame():
+		return
+	_manual_toggle_button.reparent(_return_button.get_parent())
+	_manual_toggle_button.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
+	_manual_toggle_button.custom_minimum_size.y = 44
+	_manual_toggle_button.z_index = 0
+
+
+func _show_save_retry() -> void:
+	_status_label.text = "결과 저장 미완료 · 현재 결과는 실행 중인 게임에 보관되어 있습니다"
+	_result_label.text = "저장 공간과 파일 접근 상태를 확인한 뒤 다시 시도하세요. 게임을 종료하면 저장되지 않은 진행을 잃을 수 있습니다.\n\n" + _make_result_text(_last_successful, GameState.get_minigame_result(GameState.get_current_minigame_id()))
+	_return_button.text = "저장 다시 시도 · 현장 복귀"
+	_return_button.visible = true
+	_return_button.grab_focus()
 
 
 func _make_result_text(successful: bool, details: Dictionary) -> String:
@@ -546,18 +567,24 @@ func _make_panel_style(background: Color, border: Color) -> StyleBoxFlat:
 
 
 func _return_to_flow() -> void:
-	if _is_route_restore_minigame() and _last_successful:
-		GameState.set_current_scene_path("res://scenes/battle_scene.tscn")
-		GameState.save_game()
-		get_tree().change_scene_to_file("res://scenes/battle_scene.tscn")
+	if not _completed:
 		return
 	var key := "success_next_scene_path" if _last_successful else "failure_next_scene_path"
 	var scene_path := String(_minigame.get(key, ""))
 	if scene_path.is_empty():
 		scene_path = String(_minigame.get("return_scene_path", "res://scenes/investigation_scene.tscn"))
+	if _is_route_restore_minigame() and _last_successful:
+		scene_path = "res://scenes/battle_scene.tscn"
 	GameState.set_current_scene_path(scene_path)
-	GameState.save_game()
-	get_tree().change_scene_to_file(scene_path)
+	# The completed result and effects are retained; retries only persist them.
+	if not GameState.save_game():
+		GameState.set_current_scene_path("res://scenes/minigame_scene.tscn")
+		_show_save_retry()
+		return
+	if get_tree().change_scene_to_file(scene_path) != OK:
+		GameState.set_current_scene_path("res://scenes/minigame_scene.tscn")
+		_status_label.text = "결과는 저장되었지만 다음 화면을 열지 못했습니다"
+		_return_button.text = "현장 열기 다시 시도"
 
 
 func _add_navigation(parent: Control) -> void:

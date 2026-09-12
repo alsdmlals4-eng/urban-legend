@@ -1,5 +1,13 @@
 # 괴이기록국 Current Handoff
 
+## 미니게임 종료 저장 재시도 — 2026-09-13
+
+승인된 개선 루프의 다음 보호 단위. 계획: `docs/superpowers/plans/2026-09-13-minigame-save-retry.md`. GameState.save_minigame_result는 bool로 실제 저장 성공을 반환하고 MinigameScene이 소비한다. 종료 정산/효과는 한 번만 적용하며 실패 시 기존 결과 영역에 미저장 안내, 복귀 버튼에 저장 재시도를 제공한다. 복귀 목적지 저장이 실패하면 현재 미니게임에 머무르고 메모리 Scene 경로를 복구한다. 결과/보상 재실행이나 새 저장 schema는 없다.
+
+실제 stage 경로 I/O 실패에서 성공/실패 총 12개 RED→새 통합 0 failures. 이전 primary 바이트 보존, 반복 신호/재시도 효과 불변, 장애물 제거 후 실제 조사 복귀/재로드를 검사했다. 실제 1280×720 창에서 매뉴얼/재시도 버튼 겹침을 추가 재현하고 종료 상태의 두 버튼을 동일 VBox로 배치해 교정했다. 캡처 `.artifacts/daily-case-20260912/minigame-save-retry.png`. 기존 조사 왕복, minigame pipeline/controls, GUT 27/27·144 assertions 및 Python 계약 25 PASS. 정상 전체 플레이/사람 UX/출시는 미검증이고 M01 전용 저장 실패·scene-loader 장애 주입도 미실행이다.
+
+Phasmophobia/Outer Wilds 개발사 원문 재확인과 기존 recovery 저장 실패 패턴 비교를 기록했다. 기존 자산·사용자 import/uid·다른 열린 PR·Base v9.4.4 pin은 보존했다. Base 강제 규칙 승격 없음. 다음 핵심 병목은 기존 CCTV 프레임 관측과 회수의 ‘세 번째 박자 동안 이동하면 되감김 / 끝난 뒤 고정’에 맞는 실제 미니게임 동작이다. 현행 rain_dodge의 12초 생존을 그 규칙의 완료로 오인하지 않는다. 이전 headless AudioStreamWAV/PlaybackWAV 종료 경고, 회수 전체 공통 simulation-time/음향 정지, 최종 그림체와 정상 플레이 전 구간 검증은 계속 남는다.
+
 ## 미니게임 명시적 재개·입력 분리 — 2026-09-13 successor
 
 같은 승인 루프에서 상세 설계 §11.6을 재대조하여 바로 아래 단위의 ‘닫기 즉시 재개’를 교정했다. 현재 미니게임은 매뉴얼 열람 또는 Window focus_exited에서 국소 simulation을 정지하고, 닫기/포커스 복귀 이후 ‘현장 재개’ 버튼을 눌러야 진행한다. 방향/확인/마우스 입력 해제를 기다려 재개 입력이 이동으로 새지 않게 한다. M01 route_restore의 입력 잠금도 같이 복구한다. 회수 전체 정지/음향/실시간 위험 시계까지 완료했다는 뜻이 아니다.

@@ -724,10 +724,10 @@ func apply_story_effects(result_data: Dictionary) -> void:
 
 
 ## Applies a minigame success or failure result and stores it for save/load.
-func save_minigame_result(minigame_id: String, successful: bool, details: Dictionary = {}) -> void:
+func save_minigame_result(minigame_id: String, successful: bool, details: Dictionary = {}) -> bool:
 	var minigame := get_minigame(minigame_id)
 	if minigame.is_empty():
-		return
+		return false
 
 	var result_state := "success" if successful else "failure"
 	var result_text_key := "success_result_text" if successful else "failure_result_text"
@@ -747,7 +747,7 @@ func save_minigame_result(minigame_id: String, successful: bool, details: Dictio
 	minigame_results[minigame_id] = result
 
 	apply_story_effects(_make_minigame_effect_data(minigame, successful))
-	save_game()
+	return save_game()
 
 
 ## Tries to consume the frequency filter for one minigame hint.
