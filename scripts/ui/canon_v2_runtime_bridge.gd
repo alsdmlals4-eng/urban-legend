@@ -400,43 +400,9 @@ func _get_player_manual_state() -> Dictionary:
 		"active_rule_ids": active_rule_ids,
 		"evidence_records": _array_copy(manual.get("evidence_records")),
 		"candidate_keywords": _array_copy(manual.get("candidate_keywords")),
-		"authored_draft_lines": _get_authored_draft_lines(game_state),
+		"authored_draft_lines": game_state.get_authored_manual_draft_lines(),
 		"semantic_relations": _array_copy(manual.get("semantic_relations"))
 	}
-
-
-func _get_authored_draft_lines(game_state: Node) -> Array[String]:
-	var lines: Array[String] = []
-	var episode: Dictionary = game_state.get_current_episode()
-	var manual := _dictionary_copy(episode.get("investigation_manual"))
-	if manual.is_empty() or not game_state.has_method("get_manual_draft_slots"):
-		return lines
-	var drafts: Dictionary = game_state.get_manual_draft_slots(manual)
-	var earned: Array = game_state.get_collected_clue_ids()
-	var candidates: Dictionary = {}
-	for candidate in _array_copy(manual.get("candidate_keywords")):
-		if candidate is Dictionary and String(candidate.get("source_record_id", "")) in earned:
-			candidates[String(candidate.get("id", ""))] = String(candidate.get("display_label", ""))
-	for page in _array_copy(manual.get("pages")):
-		if not page is Dictionary:
-			continue
-		var sentence := ""
-		var has_selection := false
-		for segment in _array_copy(page.get("deduction_segments")):
-			if not segment is Dictionary:
-				continue
-			if String(segment.get("kind", "")) == "slot":
-				var candidate_id := String(drafts.get(String(segment.get("slot_id", "")), ""))
-				if candidates.has(candidate_id):
-					has_selection = true
-					sentence += String(candidates[candidate_id])
-				else:
-					sentence += "〔미작성〕"
-			else:
-				sentence += String(segment.get("text", ""))
-		if has_selection:
-			lines.append("%s\n%s" % [String(page.get("title", "작성한 규칙")), sentence])
-	return lines
 
 
 func _derive_active_pages_from_filled_slots(pages: Array, manual: Dictionary) -> Array[String]:

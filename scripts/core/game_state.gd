@@ -1408,6 +1408,7 @@ func get_case_report_summary() -> Dictionary:
 		"minigame_results": get_minigame_results(),
 		"recovery_result": recovery_result,
 		"anomaly_manual_record": get_current_anomaly_manual_record(),
+		"recovery_pattern_learning": get_recovery_pattern_learning(),
 		"unlocked_records": record_entries,
 		"unlocked_research_rewards": reward_entries,
 		"unlocked_equipment": equipment_entries,
@@ -1470,6 +1471,36 @@ func get_anomaly_manual_record(episode_id: String = "") -> Dictionary:
 ## Returns the current episode's player-authored manual record.
 func get_current_anomaly_manual_record() -> Dictionary:
 	return get_anomaly_manual_record(get_current_episode_id())
+
+
+## Current authored text for field reference and immutable-at-attempt snapshots.
+func get_authored_manual_draft_lines() -> Array[String]:
+	var lines: Array[String] = []
+	var manual := _to_dictionary(get_current_episode().get("investigation_manual", {}))
+	if manual.is_empty():
+		return lines
+	var drafts := get_manual_draft_slots(manual)
+	var earned := get_collected_clue_ids()
+	var candidates: Dictionary = {}
+	for candidate in _to_dictionary_array(manual.get("candidate_keywords", [])):
+		if String(candidate.get("source_record_id", "")) in earned:
+			candidates[String(candidate.get("id", ""))] = String(candidate.get("display_label", ""))
+	for page in _to_dictionary_array(manual.get("pages", [])):
+		var sentence := ""
+		var has_selection := false
+		for segment in _to_dictionary_array(page.get("deduction_segments", [])):
+			if String(segment.get("kind", "")) == "slot":
+				var candidate_id := String(drafts.get(String(segment.get("slot_id", "")), ""))
+				if candidates.has(candidate_id):
+					has_selection = true
+					sentence += String(candidates[candidate_id])
+				else:
+					sentence += "〔미작성〕"
+			else:
+				sentence += String(segment.get("text", ""))
+		if has_selection:
+			lines.append("%s\n%s" % [String(page.get("title", "작성한 규칙")), sentence])
+	return lines
 
 
 ## Returns the current Canon-compatible player-authored draft slots for one episode.
@@ -2075,6 +2106,9 @@ func record_recovery_pattern_outcome(pattern_id: String, response_id: String, co
 		"response_id": response_id,
 		"correct": correct,
 		"reason": reason,
+		"authored_draft_lines": get_authored_manual_draft_lines(),
+		"pattern_name": String(decision_context.get("pattern_name", pattern_id)),
+		"response_label": String(decision_context.get("response_label", response_id)),
 		"attempts": int(_to_dictionary(recovery_pattern_learning.get(pattern_id, {})).get("attempts", 0)) + 1
 	}
 	recovery_pattern_learning[pattern_id] = record

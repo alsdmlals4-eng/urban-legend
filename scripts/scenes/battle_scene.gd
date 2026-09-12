@@ -400,7 +400,9 @@ func _make_recovery_evidence_text() -> String:
 		lines.append("오대응 학습: 아직 없음")
 	else:
 		lines.append("오대응 학습: %s" % String(learning.get("reason", "오대응 이유를 기록했습니다.")))
-	lines.append("다음 판단: 가설을 세우고 확보 기록을 선택한 뒤, 그 판단과 일치하는 대응을 실행합니다.")
+	if not learning.is_empty():
+		lines.append(preload("res://scripts/ui/recovery_learning_formatter.gd").format_trial(learning))
+	lines.append("다음 판단: 당시 초안과 관측 결과를 대조하고, 현재 전조에 맞는 대응을 선택합니다.")
 	return "\n".join(lines)
 
 
@@ -761,7 +763,11 @@ func _focus_first_enabled_decision_card() -> void:
 
 
 func _grab_first_decision_card_focus() -> void:
+	if not is_inside_tree() or is_queued_for_deletion() or not is_instance_valid(_response_box):
+		return
 	for child in _response_box.get_children():
+		if not child.is_inside_tree() or child.is_queued_for_deletion():
+			continue
 		if child is PanelContainer and child.has_node("%ActionButton"):
 			var action_button := child.get_node("%ActionButton") as Button
 			if not action_button.disabled:
@@ -941,7 +947,11 @@ func _evaluate_guided_decision(response: Dictionary, correct: bool) -> Dictionar
 
 func _make_manual_decision_context(response: Dictionary, evaluation: Dictionary) -> Dictionary:
 	if not bool(evaluation.get("guided", false)):
-		return {}
+		return {
+			"guided": false,
+			"pattern_name": String(_current_pattern.get("name", _current_pattern.get("id", "전조"))),
+			"response_label": String(response.get("label", response.get("id", "")))
+		}
 	var selected_hypothesis := _find_response_by_id(_selected_hypothesis_response_id)
 	var authored_supporting_ids: Array[String] = []
 	var authored_supporting_titles: Array[String] = []

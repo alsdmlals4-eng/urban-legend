@@ -2,6 +2,7 @@
 extends Control
 
 const ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")
+const RecoveryLearningFormatter = preload("res://scripts/ui/recovery_learning_formatter.gd")
 
 const MinigameResultFormatter = preload("res://scripts/minigames/minigame_result_formatter.gd")
 const LogGuideScript = preload("res://scripts/ui/log_guide.gd")
@@ -98,7 +99,8 @@ func _build_m04_narrative_result() -> void:
 	root.name = "M04NarrativeResult"
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	root.offset_left = 64
-	root.offset_top = 42
+	# Keep the case heading below the shared operation strip at PC 16:9 sizes.
+	root.offset_top = 96
 	root.offset_right = -64
 	root.offset_bottom = -42
 	root.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -131,7 +133,13 @@ func _build_m04_narrative_result() -> void:
 	_m04_body_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_m04_body_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_m04_body_label.add_theme_font_size_override("font_size", 19)
-	root.add_child(_m04_body_label)
+	var body_scroll := ScrollContainer.new()
+	body_scroll.name = "VignetteBodyScroll"
+	body_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	body_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	root.add_child(body_scroll)
+	_m04_body_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	body_scroll.add_child(_m04_body_label)
 
 	_m04_reasoning_summary = Label.new()
 	_m04_reasoning_summary.name = "ReasoningSummary"
@@ -166,7 +174,7 @@ func _make_m04_vignette_pages() -> Array[Dictionary]:
 	var recovery_text := _make_report_recovery_text(report.get("recovery_result", {}))
 	var return_route_support_used := GameState.get_used_agent_supports().has("support_kwon_return_route")
 	var support_text := "권나래의 ‘귀가 기억 고정’ 보조가 피해자의 귀가 경로와 일상 기억을 붙들어, 안전 구역 이탈 뒤에도 귀환 순서를 유지했습니다." if return_route_support_used else "권나래의 ‘귀가 기억 고정’ 보조는 이번 회수에 배치되지 않았습니다. 귀가 경로는 회수 절차의 기본 보호 기록으로만 남습니다."
-	return [
+	var pages: Array[Dictionary] = [
 		{
 			"title": "피해자",
 			"body": "%s\n\n%s" % [rescue_text, after_story]
@@ -184,6 +192,9 @@ func _make_m04_vignette_pages() -> Array[Dictionary]:
 			"body": "CASE-02 붉은 우산 골목의 회수 기록이 사건 보고서에 봉인되었습니다.\n\n이번 판단의 근거와 회수 절차는 기록국 DB에서 다시 확인할 수 있습니다."
 		}
 	]
+	for trial in RecoveryLearningFormatter.format_trials(report.get("recovery_pattern_learning", {})):
+		pages.append({"title": "현장 대응 재검토", "body": trial})
+	return pages
 
 
 func _make_m04_reasoning_summary_text() -> String:
@@ -233,12 +244,16 @@ func _render_m04_vignette() -> void:
 	if _m04_vignette_pages.is_empty() or _m04_progress_label == null or _m04_title_label == null or _m04_body_label == null:
 		return
 	var page: Dictionary = _m04_vignette_pages[_m04_page_index]
+	var body_scroll := _m04_body_label.get_parent() as ScrollContainer
+	if body_scroll != null:
+		body_scroll.scroll_vertical = 0
 	_m04_progress_label.text = "%d / %d" % [_m04_page_index + 1, _m04_vignette_pages.size()]
 	_m04_title_label.text = String(page.get("title", "기록"))
 	_m04_body_label.text = String(page.get("body", ""))
 	var is_last_page := _m04_page_index >= _m04_vignette_pages.size() - 1
 	_m04_continue_button.visible = not is_last_page
-	_m04_preparation_button.visible = is_last_page
+	# The original four narrative pages remain the only mandatory sequence.
+	_m04_preparation_button.visible = _m04_page_index >= 3
 
 
 func _return_to_preparation_from_m04_result() -> void:
@@ -320,6 +335,7 @@ func _add_reasoning_summary_panel(parent: Control) -> void:
 	content.add_child(_make_label("회수 판단 결과: %s" % _make_report_recovery_text(report.get("recovery_result", {}))))
 	_add_text_list(content, "요원 기여", _make_agent_contribution_lines(report.get("selected_agents", [])))
 	_add_text_list(content, "다음 판단", report.get("next_case_notes", []))
+	_add_text_list(content, "현장 대응 재검토 · 패턴별 최근 시도", RecoveryLearningFormatter.format_trials(report.get("recovery_pattern_learning", {})))
 
 
 func _add_manual_record_summary(parent: Control, record_value: Variant) -> void:

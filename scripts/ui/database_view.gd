@@ -355,6 +355,7 @@ func _show_daily_episode_records() -> void:
 
 func _show_completed_case_report(report: Dictionary, parent: VBoxContainer) -> void:
 	_clear_children(parent)
+	_add_text_entries("현장 대응 재검토 · 패턴별 최근 시도", preload("res://scripts/ui/recovery_learning_formatter.gd").format_trials(report.get("recovery_pattern_learning", {})), parent)
 	_add_text_entries("보고서 개요", [
 		"사건: %s" % String(report.get("episode_title", "완료 사건")),
 		"기록 시각: %s" % String(report.get("completed_at_label", "기록 시각 없음")),

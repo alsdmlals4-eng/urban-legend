@@ -1,5 +1,19 @@
 # 괴이기록국 Current Handoff
 
+## 당시 초안 → 대응 결과 → 재검토 연결 — 2026-09-13
+
+승인된 개선 루프의 FEATURE_SLICE/CAMPAIGN_CORE continuation. 계획: `docs/superpowers/plans/2026-09-13-manual-trial-feedback.md`. Phasmophobia Chronicle 개발사 원문의 기록 재열람/종료 후 debrief 재개를 ADAPT하고 기존 Outer Wilds/Expelled! 비교 evidence를 재사용했다. M04는 direct response여서 guided 전용 매뉴얼 기록에 진입하지 않는 것을 실제 코드/데이터에서 확인했다. 사건을 guided 방식으로 바꾸거나 새 정답을 만들지 않고 공통 recovery_pattern_learning을 재사용했다.
+
+구현: 당시 보유한 매뉴얼 초안 문장과 실행한 대응/전조 이름을 기존 패턴별 최신 시도 기록에 additive optional metadata로 보존한다. 기존 결과/사유/횟수의 의미는 그대로다. 현장 같은 전조의 기록 서랍, 실패/일반 결과, M04 성공 순차 결과, 완료 보고서 DB에서 재대조한다. 초안을 나중에 수정하거나 다른 사건을 열어도 완료 보고서의 과거 사본이 바뀌지 않는다. 초안 전체의 정답 판정이나 행동 효과 보정이 아님을 명시한다. 현재 초안 조합은 GameState read-only getter로 모아 기존 bridge와 동일 필터를 공유한다. 저장 버전 변경/기존 필드 삭제 없음. 이전 기록에는 당시 초안을 추정 삽입하지 않는다.
+
+새 `tests/recovery/manual_trial_feedback_test.gd`는 실제 battle handler에 M04 대응을 전달해 기록, 초안 수정/로드, 반복 전조 피드백, 실패 결과, 성공 보고서/DB/순차 결과를 검사한다. 최초 기능 6개 실패 RED→교정. 결과 제목의 상단 바 겹침 1개 실패→여백 교정, 재검토 강제 열람 1개 실패→기존 4개 후일담 뒤 즉시 준비실 복귀를 유지하고 추가 검토는 선택으로 교정했다. 이 과정의 지연 포커스가 퇴장한 카드에 접근하는 오류도 실제 재현 후 생명주기 검사로 교정했다. 정상 플레이 입력 전 구간 완주가 아닌 DIAGNOSTIC_FIXTURE다.
+
+검증: 새 통합 Vulkan 실행 0 failures 및 1280×720 캡처 `.artifacts/daily-case-20260912/manual-trial-feedback.png` 확인. GUT 27/27 tests,144 assertions PASS; Base operating/active reference unittest 25 PASS. M04 workbench 기능 PASS이나 종료 Font RID1/CanvasItem2/ObjectDB10 경고, 기존 authored handoff ObjectDB4, guided flow ObjectDB4, direct-lead 12/12 및 ObjectDB2 경고는 별도 남음. 이번 새 통합 최종 렌더 실행은 오류/누수 경고 없음. 과거 일정 기반 sequential test는 바뀐 body 경로만 교정했으며 이 legacy 테스트 전체 PASS를 주장하지 않는다.
+
+검토 1: 새 초안/과거 사본 분리, 기존 정답/보상 불변, 없는 metadata/미작성 구분. 검토 2: 실제 M04 성공/실패/DB 소비, 다른 사건 경계, 상단 겹침과 추가 페이지 선택성 교정. REMAINING_WORK_COMPLETION_GATE와 IMPLEMENTATION_CORRECTION_RESCAN 결과: 이번 기록 연결 외에 **정상 조사 입력→매뉴얼 작성→구출 미니게임→회수의 기계적 의미 연결**, 문장 조합 문법, 활성시간 시계 정책/중단·재개, 테스트 수명주기 경고, 최신 main 통합이 남음. POST_COMPLETION_ADVERSARIAL_REVIEW_REQUIRED는 수행했지만 전체 CLEAN_REVIEW_EXIT/Human/출시 PASS는 아니다. 실패 사건의 영구 아카이브나 모든 시도 연대기는 만들지 않았고 기존 패턴별 최신 시도/성공 보고서 최신 1건 정책을 유지한다.
+
+Base v9.4.4 lock/승인 자산/사용자 import·uid/열린 PR 361·360·359·287·231 보존. 사용자 파일 삭제/이동 없음. 공통 formatter를 프로젝트 내 3개 소비자에 재사용했으며 공용 Base 승격은 NO_NEW_REUSE_LEARNING. 롤백은 이번 커밋 단위이며 이전 reader는 optional metadata를 무시한다. 다음 계획은 정상 조사·구출 입력으로 기존 규칙이 실제 소비되는 경로를 추적/검증하고 누락만 연결하는 것. 과거 기록 보완을 전체 게임 구현 완료로 승격하지 않는다.
+
 ## 작성한 매뉴얼의 회수 현장 참조 연결 — 2026-09-13
 
 계획: `docs/superpowers/plans/2026-09-13-manual-recovery-handoff.md`. 조사 draft_slots의 실제 consumer를 추적한 결과 저장/조사 화면에는 연결되어 있었지만 회수 매뉴얼은 페이지 제목만 표시했다. 기존 quick-open drawer와 bridge를 재사용해 현재 사건의 저장된 초안 문장을 읽기 전용으로 전달한다. 기존 candidate ID/page/slot filter와 확보 출처 조건을 적용하고 선택이 없는 칸은 미작성으로 남긴다. 적어도 하나의 유효한 선택이 있는 페이지만 새 섹션에 표시한다. 새 섹션은 '내가 작성한 해석 · 미검증'이며 active_rule_ids 승격, 자동 정답 판정, 시계/피해/보상 변경은 하지 않는다.

@@ -44,7 +44,7 @@ func _run() -> void:
 	_expect(root_panel != null, "M04 result uses its dedicated sequential narrative surface")
 	var progress := current_scene.get_node_or_null("M04NarrativeResult/PageProgress") as Label
 	var title := current_scene.get_node_or_null("M04NarrativeResult/VignetteTitle") as Label
-	var body := current_scene.get_node_or_null("M04NarrativeResult/VignetteBody") as Label
+	var body := current_scene.get_node_or_null("M04NarrativeResult/VignetteBodyScroll/VignetteBody") as Label
 	var reasoning_summary := current_scene.get_node_or_null("M04NarrativeResult/ReasoningSummary") as Label
 	var continue_button := current_scene.get_node_or_null("M04NarrativeResult/ContinueButton") as Button
 	_expect(progress != null and progress.text == "1 / 4", "M04 begins at the first causal page")
