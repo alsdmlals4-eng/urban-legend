@@ -1,5 +1,19 @@
 # 괴이기록국 Current Handoff
 
+## 일반 저장 검증 후 교체 — 2026-09-13 continuation
+
+승인된 개선 루프의 다음 단위. 계획: `docs/superpowers/plans/2026-09-13-verified-main-save.md`. 기존 generic GameState writer는 primary를 직접 WRITE로 열어 검증 전에 이전 내용을 비웠으며 store/flush 실패를 확인하지 않았다. 이제 동일 폴더의 `urban_legend_save.json.pending`에 먼저 기록하고 store 반환값/flush 후 오류/디스크 재읽기 바이트를 확인한 뒤 primary로 rename한다. 실패는 false로 회수 재시도 소비자에 전달한다. 성공한 rename은 staging을 소비하며 실패 시 최대 한 staging 파일만 다음 재시도에 재사용한다. load_game은 staging을 자동 승격하지 않는다.
+
+기존 M01 transaction의 검증 후 교체 패턴을 ADAPT하되 migration identity/journal과 Validation 전용 legacy guard·payload schema를 일반 저장에 이식하지 않았다. M01/Validation 분기, 최종 JSON 형식·세이브 버전·보상·승인 자산은 그대로다. 공식 FileAccess/DirAccess 문서와 실제 프로젝트 세 writer를 비교했다. 원격 main c82291101bf0a2bb4d821a12bca9f14070ee2886, 기존 열린 PR 361/360/359/287/231은 read-only 확인; Base pin 미변경.
+
+RED: `tests/recovery/generic_save_staging_test.gd`에서 staging 경로를 읽기 전용 사용자 디렉터리가 아닌 테스트 소유 빈 디렉터리로 막았을 때 기존 writer가 성공 처리/primary 변경하는 2개 실패를 재현. GREEN: 0 failures. Windows 테스트 primary만 read-only로 설정한 교체 실패에서도 기존 바이트 보존/권한 복구 후 재시도·load 통과. 테스트는 기존 TestSaveGuard와 project 내부 APPDATA/LOCALAPPDATA를 사용하며 외부 사용자 저장이나 권한을 바꾸지 않는다.
+
+검증: recovery_save_retry의 기존 router refusal 및 신규 `--stage-failure` 모두 0 failures. Vulkan 실제 창 1280×720에서 `--stage-failure --capture`도 0 failures. 성공/통제 실패/승인 철수의 원래 결과·구출·보상·의뢰 게시판 보존 확인. `afterlife_migration_integration_test.gd` PASS. GUT 27/27 tests,144 assertions PASS. 변경 diff whitespace 검사 PASS. 이번 실행 출력에 종료 객체 경고 없음(과거 다른 회수 테스트의 경고 해결을 뜻하지 않음).
+
+자체 검토 1: primary 사전 제거/이동 없음, 단일 sibling stage·오류 반환·retry 수렴·기존 로더 호환 확인. 검토 2: 실제 파일 실패부터 UI retry까지 연결해 synthetic router refusal만으로 I/O 검증했다고 주장하는 공백을 보완했다. 정상 게임 플레이 전체, 실제 입력, 1920 화면, disk-full/부분쓰기 fault injection, 전원중단/하드웨어 내구성, 다중 프로세스 동시 쓰기는 여전히 미검증이다. 남은 필수 작업은 M04 정상 플레이 E2E와 중단/재개·시계 정책/UI 검증. 전체 CLEAN_REVIEW_EXIT/Human/출시 PASS는 아니다.
+
+학습: 정산 idempotency와 디스크 persistence 오류는 별도 경계로 검사한다. 프로젝트 교훈으로 보존하며 공용 Base 강제 규칙 승격 없음. 사용자 파일 삭제/이동 없음; 테스트가 생성한 빈 stage 장애물만 테스트 내 제거했고 기존 import/uid 변경은 보존했다. 롤백은 이번 단위 commit만 되돌리며 JSON은 기존 로더 호환이다.
+
 ## 회수 종료 저장 실패 재시도 — 2026-09-13
 
 사용자가 계획 선행 방식과 첫 단위(종료 저장 실패 복구)를 승인했다. 계획은 `docs/superpowers/plans/2026-09-13-recovery-save-retry.md`. `save_recovery_result`는 기존 save_game의 bool을 반환한다. battle_scene은 종료 정산을 한 번만 수행하고, 실패하면 현장 처리/입력을 멈춘 상태에서 재시도 창을 유지한다. 재시도는 결과/보상을 재적용하지 않고 save_game만 호출하며 성공 시 결과 화면으로 이동한다. Escape로 유일한 재시도 경로가 사라지지 않는다. 미저장 상태에서 게임을 종료하면 진행 손실 가능성을 명시한다. 세이브 버전·보상량·사건 규칙·자산은 변경하지 않았다.

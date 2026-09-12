@@ -2976,13 +2976,26 @@ func save_game() -> bool:
 	if current_episode_data.is_empty() and not load_episode(DEFAULT_EPISODE_PATH):
 		return false
 
-	var file := FileAccess.open(SAVE_FILE_PATH, FileAccess.WRITE)
+	# Never truncate the last usable primary while preparing its replacement.
+	# One sibling stage is reused after failure; it is not a loadable checkpoint.
+	var pending_path := SAVE_FILE_PATH + ".pending"
+	var bytes := JSON.stringify(_make_save_data(), "\t").to_utf8_buffer()
+	var file := FileAccess.open(pending_path, FileAccess.WRITE)
 	if file == null:
-		push_error("Save file cannot be opened: %s" % SAVE_FILE_PATH)
 		return false
-
-	file.store_string(JSON.stringify(_make_save_data(), "\t"))
-	return true
+	var written := file.store_buffer(bytes)
+	file.flush()
+	var write_error := file.get_error()
+	file.close()
+	if not written or write_error != OK:
+		return false
+	if FileAccess.get_file_as_bytes(pending_path) != bytes:
+		return false
+	# Same-directory promotion avoids removing/moving the primary first.
+	return DirAccess.rename_absolute(
+		ProjectSettings.globalize_path(pending_path),
+		ProjectSettings.globalize_path(SAVE_FILE_PATH)
+	) == OK
 
 
 ## Loads the current MVP run from user://urban_legend_save.json.
