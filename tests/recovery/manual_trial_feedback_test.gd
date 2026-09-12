@@ -123,7 +123,9 @@ func run() -> void:
 			await process_frame
 			check(scroll.scroll_vertical > 0, "oversized trial content remains scrollable instead of clipped")
 			var return_button := current_scene.find_child("PreparationButton", true, false) as Control
-			check(return_button.get_global_rect().end.y <= root.size.y, "long content cannot push the return action off screen")
+			# Controls use the stretched logical viewport, not physical Window.size.
+			print("Long trial layout: button=", return_button.get_global_rect(), " viewport=", root.get_visible_rect(), " window=", root.size)
+			check(return_button.get_global_rect().end.y <= root.get_visible_rect().size.y, "long content cannot push the return action off screen: button=%s viewport=%s window=%s" % [return_button.get_global_rect(), root.get_visible_rect(), root.size])
 	# Additive metadata must not be required to load older trial records.
 	state.recovery_pattern_learning = {"pattern_red_rain_rewind": {"pattern_id": "pattern_red_rain_rewind", "response_id": "wait", "correct": true, "reason": "legacy", "attempts": 2}}
 	check(state.save_game() and state.load_game(), "old-shape trial round trip remains loadable")

@@ -23,6 +23,8 @@ var _return_button: Button
 var _game_control: Control
 var _manual_drawer: AnomalyManualDrawer
 var _manual_toggle_button: Button
+var _manual_input_locked := false
+var _manual_game_process_mode: ProcessMode = Node.PROCESS_MODE_INHERIT
 
 
 func _ready() -> void:
@@ -566,8 +568,11 @@ func _build_manual_drawer() -> void:
 	_manual_drawer.anchor_top = 0.14
 	_manual_drawer.anchor_right = 0.985
 	_manual_drawer.anchor_bottom = 0.86
+	var authored_lines := GameState.get_authored_manual_draft_lines()
 	_manual_drawer.set_sections([
-		{"title": "검증 규칙", "text": String(_minigame.get("rules_text", "공식 기록과 현재 경로를 대조합니다."))},
+		{"title": "내가 작성한 해석 · 미검증", "text": "\n\n".join(authored_lines) if not authored_lines.is_empty() else "아직 작성한 해석이 없습니다. 확보한 원문 기록과 현장 관측을 대조하세요."},
+		{"title": "조작 안내", "text": String(_minigame.get("rules_text", "공식 기록과 현재 경로를 대조합니다."))},
+		{"title": "열람 중 현장 진행 일시 정지", "text": "위치와 남은 시간은 유지됩니다. 닫으면 같은 상태에서 이어집니다. 초안 작성이나 열람만으로 성공하지 않습니다."},
 		{"title": "현재 기록", "text": String(_minigame.get("description", "현장 검증을 진행합니다."))},
 		{"title": "요원 지원", "text": "요원 지원과 결과 상세는 검증이 끝난 뒤 기록에 반영됩니다."}
 	])
@@ -577,8 +582,13 @@ func _build_manual_drawer() -> void:
 
 
 func _set_manual_input_lock(locked: bool) -> void:
-	if _game_control != null:
-		_game_control.set_process_unhandled_input(not locked)
-		_game_control.set_process_unhandled_key_input(not locked)
-		if _game_control.has_method("set_input_locked"):
-			_game_control.call("set_input_locked", locked)
+	if _game_control == null or _manual_input_locked == locked:
+		return
+	_manual_input_locked = locked
+	if locked:
+		_manual_game_process_mode = _game_control.process_mode
+		_game_control.process_mode = Node.PROCESS_MODE_DISABLED
+	else:
+		_game_control.process_mode = _manual_game_process_mode
+	if _game_control.has_method("set_input_locked"):
+		_game_control.call("set_input_locked", locked)

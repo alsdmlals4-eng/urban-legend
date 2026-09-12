@@ -31,12 +31,12 @@
           "slot_m04_rain_rewind_flow"
         ],
         "deduction_segments": [
-          {"kind": "text", "text": "반복 표지판은 실제 출구가 아니라 "},
+          {"kind": "text", "text": "반복 표지판의 기능을 ‘"},
           {"kind": "slot", "slot_id": "slot_m04_rain_rewind_sign"},
-          {"kind": "text", "text": "를 가리킨다."},
-          {"kind": "text", "text": "물웅덩이의 변화는 "},
+          {"kind": "text", "text": "’으로 해석한다.\n"},
+          {"kind": "text", "text": "물웅덩이에서 관측한 변화를 ‘"},
           {"kind": "slot", "slot_id": "slot_m04_rain_rewind_flow"},
-          {"kind": "text", "text": "에서 관찰된다."}
+          {"kind": "text", "text": "’으로 해석한다."}
         ]
       },
       {
@@ -52,12 +52,12 @@
           "slot_m04_victim_tether_sign"
         ],
         "deduction_segments": [
-          {"kind": "text", "text": "피해자 보호 중에는 "},
+          {"kind": "text", "text": "피해자 보호에 사용할 손자국의 위치를 ‘"},
           {"kind": "slot", "slot_id": "slot_m04_victim_tether_fabric"},
-          {"kind": "text", "text": "에 남은 손자국을 기준으로 삼는다."},
-          {"kind": "text", "text": "표지판은 "},
+          {"kind": "text", "text": "’으로 추정한다.\n"},
+          {"kind": "text", "text": "표지판이 나타내는 내용을 ‘"},
           {"kind": "slot", "slot_id": "slot_m04_victim_tether_sign"},
-          {"kind": "text", "text": "와 분리하여 읽는다."}
+          {"kind": "text", "text": "’으로 해석한다."}
         ]
       }
     ],

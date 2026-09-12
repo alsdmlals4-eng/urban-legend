@@ -1,5 +1,15 @@
 # 괴이기록국 Current Handoff
 
+## 조사 → 작성 → 미니게임 왕복 연속성 — 2026-09-13
+
+승인된 개선 루프 continuation. 계획/비교/검증 owner: `docs/superpowers/plans/2026-09-13-investigation-minigame-continuity.md`. 기존 Outer Wilds 원출처를 현장 관측/행동 연결에 ADAPT, Phasmophobia 기록 재열람 evidence 재사용. Base v9.4.4 pin, main c82291101bf0a2bb4d821a12bca9f14070ee2886, 다른 open PR과 사용자 import/uid 변경은 보존했다.
+
+미니게임 매뉴얼에 실제 작성한 초안(미검증)을 표시하고 조작 안내와 분리한다. 읽는 동안 해당 게임 노드만 process_mode로 정지하여 Input polling, 위치, 경과 시간, 위험 진행을 보존한다. 중복 열기/닫기와 원래 모드/포커스 복귀, 완료 후 게임 비재시작을 교정했다. M04 추리문 8개 text segment의 선결 답변/조사 오류를 중립 문장으로 교정했으며 후보·정답·단서·수치는 바꾸지 않았다. 조사 숨김 Label 2개에 Scene 소유권을 부여했고 매뉴얼 닫기 직후 Scene 전환 시 deferred focus가 퇴장한 opener를 호출하지 않게 했다.
+
+`tests/recovery/investigation_minigame_manual_flow_test.gd`: 실제 조사 방법 선택→기록 확보→매뉴얼 슬롯/키워드 버튼→CCTV 조건 통과→미니게임→정지/재개→조사 복귀를 검사. RNG seed와 최종 실패는 통제된 진단이며 전체 사람 플레이는 아니다. headless 기능 0 failures, Vulkan 1280 실행 0 failures/종료 경고 없음. GUT 27/27·144 assertions 및 Python 계약 25 PASS. 기존 workbench/매뉴얼/drawer/minigame 회귀 기능 PASS. Font/CanvasItem/orphan-node 문제는 교정됐으나 반복 headless 일부에서 AudioStreamWAV/AudioStreamPlaybackWAV 각각 1개 종료 경고를 확인했으며 미해결로 남긴다.
+
+긴 결과 UI 검사도 논리 viewport와 물리 window 좌표 혼용을 교정했다. 실제 1920×1080 요청 창은 OS 제약으로 1920×1061임을 readback했으므로 정확한 1080 렌더 PASS를 주장하지 않는다. 검토 1/2와 추가 발견 교정은 계획 문서 참조. 전체 CLEAN_REVIEW_EXIT/Human/출시 PASS는 아니다. 다음 병목은 단순 12초 rain_dodge와 사건의 세 번째 빗소리 timing 의미 사이의 실제 행동 소비처 공백이다. 무단 새 규칙/노트 기반 효과 보정 없이 기존 사건 진실부터 비교한다. 삭제·자산 교체·Base 승격 없음.
+
 ## 당시 초안 → 대응 결과 → 재검토 연결 — 2026-09-13
 
 승인된 개선 루프의 FEATURE_SLICE/CAMPAIGN_CORE continuation. 계획: `docs/superpowers/plans/2026-09-13-manual-trial-feedback.md`. Phasmophobia Chronicle 개발사 원문의 기록 재열람/종료 후 debrief 재개를 ADAPT하고 기존 Outer Wilds/Expelled! 비교 evidence를 재사용했다. M04는 direct response여서 guided 전용 매뉴얼 기록에 진입하지 않는 것을 실제 코드/데이터에서 확인했다. 사건을 guided 방식으로 바꾸거나 새 정답을 만들지 않고 공통 recovery_pattern_learning을 재사용했다.

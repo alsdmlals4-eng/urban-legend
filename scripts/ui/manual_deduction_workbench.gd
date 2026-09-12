@@ -73,8 +73,13 @@ func dismiss() -> void:
 	_active_slot_id = ""
 	_selected_candidate_id = ""
 	dismiss_requested.emit()
-	if is_instance_valid(_opener):
-		_opener.call_deferred("grab_focus")
+	call_deferred("_restore_opener_focus")
+
+
+func _restore_opener_focus() -> void:
+	# Dismissal may immediately transition out of the owning investigation scene.
+	if not visible and is_instance_valid(_opener) and _opener.is_inside_tree() and _opener.is_visible_in_tree() and not _opener.is_queued_for_deletion():
+		_opener.grab_focus()
 
 
 func _unhandled_input(event: InputEvent) -> void:

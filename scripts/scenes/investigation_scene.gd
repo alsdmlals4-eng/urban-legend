@@ -172,6 +172,11 @@ func _build_ui() -> void:
 	_result_label = %ResultLabel
 	_hint_label = Label.new()
 	_team_label = Label.new()
+	# Compatibility text sinks still need a scene lifetime owner.
+	_hint_label.visible = false
+	_team_label.visible = false
+	add_child(_hint_label)
+	add_child(_team_label)
 	_narrative_label = _field_dialogue_label
 	_result_panel = _result_toast
 
