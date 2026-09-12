@@ -1,5 +1,17 @@
 # 괴이기록국 Current Handoff
 
+## 회수 종료 저장 실패 재시도 — 2026-09-13
+
+사용자가 계획 선행 방식과 첫 단위(종료 저장 실패 복구)를 승인했다. 계획은 `docs/superpowers/plans/2026-09-13-recovery-save-retry.md`. `save_recovery_result`는 기존 save_game의 bool을 반환한다. battle_scene은 종료 정산을 한 번만 수행하고, 실패하면 현장 처리/입력을 멈춘 상태에서 재시도 창을 유지한다. 재시도는 결과/보상을 재적용하지 않고 save_game만 호출하며 성공 시 결과 화면으로 이동한다. Escape로 유일한 재시도 경로가 사라지지 않는다. 미저장 상태에서 게임을 종료하면 진행 손실 가능성을 명시한다. 세이브 버전·보상량·사건 규칙·자산은 변경하지 않았다.
+
+검증: 새 `tests/recovery/recovery_save_retry_test.gd`에서 성공/통제 실패/승인 철수 각각 저장 거부 후 무조건 결과 화면으로 이동하던 6개 실패를 재현하고 교정했다. 후속 headless 및 Vulkan 실제 창 1280×720 실행은 0 failures. 실제 GameState/ValidationSession의 저장 거부를 이용하며 반복 실패, 재시도 후 로드, 원래 판정/구출 유지, 보상/의뢰 중복 방지를 검사한다. 캡처 `.artifacts/daily-case-20260912/recovery-save-retry.png`는 embedded subwindow 진단 화면이다. 버튼 신호 실행이며 사람/물리 입력 증거는 아니다. 기존 GUT 27 tests/144 assertions PASS. 별도 실패 복귀 및 철수 복귀 0 failures이나 각 headless 종료에 ObjectDB 2개 경고가 남는다.
+
+검토 1: 정산을 반복 호출하지 않고 저장만 재시도하도록 분리, 저장 전 결과 화면 이동 차단, 필드 정지와 재시도 처리 활성 상태 확인. 검토 2: 저장 로더의 optional first_terminal_outcome 추가 및 성공 resolved 복원은 정상 호환 동작이므로 테스트를 보상/게시판/원래 판정의 의미 불변으로 교정. 오류 메시지 상태도 재표시 시 갱신한다.
+
+증거 상한/다음 계획: 이는 기존 저장 함수가 false를 반환했을 때의 소비자 복구다. M04의 일반 writer가 쓰기 중 오류·디스크 가득 참·전원 중단에서도 이전 파일을 보존하는지는 보장하지 않는다(직접 WRITE 경로는 별도 저장 내구성 작업 필요). M01 전용 transaction, Validation 저장 격리 및 기존 저장 버전은 유지했다. 정상 플레이 전체 경로, 실제 1920×1080, native dialog 물리 입력, 프로세스 종료 후 미저장 복구, 결과 Scene 로딩 오류 주입은 미검증이다. 전체 CLEAN_REVIEW_EXIT/Human/출시 PASS가 아니다. 다음 단위 착수 전 정상 플레이 계획에 저장 내구성 잔여 위험을 우선 반영한다.
+
+원격 preflight main은 c82291101bf0a2bb4d821a12bca9f14070ee2886, 작업 기반은 8ffc4690f0e6e5a0b2a3d9e3f3dde7017f358270. 열린 PR 361/360/359/287/231은 변경하지 않았다. Base v9.4.4 pin 및 사용자의 import/uid 변경을 보존했다. 삭제/이동 없음. 공용 신규 도구나 Base 승격 없이 기존 오류 반환/정산 구조를 재사용했다.
+
 ## 구현 재개 — 2026-09-12
 
 ### 직접 철수 검토 연결 — 2026-09-12 continuation

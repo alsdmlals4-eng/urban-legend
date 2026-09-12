@@ -35,6 +35,8 @@ var _action_buttons: Array[Button] = []
 var _agent_support_buttons: Array[Button] = []
 var _target_agent_index := 0
 var _recovery_completion_queued := false
+var _terminal_save_pending := false
+var _save_retry_dialog: AcceptDialog
 
 var _threshold_label: Label
 var _prediction_label: Label
@@ -1510,12 +1512,61 @@ func _finish_recovery(successful: bool, status: String) -> void:
 	_recovery_completed = true
 	_turn_locked = true
 	GameState.set_current_scene_path("res://scenes/result_scene.tscn")
-	GameState.save_recovery_result(successful, status, _anomaly_stability)
+	# Settle exactly once. Subsequent retries only persist this retained outcome.
+	var saved: bool = GameState.save_recovery_result(successful, status, _anomaly_stability)
 	for button in _action_buttons:
 		button.disabled = true
 	for button in _agent_support_buttons:
 		button.disabled = true
-	get_tree().change_scene_to_file("res://scenes/result_scene.tscn")
+	if not saved:
+		_show_terminal_save_retry()
+		return
+	_open_saved_result()
+
+
+func _show_terminal_save_retry() -> void:
+	_terminal_save_pending = true
+	GameState.set_current_scene_path("res://scenes/battle_scene.tscn")
+	# Freeze the field, including background keyboard actions, without pausing other autoloads.
+	process_mode = Node.PROCESS_MODE_DISABLED
+	if _save_retry_dialog == null:
+		_save_retry_dialog = AcceptDialog.new()
+		_save_retry_dialog.name = "RecoverySaveRetryDialog"
+		_save_retry_dialog.ok_button_text = "저장 다시 시도"
+		_save_retry_dialog.dialog_hide_on_ok = false
+		_save_retry_dialog.exclusive = true
+		_save_retry_dialog.process_mode = Node.PROCESS_MODE_ALWAYS
+		_save_retry_dialog.confirmed.connect(_retry_terminal_save)
+		_save_retry_dialog.canceled.connect(_restore_save_retry_dialog)
+		add_child(_save_retry_dialog)
+	_save_retry_dialog.title = "결과 저장을 완료하지 못했습니다"
+	_save_retry_dialog.dialog_text = "현재 결과는 실행 중인 게임에 보관되어 있습니다.\n저장 공간과 파일 접근 상태를 확인한 뒤 다시 시도하세요.\n게임을 종료하면 저장되지 않은 진행을 잃을 수 있습니다."
+	_save_retry_dialog.popup_centered(Vector2i(540, 220))
+	_save_retry_dialog.get_ok_button().grab_focus()
+
+
+func _restore_save_retry_dialog() -> void:
+	if _terminal_save_pending:
+		_show_terminal_save_retry.call_deferred()
+
+
+func _retry_terminal_save() -> void:
+	if not _terminal_save_pending or not is_inside_tree():
+		return
+	GameState.set_current_scene_path("res://scenes/result_scene.tscn")
+	if not GameState.save_game():
+		_show_terminal_save_retry()
+		return
+	_terminal_save_pending = false
+	_open_saved_result()
+
+
+func _open_saved_result() -> void:
+	var error := get_tree().change_scene_to_file("res://scenes/result_scene.tscn")
+	if error != OK:
+		_show_terminal_save_retry()
+		_save_retry_dialog.title = "결과 화면을 열지 못했습니다"
+		_save_retry_dialog.dialog_text = "결과는 저장되었습니다. 결과 화면 열기를 다시 시도하세요."
 
 
 func _recover_anomaly_core() -> void:

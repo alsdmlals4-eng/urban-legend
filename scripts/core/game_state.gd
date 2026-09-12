@@ -2941,7 +2941,7 @@ func get_current_result_research_reward() -> Dictionary:
 
 
 ## Saves the recovery result after the anomaly core is stabilized.
-func save_recovery_result(successful: bool, result_status: String, anomaly_stability: int) -> void:
+func save_recovery_result(successful: bool, result_status: String, anomaly_stability: int) -> bool:
 	recovery_successful = successful
 	recovery_result_status = result_status
 	recovery_result_stability = anomaly_stability
@@ -2953,7 +2953,7 @@ func save_recovery_result(successful: bool, result_status: String, anomaly_stabi
 		var grade := get_result_resolution_grade()
 		_apply_resolution_unlocks(grade)
 		grant_resolution_echo_reward(get_current_episode_id(), grade)
-	save_game()
+	return save_game()
 
 
 ## Returns true after a successful anomaly core recovery.
