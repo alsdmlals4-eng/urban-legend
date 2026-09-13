@@ -4,7 +4,6 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 HELPER = ROOT / "addons" / "godot_ai" / "runtime" / "game_helper.gd"
-IMPLEMENTATION = ROOT / "addons" / "godot_ai" / "runtime" / "game_helper_impl.gd"
 PLUGIN = ROOT / "addons" / "godot_ai" / "plugin.gd"
 
 
@@ -17,9 +16,9 @@ class GodotAiHeadlessContractTest(unittest.TestCase):
             self.assertIn("DisplayServer.get_name()", source)
             self.assertIn("--headless", source)
         self.assertIn("if _disabled_for_headless_launch():", helper)
-        self.assertIn("GameHelperImpl.new()", helper)
-        self.assertTrue(IMPLEMENTATION.is_file())
-        self.assertIn("EngineDebugger.register_message_capture", IMPLEMENTATION.read_text(encoding="utf-8"))
+        # The current upstream helper is monolithic. Do not pin the obsolete
+        # wrapper/impl layout; actual launches are covered by the Godot test.
+        self.assertIn("EngineDebugger.register_message_capture", helper)
 
 
 if __name__ == "__main__":

@@ -100,6 +100,9 @@ var _last_eval_liveness_reply: Dictionary = {}
 
 
 func _ready() -> void:
+	if _disabled_for_headless_launch():
+		set_process(false)
+		return
 	## Only run in the game process, not in the editor. Use is_editor_hint
 	## — NOT OS.has_feature("editor"), which is a BUILD-config check
 	## (TOOLS_ENABLED) and returns true in the game subprocess too because
@@ -132,6 +135,24 @@ func _ready() -> void:
 	## if no screenshot was ever requested.
 	if EngineDebugger.is_active():
 		EngineDebugger.send_message("mcp:hello", [])
+
+
+static func _disabled_for_headless_launch() -> bool:
+	return _disabled_for_headless(OS.get_cmdline_args(), DisplayServer.get_name(), OS.get_environment("GODOT_AI_ALLOW_HEADLESS"))
+
+
+static func _disabled_for_headless(args: PackedStringArray, display_name: String, allow_value: String) -> bool:
+	const Settings = preload("res://addons/godot_ai/utils/settings.gd")
+	if Settings.truthy(allow_value):
+		return false
+	if display_name.to_lower() == "headless":
+		return true
+	for i in range(args.size()):
+		if args[i] == "--headless" or args[i] == "--display-driver=headless":
+			return true
+		if args[i] == "--display-driver" and i + 1 < args.size() and args[i + 1] == "headless":
+			return true
+	return false
 
 
 func _process(_delta: float) -> void:

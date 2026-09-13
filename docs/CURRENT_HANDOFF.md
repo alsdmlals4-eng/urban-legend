@@ -1,5 +1,13 @@
 # 괴이기록국 Current Handoff
 
+## 전체 회귀의 headless helper 계약 교정 — 2026-09-13
+
+계획 `docs/superpowers/plans/2026-09-13-headless-helper-parity.md`. 전체 Python 490개 중 기존 실패 1개를 재현했다. 최신 main과 같은 monolithic game_helper가 opt-in 없이 headless에도 capture/logger를 등록하고, 구형 테스트는 wrapper/impl 분리를 강제했다. 최신 구현을 과거 파일로 교체하지 않고 editor의 기존 launch 정책과 동일한 guard를 추가했다. 자동 검사에서는 기본 비활성, GODOT_AI_ALLOW_HEADLESS=true에서는 활성, 실제 창에서는 기존 활성이다. 추가 서비스/권한/설정 변경 없음.
+
+실제 autoload 등록·logger·process RED2→0. false/빈 opt-in/true opt-in/실제 Vulkan 창의 4개 별도 실행 모두 0 failures. headless 인자/display-driver/표시기/명시 opt-in 행렬도 검사. 구형 Python wrapper 강제만 제거하고 현행 registration 계약 검사는 유지했다. 전체 Python 490/490 PASS, GUT 27/27·144 assertions, 새 CCTV 및 조사 왕복 모두 PASS. 보조 기능의 원격 debugger 통신/전체 screenshot 기능은 이번 작은 launch test의 검증 범위가 아니며 최종 릴리스 PASS가 아니다.
+
+검토1: 환경 opt-in false/true와 기본값, 기존 종료 unregister 보존. 검토2: 실제 창 기능 활성/전 코드 보존/490개 회귀 재실행. 오래된 game_helper_impl 파일은 consumer/provenance 정리 범위 밖이므로 삭제하지 않았다. Base 승격은 보류(프로젝트 local helper vendor 업데이트 재발 증거 축적 필요). 나머지 게임 구현·회수 실시간 계약·아트/음향/전체 통합은 여전히 남는다. 이 교정은 전체 완성 선언이 아니다.
+
 ## M04 CCTV 규칙 실행 연결 — 2026-09-13
 
 계획 `docs/superpowers/plans/2026-09-13-rain-frame-sync.md`. 기존 CCTV 진입의 rain_dodge 생존 판정이 조사한 세 번째 빗소리와 무관하던 간극을 교정했다. 현재 M04 consumer는 rain_frame_sync: 재생 시작→세 번의 시각 빗소리 관측→소리가 멎은 구간에서 영상 고정. 세 번째 소리 도중은 실패, 직후는 성공이다. 대기만으로 성공하지 않는다. 기존 12초/실패 3회/장비 보호 1회, 사건 ID/정답/효과/저장 schema를 유지한다. 초안은 읽기 전용 참고이며 판정 코드가 초안이나 GameState를 읽지 않는다. 실제 입력 시각·관측·실패 횟수를 기존 result details/input_summary에 기록한다.
