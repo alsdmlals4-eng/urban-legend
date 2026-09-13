@@ -58,10 +58,10 @@
 ## Current authority 규칙
 
 - 사람용·구조화 기획, 구현, 테스트, runtime evidence는 Repository가 책임진다. Notion은 `HISTORICAL_READ_ONLY_NO_WRITE`다.
-- 최종 10일·반일 캠페인 기획은 `docs/CURRENT_PLANNING_CANON.md`와 `docs/current-planning-canon.json`이 소유한다.
+- 현재 일상/사건 기획은 `docs/CURRENT_PLANNING_CANON.md`와 `docs/current-planning-canon.json`의 `planning.cadence`가 소유한다. `legacy_cadence`는 역사·저장 호환이며 제품 일정이 아니다.
 - 현재 mutable decision·verified successor는 `docs/CURRENT_DECISION_OVERLAY.md`가 소유한다.
 - 현재 구현 continuation은 `docs/CURRENT_HANDOFF.md`가 소유한다.
-- current implementation handoff의 세 owner는 Reality Gate / 2026-08-22 design / 2026-08-22 implementation plan이다.
+- current implementation 순서는 `docs/CURRENT_HANDOFF.md`와 `docs/superpowers/specs/2026-09-14-remaining-implementation-contract.md`를 따른다. 2026-08-22 Reality Gate/design/plan은 선행 병합 증거다.
 - 역사 Ledger의 predecessor `NOT_STARTED`, `BLOCKED`, 과거 PR/merge state를 current truth로 단독 사용하지 않는다.
 - 실제 구현 사실은 latest `main`의 코드·데이터·Scene·테스트와 exact evidence를 우선한다.
 - GitHub Issue의 `open` 상태만으로 구현 권한을 만들지 않는다. current canon·overlay·actual main과 대조해 `CURRENT_VALID / DEFERRED_VALID / COMPLETED / SUPERSEDED / REVIEW_REQUIRED`를 판정한다.
@@ -116,7 +116,7 @@
 ## 문서 책임 원본
 
 - 사람용 전체 그림: repository `docs/design/PROJECT_AI_PRODUCTION_SPEC.md`와 user PDF GDD
-- 최종 10일·반일 캠페인 기획: `docs/CURRENT_PLANNING_CANON.md`, `docs/current-planning-canon.json`
+- 현재 일상/사건 기획: `docs/CURRENT_PLANNING_CANON.md`, `docs/current-planning-canon.json`
 - mutable 결정·successor: `docs/CURRENT_DECISION_OVERLAY.md`
 - 현재 continuation: `docs/CURRENT_HANDOFF.md`
 - current Reality Gate: `docs/audits/2026-08-22-final-planning-implementation-reality-gate.md`
@@ -142,16 +142,16 @@ GDD 의미가 변경되면 등록된 생성기로 DOCX mirror를 재생성·검�
 - 공식 기관명은 **괴이 기록국**이다.
 - 사건 완료는 **안정화 상태**, 실패 기록은 **위험 사례**, 회수 대상은 **잔향**이다.
 - 최종 기록 보상은 **괴이 매뉴얼 작성·갱신**이다.
-- 플레이어 노출 안내자는 **기록관 아카**다.
+- 플레이어 노출 기록 보조는 **루메**다. 사건에 맞춰 복장을 바꾼다.
 - 괴이는 처치 대상이 아니라 규칙을 조사하고 현재 출현을 안정화·회수할 현상이다.
-- 제품 cadence는 **10일 × 하루 반일 2슬롯**이며, 한 10일 cycle에 메인 사건 1개를 해결한다. Day 1~9 해결은 조기 해결, Day 10 해결은 정규 해결이다. M01~M12는 초기 case slate이며 M13+로 이어진다.
+- 제품 cadence는 **선택적 일상 준비 / 사건(조사·구출·회수)**이다. 필수 일정·휴식 슬롯과 10일 마감은 사용하지 않는다. 장기 case slate는 실제 승인·consumer를 확인하며 파일명만으로 playable 분량을 추정하지 않는다.
 - M01 저승역은 First Session, M04 빨간 우산은 release-near player-experience Vertical Slice다.
 - 관측과 해석을 분리하고 오답 가설에는 관측 가능한 반증이 있어야 한다.
 - 필수 진실을 단일 RNG 성공에 잠그지 않는다.
 - 구출 결과와 회수 결과를 서로 덮어쓰지 않는다.
 - current result authority는 `COMPOSITE_RESULT`다. Legacy S/A/B/S-rank는 history/mastery compatibility만 허용한다.
 - `battle_scene`은 안정화·잔향 회수 화면이다. HP·공격·처치 중심 시스템을 새로 늘리지 않는다.
-- 요원·아카·장비·성장·자동행동은 핵심 정답이나 미관측 패턴을 대신 제공하지 않는다.
+- 요원·루메·장비·성장·자동행동은 핵심 정답이나 미관측 패턴을 대신 제공하지 않는다.
 - 관계는 단일 호감도 숫자가 아니라 선택 기억과 대사·이벤트 변화로 표현한다.
 - Godot 4.7 stable, GDScript, PC 16:9, 마우스·키보드가 기본이다.
 - 모바일은 PC Validation 뒤 별도 Decision 전까지 current 범위에 포함하지 않는다.

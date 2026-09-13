@@ -1465,7 +1465,7 @@ func _resolve_recovery_clock_outcome(correct: bool, verified: bool, lines: Array
 	if correct:
 		lines.append("현장 대응: 위험 -1 · 현재 %d/6" % danger)
 		if verified:
-			lines.append("매뉴얼 검증: 추가 위험 -1 · 현재 %d/6" % danger)
+			lines.append("판단 근거를 기록했습니다. 위험 완화는 실제 현장 대응에만 적용됩니다.")
 	else:
 		lines.append("오대응 누적: 위험 +2 · 현재 %d/6" % danger)
 	_apply_clock_surge(outcome, lines)

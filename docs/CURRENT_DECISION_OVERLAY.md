@@ -1,5 +1,11 @@
 # 괴이기록국 Current Decision Overlay
 
+## 현재 승인 successor — 2026-09-14
+
+최신 사용자 승인과 `docs/superpowers/specs/2026-09-10-daily-case-structure-design.md`에 따라 cadence는 DAILY_CASE, 일상은 선택적 준비, 기록 보조는 루메다. M04 기본 지원은 휴식 반일을 요구하지 않는다. 실제 코드의 `_make_dispatch_context_for`는 DAILY_CASE/DEFAULT_SUPPORT를 반환한다. 노트의 평가값은 실제 행동의 물리 효과 원본이 아니다. 작업 순서는 `docs/superpowers/specs/2026-09-14-remaining-implementation-contract.md`, 정확한 구현 상태는 CURRENT_HANDOFF를 따른다.
+
+이하 2026-08의 제품 구조·10일/timing·휴식 gate·MERGED 표기는 선행 결정/증거이며 이번 successor보다 우선하지 않는다. 기존 ID/저장 호환/역사 승인 증거는 보존한다.
+
 > 문서 역할: `CURRENT_MUTABLE_DECISION_OVERLAY`
 > 상태: `CURRENT / PLANNING_COMPLETE / USER_APPROVED_VISUAL_DIRECTION_LOCK / RUNTIME_RECONCILIATION_MERGED`
 > 갱신 기준: PR #322 merge commit `9fa32d32e8a5a2ad7d34a388695986b4ab81c6a7` + merged-main canon readback (runtime merge `8d303f0f9414950273be934fd28c8fb1b3a21e18`)

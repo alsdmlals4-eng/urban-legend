@@ -2180,14 +2180,12 @@ func change_recovery_clock_danger(delta: int) -> Dictionary:
 
 
 ## Resolves one committed recovery response. Correct field work relieves pressure;
-## complete manual verification relieves one additional segment. A wrong response
+## note verification is legacy metadata, never a physical effect. A wrong response
 ## creates one bounded escalation event rather than stacking unrelated penalties.
-func resolve_recovery_clock_outcome(correct: bool, verified: bool) -> Dictionary:
+func resolve_recovery_clock_outcome(correct: bool, _verified: bool) -> Dictionary:
 	var state := get_recovery_clock_state()
 	if correct:
 		state["danger"] = maxi(0, int(state.get("danger", 0)) - 1)
-		if verified:
-			state["danger"] = maxi(0, int(state.get("danger", 0)) - 1)
 	else:
 		state["danger"] = mini(RECOVERY_CLOCK_DANGER_MAX, int(state.get("danger", 0)) + 2)
 	var surge_triggered := false

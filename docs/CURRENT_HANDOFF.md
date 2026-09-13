@@ -1,5 +1,27 @@
 # 괴이기록국 Current Handoff
 
+## W01 현재 cadence와 역사 계약 분리 — 2026-09-14
+
+사용자는 명세 보완 뒤 구현·개선 루프를 계속 실행하도록 승인했다. 작업 종료/추가 구현 중단이라는 이전 항목은 당시 상태이며 현재 continuation을 제한하지 않는다. 실행 순서는 2026-09-14 remaining contract를 따른다.
+
+실제 `_make_dispatch_context_for`의 DAILY_CASE/DEFAULT_SUPPORT와 GUT의 무일정 출동·구형 저장 복원을 기준으로 정본을 교정했다. 구조화 `planning.cadence`는 DAILY_CASE/mandatory_schedule=false, 기존 10일 값은 `legacy_cadence`로 명시 보존. AGENTS의 current 실행 owner/루메/일상-사건 표현을 교정했고 planning/overlay/context의 구형 timing 설명은 역사로 구분했다. 자동 정본 검사 RED2→전체 Python490/490 GREEN. 이는 문서/계약 교정이며 제품 런타임이나 저장 필드 삭제가 아니다.
+
+Outer Wilds/FTL 개발사와 Godot 저장 가이드를 실제 읽고 기존 구현·유지비·호환 위험을 비교한 ADOPT/ADAPT/REJECT 결과를 remaining contract §3에 기록했다. 절대 최적이라고 주장하지 않는다. 1차는 active/legacy cadence의 혼동을, 2차는 오래된 휴식 gate와 새 기본 지원의 혼동을 검토했다. START_HERE/장기 roadmap/PDF까지 전체 전파 완료는 아니며 후속 감사 대상으로 유지한다. 다른 Draft PR/승인 자산/Base pin 변경 없음.
+
+## W02 노트 평가와 회수 시계 효과 분리 — 2026-09-14
+
+승인된 잔여 작업 명세 W02를 적용했다. 실제 GameState에 위험 4를 넣고 대응/초안 인증 조합을 비교한 테스트에서 올바른 대응의 인증 여부만으로 결과가 달라지는 RED 2건을 재현했다. `resolve_recovery_clock_outcome`은 기존 두 인자 호출 호환을 보존하되 인증 인자는 물리 효과에 사용하지 않는다. 올바른 대응 위험 -1, 오대응 +2와 기존 폭주 처리는 유지했다. battle 안내의 '매뉴얼 검증 추가 위험 -1'도 제거했다. 기존 시도 기록/verified metadata/저장 schema는 변경하지 않았다. 의미 근거와 대안 비교는 승인 명세 W02 및 §3을 재사용했다.
+
+검증: RED2→0, recovery clock state / dual-clock scene / manual trial feedback 통과; GUT27/27·144 assertions, Python490/490 PASS. 1차 검토는 양쪽 인증값과 성공/실패의 물리 결과 동등성을, 2차 검토는 안내와 실제 효과 불일치·과거 기록/저장 호환을 확인했다. 실제 사람 입력 전 구간·최종 시각 검증은 이번 변경에서 NOT_RUN. W02 전체의 노트 정답 인증 표현 감사와 M04 정상 입력 대조는 남아 있다.
+
+W01 fresh-read에서 AGENTS/현재 기획/JSON/context의 일정제 표현과 구형 API 존재를 다시 확인했다. 호환 API를 삭제하지 않았으며 owner 동기화는 아직 완료하지 않았다. 이 변경과 기존 미커밋 테스트/문서는 로컬 작업본으로, main 통합을 주장하지 않는다. 롤백은 GameState 효과 분기와 battle 안내/해당 테스트를 함께 되돌리는 범위. 새 자산·저장 필드·Base pin 변경 없음. 다음은 W01 정본 전파 및 W03 정상 입력 경로 검증이다.
+
+## 남은 작업·설계/구현 명세 준비 — 2026-09-14
+
+최신 사용자 요청에 따라 구현을 중단하고 `docs/superpowers/specs/2026-09-14-remaining-implementation-contract.md`에 남은 작업 12개 패키지의 현재 상태·우선순위·선행·consumer·설계·검사·완료 조건을 정리했다. 기준 작업 HEAD는 27fa216ed563c1e85f0483588ab8243d2238c318, origin/main은 c82291101bf0a2bb4d821a12bca9f14070ee2886이다. 브랜치 구현을 main 완료로 보지 않는다. 다음 순서는 일정제 잔존 owner/호환 경계 감사 → 노트 평가와 실제 회수 효과 분리 → M04 정상 입력 전 구간 완결이다. 다른 장기 사건은 승인 범위/consumer 확인 전 구현 준비 완료로 추정하지 않는다.
+
+직전 종료 검사 보완은 미커밋 테스트로 보존했다. 오디오 실제 자원 해제 관측 helper/probe와 5개 scene teardown은 선택된 6개 검사 2회 반복 및 Python490/GUT27에서 통과했지만 통합/main/장시간 메모리 증거는 아니다. 아래 과거 handoff의 종료 경고는 당시 결과로 보존하며 이번 로컬 증거와 구분한다. 이번 명세 요청 이후 추가 runtime/아트 변경 없음. 상세 명세의 미검증·최종 아트/Human/출시 gate를 유지한다.
+
 ## 회수 활성시간 시계·명시적 재개 — 2026-09-13
 
 승인된 상세 설계 §11.6을 실제 battle consumer에 연결했다. 계획/비교 owner: `docs/superpowers/plans/2026-09-13-recovery-active-clock.md`. FTL 개발사의 전투 중 전술 정지와 Godot 공식 pause/signal 경계를 ADAPT했다. 게임 전체 정지 대신 기존 미니게임의 국소 정지·입력 해제 구조를 회수에 적용한다. 기존 턴 API는 호환 유지하되 현재 battle은 턴 교체로 위험을 더하지 않는다.

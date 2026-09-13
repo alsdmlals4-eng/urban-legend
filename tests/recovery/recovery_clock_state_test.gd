@@ -44,6 +44,17 @@ func _run() -> void:
 		var verified: Dictionary = _game_state.call("resolve_recovery_clock_outcome", true, true)
 		_expect(int(verified.get("danger", -1)) == 0, "verified manual-and-method response relieves danger")
 
+		for correct in [true, false]:
+			_game_state.call("reset_recovery_clock_state")
+			_game_state.call("change_recovery_clock_danger", 4)
+			var without_notes: Dictionary = _game_state.call("resolve_recovery_clock_outcome", correct, false)
+			_game_state.call("reset_recovery_clock_state")
+			_game_state.call("change_recovery_clock_danger", 4)
+			var with_notes: Dictionary = _game_state.call("resolve_recovery_clock_outcome", correct, true)
+			_expect(without_notes == with_notes, "note verification must not change physical clock outcome (correct=%s)" % correct)
+			_expect(int(with_notes.get("danger", -1)) == 3, "actual response retains standard relief or bounded surge")
+		_game_state.call("reset_recovery_clock_state")
+
 		_game_state.call("change_recovery_clock_danger", 6)
 		var surge: Dictionary = _game_state.call("resolve_recovery_clock_outcome", false, false)
 		_expect(bool(surge.get("surge_triggered", false)), "danger six plus a wrong response triggers one bounded surge")
@@ -70,10 +81,10 @@ func _finish() -> void:
 		_expect(restore_error.is_empty(), "test save guard must restore the player save after recovery-clock mutation")
 		_prepared = false
 	if _failures.is_empty():
-		print("Recovery clock state test: 17 passed, 0 failed")
+		print("Recovery clock state test: 0 failures")
 		quit(0)
 		return
 	for failure in _failures:
 		push_error("FAIL: %s" % failure)
-	print("Recovery clock state test: %d passed, %d failed" % [17 - _failures.size(), _failures.size()])
+	print("Recovery clock state test: %d failures" % _failures.size())
 	quit(1)
