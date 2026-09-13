@@ -114,8 +114,12 @@ func run() -> void:
 			var capture := root.get_texture().get_image()
 			print("Recovery framebuffer: ", capture.get_size(), " logical: ", root.get_visible_rect().size)
 			check(capture.save_png(ProjectSettings.globalize_path("res://.artifacts/daily-case-20260912/recovery-active-pause-%dx%d.png" % [capture.get_width(), capture.get_height()])) == OK, "capture actual recovery pause")
+	var audio_probe := preload("res://tests/test_audio_lifecycle.gd").new()
+	audio_probe.capture(battle)
 	battle.queue_free()
 	await frames()
+	var retained: Array[String] = await audio_probe.wait_for_release(self)
+	check(retained.is_empty(), "scene audio must retire before test shutdown: %s" % str(retained))
 	check(guard.restore().is_empty(), "guard restores")
 	for failure in failures:
 		push_error(failure)

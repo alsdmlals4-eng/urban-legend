@@ -66,8 +66,12 @@ func run() -> void:
 		for key in ["anomaly_risk", "anomaly_understanding", "anomaly_stability", "mental_stamina", "minigame_results"]:
 			# JSON reload represents every number as float; compare serialized meaning.
 			check(reloaded.get(key) == JSON.parse_string(JSON.stringify(snapshot.get(key))), "disk retry preserves settled " + key)
+	var audio_probe := preload("res://tests/test_audio_lifecycle.gd").new()
+	audio_probe.capture(current_scene)
 	current_scene.queue_free()
 	await frames()
+	var retained: Array[String] = await audio_probe.wait_for_release(self)
+	check(retained.is_empty(), "investigation audio must retire after minigame return: %s" % str(retained))
 	check(guard.restore().is_empty(), "restore isolated save")
 	for message in failures:
 		push_error(message)

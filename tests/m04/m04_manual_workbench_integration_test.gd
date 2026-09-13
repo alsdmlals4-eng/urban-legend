@@ -143,10 +143,14 @@ func _finish() -> void:
 
 
 func _finish_clean() -> void:
+	var audio_probe := preload("res://tests/test_audio_lifecycle.gd").new()
 	if current_scene != null:
+		audio_probe.capture(current_scene)
 		current_scene.queue_free()
 	for frame in range(3):
 		await process_frame
+	var retained: Array[String] = await audio_probe.wait_for_release(self)
+	_expect(retained.is_empty(), "M04 manual audio must retire before shutdown: %s" % str(retained))
 	if _prepared:
 		var restore_error := _guard.restore()
 		if not restore_error.is_empty():

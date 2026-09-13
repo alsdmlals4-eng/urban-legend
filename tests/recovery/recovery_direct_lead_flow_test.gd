@@ -59,7 +59,12 @@ func _run() -> void:
 	for _frame in range(4):
 		await process_frame
 	_expect(current_scene != null and current_scene.scene_file_path == "res://scenes/result_scene.tscn", "recovery threshold must advance to the result scene without a separate execute action")
-
+	var audio_probe := preload("res://tests/test_audio_lifecycle.gd").new()
+	audio_probe.capture(current_scene)
+	current_scene.queue_free()
+	await process_frame
+	var retained: Array[String] = await audio_probe.wait_for_release(self)
+	_expect(retained.is_empty(), "result audio must retire before shutdown: %s" % str(retained))
 	_finish()
 
 

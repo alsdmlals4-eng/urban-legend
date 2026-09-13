@@ -1,5 +1,13 @@
 # 괴이기록국 Current Handoff
 
+## W05 오디오 종료 관측 통합 — 2026-09-14
+
+이전 M04 manual의 WAV/playback 2개 종료 경고를 기존 test-only weakref observer로 추적했다. 현재 scene의 player/stream/playback을 약한 참조로 관측하고 scene 해제 후 최대 1초 동안 실제 소멸을 확인한다. 음소거/stop/null 주입 없이 이 소비처가 정상 소멸함을 확인했다. 기존 세 frame만 기다리던 종료가 audio retirement보다 빨랐던 사례이며 모든 엔진 누수를 고쳤다고 주장하지 않는다.
+
+기존 미커밋 audio lifecycle 작업의 실제 diff를 재검토하고 M04 manual에 동일 관측을 추가했다. helper negative fixture는 실제 stream을 강하게 보유하면 deadline 내 남음을 탐지하고, 보유를 해제하면 소멸함을 3회 검사한다. M04 manual / minigame retry / recovery active / direct lead / dual clock / withdrawal / negative probe 7개를 2회 모두 실행, 실패·종료 경고 없음. Vulkan recovery active fixture 0 failures, Python490 PASS. 비교·공식 source 근거는 기존 audio-lifecycle plan을 재사용했다. 추가 유료 서비스/엔진 변경/새 공용 계층 없음.
+
+반례 검토1: 참조를 붙잡는 fixture가 실패를 탐지하는지 확인. 검토2: 정지/재개·회수·결과·일상 귀환에서 실제 scene 제거 후 해제 확인. 증거 상한은 이 7개 consumer 및 fixture이며 장기 soak/다른 audio 타입/청감/Human/출시 QA는 별도다. Base 공용 승격은 보류. 다음은 W06 슬롯 줄바꿈과 표제 runtime 검증 및 W03 CCTV 성공 입력이다. 전체 게임 목표는 active이며 완료 축소 없음.
+
 ## W06 매뉴얼 사건 표제 갱신 — 2026-09-14
 
 실제 M04 화면의 CASE-01 잔류를 추적했다. owner는 올바른 case_label을 전달하지만 workbench가 `_ready`에서 빈 model로 header를 한 번 만들고 `_render`에서는 header를 갱신하지 않았다. UI_PRESENTATION의 표시 전용 계약을 유지하여 기존 label 참조만 갱신한다. 매번 shell 재생성(REJECT, focus/수명 비용), owner에서 node text 직접 변경(REJECT, 표시 책임 누출), 기존 model render에서 갱신(ADOPT)을 비교했다. 별도 게임 규칙/저장/아트 변경 없음.

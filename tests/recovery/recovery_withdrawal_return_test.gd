@@ -92,10 +92,14 @@ func run() -> void:
 			return_button.pressed.emit()
 			await scene_changed
 			check(current_scene.scene_file_path == "res://scenes/preparation_scene.tscn", "retreat return must reach daily hub")
-	check(guard.restore().is_empty(), "isolated save must restore")
+	var audio_probe := preload("res://tests/test_audio_lifecycle.gd").new()
 	if current_scene != null:
+		audio_probe.capture(current_scene)
 		current_scene.queue_free()
 	await process_frame
+	var retained: Array[String] = await audio_probe.wait_for_release(self)
+	check(retained.is_empty(), "daily hub audio must retire before shutdown: %s" % str(retained))
+	check(guard.restore().is_empty(), "isolated save must restore")
 	for message in failures:
 		push_error(message)
 	print("Recovery withdrawal return: ", failures.size(), " failures")

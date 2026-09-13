@@ -57,9 +57,13 @@ func _run() -> void:
 	danger_label = cluster.get_node_or_null("DangerClockLabel") as Label if cluster != null else null
 	_expect(int((_game_state.call("get_recovery_clock_state") as Dictionary).get("danger", -1)) == 1, "active interval advances danger exactly once")
 	_expect(danger_label != null and danger_label.text == "위험도 1/6", "visible danger clock must refresh after elapsed time")
+	var audio_probe := preload("res://tests/test_audio_lifecycle.gd").new()
+	audio_probe.capture(scene)
 	scene.queue_free()
 	for i in range(4):
 		await process_frame
+	var retained: Array[String] = await audio_probe.wait_for_release(self)
+	_expect(retained.is_empty(), "recovery audio must retire before shutdown: %s" % str(retained))
 	_finish()
 
 
