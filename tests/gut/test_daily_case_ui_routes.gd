@@ -23,6 +23,20 @@ func test_daily_hub_exposes_dialogue_and_ready_dispatch_without_schedule() -> vo
 	assert_gt(scene.get("_daily_episode_list").get_child_count(), 0)
 	assert_null(scene.find_child("ScheduleList", true, false))
 
+func test_main_menu_can_enter_unassigned_case_preparation() -> void:
+	assert_true(state.has_method("begin_campaign_case_selection"), "Main menu receiver must exist on actual autoload")
+	if not state.has_method("begin_campaign_case_selection"):
+		return
+	assert_true(state.begin_campaign_case_selection(["agent_kwon_narae", "agent_oh_hyun", "agent_kang_ijun"]))
+	assert_eq(state.get_current_scene_path(), "res://scenes/preparation_scene.tscn")
+	assert_eq(state.get_campaign_planned_case(), "", "Entry must not dispatch an incident")
+	assert_true(state.get_campaign_snapshot().get("active_operation", {}).is_empty())
+	assert_eq(state.get_selected_agent_ids(), ["agent_kwon_narae", "agent_oh_hyun", "agent_kang_ijun"])
+	assert_true(state.save_game())
+	assert_true(state.load_game())
+	assert_eq(state.get_current_scene_path(), "res://scenes/preparation_scene.tscn")
+	assert_eq(state.get_campaign_planned_case(), "")
+
 func test_legacy_m04_without_rest_keeps_default_support() -> void:
 	state.campaign_state.load_save_data({"active_operation": {"case_id": "episode_002_red_umbrella_alley", "day": 1, "status": "in_progress", "dispatch_context": {"m04_preparation_capacity": 0}}})
 	assert_true(bool(state.call("_get_recovery_support_availability", "support_kwon_return_route").get("available", false)))

@@ -255,6 +255,16 @@ func reset_run_state() -> void:
 	reset_recovery_pattern_state(false)
 
 
+## Opens daily preparation without selecting or dispatching an incident.
+func begin_campaign_case_selection(agent_ids: Array) -> bool:
+	reset_run_state()
+	if current_episode_data.is_empty():
+		return false
+	set_selected_agent_ids(agent_ids)
+	set_current_scene_path(SCENE_PREPARATION)
+	return true
+
+
 ## Returns the active episode title.
 func get_current_episode_title() -> String:
 	var episode: Dictionary = current_episode_data.get("episode", {})

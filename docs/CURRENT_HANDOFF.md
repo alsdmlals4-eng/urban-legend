@@ -1,5 +1,15 @@
 # 괴이기록국 Current Handoff
 
+## W03 실제 메인 진입 오류 재현·복구 — 2026-09-14
+
+전용 editor PID15480/project path와 격리 user data를 확인한 뒤 실제 메인 M04CampaignEntryButton을 클릭했다. 게임 PID30360의 로컬 로그에서 `begin_campaign_case_selection` 부재로 SCRIPT ERROR를 재현했다. Hera diagnostics는 오류 0을 반환했으나 실제 log에는 오류가 있어 log가 책임 증거다. 별도 Draft #361의 같은 finding은 read-only 비교했고 해당 PR/branch를 수정·흡수하지 않았다.
+
+현재 branch에 기존 reset/team/preparation API를 연결하는 최소 receiver를 구현했다. GUT actual autoload RED1→28/28·154 assertions GREEN. 검사 작성 중 잘못 쓴 getter 1건은 snapshot의 실제 active_operation으로 교정했고 그 실패를 제품 RED로 세지 않는다. 팀·미지정 사건·저장/로드 준비 경로 보존을 검사한다. runtime 재시작 PID3788에서 실제 M04 버튼 click→`res://scenes/preparation_scene.tscn`,1280×720 UI tree와 사건 선택 버튼을 확인했다. 사건 자동 출동/정답 주입 없음.
+
+실행 도구 문제: 설치된 Hera CLI는 skill의 game --pid 문법을 지원하지 않는다. editor PID를 지정한 단일 게임 조작은 가능했지만 전환 후 시작 scene을 찾는 오류로 후속 클릭이 중단됐다. 다른 프로젝트 editor를 선택하지 않는다. 다음은 해당 runtime 추적 경로 복구 후 M04 선택→조사→매뉴얼→미니게임→회수를 실제 입력으로 이어가는 작업이다. 현재 증거는 메인→준비까지만이며 전체 플레이/Human PASS 아님.
+
+이전 W01/W02/명세는 `105a0dbc31073932a73cb4d73c9e0eda2ecab736`으로 commit/push 및 remote branch readback 완료했다. main은 별도이며 Draft merge는 수행하지 않았다. 기존 audio 테스트·import·UID의 미커밋 상태는 유지한다.
+
 ## W01 현재 cadence와 역사 계약 분리 — 2026-09-14
 
 사용자는 명세 보완 뒤 구현·개선 루프를 계속 실행하도록 승인했다. 작업 종료/추가 구현 중단이라는 이전 항목은 당시 상태이며 현재 continuation을 제한하지 않는다. 실행 순서는 2026-09-14 remaining contract를 따른다.
