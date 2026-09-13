@@ -7,6 +7,7 @@ const AfterlifeHeaderScene = preload("res://scenes/ui/afterlife_header.tscn")
 const TeamStatusPopoverScene = preload("res://scenes/ui/team_status_popover.tscn")
 const RhythmGame = preload("res://scripts/minigames/rhythm_timing_game.gd")
 const RainDodgeGame = preload("res://scripts/minigames/rain_dodge_game.gd")
+const RainFrameSyncGame = preload("res://scripts/minigames/rain_frame_sync_game.gd")
 const RouteRestoreGame = preload("res://scripts/minigames/route_restore_game.gd")
 const AnomalyManualDrawerScript = preload("res://scripts/ui/anomaly_manual_drawer.gd")
 
@@ -172,10 +173,14 @@ func _build_ui() -> void:
 
 	var outcome := _add_section(columns, "현장 반응" if _is_route_restore_minigame() else "현장 기록", 0.9)
 	_result_label = _make_body_label("목적지 혼선 · 정상\n노선 고착 · 확인 전\n관측 위험 · 경로 확인 전" if _is_route_restore_minigame() else "검증이 끝나면 마지막 단서와 요원 반응을 이곳에 기록합니다.")
-	outcome.add_child(_result_label)
-	var spacer := Control.new()
-	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	outcome.add_child(spacer)
+	var result_scroll := ScrollContainer.new()
+	result_scroll.name = "MinigameResultScroll"
+	result_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	result_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	result_scroll.follow_focus = true
+	outcome.add_child(result_scroll)
+	_result_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	result_scroll.add_child(_result_label)
 	_return_button = Button.new()
 	_return_button.text = "조사 현장으로 복귀"
 	_return_button.custom_minimum_size.y = 48
@@ -417,6 +422,7 @@ func _make_game_control() -> Control:
 	match String(_minigame.get("type", "rhythm_timing")):
 		"route_restore": return RouteRestoreGame.new()
 		"rain_dodge": return RainDodgeGame.new()
+		"rain_frame_sync": return RainFrameSyncGame.new()
 		_: return RhythmGame.new()
 
 
@@ -480,6 +486,8 @@ func _make_result_text(successful: bool, details: Dictionary) -> String:
 	if _is_route_restore_minigame() and successful:
 		heading = "노선 복원 완료 · %s" % String(details.get("clear_grade_label", "일반 복원"))
 	var extra := ""
+	if String(_minigame.get("type", "")) == "rain_frame_sync" and not String(details.get("observation", "")).is_empty():
+		extra = "\n\n실행 관측\n%s\n초안의 정답 여부가 아니라 실제 입력 시점의 결과입니다." % String(details["observation"])
 	if bool(details.get("danger_case_seen", false)):
 		extra = "\n\n위험 사례\n개인이 인식한 목적지를 공식 경로로 적용하면 같은 승강장으로 되돌아갑니다."
 	return "%s\n\n%s%s\n\n상태 변화\n%s\n\n요원 반응\n%s" % [
@@ -510,6 +518,7 @@ func _make_play_title() -> String:
 	match String(_minigame.get("type", "")):
 		"route_restore": return "노선 복원 보드"
 		"rain_dodge": return "빗속 이동"
+		"rain_frame_sync": return "CCTV · 영상 고정"
 		_: return "폐주파수 동기화"
 
 

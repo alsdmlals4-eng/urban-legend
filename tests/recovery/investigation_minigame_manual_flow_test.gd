@@ -80,10 +80,9 @@ func run() -> void:
 		var operation_strip := current_scene.find_child("RuleStripPanel", true, false) as Control
 		check(operation_strip == null or not operation_strip.get_global_rect().intersects(field_toggle.get_global_rect()), "operation strip cannot cover the field manual entry")
 		check(drawer.z_index > field_toggle.z_index, "opened manual draws above the underlying field controls")
-		Input.action_press("ui_right")
+		game.find_child("CaptureFrameButton", true, false).pressed.emit()
 		await create_timer(0.12).timeout
-		Input.action_release("ui_right")
-		check(float(game.get("_elapsed")) > 0, "direction input starts the real simulation")
+		check(float(game.get("_elapsed")) > 0, "capture start action starts the real simulation")
 		game.grab_focus()
 		drawer.call("open_drawer")
 		drawer.call("open_drawer")
@@ -91,12 +90,13 @@ func run() -> void:
 		check(not labels(drawer).contains("실제 출구가 아니라"), "sentence scaffold must not reject the chosen exit interpretation before field verification")
 		check(labels(drawer).contains("미검증"), "reading a draft does not grade it")
 		var elapsed: float = game.get("_elapsed")
-		var position: Vector2 = game.get("_player_position")
+		var attempts: int = game.get("_attempts").size()
+		game.find_child("CaptureFrameButton", true, false).pressed.emit()
 		Input.action_press("ui_left")
 		await create_timer(0.18).timeout
 		Input.action_release("ui_left")
 		check(is_equal_approx(float(game.get("_elapsed")), elapsed), "manual reading neither wins by waiting nor advances hazards")
-		check(game.get("_player_position") == position, "navigation input cannot move the umbrella behind the drawer")
+		check(game.get("_attempts").size() == attempts, "input cannot capture a frame behind the drawer")
 		drawer.call("close_drawer")
 		await create_timer(0.1).timeout
 		check(is_equal_approx(float(game.get("_elapsed")), elapsed), "closing the manual cannot automatically resume danger")
@@ -111,7 +111,7 @@ func run() -> void:
 			Input.action_press("ui_right")
 			resume_button.pressed.emit()
 			await create_timer(0.1).timeout
-			check(is_equal_approx(float(game.get("_elapsed")), elapsed) and game.get("_player_position") == position, "held input cannot leak through the resume action")
+			check(is_equal_approx(float(game.get("_elapsed")), elapsed) and game.get("_attempts").size() == attempts, "held input cannot leak through the resume action")
 			Input.action_release("ui_right")
 			await create_timer(0.1).timeout
 			check(float(game.get("_elapsed")) > elapsed, "explicit resume starts from the preserved simulation")
@@ -123,8 +123,15 @@ func run() -> void:
 			await create_timer(0.1).timeout
 			check(is_equal_approx(float(game.get("_elapsed")), elapsed), "window focus return requires explicit resume too")
 			resume_button.pressed.emit()
-			await process_frame
-		game.call("_complete", false)
+			for i in range(3):
+				await process_frame
+		check(not bool(game.get("_input_locked")), "resume handshake releases capture input before the next action")
+		game.call("_process", maxf(0.0, 3.2 - float(game.get("_elapsed"))))
+		if "--capture" in OS.get_cmdline_user_args():
+			await RenderingServer.frame_post_draw
+			check(root.get_texture().get_image().save_png(ProjectSettings.globalize_path("res://.artifacts/daily-case-20260912/rain-frame-sync.png")) == OK, "capture actual CCTV rule execution")
+		game.find_child("CaptureFrameButton", true, false).pressed.emit()
+		check(bool(state.get_minigame_result("minigame_rain_sync").get("successful", false)), "after-third capture settles a real success without forcing completion")
 		drawer.call("open_drawer")
 		drawer.call("close_drawer")
 		check(not game.is_processing(), "closing a result-time drawer must not restart a finished minigame")
@@ -134,7 +141,7 @@ func run() -> void:
 		for i in range(6):
 			await process_frame
 		check(current_scene.scene_file_path == "res://scenes/investigation_scene.tscn", "return input restores the real investigation scene")
-		check(state.get_manual_draft_slots(manual).get(slot, "") == "kw_m04_rain_sign_actual_exit", "returning from failure preserves the player's interpretation without grading it")
+		check(state.get_manual_draft_slots(manual).get(slot, "") == "kw_m04_rain_sign_actual_exit", "physical success preserves the player's alternate interpretation without grading it")
 	current_scene.queue_free()
 	for i in range(4):
 		await process_frame

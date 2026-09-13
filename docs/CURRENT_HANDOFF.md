@@ -1,5 +1,19 @@
 # 괴이기록국 Current Handoff
 
+## M04 CCTV 규칙 실행 연결 — 2026-09-13
+
+계획 `docs/superpowers/plans/2026-09-13-rain-frame-sync.md`. 기존 CCTV 진입의 rain_dodge 생존 판정이 조사한 세 번째 빗소리와 무관하던 간극을 교정했다. 현재 M04 consumer는 rain_frame_sync: 재생 시작→세 번의 시각 빗소리 관측→소리가 멎은 구간에서 영상 고정. 세 번째 소리 도중은 실패, 직후는 성공이다. 대기만으로 성공하지 않는다. 기존 12초/실패 3회/장비 보호 1회, 사건 ID/정답/효과/저장 schema를 유지한다. 초안은 읽기 전용 참고이며 판정 코드가 초안이나 GameState를 읽지 않는다. 실제 입력 시각·관측·실패 횟수를 기존 result details/input_summary에 기록한다.
+
+FEATURE_SLICE / PLAN→BUILD→REVIEW, 테스트 우선. 신규 consumer 부재 RED1→0, 보고서 payload 누락 RED1→0, 실패 관측 미표시 RED1→0. 첫/셋째/직후/다음 주기 경계, 무입력 제한시간, 세 번 실패, 잠금과 중복 완료를 검사했다. 실제 조사 UI/획득 조건/매뉴얼 초안/재개/영상 고정 버튼/조사 복귀 통합 0 failures. 시간은 진단 fixture에서 전진시키지만 완료 신호를 강제로 성공시키지 않는다. 기존 alternate 초안이 그대로 남은 상태에서 실제 시점 선택이 성공한다. 사람의 전 구간 플레이/키보드 물리 입력 검증은 아니다.
+
+1280×720 Vulkan 화면 확인. 관측 결과가 길어졌을 때 저장 재시도 버튼이 화면 밖으로 밀리는 2개 실패를 재현해 본문을 ScrollContainer로 분리하고 복귀/매뉴얼 버튼을 고정했다. 재실행 0 failures. `.artifacts/daily-case-20260912/rain-frame-sync.png`, `minigame-save-retry.png`. 현재 CCTV는 기능 검증용 텍스트 UI이며 최종 영상/애니메이션/빗소리 오디오는 미구현이다. 연출 완성이나 최종 그림체 승인으로 승격하지 않는다.
+
+기존 minigame pipeline/controls, 조사 왕복 및 저장 재시도 PASS. GUT 27/27·144 assertions, Python 계약 25 PASS. 저장 재시도 첫 headless 실행에서 ObjectDB2 경고가 나왔으나 verbose 재실행/최종 Vulkan에서 재현되지 않았다. 간헐적 경고의 근본 해결을 주장하지 않는다. 검토1은 규칙/판정/기록, 검토2는 실제 host/pause/save/layout 재검증. 전체 게임 CLEAN_REVIEW_EXIT/출시/Human PASS가 아니다.
+
+Base v9.4.4, 기존 승인 자산과 사용자 import/uid 변경, 다른 열린 PR 보존. origin/main c82291101bf0a2bb4d821a12bca9f14070ee2886 재확인. PR 목록은 GitHub connector로 읽었으며 별도 PR 변경/병합 없음. 로컬 gh 로그인 부재를 원격 접근 불가로 확대하지 않았다. Base 신규 승격 없음; 기존 host/저장 contract 재사용. 롤백은 본 작업 커밋 revert이며 이전 결과는 기존 pipeline에서 읽힌다.
+
+REMAINING_WORK_COMPLETION_GATE / IMPLEMENTATION_CORRECTION_RESCAN: 현재 단위의 기능 연결은 확인했지만 전체 사건별 정상 플레이, 회수 활성시간 정책의 모든 소비자, 최종 UI·영상·음향, 밸런스·접근성·전 플랫폼, 전체 변경의 보호된 main 통합이 남는다. 승인된 전체 구현 루프는 계속 유효하며 이 기록은 전체 완성 선언이 아니다.
+
 ## 미니게임 종료 저장 재시도 — 2026-09-13
 
 승인된 개선 루프의 다음 보호 단위. 계획: `docs/superpowers/plans/2026-09-13-minigame-save-retry.md`. GameState.save_minigame_result는 bool로 실제 저장 성공을 반환하고 MinigameScene이 소비한다. 종료 정산/효과는 한 번만 적용하며 실패 시 기존 결과 영역에 미저장 안내, 복귀 버튼에 저장 재시도를 제공한다. 복귀 목적지 저장이 실패하면 현재 미니게임에 머무르고 메모리 Scene 경로를 복구한다. 결과/보상 재실행이나 새 저장 schema는 없다.
