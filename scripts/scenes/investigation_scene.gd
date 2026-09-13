@@ -1145,8 +1145,8 @@ func _run_method_option(point: Dictionary, method: Dictionary) -> void:
 
 	_method_result_label.text = _make_method_result_text(result)
 	_result_label.text = _make_method_result_text(result)
-	_result_toast.visible = true
 	_set_ui_mode("RESULT")
+	_show_inline_result(true)
 
 	var hint_texts_value: Variant = result.get("hint_texts", [])
 	var hint_texts: Array = hint_texts_value if typeof(hint_texts_value) == TYPE_ARRAY else []

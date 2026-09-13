@@ -41,7 +41,19 @@ func run() -> void:
 				break
 			seed(100 + attempt)
 			choices.get_child(0).emit_signal("action_requested", String(point.method_options[0].id))
+			var next_point := current_scene.find_child("ResultNextButton", true, false) as Button
+			check(next_point.is_visible_in_tree(), "method result exposes the refresh-and-return action")
+			if next_point.is_visible_in_tree():
+				next_point.pressed.emit()
+			else:
+				current_scene.find_child("ResultCloseButton", true, false).pressed.emit()
+			await process_frame
 		check(state.has_collected_clue(clue_id), "method action obtains the existing source record")
+	var cctv_available := false
+	for button in current_scene.get("_points_box").find_children("ActionButton", "Button", true, false):
+		if button.text.contains("CCTV") and not button.text.contains("잠김"):
+			cctv_available = true
+	check(cctv_available, "earned records unlock CCTV visibly without re-entering the scene")
 	var manual: Dictionary = episode.investigation_manual
 	var page: Dictionary = manual.pages[0]
 	var slot := ""

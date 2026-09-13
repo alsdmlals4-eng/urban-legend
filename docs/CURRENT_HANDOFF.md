@@ -1,5 +1,15 @@
 # 괴이기록국 Current Handoff
 
+## W03 정상 클릭에서 발견한 조사 목록 갱신 누락 — 2026-09-14
+
+Hera live-editor / systematic-debugging / 테스트 우선으로 진행했다. 실제 입력으로 메인→준비→M04 선택→조사→우산 관찰 성공→표지판 분석 실패·재시도 성공까지 확인했다. 단서 2/3인데 CCTV가 계속 잠김으로 표시됐다. `_run_method_option`이 결과창만 열고 기존 `_show_inline_result(true)`의 목록 복귀 계약을 사용하지 않은 것이 원인이다. 기존 통합 검사는 `_inspect_point` 직접 호출로 이 UI 갱신 결함을 우회하고 있었다.
+
+비교: 매 프레임 목록 재생성(REJECT, 포커스/비용), scene 전체 재진입(REJECT, 불필요한 상태 전환), 기존 결과창의 명시적 복귀·목록 갱신 재사용(ADOPT). 조사 효과·성공률·단서 조건은 변경하지 않았다. 실제 consumer와 기존 `_return_to_point_picker`를 비교한 bounded bugfix이며 새로운 게임 규칙이 아니다. 결과 다음 버튼과 획득 후 CCTV 표시 검사를 추가해 RED3→GREEN0을 확인했다. 동일 통합 검사 2회 GREEN, Hera 선택 회귀 0 failures, Python490/490 PASS. 수정 후 재시작한 실제 화면 검증은 아직 NOT_RUN이며 이전 실행 중 코드는 자동 갱신되지 않았다.
+
+실행 추적 복구: 설치 CLI의 `game --pid` 미지원과 시작 scene 기반 runtime 선택을 확인했다. 기존 GodotAI 입력 경로도 비교했으나 해당 경로에서는 대상 버튼 활성화를 증명하지 못했다. 새 자동화 계층 대신 Hera game tool에 명시적 pid 선택을 추가하고 기존 batch transport를 재사용했다. 요청 pid 부재 시 다른 runtime으로 fallback하지 않는다. 현재 project의 fresh heartbeat만 선택하며, implicit 동작은 유지한다. 5개 선택 조건 회귀 PASS, 실제 같은 game PID로 메인→준비→조사 전환 후 클릭 성공. Base/상위 addon 승격은 보류하며 프로젝트 bounded patch다.
+
+다음: 새 실행에서 정상 이어하기→조사 결과 복귀 및 CCTV 해제 확인→매뉴얼·미니게임·회수·귀환 실제 입력. 현재 전체 게임/Human/출시/최종 시각 승인 또는 main 통합 완료가 아니다. W01/W02 잔여 및 W04–W12는 remaining contract를 유지한다. import/UID, 기존 audio 변경과 타 Draft PR은 보존했다. 롤백은 이번 consumer/test/tool 변경만 revert한다.
+
 ## W03 실제 메인 진입 오류 재현·복구 — 2026-09-14
 
 전용 editor PID15480/project path와 격리 user data를 확인한 뒤 실제 메인 M04CampaignEntryButton을 클릭했다. 게임 PID30360의 로컬 로그에서 `begin_campaign_case_selection` 부재로 SCRIPT ERROR를 재현했다. Hera diagnostics는 오류 0을 반환했으나 실제 log에는 오류가 있어 log가 책임 증거다. 별도 Draft #361의 같은 finding은 read-only 비교했고 해당 PR/branch를 수정·흡수하지 않았다.
