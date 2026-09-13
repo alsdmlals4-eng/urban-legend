@@ -1,5 +1,17 @@
 # 괴이기록국 Current Handoff
 
+## 회수 활성시간 시계·명시적 재개 — 2026-09-13
+
+승인된 상세 설계 §11.6을 실제 battle consumer에 연결했다. 계획/비교 owner: `docs/superpowers/plans/2026-09-13-recovery-active-clock.md`. FTL 개발사의 전투 중 전술 정지와 Godot 공식 pause/signal 경계를 ADAPT했다. 게임 전체 정지 대신 기존 미니게임의 국소 정지·입력 해제 구조를 회수에 적용한다. 기존 턴 API는 호환 유지하되 현재 battle은 턴 교체로 위험을 더하지 않는다.
+
+활성 현장 12초마다 위험 +1, 마지막 칸에서 폭주 예고, 가득 차면 기존 8 피해/3칸 후퇴를 사용한다. 일반 시간 tick에는 피해를 추가하지 않는다. 대응의 기존 안정화/위험 완화는 그대로이고 누적 소수 시간은 기존 clock dictionary에 저장한다. 이전 저장은 0초로 시작한다. 매뉴얼/작전 상태/철수 확인/포커스 이탈은 즉시 정지하며 닫기와 포커스 복귀는 재개가 아니다. 명시적 재개와 확인·방향·마우스 입력 해제 후 진행하며 중단 시간을 따라잡지 않는다. 현장 전조 audio와 cut-in 수명도 정지한다. 전역 배경음·모든 연출 계층의 통합 pause 완료는 아니다.
+
+검토1은 시간 분할/저장 호환/턴 이중 가산/폭주 피해/정보창 뒤 입력을 검사했다. 검토2에서 작전 창 안 요원 지원이 영구 차단되는 회귀를 실제 버튼 RED2로 발견했다. 지원 선택은 창을 닫고 실행 대기만 만들며 ‘지원 실행 · 현장 재개’로 1회 소비한다. 같은 지원을 다시 선택하면 취소하고 다른 지원 선택은 대체한다. 대기는 저장된 효과가 아니며 scene 종료 시 소멸한다. 취소 RED1→0, 새 통합 및 기본 보조 UI PASS. 폐기된 휴식 일정 해금 assertion은 승인된 무일정 기본 보조로 교정했고 기존 1회 사용 제한은 유지했다.
+
+검증: active-time/state/scene, 기존 clock state17·scene13·overlay8, direct12, guided, withdrawal, save-retry, manual trial, 조사→미니게임 왕복, minigame controls/pipeline 기능 PASS. Python490/490, GUT27/27·144 assertions. 새 scene은 실제 노드/버튼/Window signal을 쓰지만 elapsed를 직접 전진시키는 DIAGNOSTIC_FIXTURE이며 정상 사람 전 구간 플레이가 아니다. Vulkan 실제 1280×720 및 요청1920×1080→실제1920×1061 캡처에서 재개 버튼과 footer 배치 확인. `.artifacts/daily-case-20260912/recovery-active-pause-1280x720.png`, `recovery-active-pause-1920x1061.png`. 정확한1080/모든 기기/최종 아트 승인으로 확대하지 않는다. 일부 headless 반복 종료에 ObjectDB2~4 경고가 남으며 기능 통과와 구별한다.
+
+REMAINING_WORK_COMPLETION_GATE / IMPLEMENTATION_CORRECTION_RESCAN: 현재 clock 단위의 기능 연결은 끝났지만 전체 사건 정상 플레이, 종료 수명주기 경고, 회수·미니게임 최종 연출/음향/아트, 밸런스/접근성/플랫폼과 보호된 main 통합은 남는다. POST_COMPLETION_ADVERSARIAL_REVIEW_REQUIRED 두 차례 수행; 전체 게임 CLEAN_REVIEW_EXIT/Human/release 완료 아님. 기존 사용자 import/uid, 승인 자산, 다른 열린 PR, Base9.4.4 pin 보존. 삭제/이동/새 자산/새 유료 도구 없음. 프로젝트 내 기존 pause 계약 재사용, Base 승격 NO_NEW_REUSE_LEARNING. 롤백은 이번 일관된 커밋 revert이며 구형 reader는 optional active_seconds를 무시한다.
+
 ## 전체 회귀의 headless helper 계약 교정 — 2026-09-13
 
 계획 `docs/superpowers/plans/2026-09-13-headless-helper-parity.md`. 전체 Python 490개 중 기존 실패 1개를 재현했다. 최신 main과 같은 monolithic game_helper가 opt-in 없이 headless에도 capture/logger를 등록하고, 구형 테스트는 wrapper/impl 분리를 강제했다. 최신 구현을 과거 파일로 교체하지 않고 editor의 기존 launch 정책과 동일한 guard를 추가했다. 자동 검사에서는 기본 비활성, GODOT_AI_ALLOW_HEADLESS=true에서는 활성, 실제 창에서는 기존 활성이다. 추가 서비스/권한/설정 변경 없음.

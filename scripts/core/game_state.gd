@@ -12,6 +12,7 @@ const DEFAULT_DIALOGUE_NODE_ID := "dialogue_intro"
 const DEFAULT_FIELD_NODE_ID := "dialogue_intro"
 const STABILITY_SCHEMA_VERSION := 2
 const RECOVERY_CLOCK_DANGER_MAX := 6
+const RECOVERY_CLOCK_INTERVAL := 12.0
 const RECOVERY_CLOCK_SURGE_DAMAGE := 8
 const RECOVERY_CLOCK_SURGE_FALLBACK := 3
 const DEFAULT_MINIGAME_ID := "minigame_frequency_sync"
@@ -2137,13 +2138,37 @@ func reset_recovery_clock_state() -> void:
 
 
 ## Starts a meaningful recovery turn. Reading a manual reference never calls this.
-func begin_recovery_clock_turn() -> Dictionary:
+func begin_recovery_clock_turn(advance_legacy_danger: bool = true) -> Dictionary:
 	var state := get_recovery_clock_state()
-	if int(state.get("turn_count", 0)) > 0:
+	if advance_legacy_danger and int(state.get("turn_count", 0)) > 0:
 		state["danger"] = mini(RECOVERY_CLOCK_DANGER_MAX, int(state.get("danger", 0)) + 1)
 	state["turn_count"] = int(state.get("turn_count", 0)) + 1
 	recovery_clock_state = _normalize_recovery_clock_state(state)
 	return get_recovery_clock_state()
+
+
+## Only the active field may submit simulation delta. Never submit wall-clock absence.
+func advance_recovery_clock_time(delta: float) -> Dictionary:
+	var state := get_recovery_clock_state()
+	var ticks := 0
+	var surges := 0
+	if is_finite(delta) and delta > 0.0:
+		var elapsed := float(state.get("active_seconds", 0.0)) + delta
+		ticks = int(floor(elapsed / RECOVERY_CLOCK_INTERVAL))
+		state["active_seconds"] = fmod(elapsed, RECOVERY_CLOCK_INTERVAL)
+		var pressure := int(state.get("danger", 0)) + ticks
+		if ticks > 0 and pressure >= RECOVERY_CLOCK_DANGER_MAX:
+			var span := RECOVERY_CLOCK_DANGER_MAX - RECOVERY_CLOCK_SURGE_FALLBACK
+			surges = 1 + int((pressure - RECOVERY_CLOCK_DANGER_MAX) / span)
+			pressure = RECOVERY_CLOCK_SURGE_FALLBACK + (pressure - RECOVERY_CLOCK_DANGER_MAX) % span
+		state["danger"] = pressure
+		state["surge_count"] = int(state.get("surge_count", 0)) + surges
+		recovery_clock_state = _normalize_recovery_clock_state(state)
+	var result := get_recovery_clock_state()
+	result["ticks"] = ticks
+	result["surge_triggered"] = surges > 0
+	result["surge_damage"] = surges * RECOVERY_CLOCK_SURGE_DAMAGE
+	return result
 
 
 ## Applies a bounded support effect without treating it as a failed recovery response.
@@ -3649,7 +3674,12 @@ func _to_dictionary(value: Variant) -> Dictionary:
 
 func _normalize_recovery_clock_state(value: Variant) -> Dictionary:
 	var source := _to_dictionary(value)
+	var elapsed_value: Variant = source.get("active_seconds", 0.0)
+	var elapsed := float(elapsed_value) if typeof(elapsed_value) in [TYPE_INT, TYPE_FLOAT] else 0.0
+	if not is_finite(elapsed):
+		elapsed = 0.0
 	return {
+		"active_seconds": clampf(elapsed, 0.0, RECOVERY_CLOCK_INTERVAL - 0.000001),
 		"danger": clampi(int(source.get("danger", 0)), 0, RECOVERY_CLOCK_DANGER_MAX),
 		"turn_count": maxi(0, int(source.get("turn_count", 0))),
 		"surge_count": maxi(0, int(source.get("surge_count", 0)))

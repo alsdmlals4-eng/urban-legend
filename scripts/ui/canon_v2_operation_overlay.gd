@@ -72,6 +72,10 @@ func open_manual_from_quick_action() -> void:
 	_toggle_manual_detail()
 
 
+func has_open_field_reference() -> bool:
+	return (_manual_detail_panel != null and _manual_detail_panel.visible) or (_detail_stack != null and _detail_stack.visible) or (_confirmation_layer != null and _confirmation_layer.visible)
+
+
 func set_rule_strip_top_inset(top_inset: int) -> void:
 	_ensure_ui()
 	var safe_area := get_node_or_null("SafeArea") as MarginContainer
@@ -95,6 +99,7 @@ func request_action_confirmation(
 	_confirmation_layer.mouse_filter = Control.MOUSE_FILTER_STOP
 	_confirmation_layer.visible = true
 	_confirmation_panel.visible = true
+	_notify_field_pause()
 	_confirm_button.disabled = not bool(preview.get("allowed", true))
 	var cancel_next := _cancel_button.get_path() if _confirm_button.disabled else _confirm_button.get_path()
 	_cancel_button.focus_next = cancel_next
@@ -526,7 +531,18 @@ func _activate_recovery_support(support: Dictionary, button: Button) -> void:
 	if not bool(support.get("available", true)) or bool(support.get("used", false)):
 		return
 	var host := get_parent()
-	if host != null and host.has_method("_use_agent_recovery_support"):
+	if host != null and host.has_method("request_field_support"):
+		if bool(host.call("request_field_support", support)):
+			var pending: Dictionary = host.get("_pending_field_support")
+			for child in _recovery_support_content.get_children():
+				for control in child.get_children():
+					if control is Button:
+						control.text = control.text.trim_prefix("선택 취소 · ")
+			if String(pending.get("id", "")) == String(support.get("id", "")):
+				button.text = "선택 취소 · " + button.text
+			_detail_stack_open = false
+			_apply_mode_visibility()
+	elif host != null and host.has_method("_use_agent_recovery_support"):
 		host.call("_use_agent_recovery_support", support, button)
 
 
@@ -580,6 +596,7 @@ func _apply_mode_visibility() -> void:
 func _toggle_manual_detail() -> void:
 	_manual_detail_panel.visible = not _manual_detail_panel.visible
 	if _manual_detail_panel.visible:
+		_notify_field_pause()
 		(_manual_detail_panel.get_node("ManualContent/ManualText") as RichTextLabel).grab_focus()
 
 
@@ -587,7 +604,14 @@ func _toggle_detail_stack() -> void:
 	_detail_stack_open = not _detail_stack_open
 	_apply_mode_visibility()
 	if _detail_stack.visible:
+		_notify_field_pause()
 		_detail_toggle_button.grab_focus()
+
+
+func _notify_field_pause() -> void:
+	var host := get_parent()
+	if _mode == "recovery" and host != null and host.has_method("request_field_pause"):
+		host.call("request_field_pause")
 
 
 func _set_legacy_action_dock_visible(is_visible: bool) -> void:

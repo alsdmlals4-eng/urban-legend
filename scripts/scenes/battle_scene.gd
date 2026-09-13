@@ -66,6 +66,12 @@ var _telegraph_audio_player: AudioStreamPlayer
 var _decision_step := GuidedDecisionStep.DIRECT
 var _selected_hypothesis_response_id := ""
 var _selected_evidence_ids: Array[String] = []
+var _field_paused := false
+var _field_resume_requested := false
+var _field_window_focused := true
+var _field_pause_button: Button
+var _cut_in_remaining := 0.0
+var _pending_field_support: Dictionary = {}
 
 
 func _ready() -> void:
@@ -79,6 +85,102 @@ func _ready() -> void:
 	_build_scene_ui()
 	_setup_runtime_editor()
 	_begin_recovery_turn()
+	get_window().focus_exited.connect(_on_field_focus_exited)
+	get_window().focus_entered.connect(func() -> void: _field_window_focused = true)
+
+
+func _field_reference_open() -> bool:
+	var overlay := get_node_or_null("CanonV2OperationOverlay")
+	return overlay != null and overlay.has_method("has_open_field_reference") and bool(overlay.call("has_open_field_reference"))
+
+
+func _field_actions_blocked() -> bool:
+	return _field_paused or not _field_window_focused or _field_reference_open() or _recovery_completed
+
+
+func _set_field_paused(paused: bool) -> void:
+	_field_paused = paused
+	if _telegraph_audio_player != null:
+		_telegraph_audio_player.stream_paused = paused
+	_refresh_field_pause_control()
+
+
+func request_field_pause() -> void:
+	_field_resume_requested = false
+	_set_field_paused(true)
+
+
+func request_field_support(support: Dictionary) -> bool:
+	if _turn_locked or _recovery_completed or not _field_window_focused:
+		return false
+	if not bool(support.get("available", true)) or GameState.has_used_agent_support(String(support.get("id", ""))):
+		return false
+	if String(_pending_field_support.get("id", "")) == String(support.get("id", "")):
+		_pending_field_support.clear()
+	else:
+		_pending_field_support = support.duplicate(true)
+	request_field_pause()
+	return true
+
+
+func _on_field_focus_exited() -> void:
+	_field_window_focused = false
+	_field_resume_requested = false
+	_set_field_paused(true)
+
+
+func _toggle_field_pause() -> void:
+	if _recovery_completed or _turn_locked or _field_reference_open():
+		return
+	if _field_paused:
+		_field_resume_requested = true
+	else:
+		_set_field_paused(true)
+
+
+func _refresh_field_pause_control() -> void:
+	if _field_pause_button == null:
+		return
+	var clock := GameState.get_recovery_clock_state()
+	var remaining := GameState.RECOVERY_CLOCK_INTERVAL - float(clock.get("active_seconds", 0.0))
+	var warning := "폭주" if int(clock.get("danger", 0)) >= 5 else "위험 +1"
+	_field_pause_button.text = "현장 재개 · 정지 중" if _field_paused else "현장 정지 · %s까지 %d초" % [warning, int(ceil(remaining))]
+	if _field_paused and not _pending_field_support.is_empty():
+		_field_pause_button.text = "지원 실행 · 현장 재개"
+	_field_pause_button.disabled = _recovery_completed or _turn_locked or _field_reference_open()
+	_field_pause_button.tooltip_text = "활성 현장 12초마다 위험 +1. 위험 6칸이면 기존 공명 폭주 피해가 발생합니다. 기록 열람 중에는 정지합니다."
+	if not _pending_field_support.is_empty():
+		_field_pause_button.tooltip_text += "\n실행 대기: %s · %s\n작전 상태에서 같은 지원을 다시 선택하면 취소합니다." % [String(_pending_field_support.get("agent_name", "")), String(_pending_field_support.get("label", "지원"))]
+
+
+func _process(delta: float) -> void:
+	if _field_reference_open() or not _field_window_focused or _turn_locked or _recovery_completed:
+		_field_resume_requested = false
+		_set_field_paused(true)
+		return
+	if _field_paused:
+		_refresh_field_pause_control()
+		if _field_resume_requested and not Input.is_action_pressed("ui_accept") and Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down").is_zero_approx() and not Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+			_field_resume_requested = false
+			_set_field_paused(false)
+			if not _pending_field_support.is_empty():
+				var support := _pending_field_support.duplicate(true)
+				_pending_field_support.clear()
+				_use_agent_recovery_support(support, null)
+		return # Resume frame never becomes a field action or catches up elapsed time.
+	if _current_pattern.is_empty():
+		return
+	var outcome := GameState.advance_recovery_clock_time(delta)
+	_refresh_field_pause_control()
+	if _cut_in_remaining > 0.0:
+		_cut_in_remaining = maxf(0.0, _cut_in_remaining - delta)
+		if _cut_in_remaining == 0.0:
+			_representative_agent_image.visible = false
+	if int(outcome.get("ticks", 0)) > 0:
+		var lines: Array[String] = ["현장 시간 경과: 위험 +%d · 현재 %d/6" % [int(outcome.ticks), int(outcome.danger)]]
+		_apply_clock_surge(outcome, lines)
+		_update_battle_view("\n".join(lines))
+		_play_recovery_clock_feedback("surge" if bool(outcome.surge_triggered) else "danger")
 
 
 func _build_scene_ui() -> void:
@@ -119,6 +221,11 @@ func _build_scene_ui() -> void:
 	withdraw_button.tooltip_text = "추가 피해 방지를 위한 철수의 책임 조건과 예상 결과를 검토합니다."
 	withdraw_button.pressed.connect(_request_withdrawal)
 	%ManualQuickButton.get_parent().add_child(withdraw_button)
+	_field_pause_button = Button.new()
+	_field_pause_button.name = "RecoveryPauseButton"
+	_field_pause_button.custom_minimum_size.y = 40
+	_field_pause_button.pressed.connect(_toggle_field_pause)
+	%ManualQuickButton.get_parent().add_child(_field_pause_button)
 
 	_log_guide = LogGuideScript.new()
 	_log_guide.set_compact(true)
@@ -142,6 +249,7 @@ func _evaluate_withdrawal() -> Dictionary:
 
 
 func _request_withdrawal() -> void:
+	# Reviewing withdrawal is a paused decision, not a field action.
 	if _turn_locked or _recovery_completed or _recovery_completion_queued:
 		return
 	if _can_recover():
@@ -212,6 +320,8 @@ func request_manual_quick_open() -> void:
 
 
 func _open_recovery_manual() -> void:
+	_field_resume_requested = false
+	_set_field_paused(true)
 	request_manual_quick_open()
 
 
@@ -518,7 +628,7 @@ func _begin_recovery_turn(last_result: String = "") -> void:
 		_log_guide.show_compact_hint("전조 기록을 찾지 못했습니다. 현장 기록을 다시 확인해 주세요.")
 		return
 	var clock_before := GameState.get_recovery_clock_state()
-	var clock_after := GameState.begin_recovery_clock_turn()
+	var clock_after := GameState.begin_recovery_clock_turn(false)
 	var danger_advanced := int(clock_after.get("danger", 0)) > int(clock_before.get("danger", 0))
 	_play_telegraph_cue()
 	var first_telegraph := not GameState.has_seen_log_tutorial("recovery_first_telegraph")
@@ -639,7 +749,7 @@ func _show_hypothesis_step() -> void:
 
 
 func _select_hypothesis(response: Dictionary) -> void:
-	if _turn_locked:
+	if _turn_locked or _field_actions_blocked():
 		return
 	_selected_hypothesis_response_id = String(response.get("id", ""))
 	_selected_evidence_ids.clear()
@@ -679,7 +789,7 @@ func _show_evidence_step() -> void:
 
 
 func _toggle_evidence(clue_id: String) -> void:
-	if _turn_locked or not GameState.has_collected_clue(clue_id):
+	if _turn_locked or _field_actions_blocked() or not GameState.has_collected_clue(clue_id):
 		return
 	if _selected_evidence_ids.has(clue_id):
 		_selected_evidence_ids.erase(clue_id)
@@ -689,7 +799,7 @@ func _toggle_evidence(clue_id: String) -> void:
 
 
 func _confirm_evidence_step() -> void:
-	if _turn_locked or _decision_step != GuidedDecisionStep.EVIDENCE:
+	if _turn_locked or _field_actions_blocked() or _decision_step != GuidedDecisionStep.EVIDENCE:
 		return
 	var has_collected_related := false
 	for clue_id_value in _current_pattern.get("related_clue_ids", []):
@@ -778,6 +888,8 @@ func _grab_first_decision_card_focus() -> void:
 
 
 func _go_back_decision_step() -> void:
+	if _field_actions_blocked():
+		return
 	if _turn_locked or not _uses_guided_decision_flow():
 		return
 	match _decision_step:
@@ -796,7 +908,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _select_pattern_response(response: Dictionary) -> void:
-	if _turn_locked:
+	if _turn_locked or _field_actions_blocked():
 		return
 	_turn_locked = true
 	_decision_back_button.disabled = true
@@ -1001,6 +1113,8 @@ func _make_recovery_learning_reason(response: Dictionary, correct: bool, evaluat
 
 
 func _use_recovery_consumable(item_id: String, button: Button) -> void:
+	if _field_actions_blocked() or _turn_locked:
+		return
 	if not GameState.use_loaded_consumable(item_id):
 		button.disabled = true
 		return
@@ -1290,6 +1404,8 @@ func _add_agent_recovery_support_actions(parent: Control) -> void:
 
 
 func _use_agent_recovery_support(support: Dictionary, button: Button) -> void:
+	if _field_actions_blocked() or _turn_locked:
+		return
 	var support_id := String(support.get("id", ""))
 	if not bool(support.get("available", true)):
 		_update_battle_view(String(support.get("unavailable_reason", "지원 조건을 먼저 확인하세요.")))
@@ -1314,7 +1430,8 @@ func _use_agent_recovery_support(support: Dictionary, button: Button) -> void:
 		30,
 		MAX_RECOVERY_THRESHOLD
 	)
-	button.disabled = true
+	if button != null:
+		button.disabled = true
 	var operation_overlay := get_node_or_null("CanonV2OperationOverlay")
 	if operation_overlay != null and operation_overlay.has_method("mark_recovery_support_used"):
 		operation_overlay.call("mark_recovery_support_used", support_id)
@@ -1351,8 +1468,13 @@ func _resolve_recovery_clock_outcome(correct: bool, verified: bool, lines: Array
 			lines.append("매뉴얼 검증: 추가 위험 -1 · 현재 %d/6" % danger)
 	else:
 		lines.append("오대응 누적: 위험 +2 · 현재 %d/6" % danger)
+	_apply_clock_surge(outcome, lines)
+	return outcome
+
+
+func _apply_clock_surge(outcome: Dictionary, lines: Array[String]) -> void:
 	if not bool(outcome.get("surge_triggered", false)):
-		return outcome
+		return
 
 	var target := _get_representative_agent()
 	var target_id := String(target.get("id", ""))
@@ -1366,7 +1488,6 @@ func _resolve_recovery_clock_outcome(correct: bool, verified: bool, lines: Array
 		String(target.get("name", "대표 요원")),
 		remaining
 	])
-	return outcome
 
 
 func _clock_delta_from_fear_delta(fear_delta: int) -> int:
@@ -1387,7 +1508,7 @@ func get_recovery_clock_presentation() -> Dictionary:
 		"stability_total": 8,
 		"danger_segments": danger_segments,
 		"danger_total": 6,
-		"danger_urgent": danger_segments >= 6,
+		"danger_urgent": danger_segments >= 5,
 		"stability_value": _anomaly_stability,
 		"stability_threshold": _recovery_threshold
 	}
@@ -1442,13 +1563,10 @@ func _show_representative_cut_in(refresh_portrait: bool = true) -> void:
 	if _representative_agent_image == null:
 		return
 	_representative_cut_in_generation += 1
-	var generation := _representative_cut_in_generation
 	if refresh_portrait:
 		_refresh_representative_agent()
 	_representative_agent_image.visible = true
-	await get_tree().create_timer(0.9).timeout
-	if generation == _representative_cut_in_generation and _representative_agent_image != null:
-		_representative_agent_image.visible = false
+	_cut_in_remaining = 0.9
 
 
 func _refresh_representative_agent() -> void:
