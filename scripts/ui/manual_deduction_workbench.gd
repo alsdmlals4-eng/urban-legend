@@ -36,6 +36,8 @@ var _guide_panel: PanelContainer
 var _guide_portrait: TextureRect
 var _selection_status_label: Label
 var _slot_buttons: Dictionary = {}
+var _case_heading: Label
+var _manual_heading: Label
 
 
 func _ready() -> void:
@@ -209,10 +211,14 @@ func _build_header() -> Control:
 	var bureau := _label("괴이기록국", 23, COLOR_GOLD)
 	bureau.custom_minimum_size = Vector2(166, 0)
 	header.add_child(bureau)
-	var case_label := _label(String(_view_model.get("case_label", "CASE-01")), 16, COLOR_TEXT)
+	var case_label := _label("", 16, COLOR_TEXT)
+	case_label.name = "CaseHeading"
+	_case_heading = case_label
 	case_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(case_label)
 	var title := _label(String(_view_model.get("title", "괴이 매뉴얼")), 20, COLOR_GOLD)
+	title.name = "ManualHeading"
+	_manual_heading = title
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title)
@@ -263,6 +269,8 @@ func _build_lume_panel() -> Control:
 func _render() -> void:
 	if not is_instance_valid(_manual_index):
 		return
+	_case_heading.text = String(_view_model.get("case_label", "사건 기록"))
+	_manual_heading.text = String(_view_model.get("title", "괴이 매뉴얼"))
 	_render_manual_index()
 	_render_deduction()
 	_render_candidates()

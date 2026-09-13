@@ -61,6 +61,7 @@ func _run() -> void:
 		_finish()
 		return
 	_expect(game_state.get_manual_draft_slots(manual, M04_EPISODE_ID).is_empty(), "reading observations must not author a draft automatically")
+	_expect(_visible_text_contains(workbench, scene.call("_player_authored_manual_case_label")), "header must reflect the current case model supplied after scene readiness")
 	_expect(workbench.find_children("SourceObservation_%s" % source_record_id, "Label", true, false).size() == 1, "candidate alternatives must share one original observation, not duplicate it")
 	var lume_portrait := workbench.find_child("LumePortrait", true, false) as TextureRect
 	_expect(lume_portrait != null and not lume_portrait.visible, "M04 guide must not display the CASE-01 Lume portrait")

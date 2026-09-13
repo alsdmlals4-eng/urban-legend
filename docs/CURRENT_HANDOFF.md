@@ -1,5 +1,13 @@
 # 괴이기록국 Current Handoff
 
+## W06 매뉴얼 사건 표제 갱신 — 2026-09-14
+
+실제 M04 화면의 CASE-01 잔류를 추적했다. owner는 올바른 case_label을 전달하지만 workbench가 `_ready`에서 빈 model로 header를 한 번 만들고 `_render`에서는 header를 갱신하지 않았다. UI_PRESENTATION의 표시 전용 계약을 유지하여 기존 label 참조만 갱신한다. 매번 shell 재생성(REJECT, focus/수명 비용), owner에서 node text 직접 변경(REJECT, 표시 책임 누출), 기존 model render에서 갱신(ADOPT)을 비교했다. 별도 게임 규칙/저장/아트 변경 없음.
+
+M04 실제 owner 모델 표제 검사 RED1 및 재사용 component의 사건/제목 변경 검사 RED2를 재현했다. 수정 후 두 검사 PASS, Python490 PASS. 기본값도 특정 CASE-01이 아닌 사건 기록으로 변경했다. 매뉴얼 슬롯의 세로 과확장은 별도 미해결이며 이번 표제 수정의 완료 증거로 섞지 않는다.
+
+M04 통합 검사 종료에서 WAV stream/playback 2개 경고가 반복 재현됐다. verbose로 종류를 확인했고 기능 assertion PASS와 수명 경고를 구분한다. 기존 audio lifecycle 계획/weakref probe를 읽었으며 아직 이 소비처의 실제 retirement 확인을 적용하지 않았으므로 경고 해결/전체 CLEAN을 주장하지 않는다. 다음은 해당 수명 관측 및 720p/1080p 슬롯 줄바꿈과 표제의 실제 화면 확인이다. 전체 목표/남은 구현 계약은 유지한다.
+
 ## W03 M04 정상 입력 회수·귀환 및 추가 진입 복구 — 2026-09-14
 
 이전 a2ebe62 이후 새 게임에서 이어하기→조사 3/3→결과 다음 조사→스크롤→CCTV 진입을 실제 클릭했다. 매뉴얼 열람은 재생을 정지하고 닫은 뒤 별도 재개를 요구했다. 이 실행은 12초 무입력 실패로 끝났으며, 위험 +10 등 관측 결과와 조사 복귀를 확인했다. 성공 입력으로 바꾸거나 결과를 주입하지 않았다. CCTV 성공의 정상 입력 증거는 아직 미확보다.
