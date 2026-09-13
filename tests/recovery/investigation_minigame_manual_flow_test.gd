@@ -54,6 +54,17 @@ func run() -> void:
 		if button.text.contains("CCTV") and not button.text.contains("잠김"):
 			cctv_available = true
 	check(cctv_available, "earned records unlock CCTV visibly without re-entering the scene")
+	var record_button := current_scene.find_child("RecordButton", true, false) as Button
+	record_button.pressed.emit()
+	check(current_scene.get("_record_drawer").visible, "M04 record button opens earned field records")
+	if current_scene.get("_record_drawer").visible:
+		record_button.pressed.emit()
+	var recovery_entry := current_scene.find_child("ResolutionAttemptButton", true, false) as Button
+	check(recovery_entry.is_visible_in_tree() and not recovery_entry.disabled, "earned evidence exposes the actual recovery entry")
+	if recovery_entry.is_visible_in_tree() and not recovery_entry.disabled:
+		recovery_entry.pressed.emit()
+		check(current_scene.get("_resolution_confirm_panel").visible, "recovery entry opens its existing confirmation")
+		current_scene.find_child("ContinueInvestigationButton", true, false).pressed.emit()
 	var manual: Dictionary = episode.investigation_manual
 	var page: Dictionary = manual.pages[0]
 	var slot := ""

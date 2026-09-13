@@ -198,6 +198,8 @@ func _build_ui() -> void:
 		_record_button.pressed.connect(_toggle_record_drawer)
 		_build_afterlife_manual()
 	if _has_player_authored_workbench_manual:
+		if not _record_button.pressed.is_connected(_toggle_record_drawer):
+			_record_button.pressed.connect(_toggle_record_drawer)
 		_manual_workbench = ManualDeductionWorkbenchScene.instantiate() as Control
 		_manual_workbench.z_index = 100
 		add_child(_manual_workbench)
@@ -1708,6 +1710,7 @@ func _add_resolution_confirm_panel(parent: Control) -> void:
 
 func _refresh_resolution_attempt_button() -> void:
 	var can_enter: bool = GameState.can_enter_resolution_phase()
+	_resolution_attempt_button.visible = true
 	_resolution_attempt_button.disabled = not can_enter
 	if can_enter:
 		if GameState.is_forced_recovery_phase():
