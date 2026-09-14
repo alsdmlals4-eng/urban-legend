@@ -825,7 +825,7 @@ func _add_investigation_point(parent: Control, point: Dictionary) -> void:
 	card.configure({
 		"id": String(point.get("id", label)),
 		"title": label if is_unlocked else "[잠김] %s" % label,
-		"description": String(point.get("summary", point.get("locked_text", "조사할 지점을 선택합니다."))),
+		"description": String(point.get("summary", "조사할 지점을 선택합니다.")) if is_unlocked else String(point.get("locked_text", "아직 확인할 근거가 부족합니다.")),
 		"meta": "조사 가능" if is_unlocked else "조건 부족"
 	})
 	card.action_requested.connect(func(_action_id: String) -> void: _inspect_point(point_copy))

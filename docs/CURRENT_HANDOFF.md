@@ -1,5 +1,13 @@
 # 괴이기록국 Current Handoff
 
+## W06 조사 지점의 조건 안내 교정 — 2026-09-14
+
+dab9a89/current source와 origin/main c82291101bf0a2bb4d821a12bca9f14070ee2886을 fresh-read했다. 이전 runtime finding인 '획득 후에도 미확보 안내'를 `_add_investigation_point`까지 추적했다. summary가 없는 열린 지점이 locked_text를 fallback으로 사용한 것이 원인이다. 기존 저승역 compact 경로는 열린 상태에서 잠김 설명을 사용하지 않으므로 이 분리 패턴을 재사용했다.
+
+대안: 데이터의 locked_text 삭제(REJECT, 실제 잠금 설명 손실), 모든 지점에 새 문구 강제 생성(REJECT, 중복 데이터/추측), 현재 unlocked 상태에 따라 표시 원본 분리(ADOPT). 열린 지점은 승인 summary 또는 중립적인 선택 안내, 잠긴 지점은 기존 locked_text를 표시한다. 새 관측/정답을 노출하지 않으며 조건·보상·저장 규칙은 그대로다.
+
+실제 조사-미니게임 통합에 acquired 조건 검사 RED4→GREEN0, 초기 잠긴 지점 설명 유지 반례도 PASS. 같은 통합을 두 번 실행했고 Python490 PASS, diff check PASS. 자동 scene 증거이며 수정 후 수동 클릭/시각 QA는 아직 미실행이다. 사용자 발행 증빙 PDF v1.0은 변경하지 않았다. 다음 W03 CCTV 성공 실제 입력, W06 기록창 구명칭/결과 요약, W04/W05 실패·철수 경계는 남아 있다. Base 승격 없음, 승인 자산/타 PR/사용자 import·UID 보존.
+
 ## W06 매뉴얼 문장 흐름 교정 — 2026-09-14
 
 기존 HFlow의 autowrap Label이 작은 최소 폭으로 배치되며 긴 글자 기둥이 되고, 같은 행 버튼도 높이를 따라 늘어났다. 기존 구조/본문 유지(목표), 고정 절대 좌표(REJECT), 문장 전체를 별도 카드로 교체(REJECT), 기존 Flow를 단어 단위 최소폭과 문단 줄바꿈으로 사용(ADOPT)을 비교했다. 공식 https://docs.godotengine.org/en/stable/classes/class_flowcontainer.html 의 child border wrapping을 확인했다. 빈칸은 세로 SHRINK_CENTER로 유지한다. 게임 규칙·키워드·이미지 변경 없음.

@@ -24,6 +24,11 @@ func run() -> void:
 	for i in range(6):
 		await process_frame
 	var episode: Dictionary = state.get_current_episode()
+	var initial_picker_text := labels(current_scene.get("_points_box"))
+	for point_value in episode.investigation_points:
+		var locked_point: Dictionary = point_value
+		if not current_scene.call("_is_point_unlocked", locked_point):
+			check(initial_picker_text.contains(String(locked_point.get("locked_text", ""))), "locked point retains its prerequisite explanation")
 	# Controlled random seeds, but real scene method-choice signals and real effects.
 	# No collect_clue, success effects, or unlock flags are injected.
 	for index in [0, 1]:
@@ -54,6 +59,13 @@ func run() -> void:
 		if button.text.contains("CCTV") and not button.text.contains("잠김"):
 			cctv_available = true
 	check(cctv_available, "earned records unlock CCTV visibly without re-entering the scene")
+	var picker_text := labels(current_scene.get("_points_box"))
+	for point_value in episode.investigation_points:
+		var earned_point: Dictionary = point_value
+		if current_scene.call("_is_point_unlocked", earned_point):
+			var obsolete_lock_text := String(earned_point.get("locked_text", ""))
+			if not obsolete_lock_text.is_empty():
+				check(not picker_text.contains(obsolete_lock_text), "available investigation point must not display its unmet prerequisite text")
 	var record_button := current_scene.find_child("RecordButton", true, false) as Button
 	record_button.pressed.emit()
 	check(current_scene.get("_record_drawer").visible, "M04 record button opens earned field records")
