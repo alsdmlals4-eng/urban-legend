@@ -1,5 +1,13 @@
 # 괴이기록국 Current Handoff
 
+## W07 시전 키보드·매뉴얼 경계 — 2026-09-14
+
+이전 goal turn은 실제 구현·검증·원격 동일 커밋 확인이 있는 PROGRESS다. fresh source의 기존 focus owner와 시전 consumer를 비교했다. 기본 배경 버튼 focus 유지(REJECT, 시전 중 차단된 버튼에 Enter가 소비됨), 별도 전역 단축키 계층(REJECT, 중복 입력/참조창 충돌), 기존 decision focus dispatcher 재사용(ADOPT)을 검토하고 마지막 경로를 적용했다.
+
+casting 테스트에 시전 focus 및 실제 viewport Enter press/release를 추가하여 RED2를 확인했다. 지원 시작·표시 종료에서 기존 deferred focus dispatcher를 요청하며, dispatcher는 열린 매뉴얼의 focus를 빼앗지 않고 활성 시전이면 기존 skip 버튼으로 보낸다. 종료 후 기존 현장 선택 경로를 재사용한다. 매뉴얼 열기→30초 delta→닫기의 시전 위치/위험 시계 정지, 열린 참조 focus 보존도 검사했다. 별도 전역 키 입력 handler·새 저장 상태·자산 변경은 없다.
+
+headless와 Vulkan 1280×720 및 fullscreen 1920×1080 요청에서 casting 회귀 0 failures, Python 503 PASS. 이번 GPU 실행은 입력/레이아웃 assertion이며 새 framebuffer capture 증거는 아니다. OS 물리 키보드/Human QA는 NOT_RUN. 매뉴얼 닫기 자체의 이전 focus 복원과 모든 F2 상태, 분리 시전 아트·현장 효과는 후속 범위다. Base pin 유지, 공용 승격 없음.
+
 ## W06 키보드 도입 연속성 — 2026-09-14
 
 앞선 표시/시전 변경은 branch `3fca5086a14d7536688f10fce4e04fdc1c69ec5b`로 commit/push했고 remote exact readback이 일치한다. main 병합은 하지 않았다.

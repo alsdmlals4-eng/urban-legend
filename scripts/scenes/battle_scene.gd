@@ -900,6 +900,11 @@ func _focus_first_enabled_decision_card() -> void:
 func _grab_first_decision_card_focus() -> void:
 	if not is_inside_tree() or is_queued_for_deletion() or not is_instance_valid(_response_box):
 		return
+	if _field_reference_open():
+		return
+	if _is_casting():
+		_casting_cut_in.get_node("SkipCastButton").grab_focus()
+		return
 	for child in _response_box.get_children():
 		if not child.is_inside_tree() or child.is_queued_for_deletion():
 			continue
@@ -1472,6 +1477,7 @@ func _use_agent_recovery_support(support: Dictionary, button: Button) -> void:
 		String(support.get("description", "")),
 		clock_note
 	])
+	_focus_first_enabled_decision_card()
 	if clock_delta < 0:
 		_play_recovery_clock_feedback("relief")
 	elif clock_delta > 0:
@@ -1483,6 +1489,7 @@ func _on_casting_finished() -> void:
 	_casting_exit_frame_pending = true
 	_set_field_paused(_field_paused)
 	_update_battle_view(_result_label.text if _result_label != null else "")
+	_focus_first_enabled_decision_card()
 
 
 func _resolve_recovery_clock_outcome(correct: bool, verified: bool, lines: Array[String]) -> Dictionary:

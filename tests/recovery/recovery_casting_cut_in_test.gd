@@ -53,6 +53,22 @@ func run() -> void:
 			var image := cut_in.find_child("CastImage", true, false) as TextureRect
 			check(image != null and image.texture == preload("res://scripts/ui/ui_asset_catalog.gd").new().get_agent_production_texture(support.agent_id, "recovery_support"), "image belongs to actual support actor")
 			await frames()
+			check(root.gui_get_focus_owner() == cut_in.find_child("SkipCastButton", true, false), "casting routes keyboard focus to skip, not blocked field actions")
+			battle.call("request_manual_quick_open")
+			await frames()
+			check(bool(battle.call("_field_reference_open")), "manual remains available during casting")
+			var reference_focus := root.gui_get_focus_owner()
+			var cast_position := image.position
+			battle.call("_focus_first_enabled_decision_card")
+			await frames()
+			battle.call("_process", 30.0)
+			check(cut_in.is_visible_in_tree() and image.position == cast_position and state.get_recovery_clock_state() == after_effect, "manual reading freezes casting and field clocks together")
+			check(root.gui_get_focus_owner() == reference_focus, "deferred casting focus cannot steal open manual input")
+			battle.get_node("CanonV2OperationOverlay").call("_toggle_manual_detail")
+			await frames()
+			check(not bool(battle.call("_field_reference_open")), "manual can close during casting")
+			battle.call("_set_field_paused", false)
+			battle.call("_process", 0.0)
 			check(root.get_visible_rect().encloses(cut_in.get_global_rect()), "casting stays inside viewport")
 			check(not cut_in.get_global_rect().intersects(battle.get_node("%TeamStrip").get_global_rect()), "casting cannot occlude staff condition strip")
 			if "--capture" in OS.get_cmdline_user_args():
@@ -85,7 +101,18 @@ func run() -> void:
 				check(cut_in.is_visible_in_tree(), "next actor has independent casting presentation")
 				check(not battle.call("request_field_support", support), "support selection cannot interrupt active cast")
 				var second_effect: Dictionary = state.get_recovery_clock_state()
-				cut_in.find_child("SkipCastButton", true, false).pressed.emit()
+				await frames()
+				var accept := InputEventKey.new()
+				accept.keycode = KEY_ENTER
+				accept.physical_keycode = KEY_ENTER
+				accept.pressed = true
+				root.push_input(accept)
+				await process_frame
+				accept = accept.duplicate()
+				accept.pressed = false
+				root.push_input(accept)
+				await frames()
+				check(not cut_in.is_visible_in_tree(), "Enter skips through real button input")
 				cut_in.find_child("SkipCastButton", true, false).pressed.emit()
 				battle.call("_process", 30.0)
 				check(not cut_in.is_visible_in_tree() and state.get_recovery_clock_state() == second_effect, "unpaused skip consumes no catch-up field time")
