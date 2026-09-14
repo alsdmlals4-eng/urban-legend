@@ -14,6 +14,18 @@ func frames(count: int = 4) -> void:
 	for i in range(count):
 		await process_frame
 
+func accept_key() -> void:
+	var event := InputEventKey.new()
+	event.keycode = KEY_ENTER
+	event.physical_keycode = KEY_ENTER
+	event.pressed = true
+	root.push_input(event)
+	await process_frame
+	event = event.duplicate()
+	event.pressed = false
+	root.push_input(event)
+	await frames()
+
 func run() -> void:
 	var state := root.get_node("GameState")
 	var guard := Guard.new()
@@ -34,12 +46,12 @@ func run() -> void:
 		if choices.get_child_count() > 0:
 			var first_action := choices.get_child(0).find_child("ActionButton", true, false) as Button
 			check(choices.get_parent().get_global_rect().encloses(first_action.get_global_rect()), "opening dialogue leaves first authored choice visible: " + episode_path)
-			choices.get_child(0).emit_signal("action_requested", String(intro.choices[0].id))
-			await frames()
+			check(root.gui_get_focus_owner() == first_action, "opening choice receives keyboard focus: " + episode_path)
+			await accept_key()
 			check(scene.get("_field_next_button").is_visible_in_tree(), "authored choice preserves next-dialogue action")
 			check(not shortcut.is_visible_in_tree(), "after-dialogue cannot be bypassed by location shortcut")
-			scene.get("_field_next_button").pressed.emit()
-			await frames()
+			check(root.gui_get_focus_owner() == scene.get("_field_next_button"), "dialogue transition retains keyboard continuation")
+			await accept_key()
 			check(String(state.get_current_field_node().id) != String(intro.id), "normal next-dialogue input advances actual field node")
 			check(scene.get("_points_box").is_visible_in_tree(), "authored transition reaches investigation points")
 		var audio_probe := preload("res://tests/test_audio_lifecycle.gd").new()

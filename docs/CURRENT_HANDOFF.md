@@ -1,5 +1,13 @@
 # 괴이기록국 Current Handoff
 
+## W06 키보드 도입 연속성 — 2026-09-14
+
+앞선 표시/시전 변경은 branch `3fca5086a14d7536688f10fce4e04fdc1c69ec5b`로 commit/push했고 remote exact readback이 일치한다. main 병합은 하지 않았다.
+
+도입 검사를 card signal 직접 호출 대신 viewport의 Enter press/release 입력으로 강화했다. 첫 선택은 기존 focus 재사용으로 통과했으나 후속 대사의 다음 조사 버튼에 focus가 전달되지 않아 M01/M04에서 RED4가 발생했다. 기존 버튼을 유지하고 선택 처리 후 deferred focus만 연결했다. headless와 Vulkan1280×720에서 실제 InputEventKey→Button→선택 처리→다음 조사→지점 진입이 0 failures, 조사→미니게임→매뉴얼 회귀도 0 failures다. OS 물리 키보드/Human 검증과는 구분한다. 새 dialogue/정답/저장 필드는 없다.
+
+다음 안전 작업은 회수 시전 키보드/참조창 경계와 W07 분리 자산·현장 효과, W03 CCTV 정상 성공 입력이다. 전체 승인 범위 잔여를 완료로 바꾸지 않는다.
+
 ## W06/W07 후속 readback — 2026-09-14
 
 최신 보정 뒤 정확한 1920×1080 Vulkan의 조사 선택과 시전 캡처를 다시 열었다: `.artifacts/daily-case-20260912/narrative-latest-1920x1080.png`, `.artifacts/daily-case-20260912/casting-1920x1080.png`. 아래 1080 재실행 예정 기록의 successor다. headless casting/intro/조사→미니게임→매뉴얼을 다시 실행하여 각각 0 failures, 활성 `tests` 범위 Python 503 PASS를 확인했다.

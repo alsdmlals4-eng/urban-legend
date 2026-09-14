@@ -818,6 +818,8 @@ func _select_field_choice(choice: Dictionary) -> void:
 	_set_ui_mode("FIELD_DIALOGUE")
 	_field_next_button.text = "다음 조사"
 	_field_next_button.visible = not _pending_next_field_node_id.is_empty()
+	if _field_next_button.visible:
+		_field_next_button.call_deferred("grab_focus")
 	_refresh_case_status()
 	_refresh_manual_drawer(true)
 
