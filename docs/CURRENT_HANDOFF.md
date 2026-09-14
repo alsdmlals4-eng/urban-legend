@@ -1,5 +1,15 @@
 # 괴이기록국 Current Handoff
 
+## W07 컷인 실제 참고 분석·후보 검수 — 2026-09-14
+
+이전 turn은 `4257e2333de512cff4fb9c268f37459424606955`의 구현/검증/remote readback이 있는 PROGRESS. 이번에는 GIF172프레임을 decode하여6880ms와 hash를 확인하고 전 구간의12시점 contact sheet를 직접 읽었다. 단일 긴 시전이 아니라 여러 배우·효과의 몽타주다. 프레임별 모든 전환을 검수했다는 뜻은 아니다. 분석 파일은 `.artifacts/daily-case-20260912/inspect_cast_reference.py`와 `casting-reference-contact.png`, 상세 규격은 `docs/visual/RECOVERY_CASTING_SEPARATION_20260914.md`다.
+
+Aseprite 현재 local usage가 가리키는 프로젝트 경계 문서가 checkout/main에 없어 역사 source를 비교한 뒤 현행 제약만 복원했다. 새 설치/구형 PASS 자동승격 없이 project-scoped 도구로 기존 staff-clean metadata를 실제 readback했다. 이미지 모델이 만든 강이준 크로마키 후보를 프로젝트 후보 경로에 복사하고 제한된 도구로 one-frame .aseprite를 생성/readback했다. 외부 공용 후보 폴더나 runtime assets에는 쓰지 않았다.
+
+배경 제거 모델 출력은 RGB 체크무늬로 실제 alpha가 없어 REJECTED. chroma와 실패 출력의 원본/hash를 보존하고 게임에는 연결하지 않았다. 또한 기존 전술복·보호막 그림과 현행 강이준 동양 봉인술사/패턴 예측 지원 간 차이를 실제 M01/M04 data에서 발견했다. 이 후보는 분리 기술/identity 비교용이며 final role-ready가 아니다. 보호막을 현재 관찰 지원 효과로 자동 구현하지 않는다. 손가락/하단 크롭/장비 표현도 재검수 필요하다.
+
+다음 작업: 현행 역할·지원 ID를 기준으로 시전별 표현 명세를 교정하고, 가능한 기존 후보·승인 인물 원본에서 역할에 맞는 소비처를 우선 연결한다. 진짜 alpha/상태군/현장 효과·사용자 최종 아트/권리 미충족을 숨기지 않는다. 승인된 기존 자산 유지, Base pin 유지, 전체 Goal 유지. 모델 생성 성공만으로 W07 완료를 선언하지 않는다.
+
 ## W07 매뉴얼 복귀와 분리 자산 소비처 감사 — 2026-09-14
 
 이전 goal turn은 `69ed93c1cd5b9152d0609f7b0d0a8b37b77e12c6` branch/remote 동일 readback을 남긴 PROGRESS다. 매뉴얼 종료의 focus 유실을 casting 통합 RED1로 재현했다. 기존 anomaly manual drawer의 이전 focus 보존 패턴을 operation overlay에 적용했다. 유효한 이전 Control로 돌아가고 hidden/disabled/freed이면 기존 작전 상태 버튼을 fallback한다. confirmation focus와 별도 변수로 보관하여 서로 덮어쓰지 않는다. 현장 정지는 자동 해제하지 않는다. overlay fallback 3종, headless/GPU720 casting, active scene, Python503 PASS.
