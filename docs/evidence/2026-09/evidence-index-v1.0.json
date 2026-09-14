@@ -1,0 +1,116 @@
+{
+  "project": "괴이기록국: 잔향 보고서",
+  "month": "2026-09",
+  "scope": "Selected verified records; not exhaustive monthly history",
+  "issued_at": "2026-09-14T22:07:15+09:00",
+  "source_head": "fd3013759d1ca536a210861a8a26caa88f747940",
+  "branch": "codex/daily-case-structure-design-20260910",
+  "retrospective": true,
+  "commits": [
+    {
+      "sha": "c5f59c9ad460cb1a6b89bc2b06f2e93b4f359136",
+      "author_date": "2026-09-13T09:17:01+09:00",
+      "commit_date": "2026-09-13T09:17:01+09:00",
+      "subject": "feat: execute M04 rain observations through CCTV capture"
+    },
+    {
+      "sha": "38548417b4a9adc4f4282856e2e31d3de1c821e0",
+      "author_date": "2026-09-13T09:21:05+09:00",
+      "commit_date": "2026-09-13T09:21:05+09:00",
+      "subject": "fix: honor headless opt-in in current runtime helper"
+    },
+    {
+      "sha": "27fa216ed563c1e85f0483588ab8243d2238c318",
+      "author_date": "2026-09-13T19:29:55+09:00",
+      "commit_date": "2026-09-13T19:29:55+09:00",
+      "subject": "feat: connect recovery active clock and explicit field resume"
+    },
+    {
+      "sha": "105a0dbc31073932a73cb4d73c9e0eda2ecab736",
+      "author_date": "2026-09-14T06:48:05+09:00",
+      "commit_date": "2026-09-14T06:48:05+09:00",
+      "subject": "fix: align daily-case authority and action-only recovery effects"
+    },
+    {
+      "sha": "4d7e318f55279e30c6c3f4dee1127390d23d58b8",
+      "author_date": "2026-09-14T06:53:51+09:00",
+      "commit_date": "2026-09-14T06:53:51+09:00",
+      "subject": "fix: reconnect main menu to unassigned daily-case preparation"
+    },
+    {
+      "sha": "a2ebe624ed5ec48fd3c99d0140dc21f8efd1f91e",
+      "author_date": "2026-09-14T07:16:16+09:00",
+      "commit_date": "2026-09-14T07:16:16+09:00",
+      "subject": "fix: refresh investigation unlocks after method results"
+    },
+    {
+      "sha": "15e2c129b6af0c7a31d676dbf1a65d87c478a179",
+      "author_date": "2026-09-14T07:26:49+09:00",
+      "commit_date": "2026-09-14T07:26:49+09:00",
+      "subject": "fix: restore investigation records and recovery entry"
+    },
+    {
+      "sha": "8474b891901de1613281b10468b9ca020e850c1f",
+      "author_date": "2026-09-14T07:30:06+09:00",
+      "commit_date": "2026-09-14T07:30:06+09:00",
+      "subject": "fix: refresh manual headings from current case model"
+    },
+    {
+      "sha": "2b4b3d09fd1cb1054674555a42c579b7dbe5ca96",
+      "author_date": "2026-09-14T07:33:16+09:00",
+      "commit_date": "2026-09-14T07:33:16+09:00",
+      "subject": "test: verify bounded audio retirement across scene exits"
+    },
+    {
+      "sha": "fd3013759d1ca536a210861a8a26caa88f747940",
+      "author_date": "2026-09-14T22:04:57+09:00",
+      "commit_date": "2026-09-14T22:04:57+09:00",
+      "subject": "fix: wrap manual sentences and record evidence export policy"
+    }
+  ],
+  "sources": [
+    {
+      "path": "docs/CURRENT_HANDOFF.md",
+      "sha256": "b025d509b553761538bcc761c502997f9131ed7cb689af456e1ccc1fb0d9bd9f",
+      "filesystem_modified": "2026-09-14T22:04:56.400359+09:00"
+    },
+    {
+      "path": "docs/CURRENT_DECISION_OVERLAY.md",
+      "sha256": "fc42ef5163071dd18ab832a77dca6af87f7603ad2fb15b2d9f6f3f9dbd578adf",
+      "filesystem_modified": "2026-09-14T22:04:56.399358+09:00"
+    },
+    {
+      "path": "docs/superpowers/specs/2026-09-14-remaining-implementation-contract.md",
+      "sha256": "3ddcdfba0e56733b682f71a95dea2a49c91fa557c20048fb0e464a24e03afe65",
+      "filesystem_modified": "2026-09-14T06:47:20.109717+09:00"
+    },
+    {
+      "path": ".artifacts/daily-case-20260912/w03-investigation-after-cctv.png",
+      "sha256": "8185b3a378148680034620f69c3738c7263286a2441165cf45b56d5dd48c9fc1",
+      "filesystem_modified": "2026-09-14T07:21:47.731468+09:00"
+    },
+    {
+      "path": ".artifacts/daily-case-20260912/manual-wrap-1280x720.png",
+      "sha256": "0de43ccd69e68a6666e1f8bf53e46c3565876e6d9c8504292f142c629d3cd0f1",
+      "filesystem_modified": "2026-09-14T07:35:40.110526+09:00"
+    },
+    {
+      "path": ".artifacts/daily-case-20260912/w03-recovery-result.png",
+      "sha256": "ffc20eb22c2a2f9129cc72146a3f2b5b44643fbcdb4438eb86cd0817a4cc5d2b",
+      "filesystem_modified": "2026-09-14T07:25:49.343212+09:00"
+    }
+  ],
+  "missing": [
+    "Original prompt screenshots",
+    "Account identification",
+    "Payment receipts",
+    "Association template and original agreement review"
+  ],
+  "input_excerpt": "작업재개,그리고 앞으로 이미지 생성시 크로마키 배경으로 만든 후 배경제거해.",
+  "input_evidence_type": "User message excerpt transcribed from current conversation; not a screenshot or timestamp attestation",
+  "pdf": {
+    "path": "C:\\Users\\user\\Documents\\증빙서류\\9월 증빙서류\\괴이기록국_잔향보고서_2026-09_AI활용_작업일지_증빙집_v1.0.pdf",
+    "sha256": "2dec5d36156862589c9536629a1a84707ac0a09c75cc8a476f3b725e86cbb04b",
+    "pages": 7
+  }
+}
