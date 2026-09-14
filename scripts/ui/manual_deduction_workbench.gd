@@ -314,12 +314,7 @@ func _render_deduction() -> void:
 	var divider := HSeparator.new()
 	divider.add_theme_stylebox_override("separator", _line_style(COLOR_GOLD_MUTED, 1))
 	_deduction_content.add_child(divider)
-	var line := HFlowContainer.new()
-	line.name = "DeductionLine"
-	line.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	line.add_theme_constant_override("h_separation", 5)
-	line.add_theme_constant_override("v_separation", 7)
-	_deduction_content.add_child(line)
+	var line := _new_deduction_line()
 	var segments_value: Variant = page.get("deduction_segments", [])
 	if segments_value is Array:
 		for segment_value in segments_value:
@@ -331,7 +326,15 @@ func _render_deduction() -> void:
 				if not slot_id.is_empty():
 					line.add_child(_slot_button(slot_id))
 			else:
-				line.add_child(_body_label(String(segment.get("text", ""))))
+				var paragraphs := String(segment.get("text", "")).split("\n", true)
+				for paragraph_index in range(paragraphs.size()):
+					if paragraph_index > 0:
+						line = _new_deduction_line()
+					for word in paragraphs[paragraph_index].split(" ", false):
+						var word_label := _body_label(word)
+						word_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+						word_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+						line.add_child(word_label)
 	var lower_divider := HSeparator.new()
 	# Original earned observations are evidence, not a verdict on the player's draft.
 	var shown_sources: Dictionary = {}
@@ -352,6 +355,16 @@ func _render_deduction() -> void:
 	_deduction_content.add_child(lower_divider)
 	_deduction_content.add_child(_label("작성 원칙", 16, COLOR_GOLD))
 	_deduction_content.add_child(_label("후보는 출처 기록을 기준으로만 열립니다. 선택 자체는 확정이나 성공을 뜻하지 않습니다.", 13, COLOR_SUBTEXT))
+
+
+func _new_deduction_line() -> HFlowContainer:
+	var line := HFlowContainer.new()
+	line.name = "DeductionLine"
+	line.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	line.add_theme_constant_override("h_separation", 5)
+	line.add_theme_constant_override("v_separation", 7)
+	_deduction_content.add_child(line, true)
+	return line
 
 
 func _render_candidates() -> void:
@@ -419,6 +432,7 @@ func _slot_button(slot_id: String) -> Button:
 	var button := Button.new()
 	button.name = "Slot_%s" % slot_id
 	button.custom_minimum_size = Vector2(146, 38)
+	button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	button.focus_mode = Control.FOCUS_ALL
 	button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	button.tooltip_text = "기록 후보를 넣거나 현재 선택을 지웁니다."

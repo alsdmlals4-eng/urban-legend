@@ -1,5 +1,11 @@
 # 괴이기록국 Current Handoff
 
+## W06 매뉴얼 문장 흐름 교정 — 2026-09-14
+
+기존 HFlow의 autowrap Label이 작은 최소 폭으로 배치되며 긴 글자 기둥이 되고, 같은 행 버튼도 높이를 따라 늘어났다. 기존 구조/본문 유지(목표), 고정 절대 좌표(REJECT), 문장 전체를 별도 카드로 교체(REJECT), 기존 Flow를 단어 단위 최소폭과 문단 줄바꿈으로 사용(ADOPT)을 비교했다. 공식 https://docs.godotengine.org/en/stable/classes/class_flowcontainer.html 의 child border wrapping을 확인했다. 빈칸은 세로 SHRINK_CENTER로 유지한다. 게임 규칙·키워드·이미지 변경 없음.
+
+720p/1080p 슬롯·본문 높이 검사 RED→GREEN, 후보 입력 후 슬롯 검사 PASS. M04/M01/workbench/조사-미니게임 통합 PASS 및 Python490 PASS. Vulkan 실제 1280×720,1920×1080 캡처를 모두 열어 문장/슬롯/현재 CASE-04 표제를 확인했다. 캡처는 `.artifacts/daily-case-20260912/manual-wrap-*.png`; 부분 단서 fixture이며 전체 후보/장문/모든 페이지 검수 또는 최종 시각 승인은 아니다. 신규 월별 증빙집은 latest user의 별도 요청으로 진행하며 전체 구현 목표는 유지한다.
+
 ## W05 오디오 종료 관측 통합 — 2026-09-14
 
 이전 M04 manual의 WAV/playback 2개 종료 경고를 기존 test-only weakref observer로 추적했다. 현재 scene의 player/stream/playback을 약한 참조로 관측하고 scene 해제 후 최대 1초 동안 실제 소멸을 확인한다. 음소거/stop/null 주입 없이 이 소비처가 정상 소멸함을 확인했다. 기존 세 frame만 기다리던 종료가 audio retirement보다 빨랐던 사례이며 모든 엔진 누수를 고쳤다고 주장하지 않는다.
