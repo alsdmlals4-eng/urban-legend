@@ -229,10 +229,67 @@ func _build_ui() -> void:
 	_team_status_popover.set_anchors_preset(Control.PRESET_CENTER)
 	_team_status_popover.position = Vector2(-180, -110)
 	_agent_stage.visible = false
+	_configure_narrative_surface()
 
 	_render_investigation_points()
 	_refresh_manual_drawer(false)
 	_show_current_field_node()
+
+
+func _configure_narrative_surface() -> void:
+	# Presentation only: the original method IDs, handlers and state owner remain intact.
+	var content := _dialogue_dock.get_node("Content") as VBoxContainer
+	_method_column.reparent(content)
+	content.move_child(_method_column, 3)
+	_method_column.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_method_title_label.visible = false
+	_method_result_label.visible = false
+	_field_dialogue_label.add_theme_font_size_override("font_size", 20)
+	_field_dialogue_label.custom_minimum_size.y = 54.0
+	_field_dialogue_label.add_theme_constant_override("line_spacing", 8)
+	var serif := load("res://assets/fonts/noto/NotoSerifKR-VF.ttf") as Font
+	_field_dialogue_label.add_theme_font_override("font", serif)
+	_field_speaker_label.add_theme_font_override("font", serif)
+	_field_speaker_label.add_theme_color_override("font_color", Color("d6bd8e"))
+	_field_speaker_label.add_theme_font_size_override("font_size", 22)
+	_result_label.add_theme_font_size_override("font_size", 18)
+	content.add_theme_constant_override("separation", 14)
+	_location_preview.visible = false
+	var tools_row := HBoxContainer.new()
+	tools_row.name = "NarrativeTools"
+	tools_row.alignment = BoxContainer.ALIGNMENT_END
+	tools_row.add_theme_constant_override("separation", 12)
+	content.add_child(tools_row)
+	var locations := Button.new()
+	locations.name = "NarrativeLocationsButton"
+	locations.text = "주변 살피기"
+	locations.pressed.connect(_on_narrative_locations_requested)
+	tools_row.add_child(locations)
+	_manual_toggle_button.reparent(tools_row)
+	var footer_space := Control.new()
+	footer_space.name = "NarrativeFooterSpace"
+	footer_space.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	content.add_child(footer_space)
+	content.move_child(footer_space, tools_row.get_index())
+	var main_column := _safe_frame.get_node("MainColumn") as VBoxContainer
+	var breathing_room := Control.new()
+	breathing_room.name = "NarrativeStageSpace"
+	breathing_room.custom_minimum_size.y = 120.0
+	breathing_room.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	main_column.add_child(breathing_room)
+	main_column.move_child(breathing_room, main_column.get_node("Workspace").get_index())
+	_point_method_dock.custom_minimum_size.x = 300.0
+	_dialogue_dock.size_flags_stretch_ratio = 0.7
+	%LogUtilityButton.text = "루메 안내"
+	var log_summary := main_column.get_node("LogBar/LogRow/LogSummaryLabel") as Label
+	log_summary.text = "현재 관찰과 확보 기록을 비교합니다. 루메는 관련 기록의 위치를 안내합니다."
+	_mode_label.visible = false
+
+
+func _on_narrative_locations_requested() -> void:
+	if _mode_label.text not in ["METHOD_PICKER", "RESULT"]:
+		return
+	_return_to_point_picker()
 
 
 func _apply_safe_frame() -> void:
@@ -641,7 +698,22 @@ func _present_support_lines(lines: Array) -> void:
 				log_texts.append(String(line.get("text", "")))
 				log_expression = String(line.get("expression", log_expression))
 			continue
-	_agent_reaction_box.visible = false
+		var spoken_text := String(line.get("text", "")).strip_edges()
+		if spoken_text.is_empty():
+			continue
+		var speaker_agent: Dictionary = {}
+		for candidate in GameState.get_agents():
+			if String(candidate.get("name", "")) == speaker:
+				speaker_agent = candidate
+				break
+		if not speaker_agent.is_empty():
+			_agent_reaction_box.add_child(_make_agent_reaction_row(speaker_agent, spoken_text))
+		else:
+			var narration := Label.new()
+			narration.text = "%s  %s" % [speaker, spoken_text] if not speaker.is_empty() else spoken_text
+			narration.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			_agent_reaction_box.add_child(narration)
+	_agent_reaction_box.visible = _agent_reaction_box.get_child_count() > 0
 	if log_texts.is_empty():
 		_log_guide.visible = false
 		return
@@ -962,11 +1034,20 @@ func _show_method_options(point: Dictionary) -> void:
 		_method_button_box.add_child(card)
 		card.configure({
 			"id": String(method_copy.get("id", method_copy.get("method_type", "method"))),
-			"title": _make_method_button_text(method_copy).get_slice("\n", 0),
-			"description": String(method_copy.get("summary", "")),
+			"title": String(method_copy.get("summary", method_copy.get("label", "조사한다"))),
+			"description": "",
 			"meta": "담당 %s · %s %d · 난이도 %d" % [String(best_agent.get("name", "팀")), GameState.ABILITY_LABELS.get(approach_type, approach_type), GameState.get_agent_ability(agent_id, approach_type), int(method_copy.get("difficulty", 0))]
 		})
 		card.action_requested.connect(func(_action_id: String) -> void: _run_method_option(point_copy, method_copy))
+		card.add_theme_stylebox_override("panel", StyleBoxEmpty.new())
+		var action_button := card.find_child("ActionButton", true, false) as Button
+		action_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		action_button.add_theme_font_size_override("font_size", 18)
+		action_button.add_theme_color_override("font_color", Color("e3d6be"))
+		var choice_style := AfterlifeTheme.panel_style(Color("65583f"), 0.86, 14)
+		action_button.add_theme_stylebox_override("normal", choice_style)
+		action_button.add_theme_stylebox_override("hover", AfterlifeTheme.panel_style(Color("d6bd8e"), 0.96, 14))
+		action_button.add_theme_stylebox_override("focus", AfterlifeTheme.panel_style(Color("d6bd8e"), 0.0, 14))
 
 		# Show responsible agent and ability info for this approach
 		if not best_agent.is_empty():
@@ -1303,14 +1384,24 @@ func _set_ui_mode(mode: String) -> void:
 		choice_scroll.visible = mode == "FIELD_CHOICES" or (_is_afterlife_layout and mode == "POINT_PICKER")
 	var uses_method_picker := mode == "METHOD_PICKER"
 	if _point_method_dock != null:
-		_point_method_dock.visible = true
+		_point_method_dock.visible = mode == "POINT_PICKER"
 	if _method_column != null:
 		_method_column.visible = uses_method_picker
-		var point_column := _method_column.get_parent().get_node_or_null("PointColumn") as Control
+		var point_column := _point_method_dock.get_node_or_null("Columns/PointColumn") as Control
 		if point_column != null:
 			point_column.visible = not uses_method_picker
 	if _dialogue_dock != null:
 		_dialogue_dock.visible = true
+	if _field_dialogue_label != null:
+		_field_dialogue_label.visible = mode != "RESULT"
+	var footer_space := _dialogue_dock.get_node_or_null("Content/NarrativeFooterSpace") as Control
+	if footer_space != null:
+		footer_space.visible = mode in ["POINT_PICKER", "FIELD_DIALOGUE"]
+	var locations := _dialogue_dock.get_node_or_null("Content/NarrativeTools/NarrativeLocationsButton") as Button
+	if locations != null:
+		locations.visible = mode in ["METHOD_PICKER", "RESULT"]
+	if _agent_reaction_box != null:
+		_agent_reaction_box.visible = mode in ["POINT_PICKER", "FIELD_CHOICES", "FIELD_DIALOGUE"] and _agent_reaction_box.get_child_count() > 0
 	if uses_method_picker:
 		if _manual_workbench != null and _manual_workbench.visible:
 			_manual_workbench.call("dismiss")

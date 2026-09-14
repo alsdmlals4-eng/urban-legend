@@ -10,6 +10,7 @@ const LogTutorialCatalog = preload("res://scripts/ui/log_tutorial_catalog.gd")
 const RecoveryTelegraphAudio = preload("res://scripts/ui/recovery_telegraph_audio.gd")
 const ActionChoiceCardScene = preload("res://scenes/ui/action_choice_card.tscn")
 const TeamStatusChipScene = preload("res://scenes/ui/team_status_chip.tscn")
+const CastingCutIn = preload("res://scripts/ui/recovery_casting_cut_in.gd")
 
 const BASE_ANOMALY_STABILITY := 0
 const BASE_RECOVERY_THRESHOLD := 70
@@ -72,6 +73,8 @@ var _field_window_focused := true
 var _field_pause_button: Button
 var _cut_in_remaining := 0.0
 var _pending_field_support: Dictionary = {}
+var _casting_cut_in: Control
+var _casting_exit_frame_pending := false
 
 
 func _ready() -> void:
@@ -95,13 +98,17 @@ func _field_reference_open() -> bool:
 
 
 func _field_actions_blocked() -> bool:
-	return _field_paused or not _field_window_focused or _field_reference_open() or _recovery_completed
+	return _field_paused or not _field_window_focused or _field_reference_open() or _recovery_completed or _is_casting() or _casting_exit_frame_pending
+
+
+func _is_casting() -> bool:
+	return _casting_cut_in != null and _casting_cut_in.active
 
 
 func _set_field_paused(paused: bool) -> void:
 	_field_paused = paused
 	if _telegraph_audio_player != null:
-		_telegraph_audio_player.stream_paused = paused
+		_telegraph_audio_player.stream_paused = paused or _is_casting()
 	_refresh_field_pause_control()
 
 
@@ -111,7 +118,7 @@ func request_field_pause() -> void:
 
 
 func request_field_support(support: Dictionary) -> bool:
-	if _turn_locked or _recovery_completed or not _field_window_focused:
+	if _turn_locked or _recovery_completed or not _field_window_focused or _is_casting() or _casting_exit_frame_pending:
 		return false
 	if not bool(support.get("available", true)) or GameState.has_used_agent_support(String(support.get("id", ""))):
 		return false
@@ -145,6 +152,8 @@ func _refresh_field_pause_control() -> void:
 	var remaining := GameState.RECOVERY_CLOCK_INTERVAL - float(clock.get("active_seconds", 0.0))
 	var warning := "폭주" if int(clock.get("danger", 0)) >= 5 else "위험 +1"
 	_field_pause_button.text = "현장 재개 · 정지 중" if _field_paused else "현장 정지 · %s까지 %d초" % [warning, int(ceil(remaining))]
+	if _is_casting() and not _field_paused:
+		_field_pause_button.text = "시전 중 · 현장 정지"
 	if _field_paused and not _pending_field_support.is_empty():
 		_field_pause_button.text = "지원 실행 · 현장 재개"
 	_field_pause_button.disabled = _recovery_completed or _turn_locked or _field_reference_open()
@@ -168,6 +177,13 @@ func _process(delta: float) -> void:
 				_pending_field_support.clear()
 				_use_agent_recovery_support(support, null)
 		return # Resume frame never becomes a field action or catches up elapsed time.
+	if _casting_exit_frame_pending:
+		_casting_exit_frame_pending = false
+		return # UI skip can finish before process; discard that animation frame too.
+	if _is_casting():
+		_casting_cut_in.advance(delta)
+		_casting_exit_frame_pending = false # Natural finish already consumes this frame.
+		return # A forced animation frame, including its final frame, costs no field time.
 	if _current_pattern.is_empty():
 		return
 	var outcome := GameState.advance_recovery_clock_time(delta)
@@ -189,6 +205,15 @@ func _build_scene_ui() -> void:
 		shade.color = Color(0.08, 0.015, 0.025, 0.14)
 	_representative_agent_image = %RepresentativeVisual
 	_representative_agent_image.visible = false
+	_casting_cut_in = CastingCutIn.new()
+	_casting_cut_in.name = "RecoveryCastingCutIn"
+	get_node("%CinematicStage").add_child(_casting_cut_in)
+	_casting_cut_in.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_casting_cut_in.anchor_left = 0.32
+	_casting_cut_in.anchor_right = 0.64
+	_casting_cut_in.anchor_bottom = 0.84
+	_casting_cut_in.z_index = 5
+	_casting_cut_in.finished.connect(_on_casting_finished)
 	_anomaly_panel = %AnomalyPanel
 	_anomaly_panel.add_theme_stylebox_override("panel", ThemeFactory.panel_style(Color("8a606c"), 0.12))
 	_anomaly_image = %AnomalyVisual
@@ -250,7 +275,7 @@ func _evaluate_withdrawal() -> Dictionary:
 
 func _request_withdrawal() -> void:
 	# Reviewing withdrawal is a paused decision, not a field action.
-	if _turn_locked or _recovery_completed or _recovery_completion_queued:
+	if _turn_locked or _recovery_completed or _recovery_completion_queued or _is_casting() or _casting_exit_frame_pending:
 		return
 	if _can_recover():
 		_complete_recovery_when_ready()
@@ -1439,6 +1464,8 @@ func _use_agent_recovery_support(support: Dictionary, button: Button) -> void:
 	if clock_delta != 0:
 		var clock_state := GameState.get_recovery_clock_state()
 		clock_note = "\n위험 시계: %s%d · 현재 %d/6" % ["+" if clock_delta > 0 else "", clock_delta, int(clock_state.get("danger", 0))]
+	_casting_cut_in.play(support, AssetCatalog.new().get_agent_production_texture(String(support.get("agent_id", "")), "recovery_support"))
+	_set_field_paused(_field_paused)
 	_update_battle_view("%s의 %s 지원 발동\n%s%s" % [
 		String(support.get("agent_name", "")),
 		String(support.get("role", "회수")),
@@ -1449,14 +1476,13 @@ func _use_agent_recovery_support(support: Dictionary, button: Button) -> void:
 		_play_recovery_clock_feedback("relief")
 	elif clock_delta > 0:
 		_play_recovery_clock_feedback("danger")
-	if _representative_agent_image != null:
-		var support_texture := AssetCatalog.new().get_agent_production_texture(
-			String(support.get("agent_id", "")),
-			"recovery_support"
-		)
-		if support_texture != null:
-			_representative_agent_image.texture = support_texture
-			_show_representative_cut_in(false)
+
+
+func _on_casting_finished() -> void:
+	# Presentation completion cannot repeat support costs, effects or rewards.
+	_casting_exit_frame_pending = true
+	_set_field_paused(_field_paused)
+	_update_battle_view(_result_label.text if _result_label != null else "")
 
 
 func _resolve_recovery_clock_outcome(correct: bool, verified: bool, lines: Array[String]) -> Dictionary:
@@ -1551,6 +1577,8 @@ func _update_battle_view(message: String) -> void:
 
 	if _result_label != null:
 		_result_label.text = status_message
+	if _is_casting():
+		return
 	if not _recovery_completed and not _can_recover() and GameState.are_all_agents_inactive() and not _recovery_completion_queued:
 		_recovery_completion_queued = true
 		call_deferred("_complete_failed_recovery")
@@ -1618,7 +1646,7 @@ func is_recovery_ready_for_resolution() -> bool:
 
 func _complete_recovery_when_ready() -> void:
 	_recovery_completion_queued = false
-	if not is_recovery_ready_for_resolution():
+	if _is_casting() or not is_recovery_ready_for_resolution():
 		return
 	_finish_recovery(true, "core_recovered")
 

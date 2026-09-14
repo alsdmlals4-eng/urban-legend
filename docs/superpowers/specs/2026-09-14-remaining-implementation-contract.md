@@ -142,6 +142,8 @@ The Operator Steam 페이지는 이번 조회에서 연령 확인 화면까지�
 
 ### W07 — 실제 자산·모션·음향 제작 계약
 
+- 2026-09-14 최신 추가: 회수 지원의 실제 시전자→시전 컷인→현장 억제/보호 반응을 연결한다. 1차 native 표시 컴포넌트는 기존 자산 재사용 및 시계/오디오/입력/스킵/최종 결과 경계만 구현하며, 배경 분리 자산과 현장 효과 완료를 대신하지 않는다. 단계별 구현·검증 증거는 CURRENT_HANDOFF를 따른다. 기존 대표 교체 UI를 복원하지 않는다.
+
 - 원본: `docs/CURRENT_VISUAL_BIBLE.md`, `docs/CURRENT_THREE_LAYER_VISUAL_ASSET_REGISTER.md`, `ASSET_MANIFEST.yml`; 소비처 `scripts/ui/ui_asset_catalog.gd` 및 실제 scene node.
 - 우선 자산 묶음: M04 CCTV 재생/순서 전조, 회수 괴이의 대기·전조·대응 반응·악화·봉쇄, 직원 지시/억제/보호 행동, 루메 사건 복장과 기록 보조 표정. 각 묶음은 현재 consumer와 부족한 상태를 확인한 뒤 필요한 것만 제작한다.
 - 명세 필드: asset ID, consumer path/node, 승인 reference, canvas/표시영역, alpha, pivot, 상태명, 프레임/태그, 재생/정지/종료 규칙, 가려지면 안 되는 영역, provenance/hash, fallback, 승인 단계.

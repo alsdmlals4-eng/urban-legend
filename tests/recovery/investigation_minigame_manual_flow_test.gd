@@ -24,6 +24,14 @@ func run() -> void:
 	for i in range(6):
 		await process_frame
 	var episode: Dictionary = state.get_current_episode()
+	check(not current_scene.find_child("NarrativeLocationsButton", true, false).is_visible_in_tree(), "opening narrative cannot bypass authored choices through location shortcut")
+	var intro_node: Dictionary = state.get_current_field_node().duplicate(true)
+	current_scene.find_child("NarrativeLocationsButton", true, false).pressed.emit()
+	check(not current_scene.get("_points_box").is_visible_in_tree() and state.get_current_field_node() == intro_node, "hidden location shortcut cannot bypass the authored introduction handler")
+	current_scene.call("_present_support_lines", episode.field_nodes[0].opening_dialogue)
+	var spoken_text := labels(current_scene.get("_agent_reaction_box"))
+	check(spoken_text.contains("빗소리와 표지판 변화는 같은 시각 기준으로 기록하겠습니다."), "authored agent dialogue is visible rather than silently discarded")
+	check(current_scene.get("_agent_reaction_box").is_visible_in_tree(), "authored reactions have a visible narrative consumer")
 	var initial_picker_text := labels(current_scene.get("_points_box"))
 	for point_value in episode.investigation_points:
 		var locked_point: Dictionary = point_value
@@ -41,13 +49,29 @@ func run() -> void:
 			await process_frame
 			await process_frame
 			var choices: Node = current_scene.get("_method_button_box")
+			check(current_scene.get("_dialogue_dock").is_ancestor_of(choices), "method choices belong to the same narrative reading surface")
+			check(not current_scene.get("_point_method_dock").is_visible_in_tree(), "method reading does not compete with a separate investigation panel")
+			check(not current_scene.get("_agent_reaction_box").is_visible_in_tree(), "previous situation dialogue does not crowd the selected investigation method")
+			for action in choices.find_children("ActionButton", "Button", true, false):
+				check(not action.text.contains("능력치:") and not action.text.contains("observation"), "narrative choice title does not expose raw stat identifiers")
+				check(choices.get_parent().get_global_rect().encloses(action.get_global_rect()), "standard three-choice method fits its available reading area")
 			check(choices.get_child_count() > 0, "real inspection exposes method choices")
 			if choices.get_child_count() == 0:
 				break
+			var first_action := choices.get_child(0).find_child("ActionButton", true, false) as Button
+			check(choices.get_parent().get_global_rect().encloses(first_action.get_global_rect()), "first method choice is visible without scrolling")
+			if index == 0 and attempt == 0 and "--capture" in OS.get_cmdline_user_args():
+				await RenderingServer.frame_post_draw
+				var capture := root.get_texture().get_image()
+				print("Narrative framebuffer: ", capture.get_size())
+				check(capture.save_png(ProjectSettings.globalize_path("res://.artifacts/daily-case-20260912/narrative-latest-%dx%d.png" % [capture.get_width(), capture.get_height()])) == OK, "capture latest narrative choice surface")
 			seed(100 + attempt)
 			choices.get_child(0).emit_signal("action_requested", String(point.method_options[0].id))
+			await process_frame
+			await process_frame
 			var next_point := current_scene.find_child("ResultNextButton", true, false) as Button
 			check(next_point.is_visible_in_tree(), "method result exposes the refresh-and-return action")
+			check(root.get_visible_rect().encloses(next_point.get_global_rect()), "long investigation result keeps next investigation on screen")
 			if next_point.is_visible_in_tree():
 				next_point.pressed.emit()
 			else:

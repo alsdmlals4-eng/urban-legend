@@ -1,5 +1,76 @@
 # 괴이기록국 Current Handoff
 
+## W06/W07 후속 readback — 2026-09-14
+
+최신 보정 뒤 정확한 1920×1080 Vulkan의 조사 선택과 시전 캡처를 다시 열었다: `.artifacts/daily-case-20260912/narrative-latest-1920x1080.png`, `.artifacts/daily-case-20260912/casting-1920x1080.png`. 아래 1080 재실행 예정 기록의 successor다. headless casting/intro/조사→미니게임→매뉴얼을 다시 실행하여 각각 0 failures, 활성 `tests` 범위 Python 503 PASS를 확인했다.
+
+failure-return의 verbose 종료를 재현하여 WAV와 PlaybackWAV 각 1개의 잔류를 확인했다. 기존 `tests/test_audio_lifecycle.gd`의 weak-reference 관측을 battle→result→본부→acknowledgement 각 장면에 적용하고 실제 retirement를 기다리도록 fixture만 보완했다. 1차 재실행 0 failures 및 종료 경고 없음. production 오디오를 강제 stop/null 처리하거나 엔진 전체 누수를 고쳤다고 주장하지 않는다. 이전 종료 경고 기록은 실패 증거로 보존한다.
+
+저장 schema·사건 진실·기존 승인 자산 bytes는 유지하며 신규 분리 시전 아트/현장 효과/Human 검수는 남아 있다. 이 변경은 branch 검증이며 main 병합/전체 게임 완료 증거가 아니다.
+
+## W06/W07 독립 검토 후 경계 교정 — 2026-09-14
+
+컷인 1차 독립 코드 검토에서 활성 상태의 버튼 skip 종료 프레임에 delta가 위험 시계로 들어가는 P2를 발견했다. 기존 paused-skip 테스트가 놓친 경로다. 활성 중복 skip→30초 delta→다음 0.125초 정상 적산 검사를 추가하여 RED2 재현 후 종료-frame latch로 GREEN. 자연 종료는 이미 소비한 프레임 뒤 latch를 해제한다. 실제 action/support/withdrawal handler도 이 경계를 따른다. 2차 읽기 전용 재검토는 추가 blocking finding 없음이며 테스트 실행 증거와 분리한다.
+
+조사 1차 독립 검토에서는 새 주변 살피기가 도입 선택을 건너뛰는 P2를 발견했다. METHOD_PICKER/RESULT에서만 표시하고 handler도 같은 조건을 검사한다. M01·M04의 실제 도입 선택→직원 후속 대사→다음 field node→조사 지점 신호 경로를 새 `tests/recovery/investigation_narrative_intro_test.gd`로 회귀했다. 2차 읽기 전용 검토는 추가 blocking finding 없음. 단서/사건/저장 데이터 변경 없음.
+
+GPU720에서 별도 footer expander가 method/intro 선택 영역을 나누어 선택지가 잘리는 문제를 RED4/RED2로 재현했다. 선택 화면에서는 spacer를 접고 짧은 본문의 불필요한 최소 높이를 줄였으며, 이전 상황의 직원 대사는 method/result에서 숨기고 원래 상황으로 돌아가면 보존한다. 표준 세 method 선택지와 첫 도입 선택이 보이며, 긴 결과의 다음 조사 버튼도 화면 안에 있는 것을 검사했다. headless 배치 PASS만으로 GPU720 배치를 보증하지 않는 사례다.
+
+회귀 증거: 조사→미니게임→매뉴얼, M01 manual workbench/first-session sync, M04 manual workbench, 기존 HQ 복귀, M01/M04 intro PASS. intro 종료의 WAV/playback 경고는 기존 약한 참조 probe로 실제 retirement를 관측한 뒤 종료하도록 하여 해당 fixture에서 해소했다. 별도 failure-return 테스트의 앞선 종료 경고는 아직 재검증 전이다. 최신 명조/선택 배치 캡처는 `.artifacts/daily-case-20260912/narrative-latest-1280x720.png`, 1080은 최신 보정 재실행 후 파일을 확인한다. 정상 mouse/keyboard 전경 플레이·모든 장문·최종 아트/Human QA는 아직 별도다.
+
+현재 main은 fresh-fetch 결과 `c82291101bf0a2bb4d821a12bca9f14070ee2886`로 유지된다. 사용자 import/UID, 보존 worktree, 타 작업 PR, Base pin은 건드리지 않는다. 이번 코드/테스트와 기록만 명시적으로 묶어 통합하며 전체 게임 Goal/W03–W12 잔여는 계속 유지한다.
+
+## W07 시전 컷인 표시·시간 경계 1차 구현 — 2026-09-14
+
+사용자의 별도 보고 없이 계속 작업 지시에 따라 기존 지원 소비처에 `scripts/ui/recovery_casting_cut_in.gd`를 연결했다. 실제 support의 agent_id/agent_name/label과 기존 recovery_support 자산을 사용한다. 1.2초 등장→유지→퇴장, 독립 건너뛰기, 시전 중 행동/추가 지원/철수 차단, 현장 시계 및 전조 오디오 정지, 사용자 정지 보존, 종료 프레임의 시간 몰아넣기 방지를 구현했다. 효과는 기존 battle/GameState에서 한 번 적용하며 표시 완료/중복 스킵은 효과를 재적용하지 않는다. 마지막 지원으로 안정화 조건을 만족해도 컷인 종료 전에 결과 화면으로 넘어가지 않는다. Save schema/사건 의미/승인 자산 bytes는 변경하지 않았다.
+
+비교: 기존 대표 이미지 0.9초 표시(REPLACE_CONSUMER, 배우/행동/입력 경계 부족), 전체 영상 재생(REJECT, 전조·피해자 가림과 건너뛰기/상태 동기화 비용), 기존 자산+국소 표시 컴포넌트(ADAPT, 현재 단계 채택). Godot 공식 Control 문서의 anchors/mouse_filter와 기존 장면의 수동 delta/국소 정지를 재사용했다: https://docs.godotengine.org/en/stable/classes/class_control.html . 신규 프레임워크/유료 서비스 없음. 새 래스터나 참조 GIF 복제는 수행하지 않았다.
+
+검증: 시전 미존재/중첩 입력/시간 소모 RED3→GREEN; 오디오 경계 RED1→GREEN; 직원 상태 가림/넓은 skip RED2→GREEN; 정지 안내 RED1→GREEN. 실제 support 호출, 무효 재사용, 다른 직원 연속 시전, 명시적 정지, 중복 skip, 자연 종료, 마지막 안정화→결과 경계를 회귀했다. 마지막 안정화 검사는 state owner에 임계 직전 값을 설정하는 boundary fixture이며 정상 플레이 승리 증거가 아니다. GPU 시작 시 이미 끝난 cue에 의존하지 않도록 오디오 fixture는 실제 cue 재생을 확인한 뒤 정지를 검사한다.
+
+Vulkan 1280×720 및 전체화면의 정확한 1920×1080 캡처를 직접 열었다. 일반 창 1920×1080 요청은 실제 1920×1061로 제한되어 1080 증거에서 제외했다. 캡처는 `.artifacts/daily-case-20260912/casting-1280x720.png`와 `.artifacts/daily-case-20260912/casting-1920x1080.png`. 직원 목록 겹침과 skip 폭은 수정했다. 기존 배경 포함 지원 이미지의 사각형 합성, 현장 효과의 분리/시점 연계, 별도 모션 강도 설정, 보호 대상 위치 반응, 모든 직원/사건/F2/키보드 정상 입력 및 Human 시각 검수는 미완료다. W07 전체 완료가 아니다.
+
+회귀: casting/active/dual-clock/direct-lead/failure-return/save-retry 기능 assertion 통과. failure-return 종료에 ObjectDB 2개 경고가 남았으므로 clean runtime으로 묶지 않는다. `python -m pytest tests -q` 503 PASS. 잘못된 무범위 pytest 호출은 보존 worktree까지 수집하여 433 collection error였으며, 보존 파일을 지우지 않고 활성 tests 경로로 다시 실행했다. 이전 490은 다른 수집 방식의 기록이며 503과 같은 실행으로 소급하지 않는다.
+
+다음 안전 작업: W06 조사 레이아웃 후속 검증/결과 영역, W07 분리 자산·효과/접근성 연결, 위 종료 경고 owner 추적. 조사 1차 미커밋 수정과 사용자 import/UID 변경은 보존한다. Base 승격은 NO_NEW_REUSE_LEARNING. 전체 Goal 유지, main/Human/출시 완료 미선언.
+
+## W06 서사형 조사 1차 구현 / W07 시전 컷인 요구 — 2026-09-14
+
+사용자의 작업재개에 따라 앞선 수정 계획의 표시층 구현을 시작했다. 기존 MethodColumn을 DialogueDock 본문 아래로 연결하고, METHOD_PICKER에서 별도 지점 패널을 접었다. 선택 제목은 기존 summary 원문, 담당/한국어 능력/난이도는 보조 행을 사용한다. 사건 ID·수치·단서·저장·매뉴얼 소비처는 바꾸지 않았다. 매뉴얼은 하단 도구행으로 이동, 본문은 저장소 명조체, 선택지는 어두운 금색 강조/좌측 정렬을 적용했다. 인물 대사를 버리던 `_present_support_lines`는 기존 원문의 화자와 대사를 실제 반응 영역으로 출력하도록 복구했다. 새 사건 대사는 작성하지 않았다.
+
+검증: 동일 서사 영역/별도 패널 접기/영문 수치 제목 제거 RED10→GREEN0. 기존 오현 대사와 반응 영역 표시 RED2→GREEN0. 조사→미니게임→매뉴얼 통합 재검사 0 failures, M04 workbench 통합 PASS, Python490 PASS. Handoff의 backtick 경로에 함수명을 붙인 표기 때문에 Python1 실패가 있었으며 경로/함수 표기를 분리해 재실행 PASS. 테스트만 통과시켜 UI가 완성됐다고 하지 않는다.
+
+Windows1280×720 실제 클릭에서 본문 아래 세 선택지와 우측하단 매뉴얼을 캡처했다(`.artifacts/daily-case-20260912/narrative-method-720.png`). 이 캡처는 명조/금색/인물 대사 후속 수정 전 중간 상태다. 최신 후속 수정의 720p/1080p·M01·장문·키보드·결과 상세 접기 검증과 인물 중심 연출 보강은 계속 필요하다. 공식 화산의 딸 Steam 갤러리 영상에서 얼굴/이름표와 결합된 하단 대화창도 실제 관찰했으나 전체 게임 플레이 검증은 아니다. 전체 서사 UI 최종 완료/사용자 만족은 미선언.
+
+추가 최신 사용자 요구: 회수의 시전 컷인. 제공 GIF는 510×287,172frames,합계6880ms이며 첨부된 첫 장면에서 좌측 시전자와 중앙 보호막/현장 효과가 보인다. 전체 프레임별 choreography 분석은 아직 NOT_RUN. 현재 `scripts/scenes/battle_scene.gd`의 `_show_representative_cut_in`은 대표 이미지를 0.9초 보이는 방식이고 actor는 기본 주인공/첫 요원이다. 이것은 행동별 실제 시전자·시전→효과 연쇄 요구에 미달한다. W07에서 실제 행동자/대상/단계 연결과 clock/input 중복 방지부터 test-first로 확장한다. 큰 이미지 재생만 구현하거나 대표 교체 버튼을 복원하지 않는다. 새 래스터는 현재 Visual Bible/승인 consumer 감사 후 크로마키→alpha 제거/잔색 QA를 적용한다.
+
+다음 순서: 최신 조사 UI 양 해상도/입력·기존 M01 회귀→조사 서술/결과 표현 보강→회수 cut-in 계약과 상태별 자산→원래 W03 CCTV 성공/회수 경계. 기존 전체 목표/발행 증빙집/사용자 변경·타 PR는 보존한다. 큰 통합/main merge/최종 아트/Human/출시는 아직 완료가 아니다.
+
+## W06 우선순위 변경 · 서사형 조사 화면 — 2026-09-14
+
+사용자 최신 지시: 조사창/조사 전체 UI를 활협전·화산의 딸 같은 텍스트 RPG 감각으로 재구성. 목표는 버튼 색만 바꾸는 것이 아니라 현장 서술→행동 선택→관측 결과의 연속성을 만드는 것이다. Work Mode REVIEW→PLAN, urban-legend-game-workflow/UI_PRESENTATION와 UX·UI architecture/pattern-selection을 사용했다. 새 UI 코드는 아직 수정하지 않았다.
+
+### 현재 실제 근거와 비교
+
+기준 branch 3e540309637cb038521a4d0ce287a77250c0f796, fetch한 origin/main c82291101bf0a2bb4d821a12bca9f14070ee2886. 열린 #359/#360 continuation와 별도 #361/#287/#231을 읽었으며 타 PR mutation/merge 없음. 프로젝트 Godot editor10052, 새 QA runtime19584에서 메인→준비→M04→첫 서술 선택→조사 지점→우산 관찰을 실제 클릭하여 단서1/3을 확인했다. 구형 잠금 안내 교정의 초기/열린 지점 중립 안내가 보였으나 전체 UI 개선 완료는 아니다. CCTV 성공 경로는 사용자 우선순위 변경으로 아직 미검증이다.
+
+- 실제 consumer: `scenes/investigation_scene.tscn`의 PointMethodDock/DialogueDock/ResultToast, `scripts/scenes/investigation_scene.gd`의 `_show_method_options`, `_set_ui_mode`, `_show_inline_result`. 같은 상황을 여러 Label에 반복하며 선택 제목에 영문 능력치·난이도가 노출된다. 지점/방법을 왼쪽, 서술/결과를 오른쪽으로 분리하여 문맥과 행동이 떨어진다.
+- source_and_evidence: 활협전 공식 https://store.steampowered.com/app/1859910/?l=koreana 와 화산의 딸 공식 https://store.steampowered.com/app/1669980/?l=koreana 를 읽었다. 웹 도구의 AVIF 열람 실패 후 브라우저로 공식 이미지 직접 열람. 활협전 extras/80d7598b8f9e8554392bbee26069ba98.avif의 인물·현장·판정 겹침, ea6a7bb6872862e2bbb26bc962502307.avif의 주제별 상태 화면을 관찰했다. 화산의 딸 공식 ss_1dc6d3ee6487763f0d293b69ed2bf1687340b229.1920x1080.jpg에서 넓은 장소/인물과 가장자리 상태 UI를 관찰했다. 두 게임 직접 플레이·전체 대화 상태별 분석은 NOT_RUN이다.
+- observed_pattern: 인물/장소를 주요 무대로 사용하고, 별도 상세 정보는 주제별 표면에 둔다. 공식 소개의 선택/인물 관계 중시와 실제 화면의 공간 비중을 함께 참고한다. 세부 대화 타이밍/모션은 위 정지화면만으로 확정하지 않는다.
+- ADAPT: 현장/인물 무대와 문맥 중심 선택 흐름. ADOPT: 현재 기록/매뉴얼 drawer와 기존 상태·signal 재사용. REJECT: 무협/중세 색감·자산 복제, 달력/육성 도입, 루메의 정답 발설, 수치/위험 정보 완전 은폐. benchmark_preflight_state: PARTIAL_VISUAL_RESEARCH; 핵심 대화/선택 화면을 더 확인한 뒤 배치 구현 확정.
+
+### 대안과 권장 수정 계획
+
+1. 기존 좌우 패널의 테두리/간격만 조정: 비용은 작지만 문맥과 행동 분리를 해결하지 못함 — REJECT.
+2. 화면 전체를 스크롤 텍스트 기록으로 전환: 기록 재탐색은 좋으나 현장/인물 시선과 사용자가 요구한 게임 감각이 약해짐 — DEFER.
+3. 현장 무대 + 하나의 서사·선택 영역 + 필요할 때 여는 기록 도구: 기존 상태/자산/신호를 재사용하며 읽기와 행동을 연결 — RECOMMENDED, 최종 배치 미검증.
+
+실행 순서: (a) 비교 게임의 대화/선택 상태 보강 관찰과 현재 720p baseline 캡처 (b) FIELD_DIALOGUE/FIELD_CHOICES/METHOD_PICKER/RESULT/POINT_PICKER 상태별 한 자리 읽기 흐름과 focus 계약 (c) 좌측 상시 방법 패널 대신 서술 인접 선택지, 결과는 같은 영역에서 교체, 지점 탐색은 접고 다시 열기 (d) 원문 summary를 선택 본문으로 활용하고 능력치·난이도·담당자는 선택 전 확인 가능한 보조 정보로 분리 (e) 기존 반응 데이터만 인물 대사로 표시, 없는 대사는 발명하지 않음 (f) 매뉴얼/기록 진입·복귀와 미니게임/회수 연결 회귀 (g) 1280×720/1920×1080 실제 클릭·키보드·한글 장문·잘림 검수.
+
+유지할 매뉴얼은 별도 추리 작업창이며 조사 서사창으로 평탄화하지 않는다. 기본 화면의 매뉴얼 진입은 우측하단 도구로 계획한다. 배경/인물/루메는 기존 승인 consumer를 먼저 감사하며 필요한 신규 분리 자산만 크로마키→배경 제거→alpha QA 경로로 제작한다. 신뢰 상태/비용/위험은 숨기지 않고 보조 계층에서 접근 가능하게 한다. 현재 UI와 원본 이미지를 삭제하지 않았고 발행 증빙 PDF v1.0도 보존했다.
+
+검증 상한: source/공식 소개와 일부 공식 화면 조사 + 기존 UI 실제 입력. 새 UI implementation/runtime/Human PASS 없음. 다음 작업은 위 (a)~(g), 기존 W03 CCTV 성공과 W04/W05 경계는 뒤에 이어서 완료한다. Base 승격 없음; reusable lesson은 아직 후보이며 프로젝트 한 번의 디자인 판단을 공용 강제 규칙으로 승격하지 않는다.
+
 ## W06 조사 지점의 조건 안내 교정 — 2026-09-14
 
 dab9a89/current source와 origin/main c82291101bf0a2bb4d821a12bca9f14070ee2886을 fresh-read했다. 이전 runtime finding인 '획득 후에도 미확보 안내'를 `_add_investigation_point`까지 추적했다. summary가 없는 열린 지점이 locked_text를 fallback으로 사용한 것이 원인이다. 기존 저승역 compact 경로는 열린 상태에서 잠김 설명을 사용하지 않으므로 이 분리 패턴을 재사용했다.
