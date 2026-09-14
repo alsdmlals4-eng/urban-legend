@@ -32,6 +32,7 @@ var _cancel_button: Button
 var _pending_confirm: Callable
 var _pending_cancel: Callable
 var _previous_focus: Control
+var _manual_previous_focus: Control
 
 
 func _ready() -> void:
@@ -594,10 +595,18 @@ func _apply_mode_visibility() -> void:
 
 
 func _toggle_manual_detail() -> void:
+	if not _manual_detail_panel.visible:
+		_manual_previous_focus = get_viewport().gui_get_focus_owner()
 	_manual_detail_panel.visible = not _manual_detail_panel.visible
 	if _manual_detail_panel.visible:
 		_notify_field_pause()
 		(_manual_detail_panel.get_node("ManualContent/ManualText") as RichTextLabel).grab_focus()
+	else:
+		if is_instance_valid(_manual_previous_focus) and _manual_previous_focus.is_visible_in_tree() and _manual_previous_focus.focus_mode != Control.FOCUS_NONE and not (_manual_previous_focus is BaseButton and _manual_previous_focus.disabled):
+			_manual_previous_focus.grab_focus()
+		else:
+			_detail_toggle_button.grab_focus()
+		_manual_previous_focus = null
 
 
 func _toggle_detail_stack() -> void:

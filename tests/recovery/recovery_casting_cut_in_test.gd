@@ -67,6 +67,8 @@ func run() -> void:
 			battle.get_node("CanonV2OperationOverlay").call("_toggle_manual_detail")
 			await frames()
 			check(not bool(battle.call("_field_reference_open")), "manual can close during casting")
+			check(root.gui_get_focus_owner() == cut_in.find_child("SkipCastButton", true, false), "closing manual restores the casting control that opened it")
+			check(bool(battle.get("_field_paused")), "closing manual never silently resumes field time")
 			battle.call("_set_field_paused", false)
 			battle.call("_process", 0.0)
 			check(root.get_visible_rect().encloses(cut_in.get_global_rect()), "casting stays inside viewport")

@@ -69,6 +69,10 @@ func _run() -> void:
 	_expect(recovery_support_panel != null and termination_preview_panel != null and recovery_support_panel.get_index() < termination_preview_panel.get_index(), "recovery support must stay before termination detail so its state remains on-screen at 1280×720")
 	_expect(overlay.get_node_or_null("SafeArea/RootLayout/RuleStripPanel/RuleStrip/ManualToggleButton") == null, "manual access must not occupy the recovery header")
 	_expect(overlay.has_method("open_manual_from_quick_action"), "lower-right manual quick action must be exposed")
+	var prior_action := Button.new()
+	prior_action.text = "현장 행동"
+	root.add_child(prior_action)
+	prior_action.grab_focus()
 	overlay.call("open_manual_from_quick_action")
 	await process_frame
 	var manual_panel := overlay.get_node_or_null("ManualDetailPanel") as Control
@@ -79,6 +83,21 @@ func _run() -> void:
 		manual_close.emit_signal("pressed")
 		await process_frame
 		_expect(manual_panel != null and not manual_panel.visible, "manual close control must hide the field-reference panel")
+		_expect(root.gui_get_focus_owner() == prior_action, "manual close restores prior field control")
+		for invalidation in ["hidden", "disabled", "freed"]:
+			prior_action.show()
+			prior_action.disabled = false
+			prior_action.grab_focus()
+			overlay.open_manual_from_quick_action()
+			if invalidation == "hidden":
+				prior_action.hide()
+			elif invalidation == "disabled":
+				prior_action.disabled = true
+			else:
+				prior_action.queue_free()
+				await process_frame
+			manual_close.pressed.emit()
+			_expect(root.gui_get_focus_owner() == overlay.get_node("SafeArea/RootLayout/RuleStripPanel/RuleStrip/DetailToggleButton"), "invalid prior focus falls back safely: " + invalidation)
 	var summary_label := overlay.get_node_or_null("SafeArea/RootLayout/RuleStripPanel/RuleStrip/RuleSummaryLabel") as Label
 	_expect(summary_label != null and not summary_label.text.is_empty(), "rule strip lacks text summary")
 	var detail_toggle := overlay.get_node_or_null("SafeArea/RootLayout/RuleStripPanel/RuleStrip/DetailToggleButton") as Button

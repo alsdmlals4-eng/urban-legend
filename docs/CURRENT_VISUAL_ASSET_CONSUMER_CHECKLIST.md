@@ -101,7 +101,9 @@ actual consumer
 
 - `TeamStatusChip` texture → current expression/cutout source.
 - `RepresentativeVisual` short cut-in → current expression texture.
-- agent support trigger → 해당 agent `recovery_support.png`가 존재하면 약 0.9초 Cut-in으로 소비된다.
+- agent support trigger → `scripts/ui/recovery_casting_cut_in.gd`의 `CastImage`가 실제 지원자의 `recovery_support.png`를 1.2초 등장/유지/퇴장으로 소비한다. `RepresentativeVisual`은 이 지원 경로의 owner가 아니다. 시전 caption/skip은 live Control이며 시전 중 현장 시간과 입력 경계는 battle owner가 소유한다. 최신 경계 검증은 `docs/CURRENT_HANDOFF.md` W07을 따른다.
+- 강이준의 현행 지원 이미지를 2026-09-14 직접 열어 인물·역 배경·보호 효과가 한 장에 합쳐져 있음을 확인했다. 실제 현장에 분리 합성하는 신규 요구에는 `REPLACE_REQUIRED`다. 현재 파일은 보존하고 **인물 분리 후보 / 현장 보호 효과 / native caption**을 별도 소비 단위로 준비한다. 아직 대체 후보 생성·승인·제품 승격은 하지 않았다.
+- MVP043 collection의 실제 catalog 소비와 root manifest의 제품 승인/권리 등재는 구별한다. root manifest에서 이 collection의 동일 경로 승격 증거를 이번 읽기로 확인하지 못했으므로 파일 존재나 legacy 명칭으로 최종 자산 승인을 추정하지 않는다.
 
 ### Current production collection
 
@@ -129,7 +131,7 @@ legacy `get_agent_expression()` / `AGENT_ASSETS` / `AGENT_CUTOUT_ASSETS`는 현�
 
 ## 6. Procedure guide consumer
 
-`LogGuide`는 `기록관 아카 · 절차 통신`이라는 text-first 절차 패널이다. 대사 순서,
+`LogGuide`의 현재 `scripts/ui/log_guide.gd` 표기는 `루메 · 괴이기록국 기록 보조`다. 대사 순서,
 접속 시그니처, 상태색만 제공하며 portrait consumer는 없다. 기존 `assets/log/log_*.png`는
 실제 소비처가 0임을 readback한 뒤 제거했다.
 

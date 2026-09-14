@@ -1,5 +1,13 @@
 # 괴이기록국 Current Handoff
 
+## W07 매뉴얼 복귀와 분리 자산 소비처 감사 — 2026-09-14
+
+이전 goal turn은 `69ed93c1cd5b9152d0609f7b0d0a8b37b77e12c6` branch/remote 동일 readback을 남긴 PROGRESS다. 매뉴얼 종료의 focus 유실을 casting 통합 RED1로 재현했다. 기존 anomaly manual drawer의 이전 focus 보존 패턴을 operation overlay에 적용했다. 유효한 이전 Control로 돌아가고 hidden/disabled/freed이면 기존 작전 상태 버튼을 fallback한다. confirmation focus와 별도 변수로 보관하여 서로 덮어쓰지 않는다. 현장 정지는 자동 해제하지 않는다. overlay fallback 3종, headless/GPU720 casting, active scene, Python503 PASS.
+
+새 이미지 생성 전 CURRENT_VISUAL_BIBLE/Visual Anchor/lock packet/루트 manifest/실제 catalog와 강이준 지원 PNG를 대조했다. 현재 PNG는 인물·배경·효과가 합성된 이미지이며 분리 시전 소비처에 불충분하다. 관련 checklist의 구형 0.9초/대표 이미지 설명을 현재 1.2초 실제 지원자 consumer로 교정했고, LogGuide 현재 루메 표기도 readback했다. MVP043 경로의 root manifest 승인 증거는 미확인으로 유지한다. 원본을 삭제·교체·자동 승인하지 않았다.
+
+분리 자산의 다음 준비는 실제 GIF 전체 프레임 전개 확인, Aseprite 자동 선택 owner 확인, 강이준 인물/보호 효과의 상태·anchor·크로마키 규격 brief다. 프로젝트 SOFT_ANIME_NOIR_LOCKED를 픽셀로 바꾸지 않는다. 이미지 스킬은 읽었지만 이번에는 생성/편집을 실행하지 않았다. 신규 Base 계약 채택·공용 승격·최종 아트/Human 완료 없음.
+
 ## W07 시전 키보드·매뉴얼 경계 — 2026-09-14
 
 이전 goal turn은 실제 구현·검증·원격 동일 커밋 확인이 있는 PROGRESS다. fresh source의 기존 focus owner와 시전 consumer를 비교했다. 기본 배경 버튼 focus 유지(REJECT, 시전 중 차단된 버튼에 Enter가 소비됨), 별도 전역 단축키 계층(REJECT, 중복 입력/참조창 충돌), 기존 decision focus dispatcher 재사용(ADOPT)을 검토하고 마지막 경로를 적용했다.
