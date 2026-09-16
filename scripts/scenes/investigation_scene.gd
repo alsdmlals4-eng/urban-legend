@@ -56,6 +56,9 @@ var _record_button: Button
 var _learning_list: VBoxContainer
 var _field_node: Dictionary = {}
 var _field_lines: Array = []
+var _reading_pages: Array[Dictionary] = []
+var _reading_page_index := 0
+var _reading_after_choice := false
 var _field_speaker_label: Label
 var _field_dialogue_label: Label
 var _field_next_button: Button
@@ -100,6 +103,8 @@ var _reasoning_definition: Dictionary = {}
 var _case_dialog: AcceptDialog
 var _team_status_popover: TeamStatusPopover
 var _inline_result_returns_to_points := false
+var _result_pages: Array[String] = []
+var _result_page_index := 0
 
 
 func _ready() -> void:
@@ -237,15 +242,24 @@ func _build_ui() -> void:
 
 
 func _configure_narrative_surface() -> void:
+	var backdrop := ColorRect.new()
+	backdrop.name = "ReadingBackdrop"
+	backdrop.color = Color("080d11")
+	backdrop.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(backdrop)
+	move_child(backdrop, 0)
+	backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	# Presentation only: the original method IDs, handlers and state owner remain intact.
 	var content := _dialogue_dock.get_node("Content") as VBoxContainer
 	_method_column.reparent(content)
 	content.move_child(_method_column, 3)
 	_method_column.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	(_method_column.get_node("MethodScroll") as ScrollContainer).follow_focus = true
+	(%FieldChoiceScroll as ScrollContainer).follow_focus = true
 	_method_title_label.visible = false
 	_method_result_label.visible = false
 	_field_dialogue_label.add_theme_font_size_override("font_size", 20)
-	_field_dialogue_label.custom_minimum_size.y = 54.0
+	_field_dialogue_label.custom_minimum_size.y = 0.0
 	_field_dialogue_label.add_theme_constant_override("line_spacing", 8)
 	var serif := load("res://assets/fonts/noto/NotoSerifKR-VF.ttf") as Font
 	_field_dialogue_label.add_theme_font_override("font", serif)
@@ -253,7 +267,7 @@ func _configure_narrative_surface() -> void:
 	_field_speaker_label.add_theme_color_override("font_color", Color("d6bd8e"))
 	_field_speaker_label.add_theme_font_size_override("font_size", 22)
 	_result_label.add_theme_font_size_override("font_size", 18)
-	content.add_theme_constant_override("separation", 14)
+	content.add_theme_constant_override("separation", 6)
 	_location_preview.visible = false
 	var tools_row := HBoxContainer.new()
 	tools_row.name = "NarrativeTools"
@@ -270,14 +284,24 @@ func _configure_narrative_surface() -> void:
 	footer_space.name = "NarrativeFooterSpace"
 	footer_space.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	content.add_child(footer_space)
-	content.move_child(footer_space, tools_row.get_index())
+	content.move_child(footer_space, _field_next_button.get_index())
+	_field_next_button.size_flags_horizontal = Control.SIZE_SHRINK_END
+	_field_next_button.custom_minimum_size = Vector2(180, 44)
 	var main_column := _safe_frame.get_node("MainColumn") as VBoxContainer
 	var breathing_room := Control.new()
 	breathing_room.name = "NarrativeStageSpace"
-	breathing_room.custom_minimum_size.y = 120.0
+	breathing_room.custom_minimum_size.y = 300.0
+	breathing_room.clip_contents = true
 	breathing_room.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	main_column.add_child(breathing_room)
 	main_column.move_child(breathing_room, main_column.get_node("Workspace").get_index())
+	# The scene has its own rectangle, not a background underneath the reading dock.
+	var art := get_node("ArtLayer") as Control
+	art.reparent(breathing_room)
+	art.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	var background := art.get_node("Background") as TextureRect
+	background.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	art.get_node("Shade").visible = false
 	_point_method_dock.custom_minimum_size.x = 300.0
 	_dialogue_dock.size_flags_stretch_ratio = 0.7
 	%LogUtilityButton.text = "루메 안내"
@@ -675,8 +699,62 @@ func _present_situation_and_choices() -> void:
 	_field_dialogue_label.visible = true
 	_field_dialogue_label.text = String(_field_node.get("title", GameState.get_current_episode_title()))
 	_field_next_button.visible = false
-	_present_support_lines(_field_lines)
-	_show_field_choices()
+	_begin_reading(_field_lines, false)
+
+
+func _begin_reading(lines: Array, after_choice: bool) -> void:
+	_reading_pages.clear()
+	_reading_page_index = 0
+	_reading_after_choice = after_choice
+	for value in lines:
+		if not value is Dictionary:
+			continue
+		var remaining := String(value.get("text", ""))
+		while not remaining.is_empty():
+			var count := mini(100, remaining.length())
+			if count < remaining.length():
+				var boundary := remaining.substr(0, count).rfind(" ")
+				if boundary >= 50:
+					count = boundary + 1
+			var page: Dictionary = value.duplicate(true)
+			page["text"] = remaining.left(count)
+			_reading_pages.append(page)
+			remaining = remaining.substr(count)
+	_clear_children(_agent_reaction_box)
+	_log_guide.visible = false
+	if _reading_pages.is_empty():
+		_finish_reading()
+	else:
+		_show_reading_page()
+
+
+func _show_reading_page() -> void:
+	_set_ui_mode("FIELD_DIALOGUE")
+	var page := _reading_pages[_reading_page_index]
+	var speaker := String(page.get("speaker", "상황"))
+	_field_speaker_label.text = "루메" if speaker == "로그" else speaker
+	_field_dialogue_label.text = String(page.get("text", ""))
+	var tutorial_id := String(page.get("tutorial_id", ""))
+	if not tutorial_id.is_empty():
+		GameState.claim_log_tutorial(tutorial_id)
+	_field_next_button.text = "계속 읽기  %d / %d" % [_reading_page_index + 1, _reading_pages.size()]
+	if _reading_page_index == _reading_pages.size() - 1:
+		_field_next_button.text = "다음 조사" if _reading_after_choice else "행동 선택"
+	_field_next_button.visible = true
+	_field_next_button.call_deferred("grab_focus")
+
+
+func _finish_reading() -> void:
+	_reading_pages.clear()
+	_field_next_button.visible = false
+	if _reading_after_choice and not _pending_next_field_node_id.is_empty():
+		GameState.set_current_field_node_id(_pending_next_field_node_id)
+		GameState.save_game()
+		_show_current_field_node()
+	else:
+		_field_speaker_label.text = "상황"
+		_field_dialogue_label.text = String(_field_node.get("title", ""))
+		_show_field_choices()
 
 
 func _present_support_lines(lines: Array) -> void:
@@ -750,6 +828,15 @@ func _make_agent_reaction_row(agent: Dictionary, text: String) -> HBoxContainer:
 
 
 func _advance_field_dialogue() -> void:
+	if _mode_label.text != "FIELD_DIALOGUE":
+		return
+	if not _reading_pages.is_empty():
+		_reading_page_index += 1
+		if _reading_page_index < _reading_pages.size():
+			_show_reading_page()
+		else:
+			_finish_reading()
+		return
 	if _pending_next_field_node_id.is_empty():
 		return
 	GameState.set_current_field_node_id(_pending_next_field_node_id)
@@ -814,12 +901,7 @@ func _select_field_choice(choice: Dictionary) -> void:
 	_pending_next_field_node_id = String(result.get("next_field_node_id", ""))
 	_field_speaker_label.text = "선택 결과"
 	_field_dialogue_label.text = "‘%s’를 선택했습니다. 현장 기록을 확인합니다." % String(choice.get("label", "행동"))
-	_present_support_lines(_field_lines)
-	_set_ui_mode("FIELD_DIALOGUE")
-	_field_next_button.text = "다음 조사"
-	_field_next_button.visible = not _pending_next_field_node_id.is_empty()
-	if _field_next_button.visible:
-		_field_next_button.call_deferred("grab_focus")
+	_begin_reading(_field_lines, true)
 	_refresh_case_status()
 	_refresh_manual_drawer(true)
 
@@ -1379,6 +1461,9 @@ func _hide_method_panel() -> void:
 
 
 func _set_ui_mode(mode: String) -> void:
+	if mode != "FIELD_DIALOGUE":
+		_reading_pages.clear()
+		_field_next_button.visible = false
 	if _mode_label != null:
 		_mode_label.text = mode
 	var choice_scroll := get_node_or_null("%FieldChoiceScroll") as ScrollContainer
@@ -1632,12 +1717,45 @@ func _focus_first_enabled_action(container: Node) -> void:
 
 func _show_inline_result(return_to_points: bool) -> void:
 	_inline_result_returns_to_points = return_to_points
+	_result_pages.clear()
+	_result_page_index = 0
+	var remaining := _result_label.text
+	while not remaining.is_empty():
+		var count := mini(140, remaining.length())
+		if count < remaining.length():
+			var boundary := remaining.substr(0, count).rfind(" ")
+			if boundary >= 70:
+				count = boundary + 1
+		_result_pages.append(remaining.left(count))
+		remaining = remaining.substr(count)
+	if not _result_pages.is_empty():
+		_result_label.text = _result_pages[0]
 	_result_toast.visible = true
 	%ResultNextButton.visible = return_to_points
 	%ResultCloseButton.visible = not return_to_points
+	_update_result_page_action()
+
+
+func _update_result_page_action() -> void:
+	var action: Button = %ResultNextButton if _inline_result_returns_to_points else %ResultCloseButton
+	var more := _result_page_index + 1 < _result_pages.size()
+	action.text = "계속 읽기  %d / %d" % [_result_page_index + 1, _result_pages.size()] if more else ("다음 조사" if _inline_result_returns_to_points else "닫기")
+	call_deferred("_focus_result_page_action")
+
+
+func _focus_result_page_action() -> void:
+	if not is_inside_tree() or not _result_toast.is_visible_in_tree():
+		return
+	var action: Button = %ResultNextButton if _inline_result_returns_to_points else %ResultCloseButton
+	action.grab_focus()
 
 
 func _close_inline_result() -> void:
+	if _result_page_index + 1 < _result_pages.size():
+		_result_page_index += 1
+		_result_label.text = _result_pages[_result_page_index]
+		_update_result_page_action()
+		return
 	_result_toast.visible = false
 	if _inline_result_returns_to_points:
 		_return_to_point_picker()

@@ -54,7 +54,12 @@ func run() -> void:
 			check(not current_scene.get("_agent_reaction_box").is_visible_in_tree(), "previous situation dialogue does not crowd the selected investigation method")
 			for action in choices.find_children("ActionButton", "Button", true, false):
 				check(not action.text.contains("능력치:") and not action.text.contains("observation"), "narrative choice title does not expose raw stat identifiers")
-				check(choices.get_parent().get_global_rect().encloses(action.get_global_rect()), "standard three-choice method fits its available reading area")
+				choices.get_parent().ensure_control_visible(action)
+				await process_frame
+				await process_frame
+				check(choices.get_parent().get_global_rect().encloses(action.get_global_rect()), "each method can be read inside the scrolling choice area")
+			choices.get_parent().scroll_vertical = 0
+			await process_frame
 			check(choices.get_child_count() > 0, "real inspection exposes method choices")
 			if choices.get_child_count() == 0:
 				break
@@ -73,7 +78,11 @@ func run() -> void:
 			check(next_point.is_visible_in_tree(), "method result exposes the refresh-and-return action")
 			check(root.get_visible_rect().encloses(next_point.get_global_rect()), "long investigation result keeps next investigation on screen")
 			if next_point.is_visible_in_tree():
-				next_point.pressed.emit()
+				for page_index in range(40):
+					if not next_point.is_visible_in_tree():
+						break
+					next_point.pressed.emit()
+					await process_frame
 			else:
 				current_scene.find_child("ResultCloseButton", true, false).pressed.emit()
 			await process_frame

@@ -1,5 +1,17 @@
 # 괴이기록국 Current Handoff
 
+## 2026-09-16 날짜별 작업 요약 — 조사 읽기 영역 / 기존 증빙집 갱신
+
+최신 사용자 지시 범위는 장면과 지문 분리, 짧은 순차 읽기, 기존 월간 일지 누적 갱신 및 GitHub 동기화다. PLAN→BUILD→REVIEW, urban-legend-game-workflow/UI_PRESENTATION 및 test-first 검증을 사용했다. 이전 W06 표시 구조를 첫 비교 기준으로 확인하고, Godot 공식 Container 문서(https://docs.godotengine.org/en/stable/tutorials/ui/gui_containers.html)의 부모 레이아웃 책임을 재확인했다. 배경 위 overlay 유지(REJECT: 가림 지속), 장면/지문 별도 전체 화면 전환(REJECT: 관찰 맥락 상실), 기존 VBox의 장면 전용 영역과 읽기 영역 분리(ADOPT)를 비교했다. 새 UI framework·저장 필드·이미지는 추가하지 않았다.
+
+실제 변경: 기존 ArtLayer를 전용 장면 영역으로 이동하고 종횡비를 유지해 전체 그림을 표시한다. 도입/후속 대사는 최대 100자씩 원문 보존 분할하며 끝까지 읽은 뒤 행동 선택/다음 조사로 연결한다. 장문 결과도 분할한다. 선택지는 하단 영역에서 스크롤/키보드로 접근하고, 매뉴얼은 우측 하단에 유지한다. 현행 사건 원문/수치/기존 자산 bytes는 보호했다. 루메 안내 화자 표기를 유지한다.
+
+검증/교정: 겹침/도입 순서 RED4→GREEN. 실제 Vulkan 720p에서 긴 결과 다음 버튼이 화면 밖으로 밀리는 것을 발견해 결과 paging으로 교정했다. 각 선택지의 scroll 접근, M01/M04 Enter→순차 읽기→실제 조사 지점 진입, 장문 문자 무손실을 검사한다. 720p/1080p 조사→미니게임→매뉴얼 및 도입 검증 각각 0 failures. Python 504 PASS. 1차 결과 focus 예약이 씬 종료 후 실행되는 경고는 alive/visible guard로 교정했고 1080p 재실행은 오류 없이 통과했다. 2차 전체 diff/상태 검토에서 사건 데이터/저장 변경 없음과 UI 상태별 queue 폐기를 확인했다.
+
+월간 보고서는 기존 9월 PDF와 기존 index를 갱신하며 과거 commit을 유지/중복 제거한다. 날짜별 요약·이전 출력 hash·갱신 사유를 같은 index에 보존한다. 새 기획 정본/매일 새 일지 생성은 하지 않는다. PDF는 9페이지 파생 보고서이며 원본 프롬프트/계정/영수증 미확보와 Human 미검증을 유지한다. 상세 발행 hash는 기존 `docs/evidence/2026-09/evidence-index-v1.0.json`을 읽는다.
+
+유지/제외: Base 9.4.4 pin, 사용자 import/UID, 보존 worktree, 타 PR, 기존 승인 자산. 삭제 없음. 롤백은 이번 명시 파일 변경만 Git으로 되돌리는 범위이며 사용자 변경을 reset하지 않는다. 재사용 학습은 프로젝트 읽기 레이아웃/누적 증빙 기록에 반영했고 신규 Base 승격은 없다. 전체 게임/최종 아트/Human/출시 완료는 선언하지 않는다. 다음 잔여는 원래 W03~W12 계약이며 이번 사용자의 '일단 마무리'에 따라 별도 확장하지 않는다.
+
 ## W07 컷인 실제 참고 분석·후보 검수 — 2026-09-14
 
 이전 turn은 `4257e2333de512cff4fb9c268f37459424606955`의 구현/검증/remote readback이 있는 PROGRESS. 이번에는 GIF172프레임을 decode하여6880ms와 hash를 확인하고 전 구간의12시점 contact sheet를 직접 읽었다. 단일 긴 시전이 아니라 여러 배우·효과의 몽타주다. 프레임별 모든 전환을 검수했다는 뜻은 아니다. 분석 파일은 `.artifacts/daily-case-20260912/inspect_cast_reference.py`와 `casting-reference-contact.png`, 상세 규격은 `docs/visual/RECOVERY_CASTING_SEPARATION_20260914.md`다.

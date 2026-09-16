@@ -28,29 +28,36 @@ def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def merge_records(previous, added):
+    records = {row["sha"]: row for row in added}
+    records.update({row["sha"]: row for row in previous})
+    return sorted(records.values(), key=lambda row: (row["commit_date"], row["sha"]))
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", required=True)
     parser.add_argument("--revision", default="v1.0")
     args = parser.parse_args()
     out = Path(args.output).resolve()
-    if out.exists():
-        raise SystemExit("Refusing to overwrite an issued evidence PDF; use a new revision.")
     now = datetime.now().astimezone()
     issued = now.isoformat(timespec="seconds")
     evidence = ROOT / "docs/evidence/2026-09"
     if not args.revision.replace(".", "").isalnum():
         raise SystemExit("Invalid revision")
     index_path = evidence / ("evidence-index-" + args.revision + ".json")
-    if index_path.exists():
-        raise SystemExit("Refusing to overwrite an issued evidence index; use a new revision.")
+    previous = json.loads(index_path.read_text(encoding="utf-8")) if index_path.exists() else {}
     evidence.mkdir(parents=True, exist_ok=True)
     out.parent.mkdir(parents=True, exist_ok=True)
     rows = []
-    for line in git("log", "-10", "--format=%H|%aI|%cI|%s").splitlines():
+    revision_range = previous.get("source_head", "")
+    history = [revision_range + "..HEAD"] if revision_range else ["-10"]
+    for line in git("log", *history, "--format=%H|%aI|%cI|%s").splitlines():
+        if not line:
+            continue
         sha, author_date, commit_date, subject = line.split("|", 3)
         rows.append(dict(sha=sha, author_date=author_date, commit_date=commit_date, subject=subject))
-    rows.reverse()
+    rows = merge_records(previous.get("commits", []), rows)
     source_paths = ["docs/CURRENT_HANDOFF.md", "docs/CURRENT_DECISION_OVERLAY.md",
                     "docs/superpowers/specs/2026-09-14-remaining-implementation-contract.md"]
     visuals = [
@@ -68,9 +75,20 @@ def main():
                     missing=["Original prompt screenshots", "Account identification", "Payment receipts", "Association template and original agreement review"],
                     input_excerpt="작업재개,그리고 앞으로 이미지 생성시 크로마키 배경으로 만든 후 배경제거해.",
                     input_evidence_type="User message excerpt transcribed from current conversation; not a screenshot or timestamp attestation")
+    manifest["update_history"] = previous.get("update_history", []) + ([{
+        "previous_issued_at": previous.get("issued_at"), "previous_pdf": previous.get("pdf"),
+        "reason": "User requested cumulative updates to the same monthly document; prior records retained."
+    }] if previous else [])
+    manifest["daily_summaries"] = previous.get("daily_summaries", {})
+    manifest["daily_summaries"].update({
+        "2026-09-13": "CCTV 관측 입력과 회수 위험 시계 연결. 저장소 기록 기준 사후 요약이며 전체 월간 작업은 아님.",
+        "2026-09-14": "조사-미니게임-매뉴얼 연결, 서사 UI와 시전 컷인·입력/정지 경계 보완. 크로마키 후보 생성 뒤 배경제거 출력은 실제 alpha가 없어 기각. 최종 아트 승인 및 Human QA 미완료.",
+        "2026-09-16": "장면과 지문 영역 분리, 도입/후속 대사와 장문 결과의 순차 읽기 연결. 기존 월간 작업일지를 날짜별 누적 갱신하도록 수정. 검증 상세와 GitHub 동기화 상태는 CURRENT_HANDOFF 및 정확한 커밋을 참조."
+    })
     pdfmetrics.registerFont(TTFont("Korean", "C:/Windows/Fonts/malgun.ttf"))
     pdfmetrics.registerFont(TTFont("KoreanBold", "C:/Windows/Fonts/malgunbd.ttf"))
-    c = canvas.Canvas(str(out), pagesize=A4)
+    pending = out.with_suffix(".pdf.pending")
+    c = canvas.Canvas(str(pending), pagesize=A4)
     c.setTitle(TITLE + " | AI 활용 작업일지·증빙집 | 2026-09 " + args.revision)
     c.setAuthor("프로젝트 작업 기록 기반 / Codex 작성")
     width, height = A4
@@ -102,21 +120,27 @@ def main():
         p = Paragraph(escape(value).replace("\n", "<br/>"), style)
         _, h = p.wrap(width - 76, height)
         if y - h < 48:
+            page("작업 기록 | 계속")
+        if y - h < 48:
             raise RuntimeError(f"Page {page_no} overflow: {value[:50]}")
         p.drawOn(c, 38, y - h)
         y -= h + gap
 
     page("AI 활용 작업일지·증빙집")
     text(TITLE, 23, True, 20)
-    text("수록 범위: 확인 가능한 2026년 9월 13~14일 일부 작업\n작성 방식: 저장소 기록과 현재 검증 결과의 사후 정리\n기록 작성일·PDF 발행일: " + issued, 11)
+    text("수록 범위: 기존 9월 기록 및 이후 확인된 추가 작업의 날짜별 누적\n작성 방식: 저장소 기록과 검증 결과의 사후 정리\n기록 갱신일·PDF 출력일: " + issued, 11)
     text("문서의 역할", 13, True)
     text("블루프린트는 게임 기획과 현재 모습을 설명합니다. 이 문서는 어떤 변경을 하고 어떻게 확인했는지 원본 근거와 연결하는 월별 파생 보고서입니다. 지정 정산 양식이나 영수증을 대체하지 않습니다.")
     text("증거 상한", 13, True)
     text("Git 작성자·커밋 시각은 저장소에 기록된 시각입니다. 실제 작업 시작·종료 또는 독립적인 날짜 인증을 뜻하지 않습니다. 파일 수정 시각 역시 캡처 시점의 보조 정보이며 변경 가능성이 있습니다. 이번 발행일에 과거 작업을 수행한 것으로 소급 기재하지 않았습니다.")
-    text("사용 AI: Codex. 계정 식별·정확한 실행 모델·결제 자료는 미확보입니다. 이미지 생성은 이번 증빙 구간에서 새로 수행하지 않았으며, 수록 이미지는 게임 실행 캡처입니다.")
+    text("사용 AI: Codex 및 이미지 생성 도구. 계정 식별·정확한 실행 모델·결제 자료는 미확보입니다. 9월 14일 컷인 후보 생성/배경제거 시도는 handoff에 기록되어 있으며 실제 alpha 실패로 게임에 반영하지 않았습니다. 아래 수록 이미지는 게임 실행 캡처입니다.")
     text("제출 준비 상태: 보완 필요", 13, True)
     text("원본 프롬프트 화면, 계정별 식별 정보, 결제 영수증 및 협회 지정 양식을 추가 대조해야 합니다. 사용자 제공 협약서 요약은 참고일 뿐, 이 작성자가 원문을 열람·법률 검토·서명한 사실은 없습니다.")
     page("01 | 날짜별 변경 기록")
+    for day, summary in sorted(manifest["daily_summaries"].items()):
+        text(day, 12, True)
+        text(summary, 10)
+    page("변경 근거 | 누적 커밋 목록")
     text("정렬 기준은 저장소 커밋 기록입니다. 각 SHA로 실제 변경 파일을 재확인할 수 있습니다. 아래 목록은 선택된 최신 기록이며 9월 전체 작업을 망라하지 않습니다.", 9)
     for row in rows:
         text(row["commit_date"] + "  |  " + row["sha"][:12], 9, True, 2)
@@ -149,7 +173,7 @@ def main():
         text("SHA-256: " + source["sha256"], 8)
     page("06 | 제출 전 보완·원본 찾아보기")
     text("서비스·계정별 찾아보기", 12, True)
-    text("Codex: UL-0914-01~03 및 변경 목록 전체. 계정 식별은 미확보입니다. ChatGPT 이미지 생성 등 다른 서비스의 실제 사용을 이번 기록만으로 확정하지 않습니다.")
+    text("Codex: UL-0914-01~03 및 누적 변경 목록. 이미지 생성 도구: 9월 14일 컷인 후보와 배경제거 실패 검수. 상세 원본 위치와 hash는 CURRENT_HANDOFF가 연결한 자산 검수 기록을 참조합니다. 계정 식별은 미확보입니다.")
     text("미확보 자료와 확인 사항", 12, True)
     for item in ["원본 프롬프트·결과 대화 캡처: 개별 작업과 연결 필요", "계정 식별·월 구독 결제 영수증: 비공개 원본으로 보관 후 제출용 사본 연결", "비용 인정 기간·추가 크레딧 인정·AI 표시 방법: 협회 원문과 안내로 확인 필요", "지정 월간 정산 양식: 별도 제출물이며 본 PDF가 대체하지 않음", "최종 사용자 검수·배포·권리 검증: 완료로 기재하지 않음"]:
         text("• " + item, 9, gap=6)
@@ -157,11 +181,12 @@ def main():
     text("저장소: https://github.com/alsdmlals4-eng/urban-legend\n기준 HEAD: " + manifest["source_head"] + "\n브랜치: " + manifest["branch"] + "\nmain 통합 여부는 별도 검증 대상입니다.", 8)
     for source in sources[:3]:
         text(source["path"] + "\nSHA-256: " + source["sha256"], 8, gap=7)
-    text("기계 판독 목록: docs/evidence/2026-09/" + index_path.name + "\n해시는 내용 동일성 확인용이며 작성 시점의 외부 인증은 아닙니다. 정정 시 새 버전과 사유를 남기고 기존 발행본을 덮어쓰지 않습니다.", 8)
+    text("기계 판독 목록: docs/evidence/2026-09/" + index_path.name + "\n같은 월간 PDF와 index를 갱신하며 기존 기록은 유지합니다. 이전 출력 hash와 갱신 사유는 index의 update_history에 남깁니다. 해시는 외부 날짜 인증이 아닙니다.", 8)
     c.save()
-    reader = PdfReader(out)
-    assert len(reader.pages) == 7
+    reader = PdfReader(pending)
+    assert len(reader.pages) >= 7
     assert all(len(p.extract_text()) > 100 for p in reader.pages)
+    pending.replace(out)
     manifest["pdf"] = dict(path=str(out), sha256=digest(out), pages=len(reader.pages))
     index_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps(manifest["pdf"], ensure_ascii=False))
