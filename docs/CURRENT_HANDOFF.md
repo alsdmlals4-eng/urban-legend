@@ -10,7 +10,9 @@
 - 현재 결과: Base #883/#885 선택 적용, 분야 Skill 10개·기존 UX/검증 책임 연결 완료. 프로젝트 전체 Python은 509개 중 508 PASS / 시작 main과 같은 headless 실패 1건이다. read-order 검사, generated adapter 검사, exact CI validator 검사 PASS. 검토 1 자체 교정 + 검토 2 독립 검토에서 신규 blocking finding 0.
 - 환경 한계: 별도 Skill quick_validate는 PyYAML 부재로 실행 실패; 설치 변경 없이 프로젝트 자체 Skill 무결성 검사로 확인했다. 실제 게임 실행·Human 재미·최종 아트·출시는 이번 운영 작업의 검증 범위가 아니다.
 - 완료 경계: `IMPLEMENTATION_CORRECTION_RESCAN`은 범위 내 신규 회귀 없음. `POST_COMPLETION_ADVERSARIAL_REVIEW_REQUIRED`의 2회 검토 기록은 `skills/SKILL_LEARNING_LOG.md`. `REMAINING_WORK_COMPLETION_GATE`는 기존 전체 검사 실패 및 원격 PR/병합 readback이 남아 OPEN이다. `CLEAN_REVIEW_EXIT` 및 전체 완료를 선언하지 않는다.
-- 다음: 이 작업의 branch를 push하고 normal PR의 exact HEAD 검사를 확인한다. 기존 #362를 수정/병합하거나 실패 검사를 우회하지 않는다. 최종 PR 상태는 이 블록에 누적한다.
+- PR: [urban-legend #363](https://github.com/alsdmlals4-eng/urban-legend/pull/363), `codex/base-lean-20260920`. 구현 commit `887167495de8d4658a42cb7b0e109eb314f75be3`를 push하고 원격 exact HEAD를 확인했다. 최초 원격 adapter·문서·Base 채택 검사들은 통과했으나 [core/docs 검사](https://github.com/alsdmlals4-eng/urban-legend/actions/runs/35478252938)는 기존 headless 문제로 실패했다.
+- 위 원격 unittest는 496개 중 495 PASS / 동일 1 FAIL이다. 로컬 pytest 509개와 수집 범위가 다르므로 개수를 합치거나 같은 검사로 보고하지 않는다. 나머지 실행 중인 엔진 matrix의 결과도 미리 통과로 표시하지 않는다.
+- 다음: 기존 #362의 명시적 처리 권한 또는 별도 작업에 의한 정상 main 교정 후 최신 main 재대조 → adapter 보호 기준/생성물 재결합 → #363 exact HEAD 전체 재검증 → 정상 병합 → main readback. 이 PR은 #362를 수정/병합하거나 실패 검사를 우회하지 않는다. 병합 전이므로 원래 게임 작업 폴더에 적용됐다고 보고하지 않는다.
 
 ## 보존된 제품 병합 계보 (아래는 당시 snapshot)
 
