@@ -47,6 +47,15 @@ func _run() -> void:
 	await process_frame
 	await process_frame
 	_test_native_dossier_hierarchy(workbench)
+	var replacement := _view_model()
+	replacement["case_label"] = "CASE-02 비 오는 골목"
+	replacement["title"] = "현장 추리 기록"
+	workbench.call("set_view_model", replacement)
+	var case_heading := workbench.find_child("CaseHeading", true, false) as Label
+	var manual_heading := workbench.find_child("ManualHeading", true, false) as Label
+	_expect(case_heading != null and case_heading.text == replacement.case_label, "reused workbench refreshes the case heading")
+	_expect(manual_heading != null and manual_heading.text == replacement.title, "reused workbench refreshes the manual heading")
+	workbench.call("set_view_model", _view_model())
 	_test_slot_and_candidate_intent(workbench)
 	_test_cancel_and_focus_restore(workbench, opener)
 	host.queue_free()

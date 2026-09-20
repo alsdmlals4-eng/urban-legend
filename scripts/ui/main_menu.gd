@@ -319,7 +319,7 @@ func _build_entry_cards(parent: Control) -> void:
 	_m04_campaign_entry_button = Button.new()
 	_m04_campaign_entry_button.name = "M04CampaignEntryButton"
 	_m04_campaign_entry_button.text = "빨간 우산 현장 기록 시작"
-	_m04_campaign_entry_button.tooltip_text = "새 본편 기록으로 준비실에서 시작합니다. 대기·회복 반일 뒤 M04를 선택해 조사와 회수까지 진행합니다."
+	_m04_campaign_entry_button.tooltip_text = "새 본편 기록으로 일상 준비실에서 시작합니다. M04와 출동 요원을 선택해 조사와 회수까지 진행합니다."
 	_m04_campaign_entry_button.focus_mode = Control.FOCUS_ALL
 	_m04_campaign_entry_button.pressed.connect(_start_red_umbrella_campaign)
 	entry_cards.add_child(_m04_campaign_entry_button)

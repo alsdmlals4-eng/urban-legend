@@ -20,8 +20,12 @@ class CurrentPlanningCanonTests(unittest.TestCase):
     def setUp(self) -> None:
         self.canon = load(CANON_PATH)
 
-    def test_ten_day_half_day_product_shape_and_slice_roles_are_unambiguous(self) -> None:
-        cadence = self.canon["planning"]["cadence"]
+    def test_daily_case_successor_and_legacy_shape_are_distinct(self) -> None:
+        active = self.canon["planning"]["cadence"]
+        self.assertEqual("DAILY_CASE", active["unit"])
+        self.assertFalse(active["mandatory_schedule"])
+        self.assertEqual("DEFAULT_SUPPORT", active["m04_support_access"])
+        cadence = self.canon["planning"]["legacy_cadence"]
         self.assertEqual("TEN_DAY_CYCLE", cadence["unit"])
         self.assertEqual(10, cadence["days_per_cycle"])
         self.assertEqual(2, cadence["slots_per_day"])
@@ -72,7 +76,7 @@ class CurrentPlanningCanonTests(unittest.TestCase):
             priority["primary_playable_core"],
         )
         self.assertEqual(
-            "TEN_DAY_HALF_DAY_CALENDAR",
+            "OPTIONAL_DAILY_PREPARATION",
             priority["supporting_campaign_system"],
         )
         self.assertIn(

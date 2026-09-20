@@ -89,6 +89,13 @@ func get_signature_play_count() -> int:
 	return _signature_play_count
 
 
+## Shared entry cue for hosts that render dialogue in their own reading dock.
+## Does not expose the guide panel or replace its dialogue sequence.
+func play_signature_cue(mode: String = "normal") -> void:
+	_ensure_ui()
+	_play_signature(mode)
+
+
 func set_internal_advance_enabled(enabled: bool) -> void:
 	_internal_advance_enabled = enabled
 	if _next_button != null:
@@ -171,13 +178,13 @@ func _ensure_ui() -> void:
 
 	_speaker_label = Label.new()
 	_speaker_label.name = "ProcedureSpeaker"
-	_speaker_label.text = "기록관 아카 · 절차 통신"
+	_speaker_label.text = "루메 · 괴이기록국 기록 보조"
 	_speaker_label.add_theme_color_override("font_color", ThemeFactory.COLOR_TEAL)
 	_speaker_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(_speaker_label)
 
 	_next_button = Button.new()
-	_next_button.text = "아카 안내 계속"
+	_next_button.text = "루메 안내 계속"
 	_next_button.pressed.connect(advance)
 	header.add_child(_next_button)
 
@@ -199,7 +206,7 @@ func _apply_current_line() -> void:
 		_current_expression = "normal"
 	_dialogue_label.text = String(line.get("text", ""))
 	_next_button.visible = _internal_advance_enabled
-	_next_button.text = "아카 안내 계속" if _line_index + 1 < _lines.size() else "닫기"
+	_next_button.text = "루메 안내 계속" if _line_index + 1 < _lines.size() else "닫기"
 	_speaker_label.add_theme_color_override("font_color", _expression_color(_current_expression))
 
 

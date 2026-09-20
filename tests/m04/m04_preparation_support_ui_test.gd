@@ -1,4 +1,4 @@
-# M04 현장 준비 상태가 실제 회수 버튼의 가용성과 차단 이유로 이어지는지 검증한다.
+# M04 기본 보조의 가용성 및 명시적 재개 후 1회 실행을 검증한다.
 extends SceneTree
 
 const TestSaveGuard = preload("res://tests/test_save_guard.gd")
@@ -33,13 +33,13 @@ func _run() -> void:
 		_finish()
 		return
 	_prepared = true
-	await _validate_locked_button_without_completed_rest()
-	await _validate_unlocked_button_after_completed_rest()
+	await _validate_available_without_scheduled_rest()
+	await _validate_support_execution_after_resume()
 	_finish()
 
 
-func _validate_locked_button_without_completed_rest() -> void:
-	_prepare_m04(false)
+func _validate_available_without_scheduled_rest() -> void:
+	_prepare_m04()
 	_expect(change_scene_to_file(_game_state.SCENE_BATTLE) == OK, "M04 recovery scene loads without completed preparation")
 	for _frame in range(5):
 		await process_frame
@@ -47,13 +47,13 @@ func _validate_locked_button_without_completed_rest() -> void:
 	await _open_active_operation_detail()
 	var button := _find_support_button()
 	_expect(button != null and button.is_visible_in_tree(), "M04 recovery renders Kwon's existing support button in the active operation overlay")
-	_expect(button != null and button.disabled, "M04 recovery disables Kwon support at preparation 0/1")
-	_expect(button != null and button.tooltip_text.contains("현장 준비"), "locked M04 support explains the completed-rest requirement")
-	await _capture_if_requested("m04-preparation-support-locked")
+	_expect(button != null and not button.disabled, "M04 basic support does not require the retired rest schedule")
+	_expect(button != null and not button.tooltip_text.contains("현장 준비가 없습니다"), "basic support does not claim a retired preparation gate")
+	await _capture_if_requested("m04-preparation-support-available")
 
 
-func _validate_unlocked_button_after_completed_rest() -> void:
-	_prepare_m04(true)
+func _validate_support_execution_after_resume() -> void:
+	_prepare_m04()
 	_expect(change_scene_to_file(_game_state.SCENE_BATTLE) == OK, "M04 recovery scene loads after completed preparation")
 	for _frame in range(5):
 		await process_frame
@@ -61,12 +61,21 @@ func _validate_unlocked_button_after_completed_rest() -> void:
 	await _open_active_operation_detail()
 	var button := _find_support_button()
 	_expect(button != null and button.is_visible_in_tree(), "prepared M04 recovery renders Kwon's existing support button in the active operation overlay")
-	_expect(button != null and not button.disabled, "M04 recovery enables Kwon support at preparation 1/1")
+	_expect(button != null and not button.disabled, "M04 basic support is available before use")
 	_expect(button != null and not button.tooltip_text.contains("현장 준비가 없습니다"), "unlocked M04 support no longer presents a blocking reason")
 	await _capture_if_requested("m04-preparation-support-unlocked")
 	if button != null:
+		root.focus_entered.emit()
 		button.emit_signal("pressed")
 		await process_frame
+		_expect(not _game_state.has_used_agent_support("support_kwon_return_route"), "selection while paused does not consume support")
+		var resume_button := current_scene.find_child("RecoveryPauseButton", true, false) as Button
+		_expect(resume_button != null, "support selection exposes explicit execution")
+		if resume_button != null:
+			resume_button.pressed.emit()
+			await process_frame
+			await process_frame
+		await _open_active_operation_detail()
 		await create_timer(0.35).timeout
 		var used_button := _find_support_button()
 		_expect(used_button != null and used_button.disabled, "using the enabled M04 support immediately disables its refreshed active operation button")
@@ -82,14 +91,10 @@ func _validate_unlocked_button_after_completed_rest() -> void:
 	await _capture_if_requested("m04-preparation-support-used")
 
 
-func _prepare_m04(with_completed_rest: bool) -> void:
+func _prepare_m04() -> void:
 	_game_state.reset_run_state()
 	_expect(_game_state.load_episode(M04_PATH), "M04 episode data loads")
 	_game_state.set_selected_agent_ids(["agent_kwon_narae"])
-	if with_completed_rest:
-		_expect(_game_state.set_campaign_schedule("agent_kwon_narae", "morning", "rest"), "the M04 preparation rest can be scheduled")
-		_expect(_game_state.complete_campaign_slot({"kind": "schedule", "results": [{"agent_id": "agent_kwon_narae", "activity": "rest"}]}), "the M04 preparation rest can complete")
-		_expect(bool(_game_state.acknowledge_campaign_slot_result().get("advanced", false)), "the completed preparation rest advances time")
 	_expect(_game_state.set_campaign_planned_case(M04_ID), "M04 can be planned")
 	_expect(_game_state.begin_campaign_operation(M04_ID), "M04 dispatch begins")
 

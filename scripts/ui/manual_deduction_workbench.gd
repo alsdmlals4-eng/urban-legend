@@ -36,6 +36,8 @@ var _guide_panel: PanelContainer
 var _guide_portrait: TextureRect
 var _selection_status_label: Label
 var _slot_buttons: Dictionary = {}
+var _case_heading: Label
+var _manual_heading: Label
 
 
 func _ready() -> void:
@@ -73,8 +75,13 @@ func dismiss() -> void:
 	_active_slot_id = ""
 	_selected_candidate_id = ""
 	dismiss_requested.emit()
-	if is_instance_valid(_opener):
-		_opener.call_deferred("grab_focus")
+	call_deferred("_restore_opener_focus")
+
+
+func _restore_opener_focus() -> void:
+	# Dismissal may immediately transition out of the owning investigation scene.
+	if not visible and is_instance_valid(_opener) and _opener.is_inside_tree() and _opener.is_visible_in_tree() and not _opener.is_queued_for_deletion():
+		_opener.grab_focus()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -204,10 +211,14 @@ func _build_header() -> Control:
 	var bureau := _label("괴이기록국", 23, COLOR_GOLD)
 	bureau.custom_minimum_size = Vector2(166, 0)
 	header.add_child(bureau)
-	var case_label := _label(String(_view_model.get("case_label", "CASE-01")), 16, COLOR_TEXT)
+	var case_label := _label("", 16, COLOR_TEXT)
+	case_label.name = "CaseHeading"
+	_case_heading = case_label
 	case_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(case_label)
 	var title := _label(String(_view_model.get("title", "괴이 매뉴얼")), 20, COLOR_GOLD)
+	title.name = "ManualHeading"
+	_manual_heading = title
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title)
@@ -258,6 +269,8 @@ func _build_lume_panel() -> Control:
 func _render() -> void:
 	if not is_instance_valid(_manual_index):
 		return
+	_case_heading.text = String(_view_model.get("case_label", "사건 기록"))
+	_manual_heading.text = String(_view_model.get("title", "괴이 매뉴얼"))
 	_render_manual_index()
 	_render_deduction()
 	_render_candidates()
@@ -301,12 +314,7 @@ func _render_deduction() -> void:
 	var divider := HSeparator.new()
 	divider.add_theme_stylebox_override("separator", _line_style(COLOR_GOLD_MUTED, 1))
 	_deduction_content.add_child(divider)
-	var line := HFlowContainer.new()
-	line.name = "DeductionLine"
-	line.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	line.add_theme_constant_override("h_separation", 5)
-	line.add_theme_constant_override("v_separation", 7)
-	_deduction_content.add_child(line)
+	var line := _new_deduction_line()
 	var segments_value: Variant = page.get("deduction_segments", [])
 	if segments_value is Array:
 		for segment_value in segments_value:
@@ -318,12 +326,45 @@ func _render_deduction() -> void:
 				if not slot_id.is_empty():
 					line.add_child(_slot_button(slot_id))
 			else:
-				line.add_child(_body_label(String(segment.get("text", ""))))
+				var paragraphs := String(segment.get("text", "")).split("\n", true)
+				for paragraph_index in range(paragraphs.size()):
+					if paragraph_index > 0:
+						line = _new_deduction_line()
+					for word in paragraphs[paragraph_index].split(" ", false):
+						var word_label := _body_label(word)
+						word_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+						word_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+						line.add_child(word_label)
 	var lower_divider := HSeparator.new()
+	# Original earned observations are evidence, not a verdict on the player's draft.
+	var shown_sources: Dictionary = {}
+	for candidate_value in _current_page_candidates():
+		var candidate: Dictionary = candidate_value
+		var source_id := String(candidate.get("source_record_id", ""))
+		var observation := String(candidate.get("source_observation", ""))
+		if source_id.is_empty() or observation.is_empty() or shown_sources.has(source_id):
+			continue
+		if shown_sources.is_empty():
+			_deduction_content.add_child(_label("확보한 원문 기록 · 후보 해석과 대조", 18, COLOR_GOLD))
+		shown_sources[source_id] = true
+		_deduction_content.add_child(_label(String(candidate.get("source_label", "출처 기록")), 14, COLOR_TEAL))
+		var observation_label := _body_label(observation)
+		observation_label.name = "SourceObservation_%s" % source_id
+		_deduction_content.add_child(observation_label)
 	lower_divider.add_theme_stylebox_override("separator", _line_style(COLOR_GOLD_MUTED, 1))
 	_deduction_content.add_child(lower_divider)
 	_deduction_content.add_child(_label("작성 원칙", 16, COLOR_GOLD))
 	_deduction_content.add_child(_label("후보는 출처 기록을 기준으로만 열립니다. 선택 자체는 확정이나 성공을 뜻하지 않습니다.", 13, COLOR_SUBTEXT))
+
+
+func _new_deduction_line() -> HFlowContainer:
+	var line := HFlowContainer.new()
+	line.name = "DeductionLine"
+	line.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	line.add_theme_constant_override("h_separation", 5)
+	line.add_theme_constant_override("v_separation", 7)
+	_deduction_content.add_child(line, true)
+	return line
 
 
 func _render_candidates() -> void:
@@ -391,6 +432,7 @@ func _slot_button(slot_id: String) -> Button:
 	var button := Button.new()
 	button.name = "Slot_%s" % slot_id
 	button.custom_minimum_size = Vector2(146, 38)
+	button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	button.focus_mode = Control.FOCUS_ALL
 	button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	button.tooltip_text = "기록 후보를 넣거나 현재 선택을 지웁니다."

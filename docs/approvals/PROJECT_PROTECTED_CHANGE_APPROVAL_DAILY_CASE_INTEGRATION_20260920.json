@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "artifact_role": "PROJECT_PROTECTED_CHANGE_APPROVAL",
+  "status": "APPROVED",
+  "protected_base_commit": "78c10b86c4ac445a43bfb166088d01df02ed5530",
+  "decision_ids": [
+    "D-2026-09-20-DAILY-CASE-INTEGRATION"
+  ],
+  "approved_paths": [
+    "addons/hera_agent_godot/tools/game_tool.gd",
+    "data/episodes/episode_002_red_umbrella_alley.json",
+    "scripts/core/campaign_state.gd",
+    "scripts/core/game_state.gd",
+    "scripts/minigames/rain_frame_sync_game.gd",
+    "scripts/scenes/battle_scene.gd",
+    "scripts/scenes/daily_episode_scene.gd",
+    "scripts/scenes/investigation_scene.gd",
+    "scripts/scenes/minigame_scene.gd",
+    "scripts/scenes/preparation_scene.gd",
+    "scripts/scenes/result_scene.gd",
+    "scripts/ui/anomaly_manual_drawer.gd",
+    "scripts/ui/canon_v2_operation_overlay.gd",
+    "scripts/ui/canon_v2_runtime_bridge.gd",
+    "scripts/ui/database_view.gd",
+    "scripts/ui/log_guide.gd",
+    "scripts/ui/log_tutorial_catalog.gd",
+    "scripts/ui/main_menu.gd",
+    "scripts/ui/manual_deduction_workbench.gd",
+    "scripts/ui/recovery_casting_cut_in.gd",
+    "scripts/ui/recovery_learning_formatter.gd",
+    "scripts/ui/runtime_ui_editor.gd"
+  ],
+  "approval_source": "User approved the existing W01-W12 implementation continuation and then said 좋아 작업 계속 진행해 after the Base #883/#885 project adaptation. Scope is integration of existing approved product source bc8320e4783a015403edc8cde3dc1075e5eecbca from latest main, preserving DAILY_CASE, Lume, action-only effects, separated paged dialogue and current helper wrapper, with bounded regression corrections. No authorization for a new third-case unlock rule, unrelated PR mutation, global settings or final art replacement.",
+  "approval_time": "2026-09-20T11:32:37Z",
+  "scope_summary": "Approved integration/correction scope, not validation or merge approval evidence. Base governance main 451935c08e8fd6e03bed9725648fcf4b74741a11 changes no protected product files compared with trusted adapter baseline78c10b86c4ac445a43bfb166088d01df02ed5530. Retain save schema/IDs/approved asset bytes; repair Lume cue and preload aliases, classify legacy tests. Third-case reachability remains a Draft blocker. Rollback via this integration branch only; never reset the original dirty checkout."
+}

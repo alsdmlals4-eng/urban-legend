@@ -56,6 +56,9 @@ var _record_button: Button
 var _learning_list: VBoxContainer
 var _field_node: Dictionary = {}
 var _field_lines: Array = []
+var _reading_pages: Array[Dictionary] = []
+var _reading_page_index := 0
+var _reading_after_choice := false
 var _field_speaker_label: Label
 var _field_dialogue_label: Label
 var _field_next_button: Button
@@ -100,6 +103,8 @@ var _reasoning_definition: Dictionary = {}
 var _case_dialog: AcceptDialog
 var _team_status_popover: TeamStatusPopover
 var _inline_result_returns_to_points := false
+var _result_pages: Array[String] = []
+var _result_page_index := 0
 
 
 func _ready() -> void:
@@ -172,6 +177,11 @@ func _build_ui() -> void:
 	_result_label = %ResultLabel
 	_hint_label = Label.new()
 	_team_label = Label.new()
+	# Compatibility text sinks still need a scene lifetime owner.
+	_hint_label.visible = false
+	_team_label.visible = false
+	add_child(_hint_label)
+	add_child(_team_label)
 	_narrative_label = _field_dialogue_label
 	_result_panel = _result_toast
 
@@ -193,6 +203,8 @@ func _build_ui() -> void:
 		_record_button.pressed.connect(_toggle_record_drawer)
 		_build_afterlife_manual()
 	if _has_player_authored_workbench_manual:
+		if not _record_button.pressed.is_connected(_toggle_record_drawer):
+			_record_button.pressed.connect(_toggle_record_drawer)
 		_manual_workbench = ManualDeductionWorkbenchScene.instantiate() as Control
 		_manual_workbench.z_index = 100
 		add_child(_manual_workbench)
@@ -222,10 +234,86 @@ func _build_ui() -> void:
 	_team_status_popover.set_anchors_preset(Control.PRESET_CENTER)
 	_team_status_popover.position = Vector2(-180, -110)
 	_agent_stage.visible = false
+	_configure_narrative_surface()
 
 	_render_investigation_points()
 	_refresh_manual_drawer(false)
 	_show_current_field_node()
+
+
+func _configure_narrative_surface() -> void:
+	var backdrop := ColorRect.new()
+	backdrop.name = "ReadingBackdrop"
+	backdrop.color = Color("080d11")
+	backdrop.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(backdrop)
+	move_child(backdrop, 0)
+	backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	# Presentation only: the original method IDs, handlers and state owner remain intact.
+	var content := _dialogue_dock.get_node("Content") as VBoxContainer
+	_method_column.reparent(content)
+	content.move_child(_method_column, 3)
+	_method_column.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	(_method_column.get_node("MethodScroll") as ScrollContainer).follow_focus = true
+	(%FieldChoiceScroll as ScrollContainer).follow_focus = true
+	_method_title_label.visible = false
+	_method_result_label.visible = false
+	_field_dialogue_label.add_theme_font_size_override("font_size", 20)
+	_field_dialogue_label.custom_minimum_size.y = 0.0
+	_field_dialogue_label.add_theme_constant_override("line_spacing", 8)
+	var serif := load("res://assets/fonts/noto/NotoSerifKR-VF.ttf") as Font
+	_field_dialogue_label.add_theme_font_override("font", serif)
+	_field_speaker_label.add_theme_font_override("font", serif)
+	_field_speaker_label.add_theme_color_override("font_color", Color("d6bd8e"))
+	_field_speaker_label.add_theme_font_size_override("font_size", 22)
+	_result_label.add_theme_font_size_override("font_size", 18)
+	content.add_theme_constant_override("separation", 6)
+	_location_preview.visible = false
+	var tools_row := HBoxContainer.new()
+	tools_row.name = "NarrativeTools"
+	tools_row.alignment = BoxContainer.ALIGNMENT_END
+	tools_row.add_theme_constant_override("separation", 12)
+	content.add_child(tools_row)
+	var locations := Button.new()
+	locations.name = "NarrativeLocationsButton"
+	locations.text = "주변 살피기"
+	locations.pressed.connect(_on_narrative_locations_requested)
+	tools_row.add_child(locations)
+	_manual_toggle_button.reparent(tools_row)
+	var footer_space := Control.new()
+	footer_space.name = "NarrativeFooterSpace"
+	footer_space.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	content.add_child(footer_space)
+	content.move_child(footer_space, _field_next_button.get_index())
+	_field_next_button.size_flags_horizontal = Control.SIZE_SHRINK_END
+	_field_next_button.custom_minimum_size = Vector2(180, 44)
+	var main_column := _safe_frame.get_node("MainColumn") as VBoxContainer
+	var breathing_room := Control.new()
+	breathing_room.name = "NarrativeStageSpace"
+	breathing_room.custom_minimum_size.y = 300.0
+	breathing_room.clip_contents = true
+	breathing_room.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	main_column.add_child(breathing_room)
+	main_column.move_child(breathing_room, main_column.get_node("Workspace").get_index())
+	# The scene has its own rectangle, not a background underneath the reading dock.
+	var art := get_node("ArtLayer") as Control
+	art.reparent(breathing_room)
+	art.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	var background := art.get_node("Background") as TextureRect
+	background.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	art.get_node("Shade").visible = false
+	_point_method_dock.custom_minimum_size.x = 300.0
+	_dialogue_dock.size_flags_stretch_ratio = 0.7
+	%LogUtilityButton.text = "루메 안내"
+	var log_summary := main_column.get_node("LogBar/LogRow/LogSummaryLabel") as Label
+	log_summary.text = "현재 관찰과 확보 기록을 비교합니다. 루메는 관련 기록의 위치를 안내합니다."
+	_mode_label.visible = false
+
+
+func _on_narrative_locations_requested() -> void:
+	if _mode_label.text not in ["METHOD_PICKER", "RESULT"]:
+		return
+	_return_to_point_picker()
 
 
 func _apply_safe_frame() -> void:
@@ -611,8 +699,65 @@ func _present_situation_and_choices() -> void:
 	_field_dialogue_label.visible = true
 	_field_dialogue_label.text = String(_field_node.get("title", GameState.get_current_episode_title()))
 	_field_next_button.visible = false
-	_present_support_lines(_field_lines)
-	_show_field_choices()
+	_begin_reading(_field_lines, false)
+
+
+func _begin_reading(lines: Array, after_choice: bool) -> void:
+	_reading_pages.clear()
+	_reading_page_index = 0
+	_reading_after_choice = after_choice
+	for value in lines:
+		if not value is Dictionary:
+			continue
+		var remaining := String(value.get("text", ""))
+		while not remaining.is_empty():
+			var count := mini(100, remaining.length())
+			if count < remaining.length():
+				var boundary := remaining.substr(0, count).rfind(" ")
+				if boundary >= 50:
+					count = boundary + 1
+			var page: Dictionary = value.duplicate(true)
+			page["text"] = remaining.left(count)
+			_reading_pages.append(page)
+			remaining = remaining.substr(count)
+	_clear_children(_agent_reaction_box)
+	_log_guide.visible = false
+	if _reading_pages.is_empty():
+		_finish_reading()
+	else:
+		_show_reading_page()
+
+
+func _show_reading_page() -> void:
+	_set_ui_mode("FIELD_DIALOGUE")
+	var page := _reading_pages[_reading_page_index]
+	var speaker := String(page.get("speaker", "상황"))
+	_field_speaker_label.text = "루메" if speaker == "로그" else speaker
+	_field_dialogue_label.text = String(page.get("text", ""))
+	if speaker in ["로그", "루메"] and not _field_log_intro_played:
+		_log_guide.play_signature_cue(String(page.get("expression", "normal")))
+		_field_log_intro_played = true
+	var tutorial_id := String(page.get("tutorial_id", ""))
+	if not tutorial_id.is_empty():
+		GameState.claim_log_tutorial(tutorial_id)
+	_field_next_button.text = "계속 읽기  %d / %d" % [_reading_page_index + 1, _reading_pages.size()]
+	if _reading_page_index == _reading_pages.size() - 1:
+		_field_next_button.text = "다음 조사" if _reading_after_choice else "행동 선택"
+	_field_next_button.visible = true
+	_field_next_button.call_deferred("grab_focus")
+
+
+func _finish_reading() -> void:
+	_reading_pages.clear()
+	_field_next_button.visible = false
+	if _reading_after_choice and not _pending_next_field_node_id.is_empty():
+		GameState.set_current_field_node_id(_pending_next_field_node_id)
+		GameState.save_game()
+		_show_current_field_node()
+	else:
+		_field_speaker_label.text = "상황"
+		_field_dialogue_label.text = String(_field_node.get("title", ""))
+		_show_field_choices()
 
 
 func _present_support_lines(lines: Array) -> void:
@@ -634,7 +779,22 @@ func _present_support_lines(lines: Array) -> void:
 				log_texts.append(String(line.get("text", "")))
 				log_expression = String(line.get("expression", log_expression))
 			continue
-	_agent_reaction_box.visible = false
+		var spoken_text := String(line.get("text", "")).strip_edges()
+		if spoken_text.is_empty():
+			continue
+		var speaker_agent: Dictionary = {}
+		for candidate in GameState.get_agents():
+			if String(candidate.get("name", "")) == speaker:
+				speaker_agent = candidate
+				break
+		if not speaker_agent.is_empty():
+			_agent_reaction_box.add_child(_make_agent_reaction_row(speaker_agent, spoken_text))
+		else:
+			var narration := Label.new()
+			narration.text = "%s  %s" % [speaker, spoken_text] if not speaker.is_empty() else spoken_text
+			narration.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			_agent_reaction_box.add_child(narration)
+	_agent_reaction_box.visible = _agent_reaction_box.get_child_count() > 0
 	if log_texts.is_empty():
 		_log_guide.visible = false
 		return
@@ -671,6 +831,15 @@ func _make_agent_reaction_row(agent: Dictionary, text: String) -> HBoxContainer:
 
 
 func _advance_field_dialogue() -> void:
+	if _mode_label.text != "FIELD_DIALOGUE":
+		return
+	if not _reading_pages.is_empty():
+		_reading_page_index += 1
+		if _reading_page_index < _reading_pages.size():
+			_show_reading_page()
+		else:
+			_finish_reading()
+		return
 	if _pending_next_field_node_id.is_empty():
 		return
 	GameState.set_current_field_node_id(_pending_next_field_node_id)
@@ -735,10 +904,7 @@ func _select_field_choice(choice: Dictionary) -> void:
 	_pending_next_field_node_id = String(result.get("next_field_node_id", ""))
 	_field_speaker_label.text = "선택 결과"
 	_field_dialogue_label.text = "‘%s’를 선택했습니다. 현장 기록을 확인합니다." % String(choice.get("label", "행동"))
-	_present_support_lines(_field_lines)
-	_set_ui_mode("FIELD_DIALOGUE")
-	_field_next_button.text = "다음 조사"
-	_field_next_button.visible = not _pending_next_field_node_id.is_empty()
+	_begin_reading(_field_lines, true)
 	_refresh_case_status()
 	_refresh_manual_drawer(true)
 
@@ -818,7 +984,7 @@ func _add_investigation_point(parent: Control, point: Dictionary) -> void:
 	card.configure({
 		"id": String(point.get("id", label)),
 		"title": label if is_unlocked else "[잠김] %s" % label,
-		"description": String(point.get("summary", point.get("locked_text", "조사할 지점을 선택합니다."))),
+		"description": String(point.get("summary", "조사할 지점을 선택합니다.")) if is_unlocked else String(point.get("locked_text", "아직 확인할 근거가 부족합니다.")),
 		"meta": "조사 가능" if is_unlocked else "조건 부족"
 	})
 	card.action_requested.connect(func(_action_id: String) -> void: _inspect_point(point_copy))
@@ -955,11 +1121,20 @@ func _show_method_options(point: Dictionary) -> void:
 		_method_button_box.add_child(card)
 		card.configure({
 			"id": String(method_copy.get("id", method_copy.get("method_type", "method"))),
-			"title": _make_method_button_text(method_copy).get_slice("\n", 0),
-			"description": String(method_copy.get("summary", "")),
+			"title": String(method_copy.get("summary", method_copy.get("label", "조사한다"))),
+			"description": "",
 			"meta": "담당 %s · %s %d · 난이도 %d" % [String(best_agent.get("name", "팀")), GameState.ABILITY_LABELS.get(approach_type, approach_type), GameState.get_agent_ability(agent_id, approach_type), int(method_copy.get("difficulty", 0))]
 		})
 		card.action_requested.connect(func(_action_id: String) -> void: _run_method_option(point_copy, method_copy))
+		card.add_theme_stylebox_override("panel", StyleBoxEmpty.new())
+		var action_button := card.find_child("ActionButton", true, false) as Button
+		action_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		action_button.add_theme_font_size_override("font_size", 18)
+		action_button.add_theme_color_override("font_color", Color("e3d6be"))
+		var choice_style := AfterlifeTheme.panel_style(Color("65583f"), 0.86, 14)
+		action_button.add_theme_stylebox_override("normal", choice_style)
+		action_button.add_theme_stylebox_override("hover", AfterlifeTheme.panel_style(Color("d6bd8e"), 0.96, 14))
+		action_button.add_theme_stylebox_override("focus", AfterlifeTheme.panel_style(Color("d6bd8e"), 0.0, 14))
 
 		# Show responsible agent and ability info for this approach
 		if not best_agent.is_empty():
@@ -1140,8 +1315,8 @@ func _run_method_option(point: Dictionary, method: Dictionary) -> void:
 
 	_method_result_label.text = _make_method_result_text(result)
 	_result_label.text = _make_method_result_text(result)
-	_result_toast.visible = true
 	_set_ui_mode("RESULT")
+	_show_inline_result(true)
 
 	var hint_texts_value: Variant = result.get("hint_texts", [])
 	var hint_texts: Array = hint_texts_value if typeof(hint_texts_value) == TYPE_ARRAY else []
@@ -1289,6 +1464,9 @@ func _hide_method_panel() -> void:
 
 
 func _set_ui_mode(mode: String) -> void:
+	if mode != "FIELD_DIALOGUE":
+		_reading_pages.clear()
+		_field_next_button.visible = false
 	if _mode_label != null:
 		_mode_label.text = mode
 	var choice_scroll := get_node_or_null("%FieldChoiceScroll") as ScrollContainer
@@ -1296,14 +1474,24 @@ func _set_ui_mode(mode: String) -> void:
 		choice_scroll.visible = mode == "FIELD_CHOICES" or (_is_afterlife_layout and mode == "POINT_PICKER")
 	var uses_method_picker := mode == "METHOD_PICKER"
 	if _point_method_dock != null:
-		_point_method_dock.visible = true
+		_point_method_dock.visible = mode == "POINT_PICKER"
 	if _method_column != null:
 		_method_column.visible = uses_method_picker
-		var point_column := _method_column.get_parent().get_node_or_null("PointColumn") as Control
+		var point_column := _point_method_dock.get_node_or_null("Columns/PointColumn") as Control
 		if point_column != null:
 			point_column.visible = not uses_method_picker
 	if _dialogue_dock != null:
 		_dialogue_dock.visible = true
+	if _field_dialogue_label != null:
+		_field_dialogue_label.visible = mode != "RESULT"
+	var footer_space := _dialogue_dock.get_node_or_null("Content/NarrativeFooterSpace") as Control
+	if footer_space != null:
+		footer_space.visible = mode in ["POINT_PICKER", "FIELD_DIALOGUE"]
+	var locations := _dialogue_dock.get_node_or_null("Content/NarrativeTools/NarrativeLocationsButton") as Button
+	if locations != null:
+		locations.visible = mode in ["METHOD_PICKER", "RESULT"]
+	if _agent_reaction_box != null:
+		_agent_reaction_box.visible = mode in ["POINT_PICKER", "FIELD_CHOICES", "FIELD_DIALOGUE"] and _agent_reaction_box.get_child_count() > 0
 	if uses_method_picker:
 		if _manual_workbench != null and _manual_workbench.visible:
 			_manual_workbench.call("dismiss")
@@ -1374,10 +1562,12 @@ func _get_player_authored_workbench_manual() -> Dictionary:
 
 func _build_player_authored_workbench_model(manual: Dictionary) -> Dictionary:
 	var source_titles: Dictionary = {}
+	var source_observations: Dictionary = {}
 	for clue_value in GameState.get_clues():
 		if clue_value is Dictionary:
 			var clue := clue_value as Dictionary
 			source_titles[String(clue.get("id", ""))] = String(clue.get("title", "확보 기록"))
+			source_observations[String(clue.get("id", ""))] = String(clue.get("description", ""))
 	var earned_record_ids := GameState.get_collected_clue_ids()
 	var visible_candidates: Array[Dictionary] = []
 	for candidate_value in manual.get("candidate_keywords", []) as Array:
@@ -1391,7 +1581,9 @@ func _build_player_authored_workbench_model(manual: Dictionary) -> Dictionary:
 			"id": String(candidate.get("id", "")),
 			"page_id": String(candidate.get("page_id", "")),
 			"display_label": String(candidate.get("display_label", "기록 후보")),
-			"source_label": "출처: %s" % String(source_titles.get(source_record_id, "확보 기록"))
+			"source_label": "출처: %s" % String(source_titles.get(source_record_id, "확보 기록")),
+			"source_record_id": source_record_id,
+			"source_observation": String(source_observations.get(source_record_id, ""))
 		})
 	return {
 		"case_label": _player_authored_manual_case_label(),
@@ -1427,7 +1619,7 @@ func _player_authored_manual_guide() -> Dictionary:
 			"portrait_visible": true
 		}
 	return {
-		"name": "기록관 아카",
+		"name": "루메",
 		"message": "확보한 기록과 문장을 대조하세요. 판단은 피해자 보호와 회수 대응에서 확인됩니다.",
 		"portrait_visible": false
 	}
@@ -1528,12 +1720,45 @@ func _focus_first_enabled_action(container: Node) -> void:
 
 func _show_inline_result(return_to_points: bool) -> void:
 	_inline_result_returns_to_points = return_to_points
+	_result_pages.clear()
+	_result_page_index = 0
+	var remaining := _result_label.text
+	while not remaining.is_empty():
+		var count := mini(140, remaining.length())
+		if count < remaining.length():
+			var boundary := remaining.substr(0, count).rfind(" ")
+			if boundary >= 70:
+				count = boundary + 1
+		_result_pages.append(remaining.left(count))
+		remaining = remaining.substr(count)
+	if not _result_pages.is_empty():
+		_result_label.text = _result_pages[0]
 	_result_toast.visible = true
 	%ResultNextButton.visible = return_to_points
 	%ResultCloseButton.visible = not return_to_points
+	_update_result_page_action()
+
+
+func _update_result_page_action() -> void:
+	var action: Button = %ResultNextButton if _inline_result_returns_to_points else %ResultCloseButton
+	var more := _result_page_index + 1 < _result_pages.size()
+	action.text = "계속 읽기  %d / %d" % [_result_page_index + 1, _result_pages.size()] if more else ("다음 조사" if _inline_result_returns_to_points else "닫기")
+	call_deferred("_focus_result_page_action")
+
+
+func _focus_result_page_action() -> void:
+	if not is_inside_tree() or not _result_toast.is_visible_in_tree():
+		return
+	var action: Button = %ResultNextButton if _inline_result_returns_to_points else %ResultCloseButton
+	action.grab_focus()
 
 
 func _close_inline_result() -> void:
+	if _result_page_index + 1 < _result_pages.size():
+		_result_page_index += 1
+		_result_label.text = _result_pages[_result_page_index]
+		_update_result_page_action()
+		return
 	_result_toast.visible = false
 	if _inline_result_returns_to_points:
 		_return_to_point_picker()
@@ -1699,6 +1924,7 @@ func _add_resolution_confirm_panel(parent: Control) -> void:
 
 func _refresh_resolution_attempt_button() -> void:
 	var can_enter: bool = GameState.can_enter_resolution_phase()
+	_resolution_attempt_button.visible = true
 	_resolution_attempt_button.disabled = not can_enter
 	if can_enter:
 		if GameState.is_forced_recovery_phase():

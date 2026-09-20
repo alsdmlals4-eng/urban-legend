@@ -1,0 +1,30 @@
+{
+  "structural_validation": "PASS",
+  "button_states": 6,
+  "source_crop_pixels": "EXACT",
+  "motion_frames": 3,
+  "motion_visual_review": "REVISION_REQUIRED_NON_EYE_COLOR_DRIFT",
+  "runtime": "NOT_RUN",
+  "human_approval": "NOT_REQUESTED_FOR_FAILED_MOTION",
+  "sha256": {
+    "button-atlas.json": "eebd2b05e43e23a3de0e263e2a0a3210ecaa48844e83be1029288563f01dc502",
+    "button-atlas.png": "806158b1ff182a6993e44871527eb67780107b89098a25102c904a2db492a1cb",
+    "button-board.png": "a267a777a231ec963c0a31158564a4490e7cc09633690316f1abdb86d24249d2",
+    "button-disabled.png": "ae13b5441d61a92bc663089de38b03b6b68a31d152ef007f5d21efaf33feab00",
+    "button-focus.png": "782c578332506b0d56d9c90bd24f50e7fb0d7d84a72878a76e202521ea321998",
+    "button-hover.png": "8526b1ce79559676816e08e566b3ecd3b0d98bcbebce21874725b9d3763890df",
+    "button-normal.png": "23fdb82ee1eb47feb062e4966eee5f955698ffa0d8f21d8a02f2b93585d35f35",
+    "button-pressed.png": "140bbd85035173e60972ee4f59c504aca4b29c67f1a4514c829cd6eabb50bf10",
+    "button-selected.png": "66f2df05b7b27aa051d730d1eb1d43c6d48d557b5c7135575b9e1b4a20e48a7f",
+    "button-states.aseprite": "6cc5fa7f0c3ff21e6600d145eebfba76905d9e050c3752d664eb31b4fa189c38",
+    "lume-blink-atlas.json": "fee62c2f61f5218ed1c36d064ea45d4369fb9c8761de2a705cc568c9a774a5d0",
+    "lume-blink-atlas.png": "d2667e49e30779b5609467a547278b3701a73f7d900bb23091cb09fc80036e41",
+    "lume-blink-sequence.aseprite": "54732050a96e37803bbabe5b05cdfd43166e7c3e44106e1bf230a68a182e742f",
+    "lume-blink.png": "20663ebec20045aece0934e6e7c85a76f06019929fed7a0f24e78f5583f4e491",
+    "lume-open.png": "1dc8e66fd3176b27b73d7091eef5939cd6c6c78d68f79c355e141e5c375d12b3",
+    "preview.html": "6c9d737a3a2b9a461376168a8d38966c3a92ae5e7bc2f53be71bd53b6051fff3"
+  },
+  "storage": "PROJECT_LOCAL_CANDIDATES_NOT_REMOTE_CANON",
+  "source_generation": "exec-372ff532-6e47-4f60-9103-4e0c0f63f480",
+  "provenance": "Approved button board cropped mechanically in Aseprite; approved M04 Lume used as image-model edit reference; closed-eye output has non-eye color drift and is rejected for runtime."
+}

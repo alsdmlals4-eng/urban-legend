@@ -12,6 +12,7 @@ const DEFAULT_DIALOGUE_NODE_ID := "dialogue_intro"
 const DEFAULT_FIELD_NODE_ID := "dialogue_intro"
 const STABILITY_SCHEMA_VERSION := 2
 const RECOVERY_CLOCK_DANGER_MAX := 6
+const RECOVERY_CLOCK_INTERVAL := 12.0
 const RECOVERY_CLOCK_SURGE_DAMAGE := 8
 const RECOVERY_CLOCK_SURGE_FALLBACK := 3
 const DEFAULT_MINIGAME_ID := "minigame_frequency_sync"
@@ -252,6 +253,16 @@ func reset_run_state() -> void:
 	set_selected_agent_ids(["agent_kwon_narae", "agent_oh_hyun", "agent_kang_ijun"])
 	_clear_investigation_method_state()
 	reset_recovery_pattern_state(false)
+
+
+## Opens daily preparation without selecting or dispatching an incident.
+func begin_campaign_case_selection(agent_ids: Array) -> bool:
+	reset_run_state()
+	if current_episode_data.is_empty():
+		return false
+	set_selected_agent_ids(agent_ids)
+	set_current_scene_path(SCENE_PREPARATION)
+	return true
 
 
 ## Returns the active episode title.
@@ -724,10 +735,10 @@ func apply_story_effects(result_data: Dictionary) -> void:
 
 
 ## Applies a minigame success or failure result and stores it for save/load.
-func save_minigame_result(minigame_id: String, successful: bool, details: Dictionary = {}) -> void:
+func save_minigame_result(minigame_id: String, successful: bool, details: Dictionary = {}) -> bool:
 	var minigame := get_minigame(minigame_id)
 	if minigame.is_empty():
-		return
+		return false
 
 	var result_state := "success" if successful else "failure"
 	var result_text_key := "success_result_text" if successful else "failure_result_text"
@@ -747,7 +758,7 @@ func save_minigame_result(minigame_id: String, successful: bool, details: Dictio
 	minigame_results[minigame_id] = result
 
 	apply_story_effects(_make_minigame_effect_data(minigame, successful))
-	save_game()
+	return save_game()
 
 
 ## Tries to consume the frequency filter for one minigame hint.
@@ -1102,26 +1113,9 @@ func get_selected_recovery_supports() -> Array:
 
 
 ## Keeps M04 preparation as a visible, case-local support gate rather than a stat bonus.
-func _get_recovery_support_availability(support_id: String) -> Dictionary:
-	if get_current_episode_id() != M04_EPISODE_ID or support_id != M04_PREPARATION_SUPPORT_ID:
-		return {"available": true, "reason": ""}
-
-	var operation := get_active_campaign_operation()
-	if String(operation.get("case_id", "")) != M04_EPISODE_ID:
-		return {"available": true, "reason": ""}
-
-	var context: Variant = operation.get("dispatch_context", {})
-	var dispatch_context: Dictionary = context if typeof(context) == TYPE_DICTIONARY else {}
-	if int(dispatch_context.get("m04_preparation_capacity", 0)) >= 1:
-		return {"available": true, "reason": ""}
-
-	return {
-		"available": false,
-		"reason": "현장 준비가 없습니다. 준비실에서 ‘대기·회복’ 반일을 한 번 완료하면 권나래의 귀가 기억 고정 보조를 사용할 수 있습니다."
-	}
-
-
-## Returns true when an agent recovery support has already been used.
+func _get_recovery_support_availability(_support_id: String) -> Dictionary:
+	# All existing support effects and once-per-case use limits remain with their owners.
+	return {"available": true, "reason": ""}
 func has_used_agent_support(support_id: String) -> bool:
 	return used_agent_supports.has(support_id)
 
@@ -1425,6 +1419,7 @@ func get_case_report_summary() -> Dictionary:
 		"minigame_results": get_minigame_results(),
 		"recovery_result": recovery_result,
 		"anomaly_manual_record": get_current_anomaly_manual_record(),
+		"recovery_pattern_learning": get_recovery_pattern_learning(),
 		"unlocked_records": record_entries,
 		"unlocked_research_rewards": reward_entries,
 		"unlocked_equipment": equipment_entries,
@@ -1487,6 +1482,36 @@ func get_anomaly_manual_record(episode_id: String = "") -> Dictionary:
 ## Returns the current episode's player-authored manual record.
 func get_current_anomaly_manual_record() -> Dictionary:
 	return get_anomaly_manual_record(get_current_episode_id())
+
+
+## Current authored text for field reference and immutable-at-attempt snapshots.
+func get_authored_manual_draft_lines() -> Array[String]:
+	var lines: Array[String] = []
+	var manual := _to_dictionary(get_current_episode().get("investigation_manual", {}))
+	if manual.is_empty():
+		return lines
+	var drafts := get_manual_draft_slots(manual)
+	var earned := get_collected_clue_ids()
+	var candidates: Dictionary = {}
+	for candidate in _to_dictionary_array(manual.get("candidate_keywords", [])):
+		if String(candidate.get("source_record_id", "")) in earned:
+			candidates[String(candidate.get("id", ""))] = String(candidate.get("display_label", ""))
+	for page in _to_dictionary_array(manual.get("pages", [])):
+		var sentence := ""
+		var has_selection := false
+		for segment in _to_dictionary_array(page.get("deduction_segments", [])):
+			if String(segment.get("kind", "")) == "slot":
+				var candidate_id := String(drafts.get(String(segment.get("slot_id", "")), ""))
+				if candidates.has(candidate_id):
+					has_selection = true
+					sentence += String(candidates[candidate_id])
+				else:
+					sentence += "〔미작성〕"
+			else:
+				sentence += String(segment.get("text", ""))
+		if has_selection:
+			lines.append("%s\n%s" % [String(page.get("title", "작성한 규칙")), sentence])
+	return lines
 
 
 ## Returns the current Canon-compatible player-authored draft slots for one episode.
@@ -2092,6 +2117,9 @@ func record_recovery_pattern_outcome(pattern_id: String, response_id: String, co
 		"response_id": response_id,
 		"correct": correct,
 		"reason": reason,
+		"authored_draft_lines": get_authored_manual_draft_lines(),
+		"pattern_name": String(decision_context.get("pattern_name", pattern_id)),
+		"response_label": String(decision_context.get("response_label", response_id)),
 		"attempts": int(_to_dictionary(recovery_pattern_learning.get(pattern_id, {})).get("attempts", 0)) + 1
 	}
 	recovery_pattern_learning[pattern_id] = record
@@ -2120,13 +2148,37 @@ func reset_recovery_clock_state() -> void:
 
 
 ## Starts a meaningful recovery turn. Reading a manual reference never calls this.
-func begin_recovery_clock_turn() -> Dictionary:
+func begin_recovery_clock_turn(advance_legacy_danger: bool = true) -> Dictionary:
 	var state := get_recovery_clock_state()
-	if int(state.get("turn_count", 0)) > 0:
+	if advance_legacy_danger and int(state.get("turn_count", 0)) > 0:
 		state["danger"] = mini(RECOVERY_CLOCK_DANGER_MAX, int(state.get("danger", 0)) + 1)
 	state["turn_count"] = int(state.get("turn_count", 0)) + 1
 	recovery_clock_state = _normalize_recovery_clock_state(state)
 	return get_recovery_clock_state()
+
+
+## Only the active field may submit simulation delta. Never submit wall-clock absence.
+func advance_recovery_clock_time(delta: float) -> Dictionary:
+	var state := get_recovery_clock_state()
+	var ticks := 0
+	var surges := 0
+	if is_finite(delta) and delta > 0.0:
+		var elapsed := float(state.get("active_seconds", 0.0)) + delta
+		ticks = int(floor(elapsed / RECOVERY_CLOCK_INTERVAL))
+		state["active_seconds"] = fmod(elapsed, RECOVERY_CLOCK_INTERVAL)
+		var pressure := int(state.get("danger", 0)) + ticks
+		if ticks > 0 and pressure >= RECOVERY_CLOCK_DANGER_MAX:
+			var span := RECOVERY_CLOCK_DANGER_MAX - RECOVERY_CLOCK_SURGE_FALLBACK
+			surges = 1 + int((pressure - RECOVERY_CLOCK_DANGER_MAX) / span)
+			pressure = RECOVERY_CLOCK_SURGE_FALLBACK + (pressure - RECOVERY_CLOCK_DANGER_MAX) % span
+		state["danger"] = pressure
+		state["surge_count"] = int(state.get("surge_count", 0)) + surges
+		recovery_clock_state = _normalize_recovery_clock_state(state)
+	var result := get_recovery_clock_state()
+	result["ticks"] = ticks
+	result["surge_triggered"] = surges > 0
+	result["surge_damage"] = surges * RECOVERY_CLOCK_SURGE_DAMAGE
+	return result
 
 
 ## Applies a bounded support effect without treating it as a failed recovery response.
@@ -2138,14 +2190,12 @@ func change_recovery_clock_danger(delta: int) -> Dictionary:
 
 
 ## Resolves one committed recovery response. Correct field work relieves pressure;
-## complete manual verification relieves one additional segment. A wrong response
+## note verification is legacy metadata, never a physical effect. A wrong response
 ## creates one bounded escalation event rather than stacking unrelated penalties.
-func resolve_recovery_clock_outcome(correct: bool, verified: bool) -> Dictionary:
+func resolve_recovery_clock_outcome(correct: bool, _verified: bool) -> Dictionary:
 	var state := get_recovery_clock_state()
 	if correct:
 		state["danger"] = maxi(0, int(state.get("danger", 0)) - 1)
-		if verified:
-			state["danger"] = maxi(0, int(state.get("danger", 0)) - 1)
 	else:
 		state["danger"] = mini(RECOVERY_CLOCK_DANGER_MAX, int(state.get("danger", 0)) + 2)
 	var surge_triggered := false
@@ -2335,6 +2385,19 @@ func complete_faction_request(request_id: String, faction_id: String) -> bool:
 	change_faction_relation(faction_id, 10, "request_relation:%s" % clean_id)
 	grant_echo_reward("request_reward:%s" % clean_id, 20)
 	return true
+
+
+func perform_daily_faction_request(instance_id: String, agent_id: String, roll_override: int = 0) -> Dictionary:
+	if get_campaign_slot_phase() != "planning" or not get_active_campaign_operation().is_empty():
+		return {"error": "현재 사건의 결과를 확인하고 일상에서 수행하세요."}
+	var request := campaign_state.get_request(instance_id)
+	if String(request.get("kind", "")) != "dispatch" or String(request.get("status", "")) != "accepted":
+		return {"error": "수락한 일상 파견 의뢰만 수행할 수 있습니다."}
+	if get_agent_by_id(agent_id).is_empty():
+		return {"error": "담당 요원을 선택하세요."}
+	if not campaign_state.assign_request(instance_id, agent_id):
+		return {"error": "의뢰 담당 요원을 배정하지 못했습니다."}
+	return resolve_faction_request(instance_id, agent_id, roll_override)
 
 
 func resolve_faction_request(instance_id: String, agent_id: String, roll_override: int = 0) -> Dictionary:
@@ -2945,17 +3008,19 @@ func get_current_result_research_reward() -> Dictionary:
 
 
 ## Saves the recovery result after the anomaly core is stabilized.
-func save_recovery_result(successful: bool, result_status: String, anomaly_stability: int) -> void:
+func save_recovery_result(successful: bool, result_status: String, anomaly_stability: int) -> bool:
 	recovery_successful = successful
 	recovery_result_status = result_status
 	recovery_result_stability = anomaly_stability
+	if not result_status.strip_edges().is_empty():
+		campaign_state.settle_case_outcome(get_current_episode_id(), "success" if successful else ("retreat" if result_status in ["retreated", "approved_withdrawal"] else "failure"))
 	if successful:
 		add_flag(FLAG_CAPTURE_SUCCESS)
 		add_flag("capture_result_%s" % result_status)
 		var grade := get_result_resolution_grade()
 		_apply_resolution_unlocks(grade)
 		grant_resolution_echo_reward(get_current_episode_id(), grade)
-	save_game()
+	return save_game()
 
 
 ## Returns true after a successful anomaly core recovery.
@@ -2978,13 +3043,26 @@ func save_game() -> bool:
 	if current_episode_data.is_empty() and not load_episode(DEFAULT_EPISODE_PATH):
 		return false
 
-	var file := FileAccess.open(SAVE_FILE_PATH, FileAccess.WRITE)
+	# Never truncate the last usable primary while preparing its replacement.
+	# One sibling stage is reused after failure; it is not a loadable checkpoint.
+	var pending_path := SAVE_FILE_PATH + ".pending"
+	var bytes := JSON.stringify(_make_save_data(), "\t").to_utf8_buffer()
+	var file := FileAccess.open(pending_path, FileAccess.WRITE)
 	if file == null:
-		push_error("Save file cannot be opened: %s" % SAVE_FILE_PATH)
 		return false
-
-	file.store_string(JSON.stringify(_make_save_data(), "\t"))
-	return true
+	var written := file.store_buffer(bytes)
+	file.flush()
+	var write_error := file.get_error()
+	file.close()
+	if not written or write_error != OK:
+		return false
+	if FileAccess.get_file_as_bytes(pending_path) != bytes:
+		return false
+	# Same-directory promotion avoids removing/moving the primary first.
+	return DirAccess.rename_absolute(
+		ProjectSettings.globalize_path(pending_path),
+		ProjectSettings.globalize_path(SAVE_FILE_PATH)
+	) == OK
 
 
 ## Loads the current MVP run from user://urban_legend_save.json.
@@ -3604,7 +3682,12 @@ func _to_dictionary(value: Variant) -> Dictionary:
 
 func _normalize_recovery_clock_state(value: Variant) -> Dictionary:
 	var source := _to_dictionary(value)
+	var elapsed_value: Variant = source.get("active_seconds", 0.0)
+	var elapsed := float(elapsed_value) if typeof(elapsed_value) in [TYPE_INT, TYPE_FLOAT] else 0.0
+	if not is_finite(elapsed):
+		elapsed = 0.0
 	return {
+		"active_seconds": clampf(elapsed, 0.0, RECOVERY_CLOCK_INTERVAL - 0.000001),
 		"danger": clampi(int(source.get("danger", 0)), 0, RECOVERY_CLOCK_DANGER_MAX),
 		"turn_count": maxi(0, int(source.get("turn_count", 0))),
 		"surge_count": maxi(0, int(source.get("surge_count", 0)))

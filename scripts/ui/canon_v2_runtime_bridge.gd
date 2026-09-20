@@ -400,6 +400,7 @@ func _get_player_manual_state() -> Dictionary:
 		"active_rule_ids": active_rule_ids,
 		"evidence_records": _array_copy(manual.get("evidence_records")),
 		"candidate_keywords": _array_copy(manual.get("candidate_keywords")),
+		"authored_draft_lines": game_state.get_authored_manual_draft_lines(),
 		"semantic_relations": _array_copy(manual.get("semantic_relations"))
 	}
 

@@ -1,7 +1,7 @@
 # TEST_CHECKLIST
 
-> 현재 10일·반일 기획·Gate: `docs/CURRENT_PLANNING_CANON.md` + `docs/current-planning-canon.json` + `docs/design/PROJECT_AI_PRODUCTION_SPEC.md`
-> 문서 역할: 병합된 CORE/ANNUAL runtime의 회귀 Checklist. 새 10일 cadence 구현 권한을 부여하지 않는다.
+> 현재 DAILY_CASE 기획·Gate: `docs/CURRENT_PLANNING_CANON.md` + `docs/current-planning-canon.json` + `docs/design/PROJECT_AI_PRODUCTION_SPEC.md`
+> 문서 역할: 현재 consumer 회귀와 CORE/ANNUAL 저장 호환 이력을 구분한다. 아래 달력/반일 전제는 당시 계약이며 현재 날짜 gate를 복원하는 근거가 아니다. 테스트 전환 시 중복 결과·저장·사건 접근성 불변식은 유지한다.
 > 현재 상태·승인: `docs/CURRENT_HANDOFF.md` + `docs/CURRENT_DECISION_OVERLAY.md`; 과거 회귀 계보: `docs/CURRENT_STATUS.md`
 > 코어: `docs/PROJECT_CORE.md`  
 > 로드맵: `MVP_ROADMAP.md`  
