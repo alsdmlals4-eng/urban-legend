@@ -1,3 +1,25 @@
+# 현재 인계 — 2026-09-20 운영규칙 경량화·재미 검증
+
+현재 승인 작업은 `D-2026-09-20-LEAN-OPERATING-AND-EXPERIENCE-METHOD`다. 읽기 순서는 `AGENTS.md`, Base 선택 적용과 재조회 조건은 `docs/BASE_RULES_VERSION.md`에서 시작한다. 아래 과거 제품 snapshot을 현재 실행 권한으로 재사용하지 않는다.
+
+- 범위: 시작 문서·분야 Skill·어댑터·관련 검사; 게임 코드/씬/데이터/자산/설치·전역 설정 변경 없음.
+- 실행 순서: 원본/스킬 연결 교정 → 생성물 및 계약 검증 → 전체 검토 2회와 독립 검토 → current-task PR의 필수 검사 → 허용될 때 정상 병합 → 최신 main readback.
+- 기존 작업 보존: `codex/daily-case-structure-design-20260910` (`bc8320e4783a015403edc8cde3dc1075e5eecbca`)은 시작 시 main보다 44커밋 앞서 있었다. 변경·미추적 파일을 그대로 두었다. 이 SHA는 이번 조사 snapshot이며 다음 대화에서 다시 fetch/비교한다.
+- 최초 main baseline `c82291101bf0a2bb4d821a12bca9f14070ee2886`은 Python 503개 중 502 PASS / 기존 headless helper 1 FAIL이었다. 이후 사용자가 **PR #362 교정·검증·정상 병합 → PR #363 재결합·검증·정상 병합**을 명시 승인했다. 다른 기존 PR은 계속 읽기 전용이다.
+- 새 재미 검증 방법의 실제 프로젝트 HUMAN은 `NOT_RUN`. 이미 승인된 제품 구현 continuation을 사람 검증 대기로 다시 잠그지 않는다.
+- 구현 결과: Base #883/#885 선택 적용, 분야 Skill 10개·기존 UX/검증 책임 연결. 최초 508 PASS / 1 FAIL 기록은 아래 교정으로 대체하며 실패 이력은 보존한다. 기존 read-order·generated adapter·exact CI validator PASS와 전체 검토 1 자체 교정 + 검토 2 독립 검토를 재사용한다.
+- 환경 한계: 별도 Skill quick_validate는 PyYAML 부재로 실행 실패; 설치 변경 없이 프로젝트 자체 Skill 무결성 검사로 확인했다. 실제 게임 실행·Human 재미·최종 아트·출시는 이번 운영 작업의 검증 범위가 아니다.
+- 완료 경계: `POST_COMPLETION_ADVERSARIAL_REVIEW_REQUIRED`의 전체 2회 검토 기록은 `skills/SKILL_LEARNING_LOG.md`; 병합 재결합은 해당 변경분만 확인하고 예산을 초기화하지 않는다. `REMAINING_WORK_COMPLETION_GATE`와 `CLEAN_REVIEW_EXIT`의 병합 결과는 [PR #363](https://github.com/alsdmlals4-eng/urban-legend/pull/363)의 최종 exact HEAD 검사·review·merge 상태 및 병합 후 readback 댓글에서 재조회한다. 이 문서의 병합 전 snapshot을 계속 OPEN 또는 이미 MERGED라고 추정하지 않는다.
+- PR: [urban-legend #363](https://github.com/alsdmlals4-eng/urban-legend/pull/363), `codex/base-lean-20260920`. 구현 commit `887167495de8d4658a42cb7b0e109eb314f75be3`를 push하고 원격 exact HEAD를 확인했다. 최초 원격 adapter·문서·Base 채택 검사들은 통과했으나 [core/docs 검사](https://github.com/alsdmlals4-eng/urban-legend/actions/runs/35478252938)는 기존 headless 문제로 실패했다.
+- 위 최초 원격 unittest는 496개 중 495 PASS / 동일 1 FAIL이었다. 로컬 pytest 509개와 수집 범위가 다르므로 개수를 합치지 않는다.
+- #362 완료: 검토 HEAD `cb41a35fa69dee12312bd365775ac791204fe377`, 독립 검토 blocking/minor 0, 원격 10 workflow·17 checks PASS, 미해결 thread 0을 확인하고 정상 merge `78c10b86c4ac445a43bfb166088d01df02ed5530`. 병합된 파일은 검토 HEAD와 같고 main Python 503 PASS 및 승인 계약/생성물 PASS를 재확인했다. 강제 push·main 직접 push·관리자 우회 없음.
+- #363 후속: 위 main을 merge하여 helper 회귀를 해소하고 adapter 보호 기준·파생본을 재결합한다. 승인된 helper 외 보호 경로는 변경하지 않으며 이 PR의 최신 main 대비 제품 diff는 0이어야 한다. Windows 긴 경로·생성물 충돌은 전역 설정 변경 없이 이번 작업의 경로 옵션·기존 생성기로 처리한다.
+- 재결합 검증: pytest 509 PASS / unittest 496 PASS, Windows read-order PASS, 운영 계약·생성물 PASS, diff check PASS. 위 main 대비 게임 코드·씬·데이터·자산·addon 변경 0. 원격 검사·재결합 독립 검토·최종 병합은 완료 후 PR 증거로 확인한다.
+- #362 병합 후 원격 main 검증도 완료: [full matrix](https://github.com/alsdmlals4-eng/urban-legend/actions/runs/35505500983), [core/Godot](https://github.com/alsdmlals4-eng/urban-legend/actions/runs/35505500969), [live-editor pilot](https://github.com/alsdmlals4-eng/urban-legend/actions/runs/35505501526) PASS. 이는 새 사람 플레이·재미·최종 아트 검증이 아니다.
+- 병합 뒤 다음 작업: 원래 브랜치 44개 커밋·19개 tracked import 수정·81개 untracked 상태를 재확인하고 최신 main 및 다른 열린 PR과 중첩을 분류한다. 게임 구현은 별도 승인된 W01~W12 계약의 실제 successor를 따라 M04 정상 입력(CCTV 성공 포함) → 시계/저장 경계 → UI·컷인·일상·사건 확장 → 재미/접근성·문서/전달 순으로 이어간다. 구형 일정제·아카를 복원하거나 #359/#360/#361 등을 무단 병합하지 않는다.
+
+## 보존된 제품 병합 계보 (아래는 당시 snapshot)
+
 # 괴이기록국 Current Handoff
 
 ## 2026-09-20 — 명시 승인된 PR #362 교정

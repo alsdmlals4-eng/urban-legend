@@ -20,13 +20,14 @@ description: Use for Urban Legend BGM, SFX, voice-event, mixing, silence, and au
 
 ## Read first
 
-1. `docs/CURRENT_STATUS.md`
-2. `docs/PROJECT_CORE.md`
-3. `docs/GAME_DESIGN_DOCUMENT.md`
-4. `docs/planning/PROJECT_DIRECTION.md`
-5. 관련 서사·UI·Scene
-6. 실제 오디오 자산·이벤트
-7. TEST_CHECKLIST.md
+먼저 `AGENTS.md`의 공통 읽기 순서를 따른다. 아래는 해당 분야 작업의 추가 자료이며 과거 planning 문서는 현재 결정이 인용할 때만 사용한다.
+
+1. `docs/PROJECT_CORE.md`
+2. `docs/design/PROJECT_AI_PRODUCTION_SPEC.md`
+3. `docs/planning/PROJECT_DIRECTION.md`
+4. 관련 서사·UI·Scene
+5. 실제 오디오 자산·이벤트
+6. TEST_CHECKLIST.md
 
 ## Domain workflow
 
@@ -42,3 +43,7 @@ description: Use for Urban Legend BGM, SFX, voice-event, mixing, silence, and au
 ## Selective support
 
 접근성 계약은 `urban-legend-ux-ui-accessibility`, 변경·회귀 증거는 `reviewing-and-validating-project-changes`.
+
+## 조건부 계보·호환 참조
+
+`docs/GAME_DESIGN_DOCUMENT.md`는 역사·회귀·호환 추적에 필요한 경우만 읽는다. current authority는 AGENTS와 현재 결정이 우선한다.

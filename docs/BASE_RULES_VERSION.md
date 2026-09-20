@@ -16,7 +16,17 @@ reviewed_base_main_policy_commit: 19355b7ef065a21d0f2b685c7d9be64a4a3970f8
 reviewed_base_main_policy_state: POLICY_EVIDENCE_NOT_RELEASE_IDENTITY
 ```
 
-`skills/PROJECT_BASE_ADAPTER.json`이 Base route와 프로젝트 분야 Skill 10개를 결합한다. 현재 프로젝트 릴리스 정체성은 Base v9.4.4이며, Base `main`의 `19355b7ef065a21d0f2b685c7d9be64a4a3970f8`는 작업 영수증 validator와 운영 artifact generator를 제공하는 최신 정책 증거다. 이 정책 commit을 별도 Base 릴리스로 오인하지 않는다.
+`skills/PROJECT_BASE_ADAPTER.json`이 Base route와 프로젝트 분야 Skill 10개를 결합한다. 위 값은 Base v9.4.4의 released identity와 기존 validator 재현 기준이다. 과거 policy commit을 현재 원격 main이라고 부르지 않는다.
+
+## 2026-09-20 선택 적용: Base #883·#885
+
+- 최신 원격 확인: `23ecad5a3084f97c4e5d1e39a9a6d70d1eeb37ef`. #883 경량화와 #885 경험→표현·재미 검증 방법을 사용자 승인으로 선택 적용한다. 릴리스/엔진/저장/자산 잠금은 바꾸지 않는다.
+- 적용 기준·exact source·원문 hash는 정본 adapter의 `shared_overrides.managing-game-project-operating-system.selective_policy_adoption`이 소유한다. 사람 실행 계약은 `docs/OPERATING_MODEL.md`, 전문 선택은 `docs/WORK_MODE_AND_SKILL_ROUTING.md`, 재미 검증은 `docs/UX_UI_SYSTEM.md#experience-verification`로 연결한다.
+- 최신 main은 매 새 채택/갱신 판단 시 fetch하여 비교한다. 위 SHA는 이번 검토·재현 기준이지 영구적인 “최신”이 아니다. 변경분의 영향·승인을 확인한 뒤 그 범위만 갱신한다.
+- 나열하지 않은 Base 스킬은 기존 released package를 유지한다. 선택 정책이 과거 포괄적 스킬 문구보다 해당 승인 범위에서 우선하지만 보안·권한·저장 보호를 완화하지 않는다.
+- 생성된 `skills/PROJECT_PATH_ADAPTER.json` 등의 옛 경로는 호환 이력이다. 새 실행의 owner는 정본 adapter `current_authority`다. 생성물/보존된 legacy input은 수동 교정하지 않는다.
+- 이번 migration의 보호 기준은 승인된 PR #362 병합을 확인한 프로젝트 main `78c10b86c4ac445a43bfb166088d01df02ed5530`로 재결합한다. 최초 조사 기준 `c82291101bf0a2bb4d821a12bca9f14070ee2886`의 helper 회귀가 정상 교정된 후의 기준이며, 기존 게임 브랜치의 44커밋을 흡수하지 않는다. 보호 경로 목록·정책 hash는 그대로다.
+- `MACHINE`의 계약·라우팅 통과는 `RUNTIME / HUMAN / FUN_PASS`가 아니다. 원래 브랜치·다른 PR·설치 플러그인·전역 설정·승인 자산은 보호한다.
 
 ## 프로젝트 보호 경계
 

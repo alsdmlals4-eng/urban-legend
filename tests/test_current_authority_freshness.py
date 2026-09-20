@@ -42,11 +42,10 @@ class CurrentAuthorityFreshnessTests(unittest.TestCase):
         self.assertIn("IMPLEMENTED / ISSUE_181_CLOSED", overlay)
         self.assertIn("product_version.gd", overlay)
 
-        snapshot = start.split("## 현재 제품·Gate Snapshot", 1)[1].split(
-            "## Verified successor와 미완료를 구분한다", 1
-        )[0]
-        self.assertNotIn("runtime_implementation: NOT_AUTHORIZED", snapshot)
-        self.assertIn("runtime_implementation: MERGED_MAIN", snapshot)
+        self.assertNotIn("runtime_implementation:", start)
+        self.assertIn("docs/CURRENT_HANDOFF.md", start)
+        self.assertIn("docs/CURRENT_DECISION_OVERLAY.md", start)
+        self.assertIn("runtime_implementation: MERGED_MAIN", overlay)
 
     def test_base_version_has_single_current_owner(self) -> None:
         agents = self.read("AGENTS.md")
@@ -60,20 +59,16 @@ class CurrentAuthorityFreshnessTests(unittest.TestCase):
         )
 
     def test_issue_status_alone_is_not_authority_after_181_completion(self) -> None:
-        for relative_path in (
-            "START_HERE.md",
-            "AGENTS.md",
-            "docs/CURRENT_DECISION_OVERLAY.md",
-        ):
-            text = self.read(relative_path)
-            self.assertIn("Issue", text, relative_path)
+        # The front door routes to decisions; historical Issue/Gate values live
+        # with their owner rather than being duplicated into every startup file.
+        self.assertIn("Issue 상태", self.read("AGENTS.md"))
         overlay = self.read("docs/CURRENT_DECISION_OVERLAY.md")
         self.assertIn("Issue #181", overlay)
         self.assertIn("completed", overlay)
         self.assertIn("open 상태만으로 구현 권한이나 current truth를 만들지 않는다", overlay)
         start = self.read("START_HERE.md")
-        self.assertIn("DEFERRED_VALID / PLAN_LOCK", start)
-        self.assertIn("CURRENT_VALID / IMPLEMENTATION_GATE", start)
+        self.assertIn("CURRENT_DECISION_OVERLAY.md", start)
+        self.assertIn("CURRENT_HANDOFF.md", start)
         self.assertIn("predecessor history", start)
 
     def test_issue_disposition_audit_covers_all_baseline_open_issues(self) -> None:

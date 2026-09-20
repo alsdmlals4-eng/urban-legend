@@ -27,8 +27,10 @@ class ContractTests(unittest.TestCase):
         agents = AGENTS.read_text(encoding="utf-8")
         for token in ("build_store_questionnaire_consistency", "asset_rights_coverage", "RELEASE_BLOCKED_UNVERIFIED", "Steam", "STOVE"):
             self.assertIn(token, release)
-        for path in ("docs/PLATFORM_RELEASE_AND_ASSET_RIGHTS_PROFILE.md", "docs/ASSET_RIGHTS_AND_PROVENANCE_RECORD.md", "docs/GAME_RELEASE_COMPLIANCE_EVIDENCE_PACK.md"):
-            self.assertIn(path, agents)
+        self.assertIn("docs/PLATFORM_RELEASE_AND_ASSET_RIGHTS_PROFILE.md", agents)
+        profile = PROFILE.read_text(encoding="utf-8")
+        for path in ("docs/ASSET_RIGHTS_AND_PROVENANCE_RECORD.md", "docs/GAME_RELEASE_COMPLIANCE_EVIDENCE_PACK.md"):
+            self.assertIn(path, profile)
 
 if __name__ == "__main__":
     unittest.main()

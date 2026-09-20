@@ -20,12 +20,13 @@ description: Use for Urban Legend worldbuilding, episode narrative, dialogue, re
 
 ## Read first
 
-1. `docs/CURRENT_STATUS.md`
-2. `docs/PROJECT_CORE.md`
-3. `docs/planning/NARRATIVE_CONTENT_PLAN.md`
-4. `docs/PROJECT_CONTEXT.md`
-5. 관련 `data/`·대화·이벤트 파일
-6. TEST_CHECKLIST.md
+먼저 `AGENTS.md`의 공통 읽기 순서를 따른다. 아래는 해당 분야 작업의 추가 자료이며 과거 planning 문서는 현재 결정이 인용할 때만 사용한다.
+
+1. `docs/PROJECT_CORE.md`
+2. `docs/planning/NARRATIVE_CONTENT_PLAN.md`
+3. `docs/PROJECT_CONTEXT.md`
+4. 관련 `data/`·대화·이벤트 파일
+5. TEST_CHECKLIST.md
 
 ## Domain workflow
 

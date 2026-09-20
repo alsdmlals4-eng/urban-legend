@@ -20,13 +20,14 @@ description: Use for Urban Legend investigation, rule deduction, stabilization, 
 
 ## Read first
 
-1. `docs/CURRENT_STATUS.md`
-2. `docs/PROJECT_CORE.md`
-3. `docs/GAME_DESIGN_DOCUMENT.md`
-4. `docs/MINIGAME_SYSTEM_SPEC.md`
-5. MVP_ROADMAP.md
-6. 실제 `data/`·`scripts/`·`scenes/`
-7. TEST_CHECKLIST.md
+먼저 `AGENTS.md`의 공통 읽기 순서를 따른다. 아래는 해당 분야 작업의 추가 자료이며 과거 planning 문서는 현재 결정이 인용할 때만 사용한다.
+
+1. `docs/PROJECT_CORE.md`
+2. `docs/design/PROJECT_AI_PRODUCTION_SPEC.md`
+3. `docs/MINIGAME_SYSTEM_SPEC.md`
+4. MVP_ROADMAP.md
+5. 실제 `data/`·`scripts/`·`scenes/`
+6. TEST_CHECKLIST.md
 
 ## Domain workflow
 
@@ -42,3 +43,11 @@ description: Use for Urban Legend investigation, rule deduction, stabilization, 
 ## Selective support
 
 컨셉은 `analyzing-and-refining-game-concepts`, 코어 영향은 `identifying-project-core`, 공격 검토는 `running-adversarial-review-and-refinement`, diff 증거는 `reviewing-and-validating-project-changes`.
+
+## 경험 가설과 반증
+
+`docs/UX_UI_SYSTEM.md#experience-verification`에서 기존 핵심 경험→기능 가설→입력·선택·피드백→consumer→관찰 질문을 연결한다. 조사로 얻은 규칙이 회수 판단을 바꾸는지, UI가 정답을 대신하는지 반증을 먼저 정한다. 기준은 현재 기획 owner가 소유하며 보편 재미 점수를 강제하지 않는다.
+
+## 조건부 계보·호환 참조
+
+`docs/GAME_DESIGN_DOCUMENT.md`는 역사·회귀·호환 추적에 필요한 경우만 읽는다. current authority는 AGENTS와 현재 결정이 우선한다.

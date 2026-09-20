@@ -159,7 +159,7 @@ class ActiveDocumentReferenceTests(unittest.TestCase):
         for path in ALL_ROUTED_DOCS:
             text = path.read_text(encoding="utf-8")
             for raw_target in BACKTICK_PATH.findall(text):
-                target = raw_target.rstrip(".,:;")
+                target = raw_target.rstrip(".,:;").split("#", 1)[0]
                 if any(token in target for token in ("*", "YYYY", "<", ">")):
                     continue
                 if target in {"docs/URBAN_LEGEND_GAME_DESIGN.docx", "docs/knowledge/"}:

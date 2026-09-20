@@ -7,66 +7,9 @@
 
 이 문서는 작업에 필요한 책임 원본을 고르는 라우터다. 모든 문서를 매번 읽지 않는다.
 
-## 기본 읽기 순서
+## 읽기 경로
 
-### 일반 구현·버그 수정
-
-```text
-최신 사용자 지시
-→ START_HERE.md
-→ AGENTS.md
-→ GitHub latest main + open PR/Issue
-→ OPERATING_MODEL.md
-→ WORK_MODE_AND_SKILL_ROUTING.md
-→ repository `docs/design/PROJECT_AI_PRODUCTION_SPEC.md`
-→ CURRENT_PLANNING_CANON.md
-→ current-planning-canon.json
-→ CURRENT_DECISION_OVERLAY.md
-→ CURRENT_HANDOFF.md
-→ 구현 작업이면 current Reality Gate / Design / Plan
-→ DOCUMENTATION_MAP.md
-→ ../skills/SKILL_REGISTRY.json
-→ 실제 대상 code/data/Scene/test
-→ 필요한 조건부 문서
-```
-
-### 콘텐츠·아트·Validation·인수인계
-
-```text
-최신 사용자 지시
-→ START_HERE.md
-→ AGENTS.md
-→ GitHub latest main + open PR/Issue
-→ repository `docs/design/PROJECT_AI_PRODUCTION_SPEC.md`
-→ CURRENT_PLANNING_CANON.md
-→ current-planning-canon.json
-→ CURRENT_DECISION_OVERLAY.md
-→ CURRENT_HANDOFF.md
-→ VALIDATION_TARGET_CANON.md       # Validation·제품 Target일 때
-→ 분야별 current 책임 문서
-→ ../skills/SKILL_REGISTRY.json
-→ 실제 대상 파일
-```
-
-`CURRENT_STATUS.md`, `CURRENT_CONFIRMED_DECISIONS.md`, `CURRENT_HANDOFF_VALIDATION.md`, 과거 spec/plan은 역사·migration·evidence lineage가 필요할 때만 조건부로 읽는다.
-
-## Current authority 순서
-
-```text
-최신 사용자 승인
-→ GitHub latest main ref
-→ repository current planning
-→ CURRENT_PLANNING_CANON.md / current-planning-canon.json
-→ CURRENT_DECISION_OVERLAY.md
-→ CURRENT_HANDOFF.md
-→ current Reality Gate / implementation design / implementation plan
-→ 분야별 current canon
-→ 실제 code/data/Scene/test
-→ 자동·Human evidence
-→ 조건부 history ledger
-```
-
-현재 기획은 `PLANNING_COMPLETE / USER_FINAL_PLANNING_DECLARATION_APPROVED`다. 과거 annual spec/plan이나 predecessor Issue state는 current 실행 권한이 아니다.
+공통 current-authority 순서는 `../AGENTS.md`만 소유한다. 이 지도는 이후 필요한 분야 원본만 고른다. 현재 결정은 `CURRENT_DECISION_OVERLAY.md`, 재개 상태는 `CURRENT_HANDOFF.md`다. `CURRENT_STATUS.md`와 과거 Gate/spec/plan은 역사·migration·회귀 증거가 필요할 때만 읽는다. 문서 작성일·Issue 상태만으로 실행 권한을 추정하지 않는다.
 
 ## 운영 책임 원본
 
@@ -76,12 +19,12 @@
 | 콜드 스타트 | `../START_HERE.md` | 새 채팅·새 작업자 |
 | 사람용 전체 그림·Flow·비교표 | `docs/design/PROJECT_AI_PRODUCTION_SPEC.md` + user PDF GDD | 기획·상태·검토 |
 | Notion 이전 영수증·참조물 inventory | `migrations/NOTION_CURRENT_WORK_MIGRATION_2026-08-28.md` | legacy Notion 내용·reference provenance가 필요할 때만 |
-| 최종 10일·반일 기획·Gate | `CURRENT_PLANNING_CANON.md`, `current-planning-canon.json` | 항상 |
+| 현재 제품 기획·Gate | `CURRENT_PLANNING_CANON.md`, `current-planning-canon.json` | 제품 기획·구현 범위 |
 | current mutable decision·successor | `CURRENT_DECISION_OVERLAY.md` | 항상 |
 | current continuation | `CURRENT_HANDOFF.md` | 구현·재개·교대 |
-| current Reality Gate | `audits/2026-08-22-final-planning-implementation-reality-gate.md` | 구현 진입 |
-| current implementation design | `superpowers/specs/2026-08-22-post-planning-runtime-reconciliation-design.md` | 구현 진입 |
-| current implementation plan | `superpowers/plans/2026-08-22-post-planning-runtime-reconciliation-implementation-plan.md` | 구현 실행 |
+| 완료된 Gate provenance | `audits/2026-08-22-final-planning-implementation-reality-gate.md` | 현재 결정이 해당 근거를 인용할 때 |
+| 완료된 구현 설계 provenance | `superpowers/specs/2026-08-22-post-planning-runtime-reconciliation-design.md` | 현재 결정이 해당 근거를 인용할 때 |
+| 완료된 구현 계획 provenance | `superpowers/plans/2026-08-22-post-planning-runtime-reconciliation-implementation-plan.md` | 현재 결정이 해당 근거를 인용할 때 |
 | 장기 구현·검증 history/evidence ceiling | `CURRENT_STATUS.md` | 역사·회귀 계보 |
 | Validation Router | `VALIDATION_TARGET_CANON.md` | Validation·제품 Target |
 | 상세 승인·대체 역사 | `CURRENT_CONFIRMED_DECISIONS.md` | 역사·근거 추적 |
@@ -132,7 +75,7 @@ Human QA는 계속 `NOT_RUN`이며 자동 테스트로 대체하지 않는다.
 - Issue open 상태만으로 현재 구현 권한을 부여하지 않는다.
 - current canon·overlay·actual main을 기준으로 disposition한다.
 - 병합 뒤 open Issue뿐 아니라 merge-linked auto-close Issue도 successor freshness로 재검사한다.
-- #181은 final planning handoff 기준 `CURRENT_VALID / IMPLEMENTATION_GATE`; 실제 구현 완료 전 닫지 않는다.
+- 과거 #181 Gate는 완료 계보이며 현재 권한은 `CURRENT_DECISION_OVERLAY.md`에서 실제 successor와 함께 확인한다.
 
 ## CORE-MVP-001 보존 문서
 
@@ -144,7 +87,7 @@ Human QA는 계속 `NOT_RUN`이며 자동 테스트로 대체하지 않는다.
 
 위 문서는 역사적 마일스톤 계약·기술 회귀 근거를 보존한다. 현재 10일·반일 제품 cadence나 M01/M04 Validation 책임, 현재 implementation handoff를 소유하지 않는다.
 
-## Skill 조건부 라우팅
+## Skill 조건부 라우팅 (Conditional routing)
 
 | 작업 조건 | 프로젝트 Skill | 추가 책임 원본 |
 |---|---|---|
@@ -162,23 +105,7 @@ Human QA는 계속 `NOT_RUN`이며 자동 테스트로 대체하지 않는다.
 
 ## 현재 Gate 라우팅
 
-```text
-PLANNING_COMPLETE
-→ USER_FINAL_PLANNING_DECLARATION_APPROVED
-→ Reality Gate: HANDOFF_READY_WITH_KNOWN_REALIGNMENT
-→ implementation contract: READY
-→ runtime implementation: MERGED_MAIN (후속 변경은 current handoff와 exact main을 재판정)
-→ COMPOSITE_RESULT semantic realignment
-→ legacy grade/save compatibility
-→ additive monthly_state
-→ M01 First Session orchestration
-→ #181 main menu / Ver 4.3 기존 plan
-→ M04 shared-system preparation
-→ PRODUCT_REFERENCE_ASSET_PENDING 해소 뒤 release-near visual/audio/VFX
-→ runtime/Human evidence
-```
-
-현재 mutation blocker는 planning lock이 아니라 **runtime implementation authorization**이다.
+`CURRENT_HANDOFF.md`의 현재 블록 → `CURRENT_DECISION_OVERLAY.md`의 유효 승인 → 해당 작업의 실제 코드·검증을 비교한다. Gate·과거 PR·planning lock·runtime 완료 값을 이 지도에 복제하지 않는다. 사람 검증과 병합 상태는 각각의 증거로 확인한다.
 
 ## 기본 읽기 제외
 

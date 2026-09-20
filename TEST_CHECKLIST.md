@@ -2,13 +2,26 @@
 
 > 현재 10일·반일 기획·Gate: `docs/CURRENT_PLANNING_CANON.md` + `docs/current-planning-canon.json` + `docs/design/PROJECT_AI_PRODUCTION_SPEC.md`
 > 문서 역할: 병합된 CORE/ANNUAL runtime의 회귀 Checklist. 새 10일 cadence 구현 권한을 부여하지 않는다.
-> 상태: `docs/CURRENT_STATUS.md`  
+> 현재 상태·승인: `docs/CURRENT_HANDOFF.md` + `docs/CURRENT_DECISION_OVERLAY.md`; 과거 회귀 계보: `docs/CURRENT_STATUS.md`
 > 코어: `docs/PROJECT_CORE.md`  
 > 로드맵: `MVP_ROADMAP.md`  
-> 최신 시간 설계: `docs/superpowers/specs/2026-07-25-annual-mvp-001-seven-day-scheduling-design.md`  
+> 과거 시간 설계: `docs/superpowers/specs/2026-07-25-annual-mvp-001-seven-day-scheduling-design.md`
 > ANNUAL-MVP-002 계획: `docs/superpowers/plans/2026-07-26-annual-mvp-002-vertical-slice-implementation-plan.md`
 
-## 현재 기준
+## 재미·표현 검증 (변경 범위에 맞춰 적용)
+
+책임 원본은 `docs/UX_UI_SYSTEM.md#experience-verification`이다. 아래 미체크 항목은 방법의 누락이 아니라 개별 기능 작업 시 남길 증거이며, 이번 운영규칙 채택으로 통과 처리하지 않는다.
+
+- [ ] 경험 가설과 반례를 현재 기획·승인에 연결했다.
+- [ ] 입력·상태·규칙·선택·정보·피드백을 실제 consumer와 연결했다.
+- [ ] 효과·UI는 정보 전달·발생/종료·실패/취소/복귀·가림을 확인했다.
+- [ ] 자동 테스트 / 실제 실행 / 사람 플레이 / 최종 자산 / 출시 상태를 분리했다.
+- [ ] 실패 원인을 이해·선택/규칙·연출·반복 피로로 구분해 교정했다.
+- [ ] 기존 유효 증거를 재사용했으며, 별도 재미 점수·보고서·반복 승인·새 서버를 강제하지 않았다.
+
+사람 검증 `NOT_RUN`은 재미 통과가 아니며 승인된 독립 구현의 금지 근거도 아니다.
+
+## 보존된 제품 회귀 기준 (현재 실행 권한은 현재 결정에서 확인)
 
 - current product cadence: 10일·오전/오후, Day 1~9 조기 해결 / Day 10 정규 해결.
 - cycle main-case lock, non-numeric dispatch context save/result, Preparation docket, and M04 sequential result are implemented with focused automated evidence; numeric balance remains `UNDEFINED`.

@@ -20,18 +20,19 @@ description: Use for Urban Legend Godot and GDScript implementation, scene archi
 
 ## Read first
 
+먼저 `AGENTS.md`의 공통 읽기 순서를 따른다. 아래는 해당 분야 작업의 추가 자료이며 과거 planning 문서는 현재 결정이 인용할 때만 사용한다.
+
 1. AGENTS.md
-2. `docs/CURRENT_STATUS.md`
-3. `docs/PROJECT_CORE.md`
-4. 관련 기획 원본·Issue·작업 계약
-5. 실제 `scripts/`·`scenes/`·`data/`
-6. project.godot
-7. TEST_CHECKLIST.md
+2. `docs/PROJECT_CORE.md`
+3. 관련 기획 원본·Issue·작업 계약
+4. 실제 `scripts/`·`scenes/`·`data/`
+5. project.godot
+6. TEST_CHECKLIST.md
 
 ## Domain workflow
 
 - 현재 구현·호출자·저장 포맷과 known-good baseline을 확인한다.
-- 최소 구현 뒤 정적·Godot·저장 왕복·영향 플레이를 검증한다.
+- 최소 구현 뒤 정적 검사와 영향받은 Godot/플레이 경로를 검증한다. 저장 왕복은 저장 consumer에 영향이 있을 때 수행한다.
 
 ## Done and failure gate
 

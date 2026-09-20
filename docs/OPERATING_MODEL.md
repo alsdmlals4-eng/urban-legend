@@ -1,94 +1,49 @@
 # Urban Legend 운영 모델
 
-Base 공용 운영체계를 urban-legend의 기존 구조와 프로젝트 코어에 비파괴적으로 적용하는 단일 실행 모델이다. Base 버전은 `docs/BASE_RULES_VERSION.md` 한 곳에서 확인한다.
+## 책임과 읽기
 
-## 우선순위
+권한·current-authority 순서는 `AGENTS.md`가 소유한다. 현재 결정은 `docs/CURRENT_DECISION_OVERLAY.md`, 다음 행동은 `docs/CURRENT_HANDOFF.md`, 기획은 `docs/CURRENT_PLANNING_CANON.md`와 `docs/current-planning-canon.json`이 소유한다. 이 문서는 그 값·게임 일정·완료 SHA를 복제하지 않는다.
 
-1. 최신 사용자 지시.
-2. Repository current GDD와 `docs/CURRENT_PLANNING_CANON.md`.
-3. `AGENTS.md`, `docs/PROJECT_CORE.md`, 보호·저장·엔진 계약.
-4. `docs/CURRENT_DECISION_OVERLAY.md`, `docs/CURRENT_HANDOFF.md`와 승인 작업 계약.
-5. 프로젝트 책임 원본과 실제 코드·데이터·자산·테스트.
-6. 프로젝트에 고정된 Base 라우팅·Coverage.
-7. Base 원격 전문과 외부 근거.
+채택 Base는 `docs/BASE_RULES_VERSION.md`와 `skills/PROJECT_BASE_ADAPTER.json`에서 확인한다. released lock과 최신 운영정책의 선택 적용은 별개다. `skills/PROJECT_PATH_ADAPTER.json`은 생성된 역사 호환 뷰이며 현재 Active Context를 결정하지 않는다.
 
-외부 사례·Base 예시는 프로젝트 구현 사실이나 승인 결정을 대체하지 않는다.
+## 승인과 연속 실행
 
-## 생명주기
+| 요청/상황 | 행동 |
+|---|---|
+| 읽기 전용 조사·상태·검토 | 관련 정본·실제 증거 확인 후 답변. 수정·새 실행 문서·승인을 만들지 않음 |
+| 새 변경 | 의도·현재 상태·변경/보호·방법·완료/검증을 설명하고 승인 |
+| 유효한 같은 계약의 승인·“진행해” | `REUSED_APPROVAL`; 남은 구현·수정·검증·정상 PR·readback을 계속 |
+| 기술적 선택·범위 안 결함 | 정본·테스트로 최소 안전안을 판단하고 기록 |
+| 새 핵심 방향·주요 UX·비용·보안·파괴적 변경 | 바뀐 부분만 사용자 결정 |
+| 필요한 원문 접근 실패 | `SOURCE_DEPENDENCY_SCOPED_BLOCKER`: 의존 작업은 `BLOCKED_UNVERIFIED`; 원문을 추정하지 않음 |
+| 독립 승인 작업이 남음 | source·consumer·승인·검증을 재결합해 계속. 전체 중단 지시 또는 모두 같은 자료에 의존하면 중단 |
 
-```text
-의도·현재 단계·위험
-→ Work Mode
-→ 프로젝트 분야 Skill 0~1개
-→ 프로젝트 로컬 전문 Skill 0~1개
-→ 필요한 Base 지원 Skill 0~3개
-→ 요구·DoR·코어·보호 baseline
-→ 결과 단위·의존성·승인
-→ 설계·구현·작성
-→ 적대적 검토·비판 검증·최소 개선
-→ 정본·참조·정적·런타임·회귀
-→ 상태·문서·PR·Handoff·Learning Log
-```
+같은 계약의 승인·계획·벤치마크·검토 예산은 Base/설치 Skill/단계 간 공유한다. 긴 작업을 작은 검증 단위로 나누되 첫 조각만 끝내고 전체 승인 범위를 완료했다고 하지 않는다.
 
-한 시점의 주 Work Mode는 하나다. 복합 작업은 `PLAN → BUILD → REVIEW`, 검증된 수정은 `REVIEW → BUILD → REVIEW`로 전환한다.
+## 재사용·선택·조사
 
-## 책임 원본
+현재 구현·승인 자산 → 관련 Base 사례/방법 → 직접 관련된 검증 사례 → 필요한 외부 원출처 순으로 비교한다. 동일 범위의 유효한 근거는 `REUSED_EVIDENCE`다. 중요한 새 설계·정책 결정만 최소 3개 실질 대안을 비교한다. 단일 정답 수정·승인된 구현에 허수 대안을 만들지 않는다.
 
-```text
-현재 상태·후속 행동 → docs/CURRENT_DECISION_OVERLAY.md + docs/CURRENT_HANDOFF.md
-현재 10일·반일 기획 → docs/CURRENT_PLANNING_CANON.md + docs/current-planning-canon.json
-사람용 전체 그림·Flow·비교표 → docs/design/PROJECT_AI_PRODUCTION_SPEC.md + user PDF GDD
-프로젝트 코어·승인 상태 → docs/PROJECT_CORE.md
-문서 위치·조건 → docs/DOCUMENTATION_MAP.md
-프로젝트 Skill → skills/SKILL_REGISTRY.json
-Base Skill 라우팅 → skills/BASE_SKILL_INDEX.json
-공용 기능 무손실 → skills/BASE_SKILL_COVERAGE.json
-경로 변환 → skills/PROJECT_PATH_ADAPTER.json
-운영 Gate 상태 → docs/PROJECT_OPERATING_HEALTH.json
-상세 설계 → docs/GAME_DESIGN_DOCUMENT.md
-로드맵 → MVP_ROADMAP.md
-검증 → TEST_CHECKLIST.md
-```
+Skill 선택은 `docs/WORK_MODE_AND_SKILL_ROUTING.md`를 따른다. 외부 AI/DeepSeek 위임은 실제 필요·허용된 도구·비용·쓰기 경계가 모두 확인될 때만 선택한다. 설치 스킬의 일괄 위임 문구가 새 권한을 만들지 않는다. 설치 파일·전역 설정은 프로젝트 규칙 정비로 변경하지 않는다.
 
-같은 사실을 여러 현행 원본으로 복제하지 않는다.
+## 구현·표현·재미의 경계
 
-Repository는 사람용·구조화 기획·구현·테스트·runtime evidence를 단독 소유한다. Notion과 Google Sheet는 migration/history only이며 새 작업면으로 사용하지 않는다.
+코어와 사건 의미는 `docs/PROJECT_CORE.md` 및 현재 승인 기획을 보호한다. 표시 계층이 판정·정답·저장을 새로 소유하지 않는다. 플레이어 경험에 영향을 주는 변경은 `docs/UX_UI_SYSTEM.md#experience-verification`에서 경험 가설과 반증을 실제 파일·상태·피드백·검증에 연결한다.
 
-## Skill 운영
+기획·기능·아트 문서 존재는 게임 구현이나 재미 증거가 아니다. 사람 검수 미실행이 이미 승인된 구현 전체를 막지는 않지만 사람 경험·최종 자산·출시 승인으로 승격하지 않는다.
 
-- 사용자는 Skill 이름을 선언할 필요가 없다.
-- 전체 Skill 폴더를 기본 로드하지 않는다.
-- 주 프로젝트 분야 Skill은 최대 하나, 프로젝트 로컬 전문 Skill은 최대 하나, 지원 Base Skill은 최대 3개다.
-- `support_skills`는 가능한 조합이지 상시 호출 목록이 아니다.
-- Base 상세는 고정 커밋의 선택된 패키지만 읽는다.
-- L1 이상은 구현 전 현재 프로젝트·승인 Asset/Reference·Base handoff 순으로 재사용 가능성을 먼저 확인하고, 결과를 작업 영수증의 `REUSE_FIRST_PREFLIGHT_REQUIRED`와 `REUSE_LEARNING_HANDOFF_REQUIRED`에 기록한다. 이 규칙은 새 게임 의미·자산 승인·Human QA를 자동 승인하지 않는다.
-- 프로젝트 분야 Skill 10개의 공통 DoR·DoD·보고는 `skills/disciplines/PROJECT_DISCIPLINE_CONTRACT.md`가 책임진다.
-- 괴이 사건의 전조·가설·근거·대응·매뉴얼 상태를 작성·개정할 때는 `skills/urban-legend-investigation-case-authoring/SKILL.md`를 추가로 읽는다.
+## 검증과 검토
 
-## 프로젝트 코어와 변경 권한
+1. 변경된 계약·실제 consumer·실패 경로에 맞는 검사를 먼저 선택한다. 운영 문서·Skill 작업은 링크/라우팅/무결성과 `python -m pytest tests -q` 또는 `python -m unittest discover -s tests -p 'test_*.py'`를 사용한다. 보존된 중첩 저장소까지 무차별 수집하지 않는다.
+2. Godot 실행·화면·저장 왕복은 그 consumer에 영향이 있을 때 필요하다. 순수 운영문서 수정에 엔진 실행·이미지 생성·PDF 발행을 강제하지 않는다. 저장·UI 변경의 해당 검증을 생략하는 예외는 아니다.
+3. 전체 적대 검토는 승인 계약 전체에서 **정확히 2회** 공유한다. 공격→근거 검증→필수 교정→회귀를 기록하며 단계별로 초기화하지 않는다. 이후 새 finding은 영향 교정·회귀로 처리한다. 독립 검토는 작성자 자체 검토와 구분한다.
+4. 승인 범위의 필수 누락·퇴행·미해결 지적을 다시 계산한다. `CLEAN_REVIEW_EXIT`는 유효 blocking finding이 없고 acceptance를 충족할 때만 사용한다.
+5. 원격 필수 검사·독립 검토·미해결 논의·정확한 HEAD를 확인한 current-task PR만 정상 병합한다. 실패 검사·다른 PR을 우회하지 않는다. 병합 후 새 main과 변경 파일·검증·남은 작업을 다시 읽는다.
 
-`docs/PROJECT_CORE.md`가 제품 불변 코어를 소유하고 `docs/CURRENT_PLANNING_CANON.md`가 최신 10일·반일 제품 구조를 소유한다. 현재는 `PLAN_LOCK`, Human QA `NOT_RUN`, Production gate `HOLD_UNTIL_PLAYER_EVIDENCE`다. 일반 리팩토링으로 코어를 바꾸거나 플레이 증거 없이 구현 완료·제작 확대를 선언하지 않는다.
+## 기록·보고·보존
 
-## 가지치기·간소화·리팩토링
+현재 변경/근거/미검증/다음 행동은 기존 Decision/Handoff에 짧게 남긴다. 월별 작업일지는 같은 문서에 날짜별 누적하며 새 버전·새 보고서를 매 작업마다 만들지 않는다. 상세 증거는 기존 검사/작업 기록으로 연결한다.
 
-- 가지치기: 죽은·중복·stale 자료를 `KEEP / MERGE / MOVE_TO_REFERENCE / STUB / ARCHIVE / DELETE / UNVERIFIED`로 판정.
-- 간소화: 항상 필요한 계약만 본문에 두고 조건부 상세를 한 단계 reference로 이동.
-- 리팩토링: baseline 동작·인터페이스·Schema·호환성을 고정하고 작은 구조 변경마다 회귀.
-- Skill 통합: 기존 mode/reference로 해결 가능한지 먼저 확인하고 독립 책임 경계가 있을 때만 유지.
+결과 → 바뀐 점과 이유 → 확인 방법 → 실제 검사와 미검증·남은 위험 순으로 한국어 보고한다. 고정 장문 양식을 강제하지 않는다. `DOC / MACHINE / RUNTIME / HUMAN / USER_APPROVAL / MERGE / RELEASE`는 구분한다.
 
-## 적대적 검토
-
-```text
-attack
-→ validate-critique
-→ MUST_FIX / SHOULD_FIX / DEFER / REJECT / UNVERIFIED
-→ 승인된 최소 변경
-→ regression-recheck
-→ decision-report
-```
-
-레드팀 지적은 자동 요구가 아니다. 취향·범위 밖·잘못된 전제는 기각하며 코어·장점·호환성을 보호한다.
-
-## 검증과 보고
-
-변경 영향에 맞춰 contract, reference freshness, static, runtime, accessibility, performance, regression, evidence를 선택한다. Skill·Registry·운영 문서 변경은 전체 Python discovery와 관련 집중 계약을 실행한다. 통합 PR은 최소 5회 whole-scope 적대적 검토, exact-head CI, 병합 뒤 GitHub remote readback을 거친다. Notion write/readback은 current scope 밖이다. L1 이상 보고에는 실제 Work Mode·분야/로컬/Base Skill·Mode·이유·변경·증거·미검증·롤백을 포함한다.
+중복 지침은 책임 원본으로 통합하지만 고유 결정·승인 자산·실패 증거·역사 호환 입력은 보존한다. 삭제 후보는 실제 참조와 복구 가능성을 확인해 사용자 직접 삭제 방식으로 안내한다. 학습은 `skills/SKILL_LEARNING_LOG.md`에 필요한 것만 누적하며, 공용 후보 발견만으로 Base 승격을 주장하지 않는다.
