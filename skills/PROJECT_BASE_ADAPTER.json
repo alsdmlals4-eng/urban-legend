@@ -61,7 +61,7 @@
   "protected_baseline": {
     "authority_kind": "REMOTE_TRACKING_REF",
     "authority_ref": "refs/remotes/origin/main",
-    "commit": "a62b5341f3c4742192f7bfc0d11e1fb4897c1308",
+    "commit": "c82291101bf0a2bb4d821a12bca9f14070ee2886",
     "policy_sha256": "1c36c4180b85d6bd97f4e7cdba908cc73298f529d368aa07e0dffde6e1e8ec52",
     "policy_source_path": "skills/PROJECT_BASE_ADAPTER.json",
     "policy_source_type": "CANONICAL_ADAPTER_SOURCE",
@@ -277,7 +277,17 @@
   "schema_version": 2,
   "shared_overrides": {
     "analyzing-and-refining-game-concepts": {},
-    "auditing-and-refining-ui-art": {},
+    "auditing-and-refining-ui-art": {
+      "experience_verification": {
+        "project_contract": "docs/UX_UI_SYSTEM.md",
+        "section": "experience-verification",
+        "experience_source": "docs/CURRENT_PLANNING_CANON.md",
+        "verification_owner": "TEST_CHECKLIST.md",
+        "human_evidence": "NOT_RUN",
+        "authority": "METHOD_ADOPTION_NOT_FUN_PASS",
+        "new_runtime_director": false
+      }
+    },
     "auditing-canonical-reference-freshness": {},
     "building-project-visual-dashboards": {},
     "creating-user-learning-notes": {},
@@ -304,9 +314,9 @@
     "governing-legacy-retention-and-archives": {
       "adapter": "docs/archive/ARCHIVE_RETENTION_ADAPTER.json",
       "current_canon_priority": [
-        "docs/PROJECT_CORE.md",
-        "docs/CURRENT_STATUS.md",
-        "docs/GAME_DESIGN_DOCUMENT.md",
+        "docs/CURRENT_DECISION_OVERLAY.md",
+        "docs/CURRENT_HANDOFF.md",
+        "docs/CURRENT_PLANNING_CANON.md",
         "docs/DOCUMENTATION_MAP.md"
       ],
       "existing_legacy_migration": "NOT_IN_THIS_ADOPTION"
@@ -316,7 +326,57 @@
     "maintaining-project-context-and-handoff": {},
     "managing-base-change-proposals": {},
     "managing-design-documents": {},
-    "managing-game-project-operating-system": {},
+    "managing-game-project-operating-system": {
+      "current_authority": {
+        "active_context": "docs/CURRENT_HANDOFF.md",
+        "decisions": "docs/CURRENT_DECISION_OVERLAY.md",
+        "planning": "docs/CURRENT_PLANNING_CANON.md",
+        "structured_planning": "docs/current-planning-canon.json"
+      },
+      "selective_policy_adoption": {
+        "source_prs": [
+          883,
+          885
+        ],
+        "observed_base_main": "23ecad5a3084f97c4e5d1e39a9a6d70d1eeb37ef",
+        "checked_on": "2026-09-20",
+        "approval_reference": "User approved the scoped operating adaptation; then explicitly added Base PR 885 fun verification.",
+        "release_identity_changed": false,
+        "refresh_policy": "FETCH_COMPARE_APPROVE_DELTA",
+        "project_contract": "docs/OPERATING_MODEL.md",
+        "references": {
+          "intake": {
+            "commit": "ebfc6c807a0d1582a2df27c518ef60398bf8486c",
+            "path": "skills/managing-project-intake-and-work-contract/SKILL.md",
+            "sha256": "2f4817fe87a83b17f2b646c2af27a183f890164cd5084f4fdd4a99d44d5244ef"
+          },
+          "execution": {
+            "commit": "ebfc6c807a0d1582a2df27c518ef60398bf8486c",
+            "path": "docs/GPT_CODEX_WORKFLOW_POLICY.md",
+            "sha256": "f6942d889ff6431df4b167addb5e1856b350155ee260f817b902a5ca8989cc76"
+          },
+          "experience": {
+            "commit": "23ecad5a3084f97c4e5d1e39a9a6d70d1eeb37ef",
+            "path": "skills/analyzing-and-refining-game-concepts/references/concept-evidence-and-gates.md",
+            "sha256": "d789ec28cedcabc7c4716db98ca825bd9a1017921b0b523d8abafc5ad2b144d0"
+          },
+          "presentation": {
+            "commit": "23ecad5a3084f97c4e5d1e39a9a6d70d1eeb37ef",
+            "path": "docs/knowledge/game-development/EXPERIENCE_TO_PRESENTATION_GUIDE.md",
+            "sha256": "5d8324029fa6f85073f6f93d301b86dce34ba1d0eebb20673e705066122de983"
+          },
+          "ui_adapter": {
+            "commit": "23ecad5a3084f97c4e5d1e39a9a6d70d1eeb37ef",
+            "path": "skills/auditing-and-refining-ui-art/references/project-adapter-contract.md",
+            "sha256": "33ec79d6d00d598884383b0e44944373b9c8d0b9ef2472831d32bab620b8dd14"
+          }
+        },
+        "unlisted_routes": "RETAIN_RELEASED_PACKAGE",
+        "compatibility_views": "HISTORY_ONLY_NOT_CURRENT_READ_ORDER",
+        "scope": "OPERATING_AND_EXPERIENCE_VERIFICATION_METHOD_ONLY",
+        "product_paths_changed": false
+      }
+    },
     "managing-project-intake-and-work-contract": {
       "first_prompt_governance": {
         "actual_project_instruction_execution": "NOT_RUN",

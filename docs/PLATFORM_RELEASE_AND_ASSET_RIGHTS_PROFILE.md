@@ -1,3 +1,7 @@
+# 조건부 상세 책임 경로
+
+자산 권리·원본 증빙은 `docs/ASSET_RIGHTS_AND_PROVENANCE_RECORD.md`, 제출·출시 증거는 `docs/GAME_RELEASE_COMPLIANCE_EVIDENCE_PACK.md`를 해당 작업에서 읽는다. 이 profile이 시작 문서와 상세 증거 사이의 라우터이며 아래 기존 플랫폼·등급·권리 제한은 유지한다.
+
 # 괴이 기록국 플랫폼 출시·에셋 권리 Profile
 
 > Base 정본: `alsdmlals4-eng/Base/docs/knowledge/game-development/PLATFORM_REVIEW_ASSET_RIGHTS_AND_REFERENCE_PRODUCTION_GUIDE.md`

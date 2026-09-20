@@ -4,13 +4,19 @@
 
 ## 선택과 읽기
 
-1. `skills/SKILL_REGISTRY.json` trigger로 주 프로젝트 Skill을 최대 하나 선택한다.
-2. `docs/PROJECT_CORE.md`에서 보호할 코어와 변경 가능한 외피를 확인한다.
-3. 선택한 Skill 본문과 그 Skill의 `Read first`만 읽는다.
+1. `AGENTS.md`의 current-authority read order와 `docs/WORK_MODE_AND_SKILL_ROUTING.md`를 먼저 따른다. 이미 읽은 같은 source는 재사용한다.
+2. `skills/SKILL_REGISTRY.json` trigger로 주 프로젝트 Skill을 최대 하나 선택하고 제품 변경이면 `docs/PROJECT_CORE.md`와 현재 기획의 보호 의미를 확인한다.
+3. 선택한 Skill 본문과 `Read first`의 분야별 추가 자료만 읽는다. 과거 planning/GDD/ledger는 현재 결정이 인용한 부분 또는 역사·회귀 계보 확인에만 사용한다.
 4. `support_skills`는 목록 전체가 아니라 현재 trigger와 단계에 맞는 것만 최대 3개 선택한다.
 5. 실제 대상 코드·데이터·Scene·자산·문서·테스트를 확인한다.
 
 Registry 행이나 이 공통 계약만 읽고 해당 Skill을 실행했다고 보고하지 않는다.
+
+현재 Active Context는 `docs/CURRENT_HANDOFF.md`, mutable 결정은 `docs/CURRENT_DECISION_OVERLAY.md`다. 역사 자료 `docs/CURRENT_STATUS.md`는 기본 읽기 목록이 아니다. 읽기 전용 mode는 조사·보고만 하며 동기화 문구가 파일/외부 쓰기 승인을 만들지 않는다.
+
+승인된 동일 계약의 계획·조사·전체 검토는 `docs/OPERATING_MODEL.md`에서 재사용한다. 작은 단위 완료는 전체 승인 범위 완료와 다르다. 새로운 방향·비용·권한만 다시 결정받는다.
+
+플레이어-facing 변경은 `docs/UX_UI_SYSTEM.md#experience-verification`의 목적→상태/표현→실제 consumer→검증/반증 연결을 기존 기록에 남긴다. MACHINE·RUNTIME·HUMAN을 구분하고 사람 검수 미실행은 `NOT_RUN`이다. 순수 내부 운영 변경에 재미 점수·새 보고서를 만들지 않는다.
 
 ## 공통 실행 흐름
 

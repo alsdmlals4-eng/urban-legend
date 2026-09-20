@@ -20,13 +20,14 @@ description: Use for Urban Legend benchmark, player-response, playtest, telemetr
 
 ## Read first
 
-1. `docs/CURRENT_STATUS.md`
-2. `docs/PROJECT_CORE.md`
-3. `docs/BENCHMARKING_REFERENCE_GUIDE.md`
-4. `docs/planning/REFERENCE_CASES.md`
-5. 관련 기획·UX 원본
-6. 실제 연구·플레이테스트·텔레메트리
-7. 결정 질문·완료 기준
+먼저 `AGENTS.md`의 공통 읽기 순서를 따른다. 아래는 해당 분야 작업의 추가 자료이며 과거 planning 문서는 현재 결정이 인용할 때만 사용한다.
+
+1. `docs/PROJECT_CORE.md`
+2. `docs/BENCHMARKING_REFERENCE_GUIDE.md`
+3. `docs/planning/REFERENCE_CASES.md`
+4. 관련 기획·UX 원본
+5. 실제 연구·플레이테스트·텔레메트리
+6. 결정 질문·완료 기준
 
 ## Domain workflow
 

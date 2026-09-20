@@ -20,18 +20,19 @@ description: Use for Urban Legend scope, roadmap, issue, dependency, priority, m
 
 ## Read first
 
-1. `docs/CURRENT_STATUS.md`
-2. `docs/PROJECT_CORE.md`
-3. MVP_ROADMAP.md
-4. `docs/planning/ROADMAP_AND_HANDOFF.md`
-5. 현재 Issue·PR·브랜치·Actions
-6. `docs/DOCUMENTATION_MAP.md`
-7. TEST_CHECKLIST.md
+먼저 `AGENTS.md`의 공통 읽기 순서를 따른다. 아래는 해당 분야 작업의 추가 자료이며 과거 planning 문서는 현재 결정이 인용할 때만 사용한다.
+
+1. `docs/PROJECT_CORE.md`
+2. MVP_ROADMAP.md
+3. `docs/planning/ROADMAP_AND_HANDOFF.md`
+4. 현재 Issue·PR·브랜치·Actions
+5. `docs/DOCUMENTATION_MAP.md`
+6. TEST_CHECKLIST.md
 
 ## Domain workflow
 
 - 구현·계획·진행 PR을 분리하고 결과 단위·의존성·보호 경로·위험을 지도화한다.
-- Issue·PR·Roadmap·gate·rollback·handoff를 실제 상태와 동기화한다.
+- BUILD 승인 범위에서만 Issue·PR·Roadmap·gate·rollback·handoff를 동기화한다. status-review는 차이를 보고하고 외부/파일 쓰기를 하지 않는다.
 
 ## Done and failure gate
 

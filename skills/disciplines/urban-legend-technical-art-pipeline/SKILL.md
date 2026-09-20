@@ -20,13 +20,14 @@ description: Use for Urban Legend asset import, Godot resource settings, manifes
 
 ## Read first
 
-1. `docs/CURRENT_STATUS.md`
-2. `docs/PROJECT_CORE.md`
-3. `docs/IMAGE_ASSET_WORKFLOW.md`
-4. `docs/planning/ART_PRESENTATION_PLAN.md`
-5. 실제 `assets/`·Scene·Resource·Manifest
-6. `skills/PROJECT_PATH_ADAPTER.json`
-7. TEST_CHECKLIST.md
+먼저 `AGENTS.md`의 공통 읽기 순서를 따른다. 아래는 해당 분야 작업의 추가 자료이며 과거 planning 문서는 현재 결정이 인용할 때만 사용한다.
+
+1. `docs/PROJECT_CORE.md`
+2. `docs/IMAGE_ASSET_WORKFLOW.md`
+3. `docs/planning/ART_PRESENTATION_PLAN.md`
+4. 실제 `assets/`·Scene·Resource·Manifest
+5. `skills/PROJECT_BASE_ADAPTER.json`
+6. TEST_CHECKLIST.md
 
 ## Domain workflow
 

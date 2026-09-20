@@ -32,7 +32,9 @@ UI는 조사 정보와 선택 의미를 이해하게 하되 진행·정답·플�
 
 ## Read first
 
-1. `docs/CURRENT_STATUS.md`, `docs/PROJECT_CORE.md`, `docs/UX_UI_SYSTEM.md`
+먼저 `AGENTS.md`의 공통 읽기 순서를 따른다. 아래는 해당 분야 작업의 추가 자료이며 과거 planning 문서는 현재 결정이 인용할 때만 사용한다.
+
+1. `docs/PROJECT_CORE.md`, `docs/UX_UI_SYSTEM.md`
 2. `docs/GODOT_NATIVE_UI_ARCHITECTURE.md`, `docs/CINEMATIC_FIELD_RECOVERY_UI.md`
 3. `docs/planning/ART_PRESENTATION_PLAN.md`, 관련 `scenes/`·`scripts/ui/`, `TEST_CHECKLIST.md`
 
@@ -59,3 +61,7 @@ UI는 조사 정보와 선택 의미를 이해하게 하되 진행·정답·플�
 - 색·소리·모션에 동등한 폴백이 있고 조사→규칙→위험/회수→기록 인과가 남는다.
 - 미확보 정보 노출, 가설의 사실화, 포커스 단절, UI의 새 상태 소유면 실패다.
 - 시각 결과는 Base `runtime-ui-audit`, 공격 검토는 `running-adversarial-review-and-refinement`, 통합 증거는 `reviewing-and-validating-project-changes`를 사용한다.
+
+## 효과·비주얼·UI 구체화
+
+`docs/UX_UI_SYSTEM.md#experience-verification`과 adapter가 선택한 Base 표현 reference를 사용한다. 실제 state_owner, 공개/숨김 정보, 필요한 상태·입력·발생 시점·중단/복귀·자산 consumer·검증을 같은 요구사항에 연결한다. 표시가 규칙 판정을 소유하지 않으며 캡처/자동 테스트를 HUMAN 재미 증거로 바꾸지 않는다.
