@@ -12,6 +12,7 @@
 - `REMAINING_WORK_COMPLETION_GATE`: OPEN; `IMPLEMENTATION_CORRECTION_RESCAN`: P1 발견/미해결, P2 음성 교정; `POST_COMPLETION_ADVERSARIAL_REVIEW_REQUIRED`: 진행 중; `CLEAN_REVIEW_EXIT`: NOT_DECLARED. 현재 작업은 Draft 체크포인트이며 전체 게임·통합 완료 보고가 아니다. 기존 월간 증빙 index에 날짜별로 누적하고 새 일지 파일을 만들지 않는다.
 - 최종 재실행: Python **510 PASS**, GUT **28/28·154 asserts PASS**, 유지 회귀 **63/77 clean, 14 flag**. 14개 중 2개는 의도된 손상 JSON, 2개는 exit=0 뒤 RID/종료 진단, 나머지 10개는 구형 일정 기대와 폐주파수 접근성 문제다. 이 분류는 strict 전체 PASS가 아니다. 독립 추가 delta 검토에서 루메 cue 3개 파일의 새 blocker 0; P1과 전체 suite blocker는 유지한다.
 - 계약 검사: 로컬 engine이 만든 untracked UID3개·source PNG import1개를 `.artifacts/integration-20260920/generated-not-for-commit`에 hash 확인 후 복구 가능하게 보관한 뒤 승인 경로 완전일치 검사 PASS. 원래 checkout 파일은 이동하지 않았다. 이 경로의 README에 복구 위치/hash가 있다. 생성 파일을 승인 자산으로 추가하지 않았다.
+- 월간 증빙: 기존 `괴이기록국_잔향보고서_2026-09_AI활용_작업일지_증빙집_v1.0.pdf`를 같은 지정 경로에서 갱신했다. 9월20일 날짜별 기록 누적, 이전 output hash/기록 유지, source HEAD `59fbe2176d435f7111fdc4a58f80ad9345cea858`, 10페이지, SHA-256 `52cf5651f3ad39c12a086e84411d4b127feb1560295100e95319bbd8596b52c2`. 10페이지 렌더를 직접 확인했다. PDF는 이 후속 발행기록 commit 자체가 아니라 명시한 source snapshot을 설명한다. 원본 프롬프트/계정/영수증 및 사람 검수는 별도 미확보다.
 
 ## 이전 운영규칙 작업 — 완료 계보 (아래 현재/후속 표현은 당시 기록)
 

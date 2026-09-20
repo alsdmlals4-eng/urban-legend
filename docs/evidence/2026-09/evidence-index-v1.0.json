@@ -2,9 +2,9 @@
   "project": "괴이기록국: 잔향 보고서",
   "month": "2026-09",
   "scope": "Selected verified records; not exhaustive monthly history",
-  "issued_at": "2026-09-16T16:09:46+09:00",
-  "source_head": "48929ae4375dbb13e40566b1ff6657dd62ecd8de",
-  "branch": "codex/daily-case-structure-design-20260910",
+  "issued_at": "2026-09-20T20:41:50+09:00",
+  "source_head": "59fbe2176d435f7111fdc4a58f80ad9345cea858",
+  "branch": "codex/daily-case-integration-20260920",
   "retrospective": true,
   "commits": [
     {
@@ -110,27 +110,93 @@
       "subject": "Specify casting separation from inspected reference and reject invalid alpha output"
     },
     {
+      "sha": "58ec54bbdadbdbb90b8ed55b39ba6f02a0c0e3b9",
+      "author_date": "2026-09-15T08:51:46+09:00",
+      "commit_date": "2026-09-15T08:51:46+09:00",
+      "subject": "fix: restore headless-safe Godot helper wrapper"
+    },
+    {
+      "sha": "1bd70470c61026604085b8702023126ae4ac7b93",
+      "author_date": "2026-09-15T08:58:19+09:00",
+      "commit_date": "2026-09-15T08:58:19+09:00",
+      "subject": "docs: register bounded headless helper recovery approval"
+    },
+    {
       "sha": "48929ae4375dbb13e40566b1ff6657dd62ecd8de",
       "author_date": "2026-09-16T16:08:10+09:00",
       "commit_date": "2026-09-16T16:08:10+09:00",
       "subject": "fix: separate investigation stage and paginate narrative reading"
+    },
+    {
+      "sha": "bc8320e4783a015403edc8cde3dc1075e5eecbca",
+      "author_date": "2026-09-16T16:10:42+09:00",
+      "commit_date": "2026-09-16T16:10:42+09:00",
+      "subject": "docs: append September evidence to the existing monthly journal"
+    },
+    {
+      "sha": "887167495de8d4658a42cb7b0e109eb314f75be3",
+      "author_date": "2026-09-20T09:14:10+09:00",
+      "commit_date": "2026-09-20T09:14:10+09:00",
+      "subject": "docs: adopt lean Base routing and project fun verification"
+    },
+    {
+      "sha": "8d6d1df3c742dd0f0ad7a9bba0c73214511522bd",
+      "author_date": "2026-09-20T09:16:00+09:00",
+      "commit_date": "2026-09-20T09:16:00+09:00",
+      "subject": "docs: record adoption PR and verified baseline CI blocker"
+    },
+    {
+      "sha": "cb41a35fa69dee12312bd365775ac791204fe377",
+      "author_date": "2026-09-20T19:30:02+09:00",
+      "commit_date": "2026-09-20T19:30:02+09:00",
+      "subject": "fix: align helper recovery to trusted PR baseline"
+    },
+    {
+      "sha": "78c10b86c4ac445a43bfb166088d01df02ed5530",
+      "author_date": "2026-09-20T19:35:24+09:00",
+      "commit_date": "2026-09-20T19:35:24+09:00",
+      "subject": "Merge pull request #362 from alsdmlals4-eng/fix/headless-helper-wrapper-drift-20260915"
+    },
+    {
+      "sha": "1602f6af3e22e5e5491afc05290a84dd416e6d00",
+      "author_date": "2026-09-20T19:39:00+09:00",
+      "commit_date": "2026-09-20T19:39:00+09:00",
+      "subject": "merge: reconcile lean operating rules with approved helper main"
+    },
+    {
+      "sha": "2a50973122fcda33002050df789dae09b9a31082",
+      "author_date": "2026-09-20T19:42:09+09:00",
+      "commit_date": "2026-09-20T19:42:09+09:00",
+      "subject": "docs: route final merge evidence without stale completion claims"
+    },
+    {
+      "sha": "451935c08e8fd6e03bed9725648fcf4b74741a11",
+      "author_date": "2026-09-20T19:47:46+09:00",
+      "commit_date": "2026-09-20T19:47:46+09:00",
+      "subject": "Merge pull request #363 from alsdmlals4-eng/codex/base-lean-20260920"
+    },
+    {
+      "sha": "59fbe2176d435f7111fdc4a58f80ad9345cea858",
+      "author_date": "2026-09-20T20:41:27+09:00",
+      "commit_date": "2026-09-20T20:41:27+09:00",
+      "subject": "wip: reconcile daily-case implementation with current main and audit regressions"
     }
   ],
   "sources": [
     {
       "path": "docs/CURRENT_HANDOFF.md",
-      "sha256": "5393a151e6e2ce321da7c7e48a767e07026635303afcaea6165a26d3f41c876c",
-      "filesystem_modified": "2026-09-16T16:09:45.339733+09:00"
+      "sha256": "11082a1be3cad137f1d3ee25cef97cc3fb71c95f4f8b472a0591563a912634ce",
+      "filesystem_modified": "2026-09-20T20:41:26.403441+09:00"
     },
     {
       "path": "docs/CURRENT_DECISION_OVERLAY.md",
-      "sha256": "bf8136864c76872090014cd2e10c115d1dffcbcc2521cf1180d8ce94e40e35e8",
-      "filesystem_modified": "2026-09-16T16:06:15.162598+09:00"
+      "sha256": "3eec1e75388d73089b296ec0490ed714b7aced806a8dba0ca74b124093790e5b",
+      "filesystem_modified": "2026-09-20T20:32:37.768596+09:00"
     },
     {
       "path": "docs/superpowers/specs/2026-09-14-remaining-implementation-contract.md",
-      "sha256": "a4879a2c53e0b94e3603c46562a0e3d58dd5db7b93b3d5a5614bf6a839847ad8",
-      "filesystem_modified": "2026-09-14T23:12:07.161892+09:00"
+      "sha256": "f6aa33205b94d932d4eeed8c7a7b385627c1472e5a156c8ba126927b63ad1e58",
+      "filesystem_modified": "2026-09-20T20:41:26.404442+09:00"
     },
     {
       "path": ".artifacts/daily-case-20260912/w03-investigation-after-cctv.png",
@@ -188,6 +254,15 @@
         "pages": 9
       },
       "reason": "User requested cumulative updates to the same monthly document; prior records retained."
+    },
+    {
+      "previous_issued_at": "2026-09-16T16:09:46+09:00",
+      "previous_pdf": {
+        "path": "C:\\Users\\user\\Documents\\증빙서류\\9월 증빙서류\\괴이기록국_잔향보고서_2026-09_AI활용_작업일지_증빙집_v1.0.pdf",
+        "sha256": "180cf283d96cc63d6187bb28fb4927dc3df721df143ec79952b8f09a2d0c98a0",
+        "pages": 10
+      },
+      "reason": "User requested cumulative updates to the same monthly document; prior records retained."
     }
   ],
   "daily_summaries": {
@@ -198,7 +273,7 @@
   },
   "pdf": {
     "path": "C:\\Users\\user\\Documents\\증빙서류\\9월 증빙서류\\괴이기록국_잔향보고서_2026-09_AI활용_작업일지_증빙집_v1.0.pdf",
-    "sha256": "180cf283d96cc63d6187bb28fb4927dc3df721df143ec79952b8f09a2d0c98a0",
+    "sha256": "52cf5651f3ad39c12a086e84411d4b127feb1560295100e95319bbd8596b52c2",
     "pages": 10
   }
 }
