@@ -1,5 +1,15 @@
 # 괴이기록국 Current Handoff
 
+## 2026-09-20 — 명시 승인된 PR #362 교정
+
+- 사용자가 PR #362의 필요한 교정·검증·정상 병합, 이어 PR #363 최신 main 재결합을 승인했다. 다른 열린 PR 및 원래 게임 작업 브랜치는 읽기 전용으로 보존한다.
+- 비교 근거: 기존 editor의 headless opt-in, 기존 wrapper 회귀 검사, PR base `c82291101bf0a2bb4d821a12bca9f14070ee2886`, CI의 trusted-baseline 선택식을 실제 대조했다 (`REUSED_EVIDENCE / ADAPT`). 승인 경로 확대나 이미 main에 들어간 PNG 되돌리기는 기각했다.
+- 실패 재현: 이전 adapter baseline `a62b534`는 이미 main에서 바뀐 PNG를 이번 변경으로 오인했다. 승인 manifest와 adapter를 실제 PR base에 맞추고 기존 생성기로 파생본을 재생성했다. 보호 경로 목록·정책 hash·release lock·helper implementation 원본은 유지했다.
+- 검증: 교정 전 승인 계약 검사 FAIL → 교정 후 PASS. Python 503 PASS. 생성 router만 LF 고정하여 Windows/CI raw-byte 비교를 보존한다. 독립 검토와 원격 exact HEAD·main 병합 확인은 아직 남아 있다.
+- 증거 상한: 기획·게임 데이터·승인 자산·저장·설치 플러그인·전역 설정 변경 없음. HUMAN 재미/최종 아트/출시 검증은 NOT_RUN. 롤백은 이 PR의 변경만 Git에서 되돌리며 원래 작업 폴더를 덮어쓰지 않는다.
+
+## 보존된 제품 상태 (당시 snapshot)
+
 > 상태: `PLANNING_COMPLETE / USER_APPROVED_VISUAL_DIRECTION_LOCK / RUNTIME_RECONCILIATION_MERGED / HUMAN_QA_PENDING`
 > latest-main reconciliation: PR #322 merge `9fa32d32e8a5a2ad7d34a388695986b4ab81c6a7` (runtime implementation: `8d303f0f9414950273be934fd28c8fb1b3a21e18` · PR #224)
 > M04 current-main continuation: PR #356 merge `a62b5341f3c4742192f7bfc0d11e1fb4897c1308` — recovery clocks/menu and main-menu identity surface are `M04_RECOVERY_AND_MENU_MAIN_MERGED`; Human QA remains `NOT_RUN`.

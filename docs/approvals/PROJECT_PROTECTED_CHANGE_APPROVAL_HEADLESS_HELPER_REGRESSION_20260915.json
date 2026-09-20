@@ -9,7 +9,7 @@
   "approved_paths": [
     "addons/godot_ai/runtime/game_helper.gd"
   ],
-  "approval_source": "Current user standing authorization for this daily authority-drift automation permits evidence-backed, safe, reversible correction and verification without routine reapproval. The same headless-safe wrapper restoration was previously approved and merged in project PR #205; this manifest narrows the current regression recovery to that single existing protected path.",
+  "approval_source": "Original authorization: current user standing authorization for the daily authority-drift automation permits evidence-backed, safe, reversible correction and verification without routine reapproval. The same wrapper restoration was previously approved and merged in project PR #205. On 2026-09-20 the user additionally authorized named PR #362 correction, verification and normal merge before PR #363 reconciliation. The protected-path scope remains only the existing game_helper.gd wrapper; the trusted baseline is the actual PR base, not the older adapter snapshot.",
   "approval_time": "2026-09-14T23:50:33Z",
   "scope_summary": "Restore the previously approved headless-safe Godot AI autoload wrapper on current main while preserving game_helper_impl.gd bytes and all gameplay, scene, asset, data, save, visual and release behavior. Rollback is the single-file revert to current-main blob ff4fb4eed1a21b6c3ebc72f60013220dd6d73c18 if exact-head validation finds a regression."
 }
