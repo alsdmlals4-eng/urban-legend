@@ -6,6 +6,7 @@
 - 재미 검증: `docs/UX_UI_SYSTEM.md#experience-verification` 및 `TEST_CHECKLIST.md`의 기존 owner에서 가설·consumer·반증과 MACHINE/RUNTIME/HUMAN을 연결한다. 새 게임 규칙·재미 PASS·새 감독 시스템을 만들지 않는다.
 - 병합 경계: 이 운영 변경은 latest main에서 분리한다. 기존 `codex/daily-case-structure-design-20260910`의 44개 게임 커밋은 승인된 별도 작업 계보이며 아직 main 병합 증거가 아니다. 아래 제품 기록은 해당 main의 보존 이력이며, 브랜치의 새 결정/실제 구현을 되돌리는 근거가 아니다.
 - 새 게임 작업 재개 시 현재 사용자 결정·브랜치의 일상/사건 및 루메 변경과 latest main을 다시 대조한다. 이 운영 PR은 그 제품 의미를 채택·폐기·구현하거나 다른 PR을 병합하지 않는다.
+- 후속 명시 승인: 사용자는 PR #362 필요한 교정·검증·정상 병합 뒤 #363을 재결합·검증·정상 병합하도록 승인했다. #362는 `78c10b86c4ac445a43bfb166088d01df02ed5530`로 정상 병합되어 이번 #363의 baseline이다. 이 예외는 이름을 지정하지 않은 다른 PR이나 기존 게임 작업 브랜치 전체의 흡수 권한으로 확장하지 않는다.
 
 # 괴이기록국 Current Decision Overlay
 

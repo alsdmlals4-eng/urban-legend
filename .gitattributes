@@ -7,5 +7,6 @@ skills/PROJECT_BASE_ADAPTER.json text eol=lf
 docs/archive/base-v9-legacy-inputs/BASE_V9_ADAPTER.json text eol=lf
 docs/archive/base-v9-legacy-inputs/PROJECT_BASE_SKILL_ADAPTER.json text eol=lf
 docs/archive/base-v9-legacy-inputs/PROJECT_PATH_ADAPTER.json text eol=lf
-# The released validator compares this generated router byte-for-byte.
+
+# This generated router is compared byte-for-byte by the pinned CI validator.
 .agents/skills/urban-legend-workflow-router/SKILL.md text eol=lf

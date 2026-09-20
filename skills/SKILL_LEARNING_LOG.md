@@ -33,3 +33,11 @@
 - 환경 한계: skill-creator의 보조 quick_validate는 기존 Python 환경에 PyYAML이 없어 실행 실패했다. 설치·전역 변경은 하지 않았다. 프로젝트 자체의 Skill frontmatter/mode/reference/보존 검사와 독립 문서 검토는 통과했으며 보조 검사 통과로 바꾸어 기록하지 않는다.
 - reuse handoff: `reuse_mode: ADAPT`; selected modules는 #883 경량 intake/execution, #885 experience/presentation/UI adapter. 변경 경로는 Git diff와 현재 Handoff에 남긴다. evidence ceiling은 문서·MACHINE이며 RUNTIME/HUMAN/최종 이미지/RELEASE는 `NOT_RUN`.
 - rollback: 이번 PR의 운영·Skill·검사 변경만 Git revert한다. 게임 브랜치·승인 자산·legacy 입력은 그대로다. 공용 환류는 `NO_NEW_REUSE_LEARNING`: 이미 Base가 소유한 패턴의 프로젝트 적용 사례이며 Base에 새 규칙을 승격하지 않는다.
+
+### 같은 승인 범위의 병합 재결합 — 2026-09-20
+
+- 사용자가 이름을 지정한 #362를 교정하여 일반 validator의 보호 파일 검출 유지와 승인 manifest exact-match를 확인했다. 독립 검토 2에서 blocking/minor 0, 원격 10 workflow / 17 checks PASS 후 정상 merge `78c10b86c4ac445a43bfb166088d01df02ed5530`. main readback은 파일 동일·Python 503 PASS·승인 계약/생성물 PASS다.
+- #363은 이 main을 merge하고 보호 기준을 같은 commit에 맞췄다. 동일한 router LF 정책은 유지하고 충돌한 파생 파일은 기존 생성기에서 재생성했다. 제품 consumer diff 0을 확인한다. 같은 전체 검토 예산을 다시 시작하지 않고 재결합 변경분만 독립 검토한다.
+- 로컬 재결합 검증: Python 509 PASS, 운영 계약 및 생성물 PASS. 최초 headless 실패는 해결됐으며 실패 로그를 삭제하거나 소급 PASS로 바꾸지 않는다. 이후 원격 exact HEAD·정상 병합·main readback은 PR 검사와 현재 Handoff에서 확인한다.
+- 판단: 승인 경로를 main의 과거 PNG 변경까지 확대하는 방식은 REJECT; 실제 PR base와 일치하는 baseline 교정을 ADOPT. 보호 목록과 hash·release identity·게임 브랜치·설치/전역 설정을 유지한다. 틀렸을 때의 비용은 보호 diff 누락이므로 negative-control 검출을 추가로 확인했다.
+- 독립 reviewer가 판단에서 제외한 실제 사람 재미·최종 자산·출시는 계속 NOT_RUN. helper 실행 회귀는 원격 Godot 전체 검사로 확인했으며 GUI/editor의 모든 수동 명령을 검수했다고 확대하지 않는다. 공용 승격은 NO_NEW_REUSE_LEARNING.

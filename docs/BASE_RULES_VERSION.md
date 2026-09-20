@@ -25,7 +25,7 @@ reviewed_base_main_policy_state: POLICY_EVIDENCE_NOT_RELEASE_IDENTITY
 - 최신 main은 매 새 채택/갱신 판단 시 fetch하여 비교한다. 위 SHA는 이번 검토·재현 기준이지 영구적인 “최신”이 아니다. 변경분의 영향·승인을 확인한 뒤 그 범위만 갱신한다.
 - 나열하지 않은 Base 스킬은 기존 released package를 유지한다. 선택 정책이 과거 포괄적 스킬 문구보다 해당 승인 범위에서 우선하지만 보안·권한·저장 보호를 완화하지 않는다.
 - 생성된 `skills/PROJECT_PATH_ADAPTER.json` 등의 옛 경로는 호환 이력이다. 새 실행의 owner는 정본 adapter `current_authority`다. 생성물/보존된 legacy input은 수동 교정하지 않는다.
-- 이번 migration의 보호 기준은 검사한 프로젝트 main `c82291101bf0a2bb4d821a12bca9f14070ee2886`로 재결합한다. 기존 main의 제품 파일을 고치거나 기존 게임 브랜치의 44커밋을 흡수하지 않는다. 보호 경로 목록·정책 hash는 그대로다.
+- 이번 migration의 보호 기준은 승인된 PR #362 병합을 확인한 프로젝트 main `78c10b86c4ac445a43bfb166088d01df02ed5530`로 재결합한다. 최초 조사 기준 `c82291101bf0a2bb4d821a12bca9f14070ee2886`의 helper 회귀가 정상 교정된 후의 기준이며, 기존 게임 브랜치의 44커밋을 흡수하지 않는다. 보호 경로 목록·정책 hash는 그대로다.
 - `MACHINE`의 계약·라우팅 통과는 `RUNTIME / HUMAN / FUN_PASS`가 아니다. 원래 브랜치·다른 PR·설치 플러그인·전역 설정·승인 자산은 보호한다.
 
 ## 프로젝트 보호 경계
