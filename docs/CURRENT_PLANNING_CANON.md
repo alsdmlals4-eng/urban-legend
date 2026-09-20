@@ -1,5 +1,13 @@
 # 괴이기록국 현재 기획 정본
 
+## 현재 승인 successor — 2026-09-14
+
+현재 제품은 **일상/사건(조사·구출·회수)** 구조다. 일상 준비는 선택적이며 일정 일수·반일 휴식으로 출동/기본 지원을 막지 않는다. 상세 설계는 `docs/superpowers/specs/2026-09-10-daily-case-structure-design.md`, 실행 명세는 `docs/superpowers/specs/2026-09-14-remaining-implementation-contract.md`, 실제 구현 증거는 `docs/CURRENT_HANDOFF.md`를 따른다. 기록 보조 이름은 루메다.
+
+구조화 원본의 `planning.cadence`는 DAILY_CASE, `legacy_cadence`는 과거 계약이다. 아래 2026-08의 10일·반일/timing/휴식 capacity 및 merged gate 설명은 **선행 정본의 호환·역사**이며 현행 요구를 덮어쓰지 않는다. 새 구현을 main/Human/출시 완료로 승격하지 않는다.
+
+## 선행 기획·병합 증거 — 역사/호환
+
 > 역할: `CURRENT_PLANNING_CANON`
 > 상태: `PLANNING_COMPLETE / USER_FINAL_PLANNING_DECLARATION_APPROVED / RUNTIME_RECONCILIATION_MERGED`
 > 사람용 정본: repository `docs/design/PROJECT_AI_PRODUCTION_SPEC.md`와 user PDF GDD

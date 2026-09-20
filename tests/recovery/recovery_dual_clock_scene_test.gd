@@ -49,12 +49,21 @@ func _run() -> void:
 
 	if scene != null:
 		scene.call("_begin_recovery_turn")
+		_expect(int(_game_state.get_recovery_clock_state().danger) == 0, "turn transition cannot double-charge active-time danger")
+		scene.call("_process", 12.0)
 	if bridge != null:
 		bridge.call("_sync_current_scene")
 	await process_frame
 	danger_label = cluster.get_node_or_null("DangerClockLabel") as Label if cluster != null else null
-	_expect(int((_game_state.call("get_recovery_clock_state") as Dictionary).get("danger", -1)) == 1, "the second meaningful telegraph advances danger exactly once")
-	_expect(danger_label != null and danger_label.text == "위험도 1/6", "visible danger clock must refresh after the next telegraph")
+	_expect(int((_game_state.call("get_recovery_clock_state") as Dictionary).get("danger", -1)) == 1, "active interval advances danger exactly once")
+	_expect(danger_label != null and danger_label.text == "위험도 1/6", "visible danger clock must refresh after elapsed time")
+	var audio_probe := preload("res://tests/test_audio_lifecycle.gd").new()
+	audio_probe.capture(scene)
+	scene.queue_free()
+	for i in range(4):
+		await process_frame
+	var retained: Array[String] = await audio_probe.wait_for_release(self)
+	_expect(retained.is_empty(), "recovery audio must retire before shutdown: %s" % str(retained))
 	_finish()
 
 
@@ -69,10 +78,10 @@ func _finish() -> void:
 		_expect(restore_error.is_empty(), "test save guard must restore the player save after recovery runtime mutation")
 		_prepared = false
 	if _failures.is_empty():
-		print("Recovery dual-clock scene test: 12 passed, 0 failed")
+		print("Recovery dual-clock scene test: 13 passed, 0 failed")
 		quit(0)
 		return
 	for failure in _failures:
 		push_error("FAIL: %s" % failure)
-	print("Recovery dual-clock scene test: %d passed, %d failed" % [12 - _failures.size(), _failures.size()])
+	print("Recovery dual-clock scene test: %d passed, %d failed" % [13 - _failures.size(), _failures.size()])
 	quit(1)

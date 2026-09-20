@@ -28,6 +28,15 @@ func _run() -> void:
 		return
 	for _frame in range(5):
 		await process_frame
+	# Read the authored location introduction before inspecting its action list.
+	var next_button := current_scene.get_node("%FieldNextButton") as Button
+	for page in range(40):
+		if not next_button.is_visible_in_tree():
+			break
+		next_button.pressed.emit()
+		await process_frame
+	for _frame in range(3):
+		await process_frame
 
 	for viewport_size in [Vector2i(1280, 720), Vector2i(1920, 1080), Vector2i(1918, 943)]:
 		root.size = viewport_size
@@ -48,7 +57,7 @@ func _run() -> void:
 			var member_list := popover.find_child("MemberList", true, false) as Container
 			_expect(member_list != null and member_list.get_child_count() == maxi(1, game_state.get_selected_agents().size()), "team status should list every deployed protagonist/support or an explicit empty state")
 			popover.call("close")
-	_expect(not _visible_text_contains(current_scene, "LOG") and not _visible_text_contains(current_scene, "로그"), "player-facing investigation UI should use Aka instead of LOG/log")
+	_expect(not _visible_text_contains(current_scene, "LOG") and not _visible_text_contains(current_scene, "로그"), "player-facing investigation UI should use Lume instead of LOG/log")
 
 	var return_field_button := current_scene.find_child("ReturnFieldButton", true, false) as Button
 	_expect(return_field_button != null and return_field_button.visible, "afterlife point picker should always offer a return path")

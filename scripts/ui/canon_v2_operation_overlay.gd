@@ -32,6 +32,7 @@ var _cancel_button: Button
 var _pending_confirm: Callable
 var _pending_cancel: Callable
 var _previous_focus: Control
+var _manual_previous_focus: Control
 
 
 func _ready() -> void:
@@ -72,6 +73,10 @@ func open_manual_from_quick_action() -> void:
 	_toggle_manual_detail()
 
 
+func has_open_field_reference() -> bool:
+	return (_manual_detail_panel != null and _manual_detail_panel.visible) or (_detail_stack != null and _detail_stack.visible) or (_confirmation_layer != null and _confirmation_layer.visible)
+
+
 func set_rule_strip_top_inset(top_inset: int) -> void:
 	_ensure_ui()
 	var safe_area := get_node_or_null("SafeArea") as MarginContainer
@@ -85,6 +90,9 @@ func request_action_confirmation(
 	on_cancel: Callable = Callable()
 ) -> void:
 	_ensure_ui()
+	# Keep one owner until the active confirmation is resolved.
+	if _confirmation_layer.visible:
+		return
 	_pending_confirm = on_confirm
 	_pending_cancel = on_cancel
 	_previous_focus = get_viewport().gui_get_focus_owner()
@@ -92,8 +100,20 @@ func request_action_confirmation(
 	_confirmation_layer.mouse_filter = Control.MOUSE_FILTER_STOP
 	_confirmation_layer.visible = true
 	_confirmation_panel.visible = true
+	_notify_field_pause()
 	_confirm_button.disabled = not bool(preview.get("allowed", true))
-	_confirm_button.grab_focus()
+	var cancel_next := _cancel_button.get_path() if _confirm_button.disabled else _confirm_button.get_path()
+	_cancel_button.focus_next = cancel_next
+	_cancel_button.focus_previous = cancel_next
+	_confirm_button.focus_next = _cancel_button.get_path()
+	_confirm_button.focus_previous = _cancel_button.get_path()
+	for side in [SIDE_LEFT, SIDE_RIGHT, SIDE_TOP, SIDE_BOTTOM]:
+		_cancel_button.set_focus_neighbor(side, cancel_next)
+		_confirm_button.set_focus_neighbor(side, _cancel_button.get_path())
+	if _confirm_button.disabled:
+		_cancel_button.grab_focus()
+	else:
+		_confirm_button.grab_focus()
 
 
 func close_action_confirmation() -> void:
@@ -375,6 +395,12 @@ func _refresh_manual_detail() -> void:
 	var pages := _array_copy(manual_state.get("pages"))
 	var active_ids := _string_array(manual_state.get("active_rule_ids"))
 	var lines: Array[String] = ["[b]현재 괴이 매뉴얼[/b]"]
+	var authored_lines := _array_copy(manual_state.get("authored_draft_lines"))
+	if not authored_lines.is_empty():
+		lines.append("[b]내가 작성한 해석 · 미검증[/b]")
+		for draft_line in authored_lines:
+			lines.append(String(draft_line).replace("[", "[lb]"))
+		lines.append("작성한 내용은 자동 확정되지 않습니다. 현재 전조와 근거를 대조해 대응하세요.\n")
 	if pages.is_empty():
 		lines.append("검증된 현행 규칙이 없습니다. 조사 기록과 후보 가설을 확인하세요.")
 	else:
@@ -506,7 +532,18 @@ func _activate_recovery_support(support: Dictionary, button: Button) -> void:
 	if not bool(support.get("available", true)) or bool(support.get("used", false)):
 		return
 	var host := get_parent()
-	if host != null and host.has_method("_use_agent_recovery_support"):
+	if host != null and host.has_method("request_field_support"):
+		if bool(host.call("request_field_support", support)):
+			var pending: Dictionary = host.get("_pending_field_support")
+			for child in _recovery_support_content.get_children():
+				for control in child.get_children():
+					if control is Button:
+						control.text = control.text.trim_prefix("선택 취소 · ")
+			if String(pending.get("id", "")) == String(support.get("id", "")):
+				button.text = "선택 취소 · " + button.text
+			_detail_stack_open = false
+			_apply_mode_visibility()
+	elif host != null and host.has_method("_use_agent_recovery_support"):
 		host.call("_use_agent_recovery_support", support, button)
 
 
@@ -558,16 +595,32 @@ func _apply_mode_visibility() -> void:
 
 
 func _toggle_manual_detail() -> void:
+	if not _manual_detail_panel.visible:
+		_manual_previous_focus = get_viewport().gui_get_focus_owner()
 	_manual_detail_panel.visible = not _manual_detail_panel.visible
 	if _manual_detail_panel.visible:
+		_notify_field_pause()
 		(_manual_detail_panel.get_node("ManualContent/ManualText") as RichTextLabel).grab_focus()
+	else:
+		if is_instance_valid(_manual_previous_focus) and _manual_previous_focus.is_visible_in_tree() and _manual_previous_focus.focus_mode != Control.FOCUS_NONE and not (_manual_previous_focus is BaseButton and _manual_previous_focus.disabled):
+			_manual_previous_focus.grab_focus()
+		else:
+			_detail_toggle_button.grab_focus()
+		_manual_previous_focus = null
 
 
 func _toggle_detail_stack() -> void:
 	_detail_stack_open = not _detail_stack_open
 	_apply_mode_visibility()
 	if _detail_stack.visible:
+		_notify_field_pause()
 		_detail_toggle_button.grab_focus()
+
+
+func _notify_field_pause() -> void:
+	var host := get_parent()
+	if _mode == "recovery" and host != null and host.has_method("request_field_pause"):
+		host.call("request_field_pause")
 
 
 func _set_legacy_action_dock_visible(is_visible: bool) -> void:

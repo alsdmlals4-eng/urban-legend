@@ -1,5 +1,9 @@
 # 괴이 기록국 프로젝트 코어
 
+> 2026-09-20 current-authority 교정: 현재 구조는 `DAILY_CASE`(선택형 일상 준비 / 사건 조사·회수)이며 동행 기록 보조는 **루메**다. 책임 원본은 `CURRENT_PLANNING_CANON.md`, `current-planning-canon.json`, `CURRENT_DECISION_OVERLAY.md`다. 아래 2026-07/08 상태·10일/반일/cycle·아카·사람 증거 전 구현 금지는 당시 이력이며 현재 승인을 덮어쓰지 않는다. 저장 호환 필드는 지우지 않는다. 핵심은 **숨겨진 규칙을 조사하고 실제 회수·미니게임 행동에 적용해 살아남는 경험**이다. 매뉴얼 초안만으로 물리 결과나 정답 인증을 만들지 않는다. 최신 구현/검증 상태는 `CURRENT_HANDOFF.md`에서 구분한다.
+
+## 보존된 코어 정의와 당시 상태
+
 > 상태: `CORE_RECORDED`
 > 사용자 승인: 2026-07-23 - 기존 사건 코어 승인
 > 최신 정합성: `INVESTIGATION_RESCUE_RECOVERY_AUTHORITY_RECONCILED`

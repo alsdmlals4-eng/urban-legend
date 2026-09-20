@@ -53,7 +53,7 @@ func _run() -> void:
 		_fail("settings utility button must open the accessibility dialog")
 		return
 	(settings_dialog as AcceptDialog).hide()
-	if not _test_situation_choice_presentation():
+	if not await _test_situation_choice_presentation():
 		return
 	var investigation_actions := current_scene.get_node("%PointsBox") as Control
 	var field_choices := current_scene.get_node("%FieldChoiceScroll") as Control
@@ -232,8 +232,19 @@ func _test_situation_choice_presentation() -> bool:
 	if not situation_label.visible or situation_label.text.strip_edges().is_empty():
 		_fail("investigation must show a situation description")
 		return false
+	# The approved reading flow pages narration before exposing choices.
+	# Advance the real UI; do not require the retired instant-choice layout.
+	var initial_node: Dictionary = root.get_node("GameState").get_current_field_node().duplicate(true)
+	for page in range(40):
+		if not next_button.visible:
+			break
+		next_button.pressed.emit()
+		await process_frame
+	if root.get_node("GameState").get_current_field_node() != initial_node:
+		_fail("reading introduction must not skip the authored choice")
+		return false
 	if not choice_scroll.visible or next_button.visible:
-		_fail("situation and choices must be visible without a dialogue advance step")
+		_fail("choices must become reachable after finishing narration")
 		return false
 	if reaction_box.visible or reaction_box.get_child_count() != 0:
 		_fail("the lightweight investigation layout must not render agent dialogue rows")

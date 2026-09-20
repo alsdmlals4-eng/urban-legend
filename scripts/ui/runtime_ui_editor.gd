@@ -73,13 +73,17 @@ func register_element(element_id: String, control: Control, options: Dictionary 
 
 
 func _prepare_free_layout(element_id: String) -> void:
+	if not is_inside_tree():
+		return
 	await get_tree().process_frame
+	if not is_inside_tree():
+		return
 	await get_tree().process_frame
-	if not _elements.has(element_id) or _root_control == null:
+	if not is_inside_tree() or not _elements.has(element_id) or not is_instance_valid(_root_control):
 		return
 	var entry: Dictionary = _elements[element_id]
 	var control := entry.get("control") as Control
-	if control == null:
+	if not is_instance_valid(control):
 		return
 	var global_position := control.global_position
 	var original_size := control.size

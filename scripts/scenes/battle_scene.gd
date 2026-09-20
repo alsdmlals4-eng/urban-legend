@@ -10,6 +10,7 @@ const LogTutorialCatalog = preload("res://scripts/ui/log_tutorial_catalog.gd")
 const RecoveryTelegraphAudio = preload("res://scripts/ui/recovery_telegraph_audio.gd")
 const ActionChoiceCardScene = preload("res://scenes/ui/action_choice_card.tscn")
 const TeamStatusChipScene = preload("res://scenes/ui/team_status_chip.tscn")
+const CastingCutIn = preload("res://scripts/ui/recovery_casting_cut_in.gd")
 
 const BASE_ANOMALY_STABILITY := 0
 const BASE_RECOVERY_THRESHOLD := 70
@@ -35,6 +36,8 @@ var _action_buttons: Array[Button] = []
 var _agent_support_buttons: Array[Button] = []
 var _target_agent_index := 0
 var _recovery_completion_queued := false
+var _terminal_save_pending := false
+var _save_retry_dialog: AcceptDialog
 
 var _threshold_label: Label
 var _prediction_label: Label
@@ -53,6 +56,8 @@ var _response_box: GridContainer
 var _consumable_row: HBoxContainer
 var _turn_auto_success_agents: Dictionary = {}
 var _turn_locked := false
+var _withdrawal_pending := false
+var _withdrawal_preview: Dictionary = {}
 var _log_guide: LogGuide
 var _decision_progress_label: Label
 var _decision_instruction_label: Label
@@ -62,6 +67,14 @@ var _telegraph_audio_player: AudioStreamPlayer
 var _decision_step := GuidedDecisionStep.DIRECT
 var _selected_hypothesis_response_id := ""
 var _selected_evidence_ids: Array[String] = []
+var _field_paused := false
+var _field_resume_requested := false
+var _field_window_focused := true
+var _field_pause_button: Button
+var _cut_in_remaining := 0.0
+var _pending_field_support: Dictionary = {}
+var _casting_cut_in: Control
+var _casting_exit_frame_pending := false
 
 
 func _ready() -> void:
@@ -75,6 +88,115 @@ func _ready() -> void:
 	_build_scene_ui()
 	_setup_runtime_editor()
 	_begin_recovery_turn()
+	get_window().focus_exited.connect(_on_field_focus_exited)
+	get_window().focus_entered.connect(func() -> void: _field_window_focused = true)
+
+
+func _field_reference_open() -> bool:
+	var overlay := get_node_or_null("CanonV2OperationOverlay")
+	return overlay != null and overlay.has_method("has_open_field_reference") and bool(overlay.call("has_open_field_reference"))
+
+
+func _field_actions_blocked() -> bool:
+	return _field_paused or not _field_window_focused or _field_reference_open() or _recovery_completed or _is_casting() or _casting_exit_frame_pending
+
+
+func _is_casting() -> bool:
+	return _casting_cut_in != null and _casting_cut_in.active
+
+
+func _set_field_paused(paused: bool) -> void:
+	_field_paused = paused
+	if _telegraph_audio_player != null:
+		_telegraph_audio_player.stream_paused = paused or _is_casting()
+	_refresh_field_pause_control()
+
+
+func request_field_pause() -> void:
+	_field_resume_requested = false
+	_set_field_paused(true)
+
+
+func request_field_support(support: Dictionary) -> bool:
+	if _turn_locked or _recovery_completed or not _field_window_focused or _is_casting() or _casting_exit_frame_pending:
+		return false
+	if not bool(support.get("available", true)) or GameState.has_used_agent_support(String(support.get("id", ""))):
+		return false
+	if String(_pending_field_support.get("id", "")) == String(support.get("id", "")):
+		_pending_field_support.clear()
+	else:
+		_pending_field_support = support.duplicate(true)
+	request_field_pause()
+	return true
+
+
+func _on_field_focus_exited() -> void:
+	_field_window_focused = false
+	_field_resume_requested = false
+	_set_field_paused(true)
+
+
+func _toggle_field_pause() -> void:
+	if _recovery_completed or _turn_locked or _field_reference_open():
+		return
+	if _field_paused:
+		_field_resume_requested = true
+	else:
+		_set_field_paused(true)
+
+
+func _refresh_field_pause_control() -> void:
+	if _field_pause_button == null:
+		return
+	var clock := GameState.get_recovery_clock_state()
+	var remaining := GameState.RECOVERY_CLOCK_INTERVAL - float(clock.get("active_seconds", 0.0))
+	var warning := "폭주" if int(clock.get("danger", 0)) >= 5 else "위험 +1"
+	_field_pause_button.text = "현장 재개 · 정지 중" if _field_paused else "현장 정지 · %s까지 %d초" % [warning, int(ceil(remaining))]
+	if _is_casting() and not _field_paused:
+		_field_pause_button.text = "시전 중 · 현장 정지"
+	if _field_paused and not _pending_field_support.is_empty():
+		_field_pause_button.text = "지원 실행 · 현장 재개"
+	_field_pause_button.disabled = _recovery_completed or _turn_locked or _field_reference_open()
+	_field_pause_button.tooltip_text = "활성 현장 12초마다 위험 +1. 위험 6칸이면 기존 공명 폭주 피해가 발생합니다. 기록 열람 중에는 정지합니다."
+	if not _pending_field_support.is_empty():
+		_field_pause_button.tooltip_text += "\n실행 대기: %s · %s\n작전 상태에서 같은 지원을 다시 선택하면 취소합니다." % [String(_pending_field_support.get("agent_name", "")), String(_pending_field_support.get("label", "지원"))]
+
+
+func _process(delta: float) -> void:
+	if _field_reference_open() or not _field_window_focused or _turn_locked or _recovery_completed:
+		_field_resume_requested = false
+		_set_field_paused(true)
+		return
+	if _field_paused:
+		_refresh_field_pause_control()
+		if _field_resume_requested and not Input.is_action_pressed("ui_accept") and Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down").is_zero_approx() and not Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+			_field_resume_requested = false
+			_set_field_paused(false)
+			if not _pending_field_support.is_empty():
+				var support := _pending_field_support.duplicate(true)
+				_pending_field_support.clear()
+				_use_agent_recovery_support(support, null)
+		return # Resume frame never becomes a field action or catches up elapsed time.
+	if _casting_exit_frame_pending:
+		_casting_exit_frame_pending = false
+		return # UI skip can finish before process; discard that animation frame too.
+	if _is_casting():
+		_casting_cut_in.advance(delta)
+		_casting_exit_frame_pending = false # Natural finish already consumes this frame.
+		return # A forced animation frame, including its final frame, costs no field time.
+	if _current_pattern.is_empty():
+		return
+	var outcome := GameState.advance_recovery_clock_time(delta)
+	_refresh_field_pause_control()
+	if _cut_in_remaining > 0.0:
+		_cut_in_remaining = maxf(0.0, _cut_in_remaining - delta)
+		if _cut_in_remaining == 0.0:
+			_representative_agent_image.visible = false
+	if int(outcome.get("ticks", 0)) > 0:
+		var lines: Array[String] = ["현장 시간 경과: 위험 +%d · 현재 %d/6" % [int(outcome.ticks), int(outcome.danger)]]
+		_apply_clock_surge(outcome, lines)
+		_update_battle_view("\n".join(lines))
+		_play_recovery_clock_feedback("surge" if bool(outcome.surge_triggered) else "danger")
 
 
 func _build_scene_ui() -> void:
@@ -83,6 +205,15 @@ func _build_scene_ui() -> void:
 		shade.color = Color(0.08, 0.015, 0.025, 0.14)
 	_representative_agent_image = %RepresentativeVisual
 	_representative_agent_image.visible = false
+	_casting_cut_in = CastingCutIn.new()
+	_casting_cut_in.name = "RecoveryCastingCutIn"
+	get_node("%CinematicStage").add_child(_casting_cut_in)
+	_casting_cut_in.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_casting_cut_in.anchor_left = 0.32
+	_casting_cut_in.anchor_right = 0.64
+	_casting_cut_in.anchor_bottom = 0.84
+	_casting_cut_in.z_index = 5
+	_casting_cut_in.finished.connect(_on_casting_finished)
 	_anomaly_panel = %AnomalyPanel
 	_anomaly_panel.add_theme_stylebox_override("panel", ThemeFactory.panel_style(Color("8a606c"), 0.12))
 	_anomaly_image = %AnomalyVisual
@@ -109,6 +240,17 @@ func _build_scene_ui() -> void:
 	_decision_back_button.pressed.connect(_go_back_decision_step)
 	_decision_confirm_button.pressed.connect(_confirm_evidence_step)
 	%ManualQuickButton.pressed.connect(_open_recovery_manual)
+	var withdraw_button := Button.new()
+	withdraw_button.name = "WithdrawButton"
+	withdraw_button.text = "철수 검토"
+	withdraw_button.tooltip_text = "추가 피해 방지를 위한 철수의 책임 조건과 예상 결과를 검토합니다."
+	withdraw_button.pressed.connect(_request_withdrawal)
+	%ManualQuickButton.get_parent().add_child(withdraw_button)
+	_field_pause_button = Button.new()
+	_field_pause_button.name = "RecoveryPauseButton"
+	_field_pause_button.custom_minimum_size.y = 40
+	_field_pause_button.pressed.connect(_toggle_field_pause)
+	%ManualQuickButton.get_parent().add_child(_field_pause_button)
 
 	_log_guide = LogGuideScript.new()
 	_log_guide.set_compact(true)
@@ -118,6 +260,84 @@ func _build_scene_ui() -> void:
 	_refresh_representative_agent()
 
 
+func _evaluate_withdrawal() -> Dictionary:
+	var runtime: Dictionary = GameState.get_canon_v2_runtime_state()
+	var handoff: Dictionary = runtime.get("recovery_handoff_state", {})
+	# Route safety comes from the authored handoff, never from opening this UI.
+	var context := {
+		"safe_route": bool(handoff.get("safe_withdrawal_route", false)),
+		"withdrawal_reason_recorded": true,
+		"before_control_collapse": not GameState.are_all_agents_inactive(),
+		"obligations": GameState.get_active_protection_obligations()
+	}
+	return preload("res://scripts/core/recovery_outcome_policy.gd").new().evaluate_termination_candidate("approved_withdrawal", context)
+
+
+func _request_withdrawal() -> void:
+	# Reviewing withdrawal is a paused decision, not a field action.
+	if _turn_locked or _recovery_completed or _recovery_completion_queued or _is_casting() or _casting_exit_frame_pending:
+		return
+	if _can_recover():
+		_complete_recovery_when_ready()
+		return
+	var overlay := get_node_or_null("CanonV2OperationOverlay")
+	if overlay == null:
+		_result_label.text = "작전 상태가 준비되지 않았습니다. 잠시 후 철수를 다시 검토하세요."
+		return
+	_withdrawal_preview = _evaluate_withdrawal()
+	_withdrawal_pending = true
+	_turn_locked = true
+	var lines: Array[String] = ["철수 사유: 추가 피해 방지를 위한 현장 철수", "회수는 미완료로 남으며, 이미 확보한 조사 기록과 피해자 구조 결과는 유지됩니다."]
+	lines.append("예상 판정: 승인 철수" if bool(_withdrawal_preview.get("eligible", false)) else "예상 판정: 통제 실패 — 아래 책임 조건이 충족되지 않았습니다.")
+	for reason in _withdrawal_preview.get("blocking_reasons", []):
+		var reason_id := String(reason)
+		var label: String = {
+			"safe_route_missing": "안전한 철수 경로가 확인되지 않았습니다.",
+			"withdrawal_reason_missing": "철수 사유가 기록되지 않았습니다.",
+			"withdrawal_not_before_control_collapse": "이미 통제가 붕괴했습니다."
+		}.get(reason_id, "미해결 보호 의무 또는 책임 인계 조건: " + reason_id)
+		lines.append("• " + label)
+	for consequence in _withdrawal_preview.get("non_blocking_consequences", []):
+		lines.append("잔여 보호 책임: %s · %s" % [String(consequence.get("target", "")), String(consequence.get("status", ""))])
+	overlay.request_action_confirmation({"allowed": true, "preview_text": "\n".join(lines)}, _confirm_withdrawal, _cancel_withdrawal)
+
+
+func _cancel_withdrawal() -> void:
+	_withdrawal_pending = false
+	_withdrawal_preview = {}
+	if not _recovery_completed:
+		_turn_locked = false
+
+
+func _confirm_withdrawal() -> void:
+	if not _withdrawal_pending or _recovery_completed:
+		return
+	if _can_recover():
+		_cancel_withdrawal()
+		_complete_recovery_when_ready()
+		return
+	var current := _evaluate_withdrawal()
+	if current != _withdrawal_preview:
+		_cancel_withdrawal()
+		_request_withdrawal()
+		return
+	_withdrawal_pending = false
+	# The displayed reason is acknowledged here; cancellation writes no outcome.
+	GameState.evaluate_canon_v2_recovery_termination("approved_withdrawal", {
+		"safe_route": bool(GameState.get_canon_v2_runtime_state().get("recovery_handoff_state", {}).get("safe_withdrawal_route", false)),
+		"withdrawal_reason_recorded": true,
+		"before_control_collapse": not GameState.are_all_agents_inactive()
+	})
+	var withdrawal_state: Dictionary = GameState.get_canon_v2_runtime_state()
+	withdrawal_state["termination_preview"]["withdrawal_reason"] = "추가 피해 방지를 위한 현장 철수"
+	var recorded: Dictionary = GameState.apply_canon_v2_runtime_state(withdrawal_state)
+	if not bool(recorded.get("ok", false)):
+		_cancel_withdrawal()
+		_result_label.text = "철수 사유 기록에 실패했습니다. 현장을 유지합니다."
+		return
+	_finish_recovery(false, "approved_withdrawal" if bool(current.get("eligible", false)) else "control_failure")
+
+
 func request_manual_quick_open() -> void:
 	var operation_overlay := get_node_or_null("CanonV2OperationOverlay")
 	if operation_overlay != null and operation_overlay.has_method("open_manual_from_quick_action"):
@@ -125,6 +345,8 @@ func request_manual_quick_open() -> void:
 
 
 func _open_recovery_manual() -> void:
+	_field_resume_requested = false
+	_set_field_paused(true)
 	request_manual_quick_open()
 
 
@@ -313,7 +535,9 @@ func _make_recovery_evidence_text() -> String:
 		lines.append("오대응 학습: 아직 없음")
 	else:
 		lines.append("오대응 학습: %s" % String(learning.get("reason", "오대응 이유를 기록했습니다.")))
-	lines.append("다음 판단: 가설을 세우고 확보 기록을 선택한 뒤, 그 판단과 일치하는 대응을 실행합니다.")
+	if not learning.is_empty():
+		lines.append(preload("res://scripts/ui/recovery_learning_formatter.gd").format_trial(learning))
+	lines.append("다음 판단: 당시 초안과 관측 결과를 대조하고, 현재 전조에 맞는 대응을 선택합니다.")
 	return "\n".join(lines)
 
 
@@ -429,7 +653,7 @@ func _begin_recovery_turn(last_result: String = "") -> void:
 		_log_guide.show_compact_hint("전조 기록을 찾지 못했습니다. 현장 기록을 다시 확인해 주세요.")
 		return
 	var clock_before := GameState.get_recovery_clock_state()
-	var clock_after := GameState.begin_recovery_clock_turn()
+	var clock_after := GameState.begin_recovery_clock_turn(false)
 	var danger_advanced := int(clock_after.get("danger", 0)) > int(clock_before.get("danger", 0))
 	_play_telegraph_cue()
 	var first_telegraph := not GameState.has_seen_log_tutorial("recovery_first_telegraph")
@@ -550,7 +774,7 @@ func _show_hypothesis_step() -> void:
 
 
 func _select_hypothesis(response: Dictionary) -> void:
-	if _turn_locked:
+	if _turn_locked or _field_actions_blocked():
 		return
 	_selected_hypothesis_response_id = String(response.get("id", ""))
 	_selected_evidence_ids.clear()
@@ -590,7 +814,7 @@ func _show_evidence_step() -> void:
 
 
 func _toggle_evidence(clue_id: String) -> void:
-	if _turn_locked or not GameState.has_collected_clue(clue_id):
+	if _turn_locked or _field_actions_blocked() or not GameState.has_collected_clue(clue_id):
 		return
 	if _selected_evidence_ids.has(clue_id):
 		_selected_evidence_ids.erase(clue_id)
@@ -600,7 +824,7 @@ func _toggle_evidence(clue_id: String) -> void:
 
 
 func _confirm_evidence_step() -> void:
-	if _turn_locked or _decision_step != GuidedDecisionStep.EVIDENCE:
+	if _turn_locked or _field_actions_blocked() or _decision_step != GuidedDecisionStep.EVIDENCE:
 		return
 	var has_collected_related := false
 	for clue_id_value in _current_pattern.get("related_clue_ids", []):
@@ -674,7 +898,16 @@ func _focus_first_enabled_decision_card() -> void:
 
 
 func _grab_first_decision_card_focus() -> void:
+	if not is_inside_tree() or is_queued_for_deletion() or not is_instance_valid(_response_box):
+		return
+	if _field_reference_open():
+		return
+	if _is_casting():
+		_casting_cut_in.get_node("SkipCastButton").grab_focus()
+		return
 	for child in _response_box.get_children():
+		if not child.is_inside_tree() or child.is_queued_for_deletion():
+			continue
 		if child is PanelContainer and child.has_node("%ActionButton"):
 			var action_button := child.get_node("%ActionButton") as Button
 			if not action_button.disabled:
@@ -685,6 +918,8 @@ func _grab_first_decision_card_focus() -> void:
 
 
 func _go_back_decision_step() -> void:
+	if _field_actions_blocked():
+		return
 	if _turn_locked or not _uses_guided_decision_flow():
 		return
 	match _decision_step:
@@ -703,7 +938,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _select_pattern_response(response: Dictionary) -> void:
-	if _turn_locked:
+	if _turn_locked or _field_actions_blocked():
 		return
 	_turn_locked = true
 	_decision_back_button.disabled = true
@@ -854,7 +1089,11 @@ func _evaluate_guided_decision(response: Dictionary, correct: bool) -> Dictionar
 
 func _make_manual_decision_context(response: Dictionary, evaluation: Dictionary) -> Dictionary:
 	if not bool(evaluation.get("guided", false)):
-		return {}
+		return {
+			"guided": false,
+			"pattern_name": String(_current_pattern.get("name", _current_pattern.get("id", "전조"))),
+			"response_label": String(response.get("label", response.get("id", "")))
+		}
 	var selected_hypothesis := _find_response_by_id(_selected_hypothesis_response_id)
 	var authored_supporting_ids: Array[String] = []
 	var authored_supporting_titles: Array[String] = []
@@ -904,6 +1143,8 @@ func _make_recovery_learning_reason(response: Dictionary, correct: bool, evaluat
 
 
 func _use_recovery_consumable(item_id: String, button: Button) -> void:
+	if _field_actions_blocked() or _turn_locked:
+		return
 	if not GameState.use_loaded_consumable(item_id):
 		button.disabled = true
 		return
@@ -1193,6 +1434,8 @@ func _add_agent_recovery_support_actions(parent: Control) -> void:
 
 
 func _use_agent_recovery_support(support: Dictionary, button: Button) -> void:
+	if _field_actions_blocked() or _turn_locked:
+		return
 	var support_id := String(support.get("id", ""))
 	if not bool(support.get("available", true)):
 		_update_battle_view(String(support.get("unavailable_reason", "지원 조건을 먼저 확인하세요.")))
@@ -1217,7 +1460,8 @@ func _use_agent_recovery_support(support: Dictionary, button: Button) -> void:
 		30,
 		MAX_RECOVERY_THRESHOLD
 	)
-	button.disabled = true
+	if button != null:
+		button.disabled = true
 	var operation_overlay := get_node_or_null("CanonV2OperationOverlay")
 	if operation_overlay != null and operation_overlay.has_method("mark_recovery_support_used"):
 		operation_overlay.call("mark_recovery_support_used", support_id)
@@ -1225,24 +1469,27 @@ func _use_agent_recovery_support(support: Dictionary, button: Button) -> void:
 	if clock_delta != 0:
 		var clock_state := GameState.get_recovery_clock_state()
 		clock_note = "\n위험 시계: %s%d · 현재 %d/6" % ["+" if clock_delta > 0 else "", clock_delta, int(clock_state.get("danger", 0))]
+	_casting_cut_in.play(support, AssetCatalog.new().get_agent_production_texture(String(support.get("agent_id", "")), "recovery_support"))
+	_set_field_paused(_field_paused)
 	_update_battle_view("%s의 %s 지원 발동\n%s%s" % [
 		String(support.get("agent_name", "")),
 		String(support.get("role", "회수")),
 		String(support.get("description", "")),
 		clock_note
 	])
+	_focus_first_enabled_decision_card()
 	if clock_delta < 0:
 		_play_recovery_clock_feedback("relief")
 	elif clock_delta > 0:
 		_play_recovery_clock_feedback("danger")
-	if _representative_agent_image != null:
-		var support_texture := AssetCatalog.new().get_agent_production_texture(
-			String(support.get("agent_id", "")),
-			"recovery_support"
-		)
-		if support_texture != null:
-			_representative_agent_image.texture = support_texture
-			_show_representative_cut_in(false)
+
+
+func _on_casting_finished() -> void:
+	# Presentation completion cannot repeat support costs, effects or rewards.
+	_casting_exit_frame_pending = true
+	_set_field_paused(_field_paused)
+	_update_battle_view(_result_label.text if _result_label != null else "")
+	_focus_first_enabled_decision_card()
 
 
 func _resolve_recovery_clock_outcome(correct: bool, verified: bool, lines: Array[String]) -> Dictionary:
@@ -1251,11 +1498,16 @@ func _resolve_recovery_clock_outcome(correct: bool, verified: bool, lines: Array
 	if correct:
 		lines.append("현장 대응: 위험 -1 · 현재 %d/6" % danger)
 		if verified:
-			lines.append("매뉴얼 검증: 추가 위험 -1 · 현재 %d/6" % danger)
+			lines.append("판단 근거를 기록했습니다. 위험 완화는 실제 현장 대응에만 적용됩니다.")
 	else:
 		lines.append("오대응 누적: 위험 +2 · 현재 %d/6" % danger)
+	_apply_clock_surge(outcome, lines)
+	return outcome
+
+
+func _apply_clock_surge(outcome: Dictionary, lines: Array[String]) -> void:
 	if not bool(outcome.get("surge_triggered", false)):
-		return outcome
+		return
 
 	var target := _get_representative_agent()
 	var target_id := String(target.get("id", ""))
@@ -1269,7 +1521,6 @@ func _resolve_recovery_clock_outcome(correct: bool, verified: bool, lines: Array
 		String(target.get("name", "대표 요원")),
 		remaining
 	])
-	return outcome
 
 
 func _clock_delta_from_fear_delta(fear_delta: int) -> int:
@@ -1290,7 +1541,7 @@ func get_recovery_clock_presentation() -> Dictionary:
 		"stability_total": 8,
 		"danger_segments": danger_segments,
 		"danger_total": 6,
-		"danger_urgent": danger_segments >= 6,
+		"danger_urgent": danger_segments >= 5,
 		"stability_value": _anomaly_stability,
 		"stability_threshold": _recovery_threshold
 	}
@@ -1333,9 +1584,11 @@ func _update_battle_view(message: String) -> void:
 
 	if _result_label != null:
 		_result_label.text = status_message
-		if GameState.are_all_agents_inactive():
-			_result_label.text += "\n\n모든 요원이 행동 불능 상태입니다. 조사 화면으로 돌아가 재정비합니다."
-			call_deferred("_return_to_investigation")
+	if _is_casting():
+		return
+	if not _recovery_completed and not _can_recover() and GameState.are_all_agents_inactive() and not _recovery_completion_queued:
+		_recovery_completion_queued = true
+		call_deferred("_complete_failed_recovery")
 	if not _recovery_completed and _can_recover() and not _recovery_completion_queued:
 		_recovery_completion_queued = true
 		call_deferred("_complete_recovery_when_ready")
@@ -1345,13 +1598,10 @@ func _show_representative_cut_in(refresh_portrait: bool = true) -> void:
 	if _representative_agent_image == null:
 		return
 	_representative_cut_in_generation += 1
-	var generation := _representative_cut_in_generation
 	if refresh_portrait:
 		_refresh_representative_agent()
 	_representative_agent_image.visible = true
-	await get_tree().create_timer(0.9).timeout
-	if generation == _representative_cut_in_generation and _representative_agent_image != null:
-		_representative_agent_image.visible = false
+	_cut_in_remaining = 0.9
 
 
 func _refresh_representative_agent() -> void:
@@ -1403,17 +1653,83 @@ func is_recovery_ready_for_resolution() -> bool:
 
 func _complete_recovery_when_ready() -> void:
 	_recovery_completion_queued = false
-	if not is_recovery_ready_for_resolution():
+	if _is_casting() or not is_recovery_ready_for_resolution():
+		return
+	_finish_recovery(true, "core_recovered")
+
+
+func _complete_failed_recovery() -> void:
+	_recovery_completion_queued = false
+	if _recovery_completed or not is_inside_tree():
+		return
+	# Preserve an achieved control objective even if exhaustion occurs in the same step.
+	if _can_recover():
+		_complete_recovery_when_ready()
+	elif GameState.are_all_agents_inactive():
+		_finish_recovery(false, "control_failure")
+
+
+func _finish_recovery(successful: bool, status: String) -> void:
+	if _recovery_completed or not is_inside_tree():
 		return
 	_recovery_completed = true
-	GameState.save_recovery_result(true, "core_recovered", _anomaly_stability)
+	_turn_locked = true
 	GameState.set_current_scene_path("res://scenes/result_scene.tscn")
-	GameState.save_game()
+	# Settle exactly once. Subsequent retries only persist this retained outcome.
+	var saved: bool = GameState.save_recovery_result(successful, status, _anomaly_stability)
 	for button in _action_buttons:
 		button.disabled = true
 	for button in _agent_support_buttons:
 		button.disabled = true
-	get_tree().change_scene_to_file("res://scenes/result_scene.tscn")
+	if not saved:
+		_show_terminal_save_retry()
+		return
+	_open_saved_result()
+
+
+func _show_terminal_save_retry() -> void:
+	_terminal_save_pending = true
+	GameState.set_current_scene_path("res://scenes/battle_scene.tscn")
+	# Freeze the field, including background keyboard actions, without pausing other autoloads.
+	process_mode = Node.PROCESS_MODE_DISABLED
+	if _save_retry_dialog == null:
+		_save_retry_dialog = AcceptDialog.new()
+		_save_retry_dialog.name = "RecoverySaveRetryDialog"
+		_save_retry_dialog.ok_button_text = "저장 다시 시도"
+		_save_retry_dialog.dialog_hide_on_ok = false
+		_save_retry_dialog.exclusive = true
+		_save_retry_dialog.process_mode = Node.PROCESS_MODE_ALWAYS
+		_save_retry_dialog.confirmed.connect(_retry_terminal_save)
+		_save_retry_dialog.canceled.connect(_restore_save_retry_dialog)
+		add_child(_save_retry_dialog)
+	_save_retry_dialog.title = "결과 저장을 완료하지 못했습니다"
+	_save_retry_dialog.dialog_text = "현재 결과는 실행 중인 게임에 보관되어 있습니다.\n저장 공간과 파일 접근 상태를 확인한 뒤 다시 시도하세요.\n게임을 종료하면 저장되지 않은 진행을 잃을 수 있습니다."
+	_save_retry_dialog.popup_centered(Vector2i(540, 220))
+	_save_retry_dialog.get_ok_button().grab_focus()
+
+
+func _restore_save_retry_dialog() -> void:
+	if _terminal_save_pending:
+		_show_terminal_save_retry.call_deferred()
+
+
+func _retry_terminal_save() -> void:
+	if not _terminal_save_pending or not is_inside_tree():
+		return
+	GameState.set_current_scene_path("res://scenes/result_scene.tscn")
+	if not GameState.save_game():
+		_show_terminal_save_retry()
+		return
+	_terminal_save_pending = false
+	_open_saved_result()
+
+
+func _open_saved_result() -> void:
+	var error := get_tree().change_scene_to_file("res://scenes/result_scene.tscn")
+	if error != OK:
+		_show_terminal_save_retry()
+		_save_retry_dialog.title = "결과 화면을 열지 못했습니다"
+		_save_retry_dialog.dialog_text = "결과는 저장되었습니다. 결과 화면 열기를 다시 시도하세요."
 
 
 func _recover_anomaly_core() -> void:

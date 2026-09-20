@@ -4,6 +4,16 @@
   "project": "urban-legend",
   "planning": {
     "cadence": {
+      "unit": "DAILY_CASE",
+      "mandatory_schedule": false,
+      "m04_support_access": "DEFAULT_SUPPORT",
+      "design_owner": "docs/superpowers/specs/2026-09-10-daily-case-structure-design.md",
+      "implementation_owner": "docs/CURRENT_HANDOFF.md",
+      "legacy_policy": "PRESERVE_SAVE_COMPATIBILITY_NOT_ACTIVE_PRODUCT_TIMING",
+      "invariants": ["OPTIONAL_DAILY_PREPARATION", "INVESTIGATE_HIDDEN_RULES_AND_USE_REAL_ACTIONS", "NOTES_DO_NOT_CHANGE_WORLD_TRUTH"]
+    },
+    "legacy_cadence": {
+      "status": "SUPERSEDED_BY_DAILY_CASE_HISTORY_ONLY",
       "unit": "TEN_DAY_CYCLE",
       "days_per_cycle": 10,
       "slots_per_day": 2,
@@ -44,7 +54,7 @@
         "VICTIM_RESCUE",
         "COMPOSITE_RESULT"
       ],
-      "supporting_campaign_system": "TEN_DAY_HALF_DAY_CALENDAR",
+      "supporting_campaign_system": "OPTIONAL_DAILY_PREPARATION",
       "invariants": [
         "CALENDAR_NEVER_REVEALS_CORE_TRUTH_OR_CORRECT_RESPONSE",
         "CALENDAR_DOES_NOT_REPLACE_CORE_LOOP_PLAYER_VALIDATION",
@@ -88,6 +98,7 @@
       "core_scene_board": "GENERATED_EXPLORATION / NOT_PROJECT_ASSET / NOT_RUNTIME_ASSET"
     },
     "m04_time_tradeoff": {
+      "authority_state": "SUPERSEDED_TIMING_HISTORY_NOT_ACTIVE_REQUIREMENT",
       "decision_id": "D-2026-08-28-TEN-DAY-HALF-DAY-CASE-CADENCE",
       "status": "USER_APPROVED / IMPLEMENTED_NON_NUMERIC_DISPATCH_CONTEXT / FOCUSED_MACHINE_VERIFIED / NUMERIC_BALANCE_UNDEFINED",
       "scope": "CAMPAIGN_GLOBAL_WITH_M04_RESULT_PRESENTATION",
@@ -139,6 +150,7 @@
       ]
     },
     "m04_bounded_preparation_capacity": {
+      "authority_state": "SUPERSEDED_REST_GATE_HISTORY_USE_CADENCE_DEFAULT_SUPPORT",
       "decision_id": "D-2026-08-30-M04-BOUNDED-PREPARATION-CAPACITY",
       "status": "USER_APPROVED / IMPLEMENTED_M04_ONLY / FOCUSED_MACHINE_VERIFIED / HUMAN_QA_NOT_RUN",
       "scope": "M04_RED_UMBRELLA_ONLY / EXISTING_KWON_SUPPORT_ONLY",

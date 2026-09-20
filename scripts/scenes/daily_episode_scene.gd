@@ -45,7 +45,7 @@ func _build_ui() -> void:
 	_content.add_child(title)
 
 	var meta := Label.new()
-	meta.text = "%s / %s\n일정 소모 없음 · 완료 기록과 선택형 이해도 보상만 남습니다." % [
+	meta.text = "%s / %s\n대화의 선택과 반응은 일상 기록으로 남습니다." % [
 		String(episode.get("agent_name", "요원")),
 		String(episode.get("case_title", "관련 사건"))
 	]

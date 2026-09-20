@@ -28,7 +28,7 @@ func execute_async(params: Dictionary) -> Dictionary:
 		return ToolResponse.success({ "instances": _game_instances() })
 	if not EditorInterface.is_playing_scene():
 		return ToolResponse.failure("no game is running; start one with `hera run --current --wait`")
-	var target := _target_game()
+	var target := _target_game(int(params.get("pid", 0)))
 	if target.has("error"):
 		return ToolResponse.failure(String(target["error"]))
 	var request_id := _new_request_id()
@@ -115,10 +115,18 @@ func _request_path(game_pid: int, request_id: String) -> String:
 func _response_path(game_pid: int, request_id: String) -> String:
 	return "%s/%s.json" % [_response_dir(game_pid), request_id]
 
-func _target_game() -> Dictionary:
-	var scene := EditorInterface.get_playing_scene()
+func _target_game(target_pid: int = 0) -> Dictionary:
+	return _select_game(_game_instances(), EditorInterface.get_playing_scene(), target_pid)
+
+func _select_game(instances: Array, scene: String, target_pid: int) -> Dictionary:
+	# Explicit identity never falls back to another runtime after scene changes.
+	if target_pid != 0:
+		for inst in instances:
+			if int(inst.get("pid", 0)) == target_pid:
+				return inst
+		return {"error": "requested Hera game pid %d is not live in this project" % target_pid}
 	var matches := []
-	for inst in _game_instances():
+	for inst in instances:
 		if scene == "" or String(inst.get("scene", "")) == scene:
 			matches.append(inst)
 	if matches.is_empty():

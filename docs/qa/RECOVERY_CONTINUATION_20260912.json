@@ -1,0 +1,202 @@
+{
+  "work_level": "L2",
+  "benchmark_preflight_receipt": {
+    "state": "PASS",
+    "entries": [
+      {
+        "source_and_evidence": "scripts/core/recovery_outcome_policy.gd; scripts/ui/canon_v2_runtime_bridge.gd; scripts/core/game_state.gd",
+        "observed_pattern": "Canonical approved_withdrawal remains independent of recovery success; campaign adapter currently recognizes only legacy retreated.",
+        "project_fit_and_difference": "ADAPT existing outcome adapter and confirmation framework. Do not create another outcome ledger or change rescue achievements.",
+        "disposition": "ADAPT"
+      },
+      {
+        "source_and_evidence": "https://www.kineticgames.co.uk/news/phasmophobia-tempest",
+        "observed_pattern": "Investigation bonus combines correct identification and escape alive; secondary objectives are separate. Developers describe easy reward farming as a balancing concern.",
+        "project_fit_and_difference": "Separate recovery, protection and survival records; keep first-terminal settlement idempotent. Do not copy rewards or ghost mechanics.",
+        "disposition": "ADAPT"
+      },
+      {
+        "source_and_evidence": "https://frictionalgames.com/2017-11-what-is-somas-safe-mode/",
+        "observed_pattern": "Safe Mode reworks creature behavior rather than merely removing damage.",
+        "project_fit_and_difference": "Legible consequences matter, but wholesale invulnerability would change the approved survival core and is excluded.",
+        "disposition": "REJECT"
+      }
+    ]
+  },
+  "context_configuration_hygiene": {
+    "scope": "Recovery termination to daily settlement; existing imported resources remain untouched",
+    "inventory": [
+      {
+        "path": "docs/CURRENT_HANDOFF.md",
+        "owner_or_provenance": "Approved daily/case implementation continuation",
+        "references_and_consumers": "battle_scene, result_scene, campaign_state, game_state and GUT",
+        "classification": "ACTIVE_OWNER"
+      },
+      {
+        "path": "docs/CURRENT_PLANNING_CANON.md",
+        "owner_or_provenance": "Older calendar planning, superseded within daily/case scope",
+        "references_and_consumers": "Legacy calendar APIs still exist; no deletion or calendar restoration",
+        "classification": "COMPATIBILITY"
+      }
+    ]
+  },
+  "alternatives": [
+    {
+      "choice": "Reuse canonical policy, confirmation and existing settlement adapter",
+      "decision": "ADAPT",
+      "reason": "One outcome owner, preserves saves and current result UI; smallest verifiable integration"
+    },
+    {
+      "choice": "Unconditional immediate exit",
+      "decision": "REJECT",
+      "reason": "Conceals unresolved protection obligations and may falsely report approved withdrawal"
+    },
+    {
+      "choice": "New retreat minigame and currency cost",
+      "decision": "REJECT",
+      "reason": "Unapproved gameplay/economy expansion and duplicated state"
+    }
+  ],
+  "project_work_kanban": {
+    "goal_or_slice_issue_ref": "docs/CURRENT_HANDOFF.md#구현-재개--2026-09-12",
+    "source_main_sha": "ef66f00fadf154d0ed826810f91cc2a8a8eef644",
+    "source_note": "Exact approved continuation branch source, not main; fetched main c82291101bf0a2bb4d821a12bca9f14070ee2886. Open PRs remain read-only.",
+    "work_item_refs": [
+      "withdrawal-settlement",
+      "withdrawal-input"
+    ],
+    "active_work_item_ref": "withdrawal-input",
+    "next_action": "Normal-player entry and responsibility-handoff verification; actual 1920 viewport and long-dialog focus/layout checks.",
+    "work_items": [
+      {
+        "work_item_id": "withdrawal-settlement",
+        "title": "Preserve canonical withdrawal in daily settlement",
+        "canon_owner": "scripts/core/game_state.gd",
+        "actual_consumers": [
+          "scripts/core/campaign_state.gd",
+          "scripts/scenes/result_scene.gd"
+        ],
+        "status": "DONE",
+        "depends_on": [],
+        "next_action": "Failing real-state regression before minimal mapping correction",
+        "acceptance_criteria": [
+          "outcome",
+          "preservation"
+        ],
+        "checklist": [
+          {
+            "id": "outcome",
+            "text": "Approved withdrawal settles as retreat; control failure remains failure",
+            "status": "PASS",
+            "evidence": [
+              "tests/gut/test_daily_faction_requests.gd; GUT 26/26,140 assertions; expected failure->retreat observed before repair"
+            ]
+          },
+          {
+            "id": "preservation",
+            "text": "Save/load, first-outcome idempotency and rescue/report boundaries preserved",
+            "status": "PASS",
+            "evidence": [
+              "tests/gut/test_daily_faction_requests.gd; GUT 26/26,140 assertions; expected failure->retreat observed before repair"
+            ]
+          }
+        ],
+        "required_evidence": [
+          "E2_TEST"
+        ],
+        "verification": [
+          {
+            "level": "E2_TEST",
+            "status": "PASS",
+            "evidence": [
+              "Godot4.7.2/GUT9.7.1:26/26,140 assertions; isolated APPDATA"
+            ]
+          }
+        ],
+        "verified_head_sha": "a8ecb2b586753cc9118d7cab3dd9bfa0ff077215",
+        "must_fix_remaining": 0,
+        "blocked_unverified_remaining": 0,
+        "user_decision_required_remaining": 0,
+        "repository_readback": "PASS",
+        "readback_evidence": [
+          "git show a8ecb2b; GUT 26/26,140 assertions"
+        ],
+        "rollback": "Revert only a8ecb2b to restore prior adapter."
+      },
+      {
+        "work_item_id": "withdrawal-input",
+        "title": "Direct retreat preview and confirmation",
+        "canon_owner": "scripts/scenes/battle_scene.gd",
+        "actual_consumers": [
+          "scripts/ui/canon_v2_operation_overlay.gd",
+          "scripts/core/recovery_outcome_policy.gd"
+        ],
+        "status": "VERIFY_REVIEW",
+        "depends_on": [
+          "withdrawal-settlement"
+        ],
+        "next_action": "Normal-player entry and responsibility-handoff verification; actual 1920 viewport and long-dialog focus/layout checks.",
+        "acceptance_criteria": [
+          "confirmation"
+        ],
+        "checklist": [
+          {
+            "id": "confirmation",
+            "text": "Cancel preserves state; confirm re-evaluates current obligations and records actual outcome without fabricated route evidence",
+            "status": "PASS",
+            "evidence": [
+              "recovery_withdrawal_return_test.gd: unsafe/safe/stale fixtures, cancel/no settlement, stored reason, result/save/load/daily route; rendered diagnostic 0 failures"
+            ]
+          }
+        ],
+        "required_evidence": [
+          "E2_TEST",
+          "E3_RUNTIME"
+        ],
+        "verification": [
+          {
+            "level": "E2_TEST",
+            "status": "PASS",
+            "evidence": [
+              "GUT27/27,144 assertions; standalone withdrawal rendered diagnostic0failures; nested-confirmation9failures before fix,0after"
+            ]
+          },
+          {
+            "level": "E3_RUNTIME",
+            "status": "PARTIAL",
+            "evidence": [
+              "1280x720 rendered diagnostic captures reviewed; injected route fixture is not normal-player path; real1920 not verified"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "reuse_learning_handoff": {
+    "selected_modules": [
+      "RecoveryOutcomePolicy",
+      "CanonV2OperationOverlay",
+      "CampaignState"
+    ],
+    "reuse_mode": "REUSE_EXISTING_PROJECT_IMPLEMENTATION",
+    "project_paths_changed": [
+      "scripts/core/game_state.gd",
+      "scripts/scenes/battle_scene.gd",
+      "scripts/ui/canon_v2_operation_overlay.gd",
+      "scripts/ui/log_guide.gd",
+      "scripts/ui/log_tutorial_catalog.gd"
+    ],
+    "verification_evidence": [
+      "GUT27/27,144 assertions",
+      "rendered diagnostic withdrawal0failures",
+      "independent read-only P2 review repaired and rechecked"
+    ],
+    "evidence_ceiling": "MACHINE_VERIFIED_AND_RENDERED_DIAGNOSTIC_NOT_NORMAL_PLAYER_PATH",
+    "rollback": "Revert only current continuation commits; preserve existing imported assets/uid/user work.",
+    "project_only_lessons": [
+      "Modal callback ownership must survive nested requests and keyboard focus; use actual viewport dimensions, not launch-request dimensions."
+    ],
+    "base_promotion_candidates": [],
+    "promotion_state": "PROJECT_ONLY_NO_BASE_PROMOTION"
+  }
+}

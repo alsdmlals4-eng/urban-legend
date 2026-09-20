@@ -7,6 +7,7 @@ const AfterlifeHeaderScene = preload("res://scenes/ui/afterlife_header.tscn")
 const TeamStatusPopoverScene = preload("res://scenes/ui/team_status_popover.tscn")
 const RhythmGame = preload("res://scripts/minigames/rhythm_timing_game.gd")
 const RainDodgeGame = preload("res://scripts/minigames/rain_dodge_game.gd")
+const RainFrameSyncGame = preload("res://scripts/minigames/rain_frame_sync_game.gd")
 const RouteRestoreGame = preload("res://scripts/minigames/route_restore_game.gd")
 const AnomalyManualDrawerScript = preload("res://scripts/ui/anomaly_manual_drawer.gd")
 
@@ -23,6 +24,12 @@ var _return_button: Button
 var _game_control: Control
 var _manual_drawer: AnomalyManualDrawer
 var _manual_toggle_button: Button
+var _manual_input_locked := false
+var _manual_game_process_mode: ProcessMode = Node.PROCESS_MODE_INHERIT
+var _resume_button: Button
+var _resume_requested := false
+var _window_focused := true
+var _navigation_row: HBoxContainer
 
 
 func _ready() -> void:
@@ -40,6 +47,17 @@ func _ready() -> void:
 	if _existing_result.is_empty() and not _is_route_restore_minigame():
 		_equipment_hint = GameState.try_use_frequency_filter_hint(minigame_id)
 	_build_ui()
+	if not _is_route_restore_minigame() and not _completed:
+		# Keep the required manual entry outside the global operation-strip area.
+		_manual_toggle_button.reparent(self)
+		_manual_toggle_button.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
+		_manual_toggle_button.offset_left = -196
+		_manual_toggle_button.offset_right = -28
+		_manual_toggle_button.offset_top = -66
+		_manual_toggle_button.offset_bottom = -22
+		_manual_toggle_button.z_index = 10
+	get_window().focus_exited.connect(_on_window_focus_exited)
+	get_window().focus_entered.connect(func() -> void: _window_focused = true)
 
 
 func _apply_runtime_minigame_overrides() -> void:
@@ -76,7 +94,7 @@ func _build_ui() -> void:
 	var margin := MarginContainer.new()
 	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	margin.add_theme_constant_override("margin_left", 28)
-	margin.add_theme_constant_override("margin_top", 18)
+	margin.add_theme_constant_override("margin_top", 80)
 	margin.add_theme_constant_override("margin_right", 28)
 	margin.add_theme_constant_override("margin_bottom", 22)
 	add_child(margin)
@@ -90,6 +108,7 @@ func _build_ui() -> void:
 	_build_manual_drawer()
 
 	var eyebrow := Label.new()
+	eyebrow.visible = false # Current case context is already in the global operation strip.
 	eyebrow.text = "FIELD VERIFICATION  /  %s" % GameState.get_current_episode_title()
 	eyebrow.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	eyebrow.add_theme_font_size_override("font_size", 13)
@@ -109,6 +128,7 @@ func _build_ui() -> void:
 	root.add_child(columns)
 
 	var briefing := _add_section(columns, "비교 근거" if _is_route_restore_minigame() else "검증 규칙", 0.78)
+	_navigation_row.reparent(briefing)
 	var description_text := String(_minigame.get("description", "현장 검증을 준비합니다."))
 	if _is_route_restore_minigame():
 		description_text = "공식 운행 기록\n· 2번 승강장에서 출발\n· 3번 환승 후 1번 도착\n· 직선 구간 최소 1회 포함\n\n방송 원본\n· 다음은 3번 환승역입니다\n· 종료 식별음 뒤 이동\n\n현장 표기\n· 개인별 목적지 표기는 배제"
@@ -153,10 +173,14 @@ func _build_ui() -> void:
 
 	var outcome := _add_section(columns, "현장 반응" if _is_route_restore_minigame() else "현장 기록", 0.9)
 	_result_label = _make_body_label("목적지 혼선 · 정상\n노선 고착 · 확인 전\n관측 위험 · 경로 확인 전" if _is_route_restore_minigame() else "검증이 끝나면 마지막 단서와 요원 반응을 이곳에 기록합니다.")
-	outcome.add_child(_result_label)
-	var spacer := Control.new()
-	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	outcome.add_child(spacer)
+	var result_scroll := ScrollContainer.new()
+	result_scroll.name = "MinigameResultScroll"
+	result_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	result_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	result_scroll.follow_focus = true
+	outcome.add_child(result_scroll)
+	_result_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	result_scroll.add_child(_result_label)
 	_return_button = Button.new()
 	_return_button.text = "조사 현장으로 복귀"
 	_return_button.custom_minimum_size.y = 48
@@ -391,12 +415,14 @@ func _show_saved_result(playfield_frame: PanelContainer) -> void:
 	playfield_frame.add_child(summary)
 	_result_label.text = _make_result_text(_last_successful, _existing_result)
 	_return_button.visible = true
+	_dock_completed_actions()
 
 
 func _make_game_control() -> Control:
 	match String(_minigame.get("type", "rhythm_timing")):
 		"route_restore": return RouteRestoreGame.new()
 		"rain_dodge": return RainDodgeGame.new()
+		"rain_frame_sync": return RainFrameSyncGame.new()
 		_: return RhythmGame.new()
 
 
@@ -423,14 +449,34 @@ func _on_game_completed(successful: bool, details: Dictionary) -> void:
 	saved_details["effect_summary"] = _make_effect_summary(successful)
 	saved_details["equipment_assisted"] = not _equipment_hint.is_empty()
 	saved_details["display_title"] = String(_minigame.get("title", "현장 검증"))
-	GameState.save_minigame_result(String(_minigame.get("id", GameState.get_current_minigame_id())), successful, saved_details)
+	var saved := GameState.save_minigame_result(String(_minigame.get("id", GameState.get_current_minigame_id())), successful, saved_details)
 	if _is_route_restore_minigame() and successful:
 		GameState.collect_clue("clue_black_ticket")
 	_result_label.text = _make_result_text(successful, saved_details)
 	_return_button.visible = true
+	_dock_completed_actions()
 	_return_button.grab_focus()
 	if _manual_drawer != null:
 		_manual_drawer.mark_new_entries()
+	if not saved:
+		_show_save_retry()
+
+
+func _dock_completed_actions() -> void:
+	if _is_route_restore_minigame():
+		return
+	_manual_toggle_button.reparent(_return_button.get_parent())
+	_manual_toggle_button.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
+	_manual_toggle_button.custom_minimum_size.y = 44
+	_manual_toggle_button.z_index = 0
+
+
+func _show_save_retry() -> void:
+	_status_label.text = "결과 저장 미완료 · 현재 결과는 실행 중인 게임에 보관되어 있습니다"
+	_result_label.text = "저장 공간과 파일 접근 상태를 확인한 뒤 다시 시도하세요. 게임을 종료하면 저장되지 않은 진행을 잃을 수 있습니다.\n\n" + _make_result_text(_last_successful, GameState.get_minigame_result(GameState.get_current_minigame_id()))
+	_return_button.text = "저장 다시 시도 · 현장 복귀"
+	_return_button.visible = true
+	_return_button.grab_focus()
 
 
 func _make_result_text(successful: bool, details: Dictionary) -> String:
@@ -440,6 +486,8 @@ func _make_result_text(successful: bool, details: Dictionary) -> String:
 	if _is_route_restore_minigame() and successful:
 		heading = "노선 복원 완료 · %s" % String(details.get("clear_grade_label", "일반 복원"))
 	var extra := ""
+	if String(_minigame.get("type", "")) == "rain_frame_sync" and not String(details.get("observation", "")).is_empty():
+		extra = "\n\n실행 관측\n%s\n초안의 정답 여부가 아니라 실제 입력 시점의 결과입니다." % String(details["observation"])
 	if bool(details.get("danger_case_seen", false)):
 		extra = "\n\n위험 사례\n개인이 인식한 목적지를 공식 경로로 적용하면 같은 승강장으로 되돌아갑니다."
 	return "%s\n\n%s%s\n\n상태 변화\n%s\n\n요원 반응\n%s" % [
@@ -470,6 +518,7 @@ func _make_play_title() -> String:
 	match String(_minigame.get("type", "")):
 		"route_restore": return "노선 복원 보드"
 		"rain_dodge": return "빗속 이동"
+		"rain_frame_sync": return "CCTV · 영상 고정"
 		_: return "폐주파수 동기화"
 
 
@@ -527,22 +576,29 @@ func _make_panel_style(background: Color, border: Color) -> StyleBoxFlat:
 
 
 func _return_to_flow() -> void:
-	if _is_route_restore_minigame() and _last_successful:
-		GameState.set_current_scene_path("res://scenes/battle_scene.tscn")
-		GameState.save_game()
-		get_tree().change_scene_to_file("res://scenes/battle_scene.tscn")
+	if not _completed:
 		return
 	var key := "success_next_scene_path" if _last_successful else "failure_next_scene_path"
 	var scene_path := String(_minigame.get(key, ""))
 	if scene_path.is_empty():
 		scene_path = String(_minigame.get("return_scene_path", "res://scenes/investigation_scene.tscn"))
+	if _is_route_restore_minigame() and _last_successful:
+		scene_path = "res://scenes/battle_scene.tscn"
 	GameState.set_current_scene_path(scene_path)
-	GameState.save_game()
-	get_tree().change_scene_to_file(scene_path)
+	# The completed result and effects are retained; retries only persist them.
+	if not GameState.save_game():
+		GameState.set_current_scene_path("res://scenes/minigame_scene.tscn")
+		_show_save_retry()
+		return
+	if get_tree().change_scene_to_file(scene_path) != OK:
+		GameState.set_current_scene_path("res://scenes/minigame_scene.tscn")
+		_status_label.text = "결과는 저장되었지만 다음 화면을 열지 못했습니다"
+		_return_button.text = "현장 열기 다시 시도"
 
 
 func _add_navigation(parent: Control) -> void:
 	var row := HBoxContainer.new()
+	_navigation_row = row
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
 	row.add_theme_constant_override("separation", 8)
 	parent.add_child(row)
@@ -561,24 +617,91 @@ func _add_navigation(parent: Control) -> void:
 
 func _build_manual_drawer() -> void:
 	_manual_drawer = AnomalyManualDrawerScript.new()
+	_manual_drawer.z_index = 30
 	add_child(_manual_drawer)
 	_manual_drawer.anchor_left = 0.67
 	_manual_drawer.anchor_top = 0.14
 	_manual_drawer.anchor_right = 0.985
 	_manual_drawer.anchor_bottom = 0.86
+	var authored_lines := GameState.get_authored_manual_draft_lines()
 	_manual_drawer.set_sections([
-		{"title": "검증 규칙", "text": String(_minigame.get("rules_text", "공식 기록과 현재 경로를 대조합니다."))},
+		{"title": "내가 작성한 해석 · 미검증", "text": "\n\n".join(authored_lines) if not authored_lines.is_empty() else "아직 작성한 해석이 없습니다. 확보한 원문 기록과 현장 관측을 대조하세요."},
+		{"title": "조작 안내", "text": String(_minigame.get("rules_text", "공식 기록과 현재 경로를 대조합니다."))},
+		{"title": "열람 중 현장 진행 일시 정지", "text": "위치와 남은 시간은 유지됩니다. 닫은 뒤 ‘현장 재개’를 눌러 이어갑니다. 초안 작성이나 열람만으로 성공하지 않습니다."},
 		{"title": "현재 기록", "text": String(_minigame.get("description", "현장 검증을 진행합니다."))},
 		{"title": "요원 지원", "text": "요원 지원과 결과 상세는 검증이 끝난 뒤 기록에 반영됩니다."}
 	])
 	_manual_drawer.bind_toggle_button(_manual_toggle_button)
-	_manual_drawer.drawer_opened.connect(_set_manual_input_lock.bind(true))
-	_manual_drawer.drawer_closed.connect(_set_manual_input_lock.bind(false))
+	_manual_drawer.drawer_opened.connect(_on_manual_opened)
+	_manual_drawer.drawer_closed.connect(_on_manual_closed)
+	_resume_button = Button.new()
+	_resume_button.name = "ResumeFieldButton"
+	_resume_button.text = "현장 일시정지 · 현장 재개"
+	_resume_button.z_index = 20
+	_resume_button.visible = false
+	add_child(_resume_button)
+	_resume_button.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	_resume_button.offset_left = -180
+	_resume_button.offset_right = 180
+	_resume_button.offset_top = -28
+	_resume_button.offset_bottom = 28
+	_resume_button.pressed.connect(func() -> void: _resume_requested = true)
+
+
+func _on_manual_opened() -> void:
+	_resume_requested = false
+	_resume_button.hide()
+	_set_manual_input_lock(true)
+
+
+func _on_manual_closed() -> void:
+	if _completed:
+		_set_manual_input_lock(false)
+		return
+	_show_resume_action()
+
+
+func _on_window_focus_exited() -> void:
+	_window_focused = false
+	_resume_requested = false
+	if _completed or _game_control == null:
+		return
+	_set_manual_input_lock(true)
+	if not _manual_drawer.visible:
+		_show_resume_action()
+
+
+func _show_resume_action() -> void:
+	_resume_button.show()
+	call_deferred("_focus_resume_action")
+
+
+func _focus_resume_action() -> void:
+	if is_inside_tree() and _resume_button.is_visible_in_tree():
+		_resume_button.grab_focus()
+
+
+func _process(_delta: float) -> void:
+	if not _resume_requested or not _window_focused or _manual_drawer == null or _manual_drawer.visible:
+		return
+	# The key used to confirm/navigate must be released before gameplay can poll it.
+	if not Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down").is_zero_approx() or Input.is_action_pressed("ui_accept") or Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+		return
+	_resume_requested = false
+	_resume_button.hide()
+	_set_manual_input_lock(false)
+	if is_instance_valid(_game_control) and _game_control.is_inside_tree() and not _completed:
+		_game_control.grab_focus()
 
 
 func _set_manual_input_lock(locked: bool) -> void:
-	if _game_control != null:
-		_game_control.set_process_unhandled_input(not locked)
-		_game_control.set_process_unhandled_key_input(not locked)
-		if _game_control.has_method("set_input_locked"):
-			_game_control.call("set_input_locked", locked)
+	if _game_control == null or _manual_input_locked == locked:
+		return
+	_manual_input_locked = locked
+	if locked:
+		_manual_game_process_mode = _game_control.process_mode
+		_game_control.process_mode = Node.PROCESS_MODE_DISABLED
+	else:
+		_game_control.process_mode = _manual_game_process_mode
+	if _game_control.has_method("set_input_locked"):
+		_game_control.call("set_input_locked", locked)

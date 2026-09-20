@@ -87,6 +87,8 @@ func mark_new_entries() -> void:
 
 
 func open_drawer() -> void:
+	if visible:
+		return
 	var focus_owner := get_viewport().gui_get_focus_owner()
 	_previous_focus = focus_owner if focus_owner is Control else null
 	visible = true
@@ -97,14 +99,16 @@ func open_drawer() -> void:
 
 
 func close_drawer() -> void:
+	if not visible:
+		return
 	visible = false
 	_refresh_toggle_button()
+	drawer_closed.emit()
 	if is_instance_valid(_previous_focus):
 		_previous_focus.grab_focus()
 	elif _toggle_button != null:
 		_toggle_button.grab_focus()
 	_previous_focus = null
-	drawer_closed.emit()
 
 
 func toggle() -> void:

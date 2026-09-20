@@ -58,7 +58,7 @@ func _run_component_tests() -> void:
 	_check(guide.get_current_text() == "접속 완료", "guide presents first line")
 	_check(guide.get_current_expression() == "normal", "guide presents normal expression")
 	var procedure_speaker := guide.find_child("ProcedureSpeaker", true, false) as Label
-	_check(procedure_speaker != null and procedure_speaker.text.contains("기록관 아카 · 절차 통신"), "guide identifies the text-only Archivist Aka procedure channel")
+	_check(procedure_speaker != null and procedure_speaker.text.contains("루메"), "guide identifies the current Lume procedure channel")
 	_check(guide.find_children("*", "TextureRect", true, false).is_empty(), "procedure guide must not render a discarded portrait asset")
 	guide.advance()
 	_check(guide.get_current_text() == "기록 대조 중", "guide advances sequence")
@@ -91,7 +91,15 @@ func _run_scene_integration_tests() -> void:
 	var investigation_guides := investigation.find_children("*", "LogGuide", true, false)
 	_check(not investigation_guides.is_empty(), "investigation contains Log guide")
 	if not investigation_guides.is_empty():
-		_check((investigation_guides[0] as LogGuide).get_signature_play_count() == 1, "first field Log line plays one signature")
+		var field_guide := investigation_guides[0] as LogGuide
+		_check(field_guide.get_signature_play_count() == 1, "first field Log line plays one signature")
+		_check(not field_guide.visible, "paged dialogue does not restore an overlapping guide panel")
+		investigation._show_reading_page()
+		_check(field_guide.get_signature_play_count() == 1, "redrawing the same Lume page does not repeat the signature")
+		investigation._begin_reading([{"speaker": "권나래", "text": "현장을 확인한다."}], false)
+		_check(field_guide.get_signature_play_count() == 1, "other speakers do not play Lume's signature")
+		investigation._begin_reading([{"speaker": "로그", "text": "다음 기록을 확인해요."}], false)
+		_check(field_guide.get_signature_play_count() == 1, "later Lume pages do not repeat the first-entry signature")
 	investigation.queue_free()
 
 	var battle: Node = load("res://scenes/battle_scene.tscn").instantiate()
@@ -109,6 +117,16 @@ func _run_scene_integration_tests() -> void:
 	_check_scene_claims_tutorial("res://scenes/main_menu.tscn", "main_welcome")
 	_check_scene_claims_tutorial("res://scenes/preparation_scene.tscn", "preparation_agents")
 	_check_scene_claims_tutorial("res://scenes/market_scene.tscn", "market_first_visit")
+	GameState.recovery_successful = false
+	GameState.seen_log_tutorial_ids.erase("result_first_case")
+	var failed_result: Node = load("res://scenes/result_scene.tscn").instantiate()
+	add_child(failed_result)
+	for failed_guide in failed_result.find_children("*", "LogGuide", true, false):
+		for _step in range(4):
+			(failed_guide as LogGuide).advance()
+	_check(not GameState.has_seen_log_tutorial("result_first_case"), "failed recovery does not claim the success tutorial")
+	failed_result.queue_free()
+	GameState.recovery_successful = true
 	_check_scene_claims_tutorial("res://scenes/result_scene.tscn", "result_first_case")
 	GameState.clear_save_file()
 	_check_scene_claims_tutorial("res://scenes/database_view.tscn", "database_first_visit")

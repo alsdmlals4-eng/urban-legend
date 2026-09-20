@@ -6,9 +6,11 @@
 
 ## 한 줄 정의
 
-`괴이 기록국`은 권나래의 **10일·오전/오후 일정**을 준비하고, 관측 가능한 단서로 획득한 키워드로 빈 괴이 매뉴얼을 직접 완성한 뒤 피해자를 구출하고 잔향을 안정화·회수하며, 성공·실패·미확정을 다음 판단의 매뉴얼과 기록으로 남기는 PC용 현대 한국 오컬트 조사 RPG다.
+`괴이기록국: 잔향 보고서`는 선택적 일상 준비 후 사건에서 숨겨진 규칙을 조사하고, 획득 키워드로 매뉴얼 초안을 작성한 뒤 실제 규칙을 구출·회수·미니게임에 사용해 살아남는 PC용 현대 한국 오컬트 조사 RPG다.
 
-## 현재 구현 기준
+현재 cadence는 DAILY_CASE이며 안내자는 루메다. 아래 일정·10일·아카·연도·cycle 관련 설명은 선행 설계의 역사로 보존하며 현재 제작 지시가 아니다. 구형 저장 필드를 지우는 권한도 아니다. 현재 상세 owner는 `docs/superpowers/specs/2026-09-10-daily-case-structure-design.md`, 구현 순서는 `docs/superpowers/specs/2026-09-14-remaining-implementation-contract.md`, 브랜치/main 증거는 `docs/CURRENT_HANDOFF.md`다.
+
+## 선행 구현·설계 기준 — 역사/호환
 
 - main menu product version `Ver 4.3`
 - current runtime: `CampaignState.MAX_DAYS = 10`, `TIME_SLOTS = [morning, afternoon]`

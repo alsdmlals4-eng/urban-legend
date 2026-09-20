@@ -31,12 +31,12 @@
           "slot_m04_rain_rewind_flow"
         ],
         "deduction_segments": [
-          {"kind": "text", "text": "반복 표지판은 실제 출구가 아니라 "},
+          {"kind": "text", "text": "반복 표지판의 기능을 ‘"},
           {"kind": "slot", "slot_id": "slot_m04_rain_rewind_sign"},
-          {"kind": "text", "text": "를 가리킨다."},
-          {"kind": "text", "text": "물웅덩이의 변화는 "},
+          {"kind": "text", "text": "’으로 해석한다.\n"},
+          {"kind": "text", "text": "물웅덩이에서 관측한 변화를 ‘"},
           {"kind": "slot", "slot_id": "slot_m04_rain_rewind_flow"},
-          {"kind": "text", "text": "에서 관찰된다."}
+          {"kind": "text", "text": "’으로 해석한다."}
         ]
       },
       {
@@ -52,12 +52,12 @@
           "slot_m04_victim_tether_sign"
         ],
         "deduction_segments": [
-          {"kind": "text", "text": "피해자 보호 중에는 "},
+          {"kind": "text", "text": "피해자 보호에 사용할 손자국의 위치를 ‘"},
           {"kind": "slot", "slot_id": "slot_m04_victim_tether_fabric"},
-          {"kind": "text", "text": "에 남은 손자국을 기준으로 삼는다."},
-          {"kind": "text", "text": "표지판은 "},
+          {"kind": "text", "text": "’으로 추정한다.\n"},
+          {"kind": "text", "text": "표지판이 나타내는 내용을 ‘"},
           {"kind": "slot", "slot_id": "slot_m04_victim_tether_sign"},
-          {"kind": "text", "text": "와 분리하여 읽는다."}
+          {"kind": "text", "text": "’으로 해석한다."}
         ]
       }
     ],
@@ -669,17 +669,17 @@
     {
       "id": "minigame_rain_sync",
       "title": "빗소리 동기화",
-      "description": "반복 골목을 닫는 빗줄기 사이로 우산을 옮겨, 붉은 우산이 되돌아오는 위치를 고정합니다.",
-      "type": "rain_dodge",
-      "rules_text": "방향키로 우산을 움직여 12초 동안 빗방울을 피하세요. 세 번 맞으면 골목의 반복에 붙잡힙니다.",
+      "description": "빗소리와 CCTV의 끊긴 영상을 비교하고, 실제 길이 이어지는 순간을 고정합니다.",
+      "type": "rain_frame_sync",
+      "rules_text": "Enter 또는 Space로 재생을 시작하고, 같은 키나 영상 고정 버튼으로 순간을 선택하세요. 조사 기록과 현장의 변화를 대조하세요. 12초 안에 영상을 고정하지 못하거나 세 번 실패하면 녹화가 끊깁니다.",
       "duration": 12.0,
       "max_hits": 3,
       "move_speed": 310.0,
       "spawn_interval": 0.34,
       "drop_speed_min": 190.0,
       "drop_speed_max": 280.0,
-      "success_agent_reaction": "관찰 담당이 빗줄기 사이의 안전 경로를 실제 출구와 겹치고, 팀이 우산의 귀환 위치를 표시합니다.",
-      "failure_agent_reaction": "팀이 빗줄기에 닫힌 골목을 경고 구역으로 표시하고, 회수 담당에게 재진입 위험을 전달합니다.",
+      "success_agent_reaction": "관찰 담당이 고정한 CCTV 프레임에서 길과 우산의 귀환 위치를 표시하고 팀에 전달합니다.",
+      "failure_agent_reaction": "팀이 끊긴 CCTV와 입력 시점의 관측을 남기고, 회수 담당에게 재진입 위험을 전달합니다.",
       "success_flags": ["minigame_rain_sync_success", "red_umbrella_sync_completed"],
       "failure_flags": ["minigame_rain_sync_failed", "red_umbrella_sync_noise"],
       "success_show_hint_ids": ["hint_red_umbrella_003"],

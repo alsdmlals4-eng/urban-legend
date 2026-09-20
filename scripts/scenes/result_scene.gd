@@ -2,10 +2,11 @@
 extends Control
 
 const ThemeFactory = preload("res://scripts/ui/ui_theme_factory.gd")
+const RecoveryLearningFormatter = preload("res://scripts/ui/recovery_learning_formatter.gd")
 
-const MinigameResultFormatter = preload("res://scripts/minigames/minigame_result_formatter.gd")
+const ResultFormatter = preload("res://scripts/minigames/minigame_result_formatter.gd")
 const LogGuideScript = preload("res://scripts/ui/log_guide.gd")
-const LogTutorialCatalog = preload("res://scripts/ui/log_tutorial_catalog.gd")
+const TutorialCatalog = preload("res://scripts/ui/log_tutorial_catalog.gd")
 const M04_EPISODE_ID := "episode_002_red_umbrella_alley"
 
 var _m04_vignette_pages: Array[Dictionary] = []
@@ -29,7 +30,7 @@ func _ready() -> void:
 
 
 func _build_ui() -> void:
-	if GameState.get_current_episode_id() == M04_EPISODE_ID and _has_m04_dispatch_context():
+	if GameState.is_recovery_successful() and GameState.get_current_episode_id() == M04_EPISODE_ID and _has_m04_dispatch_context():
 		_build_m04_narrative_result()
 		return
 
@@ -58,17 +59,29 @@ func _build_ui() -> void:
 
 	var title := Label.new()
 	title.text = "괴이 매뉴얼 갱신 / 안정화 결과" if GameState.get_current_episode_id() == "episode_001_afterlife_station" else "사건 보고서 / 잔향 회수 결과"
+	if not GameState.is_recovery_successful():
+		title.text = "현장 종료 / 회수 결과 확인"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	root.add_child(title)
 	var log_guide: LogGuide = LogGuideScript.new()
 	log_guide.set_compact(true)
 	root.add_child(log_guide)
-	if not GameState.has_seen_log_tutorial("result_first_case"):
+	if not GameState.is_recovery_successful():
+		log_guide.show_compact_hint("확보한 기록을 다시 대조하세요. 회수 결과와 피해자 구조 결과는 별도로 보존됩니다.")
+	elif not GameState.has_seen_log_tutorial("result_first_case"):
 		log_guide.present_tutorial("result_first_case", true)
 		log_guide.sequence_finished.connect(func() -> void: GameState.claim_log_tutorial("result_first_case"), CONNECT_ONE_SHOT)
 	else:
-		log_guide.show_compact_hint(LogTutorialCatalog.get_repeat_hint("result_first_case"))
+		log_guide.show_compact_hint(TutorialCatalog.get_repeat_hint("result_first_case"))
 
+	if not GameState.is_recovery_successful():
+		var content := _add_section(root, "현장 종료 기록", "완료 보고서와 성공 보상은 생성하지 않습니다.")
+		content.add_child(_make_label(_make_recovery_status_text()))
+		content.add_child(_make_label("피해자 구조 결과: %s" % GameState.get_current_victim_rescue_result()))
+		_add_reasoning_summary_panel(root)
+		_add_save_state_panel(root)
+		_add_navigation_buttons(root)
+		return
 	_add_result_panel(root)
 	_add_reasoning_summary_panel(root)
 	_add_case_report_panel(root)
@@ -86,7 +99,8 @@ func _build_m04_narrative_result() -> void:
 	root.name = "M04NarrativeResult"
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	root.offset_left = 64
-	root.offset_top = 42
+	# Keep the case heading below the shared operation strip at PC 16:9 sizes.
+	root.offset_top = 96
 	root.offset_right = -64
 	root.offset_bottom = -42
 	root.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -119,7 +133,13 @@ func _build_m04_narrative_result() -> void:
 	_m04_body_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_m04_body_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_m04_body_label.add_theme_font_size_override("font_size", 19)
-	root.add_child(_m04_body_label)
+	var body_scroll := ScrollContainer.new()
+	body_scroll.name = "VignetteBodyScroll"
+	body_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	body_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	root.add_child(body_scroll)
+	_m04_body_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	body_scroll.add_child(_m04_body_label)
 
 	_m04_reasoning_summary = Label.new()
 	_m04_reasoning_summary.name = "ReasoningSummary"
@@ -152,17 +172,9 @@ func _make_m04_vignette_pages() -> Array[Dictionary]:
 	var rescue_text := GameState.get_current_victim_rescue_result()
 	var after_story := GameState.get_current_victim_after_story()
 	var recovery_text := _make_report_recovery_text(report.get("recovery_result", {}))
-	var dispatch_context := _get_m04_dispatch_context()
-	var dispatch_kind := String(dispatch_context.get("dispatch_kind", "EARLY"))
-	var dispatch_day := int(dispatch_context.get("dispatch_day", 1))
-	var dispatch_slot := String(dispatch_context.get("dispatch_slot", "morning"))
-	var dispatch_label := "조기 해결" if dispatch_kind == "EARLY" else "정규 대응"
-	var slot_label := "오전" if dispatch_slot == "morning" else "오후"
-	var preparation_capacity := int(dispatch_context.get("m04_preparation_capacity", 0))
-	var preparation_text := "현장 준비 1/1 · 완료한 대기·회복 기록을 바탕으로 권나래의 귀가 기억 고정 보조를 회수 단계에서 선택할 수 있었습니다." if preparation_capacity >= 1 else "현장 준비 0/1 · 이번 출동에는 대기·회복 완료 기록이 없어 귀가 기억 고정 보조를 선택할 수 없었습니다."
 	var return_route_support_used := GameState.get_used_agent_supports().has("support_kwon_return_route")
 	var support_text := "권나래의 ‘귀가 기억 고정’ 보조가 피해자의 귀가 경로와 일상 기억을 붙들어, 안전 구역 이탈 뒤에도 귀환 순서를 유지했습니다." if return_route_support_used else "권나래의 ‘귀가 기억 고정’ 보조는 이번 회수에 배치되지 않았습니다. 귀가 경로는 회수 절차의 기본 보호 기록으로만 남습니다."
-	return [
+	var pages: Array[Dictionary] = [
 		{
 			"title": "피해자",
 			"body": "%s\n\n%s" % [rescue_text, after_story]
@@ -173,13 +185,16 @@ func _make_m04_vignette_pages() -> Array[Dictionary]:
 		},
 		{
 			"title": "귀가 기억",
-			"body": "%s · %d일차 %s 출동 기록입니다.\n%s\n\n%s" % [dispatch_label, dispatch_day, slot_label, preparation_text, support_text]
+			"body": support_text
 		},
 		{
 			"title": "기록국",
 			"body": "CASE-02 붉은 우산 골목의 회수 기록이 사건 보고서에 봉인되었습니다.\n\n이번 판단의 근거와 회수 절차는 기록국 DB에서 다시 확인할 수 있습니다."
 		}
 	]
+	for trial in RecoveryLearningFormatter.format_trials(report.get("recovery_pattern_learning", {})):
+		pages.append({"title": "현장 대응 재검토", "body": trial})
+	return pages
 
 
 func _make_m04_reasoning_summary_text() -> String:
@@ -211,6 +226,8 @@ func _get_m04_dispatch_context() -> Dictionary:
 
 func _has_m04_dispatch_context() -> bool:
 	var context := _get_m04_dispatch_context()
+	if String(context.get("progression_mode", "")) == "DAILY_CASE":
+		return true
 	return ["EARLY", "REGULAR"].has(String(context.get("dispatch_kind", ""))) \
 		and int(context.get("dispatch_day", 0)) >= 1 \
 		and ["morning", "afternoon"].has(String(context.get("dispatch_slot", "")))
@@ -227,12 +244,16 @@ func _render_m04_vignette() -> void:
 	if _m04_vignette_pages.is_empty() or _m04_progress_label == null or _m04_title_label == null or _m04_body_label == null:
 		return
 	var page: Dictionary = _m04_vignette_pages[_m04_page_index]
+	var body_scroll := _m04_body_label.get_parent() as ScrollContainer
+	if body_scroll != null:
+		body_scroll.scroll_vertical = 0
 	_m04_progress_label.text = "%d / %d" % [_m04_page_index + 1, _m04_vignette_pages.size()]
 	_m04_title_label.text = String(page.get("title", "기록"))
 	_m04_body_label.text = String(page.get("body", ""))
 	var is_last_page := _m04_page_index >= _m04_vignette_pages.size() - 1
 	_m04_continue_button.visible = not is_last_page
-	_m04_preparation_button.visible = is_last_page
+	# The original four narrative pages remain the only mandatory sequence.
+	_m04_preparation_button.visible = _m04_page_index >= 3
 
 
 func _return_to_preparation_from_m04_result() -> void:
@@ -314,6 +335,7 @@ func _add_reasoning_summary_panel(parent: Control) -> void:
 	content.add_child(_make_label("회수 판단 결과: %s" % _make_report_recovery_text(report.get("recovery_result", {}))))
 	_add_text_list(content, "요원 기여", _make_agent_contribution_lines(report.get("selected_agents", [])))
 	_add_text_list(content, "다음 판단", report.get("next_case_notes", []))
+	_add_text_list(content, "현장 대응 재검토 · 패턴별 최근 시도", RecoveryLearningFormatter.format_trials(report.get("recovery_pattern_learning", {})))
 
 
 func _add_manual_record_summary(parent: Control, record_value: Variant) -> void:
@@ -441,7 +463,7 @@ func _make_minigame_lines(results: Dictionary) -> Array:
 			continue
 		var minigame := GameState.get_minigame(String(minigame_id))
 		var title := String(result.get("display_title", minigame.get("title", minigame_id)))
-		lines.append(MinigameResultFormatter.make_report_line(title, result))
+		lines.append(ResultFormatter.make_report_line(title, result))
 	return lines
 
 
@@ -522,7 +544,8 @@ func _add_navigation_buttons(parent: Control) -> void:
 	row.add_child(restart_button)
 
 	var prepare_button := Button.new()
-	prepare_button.text = "현재 반일 결과 확인"
+	prepare_button.name = "ReturnToDailyButton"
+	prepare_button.text = "사건 결과 확인 후 일상으로"
 	prepare_button.pressed.connect(func() -> void:
 		GameState.complete_campaign_slot({"kind": "investigation", "episode_id": GameState.get_current_episode_id()})
 		GameState.set_current_scene_path(GameState.SCENE_PREPARATION)
@@ -537,6 +560,13 @@ func _make_recovery_status_text() -> String:
 			GameState.get_recovery_result_status(),
 			GameState.get_recovery_result_stability()
 		]
+	match GameState.get_recovery_result_status():
+		"approved_withdrawal":
+			return "승인 철수 / 회수 미완료 · 피해자 구조 기록은 별도로 유지됩니다."
+		"retreated":
+			return "현장 철수 / 회수 미완료 · 승인 철수 여부는 별도 책임 판정을 따릅니다."
+		"control_failure", "failed":
+			return "통제 실패 / 회수 미완료 · 확보한 기록과 피해자 구조 결과는 유지됩니다."
 	return "회수 기록 없음"
 
 
